@@ -13,6 +13,9 @@ VLC itself is developed by the VLC authors and VideoLAN; their authorship and
 software licenses remain in effect. See [AUTHORS](AUTHORS), [COPYING](COPYING),
 and [COPYING.LIB](COPYING.LIB).
 
+See the [Windows implementation notes, previews and independent review workflow](doc/juxtopposed-redesign.md)
+for the current scope and the remaining native build checks.
+
 ---
 
 # VLC media player

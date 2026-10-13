@@ -750,7 +750,7 @@ FocusScope {
                 property int maximumWidth: Math.max(minimumWidth, (g_mainDisplay.width + playqueueResizeHandle.width)
                                                     / (pannelVisiblity.showNavigation ? 3 : 2))
 
-                implicitWidth: Math.round(Helpers.clamp(MainCtx.playqueuePanel.width, minimumWidth, maximumWidth))
+                implicitWidth: Math.round(Helpers.clamp(playlist.preferredWidth, minimumWidth, maximumWidth))
 
                 focus: true
 

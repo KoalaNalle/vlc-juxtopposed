@@ -40,6 +40,8 @@ python modules/gui/qt/tests/test_juxtopposed_playback_bar.py --output-dir ui-pre
 python modules/gui/qt/tests/test_native_seek_handle.py
 python modules/gui/qt/tests/test_playback_settings_choices.py
 python modules/gui/qt/tests/test_playlist_proxy_mapping.py
+python modules/gui/qt/tests/test_juxtopposed_queue.py --output-dir ui-previews/queue
+python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
 ```
 
 - [ ] Confirm the component checks pass. These check Qt Quick rendering and interactions; they do not compile VLC or exercise real playback.
@@ -56,12 +58,17 @@ Use a local video, an audio file, a video with multiple audio/subtitle tracks, a
 - [ ] Open playback settings, show/hide the queue, and toggle duration/remaining time. Check streams with unknown duration and media longer than one hour.
 - [ ] Change playback speed, aspect ratio, crop and audio modes in the settings menu. Confirm changes reach the engine, hotkey changes refresh the menu, unavailable choices disable, and effects/synchronization open the expected dialogs. Test keyboard scrolling in short windows.
 - [ ] Filter a queue containing hidden rows before, between and after the matches. Play by keyboard and touch, remove with Delete and the context menu, reorder rows, stream/save selected items, and jump to the playing item. Confirm each action targets the visible selection. Drop files onto a row and the queue footer; footer/toggle drops should append to the complete queue. Repeat with zero filter matches.
+- [ ] Check Queue, Bookmarks and Chapters tab switching by mouse and keyboard. Sort by different criteria in the header and context menu; verify repeat/shuffle reflect engine state. Add files, remove selected rows, and test accessible row activation.
+- [ ] In Bookmarks, add during playback, select/remove by mouse, touch and keyboard, and seek by activation. Check millisecond labels and disable Add for stopped, unseekable or unresolved media. Test without the media library (`--no-media-library`): the interface must load, Queue/Chapters work, and Bookmarks explain their availability.
+- [ ] Delay library lookup and switch quickly between files, including continuous A-to-B playback. No stale bookmarks may appear or target the wrong file. Test first-play library indexing, stop/restart of the same file, refresh clearing selection, and rename/sort/remove in VLC's existing bookmark dialog.
+- [ ] Select chapters and confirm engine state, current chapter feedback and accessible selection stay synchronized. Check chapter times below one hour, at zero, and above one hour, and files with no chapters.
+- [ ] Check the queue overlay, library queue and detached queue with long names, unknown durations, 100/150/200-percent scaling, short windows and resizing. Verify native translucency over video; background blur remains an implementation limit.
 - [ ] Enter and leave fullscreen, using both the visible action and VLC shortcuts. Repeat with pinned controls enabled and disabled, and with the Windows menu/title bar enabled and disabled.
 - [ ] Let floating controls hide, then reveal them with the mouse and keyboard. Menus and held controls should stay accessible; after closing/releasing them, automatic hiding should resume.
 - [ ] Tab and Shift-Tab through controls; activate buttons with Space/Enter. Test arrow navigation between the playback controls, timeline, header, and open queue.
 - [ ] Resize to a narrow window and test Windows display scaling at 100%, 150%, and 200%. Confirm controls do not overlap or disappear unexpectedly and locally packaged icons/fonts load.
 - [ ] Confirm audio playback and the library mini player still work. Test DVD navigation if available.
-- [ ] Launch with `--no-qt-juxtopposed-controls` and confirm the traditional customizable toolbar still works.
+- [ ] Launch with `--no-qt-juxtopposed-controls` and confirm the traditional customizable toolbar and queue still work. Toggle the option in preferences and verify the queue retains its items and current row.
 
 ## Record the result
 

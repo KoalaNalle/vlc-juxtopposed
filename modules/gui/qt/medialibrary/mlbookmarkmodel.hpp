@@ -48,6 +48,8 @@ class MLBookmarkModel : public QAbstractListModel
 
     Q_PROPERTY(MediaLib * ml READ ml WRITE setMl FINAL)
 
+    Q_PROPERTY(bool canAdd READ canAdd NOTIFY canAddChanged FINAL)
+
 public:
     explicit MLBookmarkModel( QObject* parent = nullptr );
     virtual ~MLBookmarkModel();
@@ -56,7 +58,8 @@ public:
         NameRole = Qt::UserRole,
         TimeRole = Qt::UserRole + 1,
         PositionRole = Qt::UserRole + 2,
-        DescriptionRole = Qt::UserRole + 3
+        DescriptionRole = Qt::UserRole + 3,
+        TimeMsRole = Qt::UserRole + 4
     };
     QHash<int, QByteArray> roleNames() const override;
 
@@ -78,10 +81,15 @@ public:
     MediaLib* ml() const;
     void setMl(MediaLib* ml);
 
-    void add();
-    void remove( const QModelIndexList& indexes );
-    void clear();
+    bool canAdd() const;
+
+    Q_INVOKABLE void add();
+    Q_INVOKABLE void remove( const QModelIndexList& indexes );
+    Q_INVOKABLE void clear();
     Q_INVOKABLE void select( const QModelIndex& index );
+
+signals:
+    void canAddChanged();
 
 private:
     static void onCurrentMediaChanged( vlc_player_t* player, input_item_t* media,
@@ -95,6 +103,11 @@ private:
 
     int columnToRole(int column) const;
     void initModel();
+    void invalidateMediaId();
+    void retryMediaId();
+    void resetBookmarks();
+    bool isCurrentRevision(uint64_t revision) const;
+    bool isValidBookmarkIndex(const QModelIndex& index) const;
 
     enum RefreshOperation {
         MLBOOKMARKMODEL_REFRESH,
@@ -113,10 +126,16 @@ private:
     // Assume to be only used from the GUI thread
     BookmarkListPtr m_bookmarks;
     uint64_t m_currentMediaId = 0;
+    uint64_t m_mediaIdRevision = 0;
+    uint64_t m_mediaIdLookupRevision = 0;
+    uint64_t m_refreshRevision = 0;
+    bool m_mediaIdLookupPending = false;
+    bool m_retryMediaIdLookup = false;
+    bool m_clearBookmarks = false;
 
     mutable vlc::threads::mutex m_mutex;
     uint64_t m_revision = 0;
-    // current item & media id can be accessed by any thread and therefore
+    // Current item and revision can be accessed by any thread and therefore
     // must be accessed with m_mutex held
     InputItemPtr m_currentItem;
 

@@ -1210,7 +1210,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
         {
             const QVariantMap varmap = it.toMap();
 
-            auto key = static_cast<PlaylistController::SortKey>(varmap.value("key").toInt());
+            auto key = static_cast<PlaylistController::SortKey>(varmap.value("criteria").toInt());
             QString label = varmap.value("text").toString();
 
             addSortAction(qtr("%1 Ascending").arg(label), key, PlaylistController::SORT_ORDER_ASC);

@@ -33,6 +33,10 @@ jobs:
         run: python modules/gui/qt/tests/test_playback_settings_choices.py
       - name: Check filtered queue actions and drops
         run: python modules/gui/qt/tests/test_playlist_proxy_mapping.py
+      - name: Check queue tabs, actions and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_queue.py --output-dir ui-previews/queue
+      - name: Check production queue overlay placement
+        run: python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,4 +1,4 @@
-# Juxtopposed Windows redesign: playback controls and functional integration
+# Juxtopposed Windows redesign: playback controls and play queue
 
 The original interface design is by **[Juxtopposed](https://www.youtube.com/@juxtopposed)**.
 All visual design credit belongs to them. The source design is the
@@ -34,7 +34,18 @@ drops retain their source positions; footer and queue-toggle drops append to
 the complete queue, including when no items match the filter. Current-item
 scrolling and drag artwork map source rows back to the displayed list.
 
-Use `--no-qt-juxtopposed-controls` to return to the customizable VLC toolbar.
+The Windows play queue has the original Queue, Bookmarks and Chapters tabs,
+Inter typography, compact rows and original SVG action icons. Queue actions use
+VLC's existing list, selection and playlist controller. Bookmarks use the
+media-library bookmark model for adding, removing and seeking; adding stays
+disabled until the current file has a resolved library ID and is seekable.
+Chapters use the existing chapter model and native chapter selection. Without
+the media library, the Bookmarks tab explains its availability and disables
+its actions. The overlay follows the reference's 400-pixel width and margins,
+supports resizing, and keeps the existing queue view when styles change.
+
+Use `--no-qt-juxtopposed-controls` to return to the customizable VLC toolbar and
+traditional queue appearance.
 The option is also available in advanced Qt interface preferences. Linux,
 macOS and the library mini player retain their existing controls.
 
@@ -47,21 +58,26 @@ and 640/1024/1920-pixel layouts with 100/150/200-percent UI scaling. Additional
 checks execute the real seek-handle states, settings choice component and
 queue callbacks against Qt's native models. They cover selection/reset updates,
 filtered activation, removal, reordering, empty filters and append positions.
-QML syntax is checked for every modified file. The GitHub workflow runs these
-checks; the new native C++ context-menu mapping still needs the full VLC build.
+Queue checks render all three tabs, exercise actions, verify the retained view
+across style changes, and check the production overlay anchors with Qt. QML
+syntax is checked for every modified file. The GitHub workflow runs these
+checks; native C++ context-menu and bookmark changes still need the full VLC
+build and real media.
 
 **This milestone is not a completed port of the entire Figma concept.** The
-library sidebar, redesigned queue rows, subtitle presets/timeline, final effects
+library sidebar, subtitle presets/timeline, final effects
 sidebar, thumbnails, waveform, conversion flows and preferences remain future
 work. The Qt components have been tested independently; the full VLC
 Windows binary still needs compilation and testing with real media, fullscreen,
 track switching, DVD menus and pinned/floating controls before release. See
 the [home Windows build checklist](juxtopposed-windows-build-checklist.md).
 
-The Figma MCP account reached its tool-call limit while inspecting the next
-screens. No new sidebar appearance was inferred from sparse metadata. A paid
-Figma plan is not required to continue developing VLC. Detailed layouts and
-original assets can also be inspected and exported manually in Design Mode;
+The Figma MCP account reached its tool-call limit. The queue tabs were inspected
+and exported manually in Design Mode with the user's authorization. Original
+references, measurements and asset provenance are preserved in the
+[reference manifest](juxtopposed-references/queue/manifest.json).
+A paid Figma plan is not required to continue developing VLC. Detailed layouts
+and original assets can also be inspected and exported manually in Design Mode;
 see [Figma's inspection guide](https://help.figma.com/hc/en-us/articles/22012921621015-Guide-to-inspecting).
 
 The thicker timeline currently keeps VLC's chapter seeking behavior but uses
@@ -69,6 +85,53 @@ the simple Figma progress appearance rather than drawing chapter segments and
 bookmark marks. The new bar has a fixed arrangement; custom toolbar profiles
 apply to the legacy bar. The current visual implementation targets the dark
 playback bar; a complete light-theme port remains future work.
+
+The queue preserves the reference's 95-percent body fill. Its 50-pixel
+background blur is not implemented. The Windows software offscreen renderer
+flattens alpha when capturing previews, so native transparency and compositing
+must be evaluated separately. Hover, selection, focus and current-item feedback
+use VLC's existing theme; the neutral Figma frames do not specify those states.
+Active repeat/shuffle buttons add an accent outline and tint, with descriptions
+that distinguish repeat off/all/current and shuffle on/off. This feedback is an
+implementation adaptation; it has no matching active-state Figma reference.
+
+## Implementation and independent review loop
+
+1. Preserve a named original reference, its Figma node ID, dimensions, font,
+   colors, spacing and original assets before implementing a surface.
+2. An implementation agent builds the presentation component and binds it to
+   VLC's native models. Render fixed content at the reference dimensions.
+3. A separate visual reviewer compares reference and render, using aligned
+   overlays and measured geometry. A separate functional reviewer checks native
+   actions, selection, keyboard/touch behavior, lifecycle and optional features.
+4. Fix the ranked findings, regenerate the render and have the reviewers check
+   the corrections. Integrate the shared resources and run the relevant checks.
+5. Accept a canonical visual capture at 9.5/10 and assessed variants at 9/10,
+   with no critical visual defects. Functional acceptance requires its own
+   checks; a visual score alone does not establish production readiness.
+
+The visual rubric weights layout 35%, typography 20%, surfaces 15%, artwork
+15%, and state/responsive fidelity 15%. Record each assessed category and each
+unassessed state explicitly. A score normalized over the assessed categories
+must not be presented as a score for the entire interface. Native Windows
+rendering and playback remain open gates until tested in the full application.
+
+The independent canonical queue review passed all three 400 × 946 captures:
+
+| Canonical state | Score over assessed 85% | Result |
+| --- | --- | --- |
+| Queue | 9.64/10 | Pass |
+| Bookmarks | 9.61/10 | Pass |
+| Chapters | 9.70/10 | Pass |
+
+These are standalone Qt component captures. State/responsive fidelity is
+excluded from the score, and background blur/native compositing remain open.
+See the [three-tab preview](juxtopposed-references/queue/review/queue-final-visual-review-production-contact-sheet.png),
+[independent visual review](juxtopposed-references/queue/review/queue-final-visual-review.json),
+[bookmark backend review](juxtopposed-references/queue/review/bookmark-backend-review-final.json),
+and [native adapter review](juxtopposed-references/queue/review/queue-native-adapter-review-final.json).
+The review records the original/render hashes and normalized source Git blob
+IDs. Small text raster/advance differences of 1–3 pixels remain.
 
 ## Local component checks
 
@@ -79,6 +142,8 @@ python modules/gui/qt/tests/test_juxtopposed_playback_bar.py --output-dir ui-pre
 python modules/gui/qt/tests/test_native_seek_handle.py
 python modules/gui/qt/tests/test_playback_settings_choices.py
 python modules/gui/qt/tests/test_playlist_proxy_mapping.py
+python modules/gui/qt/tests/test_juxtopposed_queue.py --output-dir ui-previews/queue
+python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
 ```
 
 This check renders Qt offscreen and produces PNG previews. It does not require

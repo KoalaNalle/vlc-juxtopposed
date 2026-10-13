@@ -15,6 +15,12 @@ adapts the design into Qt Quick controls with dynamic playback state, volume,
 seeking, keyboard focus and a stacked layout for smaller windows. These code
 and layout adaptations do not change the authorship of the original design.
 
+The queue tab, move, sort, repeat, shuffle, remove and add SVGs are unchanged
+individual exports from Juxtopposed's Queue, Bookmarks and Chapters frames.
+Their hashes and the original panel references are recorded in
+`doc/juxtopposed-references/queue/manifest.json`. Native selection, accessible
+actions, dynamic data and narrow layouts are implementation adaptations.
+
 InterVariable.ttf is the Inter typeface by Rasmus Andersson, distributed under
 the SIL Open Font License 1.1. Its source is https://github.com/rsms/inter and
 its license is included in Inter-LICENSE.txt.

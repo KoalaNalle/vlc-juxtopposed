@@ -822,6 +822,9 @@ qml_modules += {
     'target' : 'playlist',
     'outdir' : 'VLC/Playlist',
     'sources': files(
+        'playlist/qml/JuxtopposedBookmarkList.qml',
+        'playlist/qml/JuxtopposedQueuePanel.qml',
+        'playlist/qml/JuxtopposedQueueRow.qml',
         'playlist/qml/PlaylistDelegate.qml',
         'playlist/qml/PlaylistPane.qml',
         'playlist/qml/PlaylistDetachedWindow.qml',

@@ -1042,7 +1042,12 @@ FocusScope {
             right: parent.right
             bottom: parent.bottom
 
-            bottomMargin: parent.height - rootPlayer.positionSliderY
+            topMargin: controlBar.redesigned ? (rootPlayer._controlsUnderVideo
+                                               ? VLCStyle.dp(20, VLCStyle.scale)
+                                               : Math.max(VLCStyle.dp(60, VLCStyle.scale), topBar.reservedHeight)) : 0
+            rightMargin: controlBar.redesigned ? VLCStyle.dp(20, VLCStyle.scale) : 0
+            bottomMargin: controlBar.redesigned ? controlBar.height + VLCStyle.dp(20, VLCStyle.scale)
+                                               : parent.height - rootPlayer.positionSliderY
         }
 
         focus: false
@@ -1098,9 +1103,9 @@ FocusScope {
         sourceComponent: PlaylistPane {
             id: playlistView
 
-            property real maximumWidth: (rootPlayer.width + playlistView.rightPadding) / 2
+            property real maximumWidth: Math.max(minimumWidth, (rootPlayer.width + playlistView.rightPadding) / 2)
 
-            implicitWidth: Helpers.clamp(MainCtx.playqueuePanel.width
+            implicitWidth: Helpers.clamp(playlistView.preferredWidth
                                  , playlistView.minimumWidth
                                  , playlistView.maximumWidth)
             height: playlistpopup.height
@@ -1110,8 +1115,10 @@ FocusScope {
 
             wheelEnabled: true
 
-            rightPadding: VLCStyle.applicationHorizontalMargin
+            rightPadding: juxtopposed ? 0 : VLCStyle.applicationHorizontalMargin
             topPadding:  {
+                if (juxtopposed)
+                    return 0
                 if (rootPlayer._controlsUnderVideo)
                     return VLCStyle.margin_normal
                 else
@@ -1121,7 +1128,7 @@ FocusScope {
             bottomPadding: 0
 
             background: Rectangle {
-                color: windowTheme.bg.primary.alpha(0.8)
+                color: playlistView.juxtopposed ? "transparent" : windowTheme.bg.primary.alpha(0.8)
             }
 
             view.fadingEdge.pixelAlignedForDPR: !controlBar.visible

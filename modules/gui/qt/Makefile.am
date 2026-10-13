@@ -800,6 +800,18 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/play.svg \
 	pixmaps/juxtopposed/previous.svg \
 	pixmaps/juxtopposed/queue.svg \
+	pixmaps/juxtopposed/queue-add.svg \
+	pixmaps/juxtopposed/queue-bookmarks.svg \
+	pixmaps/juxtopposed/queue-bookmarks-active.svg \
+	pixmaps/juxtopposed/queue-chapters.svg \
+	pixmaps/juxtopposed/queue-chapters-active.svg \
+	pixmaps/juxtopposed/queue-move.svg \
+	pixmaps/juxtopposed/queue-remove.svg \
+	pixmaps/juxtopposed/queue-repeat.svg \
+	pixmaps/juxtopposed/queue-shuffle.svg \
+	pixmaps/juxtopposed/queue-sort.svg \
+	pixmaps/juxtopposed/queue-tab-active.svg \
+	pixmaps/juxtopposed/queue-tab-inactive.svg \
 	pixmaps/juxtopposed/settings.svg \
 	pixmaps/juxtopposed/subtitles.svg \
 	pixmaps/juxtopposed/volume-background.svg \
@@ -1276,6 +1288,9 @@ libqml_module_playlist_a_ModulePath = VLC/Playlist
 libqml_module_playlist_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_playlist_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_playlist_a_QML = \
+	playlist/qml/JuxtopposedBookmarkList.qml \
+	playlist/qml/JuxtopposedQueuePanel.qml \
+	playlist/qml/JuxtopposedQueueRow.qml \
 	playlist/qml/PlaylistDelegate.qml \
 	playlist/qml/PlaylistPane.qml \
 	playlist/qml/PlaylistDetachedWindow.qml
