@@ -32,6 +32,7 @@ features. Start with the Windows dark interface, then expand screen by screen.
 
 - [Original Figma community design](https://www.figma.com/community/file/1691465999134370980/vlc-redesign).
 - [Design walkthrough video](https://youtu.be/ERFeOgqk324).
+- Home-machine video reference supplied on 13 October 2026: [I Redesigned VLC After 25 Years.mkv](<C:/Users/Koala/Downloads/I Redesigned VLC After 25 Years/I Redesigned VLC After 25 Years.mkv>). The file is approximately 295 MiB and remains outside the repository. Its location has been checked; detailed frame/timestamp review is pending. Use it as context for interactions, motion and navigation alongside the measured Figma references, and as a local playback sample for native validation.
 - [User's accessible Figma copy](https://www.figma.com/design/zdNUYRVOH9lEtIxMYvh8DV/VLC-Redesign--Community-).
 - Artwork/design attribution: CC BY 4.0. Inter's SIL font license is bundled.
 - VLC code retains its existing GPL licenses and VLC/VideoLAN author notices.
@@ -167,6 +168,70 @@ toolchain, then follow the guide's prerequisites for that environment. Use the
 fork/branch above as the source. Check the compiler and C++ compiler versions
 and whether available prebuilt contribs match them. The guide includes older
 example toolchain versions; select compatible dependencies deliberately.
+
+### Home environment prepared on 13 October 2026
+
+The home machine now has a working WSL 2 Ubuntu **24.04.5 LTS** environment.
+AMD SVM virtualization was enabled in the ASUS TUF GAMING B550M-PLUS firmware.
+The Windows build number is `26200.9550`; WSL runs kernel
+`6.18.54.1-microsoft-standard-WSL2`. The host has 32 GB RAM and 16 logical CPUs;
+Ubuntu currently sees about 15 GiB RAM.
+
+Installed build prerequisites include native GCC/G++, Autotools, CMake
+**3.28.3**, Python **3.12.3** and its build helpers, archive utilities,
+`dos2unix` (needed by portable packaging), Java/Ant and MinGW-w64 x64
+**GCC 13 POSIX**. VLC's extra-tools stage successfully built its required
+Meson **1.12.0** and patched Ninja **1.13.2** locally. Qt remains the contrib
+system's pinned **6.8.3** dependency.
+
+The source checkout was normalized to LF where the committed file already
+uses LF, and repository-local `core.autocrlf=false` is set. Git's cached
+normalization metadata was refreshed; both staged and unstaged code diffs
+were empty afterward. Files committed with CRLF were preserved.
+
+A small Windows x64 executable compiled and ran under WSL. A second check
+ran it from the Linux build directory and verified Windows file access to
+that directory through a WSL UNC path. These are environment checks, not
+VLC playback acceptance.
+
+The first full build was started from source checkpoint `1b4948c322f46d106c0890c80dd868fa80a72b5e`,
+with `JOBS=8`, `MESON_BUILD="-j 1"`, default debug/Qt/MSVCRT/Autotools settings,
+and **without `-p`**, so contrib libraries use the same compiler as VLC.
+Its state at this handoff update is **compiling contrib libraries**; a
+complete VLC executable and native runtime acceptance remain pending.
+
+The first contrib fetch stopped because both configured QtShaderTools
+download locations returned 404. Qt 6.8.3 now lives in Qt's official archive;
+the common Qt download URL in `contrib/src/main.mak` was corrected to use
+that archive, retaining the same version and checksum manifests. The missing
+QtShaderTools and QtSvg archives were recovered and passed their existing
+SHA512 checks. Independent inspection also verified all 69 previously cached
+archives with SHA512 manifests. The resumed build is compiling dependencies.
+
+Current local locations (the helpers and logs are ignored build artifacts):
+
+- Linux intermediates: `/root/vlc-juxtopposed-build`, with VLC in its `win64` subdirectory.
+- Setup helper/log: `C:\Modding\vlc-juxtopposed\build-windows\setup-ubuntu.sh` and `setup-ubuntu.log`.
+- Build helper/log: `C:\Modding\vlc-juxtopposed\build-windows\build-windows-x64.sh` and `build-windows-x64.log`.
+- Supervised run: `build-windows\build-supervisor.sh`, launched by a hidden Windows `wsl.exe` process; `launcher.json` records the launcher PID/start time and `build-status.txt` records running/succeeded/failed and the exit code. Cross-check the process when status says running, since an interrupted host cannot always write a final status.
+- Requested portable output: `C:\Modding\vlc-juxtopposed\build-windows\package` (only usable after packaging succeeds).
+
+Do not start a second build while the current one is running; build-directory
+locks reject duplicate launches. After a
+stopped build has been inspected, the prepared helper can resume it from
+PowerShell:
+
+```powershell
+wsl -d Ubuntu-24.04 -u root -- bash /mnt/c/Modding/vlc-juxtopposed/build-windows/build-windows-x64.sh
+```
+
+The helper deliberately clears exported `CC`/`CXX` before invoking VLC's
+script. Linux helper tools require native compilers; VLC subsequently chooses
+the installed Windows cross-compilers itself. An initial attempt exported
+the cross-compilers too early and failed in the Linux Ninja build. Its
+configuration was preserved under `extras/tools/ninja/vlc_build-cross-compiler-attempt`
+in the Linux output tree, the wrapper was corrected, and the subsequent
+helper build passed. Both attempts are retained in the appended build log.
 
 ### Example WSL build with a separate output directory
 
