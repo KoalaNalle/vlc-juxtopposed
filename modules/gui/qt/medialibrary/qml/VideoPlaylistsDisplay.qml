@@ -33,6 +33,7 @@ Widgets.PageLoader {
     property int displayMarginEnd: 0
     property bool enableBeginningFade: true
     property bool enableEndFade: true
+    property int playlistType: MLPlaylistListModel.PLAYLIST_TYPE_VIDEO
 
     //---------------------------------------------------------------------------------------------
     // Settings
@@ -67,6 +68,7 @@ Widgets.PageLoader {
                 focus: true
 
                 isMusic: false
+                playlistType: root.playlistType
 
                 searchPattern: playlistPage.search.pattern
                 sortOrder: playlistPage.sort.order

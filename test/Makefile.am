@@ -137,7 +137,11 @@ check_SCRIPTS = \
 # Disabled tests:
 EXTRA_PROGRAMS = \
 	test_src_input_stream_net \
+	test_libvlc_native_library_slice \
 	$(NULL)
+
+test_libvlc_native_library_slice_SOURCES = libvlc/native_library_slice.c
+test_libvlc_native_library_slice_LDADD = $(LIBVLCCORE) $(LIBVLC)
 
 EXTRA_DIST = \
 	modules/lua/extensions/extensions.lua \

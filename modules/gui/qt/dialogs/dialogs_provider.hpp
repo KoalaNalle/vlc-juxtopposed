@@ -246,6 +246,7 @@ public slots:
     void openUrlDialog();
     void openNetDialog();
     void openCaptureDialog();
+    void addMediaLibraryFolder();
 
     void PLOpenDir();
     void PLAppendDir();

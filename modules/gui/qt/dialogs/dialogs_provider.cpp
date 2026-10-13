@@ -38,6 +38,7 @@
 #include "util/qt_dirs.hpp"
 #include "util/vlchotkeyconverter.hpp"
 #include "maininterface/mainctx.hpp"
+#include "medialibrary/medialib.hpp"
 
 /* The dialogs */
 #include "dialogs/bookmarks/bookmarks.hpp"
@@ -753,6 +754,22 @@ void DialogsProvider::openUrlDialog()
  * pl helps you to choose from playlist or media library,
  * go to start or enqueue
  **/
+void DialogsProvider::addMediaLibraryFolder()
+{
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !ctx->hasMediaLibrary())
+        return;
+
+    const QUrl folder = QFileDialog::getExistingDirectoryUrl(root,
+        qtr("Add folder to media library"), ctx->getDialogFilePath(),
+        QFileDialog::ShowDirsOnly, {QStringLiteral("file")});
+    if (folder.isEmpty() || !ctx)
+        return;
+
+    ctx->setDialogFilePath(folder);
+    ctx->getMediaLibrary()->addFolder(folder);
+}
+
 static void openDirectory( qt_intf_t *p_intf, bool go )
 {
     QString uri = DialogsProvider::getDirectoryDialog( p_intf );

@@ -1,3 +1,11 @@
+# This diagnostic requires a generated fixture folder and fresh userdata;
+# build it explicitly rather than running it in the default test suite.
+executable('test_libvlc_native_library_slice', files('native_library_slice.c'),
+    build_by_default: false,
+    link_with: [libvlc, libvlccore, vlc_libcompat],
+    include_directories: vlc_include_dirs,
+    dependencies: [libvlccore_deps, opengl_dep])
+
 vlc_tests += {
     'name' : 'test_libvlc_core',
     'sources' : files('core.c'),

@@ -157,9 +157,10 @@ FocusScope {
             Widgets.ActionButtonPrimary {
                 id: discButton
 
-                AccessibleCompat.id: "discButton"
+                readonly property bool addsLibraryFolder: MainCtx.juxtopposedControls && MainCtx.mediaLibraryAvailable
+                AccessibleCompat.id: addsLibraryFolder ? "addLibraryFolderButton" : "discButton"
 
-                text: qsTr("Open Disc")
+                text: addsLibraryFolder ? qsTr("Add Folder") : qsTr("Open Disc")
 
                 // NOTE: Use the same width for the buttons (give more width if necessary) to have bilateral symmetry:
                 width: Math.max(fileButton.implicitWidth, discButton.implicitWidth)
@@ -167,7 +168,12 @@ FocusScope {
                 Navigation.parentItem: coneNButtons
                 Navigation.leftItem: fileButton
 
-                onClicked: DialogsProvider.openDiscDialog()
+                onClicked: {
+                    if (addsLibraryFolder)
+                        DialogsProvider.addMediaLibraryFolder()
+                    else
+                        DialogsProvider.openDiscDialog()
+                }
             }
         }
     }

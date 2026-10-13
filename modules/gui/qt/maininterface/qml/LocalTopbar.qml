@@ -18,6 +18,7 @@
 
 import QtQuick
 import QtQuick.Templates as T
+import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import QtQml.Models
 import QtQuick.Window
@@ -146,12 +147,34 @@ T.ToolBar {
                     Navigation.rightItem: playlistBtn
                 }
 
-                Widgets.BannerCone {
+                C.ToolButton {
                     id: logo
-
-                    sourceSize.width: VLCStyle.bannerButton_height
-                    sourceSize.height: VLCStyle.bannerButton_height
-                    color: theme.accent
+                    width: VLCStyle.bannerButton_height
+                    height: VLCStyle.bannerButton_height
+                    padding: 0
+                    focusPolicy: MainCtx.juxtopposedControls ? Qt.StrongFocus : Qt.NoFocus
+                    Accessible.name: qsTr("Home")
+                    AccessibleCompat.id: "libraryHomeButton"
+                    onClicked: {
+                        if (!History.exactMatch(History.viewPath, ["home"]))
+                            History.push(["home"], logo.focusReason)
+                    }
+                    C.ToolTip.visible: hovered || visualFocus
+                    C.ToolTip.text: qsTr("Home")
+                    background: Rectangle {
+                        color: "transparent"
+                        border.width: logo.visualFocus ? VLCStyle.focus_border : 0
+                        border.color: theme.accent
+                        radius: VLCStyle.button_radius
+                    }
+                    contentItem: Widgets.BannerCone {
+                        sourceSize.width: VLCStyle.bannerButton_height
+                        sourceSize.height: VLCStyle.bannerButton_height
+                        color: theme.accent
+                    }
+                    Navigation.parentItem: navigationButtons
+                    Navigation.leftItem: historyBack
+                    Navigation.rightItem: playlistBtn
                 }
             }
         }

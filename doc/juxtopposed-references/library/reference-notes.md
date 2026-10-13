@@ -22,10 +22,10 @@ Video colors are affected by the author's editing and compression. Flat decoded 
 - Video library: `MLVideoModel`, `VideoAll.qml` and existing selection/context-menu/drag adapters. Folder/group discovery has `VideoAllDisplay.qml` and `VideoGroupDisplay.qml`; the concept's actual folder breadcrumb structure needs an explicit folder model mapping.
 - Music categories: current `MusicDisplay.qml` exposes artists, albums, tracks, genres and playlists. Display Songs while retaining the real tracks route. Sort/filter must reach each active native model.
 - Playlists: VLC has separate video/music playlist routes and `MLPlaylistListModel`; the concept's shared destination needs a mixed-media route and real create/open behavior.
-- Add folder: `MLFoldersModel::add(QUrl)` already performs the operation through the media library, but this model currently belongs to the native folder editor and lacks QML registration. The old `mlsettings` page URL in `MainDisplay.qml` points to an absent QML file. Expose a small real folder-opening action or reachable editor instead of relying on that stale route.
+- Add folder: `MLFoldersModel::add(QUrl)` belongs to the native folder editor and lacks QML registration. The old `mlsettings` page URL points to an absent QML file. The new `DialogsProvider::addMediaLibraryFolder` / `MediaLib::addFolder` path now provides a native picker and worker-backed registration without relying on that stale route; its actual UI journey remains pending.
 - Search, loading and empty states: reuse active page search/sort contexts and media-library loading/count notifications. Keep source indexes correct after filtering.
 
-The next implementation step is the shared navigation/header, then a connected add-folder → browse → play → return/resume path. Exact new artwork, Home reference, expanded/collapsed/narrow states and native evidence remain open.
+Navigation and the backend path now have a [built checkpoint](implementation-checkpoint.md). Continue the shared header and connected add-folder → browse → play → return/resume journey. Exact new artwork, Home reference, complete narrow states and native evidence remain open.
 
 ## Repeatable media fixtures
 

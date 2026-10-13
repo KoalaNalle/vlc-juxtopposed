@@ -69,7 +69,22 @@ exhausted. Browser access to Figma was declined; continue with local references.
 Three exact-time library frames, provisional shell geometry and native mapping
 are preserved in [library notes](doc/juxtopposed-references/library/reference-notes.md).
 The generated chapter/subtitle/audio fixtures have been probed; their native
-feature checks remain pending. The shared shell/library implementation is next.
+feature checks remain pending.
+
+The shared navigation now has a compiled checkpoint: 46px rail / 204px expanded
+sidebar, real history routes, active/scanning/unavailable states and keyboard
+focus. Home exposes a native Add Folder action with worker-backed registration;
+shared playlists include both audio and video. The final title/header and media
+layouts remain open, as do original navigation-icon exports and native UI checks.
+All seven component suites pass. The staged Qt DLL's generated resource lists
+include both new QML types. See [navigation/library evidence](doc/juxtopposed-references/library/implementation-checkpoint.md).
+
+A separate native backend diagnostic indexes the generated fixture folder,
+filters/clears search, creates an ordered mixed playlist and verifies persistence
+after restart, exiting 0. This proves the actual backend operations and does not
+substitute for the blocked Qt picker/library journey. Its userdata is isolated
+under `build-windows/native-library-final`; the user's library is unchanged.
+The full milestones 0–8 Goal remains active and milestone 2 is incomplete.
 
 ## Scope and design credit
 

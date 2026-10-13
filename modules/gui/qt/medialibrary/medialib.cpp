@@ -24,6 +24,7 @@
 #include <utility>
 
 #include <QQmlEngine>
+#include <QFileInfo>
 
 MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlistController, QObject *_parent)
     : QObject( _parent )
@@ -105,6 +106,26 @@ static void convertQVariantListToPlaylistMedias(vlc_medialibrary_t* ml, QVariant
         }
         // else ignore
     }
+}
+
+void MediaLib::addFolder(const QUrl &folder)
+{
+    if (!folder.isLocalFile() || !QFileInfo(folder.toLocalFile()).isDir())
+    {
+        emit folderAddFailed(folder);
+        return;
+    }
+
+    struct Context { bool accepted = false; };
+    runOnMLThread<Context>(this,
+        [folder](vlc_medialibrary_t *ml, Context &ctx) {
+            ctx.accepted = vlc_ml_add_folder(ml,
+                qtu(folder.toString(QUrl::FullyEncoded))) == VLC_SUCCESS;
+        },
+        [this, folder](quint64, Context &ctx) {
+            if (!ctx.accepted)
+                emit folderAddFailed(folder);
+        }, "ML_FOLDER_ADD_QUEUE");
 }
 
 MLItemId MediaLib::deserializeMlItemIdFromString(const QString& serialized_id) {
@@ -356,6 +377,17 @@ void MediaLib::onMediaLibraryEvent( void* data, const vlc_ml_event_t* event )
     MediaLib* self = static_cast<MediaLib*>( data );
     switch ( event->i_type )
     {
+        case VLC_ML_EVENT_ENTRY_POINT_ADDED:
+        {
+            if (!event->entry_point_added.b_success)
+            {
+                const QUrl folder = QUrl::fromEncoded(event->entry_point_added.psz_entry_point);
+                QMetaObject::invokeMethod(self, [self, folder]() {
+                    emit self->folderAddFailed(folder);
+                }, Qt::QueuedConnection);
+            }
+            break;
+        }
         case VLC_ML_EVENT_PARSING_PROGRESS_UPDATED:
         {
             int percent =  event->parsing_progress.i_percent;
