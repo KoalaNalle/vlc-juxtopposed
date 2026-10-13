@@ -114,6 +114,7 @@ moc_headers = files(
     'network/networkdevicemodel.hpp',
     'network/networksourcesmodel.hpp',
     'network/networkmediamodel.hpp',
+    'network/networktreeitem.hpp',
     'network/standardpathmodel.hpp',
     'style/systempalette.hpp',
     'style/vlcicons.hpp',
@@ -399,6 +400,7 @@ qt_plugin_sources = files(
     'network/networksourcesmodel.hpp',
     'network/networkmediamodel.cpp',
     'network/networkmediamodel.hpp',
+    'network/networktreeitem.hpp',
     'network/standardpathmodel.cpp',
     'network/standardpathmodel.hpp',
     'network/vlcmediasourcewrapper.hpp',
@@ -667,6 +669,7 @@ qml_modules += {
         'medialibrary/qml/MusicAllArtists.qml',
         'medialibrary/qml/MusicArtistsDisplay.qml',
         'medialibrary/qml/MusicDisplay.qml',
+        'medialibrary/qml/MusicCategoriesDisplay.qml',
         'medialibrary/qml/MusicGenres.qml',
         'medialibrary/qml/MusicGenresDisplay.qml',
         'medialibrary/qml/MusicPlaylistsDisplay.qml',
@@ -686,6 +689,7 @@ qml_modules += {
         'medialibrary/qml/VideoInfoExpandPanel.qml',
         'medialibrary/qml/VideoListDisplay.qml',
         'medialibrary/qml/VideoGridDisplay.qml',
+        'medialibrary/qml/JuxtopposedVideoGrid.qml',
         'medialibrary/qml/MusicAlbumSectionDelegate.qml',
         'medialibrary/qml/MLGlobalShortcuts.qml',
         'medialibrary/qml/Bookmarks.qml',
@@ -928,6 +932,9 @@ qml_modules += {
         'widgets/qml/StackViewExt.qml',
         'widgets/qml/PageLoader.qml',
         'widgets/qml/PageExt.qml',
+        'widgets/qml/JuxtopposedLibraryHeader.qml',
+        'widgets/qml/JuxtopposedMediaRow.qml',
+        'widgets/qml/JuxtopposedCategoryList.qml',
         'widgets/qml/ButtonExt.qml',
         'widgets/qml/TableColumns.qml',
         'widgets/qml/TextFieldExt.qml',
@@ -1346,6 +1353,19 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'link_args': qt_link_args,
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep],
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_navigation_history',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_navigation_history.cpp',
+                             'util/navigation_history.cpp'),
+            'moc_sources': files('tests/test_navigation_history.cpp'),
+            'moc_headers': files('util/navigation_history.hpp', 'medialibrary/mlqmltypes.hpp',
+                                 'network/networktreeitem.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
         vlc_tests += {

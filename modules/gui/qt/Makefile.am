@@ -275,6 +275,7 @@ libqt_plugin_la_SOURCES = \
 	network/networksourcesmodel.hpp \
 	network/networkmediamodel.cpp \
 	network/networkmediamodel.hpp \
+	network/networktreeitem.hpp \
 	network/standardpathmodel.cpp \
 	network/standardpathmodel.hpp \
 	network/vlcmediasourcewrapper.hpp \
@@ -485,6 +486,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	network/networkbasemodel.moc.cpp \
 	network/networksourcesmodel.moc.cpp \
 	network/networkmediamodel.moc.cpp \
+	network/networktreeitem.moc.cpp \
 	network/standardpathmodel.moc.cpp \
 	style/colorcontext.moc.cpp \
 	style/systempalette.moc.cpp \
@@ -1124,6 +1126,7 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/MusicAllArtists.qml \
 	medialibrary/qml/MusicArtistsDisplay.qml \
 	medialibrary/qml/MusicDisplay.qml \
+	medialibrary/qml/MusicCategoriesDisplay.qml \
 	medialibrary/qml/MusicGenres.qml \
 	medialibrary/qml/MusicGenresDisplay.qml \
 	medialibrary/qml/MusicPlaylistsDisplay.qml \
@@ -1143,6 +1146,7 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/VideoInfoExpandPanel.qml \
 	medialibrary/qml/VideoListDisplay.qml \
 	medialibrary/qml/VideoGridDisplay.qml \
+	medialibrary/qml/JuxtopposedVideoGrid.qml \
 	medialibrary/qml/MusicAlbumSectionDelegate.qml \
 	medialibrary/qml/MLGlobalShortcuts.qml \
 	medialibrary/qml/Bookmarks.qml \
@@ -1398,6 +1402,9 @@ libqml_module_widgets_a_QML = \
 	widgets/qml/StackViewExt.qml \
 	widgets/qml/PageLoader.qml \
 	widgets/qml/PageExt.qml \
+	widgets/qml/JuxtopposedLibraryHeader.qml \
+	widgets/qml/JuxtopposedMediaRow.qml \
+	widgets/qml/JuxtopposedCategoryList.qml \
 	widgets/qml/ButtonExt.qml \
 	widgets/qml/TableColumns.qml \
 	widgets/qml/TextFieldExt.qml \
@@ -1915,6 +1922,26 @@ test_qt_navigation_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_navigation_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_navigation_model
 TESTS += test_qt_navigation_model
+
+test_qt_navigation_history_SOURCES = \
+	tests/vlc_stub_modules.cpp \
+	tests/test_navigation_history.cpp \
+	util/navigation_history.hpp \
+	util/navigation_history.cpp \
+	medialibrary/mlqmltypes.hpp
+nodist_test_qt_navigation_history_SOURCES = \
+	tests/test_navigation_history.moc \
+	util/navigation_history.moc.cpp \
+	medialibrary/mlqmltypes.moc.cpp \
+	network/networktreeitem.moc.cpp
+BUILT_SOURCES += tests/test_navigation_history.moc
+CLEANFILES += tests/test_navigation_history.moc
+test_qt_navigation_history_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_navigation_history_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_navigation_history_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_navigation_history_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_navigation_history
+TESTS += test_qt_navigation_history
 
 
 endif

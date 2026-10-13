@@ -575,7 +575,7 @@ FocusScope {
                 {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
                  uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
                 {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
-                 uri: ["music", "tracks"], enabled: MainCtx.mediaLibraryAvailable},
+                 uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
                 {key: "network", text: qsTr("Network"), icon: VLCIcons.topbar_network,
                  uri: ["network"], enabled: true},
                 {key: "playlists", text: qsTr("Playlists"), icon: VLCIcons.playlist,

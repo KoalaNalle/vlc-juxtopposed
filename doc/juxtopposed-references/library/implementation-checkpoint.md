@@ -2,6 +2,8 @@
 
 Recorded 14 October 2026. This advances milestones 2/3; their native and visual acceptance gates remain open. Original visual design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed). References and inferred geometry are in [reference notes](reference-notes.md).
 
+This records the `9f754b961c` navigation/backend checkpoint. The subsequent [header/library checkpoint](header-library-checkpoint.md) adds forward history, header, compact video/Songs adapters and Music categories with a newer staged Qt DLL. Its component/build passes remain separate from the pending desktop journey.
+
 ## Implemented and built
 
 - A shared navigation component uses the inferred 46px compact rail and 204px expanded sidebar, bundled Inter, active-route feedback, keyboard navigation, preferences, scanning state and unavailable-library feedback. The app adapter routes to Videos, Music/Songs, Network and shared Playlists through VLC's history. It retains the native content and queue models.

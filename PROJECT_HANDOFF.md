@@ -10,14 +10,13 @@ Codex session on the home computer.
 | Fork | <https://github.com/KoalaNalle/vlc-juxtopposed> |
 | Working branch | `juxtopposed-playback-bar` |
 | Draft pull request | <https://github.com/KoalaNalle/vlc-juxtopposed/pull/1> |
-| Latest implementation checkpoint | `753acdc251c7d94a5228ba1ed0a356ba80bfaac7` |
+| Latest implementation checkpoint | Branch tip; header/library evidence linked below |
 | Intended home checkout | `C:\modding\vlc-juxtopposed` |
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
 | Immediate priority | Audit all reference surfaces, stabilize playback and build the shared shell/Home slice |
 
-This handoff is added after the implementation checkpoint above. Fetch the
-latest branch tip to receive this document as well as the code. A full Windows
+Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.
 Basic native startup/plugin loading and Qt GUI loading pass. Initial real-video
 and control checks work; comprehensive native acceptance remains pending.
@@ -85,6 +84,20 @@ after restart, exiting 0. This proves the actual backend operations and does not
 substitute for the blocked Qt picker/library journey. Its userdata is isolated
 under `build-windows/native-library-final`; the user's library is unchanged.
 The full milestones 0–8 Goal remains active and milestone 2 is incomplete.
+
+The next [header/library checkpoint](doc/juxtopposed-references/library/header-library-checkpoint.md)
+builds a shared back/forward/breadcrumb/count/sort/view/search header, compact
+video/Songs rows and Music's Add/Songs/Albums/Artists/Genres entry view. The
+adapters use VLC's existing models, selection, grouping, drag and playback paths.
+Forward history retains stored view properties and skips stale network entries.
+All eight component suites pass, ten changed QML files parse, and the native
+QtTest history regression reports seven passes with zero failures. The newer Qt
+DLL is staged separately; its hash, component captures and rollback filename are
+recorded in the checkpoint. No native GUI pass is claimed for these adapters:
+desktop input still awaits the firewall prompt, and title-strip/folder hierarchy,
+original icons and the remaining library presentation remain open. Both exact-head
+Windows workflows passed for the preceding `9f754b961c` checkpoint; check the new
+pushed revision separately through Code Review. Continue the full 0–8 Goal.
 
 ## Scope and design credit
 

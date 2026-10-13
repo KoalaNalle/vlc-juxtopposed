@@ -27,6 +27,7 @@
 #include "devicesourceprovider.hpp"
 
 #include "networkbasemodel.hpp"
+#include "networktreeitem.hpp"
 
 #include <memory>
 #include <functional>
@@ -35,55 +36,6 @@ Q_MOC_INCLUDE( "maininterface/mainctx.hpp" )
 
 class QJSValue;
 class MainCtx;
-
-class NetworkTreeItem
-{
-    Q_GADGET
-public:
-    NetworkTreeItem() : source(nullptr), tree(nullptr), media(nullptr) {}
-
-    NetworkTreeItem( SharedMediaSourceModel source, const SharedInputItem& item )
-        : source(source)
-        , tree(source->getTree())
-        , media(item)
-    {
-    }
-
-    NetworkTreeItem( MediaTreePtr tree, const SharedInputItem& item )
-        : source(nullptr)
-        , tree(tree)
-        , media(item)
-    {
-    }
-
-    //build a NetworkTreeItem with the same source/tree as parent
-    NetworkTreeItem(NetworkTreeItem& parent, const SharedInputItem& item)
-        : source(parent.source)
-        , tree(parent.tree)
-        , media(item)
-    {
-    }
-
-    NetworkTreeItem( const NetworkTreeItem& ) = default;
-    NetworkTreeItem& operator=( const NetworkTreeItem& ) = default;
-    NetworkTreeItem( NetworkTreeItem&& ) = default;
-    NetworkTreeItem& operator=( NetworkTreeItem&& ) = default;
-
-    operator bool() const
-    {
-        return tree.get() != nullptr;
-    }
-
-    bool isValid() {
-        MediaTreeLocker lock{ tree };
-        input_item_node_t* node;
-        return vlc_media_tree_Find( tree.get(), media.get(), &node, nullptr);
-    }
-
-    SharedMediaSourceModel source;
-    MediaTreePtr tree;
-    SharedInputItem media;
-};
 
 class PathNode
 {

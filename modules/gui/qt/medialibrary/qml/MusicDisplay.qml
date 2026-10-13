@@ -34,9 +34,14 @@ Widgets.PageLoader {
     AccessibleCompat.id: "musicDisplay"
 
     pageModel: [{
+            displayText: qsTr("Music"),
+            name: "categories",
+            default: MainCtx.juxtopposedControls,
+            url: "qrc:///qt/qml/VLC/MediaLibrary/MusicCategoriesDisplay.qml"
+        }, {
             displayText: qsTr("Artists"),
             name: "artists",
-            default: true,
+            default: !MainCtx.juxtopposedControls,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicArtistsDisplay.qml"
         }, {
             displayText: qsTr("Albums"),
