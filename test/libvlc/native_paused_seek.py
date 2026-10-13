@@ -111,5 +111,5 @@ finally:
 
 log = (output / 'native.log').read_text(errors='replace')
 assert 'ES_OUT_SET_(GROUP_)PCR  is called' not in log, 'Clock lateness/reset loop'
-(output / 'results.json').write_text(json.dumps(results, indent=2) + '\n')
+(output / 'results.json').write_text(json.dumps(results, indent=2) + '\n', encoding='utf-8', newline='\n')
 print('Native LibVLC passes paused target-frame updates, repeated seeks, frozen time and resume.')
