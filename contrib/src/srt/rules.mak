@@ -46,4 +46,10 @@ SRT_CONF := -DENABLE_SHARED=OFF -DUSE_ENCLIB=gnutls -DENABLE_CXX11=OFF -DENABLE_
 	$(HOSTVARS_CMAKE) $(CMAKE) $(SRT_CONF)
 	+$(CMAKEBUILD)
 	$(CMAKEINSTALL)
+ifdef HAVE_WIN32
+ifndef HAVE_CLANG
+# Keep GCC exception handling static for VLC's restricted Windows plugin loader.
+	sed -i -e 's/ -lgcc_s/ -lgcc_eh/g' "$(PREFIX)/lib/pkgconfig/srt.pc"
+endif
+endif
 	touch $@
