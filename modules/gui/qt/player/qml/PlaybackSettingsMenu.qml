@@ -9,7 +9,7 @@
 import QtQuick
 import QtQuick.Window
 import QtQuick.Templates as T
-import QtQuick.Controls as C
+import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import QtQml.Models
 

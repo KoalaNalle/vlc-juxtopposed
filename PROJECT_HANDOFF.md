@@ -14,12 +14,23 @@ Codex session on the home computer.
 | Intended home checkout | `C:\modding\vlc-juxtopposed` |
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
-| Immediate priority | Compile the complete Windows application and verify it with real media |
+| Immediate priority | Audit all reference surfaces, stabilize playback and build the shared shell/Home slice |
 
 This handoff is added after the implementation checkpoint above. Fetch the
-latest branch tip to receive this document as well as the code. The redesign
-is an implementation in progress; no full VLC Windows binary has been compiled
-or run by this project session yet. The PR remains a draft.
+latest branch tip to receive this document as well as the code. A full Windows
+x64 debug application has now been compiled and packaged on the home machine.
+Basic native startup/plugin loading and Qt GUI loading pass. Initial real-video
+and control checks work; comprehensive native acceptance remains pending.
+The redesign is still an implementation in progress and the
+PR remains a draft.
+
+The user has activated the complete [vertical slice plan](doc/juxtopposed-vertical-slice-plan.md)
+as a Goal covering milestones 0 through 8, and authorized pushing the existing
+progress and each subsequent built and verified runnable checkpoint. The GUI
+fixes below form the first checkpoint. Code Review reports the preceding remote
+revision `561fd18388` passed the Windows UI workflow. Figma MCP access remains
+quota-limited; preserved exports and the supplied video remain available for
+reference work.
 
 ## Scope and design credit
 
@@ -66,6 +77,80 @@ At implementation checkpoint `753acdc`, all **six Qt 6.8.3 component/regression
 suites passed locally and in Windows GitHub Actions**. All 17 affected QML files
 parsed successfully. [Successful CI run](https://github.com/KoalaNalle/vlc-juxtopposed/actions/runs/38389157833).
 
+On **13 October 2026**, the home Windows x64 debug build completed. An
+incremental native build and portable packaging both returned exit 0. The
+packaged executable then passed a Windows dummy-interface startup/quit check
+with a fresh plugin scan: **408 plugin DLLs, 600 registered modules, zero
+plugin loading errors**. This confirms basic native startup; it does not
+establish full Qt UI behavior or real-media playback acceptance. The subsequent
+GUI and media smoke checks below cover a limited native subset.
+
+### Native GUI fixes and smoke checks on 13 October 2026
+
+The gray window was caused by QML dependency loading failures. Five redesigned
+components now import `QtQuick.Controls.Basic`, matching the styled controls
+actually registered in VLC's static Qt build. Reused `PlaybackSpeed.qml` now
+qualifies `T.ButtonGroup` and its attached group; `ComboBoxExt.qml` explicitly
+uses Basic `Popup` and `ScrollIndicator`. `ControlBar.qml` imports
+`VLC.PlayerControls` for the native `PlayerControlbarModel.Miniplayer` enum.
+The queued cached-renderer callback in `qt.cpp` copies its block-local values
+instead of retaining references after those locals expire.
+
+The Qt plugin was incrementally rebuilt and staged into the portable package,
+with build exit 0. These fixes were tested as uncommitted changes on checkout
+`561fd18388`. The original core build provenance remains recorded below.
+The initially locked old Qt DLL was preserved by renaming before replacement;
+remaining old copies are outside the runnable package in the ignored
+`build-windows/previous-interface-builds` directory.
+
+All **six component suites passed again on Windows** with Python 3.12.14 and
+PySide6 Essentials 6.8.3. The existing settings suite now loads the production
+speed and combo dependencies, covering grouped speed presets, engine updates,
+the real combo popup/model rows and its styled indicator. In-memory rollback
+checks reproduced the original missing ButtonGroup, Popup and ScrollIndicator
+errors. Final local logs/previews: `build-windows/ui-verification/final`.
+
+Actual Windows GUI checks verified:
+
+- Home renders with the media library both disabled and enabled, including
+  repeated starts using cached D3D11 renderer settings.
+- The supplied 3840 × 2160 AV1 reference video decodes and displays. Keyboard
+  and mouse play/pause and mouse mute/unmute update the native player and
+  visible controls. A paused timeline seek from approximately 01:45 to 03:52
+  updates its requested position/image, but triggers the core fault below.
+- The redesigned queue opens with the actual media row. Queue, Bookmarks and
+  Chapters tabs render. Bookmarks reports its empty state with Add enabled;
+  bookmark creation/removal has not been exercised in this native pass. This
+  sample has no chapters, so real chapter selection remains untested.
+- The native playback settings menu and aspect-ratio dropdown render with
+  real choices. Native speed/aspect/crop changes and focus/navigation acceptance
+  remain to be exercised.
+
+Native captures/metadata are saved locally in
+`build-windows/native-ui-verification`; logs include
+`native-gui-controls-fixed.log` and `native-media-gui-final.log`.
+**The video itself contains the designer's prototype UI. That in-video UI is
+reference content, not implemented app UI.** Assess only the actual window
+chrome, playback bar, right queue and live settings popup in media captures.
+No overall native visual score has been assigned.
+
+This is still a debug test build. A paused seek triggered **73 clock/PCR
+lateness errors with repeated clock/audio resets and rebuffering**, with no
+return to PLAYING before the test was stopped. Stable paused seeking fails
+this native pass even though its requested position/image update succeeds.
+Independent log/source triage points to core paused-clock accounting: the
+buffering reset in `src/input/es_out.c` sets the origin to the saved pause
+time, while later PCR updates use current wall-clock time. This is a likely
+cause, not a completed fix. Reproduce independently with traditional controls,
+repair the clock path and retest before full playback acceptance.
+The test media was stopped and VLC was left open on Home with its queue.
+Startup also logs transient SearchBox null-parent bindings and
+recursive layout warnings. A source audit additionally identified missing
+control imports in the lazy Toolbar Editor path (`WindowDialog.qml`'s
+DialogButtonBox and `ToolbarEditorDialog.qml`'s ItemDelegate); those were kept
+outside this startup fix. Fullscreen/DPI variants, bookmark lifecycle races,
+real chaptered media and the rest of the checklist remain open.
+
 The tests cover playback/seek/settings actions, engine/model synchronization,
 real Qt proxy mapping, drops, silent selection resets, bookmark action gates,
 time formatting, duration updates without row-count changes, retained views,
@@ -82,9 +167,10 @@ Independent visual review of isolated 400 × 946 canonical components:
 All three pass the 9.5 canonical target. Final captures are byte-identical to
 the independently reviewed snapshots. Small text raster/advance differences
 of 1–3px remain. These are component scores, not a score for the entire app.
-The combined state/responsive category, native compositing and real-media
-behavior remain unassessed. Source reviews found no remaining actionable
-static finding; they do not replace native compilation/runtime testing.
+The combined state/responsive category and full native behavior remain
+unassessed. Source reviews at the implementation checkpoint found no remaining
+actionable static finding; the later native pass above found runtime problems
+and does not replace comprehensive acceptance.
 
 Portable evidence is committed:
 
@@ -197,8 +283,10 @@ VLC playback acceptance.
 The first full build was started from source checkpoint `1b4948c322f46d106c0890c80dd868fa80a72b5e`,
 with `JOBS=8`, `MESON_BUILD="-j 1"`, default debug/Qt/MSVCRT/Autotools settings,
 and **without `-p`**, so contrib libraries use the same compiler as VLC.
-Its state at this handoff update is **compiling contrib libraries**; a
-complete VLC executable and native runtime acceptance remain pending.
+Its state at this handoff update is **native compilation and portable
+packaging verified**. The packaged executable now passes basic native startup
+and Qt GUI loading. Initial video/control checks work; comprehensive media
+and interaction acceptance remains pending.
 
 The first contrib fetch stopped because both configured QtShaderTools
 download locations returned 404. Qt 6.8.3 now lives in Qt's official archive;
@@ -206,7 +294,27 @@ the common Qt download URL in `contrib/src/main.mak` was corrected to use
 that archive, retaining the same version and checksum manifests. The missing
 QtShaderTools and QtSvg archives were recovered and passed their existing
 SHA512 checks. Independent inspection also verified all 69 previously cached
-archives with SHA512 manifests. The resumed build is compiling dependencies.
+archives with SHA512 manifests. The resumed build completed.
+
+The original wrapper/supervisor were edited while Bash was reading them.
+Compilation and packaging finished, but the changed file offsets caused
+unmatched-quote errors at wrapper shutdown, so no completion status was
+saved. A separate unchanged verification script subsequently ran the native
+incremental build and `package-win-common`, both successfully. Its log is
+`build-windows/final-package-verification.log`; `build-status.txt` now records
+`state=succeeded`, `exit_code=0`. Future launches use frozen per-run copies
+under `build-windows/runs/` to prevent this failure.
+
+The startup check found four plugins importing a shared GCC exception
+runtime that VLC's restricted Windows plugin loader would not find. Windows
+GCC-only post-install fixes in `contrib/src/srt/rules.mak`,
+`contrib/src/x265/rules.mak` and `contrib/src/gme/rules.mak` now normalize the
+installed `.pc` metadata from `-lgcc_s` to `-lgcc_eh`, preserving static runtime
+linkage and VLC's existing loader policy. The corresponding generated flags
+were corrected and only the SRT access/output, x265 and GME plugins were
+relinked. No Qt rebuild was needed. A fresh native startup scan then passed
+with no missing plugin dependencies. Logs: `native-startup-verified.log` and
+`final-package-verification.log` in the local build artifacts directory.
 
 Current local locations (the helpers and logs are ignored build artifacts):
 
@@ -214,15 +322,17 @@ Current local locations (the helpers and logs are ignored build artifacts):
 - Setup helper/log: `C:\Modding\vlc-juxtopposed\build-windows\setup-ubuntu.sh` and `setup-ubuntu.log`.
 - Build helper/log: `C:\Modding\vlc-juxtopposed\build-windows\build-windows-x64.sh` and `build-windows-x64.log`.
 - Supervised run: `build-windows\build-supervisor.sh`, launched by a hidden Windows `wsl.exe` process; `launcher.json` records the launcher PID/start time and `build-status.txt` records running/succeeded/failed and the exit code. Cross-check the process when status says running, since an interrupted host cannot always write a final status.
-- Requested portable output: `C:\Modding\vlc-juxtopposed\build-windows\package` (only usable after packaging succeeds).
+- Verified portable output: `C:\Modding\vlc-juxtopposed\build-windows\package`, containing `vlc.exe`, matching core DLLs and 408 plugins. Qt GUI loading is fixed; this is a debug test package with full runtime acceptance pending.
+- GUI rebuild helper/log/status: `build-windows/rebuild-native-gui.sh`, `native-gui-rebuild.log`, `gui-build-status.txt`. It stages the rebuilt Qt DLL separately; close the portable app before replacing the package's active DLL. Never edit a running helper.
+- Convenient local launcher: `build-windows/Launch VLC Juxtopposed.cmd`. It opens the portable executable, disables single-instance handoff and keeps 4K video from automatically expanding the window beyond the screen.
+- Isolated test settings: `build-windows/package/portable`. VLC detects this directory and keeps its config/cache/media-library state separate from installed VLC. Keep legacy VLC installed while validating this fork.
 
-Do not start a second build while the current one is running; build-directory
-locks reject duplicate launches. After a
-stopped build has been inspected, the prepared helper can resume it from
-PowerShell:
+Do not start a second build while another is running; build-directory locks
+reject duplicate launches. To start a future build in a visible terminal
+using frozen helper snapshots, run from PowerShell:
 
 ```powershell
-wsl -d Ubuntu-24.04 -u root -- bash /mnt/c/Modding/vlc-juxtopposed/build-windows/build-windows-x64.sh
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Modding\vlc-juxtopposed\build-windows\start-visible-build.ps1
 ```
 
 The helper deliberately clears exported `CC`/`CXX` before invoking VLC's
@@ -274,6 +384,13 @@ Windows checkout and record which source tree produced each binary.
 
 ### Launch and validate the resulting binary
 
+The verified home package is currently
+`C:\Modding\vlc-juxtopposed\build-windows\package`. The local launcher
+`C:\Modding\vlc-juxtopposed\build-windows\Launch VLC Juxtopposed.cmd` opens it
+alongside legacy VLC using the isolated portable settings directory. Continue
+the remaining native acceptance checks. The paths below belong to the
+generic example build, not this verified local package.
+
 After the example build succeeds, the requested portable folder is
 `C:\modding\vlc-juxtopposed-build\package`. Confirm the actual output exists and
 contains `vlc.exe` with its matching DLLs/plugins. Close other VLC instances,
@@ -311,19 +428,31 @@ runtime acceptance remain open until those checks are actually performed.
 
 ## Remaining design work and proposed order
 
-1. **Full Windows build and runtime fixes.** Resolve compile, resource-loading
-   and native interaction issues first. Rerun affected component checks.
-2. **Production visual review.** Compare real Windows captures with the saved
-   references; assess interaction states and responsive/DPI variants separately.
-3. **Finish playback/queue details.** The queue's Figma 50px background blur is
-   unimplemented; native transparency remains unverified. Chapter segments and
-   bookmark marks on the redesigned timeline are also pending.
-4. **Final settings/effects sidebar.** Port the Figma layout while preserving
-   the working settings actions already provided by the interim menu.
-5. **Media-library views and navigation.** Sidebar, grids/lists, artwork,
-   thumbnails and related flows still need their design port.
-6. **Other concept surfaces.** Subtitle presets/timeline, waveform, conversion
-   flows, preferences and a complete light theme remain future work.
+The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)
+now defines the proposed breadth-first coverage ledger, connected user journeys,
+milestones and overnight continuation approach. Its first execution target is
+reference inventory, stable runtime and a shared shell/Home slice. No overnight
+Goal or schedule has been activated by this planning update.
+
+1. **Reference inventory and stable runtime.** Catalogue every original screen,
+   panel, dialog and reusable control. Reproduce and repair paused-seek clock
+   behavior, preserve the current working GUI baseline and verify affected paths.
+2. **Shared shell and Home.** Port common navigation, header and Home around real
+   native library data. Deliver add/open/return/resume as the first connected slice.
+3. **Library and discovery.** Port confirmed video, music and playlist layouts,
+   search/filter, artwork/thumbnails and source-opening routes.
+4. **Player and queue completion.** Finish tracks, timeline chapter/bookmark marks,
+   fullscreen and bookmark/chapter native acceptance. Assess transparency and the
+   queue's unimplemented 50px reference blur using the actual compositor.
+5. **Settings and effects.** Port the final panels while preserving native choices,
+   effects and synchronization behavior from the interim controls.
+6. **Advanced media surfaces.** Implement one real confirmed path through subtitle
+   presets/timeline, waveform and conversion/export, with required backend support.
+7. **Preferences and appearance.** Complete persistent settings, dialogs and light
+   appearance across all implemented surfaces.
+8. **Integrated and visual acceptance.** Run the full native journeys, review real
+   Windows captures and close the coverage ledger. Assess responsive/DPI states
+   separately before accepting the portable build for broader use.
 
 Confirm the reference for each new surface before implementing its appearance.
 Do not treat the whole Figma concept or the current Windows app as finished.
@@ -376,13 +505,15 @@ More context: [implementation notes](doc/juxtopposed-redesign.md) and
 ## Suggested first message to the new Codex session
 
 > Continue the Windows VLC Juxtopposed redesign in this repository. Read
-> PROJECT_HANDOFF.md, doc/juxtopposed-redesign.md and the Windows build checklist.
+> PROJECT_HANDOFF.md, doc/juxtopposed-vertical-slice-plan.md,
+> doc/juxtopposed-redesign.md and the Windows build checklist.
 > Inspect the branch, current commit, local changes and available build tools.
-> First help me prepare and compile the full Windows x64 Qt-enabled application,
-> fix any build/runtime issues, run the six component suites, and verify real
-> playback and all three queue tabs. Capture the actual Windows UI for independent
-> visual comparison. Preserve Juxtopposed's design/artwork credits and the existing
-> VLC behavior. Use separate implementation, visual-review and functional-review
-> agents where useful, with clear file ownership. Keep native acceptance distinct
-> from component scores, retain the draft PR until its native gates pass, and
-> update this handoff with results and the next milestone.
+> Preserve the existing GUI fixes and reuse the configured WSL Windows build.
+> Start with milestones 0 through 2: catalogue every reference surface, repair
+> and verify the paused-seek runtime fault, then implement the shared shell/Home
+> slice using real native library data. Run relevant component/native checks,
+> capture the actual Windows UI and keep the coverage ledger current.
+> Preserve Juxtopposed's design/artwork credits and existing VLC behavior.
+> Keep native acceptance distinct from component scores, retain the draft PR
+> until its native gates pass, and update this handoff with results and the
+> next milestone. Goal/schedule activation remains a separate explicit request.

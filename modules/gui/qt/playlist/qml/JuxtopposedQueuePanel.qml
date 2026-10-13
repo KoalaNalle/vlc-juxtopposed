@@ -5,7 +5,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
-import QtQuick.Controls as C
+import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
 // Presentation and action signals only. VLC supplies the queue/bookmark/

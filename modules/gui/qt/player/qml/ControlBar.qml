@@ -26,6 +26,7 @@ import VLC.MainInterface
 import VLC.Style
 import VLC.Widgets as Widgets
 import VLC.Player
+import VLC.PlayerControls
 import VLC.Util
 import VLC.Playlist
 import VLC.Dialogs

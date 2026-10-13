@@ -67,10 +67,16 @@ build and real media.
 **This milestone is not a completed port of the entire Figma concept.** The
 library sidebar, subtitle presets/timeline, final effects
 sidebar, thumbnails, waveform, conversion flows and preferences remain future
-work. The Qt components have been tested independently; the full VLC
-Windows binary still needs compilation and testing with real media, fullscreen,
-track switching, DVD menus and pinned/floating controls before release. See
+work. The Windows binary now compiles and its Qt GUI loads. Initial native
+video/control checks work, but paused seeking has a confirmed clock/reset fault
+and full runtime acceptance remains open. Fullscreen, track switching, DVD
+menus and pinned/floating controls still need native validation before release. See
 the [home Windows build checklist](juxtopposed-windows-build-checklist.md).
+
+The [vertical slice implementation plan](juxtopposed-vertical-slice-plan.md)
+defines the next reference audit, a connected path through each design area,
+implementation milestones and the proposed overnight work cycle. Detailed
+home-machine build/runtime evidence is in [PROJECT_HANDOFF.md](../PROJECT_HANDOFF.md).
 
 The Figma MCP account reached its tool-call limit. The queue tabs were inspected
 and exported manually in Design Mode with the user's authorization. Original
