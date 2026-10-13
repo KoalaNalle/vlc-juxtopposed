@@ -1,6 +1,6 @@
 # VLC Juxtopposed redesign — project handoff
 
-Updated: **13 October 2026**. Read this file first when continuing from a new
+Updated: **14 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
 ## Project and current checkpoint
@@ -31,6 +31,22 @@ fixes below form the first checkpoint. Code Review reports the preceding remote
 revision `561fd18388` passed the Windows UI workflow. Figma MCP access remains
 quota-limited; preserved exports and the supplied video remain available for
 reference work.
+
+## Active Goal progress on 14 October
+
+The native GUI baseline and active full-slice plan were pushed as `7c54e2548b`.
+Both Windows UI checks on that exact revision passed through Code Review.
+The next checkpoint repairs paused-seek clock lateness and a first-picture race;
+see [runtime evidence](doc/juxtopposed-references/runtime/paused-seek-verification.md).
+The core rebuild, ES-out/input-clock regressions and packaged LibVLC color test
+pass. The separate native AV1 redesign test updates paused frames, resumes and
+stops without the reset loop. The original working package retains its old core;
+the revised core is in `build-windows/slice-package`. Milestone 1 still has the
+startup/shutdown and helper-process gates recorded in the evidence file.
+
+The [coverage ledger](doc/juxtopposed-references/coverage-ledger.md) starts the
+remaining reference audit. The complete walkthrough is sampled locally; exact
+screen measurements, Figma nodes and advanced-surface confirmation remain open.
 
 ## Scope and design credit
 

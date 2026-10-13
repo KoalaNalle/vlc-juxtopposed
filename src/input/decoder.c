@@ -1519,7 +1519,9 @@ static int ModuleThread_PlayVideo( vlc_input_decoder_t *p_owner, picture_t *p_pi
             return VLC_ENOENT;
     }
 
-    if( p_owner->b_first && p_owner->b_waiting )
+    /* Buffering may finish before the first picture arrives after a paused
+     * seek. Force that picture too, so it replaces the old paused frame. */
+    if( p_owner->b_first && (p_owner->b_waiting || p_owner->output_paused) )
     {
         msg_Dbg( p_dec, "Received first picture" );
         p_owner->b_first = false;
