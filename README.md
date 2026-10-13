@@ -1,3 +1,20 @@
+# VLC — Juxtopposed redesign
+
+The VLC user interface redesign featured in this fork was created by
+**[Juxtopposed](https://www.youtube.com/@juxtopposed)**.
+**All credit for the redesign and its original visual assets belongs to Juxtopposed.**
+This fork is an independent implementation in progress of their design.
+
+- [Watch “I Redesigned VLC After 25 Years”](https://youtu.be/ERFeOgqk324)
+- [Original VLC Redesign on Figma](https://www.figma.com/community/file/1691465999134370980/vlc-redesign)
+- The original design is shared under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+VLC itself is developed by the VLC authors and VideoLAN; their authorship and
+software licenses remain in effect. See [AUTHORS](AUTHORS), [COPYING](COPYING),
+and [COPYING.LIB](COPYING.LIB).
+
+---
+
 # VLC media player
 
 **VLC** is a libre and open source **media player** and **multimedia engine**,
