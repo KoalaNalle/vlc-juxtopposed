@@ -947,7 +947,9 @@ FocusScope {
 
         // NOTE: With pinned controls, the top controls are hidden when switching to
         //       fullScreen. Except when resume is visible
-        visible: (MainCtx.pinVideoControls === false
+        visible: (controlBar.redesigned
+                  ||
+                  MainCtx.pinVideoControls === false
                   ||
                   MainCtx.intfMainWindow.visibility !== Window.FullScreen
                   ||

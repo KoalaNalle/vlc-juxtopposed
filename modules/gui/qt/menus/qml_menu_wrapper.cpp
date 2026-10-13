@@ -1049,6 +1049,31 @@ PlaylistContextMenu::PlaylistContextMenu(QObject* parent)
     : QObject(parent)
 {}
 
+QVector<int> PlaylistContextMenu::sourceSelectedIndexes() const
+{
+    QVector<int> rows;
+    if (!m_selectionModel || !m_model)
+        return rows;
+
+    for (QModelIndex index : m_selectionModel->selectedRows())
+    {
+        // The selection belongs to the displayed model, which may be filtered.
+        // Queue actions always operate on the underlying playlist model.
+        while (index.isValid() && index.model() != m_model)
+        {
+            const auto proxy = qobject_cast<const QAbstractProxyModel*>(index.model());
+            if (!proxy)
+                break;
+            index = proxy->mapToSource(index);
+        }
+
+        if (index.isValid() && index.model() == m_model)
+            rows.push_back(index.row());
+    }
+
+    return rows;
+}
+
 void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
 {
     assert(m_ctx);
@@ -1060,7 +1085,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
     QAction* action;
 
     QList<QUrl> selectedUrlList;
-    for (const int modelIndex : m_selectionModel->selectedIndexesFlat())
+    for (const int modelIndex : sourceSelectedIndexes())
         selectedUrlList.push_back(m_model->itemAt(modelIndex).getUrl());
 
     PlaylistItem selectedItem;
@@ -1148,7 +1173,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
         action = m_menu->addAction( qtr("Remove Selected") );
         action->setIcon(QIcon(":/menu/remove.svg"));
         connect(action, &QAction::triggered, [this]( ) {
-            m_model->removeItems(m_selectionModel->selectedIndexesFlat());
+            m_model->removeItems(sourceSelectedIndexes());
         });
     }
 

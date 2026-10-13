@@ -37,14 +37,16 @@ assert font_id >= 0
 app.setFont(QFont(QFontDatabase.applicationFontFamilies(font_id)[0]))
 
 # qmlformat parses the real modified files without rewriting their formatting.
-for name in ['JuxtopposedButton.qml', 'JuxtopposedSeekBackground.qml',
+qml_files = ['JuxtopposedButton.qml', 'JuxtopposedSeekBackground.qml',
              'JuxtopposedPlaybackBar.qml', 'ControlBar.qml', 'TopBar.qml',
-             'Player.qml', 'TracksMenu.qml', 'TracksListPage.qml']:
+             'Player.qml', 'TracksMenu.qml', 'TracksListPage.qml',
+             'SliderBar.qml', 'PlaybackSettingsMenu.qml']
+for name in qml_files:
     result = subprocess.run([str(Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')),
                              '--ignore-settings', str(qml / name)],
                             stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
     assert result.returncode == 0, (name, result.stderr)
-print('All eight modified QML files parse successfully.')
+print(f'All {len(qml_files)} playback QML files parse successfully.')
 
 view = QQuickView()
 view.setResizeMode(QQuickView.SizeRootObjectToView)
@@ -95,6 +97,23 @@ play.forceActiveFocus()
 spy = QSignalSpy(root.playPauseRequested)
 QTest.keyClick(view, Qt.Key_Space)
 assert spy.count() == 1, 'Keyboard play/pause'
+
+# Arrow navigation on transport buttons traverses the toolbar and skips
+# unavailable buttons; sliders retain their own left/right input handling.
+QTest.keyClick(view, Qt.Key_Left)
+assert item('juxtopposedPrevious').hasActiveFocus(), 'Left to previous'
+QTest.keyClick(view, Qt.Key_Right)
+assert play.hasActiveFocus(), 'Right to play'
+root.setProperty('canGoNext', False)
+QTest.keyClick(view, Qt.Key_Right)
+assert item('juxtopposedSeek').hasActiveFocus(), 'Skip disabled next'
+root.setProperty('canGoNext', True)
+item('juxtopposedSettings').forceActiveFocus()
+QTest.keyClick(view, Qt.Key_Right)
+assert item('juxtopposedQueue').hasActiveFocus(), 'Right to queue'
+QTest.keyClick(view, Qt.Key_Right)
+assert item('juxtopposedPrevious').hasActiveFocus(), 'Wrap toolbar navigation'
+
 volume = item('juxtopposedVolume')
 volume.forceActiveFocus()
 spy = QSignalSpy(root.volumeRequested)
@@ -175,5 +194,5 @@ for resource in resources.findall(".//qresource[@prefix='/juxtopposed']/file"):
 errors = [m for m in messages if 'Error' in m or 'Unable' in m or 'Cannot' in m or 'binding loop' in m.lower()]
 assert not errors, errors
 (out / 'playback-bar-verification.json').write_text(json.dumps({'geometry':geometry,'messages':messages}, indent=2))
-print('Passed: nine click actions, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, and asset geometry.')
+print('Passed: nine click actions, arrow navigation, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, and asset geometry.')
 print('Native VLC compilation and actual media playback still require the VLC Windows build environment.')

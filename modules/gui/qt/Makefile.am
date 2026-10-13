@@ -1186,6 +1186,7 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedButton.qml \
 	player/qml/JuxtopposedSeekBackground.qml \
 	player/qml/JuxtopposedPlaybackBar.qml \
+	player/qml/PlaybackSettingsMenu.qml \
 	player/qml/ControlBar.qml \
 	player/qml/PlaybackSpeed.qml \
 	player/qml/LyricsFlickable.qml \

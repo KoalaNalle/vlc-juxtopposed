@@ -79,6 +79,14 @@ T.Pane {
 
         view: root.listView
 
+        // PlaylistDelegate supplies source rows for dragged items. Texture
+        // providers, unlike item data, are looked up in the filtered view.
+        getTextureProvider: function(index) {
+            const viewIndex = listView.mapSourceToView(index)
+            return viewIndex < 0 ? null
+                                 : listView.itemAtIndex.call(null, viewIndex)?.artworkTextureProvider ?? null
+        }
+
         onRequestData: (indexes, resolve, reject) => {
             resolve(indexes.map((index) => {
                 const item = root.model.itemAt(index)
@@ -91,7 +99,7 @@ T.Pane {
         }
 
         onRequestInputItems: (indexes, data, resolve, reject) => {
-            resolve(root.model.getItemsForIndexes((indexes?.length > 0) ? indexes : root.selectionModel.selectedIndexesFlat))
+            resolve(root.model.getItemsForIndexes((indexes?.length > 0) ? indexes : listView.mappedSelectedIndexes()))
         }
     }
 
@@ -104,7 +112,11 @@ T.Pane {
         controler: MainPlaylistController
         ctx: MainCtx
 
-        onJumpToCurrentPlaying: listView.positionViewAtIndex( MainPlaylistController.currentIndex, ItemView.Center)
+        onJumpToCurrentPlaying: {
+            const viewIndex = listView.mapSourceToView(MainPlaylistController.currentIndex)
+            if (viewIndex >= 0)
+                listView.positionViewAtIndex(viewIndex, ItemView.Center)
+        }
     }
 
     background: Widgets.AcrylicBackground {
@@ -378,30 +390,54 @@ T.Pane {
             fadingEdge.backgroundColor: (root.background && (root.background.color.a >= 1.0)) ? root.background.color
                                                                                               : Qt.alpha(root.background.color, 0.0)
 
-            function mappedSelectedIndexes() : var {
-                let mappedSelectedIndexes
+            function mapViewToSource(index) : int {
+                if (index < 0 || index >= listView.count)
+                    return -1
 
+                const sourceIndex = (listView.model instanceof AbstractProxyModel)
+                        ? listView.model.mapToSource(listView.model.index(index, 0)).row
+                        : index
+                return sourceIndex >= 0 && sourceIndex < root.model.count ? sourceIndex : -1
+            }
+
+            function mapSourceToView(index) : int {
+                if (index < 0 || index >= root.model.count)
+                    return -1
+
+                const viewIndex = (listView.model instanceof AbstractProxyModel)
+                        ? listView.model.mapFromSource(root.model.index(index, 0)).row
+                        : index
+                return viewIndex >= 0 && viewIndex < listView.count ? viewIndex : -1
+            }
+
+            function mappedSelectedIndexes() : var {
                 if (!listView.selectionModel)
                     return [] // unlikely
 
                 const selectedIndexes = listView.selectionModel.selectedIndexesFlat
-                if (listView.proxyModel && listView.model === listView.proxyModel) {
-                    mappedSelectedIndexes = []
-                    for (let i = 0; i < selectedIndexes.length; ++i) {
-                        const mappedIndex = listView.model.mapToSource(listView.model.index(selectedIndexes[i], 0))
-                        mappedSelectedIndexes.push(mappedIndex.row)
-                    }
-                } else {
-                    mappedSelectedIndexes = selectedIndexes
+                const sourceIndexes = []
+                for (let i = 0; i < selectedIndexes.length; ++i) {
+                    const sourceIndex = listView.mapViewToSource(selectedIndexes[i])
+                    if (sourceIndex >= 0)
+                        sourceIndexes.push(sourceIndex)
                 }
 
-                return mappedSelectedIndexes
+                // The playlist move/remove APIs require ascending source rows,
+                // whereas selection order follows the user's clicks.
+                return sourceIndexes.sort((a, b) => a - b)
             }
 
-            isDropAcceptableFunc: function(drop, index) {
-                if (drop.source === dragItem)
-                    return Helpers.itemsMovable(listView.mappedSelectedIndexes(), index)
-                else if (Helpers.isValidInstanceOf(drop.source, Widgets.DragItem))
+            // Row drop zones already map their targets to source coordinates.
+            // Keep those distinct from the footer and queue-toggle drops, which
+            // append to the complete queue even when its tail is filtered out.
+            function isSourceDropAcceptable(drop, index) : bool {
+                if (index < 0 || index > root.model.count)
+                    return false
+
+                if (drop.source === dragItem) {
+                    const sourceIndexes = listView.mappedSelectedIndexes()
+                    return sourceIndexes.length > 0 && Helpers.itemsMovable(sourceIndexes, index)
+                } else if (Helpers.isValidInstanceOf(drop.source, Widgets.DragItem))
                     return true
                 else if (drop.hasUrls)
                     return true
@@ -409,7 +445,10 @@ T.Pane {
                     return false
             }
 
-            acceptDropFunc: function(index, drop) {
+            function acceptSourceDrop(index, drop) : var {
+                if (!listView.isSourceDropAcceptable(drop, index))
+                    return Promise.resolve()
+
                 const item = drop.source;
 
                 // NOTE: Move implementation.
@@ -442,6 +481,14 @@ T.Pane {
                 return Promise.resolve()
             }
 
+            isDropAcceptableFunc: function(drop, index) {
+                return listView.isSourceDropAcceptable(drop, root.model.count)
+            }
+
+            acceptDropFunc: function(index, drop) {
+                return listView.acceptSourceDrop(root.model.count, drop)
+            }
+
             property int shiftIndex: -1
 
             onShowContextMenu: (globalPos) => {
@@ -463,12 +510,16 @@ T.Pane {
             Component.onCompleted: {
                 // WARNING: Tracking the current item and not the current index is intentional here.
                 MainPlaylistController.currentItemChanged.connect(listView, () => {
+                    const viewIndex = listView.mapSourceToView(MainPlaylistController.currentIndex)
+                    if (viewIndex < 0)
+                        return // The playing item can be filtered out.
+
                     // FIXME: Qt does not provide the `contentY` with `positionViewAtIndex()` for us
                     //        to animate. For that reason, we capture the new `contentY`, adjust
                     //        `contentY` to it is old value then enable the animation and set `contentY`
                     //        to its new value.
                     const oldContentY = listView.contentY
-                    listView.positionViewAtIndex(MainPlaylistController.currentIndex, ListView.Contain)
+                    listView.positionViewAtIndex(viewIndex, ListView.Contain)
                     const newContentY = listView.contentY
                     if (Math.abs(oldContentY - newContentY) >= Number.EPSILON) {
                         contentYBehavior.enabled = false
@@ -507,8 +558,8 @@ T.Pane {
 
                 dragItem: root.dragItem
 
-                isDropAcceptable: listView.isDropAcceptableFunc
-                acceptDrop: listView.acceptDropFunc
+                isDropAcceptable: listView.isSourceDropAcceptable
+                acceptDrop: listView.acceptSourceDrop
 
                 onContainsDragChanged: listView.updateItemContainsDrag(this, containsDrag)
 
@@ -521,18 +572,7 @@ T.Pane {
             }
 
             Keys.onDeletePressed: {
-                let items
-
-                const selectedIndexes = selectionModel.selectedIndexesFlat
-                if (listView.proxyModel && listView.model === listView.proxyModel) {
-                    items = []
-                    for (let i = 0; i < selectedIndexes.length; ++i) {
-                        const mappedIndex = listView.proxyModel.mapToSource(listView.proxyModel.index(selectedIndexes[i], 0))
-                        items.push(mappedIndex.row)
-                    }
-                } else {
-                    items = selectedIndexes
-                }
+                const items = listView.mappedSelectedIndexes()
 
                 if (items.length > 0)
                     root.model.removeItems(items)
@@ -542,10 +582,11 @@ T.Pane {
             Navigation.upItem: sort
 
             onActionAtIndex: (index) => {
-                if (index < 0)
+                const sourceIndex = listView.mapViewToSource(index)
+                if (sourceIndex < 0)
                     return
 
-                MainPlaylistController.goTo(index, true)
+                MainPlaylistController.goTo(sourceIndex, true)
             }
 
             Column {

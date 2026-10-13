@@ -494,6 +494,8 @@ FocusScope{
             Navigation.parentItem: root
             Navigation.leftItem: menuSelector.visible ? menuSelector : backBtn
             Navigation.rightItem: playlistButton
+            Keys.priority: Keys.AfterItem
+            Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
             onClicked: Player.fullscreen = !Player.fullscreen
             onHoveredChanged: root.requestLockUnlockAutoHide(hovered)
         }

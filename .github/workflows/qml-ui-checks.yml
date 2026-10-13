@@ -1,4 +1,4 @@
-name: Juxtopposed playback UI checks
+name: Juxtopposed Qt UI checks
 
 on:
   pull_request:
@@ -27,6 +27,12 @@ jobs:
         run: python -m pip install PySide6-Essentials==6.8.3
       - name: Check QML, interactions, assets and scaled layouts
         run: python modules/gui/qt/tests/test_juxtopposed_playback_bar.py --output-dir ui-previews
+      - name: Check native seek handle states
+        run: python modules/gui/qt/tests/test_native_seek_handle.py
+      - name: Check playback settings model synchronization
+        run: python modules/gui/qt/tests/test_playback_settings_choices.py
+      - name: Check filtered queue actions and drops
+        run: python modules/gui/qt/tests/test_playlist_proxy_mapping.py
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

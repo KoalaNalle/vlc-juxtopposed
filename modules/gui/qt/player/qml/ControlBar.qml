@@ -165,7 +165,7 @@ T.Pane {
                 trackReturnItem = subtitlesButton
                 tracksMenu.showTracks(0)
             }
-            onSettingsRequested: DialogsProvider.extendedDialog()
+            onSettingsRequested: playbackSettings.showSettings()
             onQueueRequested: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible
             onDurationRequested: MainCtx.showRemainingTime = !MainCtx.showRemainingTime
             onRequestLockUnlockAutoHide: (lock) => root.requestLockUnlockAutoHide(lock)
@@ -174,9 +174,11 @@ T.Pane {
                 SliderBar {
                     id: nativeSeek
                     activeFocusOnTab: true
+                    Accessible.role: Accessible.Slider
                     Accessible.name: qsTr("Progress")
                     AccessibleCompat.id: "progressSlider"
                     barHeight: VLCStyle.dp(28, VLCStyle.scale)
+                    showHandle: false
                     Navigation.parentItem: root
                     Navigation.upItem: root.Navigation.upItem
                     Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
@@ -201,14 +203,37 @@ T.Pane {
                 }
                 onClosed: {
                     root.requestLockUnlockAutoHide(false)
-                    root.menu = undefined
+                    if (root.menu === tracksMenu)
+                        root.menu = undefined
                     bar.trackReturnItem.forceActiveFocus(Qt.PopupFocusReason)
+                }
+            }
+
+            PlaybackSettingsMenu {
+                id: playbackSettings
+                parent: root
+                x: Math.max(0, root.width - width)
+                y: -height
+                maximumHeight: MainCtx.intfMainWindow.height - root.height - VLCStyle.margin_normal * 2
+                colorContext.palette: theme.palette
+                onOpened: {
+                    root.requestLockUnlockAutoHide(true)
+                    root.applyMenu(playbackSettings)
+                }
+                onClosed: {
+                    root.requestLockUnlockAutoHide(false)
+                    if (root.menu === playbackSettings)
+                        root.menu = undefined
+                    bar.settingsButton.forceActiveFocus(Qt.PopupFocusReason)
                 }
             }
 
             Connections {
                 target: root
-                function onForceUnlock() { tracksMenu.close() }
+                function onForceUnlock() {
+                    tracksMenu.close()
+                    playbackSettings.close()
+                }
             }
         }
     }

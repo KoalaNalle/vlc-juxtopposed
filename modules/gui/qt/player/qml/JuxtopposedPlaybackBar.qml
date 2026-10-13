@@ -32,6 +32,7 @@ C.Pane {
     readonly property Item seekItem: seekLoader.item
     property alias audioButton: audioButton
     property alias subtitlesButton: subtitlesButton
+    property alias settingsButton: settingsButton
     readonly property real sliderY: timeline.y + seekLoader.y
                                    + (stacked ? 0 : row.y + timelineHost.y)
     readonly property bool stacked: width < 860 * uiScale
@@ -57,6 +58,27 @@ C.Pane {
 
     Accessible.name: qsTr("Player controls")
 
+    // Native sliders consume their seek/volume keys first. Buttons pass
+    // left/right here so VLC's toolbar navigation remains available.
+    Keys.priority: Keys.AfterItem
+    Keys.onLeftPressed: moveFocus(-1)
+    Keys.onRightPressed: moveFocus(1)
+
+    function moveFocus(direction) {
+        const controls = [previousButton, playButton, nextButton, seekLoader.item,
+                          duration, muteButton, volume, audioButton,
+                          subtitlesButton, settingsButton, queueButton]
+        const current = controls.findIndex((item) => item && item.activeFocus)
+        for (let offset = 1; offset <= controls.length; ++offset) {
+            const index = (current + offset * direction + controls.length) % controls.length
+            const item = controls[index]
+            if (item && item.enabled && item.visible) {
+                item.forceActiveFocus(direction > 0 ? Qt.TabFocusReason : Qt.BacktabFocusReason)
+                return
+            }
+        }
+    }
+
     FontLoader {
         id: inter
         source: root.assetBase + "InterVariable.ttf"
@@ -78,6 +100,7 @@ C.Pane {
             spacing: 8 * root.uiScale
 
             JuxtopposedButton {
+                id: previousButton
                 objectName: "juxtopposedPrevious"
                 uiScale: root.uiScale
                 implicitHeight: 28 * uiScale
@@ -88,6 +111,7 @@ C.Pane {
             }
 
             JuxtopposedButton {
+                id: playButton
                 objectName: "juxtopposedPlay"
                 uiScale: root.uiScale
                 implicitWidth: 54 * uiScale
@@ -105,6 +129,7 @@ C.Pane {
             }
 
             JuxtopposedButton {
+                id: nextButton
                 objectName: "juxtopposedNext"
                 uiScale: root.uiScale
                 implicitHeight: 28 * uiScale
@@ -202,6 +227,7 @@ C.Pane {
             spacing: 8 * root.uiScale
 
             JuxtopposedButton {
+                id: muteButton
                 objectName: "juxtopposedMute"
                 uiScale: root.uiScale
                 implicitWidth: 24 * uiScale
@@ -305,6 +331,7 @@ C.Pane {
                 onClicked: root.subtitlesRequested()
             }
             JuxtopposedButton {
+                id: settingsButton
                 objectName: "juxtopposedSettings"
                 uiScale: root.uiScale
                 source: root.assetBase + "settings.svg"
@@ -314,6 +341,7 @@ C.Pane {
         }
 
         JuxtopposedButton {
+            id: queueButton
             objectName: "juxtopposedQueue"
             uiScale: root.uiScale
             source: root.assetBase + "queue.svg"
