@@ -15,6 +15,7 @@ and [COPYING.LIB](COPYING.LIB).
 
 See the [Windows implementation notes, previews and independent review workflow](doc/juxtopposed-redesign.md)
 for the current scope and the remaining native build checks.
+To continue on another computer, start with [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md).
 
 ---
 
