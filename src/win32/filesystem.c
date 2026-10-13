@@ -542,12 +542,17 @@ int vlc_pipe (int fds[2])
 
     uint_least64_t c = atomic_fetch_add(&count, 1);
 
-    TCHAR pipeName[MAX_PATH] = {0};
-    if (wsprintf(pipeName, TEXT("\\\\.\\pipe\\AnonPipe_%lu"), c) < 0) {
+    /* Named pipes share a system-wide namespace. The counter alone collides
+     * with another VLC instance (or a preparser child) starting at zero. */
+    char pipeName[MAX_PATH];
+    int length = snprintf(pipeName, sizeof(pipeName),
+                          "\\\\.\\pipe\\VLC_%lu_%"PRIuLEAST64,
+                          (unsigned long) GetCurrentProcessId(), c);
+    if (length < 0 || (size_t) length >= sizeof(pipeName)) {
         return -1;
     }
 
-    HANDLE hRead = CreateNamedPipe(pipeName,
+    HANDLE hRead = CreateNamedPipeA(pipeName,
                             PIPE_ACCESS_INBOUND | FILE_FLAG_OVERLAPPED,
                             PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
                             1, 4096 * 8, 4096 * 8, 0, NULL);
@@ -555,7 +560,7 @@ int vlc_pipe (int fds[2])
         return -1;
     }
 
-    HANDLE hWrite = CreateFile(pipeName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
+    HANDLE hWrite = CreateFileA(pipeName, GENERIC_WRITE, 0, NULL, OPEN_EXISTING,
                                FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED,
                                NULL);
     if (hWrite == INVALID_HANDLE_VALUE) {

@@ -555,4 +555,13 @@ vlc_tests += {
     'link_with' : [libvlccore],
 }
 
+if host_system == 'windows' and not have_win_store
+    vlc_tests += {
+        'name' : 'win32_pipe',
+        'sources' : files('test/win32_pipe.c'),
+        'suite' : ['src'],
+        'link_with' : [libvlccore],
+    }
+endif
+
 subdir('rust')

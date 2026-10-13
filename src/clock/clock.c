@@ -394,7 +394,10 @@ static void vlc_clock_main_reset(vlc_clock_main_t *main_clock)
     AvgResetAndFill(&main_clock->coeff_avg, ctx->coeff);
 
     main_clock->wait_sync_ref_priority = UINT_MAX;
-    main_clock->pause_date = VLC_TICK_INVALID;
+    /* A paused seek can create a new PCR/monotonic reference before resume.
+     * Keep its frozen system date so resume shifts those new references too. */
+    if (!main_clock->paused)
+        main_clock->pause_date = VLC_TICK_INVALID;
     vlc_cond_broadcast(&main_clock->cond);
 }
 
@@ -1061,7 +1064,7 @@ void vlc_clock_main_ChangePause(vlc_clock_main_t *main_clock, vlc_tick_t now,
         return;
     }
 
-    /* Reset was called before resume from Pause */
+    /* No pause reference is available. */
     if (main_clock->pause_date == VLC_TICK_INVALID)
         return;
 

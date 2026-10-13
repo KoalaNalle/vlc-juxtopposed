@@ -681,6 +681,13 @@ check_PROGRAMS = \
 
 TESTS = $(check_PROGRAMS) check_symbols
 
+if HAVE_WIN32
+if !HAVE_WINSTORE
+test_win32_pipe_SOURCES = test/win32_pipe.c
+check_PROGRAMS += test_win32_pipe
+endif
+endif
+
 test_block_SOURCES = test/block_test.c
 test_block_LDADD = $(LDADD) $(LIBS_libvlccore)
 test_dictionary_SOURCES = test/dictionary.c

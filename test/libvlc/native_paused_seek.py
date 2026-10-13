@@ -25,6 +25,8 @@ output.mkdir(parents=True, exist_ok=True)
 (output / 'native.log').write_text('')
 dll_directory = os.add_dll_directory(str(package))
 os.environ['VLC_PLUGIN_PATH'] = str(package / 'plugins')
+# Windows uses this override verbatim; the Python executable lives elsewhere.
+os.environ['VLC_LIBEXEC_PATH'] = str(package / 'vlc-preparser.exe')
 vlc = C.CDLL(str(package / 'libvlc.dll'))
 
 def bind(name, restype, *argtypes):
@@ -102,6 +104,11 @@ try:
     pause(player, 0)
     wait_for(lambda: state(player) == 2 and get_time(player) > 2_500_000,
              'Resume did not advance from the target')
+    assert get_time(player) < 3_500_000, 'Resume skipped ahead past the target'
+    check_picture('resumed-red', 0)
+    wait_for(lambda: get_time(player) > 7_000_000,
+             'Resume did not continue through the next segment', timeout=7)
+    check_picture('resumed-blue', 2)
     assert stop(player) == 0
     wait_for(lambda: state(player) == 4, 'Stop did not finish')
 finally:
@@ -111,5 +118,6 @@ finally:
 
 log = (output / 'native.log').read_text(errors='replace')
 assert 'ES_OUT_SET_(GROUP_)PCR  is called' not in log, 'Clock lateness/reset loop'
+assert 'more than 25 frames of late video' not in log, 'Resume dropped a burst of late frames'
 (output / 'results.json').write_text(json.dumps(results, indent=2) + '\n', encoding='utf-8', newline='\n')
 print('Native LibVLC passes paused target-frame updates, repeated seeks, frozen time and resume.')

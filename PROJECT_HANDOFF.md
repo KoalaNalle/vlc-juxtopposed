@@ -48,6 +48,29 @@ The [coverage ledger](doc/juxtopposed-references/coverage-ledger.md) starts the
 remaining reference audit. The complete walkthrough is sampled locally; exact
 screen measurements, Figma nodes and advanced-surface confirmation remain open.
 
+The next built checkpoint fixes system-wide Windows pipe-name collisions between
+VLC and its preparser. A fresh traditional player now opens/seeks/resumes the
+color fixture. A stricter video-only regression also exposes a lost output-clock
+pause date on reset: before the repair resume skips ahead, afterward actual red
+and blue frames arrive at the expected times without a late-frame burst. The
+clock-start, ES-out, input-clock and concurrent-pipe tests pass. Details and the
+tested core hash are in [the follow-up runtime record](doc/juxtopposed-references/runtime/windows-helper-and-resume.md).
+
+The Qt rebuild also qualifies toolbar-dialog Basic controls and repairs the
+search popup's construction-time anchor. All six component suites pass again.
+The media-library native launch initializes and renders its shell, then reaches
+a Windows Firewall prompt. Input checks await the user's dismissal; no Firewall
+permissions were changed. Toolbar-editor and complete latest-core startup,
+shutdown and AV1 UI acceptance remain open. The Goal remains active for all
+milestones, and no completion or whole-app visual claim has been made.
+
+The user chose saved manual Figma exports plus video when MCP quota remained
+exhausted. Browser access to Figma was declined; continue with local references.
+Three exact-time library frames, provisional shell geometry and native mapping
+are preserved in [library notes](doc/juxtopposed-references/library/reference-notes.md).
+The generated chapter/subtitle/audio fixtures have been probed; their native
+feature checks remain pending. The shared shell/library implementation is next.
+
 ## Scope and design credit
 
 Implement Juxtopposed's VLC redesign inside VLC while preserving playback,

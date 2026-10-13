@@ -34,4 +34,4 @@ The Python test uses the current LibVLC 4 declarations, including microsecond ti
 
 ## Remaining runtime gates
 
-Milestone 1 remains open for complete cold/warm startup and shutdown checks, used-path QML warnings and the final traditional-control pass with both fixes. A later isolated fixture launch stayed on Home and reported preparser process creation failures; investigate the helper path/loading before accepting that launch. Preserve the successful AV1 and API evidence separately from that failure. Fullscreen, chapter/bookmark lifecycle, DPI and full native visual acceptance belong to subsequent gates.
+The subsequent helper failure is now traced to a Windows pipe-name collision and repaired. A stricter video-only check also found and repaired lost output-clock pause state on reset. See [the follow-up checkpoint](windows-helper-and-resume.md) for before/after evidence, the revised core hash and the remaining startup/dialog/AV1 gates. Preserve the preceding AV1 evidence as belonging to its recorded core. Fullscreen, chapter/bookmark lifecycle, DPI and full native visual acceptance belong to subsequent gates.
