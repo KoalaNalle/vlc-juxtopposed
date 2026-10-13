@@ -732,6 +732,9 @@ qml_modules += {
    'target' : 'player',
    'outdir' : 'VLC/Player',
    'sources': files(
+       'player/qml/JuxtopposedButton.qml',
+       'player/qml/JuxtopposedSeekBackground.qml',
+       'player/qml/JuxtopposedPlaybackBar.qml',
        'player/qml/ControlBar.qml',
        'player/qml/PlaybackSpeed.qml',
        'player/qml/LyricsFlickable.qml',

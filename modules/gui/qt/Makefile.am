@@ -790,6 +790,23 @@ ui_%.h: %.ui
 # Resources
 
 libqt_plugin_la_RES = \
+	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/audio.svg \
+	pixmaps/juxtopposed/fullscreen.svg \
+	pixmaps/juxtopposed/Inter-LICENSE.txt \
+	pixmaps/juxtopposed/InterVariable.ttf \
+	pixmaps/juxtopposed/next.svg \
+	pixmaps/juxtopposed/pause.svg \
+	pixmaps/juxtopposed/play.svg \
+	pixmaps/juxtopposed/previous.svg \
+	pixmaps/juxtopposed/queue.svg \
+	pixmaps/juxtopposed/settings.svg \
+	pixmaps/juxtopposed/subtitles.svg \
+	pixmaps/juxtopposed/volume-background.svg \
+	pixmaps/juxtopposed/volume-fill.svg \
+	pixmaps/juxtopposed/volume-mask.svg \
+	pixmaps/juxtopposed/volume-muted.svg \
+	pixmaps/juxtopposed/volume.svg \
 	pixmaps/VLCIcons.ttf \
 	pixmaps/addons/addon_default.svg \
 	pixmaps/addons/addon_broken.svg \
@@ -1166,6 +1183,9 @@ libqml_module_player_a_ModulePath = VLC/Player
 libqml_module_player_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_player_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_player_a_QML = \
+	player/qml/JuxtopposedButton.qml \
+	player/qml/JuxtopposedSeekBackground.qml \
+	player/qml/JuxtopposedPlaybackBar.qml \
 	player/qml/ControlBar.qml \
 	player/qml/PlaybackSpeed.qml \
 	player/qml/LyricsFlickable.qml \
@@ -1896,3 +1916,5 @@ EXTRA_DIST += tests/tst_FSM.qml
 TESTS += tests/tst_FSM.qml
 endif
 endif
+
+EXTRA_DIST += tests/test_juxtopposed_playback_bar.py

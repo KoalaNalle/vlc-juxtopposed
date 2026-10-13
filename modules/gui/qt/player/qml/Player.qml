@@ -1292,9 +1292,9 @@ FocusScope {
 
         focus: true
 
-        rightPadding: VLCStyle.applicationHorizontalMargin
-        leftPadding: VLCStyle.applicationHorizontalMargin
-        bottomPadding: VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall
+        rightPadding: redesigned ? 0 : VLCStyle.applicationHorizontalMargin
+        leftPadding: redesigned ? 0 : VLCStyle.applicationHorizontalMargin
+        bottomPadding: redesigned ? 0 : VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall
 
         textPosition: (MainCtx.pinVideoControls)
                       ? ControlBar.TimeTextPosition.LeftRightSlider

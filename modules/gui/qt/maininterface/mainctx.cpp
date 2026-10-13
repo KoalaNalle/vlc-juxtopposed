@@ -449,6 +449,8 @@ void MainCtx::loadPrefs(const bool callSignals)
 
     loadFromVLCOption(m_maxVolume, "qt-max-volume", &MainCtx::maxVolumeChanged);
 
+    loadFromVLCOption(m_juxtopposedControls, "qt-juxtopposed-controls", &MainCtx::juxtopposedControlsChanged);
+
     loadFromVLCOption(m_pinVideoControls, "qt-pin-controls", &MainCtx::pinVideoControlsChanged);
 
     loadFromVLCOption(m_pinOpacity, "qt-fs-opacity", &MainCtx::pinOpacityChanged);

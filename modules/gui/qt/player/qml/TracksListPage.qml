@@ -41,6 +41,11 @@ RowLayout {
     //FIXME make TrackMenuController a proper type (see TrackMenu)
     required property QtObject trackMenuController
 
+    function focusTrack(column) {
+        const item = column === 1 ? audioColumn : subtitleColumn
+        item.forceActiveFocus(Qt.PopupFocusReason)
+    }
+
     spacing: 0
 
     focus: true
@@ -76,6 +81,7 @@ RowLayout {
         Navigation.leftItem: playbackBtn
 
         TrackColumn {
+            id: subtitleColumn
             title: qsTr("Subtitle")
             tracksModel: Player.subtitleTracks
             menuIcon: VLCIcons.expand
@@ -86,6 +92,7 @@ RowLayout {
         }
 
         TrackColumn {
+            id: audioColumn
             title: qsTr("Audio")
             tracksModel: Player.audioTracks
             menuIcon: VLCIcons.expand

@@ -1,0 +1,35 @@
+name: Juxtopposed playback UI checks
+
+on:
+  pull_request:
+    paths:
+      - 'modules/gui/qt/**'
+      - '.github/workflows/qml-ui-checks.yml'
+  push:
+    paths:
+      - 'modules/gui/qt/**'
+      - '.github/workflows/qml-ui-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  playback-ui:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Qt Quick test runtime
+        run: python -m pip install PySide6-Essentials==6.8.3
+      - name: Check QML, interactions, assets and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_playback_bar.py --output-dir ui-previews
+      - name: Save rendered previews and verification details
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juxtopposed-playback-ui
+          path: ui-previews/
