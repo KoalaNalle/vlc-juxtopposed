@@ -407,6 +407,7 @@ static void on_player_state_changed(vlc_player_t *, enum vlc_player_state state,
             that->m_audioStereoMode.resetObject( aout.get() );
             that->m_audioMixMode.resetObject( aout.get() );
             that->m_audioVisualization.resetObject( aout.get() );
+            that->m_equalizer.refresh();
             break;
         }
         case VLC_PLAYER_STATE_PAUSED:
@@ -1210,6 +1211,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
     , m_audioMixMode((audio_output_t*)nullptr, "mix-mode")
     , m_audioDeviceList(m_player)
     , m_audioVisualization((audio_output_t*)nullptr, "visual")
+    , m_equalizer(m_player)
     , m_rendererManager(p_intf, m_player)
 {
     {
@@ -1803,6 +1805,12 @@ SharedAOut PlayerController::getAout()
     Q_D(PlayerController);
     vlc_player_locker lock{ d->m_player };
     return SharedAOut( vlc_player_aout_Hold( d->m_player ), false );
+}
+
+AudioEqualizer *PlayerController::getEqualizer() const
+{
+    Q_D(const PlayerController);
+    return const_cast<AudioEqualizer *>(&d->m_equalizer);
 }
 
 void PlayerController::setVolume(float volume)

@@ -291,6 +291,7 @@ libqt_plugin_la_SOURCES = \
 	player/delay_estimator.cpp \
 	player/delay_estimator.hpp \
 	player/player_controller.cpp player/player_controller.hpp player/player_controller_p.hpp \
+	player/audio_equalizer.cpp player/audio_equalizer.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
 	player/control_list_model.cpp player/control_list_model.hpp \
 	player/control_list_filter.cpp \
@@ -494,6 +495,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/delay_estimator.moc.cpp \
 	player/input_models.moc.cpp \
 	player/player_controller.moc.cpp \
+	player/audio_equalizer.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
 	player/control_list_model.moc.cpp \
 	player/control_list_filter.moc.cpp \
@@ -1205,6 +1207,7 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedSeekBackground.qml \
 	player/qml/JuxtopposedPlaybackBar.qml \
 	player/qml/PlaybackSettingsMenu.qml \
+	player/qml/JuxtopposedSettingsPanel.qml \
 	player/qml/ControlBar.qml \
 	player/qml/PlaybackSpeed.qml \
 	player/qml/LyricsFlickable.qml \
@@ -1405,6 +1408,8 @@ libqml_module_widgets_a_QML = \
 	widgets/qml/JuxtopposedLibraryHeader.qml \
 	widgets/qml/JuxtopposedMediaRow.qml \
 	widgets/qml/JuxtopposedCategoryList.qml \
+	widgets/qml/JuxtopposedSettingSlider.qml \
+	widgets/qml/JuxtopposedSettingChoice.qml \
 	widgets/qml/ButtonExt.qml \
 	widgets/qml/TableColumns.qml \
 	widgets/qml/TextFieldExt.qml \
@@ -1942,6 +1947,21 @@ test_qt_navigation_history_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_navigation_history_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_navigation_history
 TESTS += test_qt_navigation_history
+
+test_qt_audio_equalizer_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_audio_equalizer.cpp tests/media_player_probe.c \
+	player/audio_equalizer.cpp player/audio_equalizer.hpp \
+	util/variables.cpp util/variables.hpp
+nodist_test_qt_audio_equalizer_SOURCES = \
+	tests/test_audio_equalizer.moc player/audio_equalizer.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_audio_equalizer.moc
+CLEANFILES += tests/test_audio_equalizer.moc
+test_qt_audio_equalizer_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_audio_equalizer_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_equalizer_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_equalizer_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_equalizer
+TESTS += test_qt_audio_equalizer
 
 
 endif

@@ -59,144 +59,58 @@ class Choices(QAbstractListModel):
 
 
 repo = Path(__file__).resolve().parents[4]
-source = (repo / 'modules/gui/qt/player/qml/PlaybackSettingsMenu.qml').read_text()
-marker = '    component ChoiceSetting: RowLayout {'
-assert source.count(marker) == 1
-# Exercise the production component and updateSelection implementation directly.
-# Only replace native VLC presentation types and attached navigation properties;
-# these require a compiled VLC plugin and do not affect choice-model behavior.
-choice = source[source.index(marker):].rsplit('\n}', 1)[0]
-choice = choice.replace('Widgets.CaptionLabel', 'C.Label')
-choice = choice.replace('Widgets.ComboBoxExt', 'ComboBoxExt')
-choice = choice.replace('VLCStyle.margin_small', '8')
-choice = choice.replace('theme.fg.primary', '"white"')
-choice = '\n'.join(line for line in choice.splitlines()
-                   if 'Navigation.' not in line and 'AccessibleCompat.' not in line)
-
-harness = '''import QtQuick
-import QtQuick.Controls.Basic as C
-import QtQuick.Layouts
-import QtQml.Models
-Item {
-    id: root
-    width: 448
-    height: 100
-    required property var nativeChoices
-    ChoiceSetting {
-        id: tested
-        objectName: "choiceUnderTest"
-        width: parent.width
-        title: "Aspect ratio"
-        accessibleId: "choiceUnderTest"
-        choices: root.nativeChoices
-    }
-''' + choice + '\n}\n'
-
-# Keep the production ComboBox's Templates/Basic imports, delegate and popup.
-# Only replace VLC labels, animation/theme styling and navigation helpers.
-combo_source = (repo / 'modules/gui/qt/widgets/qml/ComboBoxExt.qml').read_text()
-combo_source = '\n'.join(line for line in combo_source.splitlines()
-                         if not line.startswith('import VLC.') and 'Navigation.' not in line)
-combo_source = combo_source.replace('Widgets.ListLabel', 'C.Label')
-combo_source = combo_source.replace('Widgets.IconLabel', 'C.Label')
-combo_source = combo_source.replace('Widgets.AnimatedBackground', 'Rectangle')
-combo_source = combo_source.replace('Helpers.isArray', 'Array.isArray')
-combo_source = combo_source.replace('VLCIcons.expand', '"\\u25bc"')
-for style, value in [('margin_xxsmall', '2'), ('fontSize_large', '16'),
-                     ('margin_xsmall', '4'), ('icon_normal', '16')]:
-    combo_source = combo_source.replace('VLCStyle.' + style, value)
-combo_source = combo_source.replace('VLCStyle.dp(2, VLCStyle.scale)', '2')
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 app = QGuiApplication([])
 model = Choices()
-with tempfile.TemporaryDirectory(prefix='vlc-settings-choices-', dir=repo) as directory:
-    assert Path(directory).resolve().parent == repo.resolve()
-    (Path(directory) / 'ComboBoxExt.qml').write_text(combo_source)
-    (Path(directory) / 'ColorContext.qml').write_text('''import QtQuick
-QtObject {
-    enum ColorSet { ComboBox }
-    property int colorSet: ColorContext.ComboBox
-    property bool focused: false
-    property bool enabled: true
-    property bool hovered: false
-    property bool pressed: false
-    property bool initialized: true
-    property color border: "gray"
-    property color visualFocus: "orange"
-    property var fg: ({primary: "white"})
-    property var bg: ({primary: "black", secondary: "gray"})
-}
-''')
-    path = Path(directory) / 'ChoiceHarness.qml'
-    path.write_text(harness)
-    view = QQuickView()
-    view.setInitialProperties({'nativeChoices': model})
-    view.setSource(QUrl.fromLocalFile(str(path)))
-    assert not view.errors(), [error.toString() for error in view.errors()]
-    view.show()
-    QTest.qWait(30)
-    root = view.rootObject()
-    field = root.findChild(QObject, 'choiceUnderTest')
-    assert field
+view = QQuickView()
+view.setResizeMode(QQuickView.SizeRootObjectToView)
+view.setInitialProperties({
+    'choices': model, 'title': 'Aspect ratio',
+    'assetBase': QUrl.fromLocalFile(str(repo / 'modules/gui/qt/pixmaps/juxtopposed') + '/'),
+})
+view.setSource(QUrl.fromLocalFile(str(repo / 'modules/gui/qt/widgets/qml/JuxtopposedSettingChoice.qml')))
+assert not view.errors(), [error.toString() for error in view.errors()]
+view.resize(400, 44)
+view.show()
+QTest.qWait(30)
+field = view.rootObject()
 
-    def evaluate(code):
-        expression = QQmlExpression(qmlContext(field), field, code)
-        result = expression.evaluate()
-        assert not expression.hasError(), expression.error().toString()
-        return result[0]
+def evaluate(code):
+    expression = QQmlExpression(qmlContext(field), field, code)
+    result = expression.evaluate()
+    assert not expression.hasError(), expression.error().toString()
+    return result[0]
 
-    assert evaluate('selector.currentIndex') == 0
-    assert evaluate('selector.displayText') == 'Default'
-    assert not model.activations, 'Initial binding wrote to VLC'
-
-    evaluate('selector.popup.open()')
-    QTest.qWait(30)
-    assert evaluate('selector.popup.visible')
-    assert evaluate('selector.popup.height') > 2, 'Choice popup has no visible content'
-    assert evaluate('selector.popup.contentItem.count') == 3
-    assert evaluate('selector.popup.contentItem.C.ScrollIndicator.vertical.contentItem !== null'), 'Scroll indicator has no styled content'
-    evaluate('selector.popup.close()')
-
-    model.engine_select(2)
-    QTest.qWait(20)
-    assert evaluate('selector.currentIndex') == 2
-    assert evaluate('selector.displayText') == '4:3'
-    assert not model.activations, 'Engine selection emitted a user change'
-
-    # A QML activation invokes the same production onActivated handler used by
-    # pointer and keyboard actions, without relying on platform popup geometry.
-    evaluate('selector.activated(1)')
-    QTest.qWait(20)
-    assert model.activations == [1], model.activations
-    assert evaluate('selector.currentIndex') == 1
-
-    model.engine_select(-1)
-    QTest.qWait(20)
-    assert evaluate('selector.currentIndex') == -1
-    assert evaluate('selector.displayText') == 'Custom'
-    assert model.activations == [1]
-
-    model.engine_reset([])
-    QTest.qWait(20)
-    assert not field.property('enabled'), 'Missing model rows must disable the choice'
-    assert evaluate('selector.displayText') == 'Unavailable'
-    assert model.activations == [1], 'Model reset wrote to VLC'
-
-    model.engine_reset(['New default', '21:9'], 1)
-    QTest.qWait(20)
-    assert field.property('enabled')
-    assert evaluate('selector.currentIndex') == 1
-    assert evaluate('selector.displayText') == '21:9'
-    assert model.activations == [1], 'Restored model wrote to VLC'
-
-    field.setProperty('available', False)
-    QTest.qWait(20)
-    assert not field.property('enabled'), 'Unavailable output must disable the choice'
-    assert model.activations == [1]
-    view.close()
-
-print('Production ComboBox popup/indicator and checked-model choices pass loading, selection, activation, reset and availability checks.')
+assert evaluate('selector.currentIndex') == 0
+assert not model.activations, 'Initial synchronization must not write to VLC'
+evaluate('selector.popup.open()')
+QTest.qWait(20)
+assert evaluate('selector.popup.visible')
+assert evaluate('selector.popup.contentItem.count') == 3
+evaluate('selector.popup.close()')
+model.engine_select(2)
+QTest.qWait(20)
+assert evaluate('selector.currentIndex') == 2
+assert evaluate('selector.displayText') == '4:3'
+assert not model.activations
+evaluate('selector.activated(1)')
+QTest.qWait(20)
+assert model.activations == [1] and evaluate('selector.currentIndex') == 1
+model.engine_select(-1)
+QTest.qWait(20)
+assert evaluate('selector.currentIndex') == -1 and evaluate('selector.displayText') == 'Custom'
+model.engine_reset([])
+QTest.qWait(20)
+assert not field.property('enabled') and evaluate('selector.displayText') == 'Unavailable'
+model.engine_reset(['New default', '21:9'], 1)
+QTest.qWait(20)
+assert field.property('enabled') and evaluate('selector.currentIndex') == 1
+field.setProperty('available', False)
+QTest.qWait(20)
+assert not field.property('enabled') and model.activations == [1]
+view.close()
+print('Production settings choice passes actual Qt model selection, activation, reset and availability checks.')
 
 
 class SpeedPlayer(QObject):

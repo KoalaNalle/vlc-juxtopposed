@@ -10,7 +10,7 @@ Codex session on the home computer.
 | Fork | <https://github.com/KoalaNalle/vlc-juxtopposed> |
 | Working branch | `juxtopposed-playback-bar` |
 | Draft pull request | <https://github.com/KoalaNalle/vlc-juxtopposed/pull/1> |
-| Latest implementation checkpoint | Branch tip; header/library evidence linked below |
+| Latest implementation checkpoint | Branch tip; library/settings evidence linked below |
 | Intended home checkout | `C:\modding\vlc-juxtopposed` |
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
@@ -98,6 +98,21 @@ desktop input still awaits the firewall prompt, and title-strip/folder hierarchy
 original icons and the remaining library presentation remain open. Both exact-head
 Windows workflows passed for the preceding `9f754b961c` checkpoint; check the new
 pushed revision separately through Code Review. Continue the full 0–8 Goal.
+
+The header/library checkpoint was pushed as `9f743a4ffb`; all eight component
+suites passed in both exact-head Windows workflows through Code Review. The
+next [settings checkpoint](doc/juxtopposed-references/settings/implementation-checkpoint.md)
+replaces the interim list with Playback/Video/Audio/Subtitles tabs, live choices,
+numeric speed/delays and a native ten-band equalizer. All nine component suites
+pass locally. A native QtTest/LibVLC diagnostic verifies actual filtered PCM,
+engine callbacks, consecutive band edits, disabled-filter presets and validation.
+The Qt plugin builds and is staged separately; its hash and rollback filename
+are in the checkpoint. The Music Add action's dialog-module import is corrected.
+The saved references also confirm the full Global Settings categories and a
+distinct first-run theme/accent step. Desktop input still awaits the firewall
+prompt; missing video/subtitle/settings fields, original icons, themes and all
+other full-plan gates remain active work. No whole-app score or completion is
+claimed.
 
 ## Scope and design credit
 

@@ -22,6 +22,7 @@
 #include "player_controller.hpp"
 #include "util/variables.hpp"
 #include "input_models.hpp"
+#include "audio_equalizer.hpp"
 #include "util/varchoicemodel.hpp"
 #include "util/shared_input_item.hpp"
 #include "util/renderer_manager.hpp"
@@ -185,6 +186,7 @@ public:
     bool            m_muted = false;
     AudioDeviceModel m_audioDeviceList;
     VLCVarChoiceModel m_audioVisualization;
+    AudioEqualizer m_equalizer;
 
     //misc
     bool            m_recording = false;

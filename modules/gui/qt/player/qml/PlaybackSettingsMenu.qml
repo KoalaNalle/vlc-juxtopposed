@@ -1,18 +1,10 @@
-/*****************************************************************************
- * Copyright (C) 2026 VLC authors and VideoLAN
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *****************************************************************************/
+// Copyright (C) 2026 VLC authors and VideoLAN. GPLv2 or later.
+// Visual design: Juxtopposed; original artwork: CC BY 4.0.
 import QtQuick
 import QtQuick.Window
 import QtQuick.Templates as T
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
-import QtQml.Models
-
 import VLC.MainInterface
 import VLC.Style
 import VLC.Player
@@ -20,281 +12,499 @@ import VLC.Dialogs
 import VLC.Widgets as Widgets
 import VLC.Util
 
-// Transitional native settings popup. Reuse VLC's working controls until the
-// Juxtopposed settings sidebar can be implemented from its full Figma context.
 T.Popup {
     id: root
 
-    property real maximumHeight: MainCtx.intfMainWindow.height - VLCStyle.margin_large * 2
-
     readonly property ColorContext colorContext: ColorContext {
         id: theme
+
         colorSet: ColorContext.Window
     }
-
-    width: Math.min(VLCStyle.dp(448, VLCStyle.scale), parent.width)
-    implicitHeight: contentScope.implicitHeight + topPadding + bottomPadding
-    height: Math.min(implicitHeight, Math.max(1, maximumHeight))
-    padding: VLCStyle.margin_normal
-    margins: MainCtx.windowExtendedMargin
-    focus: true
-    closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutside
-
-    function showSettings() {
-        open()
-    }
+    property real maximumHeight: MainCtx.intfMainWindow.height - VLCStyle.margin_large * 2
+    readonly property real uiScale: VLCStyle.dp(1, VLCStyle.scale)
 
     function focusSetting(current, direction) {
-        const controls = [speed.slider, aspect.selector, crop.selector,
-                          stereo.selector, mix.selector, effects,
-                          synchronization, closeButton]
-        const currentIndex = controls.indexOf(current)
-        for (let offset = 1; offset <= controls.length; ++offset) {
-            const index = (currentIndex + offset * direction + controls.length) % controls.length
-            const item = controls[index]
-            if (item.enabled && item.visible) {
-                item.forceActiveFocus(direction > 0 ? Qt.TabFocusReason : Qt.BacktabFocusReason)
-                return
+        const controls = panel.loadedPage?.keyboardControls ?? [];
+        const start = controls.indexOf(current);
+        for (let n = 1; n <= controls.length; ++n) {
+            const item = controls[(start + n * direction + controls.length) % controls.length];
+            if (item?.enabled && item.visible) {
+                item.forceActiveFocus(direction > 0 ? Qt.TabFocusReason : Qt.BacktabFocusReason);
+                return;
             }
         }
     }
-
-    function ensureVisible(item) {
-        const top = item.mapToItem(flick.contentItem, 0, 0).y
-        const bottom = top + item.height
-        if (top < flick.contentY)
-            flick.contentY = Math.max(0, top)
-        else if (bottom > flick.contentY + flick.height)
-            flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height),
-                                     bottom - flick.height)
+    function showSettings() {
+        Player.equalizer.refresh();
+        open();
     }
 
-    function ensureFocusedItemVisible() {
-        if (!root.visible || !contentScope.Window.window)
-            return
-        const item = contentScope.Window.window.activeFocusItem
-        let ancestor = item
-        while (ancestor) {
-            if (ancestor === flick.contentItem) {
-                ensureVisible(item)
-                return
-            }
-            ancestor = ancestor.parent
-        }
-    }
-
-    onOpened: {
-        flick.contentY = 0
-        if (speed.enabled)
-            speed.slider.forceActiveFocus(Qt.PopupFocusReason)
-        else
-            focusSetting(speed.slider, 1)
-    }
-
-    Connections {
-        target: contentScope.Window.window
-        function onActiveFocusItemChanged() {
-            root.ensureFocusedItemVisible()
-        }
-    }
+    closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutside
+    focus: true
+    height: Math.min(600 * uiScale, Math.max(1, maximumHeight))
+    margins: MainCtx.windowExtendedMargin
+    padding: 0
+    width: Math.min(400 * uiScale, parent.width)
 
     background: Rectangle {
-        color: theme.bg.primary
-        radius: VLCStyle.dp(8, VLCStyle.scale)
-        border.color: theme.border
+        color: "#111111"
+        radius: 8 * root.uiScale
     }
+    contentItem: JuxtopposedSettingsPanel {
+        id: panel
 
-    contentItem: FocusScope {
-        id: contentScope
-        implicitHeight: settings.implicitHeight
-        focus: true
+        iconFontFamily: VLCIcons.fontFamily
+        tabIcons: [VLCIcons.play, VLCIcons.tv, VLCIcons.visualization, VLCIcons.audiosub]
+        uiScale: root.uiScale
 
-        // Popup content is reparented by Qt, so carry the palette explicitly.
-        readonly property ColorContext colorContext: ColorContext {
-            colorSet: theme.colorSet
-            palette: theme.palette
-        }
-
-        Accessible.role: Accessible.Pane
-        Accessible.name: qsTr("Playback settings")
-        AccessibleCompat.id: "playbackSettingsMenu"
-        Navigation.cancelAction: function() { root.close() }
-        Keys.priority: Keys.AfterItem
-        Keys.onEscapePressed: (event) => {
-            root.close()
-            event.accepted = true
-        }
-
-        Flickable {
-            id: flick
-            anchors.fill: parent
-            contentWidth: width
-            contentHeight: settings.implicitHeight
-            flickableDirection: Flickable.VerticalFlick
-            boundsBehavior: Flickable.StopAtBounds
-            clip: true
-            onHeightChanged: Qt.callLater(root.ensureFocusedItemVisible)
-
-            C.ScrollBar.vertical: Widgets.ScrollBarExt {
-                id: scrollBar
-            }
-
-            ColumnLayout {
-                id: settings
-                width: flick.width - (scrollBar.size < 1 ? scrollBar.width + VLCStyle.margin_xsmall : 0)
-                spacing: VLCStyle.margin_small
-
-                PlaybackSpeed {
-                    id: speed
-                    Layout.fillWidth: true
-                    enabled: Player.isStarted && Player.ratechangable
-                    colorContext.palette: theme.palette
-                    Navigation.parentItem: contentScope
-                    Navigation.downAction: function() { root.focusSetting(speed.slider, 1) }
-                    Navigation.upAction: function() { root.focusSetting(speed.slider, -1) }
-                }
-
-                ChoiceSetting {
-                    id: aspect
-                    title: qsTr("Aspect ratio")
-                    choices: Player.aspectRatio
-                    available: Player.hasVideoOutput
-                    accessibleId: "playbackSettingsAspectRatio"
-                }
-
-                ChoiceSetting {
-                    id: crop
-                    title: qsTr("Crop")
-                    choices: Player.crop
-                    available: Player.hasVideoOutput
-                    accessibleId: "playbackSettingsCrop"
+        audioContent: Component {
+            SettingsPage {
+                keyboardControls: {
+                    const result = [stereo.selector, mix.selector, audioDelay.editor, eqEnabled, preset, preamp.slider];
+                    for (let i = 0; i < bandControls.count; ++i)
+                        result.push(bandControls.itemAt(i).slider);
+                    return result.concat([twoPass, audioEffects]);
                 }
 
                 ChoiceSetting {
                     id: stereo
-                    title: qsTr("Stereo mode")
-                    choices: Player.audioStereoMode
-                    available: Player.isStarted
-                    accessibleId: "playbackSettingsStereoMode"
-                }
 
+                    available: Player.isStarted
+                    choices: Player.audioStereoMode
+                    title: qsTr("Stereo mode")
+                }
                 ChoiceSetting {
                     id: mix
-                    title: qsTr("Audio mix")
-                    choices: Player.audioMixMode
+
                     available: Player.isStarted
-                    accessibleId: "playbackSettingsAudioMix"
+                    choices: Player.audioMixMode
+                    title: qsTr("Audio mix")
                 }
+                SectionLabel {
+                    text: qsTr("Synchronization")
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: audioDelay
 
-                Widgets.ButtonExt {
-                    id: effects
                     Layout.fillWidth: true
-                    text: qsTr("Adjustments and effects")
-                    activeFocusOnTab: true
-                    AccessibleCompat.id: "playbackSettingsEffects"
-                    Navigation.parentItem: contentScope
-                    Navigation.downAction: function() { root.focusSetting(effects, 1) }
-                    Navigation.upAction: function() { root.focusSetting(effects, -1) }
-                    onClicked: {
-                        root.close()
-                        DialogsProvider.extendedDialog()
+                    decimals: 3
+                    enabled: Player.isStarted && Player.audioTracks.count > 0
+                    from: -10
+                    sliderVisible: false
+                    title: qsTr("Audio track delay")
+                    to: 10
+                    uiScale: root.uiScale
+                    unit: " s"
+                    value: Player.audioDelayMS / 1000
+
+                    onMoveFocusRequested: direction => root.focusSetting(audioDelay.editor, direction)
+                    onValueRequested: value => Player.audioDelayMS = Math.round(value * 1000)
+                }
+                SectionLabel {
+                    text: qsTr("Equalizer")
+                }
+                ToggleSetting {
+                    id: eqEnabled
+
+                    checked: Player.equalizer.enabled
+                    enabled: Player.isStarted && Player.audioTracks.count > 0 && Player.equalizer.available
+                    text: qsTr("Enable equalizer")
+
+                    onToggled: Player.equalizer.enabled = checked
+                }
+                C.ComboBox {
+                    id: preset
+
+                    Accessible.name: qsTr("Equalizer preset")
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 32 * root.uiScale
+                    currentIndex: Player.equalizer.presetIndex
+                    enabled: eqEnabled.enabled
+                    font.family: inter.name
+                    font.pixelSize: 14 * root.uiScale
+                    model: Player.equalizer.presets
+
+                    background: Rectangle {
+                        border.color: preset.visualFocus ? "#D37918" : "#252525"
+                        border.width: root.uiScale
+                        color: "#161616"
+                        radius: 4 * root.uiScale
+                    }
+                    contentItem: C.Label {
+                        color: "#969696"
+                        elide: Text.ElideRight
+                        font: preset.font
+                        text: preset.displayText
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+                    onActivated: index => Player.equalizer.setPreset(index)
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: preamp
+
+                    Layout.fillWidth: true
+                    enabled: eqEnabled.enabled
+                    from: -20
+                    stepSize: 0.1
+                    title: qsTr("Preamp")
+                    to: 20
+                    uiScale: root.uiScale
+                    unit: " dB"
+                    value: Player.equalizer.preamp
+
+                    onMoveFocusRequested: direction => root.focusSetting(preamp.slider, direction)
+                    onValueRequested: value => Player.equalizer.preamp = value
+                }
+                Repeater {
+                    id: bandControls
+
+                    model: Player.equalizer.frequencies
+
+                    Widgets.JuxtopposedSettingSlider {
+                        required property int index
+                        required property real modelData
+
+                        Layout.fillWidth: true
+                        enabled: eqEnabled.enabled
+                        from: -20
+                        stepSize: 0.1
+                        title: modelData >= 1000 ? qsTr("%1 kHz").arg(modelData / 1000) : qsTr("%1 Hz").arg(modelData)
+                        to: 20
+                        uiScale: root.uiScale
+                        unit: " dB"
+                        value: Player.equalizer.bands[index] ?? 0
+
+                        onMoveFocusRequested: direction => root.focusSetting(slider, direction)
+                        onValueRequested: value => Player.equalizer.setBand(index, value)
                     }
                 }
+                ToggleSetting {
+                    id: twoPass
 
-                Widgets.ButtonExt {
-                    id: synchronization
-                    Layout.fillWidth: true
-                    text: qsTr("Track synchronization")
-                    enabled: Player.isStarted
-                    activeFocusOnTab: true
-                    AccessibleCompat.id: "playbackSettingsSynchronization"
-                    Navigation.parentItem: contentScope
-                    Navigation.downAction: function() { root.focusSetting(synchronization, 1) }
-                    Navigation.upAction: function() { root.focusSetting(synchronization, -1) }
-                    onClicked: {
-                        root.close()
-                        DialogsProvider.synchroDialog()
-                    }
+                    checked: Player.equalizer.twoPass
+                    enabled: eqEnabled.enabled
+                    text: qsTr("Two pass")
+
+                    onToggled: Player.equalizer.twoPass = checked
                 }
+                ActionButton {
+                    id: audioEffects
 
-                Widgets.ButtonExt {
-                    id: closeButton
-                    Layout.fillWidth: true
-                    text: qsTr("Close")
-                    activeFocusOnTab: true
-                    AccessibleCompat.id: "playbackSettingsClose"
-                    Navigation.parentItem: contentScope
-                    Navigation.downAction: function() { root.focusSetting(closeButton, 1) }
-                    Navigation.upAction: function() { root.focusSetting(closeButton, -1) }
-                    onClicked: root.close()
+                    text: qsTr("More audio effects")
+
+                    onClicked: {
+                        root.close();
+                        DialogsProvider.extendedDialog();
+                    }
                 }
             }
+        }
+        playbackContent: Component {
+            SettingsPage {
+                keyboardControls: [speed.slider, speed.editor]
+
+                Widgets.JuxtopposedSettingSlider {
+                    id: speed
+
+                    Layout.fillWidth: true
+                    decimals: 2
+                    enabled: Player.isStarted && Player.ratechangable
+                    from: 0.25
+                    sliderMaximum: 2
+                    stepSize: 0.01
+                    ticks: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]
+                    title: qsTr("Speed")
+                    to: 4
+                    uiScale: root.uiScale
+                    unit: "x"
+                    value: Player.rate
+
+                    onMoveFocusRequested: direction => root.focusSetting(speed.slider, direction)
+                    onValueRequested: value => Player.rate = value
+                }
+            }
+        }
+        subtitlesContent: Component {
+            SettingsPage {
+                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, sync]
+
+                SectionLabel {
+                    text: qsTr("Synchronization")
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: subtitleDelay
+
+                    Layout.fillWidth: true
+                    decimals: 3
+                    enabled: Player.isStarted && Player.subtitleTracks.count > 0
+                    from: -10
+                    sliderVisible: false
+                    title: qsTr("Subtitle track delay")
+                    to: 10
+                    uiScale: root.uiScale
+                    unit: " s"
+                    value: Player.subtitleDelayMS / 1000
+
+                    onMoveFocusRequested: direction => root.focusSetting(subtitleDelay.editor, direction)
+                    onValueRequested: value => Player.subtitleDelayMS = Math.round(value * 1000)
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: secondaryDelay
+
+                    Layout.fillWidth: true
+                    decimals: 3
+                    enabled: Player.isStarted && Player.subtitleTracks.count > 0
+                    from: -10
+                    sliderVisible: false
+                    title: qsTr("Secondary subtitle delay")
+                    to: 10
+                    uiScale: root.uiScale
+                    unit: " s"
+                    value: Player.secondarySubtitleDelayMS / 1000
+
+                    onMoveFocusRequested: direction => root.focusSetting(secondaryDelay.editor, direction)
+                    onValueRequested: value => Player.secondarySubtitleDelayMS = Math.round(value * 1000)
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: subtitleFPS
+
+                    Layout.fillWidth: true
+                    decimals: 3
+                    enabled: Player.isStarted && Player.subtitleTracks.count > 0
+                    from: 0
+                    sliderVisible: false
+                    title: qsTr("Subtitle frame rate")
+                    to: 100
+                    uiScale: root.uiScale
+                    unit: " fps"
+                    value: Player.subtitleFPS
+
+                    onMoveFocusRequested: direction => root.focusSetting(subtitleFPS.editor, direction)
+                    onValueRequested: value => Player.subtitleFPS = value
+                }
+                ActionButton {
+                    id: sync
+
+                    enabled: Player.isStarted
+                    text: qsTr("Synchronization tools")
+
+                    onClicked: {
+                        root.close();
+                        DialogsProvider.synchroDialog();
+                    }
+                }
+            }
+        }
+        videoContent: Component {
+            SettingsPage {
+                keyboardControls: [zoom.selector, aspect.selector, crop.selector, deinterlace.selector, mode.selector, effects]
+
+                SectionLabel {
+                    text: qsTr("Defaults")
+                }
+                ChoiceSetting {
+                    id: zoom
+
+                    available: Player.hasVideoOutput
+                    choices: Player.zoom
+                    title: qsTr("Zoom")
+                }
+                ChoiceSetting {
+                    id: aspect
+
+                    available: Player.hasVideoOutput
+                    choices: Player.aspectRatio
+                    title: qsTr("Aspect ratio")
+                }
+                ChoiceSetting {
+                    id: crop
+
+                    available: Player.hasVideoOutput
+                    choices: Player.crop
+                    title: qsTr("Crop")
+                }
+                ChoiceSetting {
+                    id: deinterlace
+
+                    available: Player.hasVideoOutput
+                    choices: Player.deinterlace
+                    title: qsTr("Deinterlace")
+                }
+                ChoiceSetting {
+                    id: mode
+
+                    available: Player.hasVideoOutput
+                    choices: Player.deinterlaceMode
+                    title: qsTr("Deinterlace mode")
+                }
+                ActionButton {
+                    id: effects
+
+                    text: qsTr("More video effects")
+
+                    onClicked: {
+                        root.close();
+                        DialogsProvider.extendedDialog();
+                    }
+                }
+            }
+        }
+
+        onCloseRequested: root.close()
+        onTabRequested: index => {
+            if (index === 2)
+                Player.equalizer.refresh();
         }
     }
 
-    component ChoiceSetting: RowLayout {
-        id: field
-        required property string title
-        required property var choices
-        required property string accessibleId
-        property bool available: true
-        property alias selector: combo
+    onOpened: panel.focusContent(Qt.PopupFocusReason)
+
+    FontLoader {
+        id: inter
+
+        source: "qrc:/juxtopposed/InterVariable.ttf"
+    }
+
+    component ActionButton: C.Button {
+        id: actionButton
 
         Layout.fillWidth: true
-        spacing: VLCStyle.margin_small
-        enabled: available && selection.count > 0
+        Layout.preferredHeight: 32 * root.uiScale
+        font.family: inter.name
+        font.pixelSize: 14 * root.uiScale
 
-        function updateSelection() {
-            let selected = -1
-            for (let index = 0; index < selection.count; ++index) {
-                const item = selection.objectAt(index)
-                if (item && item.checked) {
-                    selected = index
-                    break
+        background: Rectangle {
+            border.color: actionButton.visualFocus ? "#D37918" : "#252525"
+            border.width: root.uiScale
+            color: actionButton.down ? "#303030" : "#161616"
+            radius: 4 * root.uiScale
+        }
+        contentItem: C.Label {
+            color: "#969696"
+            font: actionButton.font
+            horizontalAlignment: Text.AlignHCenter
+            text: actionButton.text
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+    component ChoiceSetting: Widgets.JuxtopposedSettingChoice {
+        Layout.fillWidth: true
+        uiScale: root.uiScale
+    }
+    component SectionLabel: C.Label {
+        Layout.fillWidth: true
+        Layout.topMargin: 8 * root.uiScale
+        color: "#969696"
+        font.family: inter.name
+        font.pixelSize: 16 * root.uiScale
+    }
+    component SettingsPage: FocusScope {
+        id: page
+
+        readonly property ColorContext colorContext: ColorContext {
+            colorSet: theme.colorSet
+            palette: theme.palette
+        }
+        default property alias content: column.data
+        property var keyboardControls: []
+
+        function setCurrentItemFocus(reason) {
+            for (const item of keyboardControls)
+                if (item.enabled && item.visible) {
+                    item.forceActiveFocus(reason);
+                    return;
+                }
+            page.forceActiveFocus(reason);
+        }
+
+        Connections {
+            function onActiveFocusItemChanged() {
+                const item = page.Window.window?.activeFocusItem;
+                if (!item || !root.visible)
+                    return;
+                let ancestor = item;
+                while (ancestor) {
+                    if (ancestor === column) {
+                        const top = item.mapToItem(flick.contentItem, 0, 0).y;
+                        if (top < flick.contentY)
+                            flick.contentY = Math.max(0, top);
+                        else if (top + item.height > flick.contentY + flick.height)
+                            flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height), top + item.height - flick.height);
+                        return;
+                    }
+                    ancestor = ancestor.parent;
                 }
             }
-            combo.currentIndex = selected
+
+            target: page.Window.window
         }
+        Flickable {
+            id: flick
 
-        Widgets.CaptionLabel {
-            Layout.fillWidth: true
-            Layout.preferredWidth: field.width / 3
-            text: field.title
-            color: theme.fg.primary
-            wrapMode: Text.Wrap
-        }
+            anchors.fill: parent
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            contentHeight: column.implicitHeight
+            contentWidth: width
 
-        Widgets.ComboBoxExt {
-            id: combo
-            Layout.fillWidth: true
-            Layout.preferredWidth: field.width * 2 / 3
-            Layout.minimumWidth: 0
-            model: field.choices
-            textRole: "display"
-            currentIndex: -1
-            displayText: currentIndex >= 0 ? currentText
-                         : enabled ? qsTr("Custom") : qsTr("Unavailable")
-            activeFocusOnTab: true
-            Accessible.name: field.title
-            AccessibleCompat.id: field.accessibleId
-            Navigation.parentItem: contentScope
-            Navigation.downAction: function() { root.focusSetting(combo, 1) }
-            Navigation.upAction: function() { root.focusSetting(combo, -1) }
-
-            // Only user activation writes to the engine. Model changes merely
-            // update the displayed selection, including hotkey changes.
-            onActivated: (index) => field.choices.toggleIndex(index)
-        }
-
-        Instantiator {
-            id: selection
-            model: field.choices
-            delegate: QtObject {
-                required property bool checked
-                onCheckedChanged: Qt.callLater(field.updateSelection)
+            C.ScrollBar.vertical: C.ScrollBar {
             }
-            onObjectAdded: Qt.callLater(field.updateSelection)
-            onObjectRemoved: Qt.callLater(field.updateSelection)
+
+            ColumnLayout {
+                id: column
+
+                spacing: 12 * root.uiScale
+                width: flick.width
+            }
+        }
+    }
+    component ToggleSetting: C.Switch {
+        id: toggle
+
+        Accessible.name: text
+        Layout.fillWidth: true
+        Layout.preferredHeight: 32 * root.uiScale
+        font.family: inter.name
+        font.pixelSize: 14 * root.uiScale
+        leftPadding: 0
+        rightPadding: 68 * root.uiScale
+
+        contentItem: C.Label {
+            color: "#969696"
+            font: toggle.font
+            text: toggle.text
+            verticalAlignment: Text.AlignVCenter
+        }
+        indicator: Rectangle {
+            border.color: toggle.visualFocus ? "#D37918" : "#252525"
+            border.width: root.uiScale
+            color: "#090909"
+            height: 24 * root.uiScale
+            radius: 4 * root.uiScale
+            width: 56 * root.uiScale
+            x: toggle.width - width
+            y: (toggle.height - height) / 2
+
+            Rectangle {
+                color: toggle.checked ? "#D37918" : "#404040"
+                height: parent.height - 2 * root.uiScale
+                radius: 3 * root.uiScale
+                width: parent.width / 2 - root.uiScale
+                x: toggle.checked ? parent.width / 2 : root.uiScale
+                y: root.uiScale
+            }
+            C.Label {
+                color: toggle.checked ? "#D37918" : "#6B6B6B"
+                font.family: inter.name
+                font.pixelSize: 10 * root.uiScale
+                height: parent.height
+                horizontalAlignment: Text.AlignHCenter
+                text: toggle.checked ? qsTr("ON") : qsTr("OFF")
+                verticalAlignment: Text.AlignVCenter
+                width: parent.width / 2
+                x: toggle.checked ? 0 : parent.width / 2
+            }
         }
     }
 }
