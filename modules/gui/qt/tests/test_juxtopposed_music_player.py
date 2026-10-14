@@ -75,7 +75,7 @@ def click(view, item):
     QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, item.mapToScene(item.boundingRect().center()).toPoint())
 
 # Copy the actual QML modules; no replacement implementation for artwork/rows/nav.
-with tempfile.TemporaryDirectory(prefix='music-scene-', dir=repo / 'build-windows') as directory:
+with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     path = Path(directory)
     for module, sources in {'Widgets': ['ImageExt', 'JuxtopposedMediaRow'],
                             'MainInterface': ['JuxtopposedNavigation']}.items():
