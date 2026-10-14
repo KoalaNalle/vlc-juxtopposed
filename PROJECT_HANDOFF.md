@@ -595,6 +595,24 @@ No security permission choices were made. Next: complete the native journeys and
 port music cover/list and subtitle presets, with the full Home/conversion/preferences
 inventory. Keep the full 0–8 Goal active and draft PR/visual gates open.
 
+The following [native desktop checkpoint](doc/juxtopposed-references/library/desktop-checkpoint.md)
+repairs Add Folder's uninitialized QWidget parent and protects editable QML focus
+from global application shortcuts. The actual picker now registers the fixture
+folder; two videos/one audio appear and remain after normal shutdown/restart.
+Native Videos search/clear and actual video activation/rendering pass. All ten
+component suites pass, including real Paste suppression/restoration. The final
+Qt plugin is staged with rollback available. Playback bars were absent from the
+video snapshots; visibility/input/geometry/compositor diagnosis and the complete
+return/resume journey remain open. No full native journey or visual score is claimed.
+
+A stronger [Home audit](doc/juxtopposed-references/home/reference-notes.md) preserves
+whole-grid/list/lower-section/pin frames and confirms Continue Watching, Listen
+Again, Frequent Folders/Playlists/Artists. Native visit counts, complete artist
+aggregation and recent-audio history are required rather than relabelled favorites.
+Music-folder presentation/backend, Home/dashboard/activity and subtitle presets
+have separately prepared source/integration patches under ignored build-windows;
+their registered sources/native builds are not yet integrated into this checkpoint.
+
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)

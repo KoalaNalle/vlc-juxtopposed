@@ -76,10 +76,15 @@ class DialogState(QObject):
     def __init__(self):
         super().__init__()
         self.visible = False
+        self.input_focused = False
     def set_visible(self, visible):
         self.visible = visible
         self.changed.emit()
     qmlDialogVisible = Property(bool, lambda s: s.visible, set_visible, notify=changed)
+    def set_input_focused(self, focused):
+        self.input_focused = focused
+        self.changed.emit()
+    qmlInputFocused = Property(bool, lambda s: s.input_focused, set_input_focused, notify=changed)
 
 
 app = QGuiApplication([])
@@ -97,15 +102,22 @@ import VLC.MainInterface
 import VLC.Dialogs
 import "{QUrl.fromLocalFile(str(repo / 'modules/gui/qt/menus/qml')).toString()}" as Menus
 import "{QUrl.fromLocalFile(str(qml_dir)).toString()}" as Network
+import "{QUrl.fromLocalFile(str(repo / 'modules/gui/qt/widgets/qml')).toString()}" as Widgets
 C.ApplicationWindow {{
+    id: testWindow
     visible: true; width: 1100; height: 700; color: "#111111"
     property int interceptedPaste: 0
     Menus.ShortcutExt {{ objectName: "conflictingShortcut"; sequence: StandardKey.Paste
-        onActivated: parent.interceptedPaste++
+        onActivated: testWindow.interceptedPaste++
     }}
     C.Button {{ id: opener; objectName: "opener"; text: "Open stream"; x: 10; y: 10
         onClicked: dialog.showDialog(opener)
     }}
+    C.TextField {{ objectName: "outsideEditor"; x: 200; y: 10; width: 180 }}
+    C.TextArea {{ objectName: "outsideMultiline"; x: 400; y: 10; width: 180; height: 60 }}
+    C.Button {{ objectName: "outsideButton"; text: "Return focus"; x: 600; y: 10 }}
+    Widgets.TextInputFocus {{ id: inputFocus; focusItem: testWindow.activeFocusItem }}
+    Binding {{ target: DialogsProvider; property: "qmlInputFocused"; value: inputFocus.editing }}
     Network.JuxtopposedNetworkDialog {{ id: dialog; parent: C.Overlay.overlay
         controller: networkController
         assetBase: "{QUrl.fromLocalFile(str(repo / 'modules/gui/qt/pixmaps/juxtopposed') + '/').toString()}"
@@ -224,6 +236,22 @@ click('opener')
 assert not name.property('enabled')
 QTest.keyClick(window, Qt.Key_Tab)
 assert item('networkCancel').hasActiveFocus(), 'Unavailable name was not skipped'
+click('networkCancel')
+window.resize(1100, 700)
+QGuiApplication.clipboard().setText('chaptered')
+for editor_name in ['outsideEditor', 'outsideMultiline']:
+    click(editor_name)
+    assert item(editor_name).hasActiveFocus()
+    assert not item('conflictingShortcut').property('enabled'), 'Editable focus left application Paste enabled'
+    QTest.keyClick(window, Qt.Key_V, Qt.ControlModifier)
+    QTest.qWait(20)
+    assert item(editor_name).property('text') == 'chaptered', 'Paste escaped the editor'
+    assert window.property('interceptedPaste') == 0
+click('outsideButton')
+assert item('conflictingShortcut').property('enabled'), 'Application shortcut stayed disabled after leaving the editor'
+QTest.keyClick(window, Qt.Key_V, Qt.ControlModifier)
+QTest.qWait(20)
+assert window.property('interceptedPaste') == 1, 'Non-editor shortcut was not restored'
 errors = [m for m in messages if any(word in m.lower() for word in ['error', 'cannot', 'unable', 'binding loop'])]
 assert not errors, errors
 qmlformat = Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')
@@ -231,5 +259,5 @@ for source in [qml_dir / 'JuxtopposedNetworkDialog.qml', repo / 'modules/gui/qt/
     result = subprocess.run([str(qmlformat), '--ignore-settings', str(source)], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
     assert result.returncode == 0, result.stderr
 (args.output_dir / 'network-dialog-verification.json').write_text(json.dumps({'geometry': geometry, 'messages': messages, 'submits': controller.submits, 'resets': controller.resets}, indent=2) + '\n', newline='\n')
-print('Passed: production dialog construction, multiline entry, optional name, Save/keyboard, busy/error/reset/focus return, unavailable library and short/scaled layouts.')
+print('Passed: production dialog construction, multiline entry, optional name, Save/keyboard, busy/error/reset/focus return, unavailable library, short/scaled layouts and editable-focus Paste suppression/restoration.')
 print('Actual native queue/HTTP/persistence and desktop acceptance are separate checks.')

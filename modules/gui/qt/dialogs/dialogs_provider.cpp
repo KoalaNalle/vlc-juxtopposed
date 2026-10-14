@@ -676,6 +676,12 @@ void DialogsProvider::setQmlDialogVisible(bool visible)
     m_qmlDialogVisible = visible;
     emit qmlDialogVisibleChanged();
 }
+void DialogsProvider::setQmlInputFocused(bool focused)
+{
+    if (m_qmlInputFocused == focused) return;
+    m_qmlInputFocused = focused;
+    emit qmlInputFocusedChanged();
+}
 void DialogsProvider::openCaptureDialog()
 {
     openDialog( OpenDialog::OPEN_CAPTURE_TAB );
@@ -786,7 +792,7 @@ void DialogsProvider::addMediaLibraryFolder()
     if (!ctx || !ctx->hasMediaLibrary())
         return;
 
-    const QUrl folder = QFileDialog::getExistingDirectoryUrl(root,
+    const QUrl folder = QFileDialog::getExistingDirectoryUrl(nullptr,
         qtr("Add folder to media library"), ctx->getDialogFilePath(),
         QFileDialog::ShowDirsOnly, {QStringLiteral("file")});
     if (folder.isEmpty() || !ctx)

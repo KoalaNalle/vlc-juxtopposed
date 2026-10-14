@@ -352,6 +352,18 @@ Item {
             restoreMode: Binding.RestoreBindingOrValue
         }
 
+        Widgets.TextInputFocus {
+            id: textInputFocus
+            focusItem: root.Window.window?.activeFocusItem ?? null
+        }
+
+        Binding {
+            target: DialogsProvider
+            property: "qmlInputFocused"
+            value: textInputFocus.editing
+            restoreMode: Binding.RestoreBindingOrValue
+        }
+
         Connections {
             target: DialogsProvider
             function onShowNetworkStreamDialog() {

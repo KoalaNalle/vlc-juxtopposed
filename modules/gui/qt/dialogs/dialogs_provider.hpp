@@ -110,6 +110,7 @@ public:
     Q_PROPERTY(bool openDialogVisible READ openDialogVisible NOTIFY openDialogVisibleChanged FINAL)
     Q_PROPERTY(NetworkStreamModel* networkStream READ networkStream CONSTANT FINAL)
     Q_PROPERTY(bool qmlDialogVisible READ qmlDialogVisible WRITE setQmlDialogVisible NOTIFY qmlDialogVisibleChanged FINAL)
+    Q_PROPERTY(bool qmlInputFocused READ qmlInputFocused WRITE setQmlInputFocused NOTIFY qmlInputFocusedChanged FINAL)
     Q_PROPERTY(bool firstRunDialogVisible READ firstRunDialogVisible NOTIFY firstRunDialogVisibleChanged FINAL)
     Q_PROPERTY(bool extendedDialogVisible READ extendedDialogVisible NOTIFY extendedDialogVisibleChanged FINAL)
     Q_PROPERTY(bool messagesDialogVisible READ messagesDialogVisible NOTIFY messagesDialogVisibleChanged FINAL)
@@ -146,6 +147,8 @@ public:
     NetworkStreamModel *networkStream();
     bool qmlDialogVisible() const { return m_qmlDialogVisible; }
     void setQmlDialogVisible(bool visible);
+    bool qmlInputFocused() const { return m_qmlInputFocused; }
+    void setQmlInputFocused(bool focused);
     static QString getDirectoryDialog( qt_intf_t *p_intf);
 
     static QString getSaveFileName(QWidget *parent = NULL,
@@ -167,6 +170,7 @@ protected:
 private:
     std::unique_ptr<NetworkStreamModel> m_networkStream;
     bool m_qmlDialogVisible = false;
+    bool m_qmlInputFocused = false;
     DialogsProvider( qt_intf_t * );
     virtual ~DialogsProvider() override;
 
@@ -200,7 +204,6 @@ private:
     std::unique_ptr<input_item_parser_id_t,
                     decltype(&input_item_parser_id_Release)> m_parser;
 
-    QWidget* root;
     bool b_isDying;
 
     void openDialog( OpenDialog::OpenTab );
@@ -300,6 +303,7 @@ signals:
     void showToolbarEditorDialog();
     void showNetworkStreamDialog();
     void qmlDialogVisibleChanged();
+    void qmlInputFocusedChanged();
 
     //visiblity signal
     void openDialogVisibleChanged();
