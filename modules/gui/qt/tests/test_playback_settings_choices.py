@@ -62,6 +62,8 @@ repo = Path(__file__).resolve().parents[4]
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 model = Choices()
 view = QQuickView()
 view.setResizeMode(QQuickView.SizeRootObjectToView)

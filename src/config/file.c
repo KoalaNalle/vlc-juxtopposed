@@ -42,6 +42,9 @@
 #include <vlc_charset.h>
 #include <vlc_fs.h>
 #include <vlc_actions.h>
+#ifdef _WIN32
+# include <windows.h>
+#endif
 #include <vlc_modules.h>
 #include <vlc_plugin.h>
 
@@ -321,6 +324,37 @@ static int config_PrepareDir (libvlc_int_t *obj)
     return ret;
 }
 
+/* Preserve the existing Windows destination when replacement fails. The
+ * generic vlc_rename() currently removes its destination before retrying. */
+static int config_ReplaceFile(libvlc_int_t *obj, const char *temporary,
+                              const char *permanent)
+{
+#ifdef _WIN32
+    wchar_t *source = ToWide(temporary), *destination = ToWide(permanent);
+    if (source == NULL || destination == NULL)
+    {
+        free(source);
+        free(destination);
+        return -1;
+    }
+    BOOL success = MoveFileExW(source, destination,
+                              MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+    DWORD error = GetLastError();
+    free(source);
+    free(destination);
+    if (!success)
+    {
+        msg_Err(obj, "cannot replace configuration file (Windows error %lu)",
+                (unsigned long)error);
+        return -1;
+    }
+    return 0;
+#else
+    VLC_UNUSED(obj);
+    return vlc_rename(temporary, permanent);
+#endif
+}
+
 /**
  * Saves the in-memory configuration into a file.
  * @return 0 on success, -1 on error.
@@ -480,15 +514,29 @@ int (config_SaveConfigFile) (libvlc_int_t *p_this)
         fclose (file);
         goto error;
     }
-    fdatasync (fd); /* Flush from OS */
+    if (fdatasync (fd)) /* Flush from OS before replacing the old file. */
+    {
+        fclose(file);
+        vlc_unlink(temporary);
+        vlc_mutex_unlock(&lock);
+        goto error;
+    }
 #if defined (_WIN32) || defined (__OS2__)
-    /* Windows cannot (re)move open files nor overwrite existing ones */
-    fclose (file);
-    vlc_unlink (permanent);
+    if (fclose(file))
+    {
+        vlc_unlink(temporary);
+        vlc_mutex_unlock(&lock);
+        goto error;
+    }
 #endif
-    /* Atomically replace the file... */
-    if (vlc_rename (temporary, permanent))
-        vlc_unlink (temporary);
+#ifdef __OS2__
+    /* Preserve the existing OS/2 replacement semantics. */
+    vlc_unlink(permanent);
+#endif
+    /* Replace the destination without deleting it first on Windows. */
+    int replacement = config_ReplaceFile(p_this, temporary, permanent);
+    if (replacement)
+        vlc_unlink(temporary);
     /* (...then synchronize the directory, err, TODO...) */
     /* ...and finally close the file */
     vlc_mutex_unlock (&lock);
@@ -498,7 +546,7 @@ int (config_SaveConfigFile) (libvlc_int_t *p_this)
 
     free (temporary);
     free (permanent);
-    return 0;
+    return replacement ? -1 : 0;
 
 error:
     free (temporary);

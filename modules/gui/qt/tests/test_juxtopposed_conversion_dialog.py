@@ -109,6 +109,8 @@ class DialogState(QObject):
     qmlInputFocused = Property(bool, lambda s: False, notify=changed)
 
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 controller, shortcut_state, dialog_state = Controller(), ShortcutState(), DialogState()
 qmlRegisterUncreatableType(Controller, 'VLC.Dialogs', 1, 0, 'ConversionController', 'Supplied-state controller enum')
 qmlRegisterSingletonInstance(DialogState, 'VLC.Dialogs', 1, 0, 'DialogsProvider', dialog_state)

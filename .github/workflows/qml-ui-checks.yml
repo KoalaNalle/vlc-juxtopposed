@@ -63,9 +63,30 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_home.py --output-dir ui-previews/home
       - name: Check subtitle preset menu, naming and states
         run: python modules/gui/qt/tests/test_juxtopposed_subtitle_presets.py --output-dir ui-previews/subtitle-presets
+      - name: Check Global Settings assets, choices, focus and feedback
+        run: python modules/gui/qt/tests/test_juxtopposed_global_settings.py --output-dir ui-previews/global-settings
+      - name: Check shared dialog ownership, routing and busy guards
+        run: python modules/gui/qt/tests/test_juxtopposed_dialogs_host.py --output-dir ui-previews/dialogs-host
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: juxtopposed-playback-ui
           path: ui-previews/
+
+  qml-dependency-remake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check deferred QML dependencies through actual GNU make remake
+        run: python modules/gui/qt/tests/test_qml_dependencies.py --output-dir qml-dependency-results
+      - name: Save make logs and generated dependency evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juxtopposed-qml-dependency-remake
+          path: qml-dependency-results/

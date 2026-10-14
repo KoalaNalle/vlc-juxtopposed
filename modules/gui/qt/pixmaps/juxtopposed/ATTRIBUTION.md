@@ -27,3 +27,11 @@ its license is included in Inter-LICENSE.txt.
 
 VLC source code retains its existing GPLv2-or-later license and original author
 notices. This fork's implementation is independent of the original designer.
+
+The `global-settings-*.svg` files are unchanged original exports from the
+General Global Settings frame (Figma node `999:5047`). The `*-light.svg`
+player icons are unchanged original exports from Player - Light (`2425:13624`).
+Both frames belong to the same credited VLC Redesign. Native settings binding,
+keyboard/modal behavior, shared accent selection and unshown Light surfaces
+are implementation adaptations. The design and artwork retain the CC BY 4.0
+license and Juxtopposed attribution above.

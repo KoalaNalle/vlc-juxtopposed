@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 
 FocusScope {
@@ -19,8 +20,8 @@ FocusScope {
     property bool loading: false
     property string emptyText: qsTr("No items yet")
     property string errorText: ""
-    property color accentColor: "#D37918"
-    property color surfaceColor: "#0F0F0F"
+    property color accentColor: JuxtopposedPalette.color("#D37918")
+    property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
     readonly property int count: view.count
     signal activated(var entry, string kind, int reason)
     signal retryRequested()
@@ -93,7 +94,7 @@ FocusScope {
             wrapMode: Text.WordWrap
             font.family: inter.name
             font.pixelSize: 16 * root.uiScale
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
         }
         C.Button {
             anchors.horizontalCenter: parent.horizontalCenter

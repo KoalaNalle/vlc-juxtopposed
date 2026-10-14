@@ -158,7 +158,9 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
     const auto dem = DialogErrorModel::getInstance<false>(); // expected to be already created
     assert(dem);
     connect(dem, &DialogErrorModel::rowsInserted, this, [w = QPointer(m_window)]() {
-        if (Q_LIKELY(w))
+        // Keep every error in DialogErrorModel. Disable only the optional
+        // window alert; mandatory questions/authentication remain untouched.
+        if (Q_LIKELY(w) && config_GetInt("qt-error-dialogs"))
             w->alert(0);
     });
 

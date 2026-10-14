@@ -1,6 +1,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN. GPLv2 or later.
 // Visual design: Juxtopposed; original artwork: CC BY 4.0.
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -71,7 +72,7 @@ C.Control {
             C.Label {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 elide: Text.ElideRight
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
@@ -86,7 +87,7 @@ C.Control {
                 Layout.preferredHeight: 32 * root.uiScale
                 Layout.preferredWidth: Math.min(144 * root.uiScale, root.width * 0.48)
                 bottomPadding: 4 * root.uiScale
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
                 objectName: "settingValueEditor"
@@ -95,9 +96,9 @@ C.Control {
                 topPadding: 4 * root.uiScale
 
                 background: Rectangle {
-                    border.color: editor.activeFocus ? "#D37918" : "#252525"
+                    border.color: editor.activeFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                     border.width: root.uiScale
-                    color: "#090909"
+                    color: JuxtopposedPalette.color("#090909")
                     radius: 4 * root.uiScale
                 }
 
@@ -136,9 +137,9 @@ C.Control {
             wheelEnabled: true
 
             background: Rectangle {
-                border.color: slider.visualFocus ? "#D37918" : "#252525"
+                border.color: slider.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                 border.width: root.uiScale
-                color: "#050505"
+                color: JuxtopposedPalette.color("#050505")
                 height: 14 * root.uiScale
                 radius: 5 * root.uiScale
                 width: slider.availableWidth
@@ -150,7 +151,7 @@ C.Control {
                     anchors.left: parent.left
                     anchors.margins: root.uiScale
                     anchors.top: parent.top
-                    color: "#49290C"
+                    color: JuxtopposedPalette.color("#49290C")
                     radius: 4 * root.uiScale
                     width: Math.max(0, (parent.width - 2 * root.uiScale) * slider.visualPosition)
                 }
@@ -161,7 +162,7 @@ C.Control {
                         required property real modelData
 
                         anchors.verticalCenter: parent.verticalCenter
-                        color: "#303030"
+                        color: JuxtopposedPalette.color("#303030")
                         height: 6 * root.uiScale
                         width: root.uiScale
                         x: Math.max(0, Math.min(parent.width - width, (modelData - slider.from) / (slider.to - slider.from) * parent.width))
@@ -169,7 +170,7 @@ C.Control {
                 }
             }
             handle: Rectangle {
-                color: "#D37918"
+                color: JuxtopposedPalette.color("#D37918")
                 height: 24 * root.uiScale
                 radius: 4 * root.uiScale
                 width: 8 * root.uiScale
@@ -201,7 +202,7 @@ C.Control {
                 C.Label {
                     required property real modelData
 
-                    color: "#6B6B6B"
+                    color: JuxtopposedPalette.color("#6B6B6B")
                     font.family: inter.name
                     font.pixelSize: 10 * root.uiScale
                     horizontalAlignment: Text.AlignHCenter

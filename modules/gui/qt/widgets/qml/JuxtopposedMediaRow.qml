@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 
 C.Control {
@@ -67,10 +68,10 @@ C.Control {
 
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
     background: Rectangle {
-        color: root.selected ? "#292929" : root.hovered ? "#202020" : "transparent"
+        color: root.selected ? JuxtopposedPalette.color("#292929") : root.hovered ? JuxtopposedPalette.color("#202020") : "transparent"
         radius: 4 * root.uiScale
         border.width: root.visualFocus ? 2 * root.uiScale : 0
-        border.color: "#D37918"
+        border.color: JuxtopposedPalette.color("#D37918")
     }
     contentItem: Item {
         Image {
@@ -97,7 +98,7 @@ C.Control {
                 anchors.left: parent.left
                 width: parent.width * Math.min(1, Math.max(0, root.progress))
                 height: 2 * root.uiScale
-                color: "#D37918"
+                color: JuxtopposedPalette.color("#D37918")
                 visible: root.progress > 0
             }
         }
@@ -113,7 +114,7 @@ C.Control {
             elide: Text.ElideRight
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
-            color: root.current ? "#D37918" : "#969696"
+            color: root.current ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#969696")
             Accessible.ignored: true
         }
         C.Label {
@@ -123,7 +124,7 @@ C.Control {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.showDuration
             text: root.durationText
-            color: "#6B6B6B"
+            color: JuxtopposedPalette.color("#6B6B6B")
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
             Accessible.ignored: true

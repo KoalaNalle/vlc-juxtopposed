@@ -5,6 +5,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -15,8 +16,8 @@ C.Control {
 
     required property string title
     required property string durationText
-    property color titleColor: "#969696"
-    property color durationColor: "#6B6B6B"
+    property color titleColor: JuxtopposedPalette.color("#969696")
+    property color durationColor: JuxtopposedPalette.color("#6B6B6B")
     property real uiScale: 1
     property bool showMove: true
     property int chapterNumber: 0
@@ -44,7 +45,7 @@ C.Control {
             visible: root.chapterNumber > 0
             Layout.preferredWidth: 32 * root.uiScale
             text: root.chapterNumber.toString()
-            color: "#D37918"
+            color: JuxtopposedPalette.color("#D37918")
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
             font.weight: Font.Medium

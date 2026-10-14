@@ -1,6 +1,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN. GPLv2 or later.
 // Visual design: Juxtopposed; original artwork: CC BY 4.0.
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -43,7 +44,7 @@ C.Pane {
     padding: 0
 
     background: Rectangle {
-        color: "#111111"
+        color: JuxtopposedPalette.color("#111111")
         radius: 8 * root.uiScale
     }
 
@@ -81,13 +82,13 @@ C.Pane {
                 width: tabs.width / 4
 
                 background: Rectangle {
-                    border.color: "#D37918"
+                    border.color: JuxtopposedPalette.color("#D37918")
                     border.width: button.visualFocus ? root.uiScale : 0
-                    color: button.hovered ? "#202020" : "transparent"
+                    color: button.hovered ? JuxtopposedPalette.color("#202020") : "transparent"
 
                     Rectangle {
                         anchors.bottom: parent.bottom
-                        color: button.checked ? "#D37918" : "transparent"
+                        color: button.checked ? JuxtopposedPalette.color("#D37918") : "transparent"
                         height: 2 * root.uiScale
                         width: parent.width
                     }
@@ -99,7 +100,7 @@ C.Pane {
 
                         C.Label {
                             Accessible.ignored: true
-                            color: button.checked ? "#D37918" : "#6B6B6B"
+                            color: button.checked ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#6B6B6B")
                             font.family: root.iconFontFamily
                             font.pixelSize: 20 * root.uiScale
                             horizontalAlignment: Text.AlignHCenter
@@ -107,7 +108,7 @@ C.Pane {
                             width: 20 * root.uiScale
                         }
                         C.Label {
-                            color: button.checked ? "#969696" : "#6B6B6B"
+                            color: button.checked ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#6B6B6B")
                             elide: Text.ElideRight
                             font.family: inter.name
                             font.pixelSize: 14 * root.uiScale

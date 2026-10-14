@@ -34,6 +34,11 @@ Item {
 
     property Item bgContent: null
 
+    // Optional notifications only. Login, question and progress
+    // dialogs below keep their mandatory native response flow.
+    readonly property bool showErrorNotifications:
+        MainCtx.generalPreferences.values.showDialogs
+
     //---------------------------------------------------------------------------------------------
     // Signal
     //---------------------------------------------------------------------------------------------
@@ -44,10 +49,17 @@ Item {
     // Events
     //---------------------------------------------------------------------------------------------
 
-    Component.onCompleted: if (DialogErrorModel.repeatedMessageCount){
+    Component.onCompleted: if (showErrorNotifications && DialogErrorModel.repeatedMessageCount){
                                hideErrorPopupTimer.restart()
                                errorPopup.state = "visible"
                            }
+
+    onShowErrorNotificationsChanged: {
+        if (!showErrorNotifications) {
+            hideErrorPopupTimer.stop()
+            errorPopup.state = "hidden"
+        }
+    }
 
     Component.onDestruction: {
         if (questionDialog.dialogId !== null) {
@@ -145,6 +157,7 @@ Item {
         target: DialogErrorModel
 
         function onCountChanged() {
+            if (!root.showErrorNotifications) return
             hideErrorPopupTimer.restart()
             errorPopup.state = "visible"
         }

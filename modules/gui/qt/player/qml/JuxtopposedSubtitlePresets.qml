@@ -2,6 +2,7 @@
 // Original visual design: Juxtopposed. The unshown naming form is provisional.
 pragma ComponentBehavior: Bound
 import QtQuick
+import VLC.Style
 import QtQml.Models
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
@@ -67,9 +68,9 @@ ColumnLayout {
         text: root.controller.selectedName
 
         background: Rectangle {
-            border.color: selector.visualFocus ? "#D37918" : "#252525"
+            border.color: selector.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
             border.width: root.uiScale
-            color: selector.down ? "#303030" : "#161616"
+            color: selector.down ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#161616")
             radius: 4 * root.uiScale
         }
         contentItem: RowLayout {
@@ -77,7 +78,7 @@ ColumnLayout {
             C.Label {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                color: selector.enabled ? "#969696" : "#606060"
+                color: selector.enabled ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#606060")
                 elide: Text.ElideRight
                 font: selector.font
                 horizontalAlignment: Text.AlignHCenter
@@ -86,7 +87,7 @@ ColumnLayout {
             }
             C.Label {
                 Accessible.ignored: true
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 font.family: root.iconFontFamily
                 font.pixelSize: 16 * root.uiScale
                 text: root.downIcon
@@ -105,9 +106,9 @@ ColumnLayout {
             y: selector.height
 
             background: Rectangle {
-                color: "#191919"
+                color: JuxtopposedPalette.color("#191919")
                 radius: 6 * root.uiScale
-                border.color: "#252525"
+                border.color: JuxtopposedPalette.color("#252525")
                 border.width: root.uiScale
             }
             C.MenuItem {
@@ -125,21 +126,21 @@ ColumnLayout {
                     spacing: 10 * root.uiScale
                     C.Label {
                         Accessible.ignored: true
-                        color: "#969696"
+                        color: JuxtopposedPalette.color("#969696")
                         font.family: root.iconFontFamily
                         font.pixelSize: 16 * root.uiScale
                         text: root.addIcon
                     }
                     C.Label {
                         Layout.fillWidth: true
-                        color: newPreset.enabled ? "#969696" : "#606060"
+                        color: newPreset.enabled ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#606060")
                         font: newPreset.font
                         text: newPreset.text
                         verticalAlignment: Text.AlignVCenter
                     }
                 }
                 background: Rectangle {
-                    color: newPreset.highlighted ? "#242424" : "transparent"
+                    color: newPreset.highlighted ? JuxtopposedPalette.color("#242424") : "transparent"
                     radius: 4 * root.uiScale
                 }
                 onTriggered: root.startNaming()
@@ -164,14 +165,14 @@ ColumnLayout {
 
                     indicator: null
                     background: Rectangle {
-                        color: entry.highlighted || entry.checked ? "#242424" : "transparent"
+                        color: entry.highlighted || entry.checked ? JuxtopposedPalette.color("#242424") : "transparent"
                         radius: 4 * root.uiScale
                     }
                     contentItem: RowLayout {
                         spacing: 10 * root.uiScale
                         C.Label {
                             Accessible.ignored: true
-                            color: "#969696"
+                            color: JuxtopposedPalette.color("#969696")
                             font.family: root.iconFontFamily
                             font.pixelSize: 16 * root.uiScale
                             text: root.moreIcon
@@ -179,14 +180,14 @@ ColumnLayout {
                         C.Label {
                             Layout.fillWidth: true
                             Layout.minimumWidth: 0
-                            color: entry.enabled ? "#969696" : "#606060"
+                            color: entry.enabled ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#606060")
                             elide: Text.ElideRight
                             font: entry.font
                             text: entry.text
                         }
                         C.Label {
                             Accessible.ignored: true
-                            color: "#D37918"
+                            color: JuxtopposedPalette.color("#D37918")
                             font.family: root.iconFontFamily
                             font.pixelSize: 16 * root.uiScale
                             text: entry.checked ? root.checkIcon : ""
@@ -210,7 +211,7 @@ ColumnLayout {
             Accessible.name: qsTr("Subtitle preset name")
             Layout.fillWidth: true
             Layout.preferredHeight: 36 * root.uiScale
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
             font.family: root.fontFamily
             font.pixelSize: 14 * root.uiScale
             maximumLength: 120
@@ -222,9 +223,9 @@ ColumnLayout {
             selectByMouse: true
 
             background: Rectangle {
-                border.color: nameEditor.activeFocus ? "#D37918" : "#252525"
+                border.color: nameEditor.activeFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                 border.width: root.uiScale
-                color: "#090909"
+                color: JuxtopposedPalette.color("#090909")
                 radius: 4 * root.uiScale
             }
             onAccepted: {
@@ -260,7 +261,7 @@ ColumnLayout {
     C.Label {
         Accessible.name: text
         Layout.fillWidth: true
-        color: root.controller.error.length ? "#E39B60" : "#969696"
+        color: root.controller.error.length ? JuxtopposedPalette.color("#E39B60") : JuxtopposedPalette.color("#969696")
         font.family: root.fontFamily
         font.pixelSize: 12 * root.uiScale
         objectName: "subtitlePresetStatus"
@@ -287,13 +288,13 @@ ColumnLayout {
         font.pixelSize: 14 * root.uiScale
         padding: 8 * root.uiScale
         background: Rectangle {
-            border.color: button.visualFocus ? "#D37918" : "#252525"
+            border.color: button.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
             border.width: root.uiScale
-            color: button.down ? "#303030" : "#161616"
+            color: button.down ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#161616")
             radius: 4 * root.uiScale
         }
         contentItem: C.Label {
-            color: button.enabled ? "#969696" : "#606060"
+            color: button.enabled ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#606060")
             elide: Text.ElideRight
             font: button.font
             horizontalAlignment: Text.AlignHCenter

@@ -2,6 +2,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN
 // Original visual design by Juxtopposed: https://www.youtube.com/@juxtopposed
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 
 Item {
@@ -85,7 +86,7 @@ Item {
         anchors.right: parent.right
         anchors.top: parent.top
         height: 28 * root.uiScale
-        color: "#090909"
+        color: JuxtopposedPalette.color("#090909")
         radius: 6 * root.uiScale
         clip: true
         Rectangle {
@@ -94,7 +95,7 @@ Item {
             y: 2 * root.uiScale
             height: strip.height - 4 * root.uiScale
             width: Math.max(0, root.relative(root.positionTicks) * strip.width - 2 * root.uiScale)
-            color: "#371F06"
+            color: JuxtopposedPalette.color("#371F06")
             radius: 4 * root.uiScale
             visible: root.timelineReady
             Accessible.ignored: true
@@ -111,11 +112,11 @@ Item {
                 y: 2 * root.uiScale
                 width: Math.max(root.uiScale, (root.relative(modelData.endTicks + root.dragPreviewTicks) - root.relative(modelData.startTicks + root.dragPreviewTicks)) * strip.width)
                 height: strip.height - 4 * root.uiScale
-                color: "#24FFFFFF"
+                color: JuxtopposedPalette.color("#24FFFFFF")
                 radius: root.uiScale
                 activeFocusOnTab: !!modelData.seekable
                 border.width: activeFocus ? root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
                 Accessible.role: modelData.seekable ? Accessible.Button : Accessible.StaticText
                 Accessible.name: modelData.text
                 Accessible.description: modelData.seekable ? qsTr("Seek to this source cue's start.") : qsTr("This cue is unavailable for seeking.")
@@ -133,8 +134,8 @@ Item {
                     visible: hover.hovered
                     text: cue.modelData.text
                     delay: 400
-                    contentItem: Text { text: cueTip.text; textFormat: Text.PlainText; font.family: inter.name; font.pixelSize: 12 * root.uiScale; color: "#BEBEBE"; wrapMode: Text.WordWrap; width: Math.min(implicitWidth, 320 * root.uiScale) }
-                    background: Rectangle { color: "#171717"; radius: 3 * root.uiScale; border.width: root.uiScale; border.color: "#303030" }
+                    contentItem: Text { text: cueTip.text; textFormat: Text.PlainText; font.family: inter.name; font.pixelSize: 12 * root.uiScale; color: JuxtopposedPalette.color("#BEBEBE"); wrapMode: Text.WordWrap; width: Math.min(implicitWidth, 320 * root.uiScale) }
+                    background: Rectangle { color: JuxtopposedPalette.color("#171717"); radius: 3 * root.uiScale; border.width: root.uiScale; border.color: JuxtopposedPalette.color("#303030") }
                 }
                 HoverHandler { id: hover }
             }
@@ -146,7 +147,7 @@ Item {
             width: 8 * root.uiScale
             height: strip.height - 4 * root.uiScale
             radius: width / 2
-            color: "#D37918"
+            color: JuxtopposedPalette.color("#D37918")
             visible: root.timelineReady
             Accessible.ignored: true
         }
@@ -278,7 +279,7 @@ Item {
             textFormat: Text.PlainText
             font.family: inter.name
             font.pixelSize: 11 * root.uiScale
-            color: "#8F8F8F"
+            color: JuxtopposedPalette.color("#8F8F8F")
             horizontalAlignment: Text.AlignHCenter
             elide: Text.ElideRight
             Accessible.ignored: true
@@ -304,7 +305,7 @@ Item {
         C.ToolTip.text: description
         C.ToolTip.delay: 400
         contentItem: Image { source: parent.source; mirror: parent.mirrorIcon; fillMode: Image.PreserveAspectFit; opacity: parent.enabled ? 1 : 0.35 }
-        background: Rectangle { color: "#090909"; radius: root.uiScale; border.width: parent.visualFocus ? root.uiScale : 0; border.color: "#D37918" }
+        background: Rectangle { color: JuxtopposedPalette.color("#090909"); radius: root.uiScale; border.width: parent.visualFocus ? root.uiScale : 0; border.color: JuxtopposedPalette.color("#D37918") }
     }
     C.Label {
         objectName: "subtitleCueStatus"
@@ -318,7 +319,7 @@ Item {
         textFormat: Text.PlainText
         font.family: inter.name
         font.pixelSize: 11 * root.uiScale
-        color: "#686868"
+        color: JuxtopposedPalette.color("#686868")
         elide: Text.ElideRight
         Accessible.ignored: true
     }
@@ -338,7 +339,7 @@ Item {
         Accessible.name: qsTr("Reload subtitle source cue timings")
         Accessible.description: qsTr("Read current cue times after file edits. Reopen the subtitle to refresh playback text.")
         onClicked: root.controller.reload()
-        contentItem: Text { text: reload.text; font: reload.font; color: reload.enabled ? "#BEBEBE" : "#686868"; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
-        background: Rectangle { color: reload.down ? "#303030" : reload.hovered ? "#252525" : "#171717"; radius: 3 * root.uiScale; border.width: reload.activeFocus ? root.uiScale : 0; border.color: "#D37918" }
+        contentItem: Text { text: reload.text; font: reload.font; color: reload.enabled ? JuxtopposedPalette.color("#BEBEBE") : JuxtopposedPalette.color("#686868"); horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter }
+        background: Rectangle { color: reload.down ? JuxtopposedPalette.color("#303030") : reload.hovered ? JuxtopposedPalette.color("#252525") : JuxtopposedPalette.color("#171717"); radius: 3 * root.uiScale; border.width: reload.activeFocus ? root.uiScale : 0; border.color: JuxtopposedPalette.color("#D37918") }
     }
 }

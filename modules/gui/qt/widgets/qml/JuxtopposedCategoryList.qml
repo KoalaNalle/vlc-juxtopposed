@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 
 C.Pane {
@@ -21,7 +22,7 @@ C.Pane {
     implicitWidth: 380 * uiScale
     implicitHeight: (routes.length + 1) * 44 * uiScale
     Accessible.name: qsTr("Music categories")
-    background: Rectangle { color: "#111111" }
+    background: Rectangle { color: JuxtopposedPalette.color("#111111") }
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
 
     function setCurrentItemFocus(reason) {
@@ -51,9 +52,9 @@ C.Pane {
         onActiveFocusChanged: if (activeFocus) root.ensureVisible(button)
         background: Rectangle {
             radius: 4 * root.uiScale
-            color: button.down ? "#303030" : button.hovered ? "#202020" : "transparent"
+            color: button.down ? JuxtopposedPalette.color("#303030") : button.hovered ? JuxtopposedPalette.color("#202020") : "transparent"
             border.width: button.visualFocus ? 2 * root.uiScale : 0
-            border.color: "#D37918"
+            border.color: JuxtopposedPalette.color("#D37918")
         }
         contentItem: Item {
             opacity: button.enabled ? 1 : 0.35
@@ -66,7 +67,7 @@ C.Pane {
                 horizontalAlignment: Text.AlignHCenter
                 font.family: root.iconFontFamily
                 font.pixelSize: 24 * root.uiScale
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 Accessible.ignored: true
             }
             C.Label {
@@ -78,7 +79,7 @@ C.Pane {
                 text: button.label
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 elide: Text.ElideRight
                 Accessible.ignored: true
             }

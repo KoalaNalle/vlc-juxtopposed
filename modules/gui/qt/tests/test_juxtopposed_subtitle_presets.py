@@ -33,6 +33,8 @@ def qt_message(kind, context, message):
     with (args.output_dir / 'qml-messages.txt').open('a', encoding='utf-8') as output: output.write(message + '\n')
 qInstallMessageHandler(qt_message)
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf'))
 assert font_id >= 0
 icon_font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/VLCIcons.ttf'))

@@ -1,6 +1,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN. GPLv2 or later.
 // Visual design: Juxtopposed; original artwork: CC BY 4.0.
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import QtQml.Models
@@ -40,7 +41,7 @@ C.Control {
             Layout.fillWidth: true
             Layout.minimumWidth: 0
             Layout.preferredWidth: root.width * 0.38
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
             elide: Text.ElideRight
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
@@ -65,13 +66,13 @@ C.Control {
             textRole: "display"
 
             background: Rectangle {
-                border.color: combo.visualFocus ? "#D37918" : "#252525"
+                border.color: combo.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                 border.width: root.uiScale
-                color: "#161616"
+                color: JuxtopposedPalette.color("#161616")
                 radius: 4 * root.uiScale
             }
             contentItem: C.Label {
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 elide: Text.ElideRight
                 font: combo.font
                 text: combo.displayText
@@ -82,7 +83,7 @@ C.Control {
                 anchors.right: parent.right
                 anchors.rightMargin: 8 * root.uiScale
                 anchors.verticalCenter: parent.verticalCenter
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 font: combo.font
                 text: "⌄"
             }

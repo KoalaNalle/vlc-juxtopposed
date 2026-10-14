@@ -80,6 +80,7 @@ moc_headers = files(
     'maininterface/compositor_platform.hpp',
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.hpp',
+    'maininterface/general_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
     'maininterface/navigationmodel.hpp',
@@ -315,7 +316,10 @@ qt_plugin_sources = files(
     'maininterface/interface_window_handler.cpp',
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.cpp',
+    'maininterface/general_preferences_model.cpp',
+    'util/interface_language_map.hpp',
     'maininterface/mainctx.hpp',
+    'maininterface/general_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.cpp',
@@ -667,6 +671,9 @@ qml_modules += {
     'sources': files(
         'dialogs/dialogs/qml/CustomDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
+        'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
         'dialogs/dialogs/qml/Dialogs.qml',
@@ -914,6 +921,7 @@ qml_modules += {
     'outdir' : 'VLC/Style',
     'singletons': files(
         'style/AcrylicController.qml',
+        'style/JuxtopposedPalette.qml',
         'style/VLCStyle.qml',
     ),
 }

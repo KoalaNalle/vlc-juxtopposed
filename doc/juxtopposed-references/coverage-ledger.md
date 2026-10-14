@@ -1,6 +1,14 @@
 # Juxtopposed design coverage ledger
 
-Updated 14 October 2026. Milestone 0 is **in progress**. This is an initial inventory, not a complete screen audit or an acceptance claim. Original design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed).
+Updated 15 October 2026. Milestone 0 is **in progress**. This is an initial inventory, not a complete screen audit or an acceptance claim. Original design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed).
+
+The [15 October General Settings checkpoint](native/general-settings-20261015/README.md)
+records an integrated native General page and shared modal routing, 29/0/1 ordinary
+backend results, three normal app quits and actual Light/Purple/Unicode logging
+restart restoration. The new production component suites and GNU-make oracle pass
+locally. This advances functional/native General coverage; the twelve other
+categories, backdrop/Light volume fidelity, Reset and final package acceptance
+remain open. Retain the broader surface gates below.
 
 The active target is the [first publishable beta](../juxtopposed-beta-plan.md), covering complete confirmed surfaces and actions. Figma MCP access for copy `zdNUYRVOH9lEtIxMYvh8DV` was restored on 14 October with a Professional Full seat. Successful page inventory, high-fidelity Home/New Playlist/subtitle-timeline contexts, screenshots and prototype-link reads are preserved in the [MCP reference inventory](figma/20261014/README.md). Browser control still has a separate saved site block; do not circumvent it. Reuse cached MCP, video and measured queue references; complete reference/state reconciliation and visual acceptance remain open. The supplied 20:59.915 AV1 walkthrough has been sampled into 63 overview frames and 24 closer library-region frames. Local overview/contact sheets are in `build-windows/reference-video-frames`; exact frames are in `library-reference-frames`. [Library reference notes](library/reference-notes.md) preserve three exact-time frames, tentative geometry and the native mapping. Video frames include the original VLC, commentary, advertisements and concept UI: identify the actual redesign before measuring it.
 

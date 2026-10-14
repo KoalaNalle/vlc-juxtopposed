@@ -142,7 +142,7 @@ T.Pane {
             id: bar
             property Item trackReturnItem: bar.audioButton
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            background: Rectangle { color: root.subtitleTimelineVisible ? "#F2191919" : "#1B1B1B" }
+            background: Rectangle { color: JuxtopposedPalette.color(root.subtitleTimelineVisible ? "#F2191919" : "#1B1B1B") }
             elapsed: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowStartTicks ?? 0)
                                                   : root.formatTime(Player.time)
             duration: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowEndTicks ?? 0)

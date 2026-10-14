@@ -2,6 +2,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN
 // Original visual design by Juxtopposed: https://www.youtube.com/@juxtopposed
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -81,10 +82,10 @@ C.Dialog {
     Shortcut { sequence: StandardKey.Save; enabled: root.visible && !!root.controller && root.controller.canSave; onActivated: root.save() }
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
     background: Rectangle { radius: 14 * root.uiScale; color: Qt.rgba(25 / 255, 25 / 255, 25 / 255, .95) }
-    C.Overlay.modal: Rectangle { color: "#80000000" }
+    C.Overlay.modal: Rectangle { color: JuxtopposedPalette.color("#80000000") }
 
     component FormLabel: Text {
-        color: "#C6C6C6"
+        color: JuxtopposedPalette.color("#C6C6C6")
         font.family: inter.name
         font.pixelSize: 14 * root.uiScale
         textFormat: Text.PlainText
@@ -106,26 +107,26 @@ C.Dialog {
             text: button.text
             font: button.font
             textFormat: Text.PlainText
-            color: button.primary ? "#D37918" : "#8F8F8F"
+            color: button.primary ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#8F8F8F")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
         }
         background: Rectangle {
             radius: 6 * root.uiScale
-            color: button.primary ? (button.down ? "#4D2C09" : "#371F06")
-                : (button.hovered ? "#303030" : "#1B1B1B")
+            color: button.primary ? (button.down ? JuxtopposedPalette.color("#4D2C09") : JuxtopposedPalette.color("#371F06"))
+                : (button.hovered ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#1B1B1B"))
             border.width: button.visualFocus ? root.uiScale : 0
-            border.color: "#D37918"
+            border.color: JuxtopposedPalette.color("#D37918")
         }
     }
 
     header: Rectangle {
         implicitHeight: 50 * root.uiScale
-        color: "#090909"
+        color: JuxtopposedPalette.color("#090909")
         radius: 14 * root.uiScale
         Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: parent.height / 2; color: parent.color }
-        FormLabel { anchors.left: parent.left; anchors.leftMargin: 19 * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text: root.title; color: "#8F8F8F" }
+        FormLabel { anchors.left: parent.left; anchors.leftMargin: 19 * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text: root.title; color: JuxtopposedPalette.color("#8F8F8F") }
         C.ToolButton {
             id: closeButton
             objectName: "newPlaylistClose"
@@ -140,7 +141,7 @@ C.Dialog {
             onClicked: root.reject()
             KeyNavigation.tab: playlistName.enabled ? playlistName : cancelButton
             KeyNavigation.backtab: saveButton.enabled ? saveButton : cancelButton
-            background: Rectangle { radius: 4 * root.uiScale; color: closeButton.hovered ? "#303030" : "transparent"; border.width: closeButton.visualFocus ? root.uiScale : 0; border.color: "#D37918" }
+            background: Rectangle { radius: 4 * root.uiScale; color: closeButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"; border.width: closeButton.visualFocus ? root.uiScale : 0; border.color: JuxtopposedPalette.color("#D37918") }
             contentItem: Item {
                 Image { objectName: "newPlaylistOriginalClose"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; rotation: 180; transform: Scale { origin.x: 12; origin.y: 12; yScale: -1 } source: root.assetBase + "new-playlist-close.svg"; Accessible.ignored: true }
             }
@@ -165,7 +166,7 @@ C.Dialog {
                     Layout.minimumWidth: 0
                     spacing: 0
                     FormLabel { objectName: "newPlaylistDetailsTitle"; text: qsTr("Playlist Details"); font.pixelSize: 16 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 28 * root.uiScale }
-                    FormLabel { objectName: "newPlaylistDetailsDescription"; Layout.fillWidth: true; Layout.topMargin: 5 * root.uiScale; text: qsTr("The playlist will be saved and displayed with this title and thumbnail."); color: "#6B6B6B"; font.pixelSize: 14 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 24.5 * root.uiScale }
+                    FormLabel { objectName: "newPlaylistDetailsDescription"; Layout.fillWidth: true; Layout.topMargin: 5 * root.uiScale; text: qsTr("The playlist will be saved and displayed with this title and thumbnail."); color: JuxtopposedPalette.color("#6B6B6B"); font.pixelSize: 14 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 24.5 * root.uiScale }
                     C.TextField {
                         id: playlistName
                         objectName: "newPlaylistName"
@@ -175,9 +176,9 @@ C.Dialog {
                         text: root.controller ? root.controller.name : ""
                         enabled: root.editable
                         placeholderText: qsTr("e.g., Favorite Videos")
-                        placeholderTextColor: "#404040"
-                        color: "#C6C6C6"
-                        selectionColor: "#6B431C"
+                        placeholderTextColor: JuxtopposedPalette.color("#404040")
+                        color: JuxtopposedPalette.color("#C6C6C6")
+                        selectionColor: JuxtopposedPalette.color("#6B431C")
                         font.family: inter.name; font.pixelSize: 14 * root.uiScale
                         leftPadding: 12 * root.uiScale; rightPadding: 18 * root.uiScale
                         activeFocusOnTab: true
@@ -189,7 +190,7 @@ C.Dialog {
                         onTextEdited: root.controller.name = text
                         onAccepted: root.save()
                         onActiveFocusChanged: if (activeFocus) root.reveal(playlistName)
-                        background: Rectangle { color: "#090909"; radius: 6 * root.uiScale; border.width: 2 * root.uiScale; border.color: playlistName.activeFocus ? "#D37918" : "#191919" }
+                        background: Rectangle { color: JuxtopposedPalette.color("#090909"); radius: 6 * root.uiScale; border.width: 2 * root.uiScale; border.color: playlistName.activeFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#191919") }
                     }
                 }
                 C.Button {
@@ -210,10 +211,10 @@ C.Dialog {
                     KeyNavigation.backtab: playlistName
                     onClicked: root.thumbnailRequested()
                     onActiveFocusChanged: if (activeFocus) root.reveal(thumbnailButton)
-                    background: Rectangle { color: "#090909"; radius: 6 * root.uiScale; border.width: 2 * root.uiScale; border.color: thumbnailButton.visualFocus ? "#D37918" : "#191919" }
+                    background: Rectangle { color: JuxtopposedPalette.color("#090909"); radius: 6 * root.uiScale; border.width: 2 * root.uiScale; border.color: thumbnailButton.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#191919") }
                     contentItem: Item {
                         Image { anchors.fill: parent; anchors.margins: root.uiScale; source: root.controller ? root.controller.thumbnail : ""; fillMode: Image.PreserveAspectCrop; asynchronous: true; visible: source.toString().length > 0 }
-                        Rectangle { anchors.centerIn: parent; width: 30 * root.uiScale; height: 30 * root.uiScale; radius: 5 * root.uiScale; color: "#161616"; visible: !root.controller || !root.controller.thumbnail.toString().length; Image { objectName: "newPlaylistOriginalThumbnailAdd"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "new-playlist-add.svg"; Accessible.ignored: true } }
+                        Rectangle { anchors.centerIn: parent; width: 30 * root.uiScale; height: 30 * root.uiScale; radius: 5 * root.uiScale; color: JuxtopposedPalette.color("#161616"); visible: !root.controller || !root.controller.thumbnail.toString().length; Image { objectName: "newPlaylistOriginalThumbnailAdd"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "new-playlist-add.svg"; Accessible.ignored: true } }
                     }
                 }
             }
@@ -237,7 +238,7 @@ C.Dialog {
             }
             Item { objectName: "newPlaylistDividerSlot"; Layout.fillWidth: true; Layout.leftMargin: 20 * root.uiScale; Layout.rightMargin: 20 * root.uiScale; Layout.topMargin: 20 * root.uiScale; Layout.preferredHeight: 0; Item { width: parent.width; height: root.uiScale; y: -.5 * root.uiScale; clip: true; Image { objectName: "newPlaylistOriginalDivider"; width: 673; height: 1; scale: root.uiScale; transformOrigin: Item.TopLeft; source: root.assetBase + "new-playlist-divider.svg"; Accessible.ignored: true } } }
             FormLabel { objectName: "newPlaylistFilesTitle"; Layout.leftMargin: 20 * root.uiScale; Layout.topMargin: 20 * root.uiScale; text: qsTr("Select Files"); font.pixelSize: 16 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 28 * root.uiScale }
-            FormLabel { Layout.fillWidth: true; Layout.leftMargin: 20 * root.uiScale; Layout.rightMargin: 20 * root.uiScale; Layout.topMargin: 5 * root.uiScale; text: qsTr("These files will be added to the playlist."); color: "#6B6B6B"; font.pixelSize: 14 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 24.5 * root.uiScale }
+            FormLabel { Layout.fillWidth: true; Layout.leftMargin: 20 * root.uiScale; Layout.rightMargin: 20 * root.uiScale; Layout.topMargin: 5 * root.uiScale; text: qsTr("These files will be added to the playlist."); color: JuxtopposedPalette.color("#6B6B6B"); font.pixelSize: 14 * root.uiScale; lineHeightMode: Text.FixedHeight; lineHeight: 24.5 * root.uiScale }
             Rectangle {
                 id: fileBox
                 objectName: "newPlaylistDropBox"
@@ -245,10 +246,10 @@ C.Dialog {
                 Layout.leftMargin: 20 * root.uiScale; Layout.rightMargin: 20 * root.uiScale
                 Layout.topMargin: 20 * root.uiScale
                 Layout.preferredHeight: 186 * root.uiScale
-                color: dropArea.containsDrag ? "#20160C" : "#090909"
+                color: dropArea.containsDrag ? JuxtopposedPalette.color("#20160C") : JuxtopposedPalette.color("#090909")
                 radius: 6 * root.uiScale
                 border.width: dropArea.containsDrag ? root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
                 // Dashed primitives work with the configured static Qt build,
                 // whose Canvas module is unavailable.
                 Repeater {
@@ -257,8 +258,8 @@ C.Dialog {
                         required property int index
                         x: index * 7 * root.uiScale
                         width: 4 * root.uiScale; height: fileBox.height
-                        Rectangle { anchors.top: parent.top; width: parent.width; height: 2 * root.uiScale; color: "#2D2D2D" }
-                        Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 2 * root.uiScale; color: "#2D2D2D" }
+                        Rectangle { anchors.top: parent.top; width: parent.width; height: 2 * root.uiScale; color: JuxtopposedPalette.color("#2D2D2D") }
+                        Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 2 * root.uiScale; color: JuxtopposedPalette.color("#2D2D2D") }
                     }
                 }
                 Repeater {
@@ -267,8 +268,8 @@ C.Dialog {
                         required property int index
                         y: index * 7 * root.uiScale
                         width: fileBox.width; height: 4 * root.uiScale
-                        Rectangle { anchors.left: parent.left; height: parent.height; width: 2 * root.uiScale; color: "#2D2D2D" }
-                        Rectangle { anchors.right: parent.right; height: parent.height; width: 2 * root.uiScale; color: "#2D2D2D" }
+                        Rectangle { anchors.left: parent.left; height: parent.height; width: 2 * root.uiScale; color: JuxtopposedPalette.color("#2D2D2D") }
+                        Rectangle { anchors.right: parent.right; height: parent.height; width: 2 * root.uiScale; color: JuxtopposedPalette.color("#2D2D2D") }
                     }
                 }
                 ColumnLayout {
@@ -276,8 +277,8 @@ C.Dialog {
                     width: parent.width - 20 * root.uiScale
                     spacing: 20 * root.uiScale
                     visible: !root.controller || root.controller.files.length === 0
-                    FormLabel { Layout.fillWidth: true; text: qsTr("Drag files into the box or click here to select files."); horizontalAlignment: Text.AlignHCenter; color: "#404040"; font.pixelSize: 14 * root.uiScale }
-                    FormButton { id: emptyFilesButton; objectName: "newPlaylistSelectFiles"; Layout.alignment: Qt.AlignHCenter; implicitWidth: 84 * root.uiScale; implicitHeight: 30 * root.uiScale; text: ""; contentItem: Item { Image { objectName: "newPlaylistOriginalFilesAdd"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "new-playlist-add.svg"; Accessible.ignored: true } } background: Rectangle { radius: 5 * root.uiScale; color: "#161616"; border.width: emptyFilesButton.visualFocus ? root.uiScale : 0; border.color: "#D37918" } enabled: root.editable; onClicked: root.filesRequested(); Accessible.name: qsTr("Select files"); KeyNavigation.tab: cancelButton; KeyNavigation.backtab: removeThumbnail.visible ? removeThumbnail : thumbnailButton; onActiveFocusChanged: if (activeFocus) root.reveal(fileBox) }
+                    FormLabel { Layout.fillWidth: true; text: qsTr("Drag files into the box or click here to select files."); horizontalAlignment: Text.AlignHCenter; color: JuxtopposedPalette.color("#404040"); font.pixelSize: 14 * root.uiScale }
+                    FormButton { id: emptyFilesButton; objectName: "newPlaylistSelectFiles"; Layout.alignment: Qt.AlignHCenter; implicitWidth: 84 * root.uiScale; implicitHeight: 30 * root.uiScale; text: ""; contentItem: Item { Image { objectName: "newPlaylistOriginalFilesAdd"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "new-playlist-add.svg"; Accessible.ignored: true } } background: Rectangle { radius: 5 * root.uiScale; color: JuxtopposedPalette.color("#161616"); border.width: emptyFilesButton.visualFocus ? root.uiScale : 0; border.color: JuxtopposedPalette.color("#D37918") } enabled: root.editable; onClicked: root.filesRequested(); Accessible.name: qsTr("Select files"); KeyNavigation.tab: cancelButton; KeyNavigation.backtab: removeThumbnail.visible ? removeThumbnail : thumbnailButton; onActiveFocusChanged: if (activeFocus) root.reveal(fileBox) }
                 }
                 C.ScrollView {
                     anchors.fill: parent
@@ -300,7 +301,7 @@ C.Dialog {
                             width: selectedFiles.width
                             height: 36 * root.uiScale
                             spacing: 4 * root.uiScale
-                            FormLabel { text: (index + 1) + "."; color: "#686868"; font.pixelSize: 11 * root.uiScale; Layout.preferredWidth: 24 * root.uiScale }
+                            FormLabel { text: (index + 1) + "."; color: JuxtopposedPalette.color("#686868"); font.pixelSize: 11 * root.uiScale; Layout.preferredWidth: 24 * root.uiScale }
                             FormLabel { Layout.fillWidth: true; Layout.minimumWidth: 0; text: modelData.title; font.pixelSize: 12 * root.uiScale; wrapMode: Text.NoWrap; elide: Text.ElideRight; C.ToolTip.visible: fileHover.hovered; C.ToolTip.text: modelData.path; HoverHandler { id: fileHover } }
                             FormButton { id: moveUp; objectName: "newPlaylistUp" + index; implicitWidth: 24 * root.uiScale; implicitHeight: 24 * root.uiScale; text: "↑"; enabled: root.editable && index > 0; Accessible.name: qsTr("Move %1 up").arg(modelData.title); KeyNavigation.tab: moveDown.enabled ? moveDown : removeFile; KeyNavigation.backtab: index > 0 ? (selectedFiles.itemAtIndex(index - 1)?.removeButton ?? thumbnailButton) : removeThumbnail.visible ? removeThumbnail : thumbnailButton; onClicked: root.controller.moveFile(index, index - 1) }
                             FormButton { id: moveDown; objectName: "newPlaylistDown" + index; implicitWidth: 24 * root.uiScale; implicitHeight: 24 * root.uiScale; text: "↓"; enabled: root.editable && index + 1 < root.controller.files.length; Accessible.name: qsTr("Move %1 down").arg(modelData.title); KeyNavigation.tab: removeFile; KeyNavigation.backtab: moveUp.enabled ? moveUp : removeThumbnail.visible ? removeThumbnail : thumbnailButton; onClicked: root.controller.moveFile(index, index + 1) }
@@ -344,7 +345,7 @@ C.Dialog {
                 Layout.leftMargin: 20 * root.uiScale; Layout.rightMargin: 20 * root.uiScale; Layout.topMargin: 12 * root.uiScale
                 text: root.controller ? root.controller.error : ""
                 visible: text.length > 0 && !!root.controller && (!root.controller.available || root.controller.name.length > 0 || root.controller.files.length > 0 || root.controller.thumbnail.toString().length > 0)
-                color: "#D98779"
+                color: JuxtopposedPalette.color("#D98779")
                 font.pixelSize: 12 * root.uiScale
                 Accessible.role: Accessible.StaticText
                 Accessible.name: text

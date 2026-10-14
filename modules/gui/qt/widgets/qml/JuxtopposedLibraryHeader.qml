@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -27,9 +28,9 @@ C.Pane {
     property string searchPattern: ""
     property bool searchExpanded: false
     readonly property bool compact: width < 760 * uiScale
-    property color surfaceColor: "#111111"
-    property color textColor: "#969696"
-    property color accentColor: "#D37918"
+    property color surfaceColor: JuxtopposedPalette.color("#111111")
+    property color textColor: JuxtopposedPalette.color("#969696")
+    property color accentColor: JuxtopposedPalette.color("#D37918")
 
     signal backRequested()
     signal forwardRequested()
@@ -83,7 +84,7 @@ C.Pane {
         C.ToolTip.delay: 500
         background: Rectangle {
             radius: 4 * root.uiScale
-            color: button.down ? "#404040" : button.hovered ? "#303030" : "transparent"
+            color: button.down ? JuxtopposedPalette.color("#404040") : button.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
             border.width: button.visualFocus ? 2 * root.uiScale : 0
             border.color: root.accentColor
         }
@@ -159,7 +160,7 @@ C.Pane {
                         text: "›"
                         font.family: inter.name
                         font.pixelSize: 16 * root.uiScale
-                        color: "#6B6B6B"
+                        color: JuxtopposedPalette.color("#6B6B6B")
                         Accessible.ignored: true
                     }
                     C.ToolButton {
@@ -174,7 +175,7 @@ C.Pane {
                         Accessible.name: modelData.text
                         onClicked: root.breadcrumbRequested(modelData.uri)
                         background: Rectangle {
-                            color: parent.hovered ? "#303030" : "transparent"
+                            color: parent.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                             border.width: parent.visualFocus ? 2 * root.uiScale : 0
                             border.color: root.accentColor
                             radius: 4 * root.uiScale
@@ -194,7 +195,7 @@ C.Pane {
         C.Label {
             visible: root.countAvailable && (!root.compact || !root.searchExpanded)
             text: root.itemCount === 1 ? qsTr("1 item") : qsTr("%1 items").arg(root.itemCount)
-            color: "#6B6B6B"
+            color: JuxtopposedPalette.color("#6B6B6B")
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
         }
@@ -236,13 +237,13 @@ C.Pane {
                 root.contentFocusRequested()
             }
             Keys.onReturnPressed: root.contentFocusRequested()
-            background: Rectangle { color: "#161616"; radius: 4 * root.uiScale }
+            background: Rectangle { color: JuxtopposedPalette.color("#161616"); radius: 4 * root.uiScale }
             C.Label {
                 anchors.left: parent.left
                 anchors.leftMargin: 8 * root.uiScale
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.searchIcon
-                color: "#6B6B6B"
+                color: JuxtopposedPalette.color("#6B6B6B")
                 font.family: root.iconFontFamily
                 font.pixelSize: 24 * root.uiScale
                 Accessible.ignored: true
@@ -307,6 +308,6 @@ C.Pane {
         anchors.leftMargin: 20 * root.uiScale
         anchors.rightMargin: 20 * root.uiScale
         height: root.uiScale
-        color: "#252525"
+        color: JuxtopposedPalette.color("#252525")
     }
 }

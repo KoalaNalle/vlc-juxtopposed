@@ -88,6 +88,8 @@ class Controller(QObject):
         self.finished.emit(success)
 
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 controller = Controller()
 engine = QQmlApplicationEngine()
 engine.rootContext().setContextProperty('playlistController', controller)

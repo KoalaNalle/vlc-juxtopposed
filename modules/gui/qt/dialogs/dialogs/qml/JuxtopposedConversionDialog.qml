@@ -3,6 +3,7 @@
 // Functional adaptation of the shared Juxtopposed modal styling. The inspected
 // Figma references did not contain an original conversion form/profile editor.
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import VLC.Dialogs
@@ -140,10 +141,10 @@ C.Dialog {
     Shortcut { sequence: "Ctrl+Return"; enabled: root.visible && !root.busy && !root.completed && root.hasFiles; onActivated: root.submit() }
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
     background: Rectangle { radius: 14 * root.uiScale; color: Qt.rgba(25 / 255, 25 / 255, 25 / 255, .95) }
-    C.Overlay.modal: Rectangle { color: "#80000000" }
+    C.Overlay.modal: Rectangle { color: JuxtopposedPalette.color("#80000000") }
 
     component FormLabel: Text {
-        color: "#C6C6C6"
+        color: JuxtopposedPalette.color("#C6C6C6")
         font.family: inter.name
         font.pixelSize: 14 * root.uiScale
         textFormat: Text.PlainText
@@ -165,17 +166,17 @@ C.Dialog {
             text: button.text
             font: button.font
             textFormat: Text.PlainText
-            color: button.primary ? "#D37918" : "#8F8F8F"
+            color: button.primary ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#8F8F8F")
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignVCenter
             elide: Text.ElideRight
         }
         background: Rectangle {
             radius: 6 * root.uiScale
-            color: button.primary ? (button.down ? "#4D2C09" : "#371F06")
-                : (button.hovered ? "#303030" : "#1B1B1B")
+            color: button.primary ? (button.down ? JuxtopposedPalette.color("#4D2C09") : JuxtopposedPalette.color("#371F06"))
+                : (button.hovered ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#1B1B1B"))
             border.width: button.visualFocus ? root.uiScale : 0
-            border.color: "#D37918"
+            border.color: JuxtopposedPalette.color("#D37918")
         }
     }
     component FileField: C.TextField {
@@ -184,27 +185,27 @@ C.Dialog {
         selectByMouse: true
         activeFocusOnTab: true
         enabled: !root.busy
-        color: "#C6C6C6"
-        placeholderTextColor: "#686868"
-        selectionColor: "#6B431C"
+        color: JuxtopposedPalette.color("#C6C6C6")
+        placeholderTextColor: JuxtopposedPalette.color("#686868")
+        selectionColor: JuxtopposedPalette.color("#6B431C")
         font.family: inter.name
         font.pixelSize: 13 * root.uiScale
         leftPadding: 10 * root.uiScale
         rightPadding: 10 * root.uiScale
         onActiveFocusChanged: if (activeFocus) root.focusFormItem(field)
         background: Rectangle {
-            color: "#090909"
+            color: JuxtopposedPalette.color("#090909")
             radius: 6 * root.uiScale
             border.width: field.activeFocus ? root.uiScale : 0
-            border.color: "#D37918"
+            border.color: JuxtopposedPalette.color("#D37918")
         }
     }
     header: Rectangle {
         implicitHeight: 50 * root.uiScale
-        color: "#090909"
+        color: JuxtopposedPalette.color("#090909")
         radius: 14 * root.uiScale
         Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: parent.height / 2; color: parent.color }
-        FormLabel { anchors.left: parent.left; anchors.leftMargin: 20 * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text: root.title; color: "#8F8F8F" }
+        FormLabel { anchors.left: parent.left; anchors.leftMargin: 20 * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text: root.title; color: JuxtopposedPalette.color("#8F8F8F") }
         C.ToolButton {
             id: closeButton
             objectName: "conversionClose"
@@ -217,7 +218,7 @@ C.Dialog {
             KeyNavigation.tab: root.busy ? cancelButton : sourceField
             KeyNavigation.backtab: convertButton.enabled ? convertButton : cancelButton
             onClicked: root.requestClose()
-            background: Rectangle { radius: 4 * root.uiScale; color: closeButton.hovered ? "#303030" : "transparent"; border.width: closeButton.visualFocus ? root.uiScale : 0; border.color: "#D37918" }
+            background: Rectangle { radius: 4 * root.uiScale; color: closeButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"; border.width: closeButton.visualFocus ? root.uiScale : 0; border.color: JuxtopposedPalette.color("#D37918") }
             contentItem: Item {
                 Image { anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; rotation: 180; transform: Scale { origin.x: 12; origin.y: 12; yScale: -1 } source: root.assetBase + "new-playlist-close.svg"; Accessible.ignored: true }
             }
@@ -276,7 +277,7 @@ C.Dialog {
                     text: qsTr("44.1 kHz · Stereo · Up to 512 MiB and one hour. Your original file is kept.")
                     Layout.fillWidth: true
                     font.pixelSize: 12 * root.uiScale
-                    color: "#686868"
+                    color: JuxtopposedPalette.color("#686868")
                 }
                 FormLabel { text: qsTr("Destination"); Layout.topMargin: 6 * root.uiScale }
                 RowLayout {
@@ -328,7 +329,7 @@ C.Dialog {
                         objectName: "conversionStatus"
                         Layout.fillWidth: true
                         text: root.phaseText()
-                        color: root.completed ? "#D37918" : "#8F8F8F"
+                        color: root.completed ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#8F8F8F")
                         Accessible.role: Accessible.StaticText
                         Accessible.name: text
                     }
@@ -349,10 +350,10 @@ C.Dialog {
                             Layout.preferredHeight: 6 * root.uiScale
                             visible: root.controller && root.controller.state === ConversionController.Encoding && root.controller.progress >= 0
                             value: root.controller ? Math.max(0, Math.min(1, root.controller.progress)) : 0
-                            background: Rectangle { radius: height / 2; color: "#090909" }
+                            background: Rectangle { radius: height / 2; color: JuxtopposedPalette.color("#090909") }
                             contentItem: Item {
                                 implicitHeight: 6 * root.uiScale
-                                Rectangle { width: progressBar.visualPosition * parent.width; height: parent.height; radius: height / 2; color: "#D37918" }
+                                Rectangle { width: progressBar.visualPosition * parent.width; height: parent.height; radius: height / 2; color: JuxtopposedPalette.color("#D37918") }
                             }
                             Accessible.name: qsTr("Audio conversion progress")
                         }
@@ -362,7 +363,7 @@ C.Dialog {
                             text: root.controller ? Math.floor(root.controller.progress * 100) + "% · "
                                 + root.timeText(root.controller.sourceTimeMs) + " / " + root.timeText(root.controller.sourceDurationMs) : ""
                             font.pixelSize: 12 * root.uiScale
-                            color: "#8F8F8F"
+                            color: JuxtopposedPalette.color("#8F8F8F")
                         }
                     }
                     FormLabel {
@@ -370,7 +371,7 @@ C.Dialog {
                         Layout.fillWidth: true
                         text: root.controller ? root.controller.error : ""
                         visible: text.length > 0
-                        color: "#D98779"
+                        color: JuxtopposedPalette.color("#D98779")
                         font.pixelSize: 12 * root.uiScale
                         Accessible.role: Accessible.StaticText
                         Accessible.name: text

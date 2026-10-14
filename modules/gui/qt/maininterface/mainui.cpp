@@ -4,6 +4,7 @@
 
 #include "maininterface/navigationmodel.hpp"
 #include "maininterface/subtitle_preset_model.hpp"
+#include "maininterface/general_preferences_model.hpp"
 
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlqmltypes.hpp"
@@ -245,6 +246,7 @@ void MainUI::registerQMLTypes()
         qmlRegisterAnonymousType<MainCtxWin32>(uri, versionMajor);
 #endif
         qmlRegisterUncreatableType<SubtitlePresetModel>(uri, versionMajor, versionMinor, "SubtitlePresetModel", "Use MainCtx.subtitlePresets");
+        qmlRegisterUncreatableType<GeneralPreferencesModel>(uri, versionMajor, versionMinor, "GeneralPreferencesModel", "Use MainCtx.generalPreferences");
         qmlRegisterTypesAndRevisions<SearchCtx>(uri, versionMajor);
         qmlRegisterTypesAndRevisions<SortCtx>(uri, versionMajor);
         qmlRegisterUncreatableType<UINotifier>(uri, versionMajor, versionMinor, "UINotifier", "");

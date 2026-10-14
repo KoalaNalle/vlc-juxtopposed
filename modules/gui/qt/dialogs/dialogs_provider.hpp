@@ -217,6 +217,7 @@ private:
     bool b_isDying;
 
     void openDialog( OpenDialog::OpenTab );
+    void openNativePrefsDialog(bool advanced);
 
     template<typename T>
     inline void ensureDialog(std::unique_ptr<T>& dialog);
@@ -238,6 +239,7 @@ public slots:
                                               const QMessageBox::StandardButton defaultButton = QMessageBox::NoButton,
                                               const QMessageBox::Icon icon = QMessageBox::NoIcon);
     void prefsDialog();
+    void expertPrefsDialog();
     void firstRunDialog();
     void extendedDialog();
     void synchroDialog();
@@ -318,6 +320,7 @@ signals:
     void releaseMouseEvents();
     void showToolbarEditorDialog();
     void showNetworkStreamDialog();
+    void showGlobalSettingsDialog();
     void showNewPlaylistDialog();
     void showConversionDialog();
     void newPlaylistSaved(MLItemId playlist);

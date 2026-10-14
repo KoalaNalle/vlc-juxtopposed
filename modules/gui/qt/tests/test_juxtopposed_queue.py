@@ -48,6 +48,8 @@ for source in [component, panel_component, component.parent / "JuxtopposedBookma
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 QQuickWindow.setDefaultAlphaBuffer(True)
 font_id = QFontDatabase.addApplicationFont(str(assets / "InterVariable.ttf"))
 assert font_id >= 0

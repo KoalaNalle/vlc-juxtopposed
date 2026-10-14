@@ -49,7 +49,7 @@ T.Popup {
     width: Math.min(400 * uiScale, parent.width)
 
     background: Rectangle {
-        color: "#111111"
+        color: JuxtopposedPalette.color("#111111")
         radius: 8 * root.uiScale
     }
     contentItem: JuxtopposedSettingsPanel {
@@ -127,13 +127,13 @@ T.Popup {
                     model: Player.equalizer.presets
 
                     background: Rectangle {
-                        border.color: preset.visualFocus ? "#D37918" : "#252525"
+                        border.color: preset.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                         border.width: root.uiScale
-                        color: "#161616"
+                        color: JuxtopposedPalette.color("#161616")
                         radius: 4 * root.uiScale
                     }
                     contentItem: C.Label {
-                        color: "#969696"
+                        color: JuxtopposedPalette.color("#969696")
                         elide: Text.ElideRight
                         font: preset.font
                         text: preset.displayText
@@ -598,13 +598,13 @@ T.Popup {
         font.pixelSize: 14 * root.uiScale
 
         background: Rectangle {
-            border.color: actionButton.visualFocus ? "#D37918" : "#252525"
+            border.color: actionButton.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
             border.width: root.uiScale
-            color: actionButton.down ? "#303030" : "#161616"
+            color: actionButton.down ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#161616")
             radius: 4 * root.uiScale
         }
         contentItem: C.Label {
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
             font: actionButton.font
             horizontalAlignment: Text.AlignHCenter
             text: actionButton.text
@@ -627,13 +627,13 @@ T.Popup {
         padding: 4 * root.uiScale
 
         background: Rectangle {
-            border.color: button.visualFocus ? "#D37918" : "#090909"
+            border.color: button.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#090909")
             border.width: root.uiScale
-            color: button.checked ? "#331D05" : button.down ? "#303030" : "#161616"
+            color: button.checked ? JuxtopposedPalette.color("#331D05") : button.down ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#161616")
             radius: 4 * root.uiScale
         }
         contentItem: C.Label {
-            color: button.checked ? "#D37918" : "#969696"
+            color: button.checked ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#969696")
             elide: Text.ElideRight
             font: button.font
             horizontalAlignment: Text.AlignHCenter
@@ -695,7 +695,7 @@ T.Popup {
     component SectionLabel: C.Label {
         Layout.fillWidth: true
         Layout.topMargin: 8 * root.uiScale
-        color: "#969696"
+        color: JuxtopposedPalette.color("#969696")
         font.family: inter.name
         font.pixelSize: 16 * root.uiScale
     }
@@ -782,7 +782,7 @@ T.Popup {
             C.Label {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 elide: Text.ElideRight
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
@@ -797,7 +797,7 @@ T.Popup {
                 Layout.preferredHeight: 32 * root.uiScale
                 Layout.preferredWidth: Math.min(144 * root.uiScale, textSetting.width * 0.48)
                 bottomPadding: 4 * root.uiScale
-                color: "#969696"
+                color: JuxtopposedPalette.color("#969696")
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
                 maximumLength: textSetting.colorField ? 7 : 256
@@ -808,9 +808,9 @@ T.Popup {
                 topPadding: 4 * root.uiScale
 
                 background: Rectangle {
-                    border.color: field.activeFocus ? "#D37918" : "#252525"
+                    border.color: field.activeFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
                     border.width: root.uiScale
-                    color: "#090909"
+                    color: JuxtopposedPalette.color("#090909")
                     radius: 4 * root.uiScale
                 }
 
@@ -831,7 +831,7 @@ T.Popup {
                     anchors.right: parent.right
                     anchors.rightMargin: 8 * root.uiScale
                     anchors.verticalCenter: parent.verticalCenter
-                    border.color: "#404040"
+                    border.color: JuxtopposedPalette.color("#404040")
                     border.width: root.uiScale
                     color: textSetting.colorField ? textSetting.value : "transparent"
                     height: width
@@ -861,15 +861,15 @@ T.Popup {
         rightPadding: 68 * root.uiScale
 
         contentItem: C.Label {
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
             font: toggle.font
             text: toggle.text
             verticalAlignment: Text.AlignVCenter
         }
         indicator: Rectangle {
-            border.color: toggle.visualFocus ? "#D37918" : "#252525"
+            border.color: toggle.visualFocus ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#252525")
             border.width: root.uiScale
-            color: "#090909"
+            color: JuxtopposedPalette.color("#090909")
             height: 24 * root.uiScale
             radius: 4 * root.uiScale
             width: 56 * root.uiScale
@@ -877,7 +877,7 @@ T.Popup {
             y: (toggle.height - height) / 2
 
             Rectangle {
-                color: toggle.checked ? "#D37918" : "#404040"
+                color: toggle.checked ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#404040")
                 height: parent.height - 2 * root.uiScale
                 radius: 3 * root.uiScale
                 width: parent.width / 2 - root.uiScale
@@ -885,7 +885,7 @@ T.Popup {
                 y: root.uiScale
             }
             C.Label {
-                color: toggle.checked ? "#D37918" : "#6B6B6B"
+                color: toggle.checked ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#6B6B6B")
                 font.family: inter.name
                 font.pixelSize: 10 * root.uiScale
                 height: parent.height

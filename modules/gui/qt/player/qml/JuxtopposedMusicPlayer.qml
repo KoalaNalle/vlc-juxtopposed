@@ -4,6 +4,7 @@
  * Code: GPLv2 or later. Original artwork: CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import VLC.Widgets as Widgets
@@ -112,7 +113,7 @@ FocusScope {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: root.sourcePanelWidth
-        color: "#EE111111"
+        color: JuxtopposedPalette.color("#EE111111")
         radius: 6 * root.uiScale
 
         component HeaderButton: C.ToolButton {
@@ -130,16 +131,16 @@ FocusScope {
             Keys.onReturnPressed: clicked()
             Keys.onEnterPressed: clicked()
             background: Rectangle {
-                color: button.down ? "#404040" : button.hovered ? "#303030" : "transparent"
+                color: button.down ? JuxtopposedPalette.color("#404040") : button.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                 radius: 4 * root.uiScale
                 border.width: button.visualFocus ? 2 * root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
             }
             contentItem: C.Label {
                 text: button.glyph
                 font.family: root.iconFontFamily
                 font.pixelSize: 24 * root.uiScale
-                color: button.enabled ? "#969696" : "#454545"
+                color: button.enabled ? JuxtopposedPalette.color("#969696") : JuxtopposedPalette.color("#454545")
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
                 Accessible.ignored: true
@@ -168,9 +169,9 @@ FocusScope {
                 Keys.onReturnPressed: clicked()
                 onClicked: sourceMenu.popup()
                 background: Rectangle {
-                    color: parent.hovered ? "#303030" : "transparent"
+                    color: parent.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                     border.width: parent.visualFocus ? 2 * root.uiScale : 0
-                    border.color: "#D37918"
+                    border.color: JuxtopposedPalette.color("#D37918")
                     radius: 4 * root.uiScale
                 }
                 contentItem: C.Label {
@@ -179,7 +180,7 @@ FocusScope {
                     elide: Text.ElideRight
                     font.family: inter.name
                     font.pixelSize: 16 * root.uiScale
-                    color: "#969696"
+                    color: JuxtopposedPalette.color("#969696")
                 }
             }
             HeaderButton {
@@ -191,16 +192,16 @@ FocusScope {
         }
         C.Menu {
             id: sourceMenu
-            palette.window: "#161616"
-            palette.windowText: "#969696"
-            palette.base: "#161616"
-            palette.text: "#969696"
-            palette.button: "#202020"
-            palette.buttonText: "#969696"
-            palette.highlight: "#303030"
-            palette.highlightedText: "#D37918"
-            palette.light: "#303030"
-            palette.midlight: "#404040"
+            palette.window: JuxtopposedPalette.color("#161616")
+            palette.windowText: JuxtopposedPalette.color("#969696")
+            palette.base: JuxtopposedPalette.color("#161616")
+            palette.text: JuxtopposedPalette.color("#969696")
+            palette.button: JuxtopposedPalette.color("#202020")
+            palette.buttonText: JuxtopposedPalette.color("#969696")
+            palette.highlight: JuxtopposedPalette.color("#303030")
+            palette.highlightedText: JuxtopposedPalette.color("#D37918")
+            palette.light: JuxtopposedPalette.color("#303030")
+            palette.midlight: JuxtopposedPalette.color("#404040")
             C.MenuItem {
                 text: qsTr("Source folder")
                 enabled: root.folderAvailable
@@ -243,7 +244,7 @@ FocusScope {
             C.Label {
                 Layout.fillWidth: true
                 text: root.itemCount === 1 ? qsTr("1 item") : qsTr("%1 items").arg(root.itemCount)
-                color: "#6B6B6B"
+                color: JuxtopposedPalette.color("#6B6B6B")
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
             }
@@ -279,7 +280,7 @@ FocusScope {
             anchors.top: summary.bottom
             anchors.topMargin: 8 * root.uiScale
             height: root.uiScale
-            color: "#252525"
+            color: JuxtopposedPalette.color("#252525")
         }
         C.TextField {
             id: searchField
@@ -295,12 +296,12 @@ FocusScope {
             Accessible.name: qsTr("Search source folder")
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
-            color: "#969696"
-            selectionColor: "#D37918"
+            color: JuxtopposedPalette.color("#969696")
+            selectionColor: JuxtopposedPalette.color("#D37918")
             onTextEdited: root.searchRequested(text)
             Keys.onEscapePressed: { visible = false; root.searchRequested(""); root.setCurrentItemFocus(Qt.ShortcutFocusReason) }
             Keys.onReturnPressed: root.setCurrentItemFocus(Qt.ShortcutFocusReason)
-            background: Rectangle { color: "#202020"; radius: 4 * root.uiScale }
+            background: Rectangle { color: JuxtopposedPalette.color("#202020"); radius: 4 * root.uiScale }
         }
         C.ToolButton {
             id: addButton
@@ -316,10 +317,10 @@ FocusScope {
             Keys.onDownPressed: root.setCurrentItemFocus(Qt.TabFocusReason)
             onClicked: root.addRequested()
             background: Rectangle {
-                color: parent.hovered ? "#202020" : "transparent"
+                color: parent.hovered ? JuxtopposedPalette.color("#202020") : "transparent"
                 radius: 4 * root.uiScale
                 border.width: parent.visualFocus ? 2 * root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
             }
             contentItem: Row {
                 spacing: 12 * root.uiScale
@@ -329,7 +330,7 @@ FocusScope {
                     text: root.addIcon
                     font.family: root.iconFontFamily
                     font.pixelSize: 24 * root.uiScale
-                    color: "#969696"
+                    color: JuxtopposedPalette.color("#969696")
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -338,7 +339,7 @@ FocusScope {
                     text: qsTr("Add")
                     font.family: inter.name
                     font.pixelSize: 14 * root.uiScale
-                    color: "#969696"
+                    color: JuxtopposedPalette.color("#969696")
                     verticalAlignment: Text.AlignVCenter
                 }
             }
@@ -357,7 +358,7 @@ FocusScope {
             wrapMode: Text.WordWrap
             font.family: inter.name
             font.pixelSize: 12 * root.uiScale
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
         }
         ListView {
             id: tracks
@@ -456,7 +457,7 @@ FocusScope {
             horizontalAlignment: Text.AlignHCenter
             font.family: inter.name
             font.pixelSize: (root.compact ? 20 : 24) * root.uiScale
-            color: "#969696"
+            color: JuxtopposedPalette.color("#969696")
             Accessible.role: Accessible.StaticText
         }
     }

@@ -34,6 +34,7 @@
 #include "mainctx.hpp"
 #include "mainctx_submodels.hpp"
 #include "subtitle_preset_model.hpp"
+#include "general_preferences_model.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
 
@@ -210,6 +211,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
 
     loadPrefs(false);
     loadFromSettingsImpl(false);
+    // Snapshot startup preferences after the native theme/settings restore.
+    m_generalPreferences = new GeneralPreferencesModel(p_intf, m_colorScheme, settings, this);
 
     /* Get the available interfaces */
     m_extraInterfaces = new VLCVarChoiceModel(VLC_OBJECT(p_intf->intf), "intf-add", this);
@@ -316,6 +319,9 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    // Tear down the service while its settings/native colour dependencies live.
+    delete m_generalPreferences;
+    m_generalPreferences = nullptr;
     delete m_subtitlePresets;
     m_subtitlePresets = nullptr;
 

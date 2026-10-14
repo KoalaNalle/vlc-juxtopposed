@@ -41,6 +41,7 @@
 #include "util/qt_dirs.hpp"
 #include "util/vlchotkeyconverter.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/general_preferences_model.hpp"
 #include "medialibrary/medialib.hpp"
 
 /* The dialogs */
@@ -295,12 +296,49 @@ const QEvent::Type DialogEvent::DialogEvent_Type =
 
 void DialogsProvider::prefsDialog()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        if (!prefsDialogVisible()) emit showGlobalSettingsDialog();
+        return;
+    }
+#endif
+    openNativePrefsDialog(false);
+}
+
+void DialogsProvider::expertPrefsDialog()
+{
+    openNativePrefsDialog(true);
+}
+
+void DialogsProvider::openNativePrefsDialog(bool advanced)
+{
+    // Do not overlay a QML modal or cancel an in-flight operation. The Global
+    // shell closes before calling the intentional Advanced entry.
+    if (m_qmlDialogVisible) return;
     if (Q_LIKELY(!m_prefsDialog))
     {
-        m_prefsDialog = new PrefsDialog( nullptr, p_intf );
+        m_prefsDialog = new PrefsDialog(nullptr, p_intf);
         m_prefsDialog->setAttribute(Qt::WA_DeleteOnClose);
         m_prefsDialog->installEventFilter(this);
+        if (const auto *ctx = p_intf->p_mi)
+        {
+            if (auto *preferences = ctx->getGeneralPreferences())
+            {
+                connect(m_prefsDialog, &QDialog::accepted,
+                        preferences, &GeneralPreferencesModel::reload);
+                connect(m_prefsDialog, &PrefsDialog::preferencesReset,
+                        preferences, &GeneralPreferencesModel::reload);
+            }
+        }
+        if (advanced) m_prefsDialog->showAdvancedView();
         m_prefsDialog->open();
+    }
+    else if (advanced)
+    {
+        m_prefsDialog->showAdvancedView();
+        m_prefsDialog->raise();
+        m_prefsDialog->activateWindow();
     }
     else
     {

@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -19,9 +20,9 @@ C.Pane {
     property bool libraryBusy: false
     property bool libraryAvailable: true
     property string preferencesIcon: ""
-    property color surfaceColor: "#1B1B1B"
-    property color textColor: "#969696"
-    property color accentColor: "#D37918"
+    property color surfaceColor: JuxtopposedPalette.color("#1B1B1B")
+    property color textColor: JuxtopposedPalette.color("#969696")
+    property color accentColor: JuxtopposedPalette.color("#D37918")
 
     signal routeRequested(var route, int reason)
     signal preferencesRequested()
@@ -90,7 +91,7 @@ C.Pane {
                 onClicked: root.routeRequested(modelData.uri, focusReason)
 
                 background: Rectangle {
-                    color: routeButton.down ? "#404040" : routeButton.hovered ? "#303030" : "transparent"
+                    color: routeButton.down ? JuxtopposedPalette.color("#404040") : routeButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                     radius: 4 * root.uiScale
                     border.width: routeButton.visualFocus ? 2 * root.uiScale : 0
                     border.color: root.accentColor
@@ -165,7 +166,7 @@ C.Pane {
             onClicked: root.preferencesRequested()
 
             background: Rectangle {
-                color: preferencesButton.down ? "#404040" : preferencesButton.hovered ? "#303030" : "transparent"
+                color: preferencesButton.down ? JuxtopposedPalette.color("#404040") : preferencesButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                 radius: 4 * root.uiScale
                 border.width: preferencesButton.visualFocus ? 2 * root.uiScale : 0
                 border.color: root.accentColor

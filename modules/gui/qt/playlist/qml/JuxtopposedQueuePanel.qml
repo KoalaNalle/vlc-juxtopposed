@@ -5,6 +5,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -35,7 +36,7 @@ C.Control {
     property bool shuffleActive: false
     property string repeatDescription: repeatActive ? qsTr("Repeat all") : qsTr("Repeat off")
     property string shuffleDescription: shuffleActive ? qsTr("Shuffle on") : qsTr("Shuffle off")
-    property color accentColor: "#D37918"
+    property color accentColor: JuxtopposedPalette.color("#D37918")
     property Component bodyComponent
     readonly property Item bodyContainer: body
     readonly property Item bodyItem: bodyLoader.item
@@ -77,7 +78,7 @@ C.Control {
             // the tab strip's own two-pixel corners along its lower edge.
             Rectangle {
                 anchors.fill: parent
-                color: "#090909"
+                color: JuxtopposedPalette.color("#090909")
                 radius: 10 * root.uiScale
             }
             Rectangle {
@@ -85,7 +86,7 @@ C.Control {
                 anchors.right: parent.right
                 anchors.bottom: parent.bottom
                 height: 40 * root.uiScale
-                color: "#090909"
+                color: JuxtopposedPalette.color("#090909")
                 radius: 2 * root.uiScale
             }
 
@@ -148,7 +149,7 @@ C.Control {
                                     font.family: inter.name
                                     font.pixelSize: 12 * root.uiScale
                                     font.weight: Font.Normal
-                                    color: tabButton.checked ? "#8F8F8F" : "#6B6B6B"
+                                    color: tabButton.checked ? JuxtopposedPalette.color("#8F8F8F") : JuxtopposedPalette.color("#6B6B6B")
                                     textFormat: Text.PlainText
                                     Accessible.ignored: true
                                 }
@@ -196,7 +197,7 @@ C.Control {
                     font.family: inter.name
                     font.pixelSize: 14 * root.uiScale
                     font.weight: Font.Normal
-                    color: "#6B6B6B"
+                    color: JuxtopposedPalette.color("#6B6B6B")
                     textFormat: Text.PlainText
                     elide: Text.ElideRight
                     Accessible.ignored: true

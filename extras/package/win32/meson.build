@@ -5,6 +5,8 @@ install_data('../../../COPYING',   rename : 'COPYING.txt', install_dir : '.')
 install_data('../../../NEWS',      rename : 'NEWS.txt',    install_dir : '.')
 install_data('../../../README.md', rename : 'README.txt',  install_dir : '.')
 install_data('../../../THANKS',    rename : 'THANKS.txt',  install_dir : '.')
+install_data('../../../modules/gui/qt/pixmaps/juxtopposed/Inter-LICENSE.txt', rename : 'Inter-LICENSE.txt', install_dir : '.')
+install_data('../../../modules/gui/qt/pixmaps/juxtopposed/ATTRIBUTION.md', rename : 'Juxtopposed-ATTRIBUTION.txt', install_dir : '.')
 
 install_data('../../../share/icons/vlc.ico',  install_dir : '.')
 

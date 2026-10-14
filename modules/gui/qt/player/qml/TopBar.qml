@@ -488,7 +488,7 @@ FocusScope{
             visible: root._juxtopposedControls
             enabled: Player.hasVideoOutput
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            source: "qrc:/juxtopposed/fullscreen.svg"
+            source: "qrc:/juxtopposed/" + JuxtopposedPalette.icon("fullscreen.svg")
             mirrorIcon: true
             description: Player.fullscreen ? qsTr("Leave fullscreen") : qsTr("Fullscreen")
             Navigation.parentItem: root

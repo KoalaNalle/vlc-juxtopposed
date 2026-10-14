@@ -1,8 +1,17 @@
 # VLC Juxtopposed: first publishable beta plan
 
-14 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
+15 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
+
+The [15 October General checkpoint](juxtopposed-references/native/general-settings-20261015/README.md)
+adds the real native General page, shared modal ownership and live theme/accent
+propagation. Ordinary native backend tests pass 29/0/1; the actual app restores
+Light/Purple and Unicode Errors-only logging after restart, and three normal quits
+preserve the checked existing user configuration. Maintained General/shared-host
+tests and the actual GNU-make resource-remake oracle pass locally. General is the
+only enabled category; Interface/Privacy and the other ten bodies, backdrop blur,
+Light volume, Reset, broader design acceptance and final packaging remain open.
 
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 

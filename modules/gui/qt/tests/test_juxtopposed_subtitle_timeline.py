@@ -76,6 +76,8 @@ class Controller(QObject):
         return True
 
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 controller = Controller()
 view = QQuickView()
 view.setColor(QColor('#111111'))

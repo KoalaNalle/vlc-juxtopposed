@@ -1,6 +1,6 @@
 # VLC Juxtopposed redesign — project handoff
 
-Updated: **14 October 2026**. Read this file first when continuing from a new
+Updated: **15 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
 ## Project and current checkpoint
@@ -15,6 +15,18 @@ Codex session on the home computer.
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
 | Immediate priority | Complete the first publishable beta against all confirmed Juxtopposed design surfaces |
+
+The latest [General Settings checkpoint](doc/juxtopposed-references/native/general-settings-20261015/README.md)
+opens the original General layout through Preferences/Ctrl+P, with native saved
+language/theme/accent, startup and logging controls. The ordinary Windows build
+and backend run pass (29 passed, 0 failed, one separately injected fault case
+skipped); three native app runs quit normally and preserve the checked human VLC
+configuration. Light/Purple and Unicode Errors-only logging restore after restart.
+General is the only enabled category; the other twelve remain unfinished.
+The new maintained General/shared-dialog suites and actual GNU-make remake oracle
+pass locally; exact new-head remote CI must be checked separately. Backdrop blur,
+Light volume artwork, native Reset, remaining categories and final licensed clean
+packaging retain open gates. Continue the full beta goal after this checkpoint.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.

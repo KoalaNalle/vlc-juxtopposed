@@ -27,6 +27,8 @@ args.output_dir.mkdir(parents=True, exist_ok=True)
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/VLCIcons.ttf'))
 assert font_id >= 0
 icon_source = (repo / 'modules/gui/qt/style/vlcicons.hpp').read_text(encoding='utf-8')
@@ -186,7 +188,7 @@ with tempfile.TemporaryDirectory(prefix='vlc-settings-scene-', dir=repo) as temp
                      'player/qml/JuxtopposedSubtitleTimelineToggle.qml',
                      'widgets/qml/JuxtopposedSettingChoice.qml', 'widgets/qml/JuxtopposedSettingSlider.qml']:
         path = repo / 'modules/gui/qt' / relative
-        source = '\n'.join(line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith('import VLC.'))
+        source = '\n'.join(line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith('import VLC.') or line == 'import VLC.Style')
         source = source.replace('Widgets.', '').replace('qrc:/juxtopposed/', asset_base)
         (folder / path.name).write_text(source, encoding='utf-8')
     (folder / 'ColorContext.qml').write_text('''import QtQuick

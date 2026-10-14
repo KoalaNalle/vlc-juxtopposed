@@ -88,6 +88,8 @@ class DialogState(QObject):
 
 
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 shortcut_state, dialog_state = ShortcutState(), DialogState()
 qmlRegisterSingletonInstance(ShortcutState, 'VLC.MainInterface', 1, 0, 'MainCtx', shortcut_state)
 qmlRegisterSingletonInstance(DialogState, 'VLC.Dialogs', 1, 0, 'DialogsProvider', dialog_state)

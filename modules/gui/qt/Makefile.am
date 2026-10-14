@@ -181,6 +181,8 @@ libqt_plugin_la_SOURCES = \
 	maininterface/interface_window_handler.cpp \
 	maininterface/interface_window_handler.hpp \
 	maininterface/mainctx.cpp \
+	maininterface/general_preferences_model.cpp maininterface/general_preferences_model.hpp \
+	util/interface_language_map.hpp \
 	maininterface/mainctx.hpp \
 	maininterface/mainctx_submodels.cpp maininterface/mainctx_submodels.hpp \
 	maininterface/mainui.cpp \
@@ -476,6 +478,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/compositor_platform.moc.cpp \
 	maininterface/interface_window_handler.moc.cpp \
 	maininterface/mainctx.moc.cpp \
+	maininterface/general_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
 	maininterface/navigationmodel.moc.cpp \
@@ -832,8 +835,27 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/global-settings-05bc9.svg \
+	pixmaps/juxtopposed/global-settings-08f95.svg \
+	pixmaps/juxtopposed/global-settings-1b0f7.svg \
+	pixmaps/juxtopposed/global-settings-1bf8a.svg \
+	pixmaps/juxtopposed/global-settings-1f9fe.svg \
+	pixmaps/juxtopposed/global-settings-36bfa.svg \
+	pixmaps/juxtopposed/global-settings-4dae7.svg \
+	pixmaps/juxtopposed/global-settings-66cd9.svg \
+	pixmaps/juxtopposed/global-settings-6db55.svg \
+	pixmaps/juxtopposed/global-settings-764c9.svg \
+	pixmaps/juxtopposed/global-settings-7d179.svg \
+	pixmaps/juxtopposed/global-settings-80d5a.svg \
+	pixmaps/juxtopposed/global-settings-97863.svg \
+	pixmaps/juxtopposed/global-settings-ad68b.svg \
+	pixmaps/juxtopposed/global-settings-cf6e1.svg \
+	pixmaps/juxtopposed/global-settings-ec3f6.svg \
+	pixmaps/juxtopposed/global-settings-f1a4a.svg \
 	pixmaps/juxtopposed/audio.svg \
+	pixmaps/juxtopposed/audio-light.svg \
 	pixmaps/juxtopposed/fullscreen.svg \
+	pixmaps/juxtopposed/fullscreen-light.svg \
 	pixmaps/juxtopposed/Inter-LICENSE.txt \
 	pixmaps/juxtopposed/InterVariable.ttf \
 	pixmaps/juxtopposed/next.svg \
@@ -841,6 +863,7 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/play.svg \
 	pixmaps/juxtopposed/previous.svg \
 	pixmaps/juxtopposed/queue.svg \
+	pixmaps/juxtopposed/queue-light.svg \
 	pixmaps/juxtopposed/queue-add.svg \
 	pixmaps/juxtopposed/queue-bookmarks.svg \
 	pixmaps/juxtopposed/queue-bookmarks-active.svg \
@@ -858,6 +881,7 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/new-playlist-divider.svg \
 	pixmaps/juxtopposed/settings.svg \
 	pixmaps/juxtopposed/subtitles.svg \
+	pixmaps/juxtopposed/subtitles-light.svg \
 	pixmaps/juxtopposed/timeline-chevron-left.svg \
 	pixmaps/juxtopposed/timeline-chevron-right.svg \
 	pixmaps/juxtopposed/timeline-minus.svg \
@@ -867,6 +891,7 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/volume-mask.svg \
 	pixmaps/juxtopposed/volume-muted.svg \
 	pixmaps/juxtopposed/volume.svg \
+	pixmaps/juxtopposed/volume-light.svg \
 	pixmaps/VLCIcons.ttf \
 	pixmaps/addons/addon_default.svg \
 	pixmaps/addons/addon_broken.svg \
@@ -1114,6 +1139,9 @@ libqml_module_dialogs_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
+	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
@@ -1375,6 +1403,7 @@ libqml_module_style_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_style_a_QML =
 libqml_module_style_a_Singleton_QML = \
 	style/AcrylicController.qml \
+	style/JuxtopposedPalette.qml \
 	style/VLCStyle.qml
 libqml_module_style_a_SOURCES = $(QML_MODULE_style_SRC)
 nodist_libqml_module_style_a_SOURCES = style/qmlassets.cpp $(QML_MODULE_style_NODIST_EXTRA)
@@ -1690,9 +1719,10 @@ $(QML_RULES_DEPS): Makefile
 	  echo '$(@D)/qmlcache_loader.cpp: $(@D)/qmlcachegen.rsp'; \
 	  echo '$(@D)/qmlassets.cpp: $$(builddir)/$(@D)/qmldir.qrc $$(builddir)/$(@D)/res.qrc'; \
 	  echo '$(@D)/qmlassets.cpp: $$(libqml_module_$(@D)_a_QML) $$(libqml_module_$(@D)_a_Singleton_QML)'; \
-	  for q in $(libqml_module_$(@D)_a_QML) $(libqml_module_$(@D)_a_Singleton_QML); do \
-	    case $$q in *.qml|*.js|*.mjs) echo "$${q%.*}.cpp: \$$(builddir)/$(@D)/res.qrc";; esac; \
-	  done; \
+	  echo 'qml_$(@D)_cachegen_sources = $$(libqml_module_$(@D)_a_QML) $$(libqml_module_$(@D)_a_Singleton_QML)'; \
+	  echo 'qml_$(@D)_cachegen_qml = $$(qml_$(@D)_cachegen_sources:.qml=.cpp)'; \
+	  echo 'qml_$(@D)_cachegen_js = $$(qml_$(@D)_cachegen_qml:.js=.cpp)'; \
+	  echo '$$(qml_$(@D)_cachegen_js:.mjs=.cpp): $$(builddir)/$(@D)/res.qrc'; \
 	} > $@.tmp && \
 	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv $@.tmp $@; fi
 
@@ -2422,3 +2452,9 @@ check_PROGRAMS += test_qt_shared_modal_hotkeys
 TESTS += test_qt_shared_modal_hotkeys
 endif
 endif
+
+# Production General/dialog-host component suites and GNU make remake oracle.
+EXTRA_DIST += tests/juxtopposed_general_preferences_fixture.py \
+    tests/test_juxtopposed_global_settings.py tests/test_juxtopposed_dialogs_host.py \
+    tests/test_qml_dependencies.py tests/fixtures/juxtopposed_global_settings_assets.json \
+    tests/fixtures/qml_dependencies_eager_recipe.inc

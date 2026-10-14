@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 
 Rectangle {
     id: root
@@ -16,7 +17,7 @@ Rectangle {
     readonly property real innerWidth: Math.max(0, width - 4 * uiScale)
 
     implicitHeight: 28 * uiScale
-    color: "#090909"
+    color: JuxtopposedPalette.color("#090909")
     radius: 6 * uiScale
 
     Rectangle {
@@ -27,7 +28,7 @@ Rectangle {
         width: root.innerWidth * root.boundedPosition
         height: Math.max(0, parent.height - 4 * root.uiScale)
         radius: 4 * root.uiScale
-        color: "#371F06"
+        color: JuxtopposedPalette.color("#371F06")
     }
 
     Repeater {
@@ -44,7 +45,7 @@ Rectangle {
                              * Math.max(0, root.height - 8 * root.uiScale))
             radius: width / 2
             color: (index + 0.5) / root.waveformPeaks.length <= root.boundedPosition
-                   ? "#D37918" : "#4F4F4F"
+                   ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#4F4F4F")
         }
     }
 
@@ -55,6 +56,6 @@ Rectangle {
         x: 2 * root.uiScale + Math.max(0, played.width - width)
         y: played.y
         radius: 4 * root.uiScale
-        color: "#D37918"
+        color: JuxtopposedPalette.color("#D37918")
     }
 }

@@ -1,0 +1,82 @@
+{
+  "checkpoint": "General Settings",
+  "date": "2026-10-15",
+  "platform": "Windows",
+  "publicationStatus": "Draft checkpoint, not beta release",
+  "nativeBackend": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 1,
+    "ordinaryBuild": true,
+    "terminationConfirmed": true,
+    "skippedScope": "The separate native sync/close fault-injection variant is required for the skipped case."
+  },
+  "nativeDesktop": {
+    "normalQuits": 3,
+    "exitCodes": [
+      0,
+      0,
+      0
+    ],
+    "terminationConfirmed": true,
+    "forcedCleanupUsed": false,
+    "existingConfigurationFilesUnchanged": true,
+    "isolatedPortableTestProfile": true,
+    "restoredTheme": "Light",
+    "restoredAccent": "Purple",
+    "restoredLogging": true,
+    "unicodeLogFile": true,
+    "restoredLogDetails": "Errors only",
+    "logFileCreatedOnRestartWithoutLoggingCommandLineOverrides": true,
+    "restartBannerAbsentAfterRestart": true,
+    "nativeAdvancedPreferencesOpened": true,
+    "advancedCancelReturnedToApp": true,
+    "spaceWithSettingsOpenKeptGeneratedVideoPaused": true,
+    "separateFreshFollowupRestoredSavedSettings": true,
+    "spaceOutsideSettingsStartedGeneratedVideoPlayback": true
+  },
+  "repositoryComponents": {
+    "generalPassedGroups": 12,
+    "sharedHostChecks": 24,
+    "directedTransitions": 12,
+    "busyGuards": 9,
+    "qtMessageCount": 0,
+    "nativeBackendOrDesktopAcceptance": false,
+    "initialSharedHostDefaultInvocation": "Setup failed because its checkout root resolved one directory too high.",
+    "sharedHostSetupCorrection": "REPO=HERE.parents[4] changed to REPO=HERE.parents[3]; providers and assertions unchanged.",
+    "correctedDefaultInvocationPassed": true
+  },
+  "qmlDependencyRegression": {
+    "makeVersion": "GNU Make 4.3",
+    "historicalEagerExpectedFailureExit": 2,
+    "currentProductionExit": 0,
+    "realResourcePrerequisites": [
+      "QML",
+      "JS",
+      "MJS",
+      "singleton QML"
+    ],
+    "nativeCompilation": false
+  },
+  "newSettingsScope": {
+    "enabledCategories": [
+      "General"
+    ],
+    "disabledCategoryCount": 12
+  },
+  "pending": [
+    "Native backdrop blur and shadow acceptance",
+    "Light-theme volume styling",
+    "Reset Preferences behavior",
+    "Final clean package and installer acceptance",
+    "Full design/beta acceptance"
+  ],
+  "excludedFromPublicEvidence": [
+    "Personal paths and names",
+    "Hostnames",
+    "Registry fixture identifiers",
+    "Picker captures",
+    "Raw launch/process/UIA/native log files",
+    "Inferred quit-latency measurements"
+  ]
+}

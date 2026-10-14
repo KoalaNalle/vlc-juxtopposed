@@ -68,6 +68,8 @@ class SortCtx;
 class VLCSystray;
 class MediaLib;
 class ColorSchemeModel;
+class GeneralPreferencesModel;
+Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -116,6 +118,7 @@ class MainCtx : public QObject
     Q_PROPERTY(bool hasGridListMode MEMBER m_hasGridListMode NOTIFY hasGridListModeChanged FINAL)
     Q_PROPERTY(Grouping grouping READ grouping WRITE setGrouping NOTIFY groupingChanged FINAL)
     Q_PROPERTY(ColorSchemeModel* colorScheme READ getColorScheme CONSTANT FINAL)
+    Q_PROPERTY(GeneralPreferencesModel* generalPreferences READ getGeneralPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -245,6 +248,7 @@ public:
     inline bool albumSections() const { return m_albumSections; }
     inline bool lyricsMode() const { return m_lyricsMode; }
     inline ColorSchemeModel* getColorScheme() const { return m_colorScheme; }
+    inline GeneralPreferencesModel* getGeneralPreferences() const { return m_generalPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -458,6 +462,7 @@ protected:
     bool                 m_hasGridListMode = false;
     Grouping             m_grouping = GROUPING_NONE;
     ColorSchemeModel*    m_colorScheme = nullptr;
+    GeneralPreferencesModel* m_generalPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // NOTE: Ideally this should be a QVLCBool.
     bool                 m_hasToolbarMenu = false;

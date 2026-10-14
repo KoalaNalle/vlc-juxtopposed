@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 
 C.ToolButton {
@@ -27,9 +28,9 @@ C.ToolButton {
 
     background: Rectangle {
         radius: 4 * root.uiScale
-        color: root.down ? "#404040" : root.hovered ? "#303030" : root.fillColor
+        color: root.down ? JuxtopposedPalette.color("#404040") : root.hovered ? JuxtopposedPalette.color("#303030") : root.fillColor
         border.width: root.visualFocus ? 2 * root.uiScale : 0
-        border.color: "#D37918"
+        border.color: JuxtopposedPalette.color("#D37918")
     }
 
     contentItem: Item {

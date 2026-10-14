@@ -133,7 +133,7 @@ Widgets.ListViewExt {
             showMove: false
             title: row.name
             durationText: root.formatTimeMs(row.timeMs)
-            titleColor: row.selected ? theme.fg.primary : "#969696"
+            titleColor: row.selected ? theme.fg.primary : JuxtopposedPalette.color("#969696")
         }
 
         TapHandler {
@@ -160,7 +160,7 @@ Widgets.ListViewExt {
         anchors.centerIn: parent
         visible: root.count === 0
         text: qsTr("No bookmarks yet")
-        color: "#969696"
+        color: JuxtopposedPalette.color("#969696")
         font.pixelSize: 14 * root.uiScale
     }
 }

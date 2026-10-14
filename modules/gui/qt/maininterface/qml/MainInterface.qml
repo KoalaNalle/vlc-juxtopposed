@@ -336,102 +336,18 @@ Item {
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
         }
 
-        JuxtopposedNetworkDialog {
-            id: networkStreamDialog
-            parent: g_mainInterface
-            controller: DialogsProvider.networkStream
+        JuxtopposedDialogsHost {
+            anchors.fill: parent
+            dialogsProvider: DialogsProvider
+            mainCtx: MainCtx
+            appearance: JuxtopposedPalette
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            onFallbackFocusRequested: {
-                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
-            }
-        }
-
-        Binding {
-            target: DialogsProvider
-            property: "qmlDialogVisible"
-            value: networkStreamDialog.visible || newPlaylistDialog.visible || conversionDialog.visible
-            restoreMode: Binding.RestoreBindingOrValue
-        }
-
-        JuxtopposedNewPlaylistDialog {
-            id: newPlaylistDialog
-            parent: g_mainInterface
-            controller: DialogsProvider.newPlaylist
-            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            onFilesRequested: DialogsProvider.chooseNewPlaylistFiles()
-            onThumbnailRequested: DialogsProvider.chooseNewPlaylistThumbnail()
+            fallbackFocusItem: viewLoader.item
             onPlaylistRequested: playlist => {
                 MainCtx.playerView = false
                 History.push(["playlists", "list"], {parentId: playlist, title: DialogsProvider.newPlaylist.name.trim()}, Qt.PopupFocusReason)
             }
-            onFallbackFocusRequested: {
-                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
-            }
-        }
-
-        JuxtopposedConversionDialog {
-            id: conversionDialog
-            parent: g_mainInterface
-            controller: DialogsProvider.conversion
-            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            onSourceRequested: DialogsProvider.chooseConversionSource()
-            onDestinationRequested: DialogsProvider.chooseConversionDestination()
-            onAllProfilesRequested: DialogsProvider.openLegacyTranscodingDialog()
-            onFallbackFocusRequested: {
-                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
-            }
-        }
-
-        Widgets.TextInputFocus {
-            id: textInputFocus
-            focusItem: root.Window.window?.activeFocusItem ?? null
-        }
-
-        Binding {
-            target: DialogsProvider
-            property: "qmlInputFocused"
-            value: textInputFocus.editing
-            restoreMode: Binding.RestoreBindingOrValue
-        }
-
-        Connections {
-            target: DialogsProvider
-            function onNewPlaylistSaved(playlist) {
-                MainCtx.mediaLibrary?.homeActivity?.refresh()
-            }
-            function onShowNewPlaylistDialog() {
-                if (conversionDialog.visible) {
-                    if (conversionDialog.controller.busy) return
-                    conversionDialog.requestClose()
-                }
-                if (networkStreamDialog.visible) {
-                    if (networkStreamDialog.controller.busy) return
-                    networkStreamDialog.reject()
-                }
-                newPlaylistDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
-            }
-            function onShowNetworkStreamDialog() {
-                if (conversionDialog.visible) {
-                    if (conversionDialog.controller.busy) return
-                    conversionDialog.requestClose()
-                }
-                if (newPlaylistDialog.visible) {
-                    if (newPlaylistDialog.controller.busy) return
-                    newPlaylistDialog.reject()
-                }
-                networkStreamDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
-            }
-            function onShowConversionDialog() {
-                if (networkStreamDialog.visible) {
-                    if (networkStreamDialog.controller.busy) return
-                    networkStreamDialog.reject()
-                }
-                if (newPlaylistDialog.visible) {
-                    if (newPlaylistDialog.controller.busy) return
-                    newPlaylistDialog.reject()
-                }
-                conversionDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
-            }
+            onPlaylistSaved: MainCtx.mediaLibrary?.homeActivity?.refresh()
         }
 
         Loader {

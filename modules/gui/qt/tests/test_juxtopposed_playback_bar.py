@@ -32,6 +32,8 @@ def message_handler(kind, context, message):
     messages.append(message)
 qInstallMessageHandler(message_handler)
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf'))
 assert font_id >= 0
 app.setFont(QFont(QFontDatabase.applicationFontFamilies(font_id)[0]))

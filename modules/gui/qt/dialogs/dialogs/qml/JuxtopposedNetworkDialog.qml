@@ -2,6 +2,7 @@
 // Copyright (C) 2026 VLC authors and VideoLAN
 // Original visual design by Juxtopposed: https://www.youtube.com/@juxtopposed
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -71,12 +72,12 @@ C.Dialog {
         onActivated: root.submit()
     }
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
-    background: Rectangle { radius: 12 * root.uiScale; color: "#171717" }
-    C.Overlay.modal: Rectangle { color: "#80000000" }
+    background: Rectangle { radius: 12 * root.uiScale; color: JuxtopposedPalette.color("#171717") }
+    C.Overlay.modal: Rectangle { color: JuxtopposedPalette.color("#80000000") }
 
     header: Rectangle {
         implicitHeight: 44 * root.uiScale
-        color: "#0B0B0B"
+        color: JuxtopposedPalette.color("#0B0B0B")
         radius: 12 * root.uiScale
         Rectangle {
             anchors.left: parent.left
@@ -91,7 +92,7 @@ C.Dialog {
             anchors.right: closeButton.left
             anchors.verticalCenter: parent.verticalCenter
             text: root.title
-            color: "#8F8F8F"
+            color: JuxtopposedPalette.color("#8F8F8F")
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
             elide: Text.ElideRight
@@ -113,9 +114,9 @@ C.Dialog {
             onClicked: root.reject()
             background: Rectangle {
                 radius: 4 * root.uiScale
-                color: closeButton.hovered ? "#303030" : "transparent"
+                color: closeButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                 border.width: closeButton.visualFocus ? root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
             }
             contentItem: Item {
                 Rectangle {
@@ -123,14 +124,14 @@ C.Dialog {
                     width: 16 * root.uiScale
                     height: root.uiScale
                     rotation: 45
-                    color: "#8F8F8F"
+                    color: JuxtopposedPalette.color("#8F8F8F")
                 }
                 Rectangle {
                     anchors.centerIn: parent
                     width: 16 * root.uiScale
                     height: root.uiScale
                     rotation: -45
-                    color: "#8F8F8F"
+                    color: JuxtopposedPalette.color("#8F8F8F")
                 }
             }
         }
@@ -156,14 +157,14 @@ C.Dialog {
                     text: qsTr("Network URL")
                     font.family: inter.name
                     font.pixelSize: 14 * root.uiScale
-                    color: "#BEBEBE"
+                    color: JuxtopposedPalette.color("#BEBEBE")
                 }
                 Text {
                     Layout.fillWidth: true
                     text: qsTr("You can enter multiple links to load, one per line.")
                     font.family: inter.name
                     font.pixelSize: 13 * root.uiScale
-                    color: "#686868"
+                    color: JuxtopposedPalette.color("#686868")
                     wrapMode: Text.WordWrap
                 }
                 C.ScrollView {
@@ -173,16 +174,16 @@ C.Dialog {
                     Layout.topMargin: 6 * root.uiScale
                     clip: true
                     C.ScrollBar.horizontal.policy: C.ScrollBar.AlwaysOff
-                    background: Rectangle { color: "#090909"; radius: 3 * root.uiScale }
+                    background: Rectangle { color: JuxtopposedPalette.color("#090909"); radius: 3 * root.uiScale }
                     C.TextArea {
                         id: addresses
                         objectName: "networkUrls"
                         text: root.controller ? root.controller.urlText : ""
                         enabled: !root.controller || !root.controller.busy
                         placeholderText: qsTr("e.g., https://www.example.com/stream.avi")
-                        placeholderTextColor: "#494949"
-                        color: "#BEBEBE"
-                        selectionColor: "#6B431C"
+                        placeholderTextColor: JuxtopposedPalette.color("#494949")
+                        color: JuxtopposedPalette.color("#BEBEBE")
+                        selectionColor: JuxtopposedPalette.color("#6B431C")
                         font.family: inter.name
                         font.pixelSize: 13 * root.uiScale
                         padding: 10 * root.uiScale
@@ -202,18 +203,18 @@ C.Dialog {
                             color: "transparent"
                             radius: 3 * root.uiScale
                             border.width: addresses.activeFocus ? root.uiScale : 0
-                            border.color: "#D37918"
+                            border.color: JuxtopposedPalette.color("#D37918")
                         }
                     }
                 }
-                Rectangle { Layout.fillWidth: true; Layout.topMargin: 8 * root.uiScale; height: root.uiScale; color: "#202020" }
+                Rectangle { Layout.fillWidth: true; Layout.topMargin: 8 * root.uiScale; height: root.uiScale; color: JuxtopposedPalette.color("#202020") }
                 Text {
                     Layout.topMargin: 8 * root.uiScale
                     text: qsTr("Playlist Name") + " <font color='#686868'>" + qsTr("(optional)") + "</font>"
                     textFormat: Text.RichText
                     font.family: inter.name
                     font.pixelSize: 14 * root.uiScale
-                    color: "#BEBEBE"
+                    color: JuxtopposedPalette.color("#BEBEBE")
                 }
                 Text {
                     Layout.fillWidth: true
@@ -222,7 +223,7 @@ C.Dialog {
                           : qsTr("The playlist will be saved and displayed with this title.")
                     font.family: inter.name
                     font.pixelSize: 13 * root.uiScale
-                    color: "#686868"
+                    color: JuxtopposedPalette.color("#686868")
                     wrapMode: Text.WordWrap
                 }
                 C.TextField {
@@ -234,9 +235,9 @@ C.Dialog {
                     text: root.controller ? root.controller.playlistName : ""
                     enabled: !!root.controller && root.controller.playlistAvailable && !root.controller.busy
                     placeholderText: qsTr("e.g., Favorite TV Channels")
-                    placeholderTextColor: "#494949"
-                    color: "#BEBEBE"
-                    selectionColor: "#6B431C"
+                    placeholderTextColor: JuxtopposedPalette.color("#494949")
+                    color: JuxtopposedPalette.color("#BEBEBE")
+                    selectionColor: JuxtopposedPalette.color("#6B431C")
                     font.family: inter.name
                     font.pixelSize: 13 * root.uiScale
                     leftPadding: 10 * root.uiScale
@@ -251,10 +252,10 @@ C.Dialog {
                     onTextEdited: root.controller.playlistName = text
                     onAccepted: root.submit()
                     background: Rectangle {
-                        color: "#090909"
+                        color: JuxtopposedPalette.color("#090909")
                         radius: 3 * root.uiScale
                         border.width: playlistName.activeFocus ? root.uiScale : 0
-                        border.color: "#D37918"
+                        border.color: JuxtopposedPalette.color("#D37918")
                     }
                 }
                 Text {
@@ -264,7 +265,7 @@ C.Dialog {
                     text: root.controller ? root.controller.error : ""
                     font.family: inter.name
                     font.pixelSize: 13 * root.uiScale
-                    color: "#D98779"
+                    color: JuxtopposedPalette.color("#D98779")
                     wrapMode: Text.WordWrap
                     Accessible.role: Accessible.StaticText
                     Accessible.name: text
@@ -298,13 +299,13 @@ C.Dialog {
                 font: parent.font
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                color: parent.enabled ? "#BEBEBE" : "#555555"
+                color: parent.enabled ? JuxtopposedPalette.color("#BEBEBE") : JuxtopposedPalette.color("#555555")
             }
             background: Rectangle {
-                color: parent.hovered ? "#303030" : "#1B1B1B"
+                color: parent.hovered ? JuxtopposedPalette.color("#303030") : JuxtopposedPalette.color("#1B1B1B")
                 radius: 3 * root.uiScale
                 border.width: parent.visualFocus ? root.uiScale : 0
-                border.color: "#D37918"
+                border.color: JuxtopposedPalette.color("#D37918")
             }
         }
         C.Button {
@@ -329,13 +330,13 @@ C.Dialog {
                 font: parent.font
                 horizontalAlignment: Text.AlignHCenter
                 verticalAlignment: Text.AlignVCenter
-                color: parent.enabled ? "#141414" : "#555555"
+                color: parent.enabled ? JuxtopposedPalette.color("#141414") : JuxtopposedPalette.color("#555555")
             }
             background: Rectangle {
-                color: parent.enabled ? (parent.down ? "#B16614" : "#D37918") : "#1B1B1B"
+                color: parent.enabled ? (parent.down ? JuxtopposedPalette.color("#B16614") : JuxtopposedPalette.color("#D37918")) : JuxtopposedPalette.color("#1B1B1B")
                 radius: 3 * root.uiScale
                 border.width: parent.visualFocus ? root.uiScale : 0
-                border.color: "#FFFFFF"
+                border.color: JuxtopposedPalette.color("#FFFFFF")
             }
         }
     }

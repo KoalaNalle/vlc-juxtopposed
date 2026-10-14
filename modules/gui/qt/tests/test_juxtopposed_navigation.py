@@ -27,6 +27,8 @@ repo = Path(__file__).resolve().parents[4]
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 app = QGuiApplication([])
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 icon_font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/VLCIcons.ttf'))
 assert icon_font_id >= 0
 icon_family = QFontDatabase.applicationFontFamilies(icon_font_id)[0]

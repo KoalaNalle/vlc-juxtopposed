@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -32,9 +33,9 @@ Flickable {
     property string errorText: ""
     property string searchPattern: ""
     property bool mediaEmpty: false
-    property color surfaceColor: "#0F0F0F"
-    property color textColor: "#969696"
-    property color accentColor: "#D37918"
+    property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
+    property color textColor: JuxtopposedPalette.color("#969696")
+    property color accentColor: JuxtopposedPalette.color("#D37918")
     property Item focusedEntry: null
     signal mediaRequested(var entry, bool resume, int reason)
     signal folderRequested(var entry, int reason)
@@ -125,7 +126,7 @@ Flickable {
             onClicked: root.seeAllRequested(section.category, focusReason)
             onActiveFocusChanged: if (activeFocus) { root.focusedEntry = this; root.reveal(this) }
             background: Rectangle {
-                color: heading.hovered ? "#242424" : "transparent"
+                color: heading.hovered ? JuxtopposedPalette.color("#242424") : "transparent"
                 radius: 4 * root.uiScale
                 border.width: heading.visualFocus ? 2 * root.uiScale : 0
                 border.color: root.accentColor
@@ -196,7 +197,7 @@ Flickable {
             wrapMode: Text.WordWrap
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
-            color: "#626262"
+            color: JuxtopposedPalette.color("#626262")
         }
     }
 

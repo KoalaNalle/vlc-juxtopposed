@@ -21,6 +21,7 @@
 #include <QSettings>
 #include <QFile>
 #include <maininterface/mainctx.hpp>
+#include "maininterface/general_preferences_model.hpp"
 #include <vlc_modules.h>
 #include <vlc_picture.h>
 
@@ -304,35 +305,42 @@ SystemPalette::SystemPalette(QObject* parent)
 
 void SystemPalette::componentComplete()
 {
-    {
-        assert(m_ctx);
-        char* accentColor = var_InheritString(m_ctx->getIntf(), "qt-accent-color");
-        assert(accentColor);
-
-        if (!strcmp(accentColor, "default"))
-        {
-            // Use default
-        }
-#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
-        else if (!strcmp(accentColor, "system"))
-        {
-            assert(qApp);
-            const auto palette = qApp->palette();
-
-            orange500 = palette.color(QPalette::Normal, QPalette::Accent);
-            orange800 = orange500.lighter(150);
-        }
-#endif
-        else
-        {
-            orange500 = QColor(accentColor);
-            orange800 = orange500.lighter(150);
-        }
-
-        free(accentColor);
-    }
-
+    m_componentComplete = true;
+    reloadAccentColor();
     updatePalette();
+}
+
+bool SystemPalette::reloadAccentColor()
+{
+    if (!m_ctx || !m_componentComplete)
+        return false;
+    char *raw = config_GetPsz("qt-accent-color");
+    const QString configured = QString::fromUtf8(raw ? raw : "default");
+    free(raw);
+    // System accent can change independently of the stored string.
+    if (configured == m_accentConfiguration && configured != QStringLiteral("system"))
+        return false;
+    m_accentConfiguration = configured;
+    orange500 = QColor(QStringLiteral("#FF8800"));
+    orange800 = QColor(QStringLiteral("#FF610A"));
+#if QT_VERSION >= QT_VERSION_CHECK(6, 6, 0)
+    if (configured == QStringLiteral("system"))
+    {
+        orange500 = qApp->palette().color(QPalette::Normal, QPalette::Accent);
+        orange800 = orange500.lighter(150);
+    }
+    else
+#endif
+    if (configured != QStringLiteral("default"))
+    {
+        const QColor color(configured);
+        if (color.isValid())
+        {
+            orange500 = color;
+            orange800 = orange500.lighter(150);
+        }
+    }
+    return true;
 }
 
 ColorSchemeModel::ColorScheme SystemPalette::source() const
@@ -377,7 +385,14 @@ void SystemPalette::setCtx(MainCtx* ctx)
 {
     if (ctx == m_ctx)
         return;
+    QObject::disconnect(m_preferencesConnection);
     m_ctx = ctx;
+    if (m_ctx && m_ctx->getGeneralPreferences())
+        m_preferencesConnection = connect(m_ctx->getGeneralPreferences(),
+            &GeneralPreferencesModel::valuesChanged, this, [this]() {
+                if (reloadAccentColor()) updatePalette();
+            });
+    reloadAccentColor();
     emit ctxChanged();
     updatePalette();
 }

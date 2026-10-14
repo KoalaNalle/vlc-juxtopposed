@@ -4,6 +4,7 @@
  * Code licensed under GPLv2 or later.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import VLC.Widgets as Widgets
 
@@ -17,9 +18,9 @@ C.AbstractButton {
     property string kind: "video"
     property var entry: ({})
     property bool gridMode: true
-    property color surfaceColor: "#0F0F0F"
-    property color textColor: "#969696"
-    property color accentColor: "#D37918"
+    property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
+    property color textColor: JuxtopposedPalette.color("#969696")
+    property color accentColor: JuxtopposedPalette.color("#D37918")
     readonly property bool video: kind === "video"
     readonly property bool audio: kind === "audio"
     readonly property string title: video ? (entry?.fileName || entry?.title || qsTr("Unknown title"))
@@ -45,7 +46,7 @@ C.AbstractButton {
     C.ToolTip.delay: 600
 
     background: Rectangle {
-        color: root.down ? "#303030" : root.hovered ? "#1E1E1E" : "transparent"
+        color: root.down ? JuxtopposedPalette.color("#303030") : root.hovered ? JuxtopposedPalette.color("#1E1E1E") : "transparent"
         radius: 8 * root.uiScale
         border.width: root.visualFocus ? 2 * root.uiScale : 0
         border.color: root.accentColor
@@ -59,7 +60,7 @@ C.AbstractButton {
             width: Math.min(root.coverWidth, parent.width)
             height: root.gridMode ? width * (root.video ? 9 / 16 : 1) : root.coverHeight
             radius: (root.gridMode ? 10 : 2) * root.uiScale
-            color: root.video || root.audio ? "#000000" : "#1A1A1A"
+            color: root.video || root.audio ? JuxtopposedPalette.color("#000000") : JuxtopposedPalette.color("#1A1A1A")
             clip: true
             Widgets.ImageExt {
                 id: mediaArt
@@ -122,7 +123,7 @@ C.AbstractButton {
             textFormat: Text.PlainText
             font.family: root.fontFamily
             font.pixelSize: 16 * root.uiScale
-            color: "#626262"
+            color: JuxtopposedPalette.color("#626262")
             elide: Text.ElideRight
             Accessible.ignored: true
         }

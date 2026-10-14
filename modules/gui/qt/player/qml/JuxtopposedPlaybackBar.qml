@@ -5,6 +5,7 @@
  * Code licensed under GPLv2 or later; artwork under CC BY 4.0.
  *****************************************************************************/
 import QtQuick
+import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
@@ -84,7 +85,7 @@ C.Pane {
         source: root.assetBase + "InterVariable.ttf"
     }
 
-    background: Rectangle { color: "#1B1B1B" }
+    background: Rectangle { color: JuxtopposedPalette.color("#1B1B1B") }
 
     RowLayout {
         id: row
@@ -118,12 +119,12 @@ C.Pane {
                 implicitHeight: 28 * uiScale
                 source: root.assetBase + (root.playing ? "pause.svg" : "play.svg")
                 description: root.playing ? qsTr("Pause") : qsTr("Play")
-                fillColor: root.playing ? "#6B6B6B" : "#D37918"
+                fillColor: root.playing ? JuxtopposedPalette.color("#6B6B6B") : JuxtopposedPalette.playButtonAccent
                 background: Rectangle {
                     radius: 6 * root.uiScale
-                    color: parent.down ? "#B16614" : parent.fillColor
+                    color: parent.down ? JuxtopposedPalette.color("#B16614") : parent.fillColor
                     border.width: parent.visualFocus ? 2 * root.uiScale : 0
-                    border.color: "#FFFFFF"
+                    border.color: JuxtopposedPalette.color("#FFFFFF")
                 }
                 onClicked: root.playPauseRequested()
             }
@@ -168,7 +169,7 @@ C.Pane {
                 anchors.verticalCenter: parent.verticalCenter
                 width: Math.max(76 * root.uiScale, implicitWidth + 16 * root.uiScale)
                 text: root.elapsed
-                color: "#8F8F8F"
+                color: JuxtopposedPalette.color("#8F8F8F")
                 font.family: inter.name
                 font.pixelSize: 15 * root.uiScale
                 horizontalAlignment: Text.AlignHCenter
@@ -202,15 +203,15 @@ C.Pane {
                 Accessible.name: qsTr("Duration or remaining time: %1").arg(text)
                 background: Rectangle {
                     radius: 6 * root.uiScale
-                    color: parent.hovered ? "#303030" : "transparent"
+                    color: parent.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                     border.width: parent.visualFocus ? root.uiScale : 0
-                    border.color: "#D37918"
+                    border.color: JuxtopposedPalette.color("#D37918")
                 }
                 contentItem: Text {
                     text: duration.text
                     font.family: inter.name
                     font.pixelSize: 15 * root.uiScale
-                    color: "#8F8F8F"
+                    color: JuxtopposedPalette.color("#8F8F8F")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -231,7 +232,7 @@ C.Pane {
                 objectName: "juxtopposedMute"
                 uiScale: root.uiScale
                 implicitWidth: 24 * uiScale
-                source: root.assetBase + (root.muted ? "volume-muted.svg" : "volume.svg")
+                source: root.assetBase + (root.muted ? "volume-muted.svg" : JuxtopposedPalette.icon("volume.svg"))
                 mirrorIcon: true
                 description: root.muted ? qsTr("Unmute") : qsTr("Mute")
                 onClicked: root.muteRequested()
@@ -296,7 +297,7 @@ C.Pane {
                         color: "transparent"
                         radius: 4 * root.uiScale
                         border.width: volume.visualFocus ? 2 * root.uiScale : 0
-                        border.color: "#D37918"
+                        border.color: JuxtopposedPalette.color("#D37918")
                     }
                 }
 
@@ -318,7 +319,7 @@ C.Pane {
                 id: audioButton
                 objectName: "juxtopposedAudio"
                 uiScale: root.uiScale
-                source: root.assetBase + "audio.svg"
+                source: root.assetBase + JuxtopposedPalette.icon("audio.svg")
                 description: qsTr("Audio tracks")
                 onClicked: root.audioRequested()
             }
@@ -326,7 +327,7 @@ C.Pane {
                 id: subtitlesButton
                 objectName: "juxtopposedSubtitles"
                 uiScale: root.uiScale
-                source: root.assetBase + "subtitles.svg"
+                source: root.assetBase + JuxtopposedPalette.icon("subtitles.svg")
                 description: qsTr("Subtitle tracks")
                 onClicked: root.subtitlesRequested()
             }
@@ -344,9 +345,9 @@ C.Pane {
             id: queueButton
             objectName: "juxtopposedQueue"
             uiScale: root.uiScale
-            source: root.assetBase + "queue.svg"
+            source: root.assetBase + JuxtopposedPalette.icon("queue.svg")
             description: qsTr("Play queue")
-            fillColor: root.queueVisible ? "#371F06" : "transparent"
+            fillColor: root.queueVisible ? JuxtopposedPalette.color("#371F06") : "transparent"
             Accessible.checkable: true
             Accessible.checked: root.queueVisible
             onClicked: root.queueRequested()
