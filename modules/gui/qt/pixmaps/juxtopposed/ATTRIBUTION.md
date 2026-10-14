@@ -35,3 +35,11 @@ Both frames belong to the same credited VLC Redesign. Native settings binding,
 keyboard/modal behavior, shared accent selection and unshown Light surfaces
 are implementation adaptations. The design and artwork retain the CC BY 4.0
 license and Juxtopposed attribution above.
+
+The `volume-background-light.svg` and `volume-fill-light.svg` files are unchanged
+original exports from Player - Light (`2425:13624`), volume background
+`I2425:13645;491:1733;244:226` and original full fill vector
+`I2425:13645;491:1733;244:229`. The latter is the complete 86px fill inside the
+designer's clipped 53px preview group, not a stretched clipped fragment.
+Dynamic clipping to native volume and Light/Dark asset selection are functional
+adaptations; the original artwork retains Juxtopposed's attribution above.

@@ -13,6 +13,11 @@ tests and the actual GNU-make resource-remake oracle pass locally. General is th
 only enabled category; Interface/Privacy and the other ten bodies, backdrop blur,
 Light volume, Reset, broader design acceptance and final packaging remain open.
 
+The following [Light volume checkpoint](juxtopposed-references/native/light-volume-20261015/README.md)
+closes the original Light background/full-fill selection gap with a rebuilt native
+pointer/keyboard/mute/wheel/theme-switch journey and seven maintained component
+groups. Complete Light states, System events and full design acceptance stay open.
+
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 
 Original design and artwork belong to [Juxtopposed](https://www.youtube.com/@juxtopposed). Source references are the [community design](https://www.figma.com/community/file/1691465999134370980/vlc-redesign), [accessible design copy](https://www.figma.com/design/zdNUYRVOH9lEtIxMYvh8DV/VLC-Redesign--Community-), unchanged manual exports and the supplied local walkthrough. Preserve designer artwork bytes, provenance and the existing CC BY 4.0/Inter/VLC license materials.

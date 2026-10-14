@@ -274,11 +274,13 @@ C.Pane {
                         y: 0.32 * root.uiScale
                         width: 89 * root.uiScale
                         height: 27.36 * root.uiScale
-                        source: root.assetBase + "volume-background.svg"
+                        objectName: "juxtopposedVolumeOriginalBackground"
+                        source: root.assetBase + JuxtopposedPalette.icon("volume-background.svg")
                         sourceSize: Qt.size(width, height)
                     }
 
                     Item {
+                        objectName: "juxtopposedVolumeFillClip"
                         x: 1.5 * root.uiScale
                         y: 1.72 * root.uiScale
                         width: Math.max(0, Math.min(1, volume.position)) * 86 * root.uiScale
@@ -287,7 +289,8 @@ C.Pane {
                         Image {
                             width: 86 * root.uiScale
                             height: 24.56 * root.uiScale
-                            source: root.assetBase + "volume-fill.svg"
+                            objectName: "juxtopposedVolumeOriginalFill"
+                            source: root.assetBase + JuxtopposedPalette.icon("volume-fill.svg")
                             sourceSize: Qt.size(width, height)
                         }
                     }

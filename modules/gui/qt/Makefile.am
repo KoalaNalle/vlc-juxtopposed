@@ -835,6 +835,8 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/volume-background-light.svg \
+	pixmaps/juxtopposed/volume-fill-light.svg \
 	pixmaps/juxtopposed/global-settings-05bc9.svg \
 	pixmaps/juxtopposed/global-settings-08f95.svg \
 	pixmaps/juxtopposed/global-settings-1b0f7.svg \
@@ -2458,3 +2460,9 @@ EXTRA_DIST += tests/juxtopposed_general_preferences_fixture.py \
     tests/test_juxtopposed_global_settings.py tests/test_juxtopposed_dialogs_host.py \
     tests/test_qml_dependencies.py tests/fixtures/juxtopposed_global_settings_assets.json \
     tests/fixtures/qml_dependencies_eager_recipe.inc
+
+# Original Light/Dark volume artwork and production native-binding contract.
+EXTRA_DIST += tests/test_juxtopposed_light_volume.py \
+    tests/fixtures/juxtopposed_light_volume_assets.json \
+    tests/fixtures/juxtopposed_light_volume_reference.png \
+    tests/fixtures/juxtopposed_light_volume_reference.md

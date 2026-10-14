@@ -28,6 +28,14 @@ pass locally; exact new-head remote CI must be checked separately. Backdrop blur
 Light volume artwork, native Reset, remaining categories and final licensed clean
 packaging retain open gates. Continue the full beta goal after this checkpoint.
 
+The subsequent [Light volume checkpoint](doc/juxtopposed-references/native/light-volume-20261015/README.md)
+uses the exact original complete Light artwork. Its ordinary Qt build and native
+pointer/keyboard/mute/wheel/theme-switch journey pass, including normal quit and
+preserved checked human settings. Seven maintained component groups and the
+existing playback/43 appearance checks pass. All four CI jobs on the preceding
+General head `a8688e13fa` are green; the new head needs its own checks. Full Light
+fidelity, native System events, backdrop and the remaining beta gates stay open.
+
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.
 Basic native startup/plugin loading and Qt GUI loading pass. Initial real-video

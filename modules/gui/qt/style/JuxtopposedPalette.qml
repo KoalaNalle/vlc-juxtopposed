@@ -30,7 +30,9 @@ QtObject {
         : Qt.darker(accent, 1.23)
 
     function icon(name) {
-        const variants = {"volume.svg": "volume-light.svg", "audio.svg": "audio-light.svg",
+        const variants = {"volume.svg": "volume-light.svg",
+            "volume-background.svg": "volume-background-light.svg",
+            "volume-fill.svg": "volume-fill-light.svg", "audio.svg": "audio-light.svg",
             "subtitles.svg": "subtitles-light.svg", "queue.svg": "queue-light.svg",
             "fullscreen.svg": "fullscreen-light.svg"}
         return !dark && name in variants ? variants[name] : name
