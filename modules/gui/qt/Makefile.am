@@ -232,6 +232,12 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/mlrecentmediamodel.hpp \
 	medialibrary/mlrecentvideomodel.cpp \
 	medialibrary/mlrecentvideomodel.hpp \
+	medialibrary/mlrecentaudiomodel.cpp \
+	medialibrary/mlrecentaudiomodel.hpp \
+	medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivity.hpp \
+	medialibrary/mlhomeactivitydata.cpp \
+	medialibrary/mlhomeactivitydata.hpp \
 	medialibrary/mlurlmodel.cpp \
 	medialibrary/mlurlmodel.hpp \
 	medialibrary/mlvideo.cpp \
@@ -476,6 +482,8 @@ nodist_libqt_plugin_la_SOURCES = \
 	medialibrary/mlqmltypes.moc.cpp \
 	medialibrary/mlrecentmediamodel.moc.cpp \
 	medialibrary/mlrecentvideomodel.moc.cpp \
+	medialibrary/mlrecentaudiomodel.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
 	medialibrary/mlurlmodel.moc.cpp \
 	medialibrary/mlvideo.moc.cpp \
 	medialibrary/mlmediamodel.moc.cpp \
@@ -1130,6 +1138,14 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/AudioGridItem.qml \
 	medialibrary/qml/HomeDisplay.qml \
 	medialibrary/qml/HomePage.qml \
+	medialibrary/qml/JuxtopposedHomeCard.qml \
+	medialibrary/qml/JuxtopposedHomeDashboard.qml \
+	medialibrary/qml/JuxtopposedHomeCollectionView.qml \
+	medialibrary/qml/JuxtopposedHomePage.qml \
+	medialibrary/qml/JuxtopposedHomeHistoryPage.qml \
+	medialibrary/qml/JuxtopposedHomeCollectionPage.qml \
+	medialibrary/qml/JuxtopposedHomeFolderPage.qml \
+	medialibrary/qml/JuxtopposedHomeSorting.js \
 	medialibrary/qml/MediaView.qml \
 	medialibrary/qml/VideoGroupDisplay.qml \
 	medialibrary/qml/MusicAlbums.qml \
@@ -1644,7 +1660,9 @@ $(QML_RULES_DEPS): Makefile
 	  echo '$(@D)/qmlcache_loader.cpp: $(@D)/qmlcachegen.rsp'; \
 	  echo '$(@D)/qmlassets.cpp: $$(builddir)/$(@D)/qmldir.qrc $$(builddir)/$(@D)/res.qrc'; \
 	  echo '$(@D)/qmlassets.cpp: $$(libqml_module_$(@D)_a_QML) $$(libqml_module_$(@D)_a_Singleton_QML)'; \
-	  echo '$$(libqml_module_$(@D)_a_QML:.qml=.cpp) $$(libqml_module_$(@D)_a_Singleton_QML:.qml=.cpp): $$(builddir)/$(@D)/res.qrc'; \
+	  for q in $(libqml_module_$(@D)_a_QML) $(libqml_module_$(@D)_a_Singleton_QML); do \
+	    case $$q in *.qml|*.js|*.mjs) echo "$${q%.*}.cpp: \$$(builddir)/$(@D)/res.qrc";; esac; \
+	  done; \
 	} > $@.tmp && \
 	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv $@.tmp $@; fi
 
@@ -1838,6 +1856,8 @@ test_ml_model_SOURCES = \
 	medialibrary/mlqmltypes.hpp \
 	medialibrary/mlbasemodel.hpp medialibrary/mlbasemodel.cpp \
 	medialibrary/medialib.hpp medialibrary/medialib.cpp \
+	medialibrary/mlhomeactivity.hpp medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivitydata.hpp medialibrary/mlhomeactivitydata.cpp \
 	medialibrary/mlthreadpool.hpp medialibrary/mlthreadpool.cpp \
 	playlist/playlist_controller.hpp playlist/playlist_controller.cpp \
 	playlist/playlist_item.hpp playlist/playlist_item.cpp
@@ -1851,6 +1871,7 @@ nodist_test_ml_model_SOURCES = \
 	medialibrary/mlqmltypes.moc.cpp \
 	medialibrary/mlbasemodel.moc.cpp \
 	medialibrary/medialib.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
 	medialibrary/mlthreadpool.moc.cpp \
 	playlist/playlist_controller.moc.cpp \
 	playlist/playlist_item.moc.cpp
@@ -1991,6 +2012,20 @@ test_qt_audio_waveform_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_audio_waveform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_audio_waveform
 TESTS += test_qt_audio_waveform
+
+test_qt_home_activity_SOURCES = \
+	tests/test_home_activity.cpp tests/network_stream_probe.c \
+	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp
+nodist_test_qt_home_activity_SOURCES = \
+	tests/test_home_activity.moc medialibrary/mlqmltypes.moc.cpp
+BUILT_SOURCES += tests/test_home_activity.moc
+CLEANFILES += tests/test_home_activity.moc
+test_qt_home_activity_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_home_activity_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_home_activity_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_home_activity_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_home_activity
+TESTS += test_qt_home_activity
 
 test_qt_network_stream_SOURCES = \
 	tests/test_network_stream.cpp tests/network_stream_probe.c \

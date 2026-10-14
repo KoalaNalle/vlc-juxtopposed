@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "medialib.hpp"
+#include "mlhomeactivity.hpp"
 #include "mlhelper.hpp"
 #include "playlist/playlist_controller.hpp"
 #include "util/shared_input_item.hpp"
@@ -38,10 +39,13 @@ MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlist
     m_event_cb.reset( vlc_ml_event_register_callback( m_ml, MediaLib::onMediaLibraryEvent,
                                                       this ) );
     m_runner = new ThreadRunner();
+    if (_intf->mainSettings)
+        m_homeActivity = std::make_unique<MLHomeActivity>(this, _intf->mainSettings, _intf);
 }
 
 MediaLib::~MediaLib()
 {
+    m_homeActivity.reset();
     m_runner->destroy();
 }
 

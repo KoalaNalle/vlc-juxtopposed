@@ -635,6 +635,18 @@ other codecs/tracks, full settings/lyrics journeys and visual acceptance remain
 open. Integrate the prepared five-section Home next; subtitle preset peer-review
 repairs and New Playlist integration remain pending. Continue the full 0–8 Goal.
 
+The [five-section Home checkpoint](doc/juxtopposed-references/home/implementation-checkpoint.md)
+now connects actual video/audio history, validated folder/playlist visits and
+complete native artist activity. Seven real store/snapshot checks and all twelve
+local component suites pass; the native Qt plugin builds. The initial Home build
+renders real history/artist rows, but a Windows firewall prompt blocks desktop
+interaction and needs manual user dismissal. No security choice was made. The
+final bounded-preview plugin is saved separately; full Home routes/visits/restart,
+live Clear History/reset and visual acceptance remain pending. Music's clean-tree
+test repair passes both exact-head eleven-suite Windows workflows. Subtitle
+presets, New Playlist, cue timeline and conversion continue as separate work;
+the full milestones 0–8 Goal remains active.
+
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)

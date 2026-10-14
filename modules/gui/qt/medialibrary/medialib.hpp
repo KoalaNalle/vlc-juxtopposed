@@ -31,6 +31,8 @@ class Media;
 }
 
 struct vlc_medialibrary_t;
+class MLHomeActivity;
+Q_MOC_INCLUDE("medialibrary/mlhomeactivity.hpp")
 
 class MediaLib : public QObject
 {
@@ -41,6 +43,7 @@ public:
     Q_PROPERTY(int  parsingProgress READ parsingProgress NOTIFY parsingProgressChanged FINAL)
     Q_PROPERTY(QString discoveryEntryPoint READ discoveryEntryPoint NOTIFY discoveryEntryPointChanged FINAL)
     Q_PROPERTY(bool idle READ idle NOTIFY idleChanged FINAL)
+    Q_PROPERTY(MLHomeActivity *homeActivity READ homeActivity CONSTANT FINAL)
 
 public:
     MediaLib(qt_intf_t* _intf, vlc::playlist::PlaylistController* playlistController, QObject* _parent = nullptr );
@@ -64,6 +67,7 @@ public:
 
     Q_INVOKABLE void mlInputItem(const QVector<MLItemId>& itemIdVector, QJSValue callback);
 
+    inline MLHomeActivity *homeActivity() const { return m_homeActivity.get(); }
     inline bool idle() const { return m_idle; }
     inline int discoveryPending() const { return m_discoveryPending; }
     inline QString discoveryEntryPoint() const { return m_discoveryEntryPoint; }
@@ -191,6 +195,7 @@ private:
     vlc_medialibrary_t* m_ml;
     std::unique_ptr<vlc_ml_event_callback_t, std::function<void(vlc_ml_event_callback_t*)>> m_event_cb;
     ThreadRunner* m_runner = nullptr;
+    std::unique_ptr<MLHomeActivity> m_homeActivity;
 
     QMap<QVector<MLItemId>, QVector<QJSValue>> m_inputItemQuery;
 };

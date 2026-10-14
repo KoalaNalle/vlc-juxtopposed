@@ -34,6 +34,7 @@
 #include "mainctx.hpp"
 #include "mainctx_submodels.hpp"
 #include "medialibrary/mlhelper.hpp"
+#include "medialibrary/mlhomeactivity.hpp"
 
 #include "compositor.hpp"
 #include "util/renderer_manager.hpp"
@@ -512,6 +513,8 @@ void MainCtx::loadFromSettingsImpl(const bool callSignals)
 
 void MainCtx::reloadPrefs()
 {
+    if (p_intf->preferencesResetPending && m_medialib && m_medialib->homeActivity())
+        m_medialib->homeActivity()->clearVisits();
     loadPrefs(true);
 }
 

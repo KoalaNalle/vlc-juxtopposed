@@ -30,11 +30,11 @@ Widgets.PageLoader {
 
     pageModel: [{
         name: "base",
-        component: homeComponent,
+        component: MainCtx.juxtopposedControls ? juxtHomeComponent : homeComponent,
         default: true
     }, {
         name: "continueWatching",
-        component: continueWatchingComponent
+        component: MainCtx.juxtopposedControls ? juxtVideoHistoryComponent : continueWatchingComponent
     }, {
         name: "favorites",
         component: favoritesComponent
@@ -44,6 +44,16 @@ Widgets.PageLoader {
     }, {
         name: "newMusic",
         component: newMusicComponent
+    }, {
+        name: "listenAgain", component: juxtAudioHistoryComponent
+    }, {
+        name: "frequentFolders", component: juxtFoldersComponent
+    }, {
+        name: "frequentPlaylists", component: juxtPlaylistsComponent
+    }, {
+        name: "frequentArtists", component: juxtArtistsComponent
+    }, {
+        name: "folder", component: juxtFolderComponent
     }]
 
     property int displayMarginBeginning: 0
@@ -56,6 +66,47 @@ Widgets.PageLoader {
     Accessible.name: qsTr("Home View")
     AccessibleCompat.id: "homeDisplay"
 
+
+    function openCollection(kind, entry, reason) {
+        if (kind === "folder")
+            History.push(["home", "folder"], {parentId: entry.id, title: entry.title}, reason)
+        else if (kind === "playlist")
+            History.push(["playlists", "list"], {parentId: entry.id, title: entry.title}, reason)
+        else
+            History.push(["music", "artists", "albums"], {artistId: entry.id}, reason)
+    }
+    Component {
+        id: juxtHomeComponent
+        JuxtopposedHomePage {
+            focus: true
+            onSeeAllButtonClicked: (category, reason) => History.push([...root.pagePrefix, category], reason)
+            onCollectionRequested: (kind, entry, reason) => root.openCollection(kind, entry, reason)
+        }
+    }
+    Component { id: juxtVideoHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: true; focus: true } }
+    Component { id: juxtAudioHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: false; focus: true } }
+    Component {
+        id: juxtFoldersComponent
+        JuxtopposedHomeCollectionPage {
+            category: "frequentFolders"; focus: true
+            onCollectionRequested: (kind, entry, reason) => root.openCollection(kind, entry, reason)
+        }
+    }
+    Component {
+        id: juxtPlaylistsComponent
+        JuxtopposedHomeCollectionPage {
+            category: "frequentPlaylists"; focus: true
+            onCollectionRequested: (kind, entry, reason) => root.openCollection(kind, entry, reason)
+        }
+    }
+    Component {
+        id: juxtArtistsComponent
+        JuxtopposedHomeCollectionPage {
+            category: "frequentArtists"; focus: true
+            onCollectionRequested: (kind, entry, reason) => root.openCollection(kind, entry, reason)
+        }
+    }
+    Component { id: juxtFolderComponent; JuxtopposedHomeFolderPage { focus: true } }
 
     Component {
         id: homeComponent

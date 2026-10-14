@@ -32,6 +32,11 @@ Widgets.PageExt {
 
     id: root
 
+    Component.onCompleted: {
+        if (MainCtx.juxtopposedControls)
+            MediaLib.homeActivity.recordVisit(root.parentId)
+    }
+
     property alias currentIndex: videoAll.currentIndex
 
     // NOTE: This is used to determine which media(s) shall be displayed.
