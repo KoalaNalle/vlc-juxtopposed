@@ -302,12 +302,17 @@ libqt_plugin_la_SOURCES = \
 	player/audio_waveform.cpp player/audio_waveform.hpp \
 	player/local_music_folder.cpp player/local_music_folder.hpp \
 	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
+	dialogs/conversion_controller.cpp dialogs/conversion_controller.hpp \
 	dialogs/new_playlist_model.cpp \
 	dialogs/new_playlist_model.hpp \
 	dialogs/new_playlist_data.cpp \
 	dialogs/new_playlist_data.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.hpp \
+	player/subtitle_cue_timeline.cpp \
 	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
 	util/filterchain.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
@@ -519,9 +524,11 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/audio_waveform.moc.cpp \
 	player/local_music_folder.moc.cpp \
 	dialogs/network_stream_model.moc.cpp \
+	dialogs/conversion_controller.moc.cpp \
 	dialogs/new_playlist_model.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
 	maininterface/subtitle_preset_model.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
 	player/control_list_model.moc.cpp \
@@ -843,8 +850,15 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/queue-sort.svg \
 	pixmaps/juxtopposed/queue-tab-active.svg \
 	pixmaps/juxtopposed/queue-tab-inactive.svg \
+	pixmaps/juxtopposed/new-playlist-add.svg \
+	pixmaps/juxtopposed/new-playlist-close.svg \
+	pixmaps/juxtopposed/new-playlist-divider.svg \
 	pixmaps/juxtopposed/settings.svg \
 	pixmaps/juxtopposed/subtitles.svg \
+	pixmaps/juxtopposed/timeline-chevron-left.svg \
+	pixmaps/juxtopposed/timeline-chevron-right.svg \
+	pixmaps/juxtopposed/timeline-minus.svg \
+	pixmaps/juxtopposed/timeline-plus.svg \
 	pixmaps/juxtopposed/volume-background.svg \
 	pixmaps/juxtopposed/volume-fill.svg \
 	pixmaps/juxtopposed/volume-mask.svg \
@@ -1098,6 +1112,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
@@ -1243,6 +1258,9 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedButton.qml \
 	player/qml/JuxtopposedSeekBackground.qml \
 	player/qml/JuxtopposedPlaybackBar.qml \
+	player/qml/JuxtopposedSubtitleCueTimeline.qml \
+	player/qml/JuxtopposedSubtitleTimelineAdapter.qml \
+	player/qml/JuxtopposedSubtitleTimelineToggle.qml \
 	player/qml/JuxtopposedMusicPlayer.qml \
 	player/qml/PlaybackSettingsMenu.qml \
 	player/qml/JuxtopposedSettingsPanel.qml \
@@ -2111,6 +2129,21 @@ test_qt_video_transform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_video_transform
 TESTS += test_qt_video_transform
 
+test_qt_subtitle_cue_timeline_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_subtitle_cue_timeline.cpp tests/media_player_probe.c \
+	player/subtitle_cue_data.cpp player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.cpp player/subtitle_cue_timeline.hpp
+nodist_test_qt_subtitle_cue_timeline_SOURCES = \
+	tests/test_subtitle_cue_timeline.moc player/subtitle_cue_timeline.moc.cpp
+BUILT_SOURCES += tests/test_subtitle_cue_timeline.moc
+CLEANFILES += tests/test_subtitle_cue_timeline.moc
+test_qt_subtitle_cue_timeline_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_subtitle_cue_timeline_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitle_cue_timeline_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitle_cue_timeline_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitle_cue_timeline
+TESTS += test_qt_subtitle_cue_timeline
+
 test_qt_subtitle_appearance_SOURCES = \
 	tests/vlc_stub_modules.cpp tests/test_subtitle_appearance.cpp tests/media_player_probe.c \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp util/variables.cpp util/variables.hpp
@@ -2160,6 +2193,8 @@ test_qt_player_subtitle_delay_SOURCES = \
 	player/local_music_folder.cpp \
 	player/video_transform.cpp \
 	player/subtitle_appearance.cpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.cpp \
 	maininterface/subtitle_preset_model.cpp \
 	util/audio_device_model.cpp \
 	util/variables.cpp \
@@ -2179,6 +2214,8 @@ test_qt_player_subtitle_delay_SOURCES = \
 	player/local_music_folder.hpp \
 	player/video_transform.hpp \
 	player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.hpp \
 	maininterface/subtitle_preset_model.hpp \
 	util/audio_device_model.hpp \
 	util/variables.hpp \
@@ -2200,6 +2237,7 @@ nodist_test_qt_player_subtitle_delay_SOURCES = \
 	player/local_music_folder.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
 	maininterface/subtitle_preset_model.moc.cpp \
 	util/audio_device_model.moc.cpp \
 	util/variables.moc.cpp \
@@ -2238,3 +2276,144 @@ TESTS += test_qt_subtitle_presets
 endif
 endif
 EXTRA_DIST += tests/test_juxtopposed_subtitle_presets.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+# Actual local ML, production controller and NORMAL-lock chapter/bookmark models.
+test_qt_native_bookmarks_chapters_SOURCES = \
+	tests/test_native_bookmarks_chapters.cpp \
+	tests/native_model_probe.c \
+	tests/network_stream_probe.c \
+	player/player_controller.cpp \
+	player/input_models.cpp \
+	player/audio_equalizer.cpp \
+	player/audio_waveform.cpp \
+	player/local_music_folder.cpp \
+	player/video_transform.cpp \
+	player/subtitle_appearance.cpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.cpp \
+	maininterface/subtitle_preset_model.cpp \
+	util/audio_device_model.cpp \
+	util/variables.cpp \
+	util/varchoicemodel.cpp \
+	util/renderer_manager.cpp \
+	util/vlctick.cpp \
+	dialogs/extensions/extensions_manager.cpp \
+	dialogs/extensions/extensions.cpp \
+	widgets/native/customwidgets.cpp \
+	widgets/native/animators.cpp \
+	util/soutchain.cpp \
+	util/imagehelper.cpp \
+	player/player_controller.hpp \
+	player/input_models.hpp \
+	player/audio_equalizer.hpp \
+	player/audio_waveform.hpp \
+	player/local_music_folder.hpp \
+	player/video_transform.hpp \
+	player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.hpp \
+	maininterface/subtitle_preset_model.hpp \
+	util/audio_device_model.hpp \
+	util/variables.hpp \
+	util/varchoicemodel.hpp \
+	util/renderer_manager.hpp \
+	util/vlctick.hpp \
+	dialogs/extensions/extensions_manager.hpp \
+	dialogs/extensions/extensions.hpp \
+	widgets/native/customwidgets.hpp \
+	widgets/native/animators.hpp \
+	util/soutchain.hpp \
+	util/imagehelper.hpp \
+	medialibrary/mlbookmarkmodel.cpp \
+	medialibrary/mlbookmarkmodel.hpp \
+	medialibrary/medialib.cpp \
+	medialibrary/medialib.hpp \
+	medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivity.hpp \
+	medialibrary/mlhomeactivitydata.cpp \
+	medialibrary/mlhomeactivitydata.hpp \
+	dialogs/new_playlist_data.cpp \
+	dialogs/new_playlist_data.hpp \
+	medialibrary/mlthreadpool.cpp \
+	medialibrary/mlthreadpool.hpp \
+	medialibrary/mlqmltypes.hpp \
+	playlist/playlist_controller.cpp \
+	playlist/playlist_controller.hpp \
+	playlist/playlist_item.cpp \
+	playlist/playlist_item.hpp
+nodist_test_qt_native_bookmarks_chapters_SOURCES = \
+	tests/test_native_bookmarks_chapters.moc \
+	player/player_controller.moc.cpp \
+	player/input_models.moc.cpp \
+	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
+	player/local_music_folder.moc.cpp \
+	player/video_transform.moc.cpp \
+	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
+	util/audio_device_model.moc.cpp \
+	util/variables.moc.cpp \
+	util/varchoicemodel.moc.cpp \
+	util/renderer_manager.moc.cpp \
+	util/vlctick.moc.cpp \
+	dialogs/extensions/extensions_manager.moc.cpp \
+	dialogs/extensions/extensions.moc.cpp \
+	widgets/native/customwidgets.moc.cpp \
+	widgets/native/animators.moc.cpp \
+	medialibrary/mlbookmarkmodel.moc.cpp \
+	medialibrary/medialib.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
+	medialibrary/mlthreadpool.moc.cpp \
+	medialibrary/mlqmltypes.moc.cpp \
+	playlist/playlist_controller.moc.cpp \
+	playlist/playlist_item.moc.cpp
+BUILT_SOURCES += tests/test_native_bookmarks_chapters.moc
+CLEANFILES += tests/test_native_bookmarks_chapters.moc
+test_qt_native_bookmarks_chapters_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_native_bookmarks_chapters_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_native_bookmarks_chapters_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_native_bookmarks_chapters_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_native_bookmarks_chapters
+TESTS += test_qt_native_bookmarks_chapters
+endif
+endif
+
+EXTRA_DIST += tests/test_juxtopposed_subtitle_timeline.py tests/test_page_loader_routes.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+test_qt_conversion_controller_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_conversion_controller.cpp tests/media_player_probe.c tests/network_stream_probe.c \
+	dialogs/conversion_controller.cpp dialogs/conversion_controller.hpp util/soutchain.cpp util/soutchain.hpp
+nodist_test_qt_conversion_controller_SOURCES = \
+	tests/test_conversion_controller.moc dialogs/conversion_controller.moc.cpp
+BUILT_SOURCES += tests/test_conversion_controller.moc
+CLEANFILES += tests/test_conversion_controller.moc
+test_qt_conversion_controller_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_conversion_controller_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_conversion_controller_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_conversion_controller_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_conversion_controller
+TESTS += test_qt_conversion_controller
+
+# Execute exact production key-routing methods with native Qt/VLC dispatch.
+tests/shared_modal_hotkey_production.inc: $(srcdir)/tests/generate_shared_modal_hotkey_test.py $(srcdir)/maininterface/interface_window_handler.cpp $(srcdir)/maininterface/mainctx.cpp
+	$(AM_V_GEN)$(PYTHON3) $(srcdir)/tests/generate_shared_modal_hotkey_test.py --repo-root $(top_srcdir) --output $@
+tests/test_shared_modal_hotkeys.moc: $(srcdir)/tests/test_shared_modal_hotkeys.cpp tests/shared_modal_hotkey_production.inc
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $(srcdir)/tests/test_shared_modal_hotkeys.cpp
+test_qt_shared_modal_hotkeys_SOURCES = tests/vlc_stub_modules.cpp tests/media_player_probe.c tests/test_shared_modal_hotkeys.cpp util/vlchotkeyconverter.cpp util/vlchotkeyconverter.hpp
+nodist_test_qt_shared_modal_hotkeys_SOURCES = tests/test_shared_modal_hotkeys.moc tests/shared_modal_hotkey_production.inc util/vlchotkeyconverter.moc.cpp
+BUILT_SOURCES += tests/shared_modal_hotkey_production.inc tests/test_shared_modal_hotkeys.moc
+CLEANFILES += tests/shared_modal_hotkey_production.inc tests/shared_modal_hotkey_production.inc.json tests/test_shared_modal_hotkeys.moc
+EXTRA_DIST += tests/generate_shared_modal_hotkey_test.py tests/test_juxtopposed_conversion_dialog.py
+test_qt_shared_modal_hotkeys_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_shared_modal_hotkeys_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_shared_modal_hotkeys_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_shared_modal_hotkeys_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_shared_modal_hotkeys
+TESTS += test_qt_shared_modal_hotkeys
+endif
+endif

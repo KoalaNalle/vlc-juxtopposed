@@ -65,10 +65,11 @@ FocusScope {
     function loadView(path, properties, focusReason) {
         const found = stackView.loadView(path, properties, focusReason)
         if (!found)
-            return
+            return false
 
         if (Player.hasVideoOutput && MainCtx.hasEmbededVideo)
             _showMiniPlayer = true
+        return true
     }
 
     function loadCurrentHistoryView(focusReason) {
@@ -107,23 +108,29 @@ FocusScope {
     readonly property var pageModel: [
         {
             name: "home",
+            nested: MainCtx.mediaLibraryAvailable,
             url: MainCtx.mediaLibraryAvailable ?
                  "qrc:///qt/qml/VLC/MediaLibrary/HomeDisplay.qml" :
                  "qrc:///qt/qml/VLC/MainInterface/NoMedialibHome.qml"
         }, {
             name: "video",
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/VideoDisplay.qml"
         }, {
             name: "music",
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicDisplay.qml"
         }, {
             name: "playlists",
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/JuxtopposedPlaylistsDisplay.qml"
         }, {
             name: "network",
+            nested: true,
             url: "qrc:///qt/qml/VLC/Network/BrowseDisplay.qml"
         }, {
             name: "discover",
+            nested: true,
             url: "qrc:///qt/qml/VLC/Network/DiscoverDisplay.qml"
         }, {
             name: "mlsettings",

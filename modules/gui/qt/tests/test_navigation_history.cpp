@@ -5,6 +5,7 @@
 #include "util/navigation_history.hpp"
 #include "network/networktreeitem.hpp"
 #include <QCoreApplication>
+#include <QList>
 #include <QSignalSpy>
 #include <QTest>
 
@@ -79,6 +80,48 @@ private slots:
         QCOMPARE(history.viewPath(), QStringList{"home"});
         QVERIFY(history.isNextEmpty());
         QCOMPARE(navigate.count(), 0);
+    }
+
+    void expandedLeafPropertiesSurviveNormalization()
+    {
+        NavigationHistory history;
+        history.push({"video", "all", "group"}, {{"parentId", 41}, {"title", "Selected group"}, {"initialIndex", 7}});
+        auto *properties = history.viewProp();
+        for (const auto &path : QList<QStringList>{{"video"}, {"video", "all"}, {"video", "all", "group"}})
+        {
+            history.update(path);
+            QCOMPARE(history.viewProp(), properties);
+            QCOMPARE(properties->value("parentId").toInt(), 41);
+            QCOMPARE(properties->value("title").toString(), QString("Selected group"));
+            QCOMPARE(properties->value("initialIndex").toInt(), 7);
+        }
+    }
+
+    void playlistZeroIndexAndHomeFramesRemainIsolated()
+    {
+        NavigationHistory history;
+        history.push({"home"}); history.update({"home", "base"});
+        history.push({"playlists"}, {{"initialIndex", 0}});
+        history.update({"playlists", "all"});
+        auto *playlists = history.viewProp();
+        history.push({"playlists", "list"}, {{"parentId", 29}, {"title", "Empty playlist"}, {"initialIndex", -1}});
+        history.previous(Qt::BacktabFocusReason);
+        QCOMPARE(history.viewPath(), (QStringList{"playlists", "all"}));
+        QCOMPARE(history.viewProp(), playlists);
+        QCOMPARE(history.viewProp()->value("initialIndex").toInt(), 0);
+        QVERIFY(!history.isNextEmpty());
+        history.push({"home"}, Qt::TabFocusReason);
+        auto *home = history.viewProp();
+        QVERIFY(home != playlists); QVERIFY(!home->contains("initialIndex"));
+        history.update({"home", "base"});
+        QVERIFY(history.isNextEmpty());
+        history.previous();
+        QCOMPARE(history.viewProp(), playlists);
+        QCOMPARE(history.viewProp()->value("initialIndex").toInt(), 0);
+        history.next();
+        QCOMPARE(history.viewProp(), home);
+        QCOMPARE(history.viewPath(), (QStringList{"home", "base"}));
+        QVERIFY(!home->contains("initialIndex"));
     }
 
     void availabilityEdges()

@@ -246,7 +246,9 @@ private slots:
     }
     void actualDefaultClearsAllPerTrackOverrides()
     {
-        QVERIFY(m_presets->canApply());
+        // Native role metadata precedes asynchronous subtitle output creation.
+        // Default requires those real outputs, as in the initial fixture setup.
+        QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
         QVERIFY(m_presets->apply("default"));
         QTRY_VERIFY(!m_presets->restoring());
         QCOMPARE(m_presets->error(), QString());

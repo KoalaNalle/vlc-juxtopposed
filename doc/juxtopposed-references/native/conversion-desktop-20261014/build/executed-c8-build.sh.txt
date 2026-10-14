@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+build_dir=/build/vlc
+repo=/checkout
+export PATH="$build_dir/extras/tools/build/bin:$build_dir/contrib/bin:/mnt/c/Windows/System32:$PATH"
+unset CC CXX
+exec 9> "$build_dir/.vlc-build.lock"
+flock -n 9 || exit 75
+qt_dir="$build_dir/win64/modules/gui/qt"
+make -C "$qt_dir" Makefile tests/shared_modal_hotkey_production.inc tests/test_shared_modal_hotkeys.moc > "$repo/build-windows/conversion-modal-moc-build.log" 2>&1
+make -C "$qt_dir" -j8 test_qt_shared_modal_hotkeys.exe > "$repo/build-windows/conversion-modal-native-build.log" 2>&1
+cp -- "$qt_dir/.libs/test_qt_shared_modal_hotkeys.exe" "$repo/build-windows/core-tests/test_qt_shared_modal_hotkeys.exe"
+cp -- "$qt_dir/tests/shared_modal_hotkey_production.inc" "$repo/build-windows/core-tests/shared_modal_hotkey_production.inc"
+cp -- "$qt_dir/tests/shared_modal_hotkey_production.inc.json" "$repo/build-windows/core-tests/shared_modal_hotkey_production.inc.json"
+make -C "$qt_dir" -W Makefile maininterface/qml.deps dialogs/qml.deps > "$repo/build-windows/conversion-modal-resource-build.log" 2>&1
+make -C "$qt_dir" maininterface/res.qrc maininterface/qmldir dialogs/res.qrc dialogs/qmldir >> "$repo/build-windows/conversion-modal-resource-build.log" 2>&1
+make -C "$qt_dir" -j8 libqt_plugin.la > "$repo/build-windows/conversion-modal-gui-build.log" 2>&1
+cp -- "$qt_dir/.libs/libqt_plugin.dll" "$repo/build-windows/staged-conversion-modal-libqt_plugin.dll"

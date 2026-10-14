@@ -58,6 +58,12 @@ T.Pane {
     property real sliderHeight: VLCStyle.heightBar_xxsmall
     property real bookmarksHeight: VLCStyle.controlBarBookmarksHeight
     property bool showRemainingTime: true
+    property bool subtitleTimelineVisible: false
+
+    Connections {
+        target: Player
+        function onInputChanged(hasInput) { root.subtitleTimelineVisible = false }
+    }
 
     property var menu: undefined
 
@@ -136,8 +142,11 @@ T.Pane {
             id: bar
             property Item trackReturnItem: bar.audioButton
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
-            elapsed: root.formatTime(Player.time)
-            duration: MainCtx.showRemainingTime && Player.remainingTime.valid()
+            background: Rectangle { color: root.subtitleTimelineVisible ? "#F2191919" : "#1B1B1B" }
+            elapsed: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowStartTicks ?? 0)
+                                                  : root.formatTime(Player.time)
+            duration: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowEndTicks ?? 0)
+                     : MainCtx.showRemainingTime && Player.remainingTime.valid()
                       ? "-" + root.formatTime(Player.remainingTime)
                       : root.formatTime(Player.length)
             volume: Player.volume
@@ -163,37 +172,65 @@ T.Pane {
                 tracksMenu.showTracks(1)
             }
             onSubtitlesRequested: {
+                if (root.subtitleTimelineVisible) {
+                    root.subtitleTimelineVisible = false
+                    return
+                }
                 trackReturnItem = subtitlesButton
                 tracksMenu.showTracks(0)
             }
             onSettingsRequested: playbackSettings.showSettings()
             onQueueRequested: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible
-            onDurationRequested: MainCtx.showRemainingTime = !MainCtx.showRemainingTime
+            onDurationRequested: {
+                if (root.subtitleTimelineVisible) bar.seekItem?.followPosition()
+                else MainCtx.showRemainingTime = !MainCtx.showRemainingTime
+            }
             onRequestLockUnlockAutoHide: (lock) => root.requestLockUnlockAutoHide(lock)
 
+            // Retain VLC's native slider and chapter-mark behavior. The
+            // selected-source cue view replaces only its visible presentation.
             seekComponent: Component {
-                SliderBar {
-                    id: nativeSeek
+                FocusScope {
+                    id: seekHost
                     activeFocusOnTab: true
-                    Accessible.role: Accessible.Slider
-                    Accessible.name: qsTr("Progress")
-                    AccessibleCompat.id: "progressSlider"
-                    barHeight: VLCStyle.dp(28, VLCStyle.scale)
-                    showHandle: false
-                    waveformStatus: Player.videoTracks.count === 0 && Player.audioTracks.count > 1
-                                    ? qsTr("Waveform is available for files with a single audio track.")
-                                    : (Player.waveform.enabled
-                                       ? (Player.waveform.loading ? qsTr("Preparing waveform…")
-                                                                 : Player.waveform.error) : "")
-                    Navigation.parentItem: root
-                    Navigation.upItem: root.Navigation.upItem
-                    Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
-                    background: JuxtopposedSeekBackground {
-                        width: nativeSeek.availableWidth
-                        height: nativeSeek.barHeight
-                        position: nativeSeek.visualPosition
-                        uiScale: bar.uiScale
-                        waveformPeaks: Player.waveform.available ? Player.waveform.peaks : []
+                    readonly property real windowStartTicks: cueLane.windowStartTicks
+                    readonly property real windowEndTicks: cueLane.windowEndTicks
+                    function showChapterMarks() { nativeSeek.showChapterMarks() }
+                    function followPosition() { cueLane.followPosition() }
+                    onActiveFocusChanged: if (activeFocus)
+                        (root.subtitleTimelineVisible ? cueLane : nativeSeek).forceActiveFocus(Qt.TabFocusReason)
+                    SliderBar {
+                        id: nativeSeek
+                        anchors.fill: parent
+                        visible: !root.subtitleTimelineVisible
+                        activeFocusOnTab: true
+                        Accessible.role: Accessible.Slider
+                        Accessible.name: qsTr("Progress")
+                        AccessibleCompat.id: "progressSlider"
+                        barHeight: VLCStyle.dp(28, VLCStyle.scale)
+                        showHandle: false
+                        waveformStatus: Player.videoTracks.count === 0 && Player.audioTracks.count > 1
+                                        ? qsTr("Waveform is available for files with a single audio track.")
+                                        : (Player.waveform.enabled
+                                           ? (Player.waveform.loading ? qsTr("Preparing waveform…")
+                                                                     : Player.waveform.error) : "")
+                        Navigation.parentItem: root
+                        Navigation.upItem: root.Navigation.upItem
+                        Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
+                        background: JuxtopposedSeekBackground {
+                            width: nativeSeek.availableWidth
+                            height: nativeSeek.barHeight
+                            position: nativeSeek.visualPosition
+                            uiScale: bar.uiScale
+                            waveformPeaks: Player.waveform.available ? Player.waveform.peaks : []
+                        }
+                    }
+                    JuxtopposedSubtitleTimelineAdapter {
+                        id: cueLane
+                        anchors.fill: parent
+                        visible: root.subtitleTimelineVisible
+                        onCloseRequested: { root.subtitleTimelineVisible = false; nativeSeek.forceActiveFocus(Qt.PopupFocusReason) }
+                        onRequestLockUnlockAutoHide: lock => root.requestLockUnlockAutoHide(lock)
                     }
                 }
             }
@@ -218,6 +255,12 @@ T.Pane {
 
             PlaybackSettingsMenu {
                 id: playbackSettings
+                subtitleTimelineVisible: root.subtitleTimelineVisible
+                onSubtitleTimelineRequested: enabled => {
+                    root.subtitleTimelineVisible = enabled
+                    close()
+                    bar.seekItem?.forceActiveFocus(Qt.PopupFocusReason)
+                }
                 parent: root
                 x: Math.max(0, root.width - width)
                 y: -height
@@ -243,6 +286,15 @@ T.Pane {
                 }
             }
         }
+    }
+
+    // The original cue variant labels the visible range endpoints with *.
+    // They are source/media times, distinct from the ordinary elapsed clock.
+    function formatRangeTime(ticks) {
+        const seconds = Math.max(0, Math.floor(ticks / 1000000))
+        return String(Math.floor(seconds / 3600)).padStart(2, "0") + ":"
+             + String(Math.floor(seconds / 60) % 60).padStart(2, "0") + ":"
+             + String(seconds % 60).padStart(2, "0") + "*"
     }
 
     function formatTime(tick) {

@@ -38,6 +38,7 @@ Widgets.PageExt {
     }
 
     property alias currentIndex: videoAll.currentIndex
+    property alias initialIndex: videoAll.initialIndex
 
     // NOTE: This is used to determine which media(s) shall be displayed.
     property alias parentId: modelVideo.parentId

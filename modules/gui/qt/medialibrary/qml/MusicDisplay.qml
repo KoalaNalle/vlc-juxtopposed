@@ -41,6 +41,7 @@ Widgets.PageLoader {
         }, {
             displayText: qsTr("Artists"),
             name: "artists",
+            nested: true,
             default: !MainCtx.juxtopposedControls,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicArtistsDisplay.qml"
         }, {
@@ -54,10 +55,12 @@ Widgets.PageLoader {
         }, {
             displayText: qsTr("Genres"),
             name: "genres" ,
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicGenresDisplay.qml"
         }, {
             displayText: qsTr("Playlists"),
             name: "playlists" ,
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicPlaylistsDisplay.qml"
         }
     ]

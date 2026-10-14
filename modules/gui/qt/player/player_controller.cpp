@@ -1262,6 +1262,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
     , m_deinterlaceMode((vout_thread_t*)nullptr, "deinterlace-mode")
     , m_autoscale((vout_thread_t*)nullptr, "autoscale")
     , m_subtitleAppearance(m_player)
+    , m_subtitleTimeline(m_player)
     , m_audioStereoMode((audio_output_t*)nullptr, "stereo-mode")
     , m_audioMixMode((audio_output_t*)nullptr, "mix-mode")
     , m_audioDeviceList(m_player)
@@ -1904,6 +1905,12 @@ SubtitleAppearance *PlayerController::getSubtitleAppearance() const
 {
     Q_D(const PlayerController);
     return const_cast<SubtitleAppearance *>(&d->m_subtitleAppearance);
+}
+
+SubtitleCueTimeline *PlayerController::getSubtitleTimeline() const
+{
+    Q_D(const PlayerController);
+    return const_cast<SubtitleCueTimeline *>(&d->m_subtitleTimeline);
 }
 
 void PlayerController::setVolume(float volume)

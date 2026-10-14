@@ -407,15 +407,21 @@ MediaLibrary* MediaLibrary::create( vlc_medialibrary_module_t* vlc_ml )
     auto mlDir = std::string{ userDir.get() } + "/ml/";
     auto dbPath = mlDir + "ml.db";
     auto mlFolderPath = mlDir + "mlstorage/";
+    const bool discoverNetwork = var_InheritBool( VLC_OBJECT( vlc_ml ),
+                                                  "ml-network-discovery" );
     medialibrary::SetupConfig cfg;
-    cfg.deviceListers = { { "smb://", std::make_shared<vlc::medialibrary::DeviceLister>(
-                                           VLC_OBJECT(vlc_ml) ) } };
     cfg.fsFactories = {
         std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
-                                    VLC_OBJECT( vlc_ml ), "file://"),
-        std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
-                                    VLC_OBJECT( vlc_ml ), "smb://")
+                                    VLC_OBJECT( vlc_ml ), "file://")
     };
+    if ( discoverNetwork )
+    {
+        cfg.deviceListers = { { "smb://", std::make_shared<vlc::medialibrary::DeviceLister>(
+                                               VLC_OBJECT(vlc_ml) ) } };
+        cfg.fsFactories.push_back(
+            std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
+                                    VLC_OBJECT( vlc_ml ), "smb://") );
+    }
 
     cfg.parserServices = {
         std::make_shared<MetadataExtractor>( VLC_OBJECT( vlc_ml ) )
@@ -430,13 +436,15 @@ MediaLibrary* MediaLibrary::create( vlc_medialibrary_module_t* vlc_ml )
     if ( !ml )
         return nullptr;
 
-    return new MediaLibrary( vlc_ml, ml );
+    return new MediaLibrary( vlc_ml, ml, discoverNetwork );
 }
 
 MediaLibrary::MediaLibrary( vlc_medialibrary_module_t* vlc_ml,
-                            medialibrary::IMediaLibrary* ml )
+                            medialibrary::IMediaLibrary* ml,
+                            bool discoverNetwork )
     : m_vlc_ml( vlc_ml )
     , m_ml( ml )
+    , m_discoverNetwork( discoverNetwork )
 {
 }
 
@@ -495,7 +503,7 @@ bool MediaLibrary::Init()
         return false;
     }
 
-    m_ml->setDiscoverNetworkEnabled( true );
+    m_ml->setDiscoverNetworkEnabled( m_discoverNetwork );
 
     m_initialized = true;
     return true;
@@ -2681,6 +2689,10 @@ static void Close( vlc_object_t* obj )
                               "media from" )
 
 #define ML_VERBOSE _( "Extra verbose media library logs" )
+#define ML_NETWORK_DISCOVERY_TEXT N_( "Enable media library network discovery" )
+#define ML_NETWORK_DISCOVERY_LONGTEXT N_( \
+    "Enable network device discovery by the media library. When disabled, " \
+    "the media library does not start network device discovery." )
 
 vlc_module_begin()
     set_shortname(N_("media library"))
@@ -2689,4 +2701,7 @@ vlc_module_begin()
     set_capability("medialibrary", 100)
     set_callbacks(Open, Close)
     add_bool( "ml-verbose", false, ML_VERBOSE, nullptr )
+    add_bool( "ml-network-discovery", true, ML_NETWORK_DISCOVERY_TEXT,
+              ML_NETWORK_DISCOVERY_LONGTEXT )
+        change_volatile()
 vlc_module_end()

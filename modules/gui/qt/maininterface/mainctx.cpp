@@ -554,6 +554,11 @@ void MainCtx::onVOutChanged( bool video )
 #endif
 void MainCtx::sendHotkey(Qt::Key key , Qt::KeyboardModifiers modifiers)
 {
+    // Direct QML and wheel dispatch must obey the same shared-modal boundary
+    // as the native window event filter. Do not create a provider during setup.
+    const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
+    if (dialogs && dialogs->qmlDialogVisible()) return;
+
     QKeyEvent event(QEvent::KeyPress, key, modifiers );
     int vlckey = qtEventToVLCKey(&event);
     var_SetInteger(vlc_object_instance(p_intf), "key-pressed", vlckey);
@@ -561,6 +566,11 @@ void MainCtx::sendHotkey(Qt::Key key , Qt::KeyboardModifiers modifiers)
 
 void MainCtx::sendVLCHotkey(int vlcHotkey)
 {
+    // Direct QML and wheel dispatch must obey the same shared-modal boundary
+    // as the native window event filter. Do not create a provider during setup.
+    const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
+    if (dialogs && dialogs->qmlDialogVisible()) return;
+
     var_SetInteger(vlc_object_instance(p_intf), "key-pressed", vlcHotkey);
 }
 

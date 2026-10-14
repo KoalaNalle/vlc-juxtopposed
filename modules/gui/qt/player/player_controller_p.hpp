@@ -28,6 +28,7 @@
 #include "local_music_folder.hpp"
 #include "video_transform.hpp"
 #include "subtitle_appearance.hpp"
+#include "subtitle_cue_timeline.hpp"
 #include "util/varchoicemodel.hpp"
 #include "util/shared_input_item.hpp"
 #include "util/renderer_manager.hpp"
@@ -186,6 +187,7 @@ public:
     QVLCBool m_autoscale;
     VideoTransform m_videoTransform;
     SubtitleAppearance m_subtitleAppearance;
+    SubtitleCueTimeline m_subtitleTimeline;
     bool            m_hasVideo = false;
     bool            m_fullscreen = false;
     bool            m_wallpaperMode = false;

@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "scope": "Independent native complete decode of actual desktop-created FLAC; no pointer/control/primary-player/Figma acceptance.",
+  "libvlcVersion": "4.0.0-dev Otto Chriek",
+  "sourceFormat": {
+    "channels": 1,
+    "widthBytes": 2,
+    "rate": 44100,
+    "frames": 1323000,
+    "compression": "NONE"
+  },
+  "decode": {
+    "states": [
+      1,
+      2,
+      5,
+      4
+    ],
+    "reasons": [
+      1
+    ],
+    "callbackErrors": [],
+    "drains": 1,
+    "finalState": 4,
+    "elapsedSeconds": 28.95300000000134,
+    "audioDecoderModules": [
+      "flac",
+      "flac"
+    ],
+    "startupErrors": [],
+    "eos": true
+  },
+  "sourceSha256": "661d2ee20c2ea5952c89f7ec0e295e27cfc29b5ebfb054b49c9ce0a90153921c",
+  "convertedSha256": "6aa147941667f0a2f20db8034701daa280e954499dc34ffb7a9cf72c274879a1",
+  "sourcePcmSha256": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+  "decodedPcmSha256": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+  "decodedFrames": 1323000,
+  "expectedFrames": 1323000,
+  "decodedBytes": 2646000,
+  "exactPcm": true,
+  "exactFinal64Samples": true,
+  "sourceAmplitude": {
+    "peakSample": 13107,
+    "rmsSample": 6147.821796899357,
+    "nonzeroSamples": 1322400
+  },
+  "decodedAmplitude": {
+    "peakSample": 13107,
+    "rmsSample": 6147.821796899357,
+    "nonzeroSamples": 1322400
+  },
+  "sourceFilePreserved": true,
+  "convertedFilePreserved": true,
+  "selectedFlacDecoderAudit": {
+    "passed": true,
+    "resolvedPackageDll": "plugins/codec/libflac_plugin.dll",
+    "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2",
+    "basis": "Actual selected decoder log under exclusive package root plus package DLL identity; no memory-map claim."
+  },
+  "nativeLogSha256": "d733b7d40d27244c85bb4fe0ee62d3b0154e6decb9ecb66ea790a664509acef4"
+}

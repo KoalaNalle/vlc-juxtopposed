@@ -90,6 +90,8 @@ class EpgDialog;
 class UpdateDialog;
 class PrefsDialog;
 class NetworkStreamModel;
+class ConversionController;
+Q_MOC_INCLUDE("dialogs/conversion_controller.hpp")
 class NewPlaylistModel;
 Q_MOC_INCLUDE("dialogs/new_playlist_model.hpp")
 Q_MOC_INCLUDE("dialogs/network_stream_model.hpp")
@@ -111,6 +113,7 @@ public:
 
     Q_PROPERTY(bool openDialogVisible READ openDialogVisible NOTIFY openDialogVisibleChanged FINAL)
     Q_PROPERTY(NetworkStreamModel* networkStream READ networkStream CONSTANT FINAL)
+    Q_PROPERTY(ConversionController *conversion READ conversion CONSTANT FINAL)
     Q_PROPERTY(NewPlaylistModel *newPlaylist READ newPlaylist CONSTANT FINAL)
     Q_PROPERTY(bool qmlDialogVisible READ qmlDialogVisible WRITE setQmlDialogVisible NOTIFY qmlDialogVisibleChanged FINAL)
     Q_PROPERTY(bool qmlInputFocused READ qmlInputFocused WRITE setQmlInputFocused NOTIFY qmlInputFocusedChanged FINAL)
@@ -148,6 +151,7 @@ public:
                                 const QUrl& path = QUrl() );
     bool isDying() { return b_isDying; }
     NetworkStreamModel *networkStream();
+    ConversionController *conversion();
     NewPlaylistModel *newPlaylist();
     bool qmlDialogVisible() const { return m_qmlDialogVisible; }
     void setQmlDialogVisible(bool visible);
@@ -173,6 +177,7 @@ protected:
 
 private:
     std::unique_ptr<NetworkStreamModel> m_networkStream;
+    std::unique_ptr<ConversionController> m_conversion;
     std::unique_ptr<NewPlaylistModel> m_newPlaylist;
     bool m_qmlDialogVisible = false;
     bool m_qmlInputFocused = false;
@@ -267,6 +272,8 @@ public slots:
     void newPlaylistDialog();
     void chooseNewPlaylistFiles();
     void chooseNewPlaylistThumbnail();
+    void chooseConversionSource();
+    void chooseConversionDestination();
 
     void PLOpenDir();
     void PLAppendDir();
@@ -276,6 +283,7 @@ public slots:
     void streamingDialog( const QList<QUrl>& urls, bool b_stream = true );
     void openAndStreamingDialogs();
     void openAndTranscodingDialogs();
+    void openLegacyTranscodingDialog();
 
     void savePlayingToPlaylist();
 
@@ -311,6 +319,7 @@ signals:
     void showToolbarEditorDialog();
     void showNetworkStreamDialog();
     void showNewPlaylistDialog();
+    void showConversionDialog();
     void newPlaylistSaved(MLItemId playlist);
     void qmlDialogVisibleChanged();
     void qmlInputFocusedChanged();

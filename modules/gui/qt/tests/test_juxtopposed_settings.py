@@ -118,14 +118,14 @@ tracks = Tracks()
 choices = {name: Choices() for name in ['zoom', 'aspectRatio', 'crop', 'deinterlace', 'deinterlaceMode', 'audioStereoMode', 'audioMixMode']}
 fields = dict(isStarted=bool, hasVideoOutput=bool, ratechangable=bool, rate=float,
               audioDelayMS=int, subtitleDelayMS=int, secondarySubtitleDelayMS=int, subtitleFPS=float,
-              equalizer=QObject, videoTransform=QObject, subtitleAppearance=QObject, audioTracks=QObject, subtitleTracks=QObject)
+              equalizer=QObject, videoTransform=QObject, subtitleAppearance=QObject, audioTracks=QObject, subtitleTracks=QObject, videoTracks=QObject)
 fields.update({name: QObject for name in choices})
 player_notification = Signal()
 Player = type('Player', (State,), dict(changed=player_notification,
     **{name: state_property(name, kind, player_notification) for name, kind in fields.items()}))
 player = Player(dict(isStarted=True, hasVideoOutput=True, ratechangable=True, rate=1.,
                     audioDelayMS=0, subtitleDelayMS=0, secondarySubtitleDelayMS=0, subtitleFPS=0.,
-                    equalizer=eq, videoTransform=transform, subtitleAppearance=appearance, audioTracks=tracks, subtitleTracks=tracks, **choices))
+                    equalizer=eq, videoTransform=transform, subtitleAppearance=appearance, audioTracks=tracks, subtitleTracks=tracks, videoTracks=tracks, **choices))
 class Dialogs(QObject):
     def __init__(self): super().__init__(); self.actions = []
     @Slot()
@@ -183,6 +183,7 @@ with tempfile.TemporaryDirectory(prefix='vlc-settings-scene-', dir=repo) as temp
     assert folder.resolve().parent == repo.resolve()
     asset_base = (repo / 'modules/gui/qt/pixmaps/juxtopposed').as_uri() + '/'
     for relative in ['player/qml/PlaybackSettingsMenu.qml', 'player/qml/JuxtopposedSettingsPanel.qml', 'player/qml/JuxtopposedSubtitlePresets.qml',
+                     'player/qml/JuxtopposedSubtitleTimelineToggle.qml',
                      'widgets/qml/JuxtopposedSettingChoice.qml', 'widgets/qml/JuxtopposedSettingSlider.qml']:
         path = repo / 'modules/gui/qt' / relative
         source = '\n'.join(line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith('import VLC.'))

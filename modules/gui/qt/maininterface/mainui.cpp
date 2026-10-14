@@ -33,6 +33,7 @@
 #include "player/local_music_folder.hpp"
 #include "player/video_transform.hpp"
 #include "player/subtitle_appearance.hpp"
+#include "player/subtitle_cue_timeline.hpp"
 #include "player/player_controlbar_model.hpp"
 #include "player/control_list_model.hpp"
 #include "player/control_list_filter.hpp"
@@ -69,6 +70,7 @@
 #include "dialogs/help/aboutmodel.hpp"
 #include "dialogs/dialogs_provider.hpp"
 #include "dialogs/network_stream_model.hpp"
+#include "dialogs/conversion_controller.hpp"
 #include "dialogs/new_playlist_model.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
 #ifdef UPDATE_CHECK
@@ -290,6 +292,7 @@ void MainUI::registerQMLTypes()
         assert(DialogsProvider::getInstance());
         qmlRegisterSingletonInstance<DialogsProvider>(uri, versionMajor, versionMinor, "DialogsProvider", DialogsProvider::getInstance());
         qmlRegisterUncreatableType<NetworkStreamModel>(uri, versionMajor, versionMinor, "NetworkStreamModel", "Use DialogsProvider.networkStream");
+        qmlRegisterUncreatableType<ConversionController>(uri, versionMajor, versionMinor, "ConversionController", "Use DialogsProvider.conversion");
         qmlRegisterUncreatableType<NewPlaylistModel>(uri, versionMajor, versionMinor, "NewPlaylistModel", "Use DialogsProvider.newPlaylist");
         assert(DialogErrorModel::getInstance<false>());
         qmlRegisterSingletonInstance<DialogErrorModel>(uri, versionMajor, versionMinor, "DialogErrorModel", DialogErrorModel::getInstance<false>());
@@ -332,6 +335,7 @@ void MainUI::registerQMLTypes()
         qmlRegisterUncreatableType<LocalMusicFolderModel>(uri, versionMajor, versionMinor, "LocalMusicFolderModel", "Use Player.musicFolder");
         qmlRegisterUncreatableType<VideoTransform>(uri, versionMajor, versionMinor, "VideoTransform", "Use Player.videoTransform");
         qmlRegisterUncreatableType<SubtitleAppearance>(uri, versionMajor, versionMinor, "SubtitleAppearance", "Use Player.subtitleAppearance");
+        qmlRegisterUncreatableType<SubtitleCueTimeline>(uri, versionMajor, versionMinor, "SubtitleCueTimeline", "Use Player.subtitleTimeline");
         qmlRegisterTypesAndRevisions<TimedText>(uri, versionMajor);
         qmlRegisterType<PlayerHighResolutionTimeUpdater>(uri, versionMajor, versionMinor, "HighResolutionTimeUpdater");
         qmlRegisterUncreatableMetaObject(VLCTickForeign::staticMetaObject, uri, versionMajor, versionMinor, "VLCTick", "Not Instantiable" );

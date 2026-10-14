@@ -254,6 +254,7 @@ Item {
         DropArea {
             anchors.fill: parent
             z: -1
+            enabled: !DialogsProvider.qmlDialogVisible
 
             onEntered: (drag) => {
                 // Do not handle internal drag here:
@@ -348,7 +349,7 @@ Item {
         Binding {
             target: DialogsProvider
             property: "qmlDialogVisible"
-            value: networkStreamDialog.visible || newPlaylistDialog.visible
+            value: networkStreamDialog.visible || newPlaylistDialog.visible || conversionDialog.visible
             restoreMode: Binding.RestoreBindingOrValue
         }
 
@@ -363,6 +364,19 @@ Item {
                 MainCtx.playerView = false
                 History.push(["playlists", "list"], {parentId: playlist, title: DialogsProvider.newPlaylist.name.trim()}, Qt.PopupFocusReason)
             }
+            onFallbackFocusRequested: {
+                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
+            }
+        }
+
+        JuxtopposedConversionDialog {
+            id: conversionDialog
+            parent: g_mainInterface
+            controller: DialogsProvider.conversion
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            onSourceRequested: DialogsProvider.chooseConversionSource()
+            onDestinationRequested: DialogsProvider.chooseConversionDestination()
+            onAllProfilesRequested: DialogsProvider.openLegacyTranscodingDialog()
             onFallbackFocusRequested: {
                 if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
             }
@@ -386,6 +400,10 @@ Item {
                 MainCtx.mediaLibrary?.homeActivity?.refresh()
             }
             function onShowNewPlaylistDialog() {
+                if (conversionDialog.visible) {
+                    if (conversionDialog.controller.busy) return
+                    conversionDialog.requestClose()
+                }
                 if (networkStreamDialog.visible) {
                     if (networkStreamDialog.controller.busy) return
                     networkStreamDialog.reject()
@@ -393,11 +411,26 @@ Item {
                 newPlaylistDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
             }
             function onShowNetworkStreamDialog() {
+                if (conversionDialog.visible) {
+                    if (conversionDialog.controller.busy) return
+                    conversionDialog.requestClose()
+                }
                 if (newPlaylistDialog.visible) {
                     if (newPlaylistDialog.controller.busy) return
                     newPlaylistDialog.reject()
                 }
                 networkStreamDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
+            }
+            function onShowConversionDialog() {
+                if (networkStreamDialog.visible) {
+                    if (networkStreamDialog.controller.busy) return
+                    networkStreamDialog.reject()
+                }
+                if (newPlaylistDialog.visible) {
+                    if (newPlaylistDialog.controller.busy) return
+                    newPlaylistDialog.reject()
+                }
+                conversionDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
             }
         }
 

@@ -1,0 +1,14 @@
+********* Start testing of TestSharedModalHotkeys *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+QINFO  : TestSharedModalHotkeys::initTestCase() ROUTING_PRODUCTION_SHA256 {"modules/gui/qt/maininterface/interface_window_handler.cpp": "a0153ccfbb49d1f5e9fb8b81bea00b21a5e63c5424542d0dd74823c53357cae5", "modules/gui/qt/maininterface/mainctx.cpp": "025bcf34108679e33865136a19df44ea34f897e24f1a8174dce281ab9c4ec101"}
+PASS   : TestSharedModalHotkeys::initTestCase()
+PASS   : TestSharedModalHotkeys::absentProviderPreservesDirectDispatch()
+PASS   : TestSharedModalHotkeys::mouseFocusOutsideModalDispatchesNativeKeys()
+FAIL!  : TestSharedModalHotkeys::modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch() Compared lists have different sizes.
+   Actual   (receiver.presses) size: 0
+   Expected ((QVector<int>{Qt::Key_Space, Qt::Key_Up, Qt::Key_Down})) size: 3
+/checkout/modules/gui/qt/tests/test_shared_modal_hotkeys.cpp(150) : failure location
+PASS   : TestSharedModalHotkeys::outsideModalQtNavigationPolicyRemains()
+PASS   : TestSharedModalHotkeys::cleanupTestCase()
+Totals: 5 passed, 1 failed, 0 skipped, 0 blacklisted, 77ms
+********* Finished testing of TestSharedModalHotkeys *********

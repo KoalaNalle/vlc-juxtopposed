@@ -33,6 +33,7 @@
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
 #include "network_stream_model.hpp"
+#include "conversion_controller.hpp"
 #include "new_playlist_model.hpp"
 #include "player/player_controller.hpp" /* Load Subtitles */
 #include "playlist/playlist_controller.hpp"
@@ -67,6 +68,8 @@
 #include <QApplication>
 #include <QSignalMapper>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QDir>
 #include <QUrl>
 #include <QInputDialog>
 #include <QPointer>
@@ -722,6 +725,57 @@ void DialogsProvider::chooseNewPlaylistThumbnail()
     model->setThumbnail(image);
 }
 
+ConversionController *DialogsProvider::conversion()
+{
+    if (!m_conversion)
+        m_conversion = std::make_unique<ConversionController>(VLC_OBJECT(p_intf), this);
+    return m_conversion.get();
+}
+
+void DialogsProvider::chooseConversionSource()
+{
+    QPointer<ConversionController> model = conversion();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || model->busy()) return;
+    const auto source = QFileDialog::getOpenFileUrl(nullptr, qtr("Choose audio to convert"),
+        model->sourceUrl().isEmpty() ? ctx->getDialogFilePath() : model->sourceUrl(),
+        qtr("Audio files") + " (*.wav *.flac *.mp3 *.ogg *.opus *.m4a *.aac *.aiff *.aif *.wma);;"
+            + qtr("All files") + " (*)", nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || model->busy() || source.isEmpty()) return;
+    ctx->setDialogFilePath(source);
+    model->setSourceUrl(source);
+}
+
+void DialogsProvider::chooseConversionDestination()
+{
+    QPointer<ConversionController> model = conversion();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || model->busy()) return;
+    QUrl initial = model->destinationUrl();
+    if (initial.isEmpty())
+    {
+        if (model->sourceUrl().isLocalFile())
+        {
+            const QFileInfo input(model->sourceUrl().toLocalFile());
+            auto proposed = input.dir().filePath(input.completeBaseName() + QStringLiteral(".flac"));
+            if (QFileInfo::exists(proposed))
+                proposed = input.dir().filePath(input.completeBaseName() + QStringLiteral("-converted.flac"));
+            initial = QUrl::fromLocalFile(proposed);
+        }
+        else initial = ctx->getDialogFilePath();
+    }
+    auto destination = QFileDialog::getSaveFileUrl(nullptr, qtr("Save converted FLAC audio"),
+        initial, qtr("FLAC audio") + " (*.flac)", nullptr,
+        QFileDialog::DontConfirmOverwrite, {QStringLiteral("file")});
+    if (!ctx || !model || model->busy() || destination.isEmpty()) return;
+    if (destination.isLocalFile() && QFileInfo(destination.toLocalFile()).suffix().isEmpty())
+        destination = QUrl::fromLocalFile(destination.toLocalFile() + QStringLiteral(".flac"));
+    // The controller validates again at start and publishes without replacement;
+    // selecting an existing filename never authorizes an overwrite.
+    ctx->setDialogFilePath(destination);
+    model->setDestinationUrl(destination);
+}
+
 void DialogsProvider::setQmlDialogVisible(bool visible)
 {
     if (m_qmlDialogVisible == visible) return;
@@ -1064,6 +1118,19 @@ void DialogsProvider::openAndStreamingDialogs()
 
 void DialogsProvider::openAndTranscodingDialogs()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        emit showConversionDialog();
+        return;
+    }
+#endif
+    openLegacyTranscodingDialog();
+}
+
+void DialogsProvider::openLegacyTranscodingDialog()
+{
+    if (m_conversion && m_conversion->busy()) return;
     ensureDialog(m_openDialog);
     m_openDialog->showTab( OpenDialog::OPEN_FILE_TAB, OpenDialog::OPEN_AND_SAVE );
 }

@@ -110,6 +110,8 @@ Q_MOC_INCLUDE("player/local_music_folder.hpp")
 class VideoTransform;
 Q_MOC_INCLUDE("player/video_transform.hpp")
 class SubtitleAppearance;
+class SubtitleCueTimeline;
+Q_MOC_INCLUDE("player/subtitle_cue_timeline.hpp")
 Q_MOC_INCLUDE("player/subtitle_appearance.hpp")
 class PlayerController : public QObject
 {
@@ -233,6 +235,7 @@ public:
     Q_PROPERTY(LocalMusicFolderModel* musicFolder READ getMusicFolder CONSTANT FINAL)
     Q_PROPERTY(VideoTransform* videoTransform READ getVideoTransform CONSTANT FINAL)
     Q_PROPERTY(SubtitleAppearance* subtitleAppearance READ getSubtitleAppearance CONSTANT FINAL)
+    Q_PROPERTY(SubtitleCueTimeline *subtitleTimeline READ getSubtitleTimeline CONSTANT FINAL)
 
     //misc
     Q_PROPERTY(ABLoopState ABloopState READ getABloopState WRITE setABloopState NOTIFY ABLoopStateChanged FINAL)
@@ -319,6 +322,7 @@ public:
     LocalMusicFolderModel *getMusicFolder() const;
     VideoTransform *getVideoTransform() const;
     SubtitleAppearance *getSubtitleAppearance() const;
+    SubtitleCueTimeline *getSubtitleTimeline() const;
     int AddAssociatedMedia(enum es_format_category_e cat, const QString& uri, bool select, bool notify, bool check_ext);
 
     void requestArtUpdate( input_item_t *p_item );

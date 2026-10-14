@@ -24,6 +24,7 @@
 #include "dialogs/systray/systray.hpp"
 #include "widgets/native/qvlcframe.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
+#include "dialogs/dialogs_provider.hpp"
 #include <QScreen>
 #include <QQmlProperty>
 #include <cmath>
@@ -504,6 +505,11 @@ void InterfaceWindowHandler::setInterfaceAlwaysOnTop( bool on_top )
 
 bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
 {
+    // A shared modal owns these keys, including mouse focus and cancellation
+    // transitions. Returning false keeps press/release delivery in Qt controls.
+    const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
+    if (dialogs && dialogs->qmlDialogVisible()) return false;
+
     int key = event->key();
 
     // NOTE: We have to make sure tab and backtab are never used as hotkeys. When browsing the

@@ -782,6 +782,75 @@ DLL SHA-256 is `88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6
 These are incremental checkpoints; the [beta plan](doc/juxtopposed-beta-plan.md)
 still has open functional, visual and final-package gates.
 
+## Conversion and real-media verification in progress
+
+The [shared-modal native proof](doc/juxtopposed-references/native/shared-modal-20261014/README.md)
+records the same frozen harness failing the unguarded modal key route and
+passing all six cases with production guards. The
+[desktop conversion proof](doc/juxtopposed-references/native/conversion-desktop-20261014/README.md)
+records actual Windows pickers, a completed FLAC conversion, Completed-state
+keys/Done, normal exit and an independent full 1,323,000-frame mono PCM match.
+The new Qt checkpoint contains those sources and proof bundles.
+Encoding-state keys, full queue/drop/lifecycle, other conversion profiles,
+original Figma form and final-package acceptance remain open.
+
+The user authorized read-only testing with `D:\Media` and its subfolders.
+Private inventory, paths, metadata and actual-media observations stay ignored
+under `build-windows`. Eight selected originals cover embedded ASS/text/PGS,
+multiple audio tracks, AVC/HEVC/legacy AVI and MP3/FLAC. The corrected native
+smoke passes all six video cases, including track switching and actual decoded
+video/PCM. MP3 and FLAC fail its precise paused `get_time` seek-completion gate;
+the unchanged failed oracle and separate clock diagnostics are retained. Actual
+desktop multi-audio/subtitle selection, HEVC/ASS rendering and clearing, and
+FLAC paused-seek display/resume were observed. Separate native traces confirm
+accepted audio seeks and actual target clocks after resume; paused getters
+retain the older output clock without a new audio timing point. Their strict
+paused-clock gate remains failed. Caption redraw still needs packet-timing
+investigation. Original size/mtime was
+preserved; no full-original hash or all-format/full-file acceptance is claimed.
+
+The first Home route guard rebuild allowed Videos-to-Home and Back/Forward,
+but a later playlist journey still failed and the closed log retained five
+`initialIndex` property errors. Generic nested property forwarding and real
+view restoration require further repair and a fresh desktop check. The first
+guard build is not a passing complete-navigation checkpoint.
+
+The later [leaf-property repair](doc/juxtopposed-references/native/navigation-leaf-20261014/README.md)
+passes eleven paired component gates and nine actual QCore History results.
+The [mounted Windows journey](doc/juxtopposed-references/native/navigation-desktop-20261014/README.md)
+now opens Home/Videos/Playlists and real empty/mixed playlist details through
+keyboard navigation. Back restores the second overview selection; Enter reopens
+its same three ordered rows. The flushed log has no QML property/loader errors,
+and normal quit returns exit 0. All seventeen local component/source suites
+pass. The fresh Qt DLL is `03d93c91c056442d7392866eec4e39ca6f12f0fb745529fadb8a50b8adddd797`.
+Videos pointer selection, broader Music/Network history, rapid same-route
+generations, clean-profile/restart and native design fidelity remain open.
+
+The [literal conversion-path repair](doc/juxtopposed-references/native/conversion-literal-path-20261014/README.md)
+preserves percent characters despite inherited file-sink date formatting.
+The same frozen native fixture reproduces 10 passes/1 failure before the
+one-line fix and passes all eleven afterward. Both encode and validation sinks
+keep literal paths; original conversion/cancel/race/primary/shutdown assertions
+remain intact. The preceding desktop exact-PCM proof is retained separately.
+
+The current subtitle service remains a bounded selected-local-UTF-8-SRT
+snapshot adaptation. Its actual native twelve-case suite passes, including the
+NORMAL-lock exact 4,352,555us request. The native bookmark/chapter suite passes
+nine cases with real local ML and database restart, and the subtitle-delay
+controller suite passes eight cases after waiting for actual output readiness.
+These do not accept authoritative embedded-cue/renderer expiry, full native
+panels, queued-worker lifetime or every subtitle format. The core cue bridge
+proposal is still ignored and unbuilt; do not advertise it as implemented.
+
+Visible tests now use monitor 2 at the user's request. No VLC test GUI remains
+open after the recorded normal quit. The copied Qt test settings contained
+personal recent-file history; that section was removed only from the new test
+package, preserving its geometry and other settings. Seed future test settings
+selectively, and keep all preferences/library/userdata out of public artifacts.
+The installed VLC and original working package are preserved. Pending broader
+history and playlist Play repairs live in ignored proposals and have not yet
+changed this built source checkpoint. The full beta Goal remains active.
+
 ## Code map
 
 | Responsibility | Main locations |

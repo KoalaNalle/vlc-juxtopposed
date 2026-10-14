@@ -22,6 +22,8 @@ T.Popup {
     }
     property real maximumHeight: MainCtx.intfMainWindow.height - VLCStyle.margin_large * 2
     readonly property real uiScale: VLCStyle.dp(1, VLCStyle.scale)
+    property bool subtitleTimelineVisible: false
+    signal subtitleTimelineRequested(bool enabled)
 
     function focusSetting(current, direction) {
         const controls = panel.loadedPage?.keyboardControls ?? [];
@@ -227,10 +229,18 @@ T.Popup {
         }
         subtitlesContent: Component {
             SettingsPage {
-                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, duration.slider, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync].concat(subtitlePresets.keyboardControls)
+                keyboardControls: [subtitleTimelineToggle, subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, duration.slider, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync].concat(subtitlePresets.keyboardControls)
 
                 SectionLabel {
                     text: qsTr("Synchronization")
+                }
+                JuxtopposedSubtitleTimelineToggle {
+                    id: subtitleTimelineToggle
+                    Layout.fillWidth: true
+                    checked: root.subtitleTimelineVisible
+                    enabled: Player.isStarted && Player.videoTracks.count > 0
+                    uiScale: root.uiScale
+                    onClicked: root.subtitleTimelineRequested(checked)
                 }
                 Widgets.JuxtopposedSettingSlider {
                     id: subtitleDelay

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+phase="$1"
+case "$phase" in before|before-corrected|after) ;; *) exit 64 ;; esac
+build_dir=/build/vlc
+repo=/checkout
+export PATH="$build_dir/extras/tools/build/bin:$build_dir/contrib/bin:/system/Windows/System32:$PATH"
+unset CC CXX
+exec 9> "$build_dir/.vlc-build.lock"
+flock -n 9 || exit 75
+qt_dir="$build_dir/win64/modules/gui/qt"
+make -C "$qt_dir" Makefile tests/test_conversion_controller.moc > "$repo/build-windows/literal-conversion-$phase-moc-build.log" 2>&1
+make -C "$qt_dir" -j8 test_qt_conversion_controller.exe > "$repo/build-windows/literal-conversion-$phase-native-build.log" 2>&1
+cp -- "$qt_dir/.libs/test_qt_conversion_controller.exe" "$repo/build-windows/core-tests/test_qt_conversion_controller.exe"
+cp -- "$qt_dir/.libs/test_qt_conversion_controller.exe" "$repo/build-windows/literal-conversion-$phase-test.exe"

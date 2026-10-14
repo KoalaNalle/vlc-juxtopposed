@@ -84,6 +84,9 @@ Loader {
                 "z": 1
             })
         else if (!isLoading && _loadingItem) _loadingItem.visible = false
+
+        // Count may arrive before loading settles, after the view already exists.
+        if (!isLoading && _pendingInitialIndexReset) resetFocus()
     }
 
     readonly property int count: model.count
@@ -106,6 +109,7 @@ Loader {
 
     // the index to "go to" when the view is loaded
     property int initialIndex: -1
+    property bool _pendingInitialIndexReset: false
 
     // used in custom focus management for explicit "focusReason" transfer
     property var setCurrentItemFocus: currentItem?.setCurrentItemFocus ?? setCurrentItemFocusDefault
@@ -168,6 +172,9 @@ Loader {
                 return root.rightPadding
             })
         }
+        // A cached model may have its initial index before the view exists.
+        // Consume that request once; later grid/list switches retain selection.
+        if (_pendingInitialIndexReset) resetFocus()
     }
 
     Connections {
@@ -183,7 +190,8 @@ Loader {
 
     // makes the views currentIndex initial index and position view at that index
     function resetFocus() {
-        if (isLoading || count === 0 || initialIndex === -1) return
+        _pendingInitialIndexReset = initialIndex !== -1
+        if (isLoading || count === 0 || initialIndex === -1 || currentItem === null) return
 
         var index
 
@@ -198,6 +206,7 @@ Loader {
             currentItem.positionViewAtIndex(index, ItemView.Contain)
 
         currentItem.setCurrentItem(index)
+        _pendingInitialIndexReset = false
     }
 
     function setCurrentItemFocusDefault(reason) {

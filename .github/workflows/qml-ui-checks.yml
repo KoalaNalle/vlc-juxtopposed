@@ -39,14 +39,20 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
       - name: Check shared library navigation states and actions
         run: python modules/gui/qt/tests/test_juxtopposed_navigation.py --output-dir ui-previews/navigation
+      - name: Check leaf route properties and saved selection restoration
+        run: python modules/gui/qt/tests/test_page_loader_routes.py --repo-root . --mode fixed --output-dir ui-previews/page-loader
       - name: Check library header and compact media rows
         run: python modules/gui/qt/tests/test_juxtopposed_library.py --output-dir ui-previews/library
       - name: Check production settings tabs and engine bindings
         run: python modules/gui/qt/tests/test_juxtopposed_settings.py --output-dir ui-previews/settings
       - name: Check new playlist dialog, files and save states
         run: python modules/gui/qt/tests/test_juxtopposed_new_playlist.py --output-dir ui-previews/new-playlist
+      - name: Check subtitle source-cue strip and timing states
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitle_timeline.py --output-dir ui-previews/subtitle-timeline
       - name: Check network stream dialog and modal shortcuts
         run: python modules/gui/qt/tests/test_juxtopposed_network_dialog.py --output-dir ui-previews/network
+      - name: Check conversion form states, focus and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_conversion_dialog.py --output-dir ui-previews/conversion
       - name: Check music source list and cover layout
         run: python modules/gui/qt/tests/test_juxtopposed_music_player.py --output-dir ui-previews/music
       - name: Check Home dashboard and collection actions

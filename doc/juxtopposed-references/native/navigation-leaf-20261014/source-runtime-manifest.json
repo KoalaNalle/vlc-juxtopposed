@@ -1,0 +1,161 @@
+{
+  "documentationDate": "2026-10-14",
+  "scope": "Production loader and real Qt selection with supplied QML dependencies; independently built/run actual QCore NavigationHistory.",
+  "helper": {
+    "path": "modules/gui/qt/tests/test_page_loader_routes.py",
+    "sha256": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22",
+    "duplicated": false
+  },
+  "nativeTestSource": {
+    "path": "modules/gui/qt/tests/test_navigation_history.cpp",
+    "sha256": "894b75a685ab75c0120582a80c05696ea3895d9d9a6a06da0c30b136ab965101",
+    "duplicated": false
+  },
+  "integratedSourcesSha256": {
+    "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+    "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ba2cba36914855e3f88ba1bc70b2292d85ea1d6d56c824f198b5d5fed4e8d50b",
+    "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+    "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "4e9e293a91b6a0d43702d0b569daa2f7be3c9c7730fcfef9b13a281ac1ff1b60",
+    "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+    "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+    "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+    "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee",
+    "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+    "modules/gui/qt/tests/test_navigation_history.cpp": "894b75a685ab75c0120582a80c05696ea3895d9d9a6a06da0c30b136ab965101",
+    "modules/gui/qt/Makefile.am": "2e4efc081c88d6ae2c98aee8b90c41a05bb6312d7adb36a6faf42dbb6d76537a",
+    "modules/gui/qt/tests/test_page_loader_routes.py": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22"
+  },
+  "nativeSourceSha256": {
+    "modules/gui/qt/tests/test_navigation_history.cpp": "894b75a685ab75c0120582a80c05696ea3895d9d9a6a06da0c30b136ab965101",
+    "modules/gui/qt/util/navigation_history.cpp": "e0381ab6d440853451a2fca2650a1009219419aaad04a05b87165426d4c4f949",
+    "modules/gui/qt/util/navigation_history.hpp": "0146ac391fa19ac8e3e70939b2b934df538e8aa02448c663a5f5488e4a95e24b"
+  },
+  "proposalPatchSha256": "f8d4ffb18327e3cf94fa29a373afeb928cd7290f5d6f07dd36d0c830782514d1",
+  "componentVariants": {
+    "baseline": {
+      "passed": false,
+      "completed": [],
+      "helperSha256": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22",
+      "sourceSha256": {
+        "modules/gui/qt/widgets/qml/PageLoader.qml": "e6a864adf9ecdf79596c05f80a913534a33632d5ba93ca25f67ba095a90b05e3",
+        "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+        "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "7c835bec0cae01b1616160d9cbadcaa04f459093c501afdf5b18dc004bcd1e96",
+        "modules/gui/qt/maininterface/qml/MainDisplay.qml": "a50af3f2284402aaab9f3eacf1e8985ff89f59717de74d5c83f734aef24630f8",
+        "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "c4fa4e83f1ba27a7194d34b27ef46151397c4c13c72c1d28ef27d284268ef95f",
+        "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "645e2a0b11407972012d389a460b173d353871c56bffb4092ffa69ee94d7a0f5",
+        "modules/gui/qt/network/qml/DiscoverDisplay.qml": "b8cced923baa8cce7f21ced2be7caebf6ae1a2d214318be38224cc88ff7aa5da",
+        "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "52b7f0041a5868685aec58fb2c6e4da128bebeec06e1ff04ace2f920f30fea8d",
+        "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "5e2f590b9c86ba56116d42636923087ef1e7011038668dc055dd19762b11cef4",
+        "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "55b000aea0a4bbbb586c7bac5239aa1f0c9074b775efbc7b42e0db44d43e498a"
+      },
+      "fullNativeIntegrationAccepted": false
+    },
+    "loading-before": {
+      "passed": false,
+      "completed": [
+        "expandedVideoLeafIndex",
+        "pendingInitialResetDoesNotReplayAfterGridSwitch"
+      ],
+      "helperSha256": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22",
+      "sourceSha256": {
+        "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+        "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+        "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "1d0f7bfa8d3ba434c1dca76b4fc7942458d3385703bbe418ef425f0a6e6fd259",
+        "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ba2cba36914855e3f88ba1bc70b2292d85ea1d6d56c824f198b5d5fed4e8d50b",
+        "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+        "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "4e9e293a91b6a0d43702d0b569daa2f7be3c9c7730fcfef9b13a281ac1ff1b60",
+        "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+        "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+        "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+        "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+      },
+      "fullNativeIntegrationAccepted": false
+    },
+    "fixed-shadow": {
+      "passed": true,
+      "completed": [
+        "expandedVideoLeafIndex",
+        "pendingInitialResetDoesNotReplayAfterGridSwitch",
+        "countBeforeLoadingSettlesConsumesPendingIndex",
+        "defaultPlaylistLeafZeroIndex",
+        "genuineIdTitleBeforeConstruction",
+        "adapterBackForwardLeafRestoration",
+        "playlistToRealNoIndexHomeContract",
+        "sameParentReloadAndGroupAlias",
+        "explicitChildFalseNewAndReusedParent",
+        "unknownLeafPropertyFailsWithoutDropping",
+        "conditionalNoMlLeaf"
+      ],
+      "helperSha256": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22",
+      "sourceSha256": {
+        "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+        "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+        "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+        "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ba2cba36914855e3f88ba1bc70b2292d85ea1d6d56c824f198b5d5fed4e8d50b",
+        "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+        "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "4e9e293a91b6a0d43702d0b569daa2f7be3c9c7730fcfef9b13a281ac1ff1b60",
+        "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+        "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+        "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+        "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+      },
+      "fullNativeIntegrationAccepted": false
+    },
+    "integrated": {
+      "passed": true,
+      "completed": [
+        "expandedVideoLeafIndex",
+        "pendingInitialResetDoesNotReplayAfterGridSwitch",
+        "countBeforeLoadingSettlesConsumesPendingIndex",
+        "defaultPlaylistLeafZeroIndex",
+        "genuineIdTitleBeforeConstruction",
+        "adapterBackForwardLeafRestoration",
+        "playlistToRealNoIndexHomeContract",
+        "sameParentReloadAndGroupAlias",
+        "explicitChildFalseNewAndReusedParent",
+        "unknownLeafPropertyFailsWithoutDropping",
+        "conditionalNoMlLeaf"
+      ],
+      "helperSha256": "f3a1aa40cac99ea740708c1e18622d74b1c855cedbf25e685c1fca866a2b2c22",
+      "sourceSha256": {
+        "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+        "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+        "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+        "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ba2cba36914855e3f88ba1bc70b2292d85ea1d6d56c824f198b5d5fed4e8d50b",
+        "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+        "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "4e9e293a91b6a0d43702d0b569daa2f7be3c9c7730fcfef9b13a281ac1ff1b60",
+        "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+        "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+        "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+        "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+      },
+      "fullNativeIntegrationAccepted": false
+    }
+  },
+  "nativeExeSha256": "12199a30ab729fda7f718c12b20922f3f7fb33241603b97734adb6f6b5929fec",
+  "selectedRuntimePackage": "build-windows/slice-home-route-package-20261014",
+  "selectedRuntimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "buildOwnerReportedExitCode": 0,
+  "buildEvidence": "Preserved MOC/CXX/link logs and executed owner script; Libtool Continuing warnings retained. Recorded source identities and actual new case names associate the build/run; no embedded source hash or native Meson build claim.",
+  "sourceHashAloneIsNotBuildProof": true,
+  "exactNativeCases": [
+    "initTestCase",
+    "emptyActions",
+    "retainsViewState",
+    "branchClearsForward",
+    "staleForwardEntry",
+    "expandedLeafPropertiesSurviveNormalization",
+    "playlistZeroIndexAndHomeFramesRemainIsolated",
+    "availabilityEdges",
+    "cleanupTestCase"
+  ],
+  "publicProofAudit": "native/strict-output-audit.json",
+  "mountedQmlNativeHistoryTogetherAccepted": false,
+  "desktopJourneyAccepted": false,
+  "personalMediaIncluded": false,
+  "binariesIncluded": false,
+  "privateAbsolutePathsIncluded": false
+}
