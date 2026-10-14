@@ -302,6 +302,10 @@ libqt_plugin_la_SOURCES = \
 	player/audio_waveform.cpp player/audio_waveform.hpp \
 	player/local_music_folder.cpp player/local_music_folder.hpp \
 	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
+	dialogs/new_playlist_model.cpp \
+	dialogs/new_playlist_model.hpp \
+	dialogs/new_playlist_data.cpp \
+	dialogs/new_playlist_data.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
 	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
@@ -515,6 +519,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/audio_waveform.moc.cpp \
 	player/local_music_folder.moc.cpp \
 	dialogs/network_stream_model.moc.cpp \
+	dialogs/new_playlist_model.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
 	maininterface/subtitle_preset_model.moc.cpp \
@@ -1092,6 +1097,7 @@ libqml_module_dialogs_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
@@ -1858,9 +1864,11 @@ test_ml_model_SOURCES = \
 	util/locallistcacheloader.hpp \
 	medialibrary/mlqmltypes.hpp \
 	medialibrary/mlbasemodel.hpp medialibrary/mlbasemodel.cpp \
+	medialibrary/mlplaylist.hpp medialibrary/mlplaylist.cpp \
 	medialibrary/medialib.hpp medialibrary/medialib.cpp \
 	medialibrary/mlhomeactivity.hpp medialibrary/mlhomeactivity.cpp \
 	medialibrary/mlhomeactivitydata.hpp medialibrary/mlhomeactivitydata.cpp \
+	dialogs/new_playlist_data.hpp dialogs/new_playlist_data.cpp \
 	medialibrary/mlthreadpool.hpp medialibrary/mlthreadpool.cpp \
 	playlist/playlist_controller.hpp playlist/playlist_controller.cpp \
 	playlist/playlist_item.hpp playlist/playlist_item.cpp
@@ -2018,7 +2026,8 @@ TESTS += test_qt_audio_waveform
 
 test_qt_home_activity_SOURCES = \
 	tests/test_home_activity.cpp tests/network_stream_probe.c \
-	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp
+	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp \
+	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp
 nodist_test_qt_home_activity_SOURCES = \
 	tests/test_home_activity.moc medialibrary/mlqmltypes.moc.cpp
 BUILT_SOURCES += tests/test_home_activity.moc
@@ -2029,6 +2038,23 @@ test_qt_home_activity_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_home_activity_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_home_activity
 TESTS += test_qt_home_activity
+
+test_qt_new_playlist_SOURCES = \
+	tests/test_new_playlist.cpp tests/network_stream_probe.c \
+	dialogs/new_playlist_model.cpp dialogs/new_playlist_model.hpp \
+	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp medialibrary/mlqmltypes.hpp \
+	util/vlctick.cpp util/vlctick.hpp \
+	medialibrary/mlplaylist.cpp medialibrary/mlplaylist.hpp
+nodist_test_qt_new_playlist_SOURCES = \
+	tests/test_new_playlist.moc dialogs/new_playlist_model.moc.cpp medialibrary/mlqmltypes.moc.cpp
+BUILT_SOURCES += tests/test_new_playlist.moc
+CLEANFILES += tests/test_new_playlist.moc
+test_qt_new_playlist_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_new_playlist_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_new_playlist_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_new_playlist_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_new_playlist
+TESTS += test_qt_new_playlist
 
 test_qt_network_stream_SOURCES = \
 	tests/test_network_stream.cpp tests/network_stream_probe.c \

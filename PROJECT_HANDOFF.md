@@ -14,7 +14,7 @@ Codex session on the home computer.
 | Intended home checkout | `C:\modding\vlc-juxtopposed` |
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
-| Immediate priority | Audit all reference surfaces, stabilize playback and build the shared shell/Home slice |
+| Immediate priority | Complete the first publishable beta against all confirmed Juxtopposed design surfaces |
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.
@@ -23,13 +23,18 @@ and control checks work; comprehensive native acceptance remains pending.
 The redesign is still an implementation in progress and the
 PR remains a draft.
 
-The user has activated the complete [vertical slice plan](doc/juxtopposed-vertical-slice-plan.md)
-as a Goal covering milestones 0 through 8, and authorized pushing the existing
-progress and each subsequent built and verified runnable checkpoint. The GUI
+The user's active Goal now targets the first publishable, feature-complete beta;
+the [beta plan](doc/juxtopposed-beta-plan.md) expands the earlier
+[vertical slice plan](doc/juxtopposed-vertical-slice-plan.md). The user authorized
+pushing each built and verified runnable checkpoint. The GUI
 fixes below form the first checkpoint. Code Review reports the preceding remote
-revision `561fd18388` passed the Windows UI workflow. Figma MCP access remains
-quota-limited; preserved exports and the supplied video remain available for
-reference work.
+revision `561fd18388` passed the Windows UI workflow; both Windows checks on the
+latest pushed `7ff50d23fd` also passed. Figma MCP access was restored on
+14 October after the user connected a Professional Full seat. Page inventory,
+high-fidelity Home/New Playlist/subtitle-timeline context and screenshots now
+read successfully. Reuse the [saved MCP reference inventory](doc/juxtopposed-references/figma/20261014/README.md),
+preserved exports and supplied video; browser permission remains a separate
+unresolved setting and is not needed for these successful MCP reads.
 
 ## Active Goal progress on 14 October
 
@@ -64,7 +69,10 @@ shutdown and AV1 UI acceptance remain open. The Goal remains active for all
 milestones, and no completion or whole-app visual claim has been made.
 
 The user chose saved manual Figma exports plus video when MCP quota remained
-exhausted. Browser access to Figma was declined; continue with local references.
+exhausted, and later authorized browser inspection. Browser attempts still
+rejected `www.figma.com` because of a saved site block; do not circumvent that
+block. MCP now succeeds independently with the restored Professional Full seat.
+Conserve calls by reusing saved high-fidelity context, screenshots and assets.
 Three exact-time library frames, provisional shell geometry and native mapping
 are preserved in [library notes](doc/juxtopposed-references/library/reference-notes.md).
 The generated chapter/subtitle/audio fixtures have been probed; their native
@@ -720,12 +728,45 @@ surfaces 15%, artwork 15%, state/responsive fidelity 15%. Explicitly exclude
 unassessed categories when normalizing a partial score. Functional acceptance
 and full native build/playback acceptance are separate gates.
 
-Figma MCP hit its account call limit in the previous session. Manual Design
-Mode inspection and original asset exports were authorized and successfully
-used. Reuse committed references first; a paid Figma plan is not required to
-continue. If MCP is available, use the applicable Figma skills. For new screens,
-obtain sufficient original reference material rather than guessing from sparse
-metadata. Keep original SVGs unchanged and retain attribution.
+Figma MCP hit its account call limit earlier. Manual Design Mode inspection and
+original asset exports were authorized and successfully used. MCP reads now
+work after the user's Professional Full-seat connection; this does not accept
+the current app's visual fidelity. Follow the applicable Figma skills, reuse
+saved references, and obtain sufficient high-fidelity context before new UI
+edits. Keep original SVGs unchanged and retain attribution.
+
+Windows development firewall setup is now complete for the explicitly named
+test programs and package paths: Private TCP/UDP incoming traffic is limited to
+the local subnet; Public/Domain incoming traffic is blocked. Existing automatic
+query rules for those exact programs were disabled to avoid conflicting rules.
+All firewall profiles and checked Defender protections remain enabled. The
+setup/Undo script and host-specific audit files remain ignored under
+`build-windows`; new executable paths are not automatically covered. A fresh
+Home native helper run after setup again passed all 11 cases. The complete
+Home worker/picker desktop journey remains a separate acceptance gate.
+
+## Latest native playlist and Home checkpoint
+
+The [New Playlist checkpoint](doc/juxtopposed-references/advanced/new-playlist-checkpoint.md)
+now has a production modal, native image/media pickers, ordered mixed/repeated
+files, optional copied artwork and native library routing. The final native
+suite passes 10 cases, including real external files with unknown duration;
+all 14 component/source suites pass. Actual desktop creation, reorder, saved
+contents and Home cover/content persistence after restart were observed.
+The rebuilt desktop now displays `--:--` for unknown row and all-unknown playlist
+durations. Actual drop, active-primary-player preservation and full error/DPI/
+reference acceptance remain open. Synthetic ML model additions compiled, but
+the existing Windows stub initializer prevents that separate model test from
+running; it is not a passing check.
+
+The [Home folder-bootstrap checkpoint](doc/juxtopposed-references/home/folder-bootstrap-checkpoint.md)
+adds explicit audio-only Add Folder visit registration and preserves accepted
+activity after actual settings write/clear failures. All 11 native Home cases
+pass with real indexing/events/restart and separate request/store helpers.
+The complete worker/picker/Home journey remains a desktop gate. The built Qt
+DLL SHA-256 is `88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6`.
+These are incremental checkpoints; the [beta plan](doc/juxtopposed-beta-plan.md)
+still has open functional, visual and final-package gates.
 
 ## Code map
 

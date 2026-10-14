@@ -17,6 +17,7 @@
 #include <QSettings>
 #include <QTimer>
 #include <QVariantList>
+#include <atomic>
 
 class MediaLib;
 struct qt_intf_t;
@@ -42,6 +43,9 @@ public:
 
     // Call after a native folder/playlist content route has actually entered.
     Q_INVOKABLE void recordVisit(MLItemId id);
+    // Register before the accepted Add Folder job can emit native root events.
+    quint64 beginFolderAddition(const QUrl &);
+    void completeFolderAddition(quint64 serial, bool accepted, bool existingRoot);
     Q_INVOKABLE void clearVisits();
     Q_INVOKABLE void refresh();
 signals:
@@ -51,12 +55,16 @@ private:
     static void libraryEvent(void *, const vlc_ml_event_t *);
     void beginRefresh();
     void setLoading(bool);
+    void addedFolderEvent(const QUrl &, bool success, quint64 epoch);
+    void retryAddedFolders();
     MediaLib *m_library;
     qt_intf_t *m_interface;
     MLHomeVisitStore m_store;
     vlc_ml_event_callback_t *m_listener = nullptr;
     QSet<quint64> m_tasks;
-    QTimer m_refreshTimer;
+    QTimer m_refreshTimer, m_folderLookupTimer;
+    MLHomeFolderAdditions m_addedFolders;
+    bool m_folderLookupRunning = false, m_folderLookupAgain = false;
     QVariantList m_folders, m_playlists, m_artists;
     QString m_error;
     QString m_persistenceError;
@@ -65,5 +73,5 @@ private:
     bool m_refreshRunning = false;
     bool m_refreshAgain = false;
     quint64 m_generation = 0;
-    quint64 m_visitEpoch = 0;
+    std::atomic_uint64_t m_visitEpoch{0};
 };

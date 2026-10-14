@@ -33,6 +33,7 @@
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
 #include "network_stream_model.hpp"
+#include "new_playlist_model.hpp"
 #include "player/player_controller.hpp" /* Load Subtitles */
 #include "playlist/playlist_controller.hpp"
 #include "menus/menus.hpp"
@@ -668,6 +669,57 @@ NetworkStreamModel *DialogsProvider::networkStream()
         m_networkStream = std::make_unique<NetworkStreamModel>(p_intf->p_playlist, library, this);
     }
     return m_networkStream.get();
+}
+
+NewPlaylistModel *DialogsProvider::newPlaylist()
+{
+    if (!m_newPlaylist)
+    {
+        const auto *ctx = p_intf->p_mi;
+        auto *library = ctx && ctx->hasMediaLibrary() ? vlc_ml_instance_get(p_intf) : nullptr;
+        m_newPlaylist = std::make_unique<NewPlaylistModel>(library, newPlaylistArtworkDirectory(), this);
+        connect(m_newPlaylist.get(), &NewPlaylistModel::finished, this, [this](bool) {
+            if (m_newPlaylist->savedPlaylist().isValid())
+                emit newPlaylistSaved(m_newPlaylist->savedPlaylist());
+        });
+    }
+    return m_newPlaylist.get();
+}
+
+void DialogsProvider::newPlaylistDialog()
+{
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+        emit showNewPlaylistDialog();
+}
+
+void DialogsProvider::chooseNewPlaylistFiles()
+{
+    QPointer<NewPlaylistModel> model = newPlaylist();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !model->available() || model->busy() || model->partialSave()) return;
+    auto patterns = QStringLiteral(EXTENSIONS_MEDIA);
+    patterns.replace(';', ' ');
+    const auto urls = QFileDialog::getOpenFileUrls(nullptr, qtr("Select playlist files"),
+        ctx->getDialogFilePath(), qtr("Media files") + " (" + patterns + ");;" + qtr("All files") + " (*)",
+        nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || urls.isEmpty()) return;
+    ctx->setDialogFilePath(urls.last());
+    QVariantList ordered;
+    for (const auto &url : urls) ordered.append(url);
+    model->appendFiles(ordered);
+}
+
+void DialogsProvider::chooseNewPlaylistThumbnail()
+{
+    QPointer<NewPlaylistModel> model = newPlaylist();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !model->available() || model->busy() || model->partialSave()) return;
+    const auto image = QFileDialog::getOpenFileUrl(nullptr, qtr("Choose playlist thumbnail"),
+        ctx->getDialogFilePath(), qtr("Images") + " (*.png *.jpg *.jpeg *.webp *.bmp);;" + qtr("All files") + " (*)",
+        nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || image.isEmpty()) return;
+    ctx->setDialogFilePath(image);
+    model->setThumbnail(image);
 }
 
 void DialogsProvider::setQmlDialogVisible(bool visible)

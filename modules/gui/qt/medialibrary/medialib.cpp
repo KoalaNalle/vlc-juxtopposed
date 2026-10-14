@@ -120,13 +120,19 @@ void MediaLib::addFolder(const QUrl &folder)
         return;
     }
 
-    struct Context { bool accepted = false; };
+    // Pending state exists before native discovery can publish its root event.
+    const auto serial = m_homeActivity ? m_homeActivity->beginFolderAddition(folder) : 0;
+    struct Context { bool accepted = false, existingRoot = false; };
     runOnMLThread<Context>(this,
         [folder](vlc_medialibrary_t *ml, Context &ctx) {
+            // Successful root-added events are emitted only once. A root
+            // already indexed before this user action is also a genuine visit.
+            ctx.existingRoot = lookupMLHomeAddedFolder(ml, folder).status == MLHomeFolderLookup::Ready;
             ctx.accepted = vlc_ml_add_folder(ml,
                 qtu(folder.toString(QUrl::FullyEncoded))) == VLC_SUCCESS;
         },
-        [this, folder](quint64, Context &ctx) {
+        [this, folder, serial](quint64, Context &ctx) {
+            if (m_homeActivity) m_homeActivity->completeFolderAddition(serial, ctx.accepted, ctx.existingRoot);
             if (!ctx.accepted)
                 emit folderAddFailed(folder);
         }, "ML_FOLDER_ADD_QUEUE");

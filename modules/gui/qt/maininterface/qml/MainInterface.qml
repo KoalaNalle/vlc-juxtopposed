@@ -348,8 +348,24 @@ Item {
         Binding {
             target: DialogsProvider
             property: "qmlDialogVisible"
-            value: networkStreamDialog.visible
+            value: networkStreamDialog.visible || newPlaylistDialog.visible
             restoreMode: Binding.RestoreBindingOrValue
+        }
+
+        JuxtopposedNewPlaylistDialog {
+            id: newPlaylistDialog
+            parent: g_mainInterface
+            controller: DialogsProvider.newPlaylist
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            onFilesRequested: DialogsProvider.chooseNewPlaylistFiles()
+            onThumbnailRequested: DialogsProvider.chooseNewPlaylistThumbnail()
+            onPlaylistRequested: playlist => {
+                MainCtx.playerView = false
+                History.push(["playlists", "list"], {parentId: playlist, title: DialogsProvider.newPlaylist.name.trim()}, Qt.PopupFocusReason)
+            }
+            onFallbackFocusRequested: {
+                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
+            }
         }
 
         Widgets.TextInputFocus {
@@ -366,7 +382,21 @@ Item {
 
         Connections {
             target: DialogsProvider
+            function onNewPlaylistSaved(playlist) {
+                MainCtx.mediaLibrary?.homeActivity?.refresh()
+            }
+            function onShowNewPlaylistDialog() {
+                if (networkStreamDialog.visible) {
+                    if (networkStreamDialog.controller.busy) return
+                    networkStreamDialog.reject()
+                }
+                newPlaylistDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
+            }
             function onShowNetworkStreamDialog() {
+                if (newPlaylistDialog.visible) {
+                    if (newPlaylistDialog.controller.busy) return
+                    newPlaylistDialog.reject()
+                }
                 networkStreamDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
             }
         }

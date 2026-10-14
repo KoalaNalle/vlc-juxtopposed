@@ -11,6 +11,8 @@
 #include <QHash>
 #include <QPointer>
 #include <QSettings>
+#include <QUrl>
+#include <QDeadlineTimer>
 #include <QVariantList>
 
 // Visits are interface activity, distinct from native media completion counts.
@@ -35,3 +37,37 @@ struct MLHomeActivitySnapshot
 };
 
 MLHomeActivitySnapshot loadMLHomeActivity(vlc_medialibrary_t *, const QList<MLHomeVisitStore::Visit> &);
+
+// Native roots are resolved through the existing entry-point list: the C API
+// has no folder-by-MRL getter. No request stores an invented database ID.
+QString mlHomeFolderKey(const QUrl &);
+struct MLHomeFolderLookup
+{
+    enum Status { Missing, Ready, Unavailable, Error } status = Missing;
+    MLItemId id;
+};
+MLHomeFolderLookup lookupMLHomeAddedFolder(vlc_medialibrary_t *, const QUrl &);
+
+class MLHomeFolderAdditions
+{
+public:
+    struct Request {
+        QUrl folder;
+        QString key;
+        quint64 serial = 0, epoch = 0;
+        bool accepted = false, confirmed = false;
+        QDeadlineTimer deadline;
+    };
+    quint64 begin(const QUrl &);
+    void accepted(quint64 serial, bool success, bool existingRoot);
+    void rootAdded(const QUrl &, bool success);
+    void cancel(const QUrl &);
+    bool current(const Request &) const;
+    bool consume(const Request &);
+    QList<Request> ready() const;
+    bool empty() const { return m_requests.isEmpty(); }
+    void clear();
+private:
+    QHash<QString, Request> m_requests;
+    quint64 m_serial = 0, m_epoch = 0;
+};

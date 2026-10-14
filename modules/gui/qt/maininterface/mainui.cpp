@@ -69,6 +69,7 @@
 #include "dialogs/help/aboutmodel.hpp"
 #include "dialogs/dialogs_provider.hpp"
 #include "dialogs/network_stream_model.hpp"
+#include "dialogs/new_playlist_model.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
 #ifdef UPDATE_CHECK
 #include "dialogs/help/help.hpp" // UpdateModel
@@ -289,6 +290,7 @@ void MainUI::registerQMLTypes()
         assert(DialogsProvider::getInstance());
         qmlRegisterSingletonInstance<DialogsProvider>(uri, versionMajor, versionMinor, "DialogsProvider", DialogsProvider::getInstance());
         qmlRegisterUncreatableType<NetworkStreamModel>(uri, versionMajor, versionMinor, "NetworkStreamModel", "Use DialogsProvider.networkStream");
+        qmlRegisterUncreatableType<NewPlaylistModel>(uri, versionMajor, versionMinor, "NewPlaylistModel", "Use DialogsProvider.newPlaylist");
         assert(DialogErrorModel::getInstance<false>());
         qmlRegisterSingletonInstance<DialogErrorModel>(uri, versionMajor, versionMinor, "DialogErrorModel", DialogErrorModel::getInstance<false>());
 
