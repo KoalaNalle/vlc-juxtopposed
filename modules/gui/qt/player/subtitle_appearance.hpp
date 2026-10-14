@@ -21,6 +21,10 @@ class SubtitleAppearance : public QObject
     Q_PROPERTY(float fontSizeMaximum READ fontSizeMaximum NOTIFY stateChanged FINAL)
     Q_PROPERTY(float outlineSize READ outlineSize WRITE setOutlineSize NOTIFY stateChanged FINAL)
     Q_PROPERTY(float backgroundOpacity READ backgroundOpacity WRITE setBackgroundOpacity NOTIFY stateChanged FINAL)
+    Q_PROPERTY(bool durationAvailable READ durationAvailable NOTIFY stateChanged FINAL)
+    Q_PROPERTY(float durationFactor READ durationFactor WRITE setDurationFactor NOTIFY stateChanged FINAL)
+    Q_PROPERTY(QString durationUnit READ durationUnit NOTIFY stateChanged FINAL)
+    Q_PROPERTY(QString durationDescription READ durationDescription NOTIFY stateChanged FINAL)
 public:
     explicit SubtitleAppearance(vlc_player_t *, QObject *parent = nullptr);
     ~SubtitleAppearance();
@@ -38,6 +42,10 @@ public:
     float fontSizeMaximum() const { return (sizeMode() ? 512.f : 50.f) * scale(); }
     float outlineSize() const;
     float backgroundOpacity() const;
+    bool durationAvailable() const;
+    float durationFactor() const;
+    QString durationUnit() const;
+    QString durationDescription() const;
     Q_INVOKABLE void refresh();
 public slots:
     void setEmbeddedFormat(bool);
@@ -49,6 +57,7 @@ public slots:
     void setFontSize(float);
     void setOutlineSize(float);
     void setBackgroundOpacity(float);
+    void setDurationFactor(float);
 signals:
     void stateChanged();
 private:
@@ -56,6 +65,7 @@ private:
     void prepareStyle();
     bool custom() const;
     float scale() const;
+    int durationMode() const;
     QString color(const char *, const char *) const;
     void setColor(const QString &, QVLCInteger &);
     using Output = vlc::vlc_shared_data_ptr<vout_thread_t, &vout_Hold, &vout_Release>;
@@ -66,5 +76,8 @@ private:
     QVLCInteger m_color, m_outlineColor, m_mode, m_background, m_offset;
     QVLCFloat m_relative, m_pixels, m_relativeOutline, m_pixelOutline;
     QVLCInteger m_scale;
+    QVLCString m_subFilters;
+    QVLCFloat m_duration;
+    QVLCInteger m_durationMode;
 };
 #endif

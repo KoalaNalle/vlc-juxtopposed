@@ -299,6 +299,14 @@ VLC_API subpicture_t * subpicture_New( const subpicture_updater_t * );
  */
 VLC_API void subpicture_Delete( subpicture_t *p_subpic );
 
+/** Request a new stop timestamp in the subtitle source clock domain.
+ * The SPU reconverts it when rendering, including after rate/pause changes. */
+VLC_API void subpicture_SetStopTime(subpicture_t *, vlc_tick_t);
+
+/** Convert a displayed timestamp back to the subtitle source clock domain.
+ * Before registration with a clocked SPU, the timestamp is returned unchanged. */
+VLC_API vlc_tick_t subpicture_GetSourceTime(const subpicture_t *, vlc_tick_t);
+
 /**
  * This function will create a subpicture having one region in the requested
  * chroma showing the given picture.

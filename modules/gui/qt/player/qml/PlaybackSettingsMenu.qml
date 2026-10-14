@@ -227,7 +227,7 @@ T.Popup {
         }
         subtitlesContent: Component {
             SettingsPage {
-                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync]
+                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, duration.slider, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync]
 
                 SectionLabel {
                     text: qsTr("Synchronization")
@@ -283,13 +283,30 @@ T.Popup {
                     onMoveFocusRequested: direction => root.focusSetting(subtitleFPS.editor, direction)
                     onValueRequested: value => Player.subtitleFPS = value
                 }
+                Widgets.JuxtopposedSettingSlider {
+                    id: duration
+
+                    Layout.fillWidth: true
+                    decimals: 3
+                    enabled: Player.subtitleAppearance.durationAvailable
+                    from: 0
+                    helpText: Player.subtitleAppearance.durationDescription
+                    title: qsTr("Subtitle duration factor")
+                    to: 20
+                    uiScale: root.uiScale
+                    unit: Player.subtitleAppearance.durationUnit
+                    value: Player.subtitleAppearance.durationFactor
+
+                    onMoveFocusRequested: direction => root.focusSetting(duration.slider, direction)
+                    onValueRequested: value => Player.subtitleAppearance.durationFactor = value
+                }
                 SectionLabel {
                     text: qsTr("Appearance")
                 }
                 SectionLabel {
                     Layout.fillWidth: true
-                    visible: !Player.subtitleAppearance.available
                     text: Player.subtitleAppearance.statusText
+                    visible: !Player.subtitleAppearance.available
                     wrapMode: Text.WordWrap
                 }
                 ToggleSetting {

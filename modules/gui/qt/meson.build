@@ -428,6 +428,7 @@ qt_plugin_sources = files(
     'player/video_transform.hpp',
     'player/subtitle_appearance.cpp',
     'player/subtitle_appearance.hpp',
+    'util/filterchain.hpp',
     'player/player_controlbar_model.cpp',
     'player/player_controlbar_model.hpp',
     'player/control_list_model.cpp',

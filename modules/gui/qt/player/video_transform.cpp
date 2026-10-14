@@ -4,6 +4,7 @@
 # include "config.h"
 #endif
 #include "video_transform.hpp"
+#include "util/filterchain.hpp"
 #include <vlc_configuration.h>
 #include <vlc_modules.h>
 #include <QByteArrayList>
@@ -11,43 +12,11 @@
 #include <cmath>
 
 namespace {
-struct FilterEntry
-{
-    QString name;
-    QByteArray original;
-    QMap<QString, QString> options;
-};
-
-// Use VLC's parser: a ':' inside a quoted filter option is not a separator.
-QList<FilterEntry> filterEntries(vout_thread_t *output)
-{
-    QList<FilterEntry> entries;
-    if (!output) return entries;
-    auto chain = vlc::wrap_cptr(var_GetString(output, "video-filter"));
-    while (chain && *chain)
-    {
-        char *name = nullptr;
-        config_chain_t *options = nullptr;
-        auto next = vlc::wrap_cptr(config_ChainCreate(&name, &options, chain.get()));
-        FilterEntry entry;
-        entry.name = QString::fromUtf8(name);
-        const size_t length = strlen(chain.get()) - (next ? strlen(next.get()) + 1 : 0);
-        entry.original = QByteArray(chain.get(), length);
-        for (auto *option = options; option; option = option->p_next)
-            entry.options.insert(QString::fromUtf8(option->psz_name), QString::fromUtf8(option->psz_value));
-        if (!entry.name.isEmpty()) entries.push_back(std::move(entry));
-        free(name);
-        config_ChainDestroy(options);
-        chain = std::move(next);
-    }
-    return entries;
-}
-
 struct State { int flip = 0; float angle = 0.f; };
 State currentState(vout_thread_t *output)
 {
     State state;
-    for (const auto &entry : filterEntries(output))
+    for (const auto &entry : vlc::qt::filterChainEntries(output, "video-filter"))
     {
         if (entry.name == "transform")
         {
@@ -124,7 +93,7 @@ void VideoTransform::apply(int flip, float angle)
 {
     if (!available()) return;
     QByteArrayList filters;
-    for (const auto &entry : filterEntries(m_output.get()))
+    for (const auto &entry : vlc::qt::filterChainEntries(m_output.get(), "video-filter"))
     {
         if (entry.name != "transform" && entry.name != "rotate")
             filters.push_back(entry.original);

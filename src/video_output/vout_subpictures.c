@@ -813,13 +813,24 @@ static size_t spu_channel_UpdateDates(struct spu_channel *channel,
         return 0;
 
     if (!channel->clock)
+    {
+        spu_render_entry_t *entry;
+        vlc_vector_foreach_ref(entry, &channel->entries)
+        {
+            if (subpicture_GetStopTime(entry->subpic, &entry->orgstop))
+                entry->subpic->i_stop = entry->stop = entry->orgstop;
+            subpicture_SetSourceTiming(entry->subpic, entry->orgstart, entry->start, 1.f);
+        }
         goto end;
+    }
 
     vlc_clock_Lock(channel->clock);
     spu_render_entry_t *entry;
     vlc_vector_foreach_ref(entry, &channel->entries)
     {
         assert(entry);
+
+        const bool stop_changed = subpicture_GetStopTime(entry->subpic, &entry->orgstop);
 
         entry->start = vlc_clock_ConvertToSystem(channel->clock, system_now,
                                                  entry->orgstart, channel->rate,
@@ -835,6 +846,8 @@ static size_t spu_channel_UpdateDates(struct spu_channel *channel,
         }
         else
             entry->stop = VLC_TICK_INVALID;
+        if (stop_changed) entry->subpic->i_stop = entry->stop;
+        subpicture_SetSourceTiming(entry->subpic, entry->orgstart, entry->start, channel->rate);
     }
     vlc_clock_Unlock(channel->clock);
 
@@ -2126,22 +2139,16 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
 
     vlc_mutex_lock(&sys->filter_chain_lock);
     if (chain_update) {
+        if (sys->vout)
+            filter_chain_ForEach(sys->filter_chain, SubFilterDelProxyCallbacks, sys->vout);
+        filter_chain_Clear(sys->filter_chain);
         if (*chain_update) {
-            if (sys->vout)
-                filter_chain_ForEach(sys->filter_chain,
-                                     SubFilterDelProxyCallbacks,
-                                     sys->vout);
-            filter_chain_Clear(sys->filter_chain);
-
             filter_chain_AppendFromString(sys->filter_chain, chain_update);
             if (sys->vout)
                 filter_chain_ForEach(sys->filter_chain,
                                      SubFilterAddProxyCallbacks,
                                      sys->vout);
         }
-        else
-            filter_chain_Clear(sys->filter_chain);
-
         /* "sub-source"  was formerly "sub-filter", so now the "sub-filter"
         configuration may contain sub-filters or sub-sources configurations.
         if the filters chain was left empty it may indicate that it's a sub-source configuration */
@@ -2195,11 +2202,13 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
     /* Convert all spu ts */
     vlc_tick_t orgstart = subpic->i_start;
     vlc_tick_t orgstop = subpic->i_stop;
+    subpicture_GetStopTime(subpic, &orgstop);
     if (channel->clock)
     {
         vlc_tick_t system_now = vlc_tick_now();
 
         vlc_clock_Lock(channel->clock);
+        const bool paused = vlc_clock_IsPaused(channel->clock);
         subpic->i_start =
             vlc_clock_ConvertToSystem(channel->clock, system_now,
                                       orgstart, channel->rate, NULL);
@@ -2211,11 +2220,16 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
         }
 
         vlc_clock_Unlock(channel->clock);
+        subpicture_SetSourceTiming(subpic, orgstart, subpic->i_start, channel->rate);
 
-        spu_channel_EarlyRemoveLate(sys, channel, system_now);
+        /* A paused seek maps the new cue to the frozen pause date. Wall time
+         * may already be beyond its stop date even though playback is inside
+         * the cue. Let rendering at the pause date decide what has expired. */
+        if (!paused)
+            spu_channel_EarlyRemoveLate(sys, channel, system_now);
 
         /* Maybe the new one is also already expired */
-        if(spu_HasAlreadyExpired(subpic->i_start, subpic->i_stop, system_now))
+        if(!paused && spu_HasAlreadyExpired(subpic->i_start, subpic->i_stop, system_now))
         {
             vlc_mutex_unlock(&sys->lock);
             subpicture_Delete(subpic);

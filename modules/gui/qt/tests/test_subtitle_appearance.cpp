@@ -167,11 +167,14 @@ private slots:
         m_style->setBackgroundOpacity(101); m_style->setSizeMode(2); m_style->setOffset(2001);
         QCOMPARE(m_style->textColor(), "#FF0000"); QCOMPARE(m_style->offset(), 20);
         m_style->resetOutput(nullptr); QVERIFY(!m_style->available());
+        QVERIFY(!m_style->durationAvailable()); m_style->setDurationFactor(2);
         m_style->setTextColor("#00FF00");
         m_style->resetOutput(m_output); QCOMPARE(m_style->textColor(), "#FF0000");
         auto *player = vlc_test_media_player_core(m_mediaPlayer);
         vlc_player_Lock(player); vlc_player_UnselectTrackCategory(player, SPU_ES); vlc_player_Unlock(player);
         QTRY_VERIFY(!m_style->available()); m_style->setTextColor("#00FF00");
+        QVERIFY(!m_style->durationAvailable()); m_style->setDurationFactor(2);
+        QCOMPARE(m_style->durationFactor(), 0.f);
         QCOMPARE(m_style->textColor(), "#FF0000");
     }
     void playbackMessagesKeepTheirAppearance()
@@ -184,6 +187,106 @@ private slots:
         QVERIFY2(!message.isEmpty() && message.bottom() < 90,
                  "Subtitle color/font overrides affected the playback message");
         var_Destroy(m_output, "osd");
+    }
+    void durationTiming_data()
+    {
+        QTest::addColumn<int>("mode"); QTest::addColumn<float>("factor"); QTest::addColumn<bool>("visibleAtSeven");
+        QTest::newRow("disabled") << 1 << 0.f << false;
+        QTest::newRow("multiplier") << 1 << 2.f << true;
+        QTest::newRow("extra-seconds") << 0 << 2.f << true;
+        QTest::newRow("text-content") << 2 << 0.01f << true;
+    }
+    void durationTiming()
+    {
+        QFETCH(int, mode); QFETCH(float, factor); QFETCH(bool, visibleAtSeven);
+        m_style.reset();
+        if (m_output) { vout_Release(m_output); m_output = nullptr; }
+        libvlc_media_player_stop_async(m_mediaPlayer); libvlc_media_player_release(m_mediaPlayer);
+        m_mediaPlayer = nullptr;
+        { QMutexLocker guard(&m_mutex); m_image = {}; }
+        m_frames.store(0);
+        const auto fixture = qEnvironmentVariable("VLC_SUBTITLE_FIXTURE");
+        m_mediaPlayer = libvlc_media_player_new(m_instance, nullptr, nullptr); QVERIFY(m_mediaPlayer);
+        libvlc_video_set_callbacks(m_mediaPlayer, lock, unlock, display, this);
+        libvlc_video_set_format(m_mediaPlayer, "BGRA", 320, 180, 1280);
+        auto *media = libvlc_media_new_path(qtu(fixture)); QVERIFY(media);
+        libvlc_media_player_set_media(m_mediaPlayer, media); libvlc_media_release(media);
+        QCOMPARE(libvlc_media_player_play(m_mediaPlayer), 0);
+        QTRY_VERIFY_WITH_TIMEOUT(m_frames.load() > 3, 10000);
+        auto *player = vlc_test_media_player_core(m_mediaPlayer);
+        vlc_player_Lock(player); m_output = vlc_player_vout_Hold(player); vlc_player_Unlock(player);
+        QVERIFY(m_output);
+        m_style = std::make_unique<SubtitleAppearance>(player); m_style->resetOutput(m_output);
+        var_SetInteger(m_output, "subsdelay-mode", mode);
+        libvlc_media_player_set_pause(m_mediaPlayer, true);
+        QTRY_COMPARE(libvlc_media_player_get_state(m_mediaPlayer), libvlc_Paused);
+        const auto subtitle = QUrl::fromLocalFile(QFileInfo(fixture).absolutePath() + "/duration-cues.srt").toEncoded();
+        QCOMPARE(libvlc_media_player_add_slave(m_mediaPlayer, libvlc_media_slave_type_subtitle, subtitle.constData(), true), 0);
+        QTRY_VERIFY_WITH_TIMEOUT(m_style->durationAvailable(), 10000);
+        QCOMPARE(m_style->durationFactor(), 0.f);
+        m_style->setDurationFactor(factor);
+        QCOMPARE(m_style->durationFactor(), factor);
+        QCOMPARE(m_style->durationUnit(), mode == 0 ? QString(" s") : QString{});
+        QCOMPARE(libvlc_media_player_set_time(m_mediaPlayer, 4'200'000, false), 0);
+        QTRY_VERIFY_WITH_TIMEOUT(!pixels(frame(), 2).isEmpty(), 10000);
+        m_style->setEmbeddedFormat(false); m_style->setTextColor("#FF0000");
+        QTRY_VERIFY_WITH_TIMEOUT(!pixels(frame(), 1).isEmpty(), 5000);
+        m_style->setEmbeddedFormat(true);
+        QTRY_VERIFY_WITH_TIMEOUT(!pixels(frame(), 2).isEmpty(), 5000);
+        QCOMPARE(libvlc_media_player_set_rate(m_mediaPlayer, 4.f), 0);
+        libvlc_media_player_set_pause(m_mediaPlayer, false);
+        QTRY_VERIFY_WITH_TIMEOUT(libvlc_media_player_get_time(m_mediaPlayer) >= 6'900'000, 5000);
+        libvlc_media_player_set_pause(m_mediaPlayer, true);
+        QTRY_COMPARE(libvlc_media_player_get_state(m_mediaPlayer), libvlc_Paused);
+        const auto image = frame(QString("duration-%1-%2").arg(mode).arg(factor));
+        const bool visible = !pixels(image, 2).isEmpty();
+        qInfo("Duration mode=%d factor=%f time=%lld visible=%d", mode, factor,
+              (long long)libvlc_media_player_get_time(m_mediaPlayer), visible);
+        QCOMPARE(visible, visibleAtSeven);
+        if (visibleAtSeven)
+        {
+            libvlc_media_player_set_pause(m_mediaPlayer, false);
+            const auto end = mode == 2 ? 9'200'000 : 8'500'000;
+            QTRY_VERIFY_WITH_TIMEOUT(libvlc_media_player_get_time(m_mediaPlayer) >= end, 5000);
+            libvlc_media_player_set_pause(m_mediaPlayer, true);
+            QTRY_COMPARE(libvlc_media_player_get_state(m_mediaPlayer), libvlc_Paused);
+            QVERIFY(pixels(frame(QString("duration-expired-%1").arg(mode)), 2).isEmpty());
+        }
+        // Changing the chain must release its proxies before re-enabling.
+        for (int pass = 0; pass < 3; ++pass)
+        {
+            qInfo("Duration lifecycle %d: disable", pass);
+            m_style->setDurationFactor(0);
+            qInfo("Duration lifecycle %d: seek disabled", pass);
+            QCOMPARE(libvlc_media_player_set_time(m_mediaPlayer, 4'400'000, false), 0);
+            QTRY_VERIFY_WITH_TIMEOUT(std::abs(libvlc_media_player_get_time(m_mediaPlayer) - 4'400'000) < 100'000, 5000);
+            QTRY_VERIFY_WITH_TIMEOUT(!pixels(frame(), 2).isEmpty(), 10000);
+            QTest::qWait(100);
+            qInfo("Duration lifecycle %d: enable", pass);
+            m_style->setDurationFactor(2);
+            qInfo("Duration lifecycle %d: seek enabled", pass);
+            QCOMPARE(libvlc_media_player_set_time(m_mediaPlayer, 4'200'000, false), 0);
+            QTRY_VERIFY_WITH_TIMEOUT(std::abs(libvlc_media_player_get_time(m_mediaPlayer) - 4'200'000) < 100'000, 5000);
+            QTest::qWait(100);
+            QTRY_VERIFY(!pixels(frame(), 2).isEmpty());
+        }
+        m_style->setDurationFactor(-1); m_style->setDurationFactor(21);
+        m_style->setDurationFactor(std::numeric_limits<float>::quiet_NaN());
+        QCOMPARE(m_style->durationFactor(), 2.f);
+        // Normalize owned inline factor/mode without changing other filters or
+        // the user's subtitle overlap setting. These edits need no new cue.
+        const auto previous = vlc::wrap_cptr(var_GetString(m_output, "sub-filter"));
+        var_SetString(m_output, "sub-filter", "other{path='C:/one:two'}:subsdelay{mode=0,factor=1.25,overlap=3}");
+        QCOMPARE(m_style->durationFactor(), 1.25f);
+        QCOMPARE(m_style->durationUnit(), QString(" s"));
+        m_style->setDurationFactor(2);
+        const auto normalized = vlc::wrap_cptr(var_GetString(m_output, "sub-filter"));
+        QCOMPARE(QByteArray(normalized.get()), QByteArray("other{path='C:/one:two'}:subsdelay{overlap=3}"));
+        QCOMPARE(m_style->durationUnit(), QString(" s"));
+        m_style->setDurationFactor(0);
+        const auto removed = vlc::wrap_cptr(var_GetString(m_output, "sub-filter"));
+        QCOMPARE(QByteArray(removed.get()), QByteArray("other{path='C:/one:two'}"));
+        var_SetString(m_output, "sub-filter", previous.get());
     }
     void cleanupTestCase()
     {

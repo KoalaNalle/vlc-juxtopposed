@@ -135,8 +135,20 @@ All nine UI suites, the core clock/pipe checks, packaged paused seeking and prec
 audio/video diagnostics pass on the updated runtime. Core/Freetype/Qt builds pass
 and are staged together with each old DLL recoverable. The evidence records exact
 hashes, component/native captures and separate GUI/format/persistence/visual gates.
-Desktop input remains pending; duration factor, presets/timeline, remaining effects,
+Desktop input remains pending; presets/timeline, remaining effects,
 preferences/themes and the complete integrated slice are still active work.
+
+The [subtitle duration checkpoint](doc/juxtopposed-references/settings/subtitle-duration-checkpoint.md)
+adds the referenced three-decimal field/slider using the real duration filter and
+its current calculation mode. Eleven native rendered-output checks pass, including
+disabled/multiplier/seconds/content timing, expiry, repeated paused seeks and filter
+cycles at 4× speed, appearance with the filter active and inline/quoted-chain guards.
+Core repairs address source/system timing, cloned region ownership, styled text
+ranking, proxy removal and paused dejitter. All nine component suites and native
+clock/pipe/equalizer/video/paused-seek regressions pass. Matching core/filter/Qt DLLs
+are staged with preceding versions recoverable; exact hashes and before/after
+evidence are recorded. GUI/other-format/overlap/hardware/persistence/visual gates
+remain open. Continue all outstanding milestones 0–8.
 
 ## Scope and design credit
 

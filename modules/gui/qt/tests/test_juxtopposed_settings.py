@@ -104,11 +104,13 @@ appearance_notification = Signal()
 appearance_fields = dict(available=bool, statusText=str, embeddedFormat=bool, fontFamily=str, textColor=str,
                          outlineColor=str, offset=int, sizeMode=int, fontSize=float,
                          fontSizeMinimum=float, fontSizeMaximum=float, outlineSize=float, backgroundOpacity=float)
+appearance_fields.update(durationAvailable=bool, durationFactor=float, durationUnit=str, durationDescription=str)
 Appearance = type('Appearance', (AppearanceBase,), dict(changed=appearance_notification,
     **{name: state_property(name, kind, appearance_notification) for name, kind in appearance_fields.items()}))
 appearance = Appearance(dict(available=True, statusText='Select a text subtitle track to change its appearance.', embeddedFormat=True, fontFamily='Arial', textColor='#FFFFFF',
     outlineColor='#000000', offset=0, sizeMode=0, fontSize=6.25, fontSizeMinimum=0.1,
-    fontSizeMaximum=50., outlineSize=4., backgroundOpacity=0.))
+    fontSizeMaximum=50., outlineSize=4., backgroundOpacity=0., durationAvailable=True, durationFactor=0.,
+    durationUnit='', durationDescription='Multiply cue duration; 0 disables.'))
 class Tracks(QObject):
     @Property(int, constant=True)
     def count(self): return 2
@@ -270,6 +272,23 @@ Item {
     accessible(page(), 'Subtitle track delay').valueRequested.emit(0.250)
     assert player.writes[-1] == ('subtitleDelayMS', 250)
     assert not appearance.writes
+    duration = accessible(page(), 'Subtitle duration factor')
+    appearance.engine('durationFactor', 2.5)
+    QTest.qWait(20)
+    assert duration.property('value') == 2.5 and not appearance.writes
+    duration.valueRequested.emit(1.5)
+    assert appearance.writes[-1] == ('durationFactor', 1.5)
+    before_mode_refresh = list(appearance.writes)
+    appearance.engine('durationUnit', ' s')
+    appearance.engine('durationDescription', 'Add seconds; 0 disables.')
+    QTest.qWait(20)
+    assert duration.property('unit') == ' s' and duration.property('helpText') == 'Add seconds; 0 disables.'
+    assert appearance.writes == before_mode_refresh
+    appearance.engine('durationAvailable', False)
+    QTest.qWait(20)
+    assert not duration.isEnabled()
+    appearance.engine('durationAvailable', True)
+    appearance.writes.clear()
     appearance.engine('textColor', '#FF0000')
     QTest.qWait(20)
     color_editor = accessible(accessible(page(), 'Text color'), 'settingTextEditor')

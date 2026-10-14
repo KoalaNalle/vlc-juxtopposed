@@ -698,7 +698,10 @@ vlc_clock_monotonic_to_system(vlc_clock_t *clock, struct vlc_clock_context *ctx,
 
         const vlc_tick_t input_delay = main_clock->input_dejitter + pcr_delay;
 
-        const vlc_tick_t delay =
+        /* Paused seeks render at a frozen date. Preserve the PCR/input delay
+         * even when negative; an output-start margin could move an active cue
+         * permanently beyond that date. Playing outputs still use dejitter. */
+        const vlc_tick_t delay = main_clock->paused ? input_delay :
             __MAX(input_delay, main_clock->output_dejitter);
 
         main_clock->wait_sync_ref_priority = clock->priority;
@@ -900,7 +903,7 @@ vlc_clock_output_start(vlc_clock_t *clock,
 
     const vlc_tick_t input_delay = main_clock->input_dejitter + pcr_delay;
 
-    const vlc_tick_t delay =
+    const vlc_tick_t delay = main_clock->paused ? input_delay :
         __MAX(input_delay, main_clock->output_dejitter);
 
     main_clock->wait_sync_ref_priority = clock->priority;

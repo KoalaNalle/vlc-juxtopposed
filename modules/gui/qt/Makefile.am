@@ -294,6 +294,7 @@ libqt_plugin_la_SOURCES = \
 	player/audio_equalizer.cpp player/audio_equalizer.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+	util/filterchain.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
 	player/control_list_model.cpp player/control_list_model.hpp \
 	player/control_list_filter.cpp \

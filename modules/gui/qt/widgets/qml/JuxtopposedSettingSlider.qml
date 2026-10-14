@@ -11,6 +11,7 @@ C.Control {
     property int decimals: 1
     property alias editor: editor
     property real from: 0
+    property string helpText: ""
     property alias slider: slider
     property real sliderMaximum: to
     property bool sliderVisible: true
@@ -48,7 +49,11 @@ C.Control {
             editor.forceActiveFocus(reason);
     }
 
+    Accessible.description: helpText
     Accessible.name: title
+    C.ToolTip.text: helpText
+    C.ToolTip.visible: helpText.length > 0 && hovered
+    hoverEnabled: helpText.length > 0
     implicitHeight: sliderVisible ? (ticks.length ? 100 : 80) * uiScale : 40 * uiScale
     implicitWidth: 360 * uiScale
     opacity: enabled ? 1 : 0.35
