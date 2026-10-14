@@ -304,6 +304,7 @@ libqt_plugin_la_SOURCES = \
 	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
 	util/filterchain.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
 	player/control_list_model.cpp player/control_list_model.hpp \
@@ -516,6 +517,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	dialogs/network_stream_model.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
 	player/control_list_model.moc.cpp \
 	player/control_list_filter.moc.cpp \
@@ -1238,6 +1240,7 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedMusicPlayer.qml \
 	player/qml/PlaybackSettingsMenu.qml \
 	player/qml/JuxtopposedSettingsPanel.qml \
+	player/qml/JuxtopposedSubtitlePresets.qml \
 	player/qml/ControlBar.qml \
 	player/qml/PlaybackSpeed.qml \
 	player/qml/LyricsFlickable.qml \
@@ -2116,3 +2119,96 @@ endif
 endif
 
 EXTRA_DIST += tests/test_juxtopposed_playback_bar.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+# Actual native subtitle preset persistence and rendered-output diagnostic.
+# Actual PlayerController callbacks on the native NORMAL-lock playlist player.
+test_qt_player_subtitle_delay_SOURCES = \
+	tests/vlc_stub_modules.cpp \
+	tests/test_player_subtitle_delay.cpp \
+	player/player_controller.cpp \
+	player/input_models.cpp \
+	player/audio_equalizer.cpp \
+	player/audio_waveform.cpp \
+	player/local_music_folder.cpp \
+	player/video_transform.cpp \
+	player/subtitle_appearance.cpp \
+	maininterface/subtitle_preset_model.cpp \
+	util/audio_device_model.cpp \
+	util/variables.cpp \
+	util/varchoicemodel.cpp \
+	util/renderer_manager.cpp \
+	util/vlctick.cpp \
+	dialogs/extensions/extensions_manager.cpp \
+	dialogs/extensions/extensions.cpp \
+	widgets/native/customwidgets.cpp \
+	widgets/native/animators.cpp \
+	util/soutchain.cpp \
+	util/imagehelper.cpp \
+	player/player_controller.hpp \
+	player/input_models.hpp \
+	player/audio_equalizer.hpp \
+	player/audio_waveform.hpp \
+	player/local_music_folder.hpp \
+	player/video_transform.hpp \
+	player/subtitle_appearance.hpp \
+	maininterface/subtitle_preset_model.hpp \
+	util/audio_device_model.hpp \
+	util/variables.hpp \
+	util/varchoicemodel.hpp \
+	util/renderer_manager.hpp \
+	util/vlctick.hpp \
+	dialogs/extensions/extensions_manager.hpp \
+	dialogs/extensions/extensions.hpp \
+	widgets/native/customwidgets.hpp \
+	widgets/native/animators.hpp \
+	util/soutchain.hpp \
+	util/imagehelper.hpp
+nodist_test_qt_player_subtitle_delay_SOURCES = \
+	tests/test_player_subtitle_delay.moc \
+	player/player_controller.moc.cpp \
+	player/input_models.moc.cpp \
+	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
+	player/local_music_folder.moc.cpp \
+	player/video_transform.moc.cpp \
+	player/subtitle_appearance.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
+	util/audio_device_model.moc.cpp \
+	util/variables.moc.cpp \
+	util/varchoicemodel.moc.cpp \
+	util/renderer_manager.moc.cpp \
+	util/vlctick.moc.cpp \
+	dialogs/extensions/extensions_manager.moc.cpp \
+	dialogs/extensions/extensions.moc.cpp \
+	widgets/native/customwidgets.moc.cpp \
+	widgets/native/animators.moc.cpp
+BUILT_SOURCES += tests/test_player_subtitle_delay.moc
+CLEANFILES += tests/test_player_subtitle_delay.moc
+test_qt_player_subtitle_delay_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_subtitle_delay_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_subtitle_delay_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_subtitle_delay_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_player_subtitle_delay
+TESTS += test_qt_player_subtitle_delay
+
+
+test_qt_subtitle_presets_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_subtitle_presets.cpp tests/media_player_probe.c \
+	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+	player/subtitle_appearance.cpp player/subtitle_appearance.hpp util/variables.cpp util/variables.hpp
+nodist_test_qt_subtitle_presets_SOURCES = \
+	tests/test_subtitle_presets.moc maininterface/subtitle_preset_model.moc.cpp \
+	player/subtitle_appearance.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_subtitle_presets.moc
+CLEANFILES += tests/test_subtitle_presets.moc
+test_qt_subtitle_presets_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_subtitle_presets_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitle_presets_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitle_presets_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitle_presets
+TESTS += test_qt_subtitle_presets
+endif
+endif
+EXTRA_DIST += tests/test_juxtopposed_subtitle_presets.py

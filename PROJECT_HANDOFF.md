@@ -647,6 +647,29 @@ test repair passes both exact-head eleven-suite Windows workflows. Subtitle
 presets, New Playlist, cue timeline and conversion continue as separate work;
 the full milestones 0–8 Goal remains active.
 
+The [subtitle preset checkpoint](doc/juxtopposed-references/advanced/subtitle-preset-checkpoint.md)
+now builds with persistent bounded presets, actual ordered track restoration,
+appearance/duration snapshots and per-media associations. Ten native preset
+checks, eight actual normal-lock PlayerController checks, the existing eleven
+appearance regressions and all thirteen component suites pass. Native confirmation
+now submits writes once, preventing the reproduced input-control FIFO retry storm.
+Secondary delays now inherit the category until overridden and publish actual
+effective values after unlocking; stale GUI roles cannot retarget changes.
+The final plugin is preserved in a separate `build-windows/slice-presets-package`;
+native menu/save/restart and visual acceptance remain pending. Both exact-head
+  twelve-suite Home CI runs passed. Both firewall prompts were manually dismissed.
+  The [Home desktop checks](doc/juxtopposed-references/home/desktop-checkpoint.md)
+  reproduced and repaired an inactive history model's `ml: null` assertion, then
+  passed actual video/audio See All, search/clear, alphabetic sorting, view switching
+  and audio seek/resume/Back/retained-player return. The final plugin hash is
+  `364bfe40d5af74435b08421a6fe1032fa8338158c8f208cda3652e1b3a500abe`.
+  The actual pinned subtitle settings change a held caption from green to red;
+  native footer-menu Save/apply/restart remains pending separately from the service
+  tests. Current test preferences are portable private copies. No security choice
+  was automated. Prepared independent repairs cover New Playlist unsafe paths and
+  thumbnail previews, audio-only Home folder bootstrap, dark missing-art and cue
+  seeking. Integrate/build them sequentially, then conversion and the full 0–8 Goal.
+
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)

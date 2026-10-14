@@ -49,6 +49,8 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_music_player.py --output-dir ui-previews/music
       - name: Check Home dashboard and collection actions
         run: python modules/gui/qt/tests/test_juxtopposed_home.py --output-dir ui-previews/home
+      - name: Check subtitle preset menu, naming and states
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitle_presets.py --output-dir ui-previews/subtitle-presets
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

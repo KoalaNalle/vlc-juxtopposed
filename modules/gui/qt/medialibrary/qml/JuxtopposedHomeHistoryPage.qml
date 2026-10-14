@@ -27,14 +27,14 @@ Widgets.PageExt {
     function setCurrentItemFocus(reason) { view.setCurrentItemFocus(reason) }
     MLRecentVideoModel {
         id: videos
-        ml: root.isVideo ? MediaLib : null
+        ml: MediaLib
         searchPattern: root.search.pattern
         sortCriteria: HomeSorting.mediaCriteria(root.sort.criteria)
         sortOrder: HomeSorting.mediaOrder(root.sort.criteria, root.sort.order)
     }
     MLRecentAudioModel {
         id: audio
-        ml: root.isVideo ? null : MediaLib
+        ml: MediaLib
         searchPattern: root.search.pattern
         sortCriteria: HomeSorting.mediaCriteria(root.sort.criteria)
         sortOrder: HomeSorting.mediaOrder(root.sort.criteria, root.sort.order)

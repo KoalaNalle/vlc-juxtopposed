@@ -227,7 +227,7 @@ T.Popup {
         }
         subtitlesContent: Component {
             SettingsPage {
-                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, duration.slider, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync]
+                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, duration.slider, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync].concat(subtitlePresets.keyboardControls)
 
                 SectionLabel {
                     text: qsTr("Synchronization")
@@ -460,6 +460,25 @@ T.Popup {
                     onClicked: {
                         root.close();
                         DialogsProvider.synchroDialog();
+                    }
+                }
+                JuxtopposedSubtitlePresets {
+                    id: subtitlePresets
+
+                    Layout.fillWidth: true
+                    controller: MainCtx.subtitlePresets
+                    iconFontFamily: VLCIcons.fontFamily
+                    addIcon: VLCIcons.add
+                    moreIcon: VLCIcons.ellipsis
+                    checkIcon: VLCIcons.check
+                    downIcon: VLCIcons.chevron_down
+                    fontFamily: inter.name
+                    uiScale: root.uiScale
+
+                    onMoveFocusRequested: (current, direction) => root.focusSetting(current, direction)
+                    onAdvancedRequested: {
+                        root.close();
+                        DialogsProvider.prefsDialog();
                     }
                 }
             }

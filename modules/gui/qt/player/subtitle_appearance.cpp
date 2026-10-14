@@ -9,6 +9,7 @@
 #include <vlc_modules.h>
 #include <QColor>
 #include <QRegularExpression>
+#include <QSignalBlocker>
 #include <cmath>
 
 SubtitleAppearance::SubtitleAppearance(vlc_player_t *player, QObject *parent)
@@ -31,6 +32,7 @@ SubtitleAppearance::SubtitleAppearance(vlc_player_t *player, QObject *parent)
     , m_subFilters((vout_thread_t *)nullptr, "sub-filter")
     , m_duration((vout_thread_t *)nullptr, "subsdelay-factor")
     , m_durationMode((vout_thread_t *)nullptr, "subsdelay-mode")
+    , m_durationOverlap((vout_thread_t *)nullptr, "subsdelay-overlap")
 {
     for (auto *value : {&m_enabled, &m_embedded, &m_supported})
         connect(value, &QVLCBool::valueChanged, this, &SubtitleAppearance::stateChanged);
@@ -43,42 +45,60 @@ SubtitleAppearance::SubtitleAppearance(vlc_player_t *player, QObject *parent)
     connect(&m_subFilters, &QVLCString::valueChanged, this, &SubtitleAppearance::stateChanged);
     connect(&m_duration, &QVLCFloat::valueChanged, this, &SubtitleAppearance::stateChanged);
     connect(&m_durationMode, &QVLCInteger::valueChanged, this, &SubtitleAppearance::stateChanged);
+    connect(&m_durationOverlap, &QVLCInteger::valueChanged, this, &SubtitleAppearance::stateChanged);
+
 }
 SubtitleAppearance::~SubtitleAppearance() { releaseOutput(); m_scale.clearObject(); }
 void SubtitleAppearance::releaseOutput()
 {
+    m_proxyOutput = nullptr;
+    const char *commands[] = {"subsdelay-factor", "subsdelay-mode", "subsdelay-overlap", "sub-filter"};
+    for (unsigned i = 0; i < 4; ++i)
+        if (m_commandCallbacks & (1u << i)) var_DelCallback(m_output.get(), commands[i], durationCommand, this);
+    m_commandCallbacks = 0;
     m_enabled.clearObject(); m_embedded.clearObject(); m_supported.clearObject(); m_font.clearObject();
     m_color.clearObject(); m_outlineColor.clearObject(); m_mode.clearObject();
     m_background.clearObject(); m_offset.clearObject();
     m_relative.clearObject(); m_pixels.clearObject();
     m_relativeOutline.clearObject(); m_pixelOutline.clearObject();
-    m_subFilters.clearObject(); m_duration.clearObject(); m_durationMode.clearObject();
+    m_subFilters.clearObject(); m_duration.clearObject(); m_durationMode.clearObject(); m_durationOverlap.clearObject();
     m_output.reset();
 }
 void SubtitleAppearance::resetOutput(vout_thread_t *output)
 {
     if (output == m_output.get()) return;
-    releaseOutput();
-    m_output.reset(output);
-    if (output)
     {
-        m_enabled.resetObject(output); m_embedded.resetObject(output); m_supported.resetObject(output); m_font.resetObject(output);
-        m_color.resetObject(output); m_outlineColor.resetObject(output); m_mode.resetObject(output);
-        m_background.resetObject(output); m_offset.resetObject(output);
-        m_relative.resetObject(output); m_pixels.resetObject(output);
-        m_relativeOutline.resetObject(output); m_pixelOutline.resetObject(output);
-        m_subFilters.resetObject(output);
-        if (module_exists("subsdelay"))
+        const QSignalBlocker notifications(this);
+        releaseOutput();
+        m_output.reset(output);
+        m_factorCommanded = false; m_modeCommanded = false; m_overlapCommanded = false;
+        m_proxyOutput = reinterpret_cast<vlc_object_t *>(output);
+        if (output)
         {
-            // Proxy mappings survive filter removal; our observers own only
-            // their additional references, as in filter_AddProxyCallbacks().
-            for (const auto &option : {std::pair{"subsdelay-factor", VLC_VAR_FLOAT}, std::pair{"subsdelay-mode", VLC_VAR_INTEGER}})
+            m_enabled.resetObject(output); m_embedded.resetObject(output); m_supported.resetObject(output); m_font.resetObject(output);
+            m_color.resetObject(output); m_outlineColor.resetObject(output); m_mode.resetObject(output);
+            m_background.resetObject(output); m_offset.resetObject(output);
+            m_relative.resetObject(output); m_pixels.resetObject(output);
+            m_relativeOutline.resetObject(output); m_pixelOutline.resetObject(output);
+            m_subFilters.resetObject(output);
+            if (module_exists("subsdelay"))
             {
-                const bool exists = var_Type(output, option.first) != 0;
-                var_Create(output, option.first, option.second | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND);
-                if (exists) var_Destroy(output, option.first);
+                // Proxy mappings survive filter removal; our observers own only
+                // their additional references, as in filter_AddProxyCallbacks().
+                for (const auto &option : {std::pair{"subsdelay-factor", VLC_VAR_FLOAT}, std::pair{"subsdelay-mode", VLC_VAR_INTEGER}, std::pair{"subsdelay-overlap", VLC_VAR_INTEGER}})
+                {
+                    const bool exists = var_Type(output, option.first) != 0;
+                    var_Create(output, option.first, option.second | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND);
+                    if (exists) var_Destroy(output, option.first);
+                }
+                m_duration.resetObject(output); m_durationMode.resetObject(output); m_durationOverlap.resetObject(output);
             }
-            m_duration.resetObject(output); m_durationMode.resetObject(output);
+            const char *commands[] = {"subsdelay-factor", "subsdelay-mode", "subsdelay-overlap", "sub-filter"};
+            for (unsigned i = 0; i < 4; ++i)
+                if (var_Type(output, commands[i])) {
+                    var_AddCallback(output, commands[i], durationCommand, this);
+                    m_commandCallbacks |= 1u << i;
+                }
         }
     }
     emit stateChanged();
@@ -199,14 +219,14 @@ float SubtitleAppearance::durationFactor() const
 {
     for (const auto &entry : vlc::qt::filterChainEntries(m_output.get(), "sub-filter"))
         if (entry.name == "subsdelay")
-            return entry.options.contains("factor") ? entry.options["factor"].toFloat()
+            return entry.options.contains("factor") && !m_factorCommanded.load() ? entry.options["factor"].toFloat()
                                                      : var_GetFloat(m_output.get(), "subsdelay-factor");
     return 0.f;
 }
 int SubtitleAppearance::durationMode() const
 {
     for (const auto &entry : vlc::qt::filterChainEntries(m_output.get(), "sub-filter"))
-        if (entry.name == "subsdelay" && entry.options.contains("mode")) return entry.options["mode"].toInt();
+        if (entry.name == "subsdelay" && entry.options.contains("mode") && !m_modeCommanded.load()) return entry.options["mode"].toInt();
     return m_output && module_exists("subsdelay") ? var_GetInteger(m_output.get(), "subsdelay-mode") : 1;
 }
 QString SubtitleAppearance::durationUnit() const { return durationMode() == 0 ? QStringLiteral(" s") : QString{}; }
@@ -221,6 +241,8 @@ void SubtitleAppearance::setDurationFactor(float value)
 {
     if (!durationAvailable() || !std::isfinite(value) || value < 0.f || value > 20.f) return;
     const auto mode = durationMode();
+    const auto previousFactor = durationFactor();
+    int overlap = var_GetInteger(m_output.get(), "subsdelay-overlap");
     QByteArrayList filters;
     QByteArray durationFilter = "subsdelay";
     int position = -1;
@@ -232,18 +254,207 @@ void SubtitleAppearance::setDurationFactor(float value)
             {
                 position = filters.size();
                 bool validOverlap = false;
-                const int overlap = entry.options.value("overlap").toInt(&validOverlap);
-                if (validOverlap)
-                    durationFilter += "{overlap=" + QByteArray::number(overlap) + '}';
+                const int initialOverlap = entry.options.value("overlap").toInt(&validOverlap);
+                if (validOverlap && !m_overlapCommanded.load()) overlap = initialOverlap;
             }
         }
         else filters.push_back(entry.original);
     }
+    m_durationMode.setValue(mode);
+    m_duration.setValue(value > 0.f ? value : previousFactor);
+    m_durationOverlap.setValue(overlap);
     if (value > 0.f)
     {
-        m_durationMode.setValue(mode);
-        m_duration.setValue(value);
         filters.insert(position < 0 ? filters.size() : position, durationFilter);
     }
     m_subFilters.setValue(QString::fromUtf8(filters.join(':')));
+}
+
+
+bool SubtitleAppearance::validSnapshot(const Snapshot &s)
+{
+    auto range = [](float value, float minimum, float maximum) {
+        return std::isfinite(value) && value >= minimum && value <= maximum;
+    };
+    return s.font.size() <= 256 && !s.font.contains(QChar::Null)
+        && s.text >= 0 && s.text <= 0xFFFFFF && s.outline >= 0 && s.outline <= 0xFFFFFF
+        && s.sizeMode >= 0 && s.sizeMode <= 1 && s.background >= 0 && s.background <= 255
+        && s.offset >= -2000 && s.offset <= 2000 && s.scale >= 10 && s.scale <= 500
+        && range(s.relativeSize, 0.1f, 50.f) && range(s.pixelSize, 1.f, 512.f)
+        && range(s.relativeOutline, 0.f, 50.f) && range(s.pixelOutline, 0.f, 50.f)
+        && s.durationMode >= 0 && s.durationMode <= 2
+        && s.durationOverlap >= 1 && s.durationOverlap <= 4
+        && range(s.durationFactor, 0.f, 20.f);
+}
+
+SubtitleAppearance::Snapshot SubtitleAppearance::configuredSnapshot(vlc_object_t *source)
+{
+    Snapshot s;
+    if (!source) return s;
+    s.enabled = var_InheritBool(source, "sub-text-style-enabled");
+    s.embedded = var_InheritBool(source, "sub-text-style-embedded");
+    auto font = vlc::wrap_cptr(var_InheritString(source, "sub-text-style-font"));
+    s.font = QString::fromUtf8(font.get());
+    s.text = var_InheritInteger(source, "sub-text-style-color");
+    s.outline = var_InheritInteger(source, "sub-text-style-outline-color");
+    s.sizeMode = var_InheritInteger(source, "sub-text-style-size-mode");
+    s.background = var_InheritInteger(source, "sub-text-style-background-opacity");
+    s.offset = var_InheritInteger(source, "sub-margin");
+    s.relativeSize = var_InheritFloat(source, "sub-text-style-relative-size");
+    s.pixelSize = var_InheritFloat(source, "sub-text-style-pixel-size");
+    s.relativeOutline = var_InheritFloat(source, "sub-text-style-relative-outline");
+    s.pixelOutline = var_InheritFloat(source, "sub-text-style-pixel-outline");
+    s.scale = var_InheritInteger(source, "sub-text-scale");
+    if (module_exists("subsdelay")) {
+        s.durationMode = var_InheritInteger(source, "subsdelay-mode");
+        s.durationFactor = var_InheritFloat(source, "subsdelay-factor");
+        s.durationOverlap = var_InheritInteger(source, "subsdelay-overlap");
+        auto chain = vlc::wrap_cptr(var_InheritString(source, "sub-filter"));
+        while (chain && *chain) {
+            char *name = nullptr;
+            config_chain_t *options = nullptr;
+            auto next = vlc::wrap_cptr(config_ChainCreate(&name, &options, chain.get()));
+            if (name && std::strcmp(name, "subsdelay") == 0) {
+                s.durationEnabled = true;
+                for (auto *option = options; option; option = option->p_next) {
+                    const QString key = QString::fromUtf8(option->psz_name);
+                    const QString value = QString::fromUtf8(option->psz_value);
+                    if (key == "mode") s.durationMode = value.toInt();
+                    if (key == "factor") s.durationFactor = value.toFloat();
+                    if (key == "overlap") s.durationOverlap = value.toInt();
+                }
+            }
+            free(name); config_ChainDestroy(options); chain = std::move(next);
+        }
+    }
+    return s;
+}
+
+bool SubtitleAppearance::snapshot(Snapshot *result, input_item_t *expectedMedia) const
+{
+    if (!result || !m_output || !m_player) return false;
+    vlc_locker<vlc_player_t, vlc_player_Lock, vlc_player_Unlock> lock(m_player);
+    if (expectedMedia && vlc_player_GetCurrentMedia(m_player) != expectedMedia) return false;
+    auto *currentOutput = vlc_player_vout_Hold(m_player);
+    const bool correctOutput = currentOutput == m_output.get();
+    if (currentOutput) vout_Release(currentOutput);
+    if (!correctOutput || !var_GetBool(m_output.get(), "sub-text-style-supported")) return false;
+    const auto *track = vlc_player_GetSelectedTrack(m_player, SPU_ES);
+    if (!track) return false;
+    switch (track->fmt.i_codec) {
+        case VLC_CODEC_SUBT: case VLC_CODEC_TEXT: case VLC_CODEC_QTXT:
+        case VLC_CODEC_TX3G: case VLC_CODEC_USF: case VLC_CODEC_TTML:
+        case VLC_CODEC_TTML_TS: case VLC_CODEC_WEBVTT: break;
+        default: return false;
+    }
+    Snapshot s;
+    auto *output = m_output.get();
+    s.enabled = var_GetBool(output, "sub-text-style-enabled");
+    s.embedded = var_GetBool(output, "sub-text-style-embedded");
+    auto font = vlc::wrap_cptr(var_GetString(output, "sub-text-style-font"));
+    s.font = QString::fromUtf8(font.get());
+    s.text = var_GetInteger(output, "sub-text-style-color");
+    s.outline = var_GetInteger(output, "sub-text-style-outline-color");
+    s.sizeMode = var_GetInteger(output, "sub-text-style-size-mode");
+    s.background = var_GetInteger(output, "sub-text-style-background-opacity");
+    s.offset = var_GetInteger(output, "sub-margin");
+    s.relativeSize = var_GetFloat(output, "sub-text-style-relative-size");
+    s.pixelSize = var_GetFloat(output, "sub-text-style-pixel-size");
+    s.relativeOutline = var_GetFloat(output, "sub-text-style-relative-outline");
+    s.pixelOutline = var_GetFloat(output, "sub-text-style-pixel-outline");
+    s.scale = var_GetInteger(reinterpret_cast<vlc_object_t *>(m_player), "sub-text-scale");
+    if (module_exists("subsdelay")) {
+        s.durationMode = durationMode();
+        s.durationFactor = var_GetFloat(output, "subsdelay-factor");
+        s.durationOverlap = var_GetInteger(output, "subsdelay-overlap");
+        for (const auto &entry : vlc::qt::filterChainEntries(output, "sub-filter"))
+            if (entry.name == "subsdelay") {
+                s.durationEnabled = true;
+                if (entry.options.contains("factor") && !m_factorCommanded.load()) s.durationFactor = entry.options["factor"].toFloat();
+                if (entry.options.contains("overlap") && !m_overlapCommanded.load()) s.durationOverlap = entry.options["overlap"].toInt();
+                break;
+            }
+    }
+    if (!validSnapshot(s)) return false;
+    *result = std::move(s);
+    return true;
+}
+
+bool SubtitleAppearance::applySnapshot(const Snapshot &s, input_item_t *expectedMedia,
+    const std::atomic_uint64_t *generation, uint64_t expectedGeneration)
+{
+    if (!validSnapshot(s) || !expectedMedia || !m_output || !m_player
+        || (s.durationEnabled && !module_exists("subsdelay"))) return false;
+    {
+        const QSignalBlocker notifications(this);
+        vlc_locker<vlc_player_t, vlc_player_Lock, vlc_player_Unlock> lock(m_player);
+        if (vlc_player_GetCurrentMedia(m_player) != expectedMedia
+            || (generation && generation->load() != expectedGeneration)) return false;
+        auto *currentOutput = vlc_player_vout_Hold(m_player);
+        const bool correctOutput = currentOutput == m_output.get();
+        if (currentOutput) vout_Release(currentOutput);
+        if (!correctOutput || !var_GetBool(m_output.get(), "sub-text-style-supported")) return false;
+        const auto *track = vlc_player_GetSelectedTrack(m_player, SPU_ES);
+        if (!track) return false;
+        switch (track->fmt.i_codec) {
+            case VLC_CODEC_SUBT: case VLC_CODEC_TEXT: case VLC_CODEC_QTXT:
+            case VLC_CODEC_TX3G: case VLC_CODEC_USF: case VLC_CODEC_TTML:
+            case VLC_CODEC_TTML_TS: case VLC_CODEC_WEBVTT: break;
+            default: return false;
+        }
+        QByteArrayList filters;
+        int position = -1;
+        for (const auto &entry : vlc::qt::filterChainEntries(m_output.get(), "sub-filter")) {
+            if (entry.name == "subsdelay") {
+                if (position < 0) position = filters.size();
+            } else filters.push_back(entry.original);
+        }
+        if (module_exists("subsdelay")) {
+            m_durationMode.setValue(s.durationMode);
+            m_duration.setValue(s.durationFactor);
+            m_durationOverlap.setValue(s.durationOverlap);
+        }
+        if (s.durationEnabled) {
+            // The proxy values above initialize the filter and remain the live
+            // authority. Do not put stale duplicates into an owned inline chain.
+            const QByteArray filter = "subsdelay";
+            filters.insert(position < 0 ? filters.size() : position, filter);
+        }
+        m_font.setValue(s.font); m_color.setValue(s.text); m_outlineColor.setValue(s.outline);
+        m_mode.setValue(s.sizeMode); m_background.setValue(s.background); m_offset.setValue(s.offset);
+        m_relative.setValue(s.relativeSize); m_pixels.setValue(s.pixelSize);
+        m_relativeOutline.setValue(s.relativeOutline); m_pixelOutline.setValue(s.pixelOutline);
+        m_embedded.setValue(s.embedded); m_enabled.setValue(s.enabled);
+        vlc_player_SetSubtitleTextScale(m_player, s.scale);
+        m_subFilters.setValue(QString::fromUtf8(filters.join(':')));
+    }
+    emit stateChanged();
+    return true;
+}
+
+bool SubtitleAppearance::Snapshot::operator==(const Snapshot &s) const
+{
+    return enabled == s.enabled && embedded == s.embedded && font == s.font
+        && text == s.text && outline == s.outline && sizeMode == s.sizeMode
+        && background == s.background && offset == s.offset && scale == s.scale
+        && relativeSize == s.relativeSize && pixelSize == s.pixelSize
+        && relativeOutline == s.relativeOutline && pixelOutline == s.pixelOutline
+        && durationEnabled == s.durationEnabled
+        && durationMode == s.durationMode && durationFactor == s.durationFactor
+        && durationOverlap == s.durationOverlap;
+}
+
+int SubtitleAppearance::durationCommand(vlc_object_t *object, const char *name, vlc_value_t, vlc_value_t, void *opaque)
+{
+    auto *self = static_cast<SubtitleAppearance *>(opaque);
+    if (object != self->m_proxyOutput.load()) return VLC_SUCCESS;
+    if (std::strcmp(name, "sub-filter") == 0) {
+        self->m_factorCommanded = false; self->m_modeCommanded = false; self->m_overlapCommanded = false;
+    } else {
+        if (std::strcmp(name, "subsdelay-factor") == 0) self->m_factorCommanded = true;
+        if (std::strcmp(name, "subsdelay-mode") == 0) self->m_modeCommanded = true;
+        if (std::strcmp(name, "subsdelay-overlap") == 0) self->m_overlapCommanded = true;
+    }
+    QMetaObject::invokeMethod(self, &SubtitleAppearance::refresh, Qt::QueuedConnection);
+    return VLC_SUCCESS;
 }

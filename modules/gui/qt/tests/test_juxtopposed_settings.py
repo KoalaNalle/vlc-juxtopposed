@@ -132,7 +132,33 @@ class Dialogs(QObject):
     def extendedDialog(self): self.actions.append('effects')
     @Slot()
     def synchroDialog(self): self.actions.append('sync')
+    @Slot()
+    def prefsDialog(self): self.actions.append('preferences')
 dialogs = Dialogs()
+class SubtitlePresets(QObject):
+    changed = Signal()
+    def __init__(self): super().__init__(); self.actions = []
+    @Property('QVariantList', notify=changed)
+    def entries(self): return [{'id': 'default', 'name': 'Default Preset', 'selected': True}]
+    @Property(str, notify=changed)
+    def selectedName(self): return 'Default Preset'
+    @Property(str, notify=changed)
+    def error(self): return ''
+    @Property(str, notify=changed)
+    def statusText(self): return '' if appearance.available else appearance.statusText
+    @Property(bool, notify=changed)
+    def canApply(self): return player.isStarted and appearance.available
+    @Property(bool, notify=changed)
+    def canSave(self): return self.canApply
+    @Slot()
+    def clearError(self): pass
+    @Slot(str, result=bool)
+    def apply(self, identity): self.actions.append(('apply', identity)); return True
+    @Slot(str, result=bool)
+    def save(self, name): self.actions.append(('save', name)); return True
+subtitle_presets = SubtitlePresets()
+appearance.changed.connect(subtitle_presets.changed)
+player.changed.connect(subtitle_presets.changed)
 class Style(QObject):
     changed = Signal()
     def __init__(self): super().__init__(); self.factor = 1.
@@ -156,7 +182,7 @@ with tempfile.TemporaryDirectory(prefix='vlc-settings-scene-', dir=repo) as temp
     folder = Path(temporary)
     assert folder.resolve().parent == repo.resolve()
     asset_base = (repo / 'modules/gui/qt/pixmaps/juxtopposed').as_uri() + '/'
-    for relative in ['player/qml/PlaybackSettingsMenu.qml', 'player/qml/JuxtopposedSettingsPanel.qml',
+    for relative in ['player/qml/PlaybackSettingsMenu.qml', 'player/qml/JuxtopposedSettingsPanel.qml', 'player/qml/JuxtopposedSubtitlePresets.qml',
                      'widgets/qml/JuxtopposedSettingChoice.qml', 'widgets/qml/JuxtopposedSettingSlider.qml']:
         path = repo / 'modules/gui/qt' / relative
         source = '\n'.join(line for line in path.read_text(encoding='utf-8').splitlines() if not line.startswith('import VLC.'))
@@ -180,9 +206,9 @@ Item {
     view.setResizeMode(QQuickView.SizeRootObjectToView)
     context = view.rootContext()
     for name, value in [('Player', player), ('VLCStyle', style), ('DialogsProvider', dialogs),
-                        ('MainCtx', {'intfMainWindow': {'height': 600}, 'windowExtendedMargin': 0}),
+                        ('MainCtx', {'intfMainWindow': {'height': 600}, 'windowExtendedMargin': 0, 'subtitlePresets': subtitle_presets}),
                         ('VLCIcons', dict(fontFamily=QFontDatabase.applicationFontFamilies(font_id)[0],
-                            **{name: icon(name) for name in ['play', 'tv', 'visualization', 'audiosub']}))]:
+                            **{name: icon(name) for name in ['play', 'tv', 'visualization', 'audiosub', 'add', 'ellipsis', 'check', 'chevron_down']}))]:
         context.setContextProperty(name, value)
     view.setSource(QUrl.fromLocalFile(str(folder / 'Scene.qml')))
     assert not view.errors(), [e.toString() for e in view.errors()]

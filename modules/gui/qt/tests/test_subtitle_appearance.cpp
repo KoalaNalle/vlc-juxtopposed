@@ -281,7 +281,7 @@ private slots:
         QCOMPARE(m_style->durationUnit(), QString(" s"));
         m_style->setDurationFactor(2);
         const auto normalized = vlc::wrap_cptr(var_GetString(m_output, "sub-filter"));
-        QCOMPARE(QByteArray(normalized.get()), QByteArray("other{path='C:/one:two'}:subsdelay{overlap=3}"));
+        QCOMPARE(QByteArray(normalized.get()), QByteArray("other{path='C:/one:two'}:subsdelay"));
         QCOMPARE(m_style->durationUnit(), QString(" s"));
         m_style->setDurationFactor(0);
         const auto removed = vlc::wrap_cptr(var_GetString(m_output, "sub-filter"));

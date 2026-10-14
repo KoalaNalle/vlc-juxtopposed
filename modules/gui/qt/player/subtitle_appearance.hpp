@@ -4,6 +4,7 @@
 #define VLC_QT_SUBTITLE_APPEARANCE_HPP
 #include "util/variables.hpp"
 #include <vlc_player.h>
+#include <atomic>
 
 class SubtitleAppearance : public QObject
 {
@@ -26,6 +27,27 @@ class SubtitleAppearance : public QObject
     Q_PROPERTY(QString durationUnit READ durationUnit NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString durationDescription READ durationDescription NOTIFY stateChanged FINAL)
 public:
+    // Presets retain both unit modes and raw engine values. Capturing a preset
+    // must never switch units or otherwise change the live output.
+    struct Snapshot {
+        bool enabled = false, embedded = true;
+        QString font;
+        int text = 0xFFFFFF, outline = 0, sizeMode = 0, background = 0, offset = 0;
+        float relativeSize = 6.25f, pixelSize = 18.f;
+        float relativeOutline = 4.f, pixelOutline = 2.f;
+        int scale = 100;
+        bool durationEnabled = false;
+        int durationMode = 1, durationOverlap = 3;
+        float durationFactor = 2.f;
+        bool operator==(const Snapshot &) const;
+    };
+    static bool validSnapshot(const Snapshot &);
+    static Snapshot configuredSnapshot(vlc_object_t *);
+    bool snapshot(Snapshot *, input_item_t *expectedMedia = nullptr) const;
+    // expectedMedia is held by the caller. Reject an output or media switch
+    // before touching any native variable.
+    bool applySnapshot(const Snapshot &, input_item_t *expectedMedia,
+        const std::atomic_uint64_t *generation = nullptr, uint64_t expectedGeneration = 0);
     explicit SubtitleAppearance(vlc_player_t *, QObject *parent = nullptr);
     ~SubtitleAppearance();
     void resetOutput(vout_thread_t *);
@@ -61,6 +83,7 @@ public slots:
 signals:
     void stateChanged();
 private:
+    static int durationCommand(vlc_object_t *, const char *, vlc_value_t, vlc_value_t, void *);
     void releaseOutput();
     void prepareStyle();
     bool custom() const;
@@ -78,6 +101,9 @@ private:
     QVLCInteger m_scale;
     QVLCString m_subFilters;
     QVLCFloat m_duration;
-    QVLCInteger m_durationMode;
+    QVLCInteger m_durationMode, m_durationOverlap;
+    unsigned m_commandCallbacks = 0;
+    std::atomic<vlc_object_t *> m_proxyOutput{nullptr};
+    std::atomic_bool m_factorCommanded{false}, m_modeCommanded{false}, m_overlapCommanded{false};
 };
 #endif

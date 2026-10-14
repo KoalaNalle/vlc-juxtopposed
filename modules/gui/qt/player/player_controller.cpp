@@ -296,27 +296,52 @@ void PlayerControllerPrivate::UpdateVouts(vout_thread_t **vouts, size_t i_vouts,
         emit q->hasVideoOutputChanged(m_hasVideo);
 }
 
-void PlayerControllerPrivate::UpdateSpuOrder(vlc_es_id_t *es_id, enum vlc_vout_order order)
+vlc_es_id_t *PlayerControllerPrivate::selectedSecondarySubtitle() const
 {
-    switch (order)
+    for (size_t i = 0; i < vlc_player_GetTrackCount(m_player, SPU_ES); ++i)
     {
-        case VLC_VOUT_ORDER_NONE:
-            if (es_id == m_secondarySpuEsId.get())
-                m_secondarySpuEsId.reset(NULL, false);
-            break;
-        case VLC_VOUT_ORDER_SECONDARY:
-            m_secondarySpuEsId.reset(es_id, true);
-            if (m_secondarySubtitleDelay.valid())
-            {
-                vlc_player_locker lock{ m_player };
-                vlc_player_SetEsIdDelay(m_player, es_id,
-                                        m_secondarySubtitleDelay.toVLCTick(),
-                                        VLC_PLAYER_WHENCE_ABSOLUTE);
-            }
-            break;
-        default:
-            break;
+        const auto *track = vlc_player_GetTrackAt(m_player, SPU_ES, i);
+        if (!track->selected)
+            continue;
+        vlc_vout_order order = VLC_VOUT_ORDER_NONE;
+        vlc_player_GetEsIdVout(m_player, track->es_id, &order);
+        if (order == VLC_VOUT_ORDER_SECONDARY)
+            return track->es_id;
     }
+    return nullptr;
+}
+
+void PlayerControllerPrivate::RefreshSubtitleDelays()
+{
+    Q_Q(PlayerController);
+    const auto previousCategory = m_subtitleDelay;
+    const auto previousSecondary = q->getSecondarySubtitleDelay();
+    const auto previousRaw = m_secondarySubtitleDelay;
+    const auto previousId = m_secondarySpuEsId;
+    {
+        vlc_player_locker lock{m_player};
+        if (m_currentItem && isCurrentItemSynced())
+        {
+            m_subtitleDelay = vlc_player_GetSubtitleDelay(m_player);
+            auto *secondary = selectedSecondarySubtitle();
+            m_secondarySpuEsId.reset(secondary, true);
+            const auto raw = secondary ? vlc_player_GetEsIdDelay(m_player, secondary) : INT64_MAX;
+            m_secondarySubtitleDelay = raw == INT64_MAX ? VLCDuration() : VLCDuration(raw);
+        }
+        else
+        {
+            // Queued events may belong to a finished input. They must neither
+            // publish an old role nor carry its override into another input.
+            m_subtitleDelay = VLCDuration();
+            m_secondarySpuEsId.reset(nullptr);
+            m_secondarySubtitleDelay = VLCDuration();
+        }
+    }
+    if (!(previousCategory == m_subtitleDelay))
+        emit q->subtitleDelayChanged(q->getSubtitleDelay());
+    if (previousId != m_secondarySpuEsId || !(previousRaw == m_secondarySubtitleDelay)
+        || !(previousSecondary == q->getSecondarySubtitleDelay()))
+        emit q->secondarySubtitleDelayChanged(q->getSecondarySubtitleDelay());
 }
 
 void PlayerControllerPrivate::resetTimer(bool hasInput)
@@ -362,6 +387,7 @@ static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_m
                 vlc_player_locker lock{ that->m_player };
                 that->m_currentItem.reset(nullptr);
             }
+            that->RefreshSubtitleDelays();
 
             that->m_syltRaw.reset();
             that->m_syltLyrics.reset();
@@ -399,6 +425,7 @@ static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_m
             vlc_player_locker lock{ that->m_player };
             that->m_currentItem = std::move(newMediaPtr);
         }
+        that->RefreshSubtitleDelays();
 
         that->m_canRestorePlayback = false;
         emit q->playbackRestoreQueried();
@@ -597,6 +624,7 @@ static void on_player_track_list_changed(vlc_player_t *, enum vlc_player_list_ac
         case SPU_ES:
             msg_Dbg( that->p_intf, "on_player_track_list_changed (spu)");
             that->m_subtitleTracks.updateTracks( action, trackPtr.get() );
+            that->RefreshSubtitleDelays();
             break;
         default:
             //we don't handle other kind of tracks
@@ -619,6 +647,7 @@ static void on_player_track_selection_changed(vlc_player_t *, vlc_es_id_t * unse
             that->UpdateTrackSelection( unselectedPtr.get(), false );
         if (selectedPtr)
             that->UpdateTrackSelection( selectedPtr.get(), true );
+        that->RefreshSubtitleDelays();
         that->m_subtitleAppearance.refresh();
     });
 }
@@ -782,8 +811,8 @@ static void on_player_category_delay_changed(vlc_player_t *,
                 emit that->q_func()->audioDelayChanged( new_delay );
                 break;
             case SPU_ES:
-                that->m_subtitleDelay = new_delay;
-                emit that->q_func()->subtitleDelayChanged( new_delay );
+                // A queued event payload may precede a preset or role change.
+                that->RefreshSubtitleDelays();
                 break;
             default:
                 break;
@@ -792,19 +821,13 @@ static void on_player_category_delay_changed(vlc_player_t *,
 }
 
 static void on_player_track_delay_changed(vlc_player_t *,
-                                vlc_es_id_t *es_id, vlc_tick_t new_delay,
+                                vlc_es_id_t *es_id, vlc_tick_t,
                                 void *data)
 {
-    PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
-    SharedEsId sharedEsId = SharedEsId(es_id);
-
-    that->callAsync([that,sharedEsId,new_delay] (){
-        if (that->m_secondarySpuEsId == sharedEsId)
-        {
-            that->m_secondarySubtitleDelay = new_delay;
-            emit that->q_func()->secondarySubtitleDelayChanged( new_delay );
-        }
-    });
+    if (vlc_es_id_GetCat(es_id) != SPU_ES)
+        return;
+    auto *that = static_cast<PlayerControllerPrivate *>(data);
+    that->callAsync([that] { that->RefreshSubtitleDelays(); });
 }
 
 static void on_player_associated_subs_fps_changed(vlc_player_t *, float subs_fps, void *data)
@@ -911,7 +934,7 @@ static void on_player_subitems_changed(vlc_player_t *, input_item_t *, const inp
 
 
 static void on_player_vout_changed(vlc_player_t *player, enum vlc_player_vout_action action,
-    vout_thread_t *, enum vlc_vout_order order, vlc_es_id_t *es_id, void *data)
+    vout_thread_t *, enum vlc_vout_order, vlc_es_id_t *es_id, void *data)
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
     msg_Dbg( that->p_intf, "on_player_vout_list_changed");
@@ -938,10 +961,7 @@ static void on_player_vout_changed(vlc_player_t *player, enum vlc_player_vout_ac
         }
         case SPU_ES:
         {
-            SharedEsId sharedEsId = SharedEsId(es_id);
-            that->callAsync([that,sharedEsId,order] () {
-                that->UpdateSpuOrder(sharedEsId.get(), order);
-            });
+            that->callAsync([that] { that->RefreshSubtitleDelays(); });
             break;
         }
         default:
@@ -1528,23 +1548,35 @@ void PlayerController::setSubtitleDelay(VLCDuration delay)
 void PlayerController::setSecondarySubtitleDelay(VLCDuration delay)
 {
     Q_D(PlayerController);
-    vlc_player_locker lock{ d->m_player };
-    if( !d->isCurrentItemSynced() )
+    vlc_player_locker lock{d->m_player};
+    if (!delay.valid() || !d->m_currentItem || !d->isCurrentItemSynced())
         return;
-    if (d->m_secondarySpuEsId.get() != NULL)
-        vlc_player_SetEsIdDelay(d->m_player, d->m_secondarySpuEsId.get(),
-                                delay.toVLCTick(), VLC_PLAYER_WHENCE_ABSOLUTE);
+    // Read the current role while locked; the GUI's last role can be stale.
+    if (auto *secondary = d->selectedSecondarySubtitle())
+        vlc_player_SetEsIdDelay(d->m_player, secondary, delay.toVLCTick(),
+                               VLC_PLAYER_WHENCE_ABSOLUTE);
 }
 
 /*Q_INVOKABLE*/void PlayerController::addSecondarySubtitleDelay(VLCDuration delay)
 {
     Q_D(PlayerController);
-    vlc_player_locker lock{ d->m_player };
-    if (d->m_secondarySpuEsId.get() != NULL) {
-        vlc_player_SetEsIdDelay(d->m_player, d->m_secondarySpuEsId.get(),
-                                delay.toVLCTick(), VLC_PLAYER_WHENCE_RELATIVE);
-        emit secondarySubtitleDelayChanged(delay);
-    }
+    vlc_player_locker lock{d->m_player};
+    if (!delay.valid() || !d->m_currentItem || !d->isCurrentItemSynced())
+        return;
+    auto *secondary = d->selectedSecondarySubtitle();
+    if (!secondary)
+        return;
+    const auto raw = vlc_player_GetEsIdDelay(d->m_player, secondary);
+    const auto effective = raw == INT64_MAX ? vlc_player_GetSubtitleDelay(d->m_player) : raw;
+    const auto delta = delay.toVLCTick();
+    if ((delta > 0 && effective >= INT64_MAX - delta)
+        || (delta < 0 && effective < INT64_MIN - delta))
+        return;
+    // Native relative delay starts at zero for an inherited track. A UI nudge
+    // must start from its effective category delay and create an own override.
+    vlc_player_SetEsIdDelay(d->m_player, secondary, effective + delta,
+                           VLC_PLAYER_WHENCE_ABSOLUTE);
+    // The queued native callback publishes the final value after unlocking.
 }
 
 int PlayerController::getAudioDelayMS() const
@@ -2347,7 +2379,13 @@ PRIMITIVETYPE_GETTER(double, getPosition, m_position)
 PRIMITIVETYPE_GETTER(VLCDuration, getLength, m_length)
 PRIMITIVETYPE_GETTER(VLCDuration, getAudioDelay, m_audioDelay)
 PRIMITIVETYPE_GETTER(VLCDuration, getSubtitleDelay, m_subtitleDelay)
-PRIMITIVETYPE_GETTER(VLCDuration, getSecondarySubtitleDelay, m_secondarySubtitleDelay)
+VLCDuration PlayerController::getSecondarySubtitleDelay() const
+{
+    Q_D(const PlayerController);
+    if (!d->m_secondarySpuEsId)
+        return VLCDuration(0);
+    return d->m_secondarySubtitleDelay.valid() ? d->m_secondarySubtitleDelay : d->m_subtitleDelay;
+}
 PRIMITIVETYPE_GETTER(bool, isSeekable, m_capabilities & VLC_PLAYER_CAP_SEEK)
 PRIMITIVETYPE_GETTER(bool, isRewindable, m_capabilities & VLC_PLAYER_CAP_REWIND)
 PRIMITIVETYPE_GETTER(bool, isPausable, m_capabilities & VLC_PLAYER_CAP_PAUSE)

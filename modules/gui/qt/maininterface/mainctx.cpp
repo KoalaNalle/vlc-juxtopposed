@@ -33,6 +33,7 @@
 
 #include "mainctx.hpp"
 #include "mainctx_submodels.hpp"
+#include "subtitle_preset_model.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
 
@@ -160,6 +161,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
      **/
 
     settings = getSettings();
+    m_subtitlePresets = new SubtitlePresetModel(p_intf->p_player, THEMIM->getSubtitleAppearance(),
+        settings, VLC_OBJECT(p_intf), this);
     m_colorScheme = new ColorSchemeModel(this);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
@@ -313,6 +316,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_subtitlePresets;
+    m_subtitlePresets = nullptr;
 
     if ( !p_intf->preferencesResetPending)
     {
@@ -516,6 +521,8 @@ void MainCtx::reloadPrefs()
     if (p_intf->preferencesResetPending && m_medialib && m_medialib->homeActivity())
         m_medialib->homeActivity()->clearVisits();
     loadPrefs(true);
+    if (p_intf->preferencesResetPending) m_subtitlePresets->reload();
+    else m_subtitlePresets->refreshDefaults();
 }
 
 void MainCtx::onInputChanged( bool hasInput )
