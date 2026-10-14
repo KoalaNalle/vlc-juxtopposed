@@ -288,6 +288,7 @@ void PlayerControllerPrivate::UpdateVouts(vout_thread_t **vouts, size_t i_vouts,
     m_deinterlace.resetObject( main_vout );
     m_deinterlaceMode.resetObject( main_vout );
     m_autoscale.resetObject( main_vout );
+    m_videoTransform.resetOutput( main_vout );
 
     emit q->voutListChanged(vouts, i_vouts);
     if( hadVideo != m_hasVideo )
@@ -1811,6 +1812,12 @@ AudioEqualizer *PlayerController::getEqualizer() const
 {
     Q_D(const PlayerController);
     return const_cast<AudioEqualizer *>(&d->m_equalizer);
+}
+
+VideoTransform *PlayerController::getVideoTransform() const
+{
+    Q_D(const PlayerController);
+    return const_cast<VideoTransform *>(&d->m_videoTransform);
 }
 
 void PlayerController::setVolume(float volume)

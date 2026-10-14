@@ -103,6 +103,8 @@ private:
 class PlayerControllerPrivate;
 class AudioEqualizer;
 Q_MOC_INCLUDE("player/audio_equalizer.hpp")
+class VideoTransform;
+Q_MOC_INCLUDE("player/video_transform.hpp")
 class PlayerController : public QObject
 {
     Q_OBJECT
@@ -221,6 +223,7 @@ public:
     Q_PROPERTY(VLCVarChoiceModel* audioVisualization READ getAudioVisualizations CONSTANT FINAL)
     Q_PROPERTY(bool hasAudioVisualization READ hasAudioVisualization NOTIFY hasAudioVisualizationChanged FINAL)
     Q_PROPERTY(AudioEqualizer* equalizer READ getEqualizer CONSTANT FINAL)
+    Q_PROPERTY(VideoTransform* videoTransform READ getVideoTransform CONSTANT FINAL)
 
     //misc
     Q_PROPERTY(ABLoopState ABloopState READ getABloopState WRITE setABloopState NOTIFY ABLoopStateChanged FINAL)
@@ -303,6 +306,7 @@ public:
     VOutThreadList getVouts() const;
     SharedAOut getAout();
     AudioEqualizer *getEqualizer() const;
+    VideoTransform *getVideoTransform() const;
     int AddAssociatedMedia(enum es_format_category_e cat, const QString& uri, bool select, bool notify, bool check_ext);
 
     void requestArtUpdate( input_item_t *p_item );

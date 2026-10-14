@@ -3,7 +3,7 @@
 set -euo pipefail
 output=${1:?Usage: generate_slice_fixtures.sh OUTPUT_DIRECTORY}
 mkdir -p "$output"
-for name in paused-seek-colors.mp4 chapters.ffmetadata chaptered-colors.srt chaptered-colors.mkv waveform-audio.wav; do
+for name in paused-seek-colors.mp4 chapters.ffmetadata chaptered-colors.srt chaptered-colors.mkv waveform-audio.wav quadrants.mp4; do
     if [[ -e "$output/$name" ]]; then
         printf 'Fixture already exists: %s\nUse a fresh output directory.\n' "$output/$name" >&2
         exit 1
@@ -16,6 +16,11 @@ ffmpeg -hide_banner -loglevel error -n \
     -f lavfi -i color=c=lime:s=320x180:r=25:d=6 \
     -filter_complex '[0:v][1:v][2:v]concat=n=3:v=1:a=0[v]' -map '[v]' \
     -c:v mpeg4 -g 1 -q:v 2 "$output/paused-seek-colors.mp4"
+
+# Asymmetric spatial fixture for flip/rotation checks on rendered pixels.
+ffmpeg -hide_banner -loglevel error -n -f lavfi \
+    -i 'color=c=red:s=128x128:r=25:d=60,drawbox=x=64:y=0:w=64:h=64:color=lime:t=fill,drawbox=x=0:y=64:w=64:h=64:color=blue:t=fill,drawbox=x=64:y=64:w=64:h=64:color=yellow:t=fill' \
+    -c:v mpeg4 -g 1 -q:v 2 "$output/quadrants.mp4"
 
 cat > "$output/chapters.ffmetadata" <<'EOF'
 ;FFMETADATA1

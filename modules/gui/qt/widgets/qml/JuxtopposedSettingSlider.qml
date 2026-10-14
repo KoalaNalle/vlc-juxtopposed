@@ -80,12 +80,14 @@ C.Control {
                 Accessible.name: root.title
                 Layout.preferredHeight: 32 * root.uiScale
                 Layout.preferredWidth: Math.min(144 * root.uiScale, root.width * 0.48)
+                bottomPadding: 4 * root.uiScale
                 color: "#969696"
                 font.family: inter.name
                 font.pixelSize: 14 * root.uiScale
                 objectName: "settingValueEditor"
                 padding: 10 * root.uiScale
                 selectByMouse: true
+                topPadding: 4 * root.uiScale
 
                 background: Rectangle {
                     border.color: editor.activeFocus ? "#D37918" : "#252525"

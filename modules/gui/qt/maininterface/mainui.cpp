@@ -26,6 +26,7 @@
 
 #include "player/player_controller.hpp"
 #include "player/audio_equalizer.hpp"
+#include "player/video_transform.hpp"
 #include "player/player_controlbar_model.hpp"
 #include "player/control_list_model.hpp"
 #include "player/control_list_filter.hpp"
@@ -316,6 +317,7 @@ void MainUI::registerQMLTypes()
         assert(m_intf->p_mainPlayerController);
         qmlRegisterSingletonInstance<PlayerController>(uri, versionMajor, versionMinor, "Player", m_intf->p_mainPlayerController);
         qmlRegisterUncreatableType<AudioEqualizer>(uri, versionMajor, versionMinor, "AudioEqualizer", "Use Player.equalizer");
+        qmlRegisterUncreatableType<VideoTransform>(uri, versionMajor, versionMinor, "VideoTransform", "Use Player.videoTransform");
         qmlRegisterTypesAndRevisions<TimedText>(uri, versionMajor);
         qmlRegisterType<PlayerHighResolutionTimeUpdater>(uri, versionMajor, versionMinor, "HighResolutionTimeUpdater");
         qmlRegisterUncreatableMetaObject(VLCTickForeign::staticMetaObject, uri, versionMajor, versionMinor, "VLCTick", "Not Instantiable" );

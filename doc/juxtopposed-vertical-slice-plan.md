@@ -1,6 +1,6 @@
 # VLC Juxtopposed vertical slice implementation plan
 
-Updated: 13 October 2026. Status: active Goal; implementation covers milestones 0 through 8.
+Updated: 14 October 2026. Status: active Goal; implementation covers milestones 0 through 8.
 
 The user activated this plan as a Goal and authorized committing and pushing the existing progress, then pushing each built and verified runnable checkpoint. Keep the pull request in draft while the integrated acceptance gates remain open.
 
@@ -18,11 +18,11 @@ The first slice covers the breadth of the design. Subsequent passes bring each c
 
 ## Current baseline
 
-The Windows x64 Qt 6.8.3 debug package builds and its GUI loads. The redesigned playback bar, queue tabs and an interim settings menu are implemented. Six component suites pass, including the production playback-speed and combo dependencies.
+The Windows x64 Qt 6.8.3 debug package builds and its baseline GUI loads. The redesigned playback bar, queue tabs, library navigation/header/compact rows and four-tab settings panel are implemented. Nine component suites pass. Native backend checks verify library indexing/history, actual equalizer PCM and rendered flip/rotation pixels; the latest complete GUI journeys await the existing firewall prompt's user dismissal.
 
-Home and library views still use VLC's existing presentation. The final settings sidebar, subtitle timeline and presets, waveform, conversion screens, preferences and full light appearance require further design work.
+Home retains VLC's presentation with a connected native folder picker. Remaining library/title/folder layouts, settings/effects/subtitle appearance, subtitle timeline and presets, waveform, conversion screens, preferences and full light appearance require further design work.
 
-Native testing found a paused-seek clock fault with repeated resets and rebuffering. Fix and verify that fault before accepting the playback journey. Native chapter selection, bookmark lifecycle, complete track/settings interaction, fullscreen and DPI variants remain open.
+The reproduced paused-seek/reset/resume-clock faults and Windows helper collisions have been repaired and verified with core/packaged-backend tests. Complete desktop startup/playback, native chapter selection, bookmark lifecycle, track/settings interaction, fullscreen and DPI variants remain open.
 
 ## Establish the complete design inventory
 
@@ -89,4 +89,4 @@ The Goal is active without an explicit deadline or usage budget. No follow-up sc
 
 ## Next concrete action
 
-Begin milestone 0 by cataloguing the remaining original screens and their native counterparts. Preserve today's GUI fixes as the baseline, then reproduce the paused-seek failure independently for milestone 1. Milestone 2 delivers the first visible expansion beyond the existing playback/queue work.
+Continue the confirmed subtitle appearance/effects surfaces using saved exports and the video, preserving real backend actions and separate component/native evidence. Keep completing the reference inventory. When desktop input becomes available, verify the built folder-picker/browse/search/play/return/resume journey and settings/media-switch/focus paths before accepting those milestones. The coverage ledger and latest checkpoint records identify the remaining full-slice work.

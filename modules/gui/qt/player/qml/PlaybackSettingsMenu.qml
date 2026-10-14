@@ -298,10 +298,34 @@ T.Popup {
         }
         videoContent: Component {
             SettingsPage {
-                keyboardControls: [zoom.selector, aspect.selector, crop.selector, deinterlace.selector, mode.selector, effects]
+                keyboardControls: [flip.noneButton, flip.horizontalButton, flip.verticalButton, rotation.editor, zoom.selector, aspect.selector, crop.selector, deinterlace.selector, mode.selector, effects]
 
                 SectionLabel {
                     text: qsTr("Defaults")
+                }
+                FlipChoice {
+                    id: flip
+
+                    enabled: Player.videoTransform.available
+                    value: Player.videoTransform.flip
+
+                    onValueRequested: value => Player.videoTransform.flip = value
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: rotation
+
+                    Layout.fillWidth: true
+                    decimals: Math.abs(value - Math.round(value)) > 0.001 ? 1 : 0
+                    enabled: Player.videoTransform.available
+                    from: 0
+                    sliderVisible: false
+                    title: qsTr("Rotate")
+                    to: 360
+                    uiScale: root.uiScale
+                    unit: qsTr(" deg")
+                    value: Player.videoTransform.rotation
+
+                    onValueRequested: value => Player.videoTransform.rotation = value
                 }
                 ChoiceSetting {
                     id: zoom
@@ -391,6 +415,83 @@ T.Popup {
     component ChoiceSetting: Widgets.JuxtopposedSettingChoice {
         Layout.fillWidth: true
         uiScale: root.uiScale
+    }
+    component FlipButton: C.Button {
+        id: button
+
+        Layout.fillWidth: true
+        Layout.minimumWidth: 0
+        Layout.preferredHeight: 40 * root.uiScale
+        Layout.preferredWidth: 1
+        font.family: inter.name
+        font.pixelSize: 14 * root.uiScale
+        padding: 4 * root.uiScale
+
+        background: Rectangle {
+            border.color: button.visualFocus ? "#D37918" : "#090909"
+            border.width: root.uiScale
+            color: button.checked ? "#331D05" : button.down ? "#303030" : "#161616"
+            radius: 4 * root.uiScale
+        }
+        contentItem: C.Label {
+            color: button.checked ? "#D37918" : "#969696"
+            elide: Text.ElideRight
+            font: button.font
+            horizontalAlignment: Text.AlignHCenter
+            text: button.text
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+    component FlipChoice: ColumnLayout {
+        id: choice
+
+        property alias horizontalButton: horizontal
+        property alias noneButton: none
+        property int value: 0
+        property alias verticalButton: vertical
+
+        signal valueRequested(int value)
+
+        Layout.fillWidth: true
+        opacity: enabled ? 1 : 0.35
+        spacing: 12 * root.uiScale
+
+        SectionLabel {
+            text: qsTr("Flip")
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 2 * root.uiScale
+            uniformCellSizes: true
+
+            FlipButton {
+                id: none
+
+                Accessible.name: qsTr("Flip none")
+                checked: choice.value === 0
+                text: qsTr("None")
+
+                onClicked: choice.valueRequested(0)
+            }
+            FlipButton {
+                id: horizontal
+
+                Accessible.name: qsTr("Flip horizontal")
+                checked: choice.value === 1
+                text: qsTr("Horizontal")
+
+                onClicked: choice.valueRequested(1)
+            }
+            FlipButton {
+                id: vertical
+
+                Accessible.name: qsTr("Flip vertical")
+                checked: choice.value === 2
+                text: qsTr("Vertical")
+
+                onClicked: choice.valueRequested(2)
+            }
+        }
     }
     component SectionLabel: C.Label {
         Layout.fillWidth: true

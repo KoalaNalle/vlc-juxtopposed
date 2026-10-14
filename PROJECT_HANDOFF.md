@@ -114,6 +114,17 @@ prompt; missing video/subtitle/settings fields, original icons, themes and all
 other full-plan gates remain active work. No whole-app score or completion is
 claimed.
 
+The following [video transform checkpoint](doc/juxtopposed-references/settings/video-transform-checkpoint.md)
+adds the reference's None/Horizontal/Vertical selector and degree input. The same
+native model observes current VLC filters and preserves other effects. Final
+rendered-video tests pass 11 checks, including combined transforms, all seven
+existing effects orientations, engine updates, validation and detach/reattach.
+All nine component suites pass; numeric text clipping is repaired. The Windows
+Qt build exits 0, and its DLL is staged separately with the preceding settings
+DLL retained. Desktop interaction remains pending at the firewall prompt;
+non-square/hardware variants and restart persistence retain open gates. Continue
+the remaining subtitle/effects/preferences surfaces under the complete plan.
+
 ## Scope and design credit
 
 Implement Juxtopposed's VLC redesign inside VLC while preserving playback,

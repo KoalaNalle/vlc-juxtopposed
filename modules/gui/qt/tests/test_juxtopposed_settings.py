@@ -92,6 +92,11 @@ Equalizer = type('Equalizer', (EqualizerBase,), dict(changed=eq_notification,
 eq = Equalizer({'available': True, 'enabled': False, 'twoPass': False, 'preamp': 12.,
                 'bands': [0.] * 10, 'frequencies': [60., 170., 310., 600., 1000., 3000., 6000., 12000., 14000., 16000.],
                 'presets': ['Flat', 'Test preset'], 'presetIndex': 0})
+transform_notification = Signal()
+VideoTransform = type('VideoTransform', (State,), dict(changed=transform_notification,
+    **{name: state_property(name, kind, transform_notification)
+       for name, kind in {'available': bool, 'flip': int, 'rotation': float}.items()}))
+transform = VideoTransform(dict(available=True, flip=0, rotation=0.))
 class Tracks(QObject):
     @Property(int, constant=True)
     def count(self): return 2
@@ -99,14 +104,14 @@ tracks = Tracks()
 choices = {name: Choices() for name in ['zoom', 'aspectRatio', 'crop', 'deinterlace', 'deinterlaceMode', 'audioStereoMode', 'audioMixMode']}
 fields = dict(isStarted=bool, hasVideoOutput=bool, ratechangable=bool, rate=float,
               audioDelayMS=int, subtitleDelayMS=int, secondarySubtitleDelayMS=int, subtitleFPS=float,
-              equalizer=QObject, audioTracks=QObject, subtitleTracks=QObject)
+              equalizer=QObject, videoTransform=QObject, audioTracks=QObject, subtitleTracks=QObject)
 fields.update({name: QObject for name in choices})
 player_notification = Signal()
 Player = type('Player', (State,), dict(changed=player_notification,
     **{name: state_property(name, kind, player_notification) for name, kind in fields.items()}))
 player = Player(dict(isStarted=True, hasVideoOutput=True, ratechangable=True, rate=1.,
                     audioDelayMS=0, subtitleDelayMS=0, secondarySubtitleDelayMS=0, subtitleFPS=0.,
-                    equalizer=eq, audioTracks=tracks, subtitleTracks=tracks, **choices))
+                    equalizer=eq, videoTransform=transform, audioTracks=tracks, subtitleTracks=tracks, **choices))
 class Dialogs(QObject):
     def __init__(self): super().__init__(); self.actions = []
     @Slot()
@@ -205,6 +210,33 @@ Item {
     QTest.qWait(20)
     assert player.writes == before_invalid and editor.property('text') == '1.50x'
     switch(1)
+    assert not transform.writes
+    transform.engine('flip', 1)
+    transform.engine('rotation', 90.)
+    QTest.qWait(20)
+    assert accessible(page(), 'Horizontal').property('checked')
+    buttons = [accessible(page(), name) for name in ['None', 'Horizontal', 'Vertical']]
+    assert max(button.width() for button in buttons) - min(button.width() for button in buttons) <= 1, [button.width() for button in buttons]
+    assert accessible(page(), 'Rotate').property('value') == 90. and not transform.writes
+    click(accessible(page(), 'Vertical'))
+    assert transform.writes == [('flip', 2)]
+    rotation = accessible(page(), 'Rotate')
+    rotation_editor = accessible(rotation, 'settingValueEditor')
+    click(rotation_editor)
+    QTest.keyClick(view, Qt.Key_A, Qt.ControlModifier)
+    for character in '37 deg': QTest.keyClick(view, Qt.Key(ord(character.upper())))
+    QTest.keyClick(view, Qt.Key_Return)
+    QTest.qWait(20)
+    assert transform.writes[-1] == ('rotation', 37.)
+    before_rotation_refresh = list(transform.writes)
+    transform.engine('rotation', 37.5)
+    QTest.qWait(20)
+    assert rotation_editor.property('text') == '37.5 deg' and transform.writes == before_rotation_refresh
+    assert rotation_editor.property('height') - rotation_editor.property('topPadding') - rotation_editor.property('bottomPadding') >= rotation_editor.property('contentHeight')
+    transform.engine('available', False)
+    QTest.qWait(20)
+    assert not rotation.isEnabled() and not accessible(page(), 'Horizontal').isEnabled()
+    transform.engine('available', True)
     selector = accessible(accessible(page(), 'Aspect ratio'), 'settingChoiceSelector')
     selector.activated.emit(1)
     assert choices['aspectRatio'].writes == [1]
@@ -226,9 +258,9 @@ Item {
     accessible(page(), 'Subtitle track delay').valueRequested.emit(0.250)
     assert player.writes[-1] == ('subtitleDelayMS', 250)
     # Loading/destroying tab controls must not make additional engine writes.
-    before = (list(player.writes), list(eq.writes))
+    before = (list(player.writes), list(eq.writes), list(transform.writes))
     for index in range(4): switch(index)
-    assert before == (player.writes, eq.writes), (before, player.writes, eq.writes)
+    assert before == (player.writes, eq.writes, transform.writes), (before, player.writes, eq.writes, transform.writes)
     player.engine('isStarted', False)
     switch(0)
     assert not accessible(page(), 'Speed').isEnabled()
