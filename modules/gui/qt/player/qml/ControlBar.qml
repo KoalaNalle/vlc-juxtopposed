@@ -180,6 +180,11 @@ T.Pane {
                     AccessibleCompat.id: "progressSlider"
                     barHeight: VLCStyle.dp(28, VLCStyle.scale)
                     showHandle: false
+                    waveformStatus: Player.videoTracks.count === 0 && Player.audioTracks.count > 1
+                                    ? qsTr("Waveform is available for files with a single audio track.")
+                                    : (Player.waveform.enabled
+                                       ? (Player.waveform.loading ? qsTr("Preparing waveform…")
+                                                                 : Player.waveform.error) : "")
                     Navigation.parentItem: root
                     Navigation.upItem: root.Navigation.upItem
                     Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
@@ -188,6 +193,7 @@ T.Pane {
                         height: nativeSeek.barHeight
                         position: nativeSeek.visualPosition
                         uiScale: bar.uiScale
+                        waveformPeaks: Player.waveform.available ? Player.waveform.peaks : []
                     }
                 }
             }

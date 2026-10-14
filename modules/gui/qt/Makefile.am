@@ -292,6 +292,7 @@ libqt_plugin_la_SOURCES = \
 	player/delay_estimator.hpp \
 	player/player_controller.cpp player/player_controller.hpp player/player_controller_p.hpp \
 	player/audio_equalizer.cpp player/audio_equalizer.hpp \
+	player/audio_waveform.cpp player/audio_waveform.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
 	util/filterchain.hpp \
@@ -499,6 +500,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/input_models.moc.cpp \
 	player/player_controller.moc.cpp \
 	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
@@ -1967,6 +1969,20 @@ test_qt_audio_equalizer_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_audio_equalizer_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_audio_equalizer
 TESTS += test_qt_audio_equalizer
+
+test_qt_audio_waveform_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_audio_waveform.cpp tests/media_player_probe.c \
+	player/audio_waveform.cpp player/audio_waveform.hpp util/soutchain.cpp util/soutchain.hpp
+nodist_test_qt_audio_waveform_SOURCES = \
+	tests/test_audio_waveform.moc player/audio_waveform.moc.cpp
+BUILT_SOURCES += tests/test_audio_waveform.moc
+CLEANFILES += tests/test_audio_waveform.moc
+test_qt_audio_waveform_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_audio_waveform_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_waveform_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_waveform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_waveform
+TESTS += test_qt_audio_waveform
 
 test_qt_video_transform_SOURCES = \
 	tests/vlc_stub_modules.cpp tests/test_video_transform.cpp tests/media_player_probe.c \

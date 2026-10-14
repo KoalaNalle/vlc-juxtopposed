@@ -358,6 +358,21 @@ FocusScope {
                 property real topPadding: playerSpecializationLoader.topPadding
                 property real bottomPadding: playerSpecializationLoader.bottomPadding
 
+                Binding {
+                    target: Player.waveform
+                    property: "source"
+                    value: Player.url
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+
+                Binding {
+                    target: Player.waveform
+                    property: "enabled"
+                    value: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
+                           && Player.audioTracks.count === 1 && Player.videoTracks.count === 0
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+
                 // Whether the full lyrics view is active
                 readonly property bool lyricsMode: MainCtx.lyricsMode
                 readonly property bool lyricsLayoutActive: lyricsMode

@@ -564,8 +564,18 @@ pass. Both plugins build and are staged in the separate slice package with
 rollback copies; the working home package is preserved. The asynchronous model,
 player waveform GUI and conversion journey are still incomplete.
 
-Next: connect real local audio analysis to the player with cancellation and
-media-switch guards, then implement the confirmed waveform presentation. Keep
+The following [waveform checkpoint](doc/juxtopposed-references/advanced/waveform-checkpoint.md)
+builds a single-worker native decode, cancellation/generation guards, bounded
+file-identity cache and rounded peak bars on VLC's existing slider. Eight native
+QtTest checks pass: full audio, silence/four-sample files, errors, source changes,
+cache invalidation, shutdown and independence from normal/paused primary audio.
+All nine component suites pass, including peak colours/height/seek/scaling and
+fallback. The native Qt plugin builds and is staged with its preceding version
+recoverable. This working path supports local single-track audio; cover/list
+layout, track/codec variants and desktop/visual acceptance remain open.
+
+Next: port the confirmed music cover/list layout and subtitle presets, continue
+the full Home/conversion/preferences reference inventory and native journeys. Keep
 the full 0–8 Goal active and the draft PR/desktop/visual gates open. The existing
 Firewall prompt still requires user dismissal; no permission choices were made.
 

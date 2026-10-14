@@ -31,6 +31,7 @@ T.ProgressBar {
     readonly property real _hoveredScalingFactor: 1.8
     property int barHeight: VLCStyle.dp(5, VLCStyle.scale)
     property bool showHandle: true
+    property string waveformStatus: ""
     readonly property real _scaledBarHeight: control.barHeight * _hoveredScalingFactor
     readonly property real _scaledY: (-control.barHeight / 2) * (control._hoveredScalingFactor - 1)
 
@@ -90,6 +91,9 @@ T.ProgressBar {
 
         if (Player.hasChapters)
             _text += " - " + Player.chapters.getNameAtPosition(control._tooltipPosition)
+
+        if (control.waveformStatus.length)
+            _text += "\n" + control.waveformStatus
 
         return _text
     }

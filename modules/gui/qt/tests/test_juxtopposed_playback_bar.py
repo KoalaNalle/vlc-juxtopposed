@@ -184,6 +184,42 @@ for name in ['juxtopposedPlay', 'juxtopposedNext', 'juxtopposedPrevious',
     assert expression.evaluate()[0], (name, image.property('source'))
     assert image.width() == 24 and image.height() == 24, (name, image.width(), image.height())
 
+# Render the production seek background with actual native peak evidence.
+# These are supplied component values; this does not claim desktop playback.
+waveform = json.loads((repo / 'doc/juxtopposed-references/advanced/audio-drain/native-result.json').read_text())['peaks']
+background = seek.property('background')
+background.setProperty('waveformPeaks', waveform)
+root.setProperty('position', .25)
+root.setProperty('elapsed', '00:00:08')
+root.setProperty('duration', '00:00:30')
+QTest.qWait(30)
+waveform_items = {obj.objectName(): obj for obj in background.childItems()}
+bars = [waveform_items.get('juxtopposedWaveformBar' + str(i)) for i in range(300)]
+assert all(bars), ('Decoded waveform bars were not constructed', len(waveform_items), messages[-5:])
+assert bars[0].property('color').name().upper() == '#D37918', 'Elapsed waveform colour'
+assert bars[299].property('color').name().upper() == '#4F4F4F', 'Future waveform colour'
+assert max(b.height() for b in bars) - min(b.height() for b in bars) > 8, 'Source amplitudes were flattened'
+assert seekSpy.count() == 0, 'Waveform/position refresh emitted a seek'
+assert view.grabWindow().save(str(out / 'waveform-bar-preview.png'))
+for width, scale in [(640, 1), (1280, 2), (960, 1.5)]:
+    root.setProperty('uiScale', scale)
+    root.setProperty('position', .1 + .02 * scale)
+    view.resize(width, round(94 * scale))
+    QTest.qWait(30)
+    for bar in bars:
+        assert bar.x() >= 0 and bar.x() + bar.width() <= background.width() + .5, 'Waveform horizontal bounds'
+        assert bar.y() >= 0 and bar.y() + bar.height() <= background.height() + .5, 'Waveform vertical bounds'
+    spy = QSignalSpy(root.seekRequested)
+    QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, center(seek))
+    assert spy.count() and .45 < spy.at(0)[0] < .55, ('Waveform seek midpoint', width, spy.count())
+background.setProperty('waveformPeaks', [0.0] * 300)
+QTest.qWait(15)
+silent_bars = [obj for obj in background.childItems() if obj.objectName().startswith('juxtopposedWaveformBar')]
+assert len(silent_bars) == 300 and all(b.height() == scale for b in silent_bars), 'Silence should have a minimal visible baseline'
+background.setProperty('waveformPeaks', [])
+QTest.qWait(15)
+assert not background.property('hasWaveform'), 'Missing waveform must restore ordinary seeking'
+
 import xml.etree.ElementTree as ET
 resources = ET.parse(repo / 'modules/gui/qt/assets.qrc')
 for resource in resources.findall(".//qresource[@prefix='/juxtopposed']/file"):
@@ -194,5 +230,5 @@ for resource in resources.findall(".//qresource[@prefix='/juxtopposed']/file"):
 errors = [m for m in messages if 'Error' in m or 'Unable' in m or 'Cannot' in m or 'binding loop' in m.lower()]
 assert not errors, errors
 (out / 'playback-bar-verification.json').write_text(json.dumps({'geometry':geometry,'messages':messages}, indent=2))
-print('Passed: nine click actions, arrow navigation, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, and asset geometry.')
+print('Passed: nine click actions, arrow navigation, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, asset geometry, real peak display/colours, waveform seeking, silence and fallback.')
 print('Native VLC compilation and actual media playback still require the VLC Windows build environment.')

@@ -123,6 +123,7 @@ moc_headers = files(
     'player/delay_estimator.hpp',
     'player/player_controller.hpp',
     'player/audio_equalizer.hpp',
+    'player/audio_waveform.hpp',
     'player/video_transform.hpp',
     'player/subtitle_appearance.hpp',
     'player/player_controlbar_model.hpp',
@@ -424,6 +425,8 @@ qt_plugin_sources = files(
     'player/player_controller_p.hpp',
     'player/audio_equalizer.cpp',
     'player/audio_equalizer.hpp',
+    'player/audio_waveform.cpp',
+    'player/audio_waveform.hpp',
     'player/video_transform.cpp',
     'player/video_transform.hpp',
     'player/subtitle_appearance.cpp',
@@ -1387,6 +1390,18 @@ if qt6_dep.found()
                              'tests/media_player_probe.c', 'player/audio_equalizer.cpp', 'util/variables.cpp'),
             'moc_sources': files('tests/test_audio_equalizer.cpp'),
             'moc_headers': files('player/audio_equalizer.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_audio_waveform',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_audio_waveform.cpp',
+                             'tests/media_player_probe.c', 'player/audio_waveform.cpp', 'util/soutchain.cpp'),
+            'moc_sources': files('tests/test_audio_waveform.cpp'),
+            'moc_headers': files('player/audio_waveform.hpp'),
             'suite': ['qt'],
             'include_directories': qt_include_dir,
             'link_with': [libvlccore, libvlc],

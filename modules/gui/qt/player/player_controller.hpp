@@ -103,6 +103,8 @@ private:
 class PlayerControllerPrivate;
 class AudioEqualizer;
 Q_MOC_INCLUDE("player/audio_equalizer.hpp")
+class AudioWaveform;
+Q_MOC_INCLUDE("player/audio_waveform.hpp")
 class VideoTransform;
 Q_MOC_INCLUDE("player/video_transform.hpp")
 class SubtitleAppearance;
@@ -225,6 +227,7 @@ public:
     Q_PROPERTY(VLCVarChoiceModel* audioVisualization READ getAudioVisualizations CONSTANT FINAL)
     Q_PROPERTY(bool hasAudioVisualization READ hasAudioVisualization NOTIFY hasAudioVisualizationChanged FINAL)
     Q_PROPERTY(AudioEqualizer* equalizer READ getEqualizer CONSTANT FINAL)
+    Q_PROPERTY(AudioWaveform* waveform READ getWaveform CONSTANT FINAL)
     Q_PROPERTY(VideoTransform* videoTransform READ getVideoTransform CONSTANT FINAL)
     Q_PROPERTY(SubtitleAppearance* subtitleAppearance READ getSubtitleAppearance CONSTANT FINAL)
 
@@ -309,6 +312,7 @@ public:
     VOutThreadList getVouts() const;
     SharedAOut getAout();
     AudioEqualizer *getEqualizer() const;
+    AudioWaveform *getWaveform() const;
     VideoTransform *getVideoTransform() const;
     SubtitleAppearance *getSubtitleAppearance() const;
     int AddAssociatedMedia(enum es_format_category_e cat, const QString& uri, bool select, bool notify, bool check_ext);

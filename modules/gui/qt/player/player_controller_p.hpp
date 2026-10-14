@@ -23,6 +23,7 @@
 #include "util/variables.hpp"
 #include "input_models.hpp"
 #include "audio_equalizer.hpp"
+#include "audio_waveform.hpp"
 #include "video_transform.hpp"
 #include "subtitle_appearance.hpp"
 #include "util/varchoicemodel.hpp"
@@ -191,6 +192,7 @@ public:
     AudioDeviceModel m_audioDeviceList;
     VLCVarChoiceModel m_audioVisualization;
     AudioEqualizer m_equalizer;
+    AudioWaveform m_waveform;
 
     //misc
     bool            m_recording = false;

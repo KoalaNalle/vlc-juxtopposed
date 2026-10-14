@@ -7,8 +7,14 @@
 #include "../../../../lib/media_player_internal.h"
 
 vlc_player_t *vlc_test_media_player_core(libvlc_media_player_t *player);
+vlc_object_t *vlc_test_media_player_object(libvlc_media_player_t *player);
 
 vlc_player_t *vlc_test_media_player_core(libvlc_media_player_t *player)
 {
     return player->player;
+}
+
+vlc_object_t *vlc_test_media_player_object(libvlc_media_player_t *player)
+{
+    return VLC_OBJECT(player);
 }

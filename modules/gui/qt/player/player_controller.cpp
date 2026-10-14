@@ -1216,6 +1216,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
     , m_audioDeviceList(m_player)
     , m_audioVisualization((audio_output_t*)nullptr, "visual")
     , m_equalizer(m_player)
+    , m_waveform(VLC_OBJECT(p_intf))
     , m_rendererManager(p_intf, m_player)
 {
     {
@@ -1815,6 +1816,12 @@ AudioEqualizer *PlayerController::getEqualizer() const
 {
     Q_D(const PlayerController);
     return const_cast<AudioEqualizer *>(&d->m_equalizer);
+}
+
+AudioWaveform *PlayerController::getWaveform() const
+{
+    Q_D(const PlayerController);
+    return const_cast<AudioWaveform *>(&d->m_waveform);
 }
 
 VideoTransform *PlayerController::getVideoTransform() const
