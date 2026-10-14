@@ -986,6 +986,22 @@ renderer expiry, native focus/DPI/fidelity and final clean packaging remain
 required beta work. Keep the draft PR and full beta Goal open; this scoped
 incremental checkpoint does not accept the complete beta or final package.
 
+The source/proof checkpoint was pushed as
+`bf2c2e1a09192d7c57e8af2138810abf494ef3ae`. Both clean GitHub Windows jobs then
+failed at the new Music/Network worker's startup. The downloaded artifact shows
+an exact LF-only multiline Loader search failing against CRLF checkout bytes.
+This was a fixture portability failure, not an accepted negative baseline.
+The [test-only follow-up](doc/juxtopposed-references/native/navigation-play-shutdown-20261014/ci-newlines/README.md)
+normalizes only the decoded parsing view while retaining unchanged copied QML
+bytes/hashes, and exposes subprocess stderr in failing launcher logs. The old
+worker reproduces the error against CRLF. The updated strict 27-case oracle
+reproduces all original failures and all repaired passes for both LF and CRLF;
+all nineteen suites pass again locally. Only the two Python helper files differ
+from the native build source freeze; no compiled production source changed.
+The preceding 132 published provenance pairs also match their committed Git
+blobs exactly. Verify the follow-up head's CI through Code Review before
+claiming GitHub acceptance; keep the first failed jobs/results intact.
+
 ## Code map
 
 | Responsibility | Main locations |

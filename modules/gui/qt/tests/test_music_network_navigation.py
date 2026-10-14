@@ -42,7 +42,9 @@ sources = {}
 def save_source(name, target):
     data = source(name); sources[name] = digest(data)
     target.parent.mkdir(parents=True, exist_ok=True); target.write_bytes(data)
-    return data.decode('utf-8')
+    # Keep copied QML and hashes byte-exact, but parse either Git checkout's
+    # line endings. Windows CI may materialize these sources with CRLF.
+    return data.decode('utf-8').replace('\r\n', '\n')
 def write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True); path.write_text(text, encoding='utf-8', newline='\n')
 

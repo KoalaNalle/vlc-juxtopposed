@@ -87,4 +87,7 @@ audit = dict(acceptedExpectedResult=not errors, mode=args.mode, childExitCode=co
 (output / "launcher-audit.json").write_text(json.dumps(audit, indent=2)+"\n", encoding="utf-8", newline="\n")
 print(json.dumps(dict(acceptedExpectedResult=not errors, childExitCode=code,
     timedOut=timed_out, caseCount=len(expected), errors=errors), indent=2))
+if errors and stderr:
+    # Preserve the exact bytes above and expose startup failures in CI logs.
+    sys.stderr.buffer.write(stderr)
 raise SystemExit(0 if not errors else 1)
