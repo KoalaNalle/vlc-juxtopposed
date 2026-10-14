@@ -124,6 +124,7 @@ moc_headers = files(
     'player/player_controller.hpp',
     'player/audio_equalizer.hpp',
     'player/audio_waveform.hpp',
+    'dialogs/network_stream_model.hpp',
     'player/video_transform.hpp',
     'player/subtitle_appearance.hpp',
     'player/player_controlbar_model.hpp',
@@ -427,6 +428,8 @@ qt_plugin_sources = files(
     'player/audio_equalizer.hpp',
     'player/audio_waveform.cpp',
     'player/audio_waveform.hpp',
+    'dialogs/network_stream_model.cpp',
+    'dialogs/network_stream_model.hpp',
     'player/video_transform.cpp',
     'player/video_transform.hpp',
     'player/subtitle_appearance.cpp',
@@ -625,6 +628,7 @@ qml_modules += {
     'outdir' : 'VLC/Dialogs',
     'sources': files(
         'dialogs/dialogs/qml/CustomDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
         'dialogs/dialogs/qml/Dialogs.qml',
         'dialogs/dialogs/qml/ModalDialog.qml',
         'dialogs/dialogs/qml/WindowDialog.qml',
@@ -1404,6 +1408,18 @@ if qt6_dep.found()
             'moc_headers': files('player/audio_waveform.hpp'),
             'suite': ['qt'],
             'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_network_stream',
+            'sources': files('tests/test_network_stream.cpp', 'tests/network_stream_probe.c',
+                             'dialogs/network_stream_model.cpp'),
+            'moc_sources': files('tests/test_network_stream.cpp'),
+            'moc_headers': files('dialogs/network_stream_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
             'link_with': [libvlccore, libvlc],
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }

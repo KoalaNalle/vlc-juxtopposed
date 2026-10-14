@@ -32,6 +32,7 @@
 
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
+#include "network_stream_model.hpp"
 #include "player/player_controller.hpp" /* Load Subtitles */
 #include "playlist/playlist_controller.hpp"
 #include "menus/menus.hpp"
@@ -648,7 +649,32 @@ void DialogsProvider::openDiscDialog()
 }
 void DialogsProvider::openNetDialog()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        emit showNetworkStreamDialog();
+        return;
+    }
+#endif
     openDialog( OpenDialog::OPEN_NETWORK_TAB );
+}
+
+NetworkStreamModel *DialogsProvider::networkStream()
+{
+    if (!m_networkStream)
+    {
+        const auto *ctx = p_intf->p_mi;
+        auto *library = ctx && ctx->hasMediaLibrary() ? vlc_ml_instance_get(p_intf) : nullptr;
+        m_networkStream = std::make_unique<NetworkStreamModel>(p_intf->p_playlist, library, this);
+    }
+    return m_networkStream.get();
+}
+
+void DialogsProvider::setQmlDialogVisible(bool visible)
+{
+    if (m_qmlDialogVisible == visible) return;
+    m_qmlDialogVisible = visible;
+    emit qmlDialogVisibleChanged();
 }
 void DialogsProvider::openCaptureDialog()
 {

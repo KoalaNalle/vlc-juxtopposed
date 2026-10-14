@@ -293,6 +293,7 @@ libqt_plugin_la_SOURCES = \
 	player/player_controller.cpp player/player_controller.hpp player/player_controller_p.hpp \
 	player/audio_equalizer.cpp player/audio_equalizer.hpp \
 	player/audio_waveform.cpp player/audio_waveform.hpp \
+	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
 	util/filterchain.hpp \
@@ -501,6 +502,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/player_controller.moc.cpp \
 	player/audio_equalizer.moc.cpp \
 	player/audio_waveform.moc.cpp \
+	dialogs/network_stream_model.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
@@ -1076,6 +1078,7 @@ libqml_module_dialogs_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_dialogs_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
@@ -1983,6 +1986,20 @@ test_qt_audio_waveform_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_audio_waveform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_audio_waveform
 TESTS += test_qt_audio_waveform
+
+test_qt_network_stream_SOURCES = \
+	tests/test_network_stream.cpp tests/network_stream_probe.c \
+	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp
+nodist_test_qt_network_stream_SOURCES = \
+	tests/test_network_stream.moc dialogs/network_stream_model.moc.cpp
+BUILT_SOURCES += tests/test_network_stream.moc
+CLEANFILES += tests/test_network_stream.moc
+test_qt_network_stream_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_network_stream_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_network_stream_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_network_stream_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_network_stream
+TESTS += test_qt_network_stream
 
 test_qt_video_transform_SOURCES = \
 	tests/vlc_stub_modules.cpp tests/test_video_transform.cpp tests/media_player_probe.c \

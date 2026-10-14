@@ -574,18 +574,34 @@ fallback. The native Qt plugin builds and is staged with its preceding version
 recoverable. This working path supports local single-track audio; cover/list
 layout, track/codec variants and desktop/visual acceptance remain open.
 
-Next: port the confirmed music cover/list layout and subtitle presets, continue
-the full Home/conversion/preferences reference inventory and native journeys. Keep
-the full 0–8 Goal active and the draft PR/desktop/visual gates open. The existing
-Firewall prompt still requires user dismissal; no permission choices were made.
+The [network dialog checkpoint](doc/juxtopposed-references/advanced/network-dialog-checkpoint.md)
+builds multiline validation, actual ordered queue/playback and optional named
+playlists. Six native checks pass, including real HTTP audio and database restart
+persistence; all ten component suites pass, including modal shortcut suppression,
+failure/retry and short/scaled layouts. The new Qt plugin is staged separately
+with its preceding version recoverable. External protocol/failure variants and
+native desktop/visual acceptance remain open.
+
+The old GUI and Firewall prompt were no longer visible in the morning inventory.
+A new diagnostic launcher used an incorrect option/helper path and was corrected.
+The visible launch exposed `Canvas is not a type` in the new dialog's close glyph;
+the static Qt build omits Canvas. The glyph now uses ordinary Rectangle items.
+PageExt's read-only Loader.implicitHeight assignment also left Home blank; a
+writable height binding repairs page construction. The final rebuilt plugin now
+renders Home/header/Open File/Add Folder and opens the actual dialog via Ctrl+N.
+Invalid entry, disabled Save, dismissal and reset/reopen pass on Windows. Complete
+GUI submission/playback and library/media journeys still require acceptance.
+No security permission choices were made. Next: complete the native journeys and
+port music cover/list and subtitle presets, with the full Home/conversion/preferences
+inventory. Keep the full 0–8 Goal active and draft PR/visual gates open.
 
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)
 now defines the proposed breadth-first coverage ledger, connected user journeys,
 milestones and overnight continuation approach. Its first execution target is
-reference inventory, stable runtime and a shared shell/Home slice. No overnight
-Goal or schedule has been activated by this planning update.
+reference inventory, stable runtime and a shared shell/Home slice. The full
+milestones 0–8 Goal is active; no separate follow-up schedule has been created.
 
 1. **Reference inventory and stable runtime.** Catalogue every original screen,
    panel, dialog and reusable control. Reproduce and repair paused-seek clock

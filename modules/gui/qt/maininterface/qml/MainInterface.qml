@@ -335,6 +335,30 @@ Item {
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
         }
 
+        JuxtopposedNetworkDialog {
+            id: networkStreamDialog
+            parent: g_mainInterface
+            controller: DialogsProvider.networkStream
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            onFallbackFocusRequested: {
+                if (viewLoader.item) viewLoader.item.forceActiveFocus(Qt.PopupFocusReason)
+            }
+        }
+
+        Binding {
+            target: DialogsProvider
+            property: "qmlDialogVisible"
+            value: networkStreamDialog.visible
+            restoreMode: Binding.RestoreBindingOrValue
+        }
+
+        Connections {
+            target: DialogsProvider
+            function onShowNetworkStreamDialog() {
+                networkStreamDialog.showDialog(root.Window.window?.activeFocusItem ?? null)
+            }
+        }
+
         Loader {
             active: {
                 const windowVisibility = MainCtx.intfMainWindow.visibility

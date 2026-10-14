@@ -43,6 +43,8 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_library.py --output-dir ui-previews/library
       - name: Check production settings tabs and engine bindings
         run: python modules/gui/qt/tests/test_juxtopposed_settings.py --output-dir ui-previews/settings
+      - name: Check network stream dialog and modal shortcuts
+        run: python modules/gui/qt/tests/test_juxtopposed_network_dialog.py --output-dir ui-previews/network
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

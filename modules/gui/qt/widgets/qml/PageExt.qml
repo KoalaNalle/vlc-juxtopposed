@@ -123,7 +123,7 @@ T.Page {
     }
 
     header: Loader {
-        implicitHeight: item?.implicitHeight ?? 0
+        height: item?.implicitHeight ?? 0
         sourceComponent: MainCtx.juxtopposedControls ? juxtopposedHeader : traditionalHeader
         Navigation.parentItem: root
         Navigation.downAction: root.focusContent
