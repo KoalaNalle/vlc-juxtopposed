@@ -124,6 +124,7 @@ moc_headers = files(
     'player/player_controller.hpp',
     'player/audio_equalizer.hpp',
     'player/audio_waveform.hpp',
+    'player/local_music_folder.hpp',
     'dialogs/network_stream_model.hpp',
     'player/video_transform.hpp',
     'player/subtitle_appearance.hpp',
@@ -424,10 +425,13 @@ qt_plugin_sources = files(
     'player/player_controller.cpp',
     'player/player_controller.hpp',
     'player/player_controller_p.hpp',
+    'player/player_timer_point.hpp',
     'player/audio_equalizer.cpp',
     'player/audio_equalizer.hpp',
     'player/audio_waveform.cpp',
     'player/audio_waveform.hpp',
+    'player/local_music_folder.cpp',
+    'player/local_music_folder.hpp',
     'dialogs/network_stream_model.cpp',
     'dialogs/network_stream_model.hpp',
     'player/video_transform.cpp',
@@ -758,6 +762,7 @@ qml_modules += {
        'player/qml/JuxtopposedButton.qml',
        'player/qml/JuxtopposedSeekBackground.qml',
        'player/qml/JuxtopposedPlaybackBar.qml',
+       'player/qml/JuxtopposedMusicPlayer.qml',
        'player/qml/PlaybackSettingsMenu.qml',
         'player/qml/JuxtopposedSettingsPanel.qml',
        'player/qml/ControlBar.qml',
@@ -1409,6 +1414,28 @@ if qt6_dep.found()
             'moc_headers': files('player/audio_waveform.hpp'),
             'suite': ['qt'],
             'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_player_timer_point',
+            'sources': files('tests/test_player_timer_point.cpp'),
+            'moc_sources': files('tests/test_player_timer_point.cpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_local_music_folder',
+            'sources': files('tests/test_local_music_folder.cpp', 'tests/media_player_probe.c',
+                             'tests/network_stream_probe.c', 'player/local_music_folder.cpp'),
+            'moc_sources': files('tests/test_local_music_folder.cpp'),
+            'moc_headers': files('player/local_music_folder.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
             'link_with': [libvlccore, libvlc],
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }

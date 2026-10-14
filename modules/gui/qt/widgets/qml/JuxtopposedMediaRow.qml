@@ -109,6 +109,7 @@ C.Control {
             anchors.rightMargin: 16 * root.uiScale
             anchors.verticalCenter: parent.verticalCenter
             text: root.title
+            textFormat: Text.PlainText
             elide: Text.ElideRight
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale

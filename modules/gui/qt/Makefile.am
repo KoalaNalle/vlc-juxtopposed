@@ -291,8 +291,10 @@ libqt_plugin_la_SOURCES = \
 	player/delay_estimator.cpp \
 	player/delay_estimator.hpp \
 	player/player_controller.cpp player/player_controller.hpp player/player_controller_p.hpp \
+	player/player_timer_point.hpp \
 	player/audio_equalizer.cpp player/audio_equalizer.hpp \
 	player/audio_waveform.cpp player/audio_waveform.hpp \
+	player/local_music_folder.cpp player/local_music_folder.hpp \
 	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
 	player/video_transform.cpp player/video_transform.hpp \
 	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
@@ -502,6 +504,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/player_controller.moc.cpp \
 	player/audio_equalizer.moc.cpp \
 	player/audio_waveform.moc.cpp \
+	player/local_music_folder.moc.cpp \
 	dialogs/network_stream_model.moc.cpp \
 	player/video_transform.moc.cpp \
 	player/subtitle_appearance.moc.cpp \
@@ -1216,6 +1219,7 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedButton.qml \
 	player/qml/JuxtopposedSeekBackground.qml \
 	player/qml/JuxtopposedPlaybackBar.qml \
+	player/qml/JuxtopposedMusicPlayer.qml \
 	player/qml/PlaybackSettingsMenu.qml \
 	player/qml/JuxtopposedSettingsPanel.qml \
 	player/qml/ControlBar.qml \
@@ -2001,6 +2005,32 @@ test_qt_network_stream_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_network_stream_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_network_stream
 TESTS += test_qt_network_stream
+
+test_qt_player_timer_point_SOURCES = \
+	tests/test_player_timer_point.cpp player/player_timer_point.hpp
+nodist_test_qt_player_timer_point_SOURCES = tests/test_player_timer_point.moc
+BUILT_SOURCES += tests/test_player_timer_point.moc
+CLEANFILES += tests/test_player_timer_point.moc
+test_qt_player_timer_point_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_timer_point_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_timer_point_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_timer_point_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_player_timer_point
+TESTS += test_qt_player_timer_point
+
+test_qt_local_music_folder_SOURCES = \
+	tests/test_local_music_folder.cpp tests/media_player_probe.c tests/network_stream_probe.c \
+	player/local_music_folder.cpp player/local_music_folder.hpp
+nodist_test_qt_local_music_folder_SOURCES = \
+	tests/test_local_music_folder.moc player/local_music_folder.moc.cpp
+BUILT_SOURCES += tests/test_local_music_folder.moc
+CLEANFILES += tests/test_local_music_folder.moc
+test_qt_local_music_folder_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_local_music_folder_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_local_music_folder_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_local_music_folder_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_local_music_folder
+TESTS += test_qt_local_music_folder
 
 test_qt_video_transform_SOURCES = \
 	tests/vlc_stub_modules.cpp tests/test_video_transform.cpp tests/media_player_probe.c \

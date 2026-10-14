@@ -105,6 +105,8 @@ class AudioEqualizer;
 Q_MOC_INCLUDE("player/audio_equalizer.hpp")
 class AudioWaveform;
 Q_MOC_INCLUDE("player/audio_waveform.hpp")
+class LocalMusicFolderModel;
+Q_MOC_INCLUDE("player/local_music_folder.hpp")
 class VideoTransform;
 Q_MOC_INCLUDE("player/video_transform.hpp")
 class SubtitleAppearance;
@@ -228,6 +230,7 @@ public:
     Q_PROPERTY(bool hasAudioVisualization READ hasAudioVisualization NOTIFY hasAudioVisualizationChanged FINAL)
     Q_PROPERTY(AudioEqualizer* equalizer READ getEqualizer CONSTANT FINAL)
     Q_PROPERTY(AudioWaveform* waveform READ getWaveform CONSTANT FINAL)
+    Q_PROPERTY(LocalMusicFolderModel* musicFolder READ getMusicFolder CONSTANT FINAL)
     Q_PROPERTY(VideoTransform* videoTransform READ getVideoTransform CONSTANT FINAL)
     Q_PROPERTY(SubtitleAppearance* subtitleAppearance READ getSubtitleAppearance CONSTANT FINAL)
 
@@ -313,6 +316,7 @@ public:
     SharedAOut getAout();
     AudioEqualizer *getEqualizer() const;
     AudioWaveform *getWaveform() const;
+    LocalMusicFolderModel *getMusicFolder() const;
     VideoTransform *getVideoTransform() const;
     SubtitleAppearance *getSubtitleAppearance() const;
     int AddAssociatedMedia(enum es_format_category_e cat, const QString& uri, bool select, bool notify, bool check_ext);

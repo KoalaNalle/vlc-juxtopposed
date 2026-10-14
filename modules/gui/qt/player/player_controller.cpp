@@ -319,11 +319,26 @@ void PlayerControllerPrivate::UpdateSpuOrder(vlc_es_id_t *es_id, enum vlc_vout_o
     }
 }
 
+void PlayerControllerPrivate::resetTimer(bool hasInput)
+{
+    Q_Q(PlayerController);
+    m_player_time = vlc::qt::invalidPlayerTimerPoint();
+    seeking = false;
+    m_position_timer.stop();
+    m_time_timer.stop();
+    m_position = 0.0;
+    m_time = hasInput ? VLCTime(VLC_TICK_0) : VLCTime();
+    m_length = VLCDuration();
+    emit q->lengthChanged(m_length);
+    q->updatePosition();
+    q->updateTime(VLC_TICK_INVALID, false);
+}
+
 int PlayerControllerPrivate::interpolateTime(vlc_tick_t system_now)
 {
     vlc_tick_t new_time;
-    if (vlc_player_timer_point_Interpolate(&m_player_time, system_now,
-                                           &new_time, &m_position) == VLC_SUCCESS)
+    if (vlc::qt::interpolatePlayerTimerPoint(m_player_time, system_now,
+                                            &new_time, &m_position) == VLC_SUCCESS)
     {
         m_time = new_time;
         return VLC_SUCCESS;
@@ -355,6 +370,7 @@ static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_m
             emit that->q_func()->syltLyricsChanged();
             emit that->q_func()->currentLyricIndexChanged(-1);
             emit that->q_func()->currentLyricChanged();
+            that->resetTimer(false);
             emit that->q_func()->inputChanged(false);
         });
         return;
@@ -371,6 +387,7 @@ static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_m
         emit q->syltLyricsChanged();
         emit q->currentLyricIndexChanged(-1);
         emit q->currentLyricChanged();
+        that->resetTimer(true);
 
         that->UpdateArt( newMediaPtr.get() );
         that->UpdateMeta( newMediaPtr.get() );
@@ -387,6 +404,22 @@ static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_m
         emit q->playbackRestoreQueried();
 
         emit q->inputChanged(true);
+    });
+}
+
+static void on_player_length_changed(vlc_player_t *, vlc_tick_t length, void *data)
+{
+    auto *that = static_cast<PlayerControllerPrivate *>(data);
+    that->callAsync([that, length] {
+        PlayerController *q = that->q_func();
+        const auto duration = length > 0 ? VLCDuration(length) : VLCDuration();
+        if (that->m_length == duration)
+            return;
+        // A paused audio input can know its length before an output clock point.
+        that->m_length = duration;
+        emit q->lengthChanged(that->m_length);
+        q->updatePosition();
+        q->updateTime(VLC_TICK_INVALID, false);
     });
 }
 
@@ -427,10 +460,7 @@ static void on_player_state_changed(vlc_player_t *, enum vlc_player_state state,
             that->m_audioVisualization.resetObject((audio_output_t*)nullptr);
 
             /* reset the state on stop */
-            that->m_position = 0;
-            that->m_time = 0;
-            that->m_length = 0;
-            emit q->positionUpdated( -1.0, VLCTime() , VLCDuration() );
+            that->resetTimer(false);
             that->m_rate = 1.0f;
             emit q->rateChanged( 1.0f );
             that->m_name = "";
@@ -1124,6 +1154,7 @@ static const struct vlc_player_cbs player_cbs = [] {
     struct vlc_player_cbs cbs {};
     cbs.on_current_media_changed = on_player_current_media_changed;
     cbs.on_state_changed = on_player_state_changed;
+    cbs.on_length_changed = on_player_length_changed;
     cbs.on_error_changed = on_player_error_changed;
     cbs.on_buffering_changed = on_player_buffering;
     cbs.on_capabilities_changed = on_player_capabilities_changed;
@@ -1217,6 +1248,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
     , m_audioVisualization((audio_output_t*)nullptr, "visual")
     , m_equalizer(m_player)
     , m_waveform(VLC_OBJECT(p_intf))
+    , m_musicFolder(VLC_OBJECT(p_intf), p_intf->p_playlist)
     , m_rendererManager(p_intf, m_player)
 {
     {
@@ -1822,6 +1854,12 @@ AudioWaveform *PlayerController::getWaveform() const
 {
     Q_D(const PlayerController);
     return const_cast<AudioWaveform *>(&d->m_waveform);
+}
+
+LocalMusicFolderModel *PlayerController::getMusicFolder() const
+{
+    Q_D(const PlayerController);
+    return const_cast<LocalMusicFolderModel *>(&d->m_musicFolder);
 }
 
 VideoTransform *PlayerController::getVideoTransform() const

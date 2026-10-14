@@ -357,6 +357,13 @@ FocusScope {
 
                 property real topPadding: playerSpecializationLoader.topPadding
                 property real bottomPadding: playerSpecializationLoader.bottomPadding
+                readonly property bool musicPresentationActive: musicView.active
+
+                Rectangle {
+                    anchors.fill: parent
+                    visible: musicView.active && !(musicView.item?.artworkReady ?? false)
+                    color: "#151515"
+                }
 
                 Binding {
                     target: Player.waveform
@@ -385,9 +392,98 @@ FocusScope {
                         lyricsLoader.item.lyricsSyncToPlayback = true
                 }
 
+                Binding {
+                    target: Player.musicFolder
+                    property: "sourceUrl"
+                    value: Player.url
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                Binding {
+                    target: Player.musicFolder
+                    property: "enabled"
+                    value: controlBar.redesigned && Player.videoTracks.count === 0
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                Binding {
+                    target: MainCtx
+                    property: "useGlobalShortcuts"
+                    when: musicView.active && (musicView.item?.editingOrMenuActive ?? false)
+                    value: false
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                PlaylistListModel {
+                    id: audioQueue
+                    playlist: MainPlaylistController.playlist
+                }
+                Loader {
+                    id: musicView
+                    z: 1
+                    objectName: "juxtopposedMusicLoader"
+                    anchors.fill: parent
+                    anchors.topMargin: audioFocusScope.topPadding
+                    anchors.bottomMargin: audioFocusScope.bottomPadding
+                    focus: true
+                    active: controlBar.redesigned && Player.videoTracks.count === 0
+                            && !audioFocusScope.lyricsLayoutActive
+                    sourceComponent: JuxtopposedMusicPlayer {
+                        uiScale: VLCStyle.dp(1, VLCStyle.scale)
+                        iconFontFamily: VLCIcons.fontFamily
+                        backIcon: VLCIcons.back
+                        moreIcon: VLCIcons.more
+                        addIcon: VLCIcons.add
+                        searchIcon: VLCIcons.search
+                        preferencesIcon: VLCIcons.settings
+                        artwork: Player.artwork.toString().length ? VLCAccessImage.uri(Player.artwork) : ""
+                        fallbackArtwork: VLCStyle.noArtAlbumCover
+                        title: Player.title
+                        artist: Player.artist
+                        folderAvailable: Player.musicFolder.available
+                        folderName: Player.musicFolder.name
+                        sourceModel: folderMode ? Player.musicFolder : audioQueue
+                        itemCount: folderMode ? Player.musicFolder.count : audioQueue.count
+                        currentIndex: folderMode ? Player.musicFolder.currentIndex : audioQueue.currentIndex
+                        busy: Player.musicFolder.busy
+                        error: displayFolder ? Player.musicFolder.error : ""
+                        searchPattern: folderMode ? Player.musicFolder.searchPattern : ""
+                        sortAscending: Player.musicFolder.sortAscending
+                        lyricsAvailable: Player.hasLyrics
+                        lyricsEnabled: MainCtx.lyricsMode
+                        libraryAvailable: MainCtx.mediaLibraryAvailable
+                        libraryBusy: MainCtx.mediaLibraryAvailable && !MainCtx.mediaLibrary.idle
+                        navigationRoutes: [
+                            {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
+                             uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
+                            {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
+                             uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
+                            {key: "network", text: qsTr("Network"), icon: VLCIcons.topbar_network,
+                             uri: ["network"], enabled: true},
+                            {key: "playlists", text: qsTr("Playlists"), icon: VLCIcons.playlist,
+                             uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable}
+                        ]
+                        onActivationRequested: row => {
+                            if (folderMode) Player.musicFolder.addAndPlay(row)
+                            else MainPlaylistController.goTo(row, true)
+                        }
+                        onAddRequested: DialogsProvider.simpleOpenDialog(false)
+                        onBackRequested: MainCtx.playerView = false
+                        onFolderOpenRequested: Qt.openUrlExternally(Player.musicFolder.folderUrl)
+                        onRefreshRequested: Player.musicFolder.refresh()
+                        onSearchRequested: pattern => Player.musicFolder.searchPattern = pattern
+                        onSortRequested: Player.musicFolder.sortAscending = !Player.musicFolder.sortAscending
+                        onLyricsRequested: MainCtx.lyricsMode = !MainCtx.lyricsMode
+                        onPreferencesRequested: DialogsProvider.prefsDialog()
+                        onRouteRequested: (route, reason) => {
+                            History.push(route, {}, reason)
+                            MainCtx.playerView = false
+                        }
+                        onControlsFocusRequested: reason => controlBar.forceActiveFocus(reason)
+                    }
+                }
+
                 // background image
                 Widgets.DualKawaseBlur {
                     id: blurredBackground
+                    visible: !musicView.active || (musicView.item?.artworkReady ?? false)
 
                     // Six pass is free here since we release the intermediate layers
                     // through unsetting `live` (see `liveTimer`):
@@ -403,10 +499,12 @@ FocusScope {
                     readonly property real dar: parent.width / parent.height
 
                     anchors.centerIn: parent
-                    width: (cover.sar < dar) ? parent.width :  parent.height * cover.sar
-                    height: (cover.sar < dar) ? parent.width / cover.sar :  parent.height
+                    readonly property real sourceAspectRatio: musicView.active ? (musicView.item?.artworkAspectRatio ?? 1) : (cover.sar > 0 ? cover.sar : 1)
+                    width: (sourceAspectRatio < dar) ? parent.width : parent.height * sourceAspectRatio
+                    height: (sourceAspectRatio < dar) ? parent.width / sourceAspectRatio : parent.height
 
-                    source: textureProviderIndirection
+                    source: musicView.active ? (musicView.item?.artworkTextureProvider ?? textureProviderIndirection)
+                                             : textureProviderIndirection
 
                     postprocess: true
                     tint: bgtheme.palette.isDark ? "black" : "white"
@@ -472,6 +570,7 @@ FocusScope {
 
                 MouseArea {
                     id: centerContent
+                    visible: !musicView.active
 
                     readonly property ColorContext colorContext: ColorContext {
                         id: centerTheme
@@ -971,7 +1070,7 @@ FocusScope {
                   resumeVisible)
 
         focus: true
-        title: Player.title
+        title: playerSpecializationLoader.item?.musicPresentationActive ? "" : Player.title
 
         pinControls: MainCtx.pinVideoControls
 

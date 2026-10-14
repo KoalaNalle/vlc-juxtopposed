@@ -24,6 +24,8 @@
 #include "input_models.hpp"
 #include "audio_equalizer.hpp"
 #include "audio_waveform.hpp"
+#include "player_timer_point.hpp"
+#include "local_music_folder.hpp"
 #include "video_transform.hpp"
 #include "subtitle_appearance.hpp"
 #include "util/varchoicemodel.hpp"
@@ -65,6 +67,7 @@ public:
     void UpdateTrackSelection(vlc_es_id_t *trackid, bool selected);
     void UpdateSpuOrder(vlc_es_id_t *es_id, enum vlc_vout_order spu_order);
     int interpolateTime(vlc_tick_t system_now);
+    void resetTimer(bool hasInput);
     bool isCurrentItemSynced();
 
     // Lazily reads m_syltRaw (the raw sylt-data buffer captured during
@@ -143,7 +146,7 @@ public:
     //timer
     vlc_player_timer_id* m_player_timer = nullptr;
     vlc_player_timer_id* m_player_timer_smpte = nullptr;
-    struct vlc_player_timer_point m_player_time;
+    struct vlc_player_timer_point m_player_time = vlc::qt::invalidPlayerTimerPoint();
     bool seeking = false;
     QTimer m_position_timer;
     QTimer m_time_timer;
@@ -193,6 +196,7 @@ public:
     VLCVarChoiceModel m_audioVisualization;
     AudioEqualizer m_equalizer;
     AudioWaveform m_waveform;
+    LocalMusicFolderModel m_musicFolder;
 
     //misc
     bool            m_recording = false;

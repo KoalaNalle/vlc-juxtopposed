@@ -24,6 +24,6 @@ The final Qt plugin SHA-256 is **`2afa0383d817d90987977b33291fb5b0740e6c95602119
 
 ## Open gates
 
-The video snapshots show no playback bars. The real FSM/fade components pass an independent probe; default autohide timing, native input delivery, actual dimensions and compositor behavior still need diagnosis. A pinned/long-timeout variant can distinguish visibility timing from rendering, but must not substitute for acceptance of the normal floating controls. Full Back/return/resume, chapters/bookmarks, settings/media-switch/focus, narrow/DPI and original whole-window fidelity remain open. The Home/music/preset implementations are separately prepared and have not yet received native integration/build acceptance.
+The initial video snapshots show hidden playback bars. The subsequent [native controls and return checks](../runtime/player-controls-verification.md) verify ordinary autohide/restoration, paused seeking, Back/retained mini-player position, player switching/resume and fullscreen entry/restoration/exit. Chapters/bookmarks, settings/media-switch/focus, narrow/DPI and original whole-window fidelity remain open. The Home/music/preset implementations are separately prepared and have not yet received native integration/build acceptance.
 
 The stronger [Home audit](../home/reference-notes.md) confirms five sections and sidebar pins. Native folder/search/playback results above do not finish that dashboard's design. Continue the complete milestones 0–8 plan and keep the PR draft.

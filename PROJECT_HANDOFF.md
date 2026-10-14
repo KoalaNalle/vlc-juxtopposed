@@ -613,6 +613,28 @@ Music-folder presentation/backend, Home/dashboard/activity and subtitle presets
 have separately prepared source/integration patches under ignored build-windows;
 their registered sources/native builds are not yet integrated into this checkpoint.
 
+The subsequent [native controls checks](doc/juxtopposed-references/runtime/player-controls-verification.md)
+verify the same built Qt plugin's ordinary floating controls: auto-hide,
+keyboard/pointer restoration, held red-to-blue seeking, Back with the retained
+mini-player position, player switching and actual resume from six to eight
+seconds. Fullscreen entry, restored controls and exit also pass. No compositor
+order change was needed. Native narrow/DPI, settings/chapter/bookmark journeys
+and visual acceptance remain open. The music-folder/cover source is now integrated;
+its native build/testing is in progress. Home/presets remain separate pending ports.
+
+The [music checkpoint](doc/juxtopposed-references/advanced/music-player-checkpoint.md)
+now builds and runs the actual local source-folder/cover/waveform screen. Seven
+native folder checks and six native timer checks pass; all eleven component
+suites pass. Desktop search/clear/queue fallback, actual waveform seeking,
+resume/Back retention and audio-to-video replacement pass within the recorded
+scope. Initial paused audio now displays zero time and its real duration after
+repairing an uninitialized timer point and missing early length notification.
+The final Qt plugin is staged separately with rollback. Missing-artwork contrast
+and overlapping legacy title are repaired. Actual album-art blur, native narrow/DPI,
+other codecs/tracks, full settings/lyrics journeys and visual acceptance remain
+open. Integrate the prepared five-section Home next; subtitle preset peer-review
+repairs and New Playlist integration remain pending. Continue the full 0–8 Goal.
+
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)
