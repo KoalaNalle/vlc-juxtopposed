@@ -1143,6 +1143,8 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
 	dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \
@@ -1710,6 +1712,9 @@ endif
 # text functions.
 QML_RULES_DEPS = $(libqt_plugin_la_QML_MODULES:=/qml.deps)
 
+# Always replace a remade included dependency file. GNU make 4.3 can miss a
+# main Makefile rebuilt indirectly when an included file retains its timestamp.
+# The per-module source-list stamps below still suppress unrelated QRC rebuilds.
 # Since every QML modules is built into a given directory, we can use $(@D)
 # to get the module name.
 $(QML_RULES_DEPS): Makefile
@@ -1725,8 +1730,7 @@ $(QML_RULES_DEPS): Makefile
 	  echo 'qml_$(@D)_cachegen_qml = $$(qml_$(@D)_cachegen_sources:.qml=.cpp)'; \
 	  echo 'qml_$(@D)_cachegen_js = $$(qml_$(@D)_cachegen_qml:.js=.cpp)'; \
 	  echo '$$(qml_$(@D)_cachegen_js:.mjs=.cpp): $$(builddir)/$(@D)/res.qrc'; \
-	} > $@.tmp && \
-	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv $@.tmp $@; fi
+	} > $@.tmp && mv $@.tmp $@
 
 BUILT_SOURCES += $(QML_RULES_DEPS)
 CLEANFILES += $(QML_RULES_DEPS)
@@ -2466,3 +2470,9 @@ EXTRA_DIST += tests/test_juxtopposed_light_volume.py \
     tests/fixtures/juxtopposed_light_volume_assets.json \
     tests/fixtures/juxtopposed_light_volume_reference.png \
     tests/fixtures/juxtopposed_light_volume_reference.md
+
+# Production backdrop software fallback and shared General/Host setup checks.
+EXTRA_DIST += tests/juxtopposed_backdrop_fixture.py tests/test_juxtopposed_settings_backdrop.py
+
+# Warm list-only QML metadata and preserved stale-include regression.
+EXTRA_DIST += tests/test_qml_module_lists.py tests/fixtures/qml_dependencies_stable_cmp_recipe.inc

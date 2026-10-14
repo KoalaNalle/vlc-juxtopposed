@@ -7,6 +7,7 @@ existing component tests. This does not compile or replace native VLC methods.
 from pathlib import Path
 import argparse, ast, hashlib, json, os, shutil
 from enum import IntEnum
+from juxtopposed_backdrop_fixture import software_backdrop_state
 
 HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[3]
@@ -122,6 +123,7 @@ C.ApplicationWindow {{
     property var savedSelection:null
     property Item ephemeral:null
     Component {{ id: ephemeralButton; C.Button {{ objectName:"ephemeralOpener"; text:"Temporary"; x:700; y:10 }} }}
+    Rectangle {{ id: backdropUnderlay; objectName:"settingsTestUnderlay"; anchors.fill:parent; color:window.color }}
     C.Button {{ id: opener; objectName:"opener"; x:10; y:10; text:"Settings"; onClicked:DialogsProvider.showGlobalSettingsDialog() }}
     C.Button {{ id: fallback; objectName:"fallback"; x:160; y:10; text:"View" }}
     C.TextField {{ objectName:"outsideText"; x:300; y:10; width:160 }}
@@ -130,6 +132,7 @@ C.ApplicationWindow {{
     Binding {{ target:JuxtopposedPalette; property:"preferences"; value:MainCtx.generalPreferences }}
     Dialogs.JuxtopposedDialogsHost {{
         id:host; anchors.fill:parent; mainCtx:MainCtx; dialogsProvider:DialogsProvider
+        backdropSource:backdropUnderlay
         appearance:JuxtopposedPalette; assetBase:"{assets}"; fallbackFocusItem:fallback
         onPlaylistSaved:window.savedNotifications++
         onPlaylistRequested:playlist => window.savedSelection=playlist
@@ -179,6 +182,7 @@ check('initial host: no modal, no native text input, one genuine General service
       visible()==[False]*4 and not provider.visible and not provider.editing
       and dialogs[0].property('preferences') is ctx.general)
 focus('opener');click('opener')
+backdrop_state=software_backdrop_state(window,dialogs[0],item('settingsTestUnderlay'))
 check('real opener activates the shared Global route; Search sets actual TextInputFocus',
       visible()==[True,False,False,False] and provider.visible and provider.editing
       and window.activeFocusItem().objectName()=='globalSettingsSearch')
@@ -286,6 +290,8 @@ sources=[FILES/path for path in [
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
@@ -294,7 +300,7 @@ sources=[FILES/path for path in [
     'modules/gui/qt/maininterface/mainctx.cpp', 'modules/gui/qt/maininterface/mainctx.hpp',
     'modules/gui/qt/dialogs/dialogs_provider.cpp']]
 for path in sources:identities[str(path.relative_to(REPO))]=hashlib.sha256(path.read_bytes()).hexdigest()
-report={'checks':checks,'checkCount':len(checks),'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages,
+report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages,
         'sourceSha256':identities,'scope':'Actual integrated production QML host, General shell/body/palette and three real dialogs; supplied strict controller contracts. Native C++/OS hotkey/expert/save/reset build execution remains Root gate.'}
 (args.output_dir/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'checks':len(checks),'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages}))

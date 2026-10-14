@@ -16,6 +16,7 @@ C.Dialog {
     // claim unsupported categories or silently fall back to legacy dialogs.
     property var categoryPages: ({})
     property var categorySearchTerms: ({})
+    property Item backdropSource: null
     property Item focusReturnItem: null
     property string selectedCategory: "general"
     readonly property alias searchText: searchField.text
@@ -121,7 +122,12 @@ C.Dialog {
     }
     onCategoryPagesChanged: if (!hasPage(selectedCategory)) selectedCategory = "general"
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
-    background: Rectangle { color: root.tone("#0E0E0E"); opacity: .95; radius: 14 * root.uiScale }
+    background: JuxtopposedSettingsBackdrop {
+        sourceItem: root.backdropSource
+        active: root.visible
+        color: root.tone("#0E0E0E")
+        uiScale: root.uiScale
+    }
     C.Overlay.modal: Rectangle { color: "#80000000" }
 
     header: Item {

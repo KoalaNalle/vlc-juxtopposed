@@ -33,8 +33,20 @@ uses the exact original complete Light artwork. Its ordinary Qt build and native
 pointer/keyboard/mute/wheel/theme-switch journey pass, including normal quit and
 preserved checked human settings. Seven maintained component groups and the
 existing playback/43 appearance checks pass. All four CI jobs on the preceding
-General head `a8688e13fa` are green; the new head needs its own checks. Full Light
+General head `a8688e13fa` are green. Both Windows jobs on the subsequent Light
+head `73ab60e6b9` pass all 22 commands, and both Ubuntu jobs pass. Full Light
 fidelity, native System events, backdrop and the remaining beta gates stay open.
+
+The [settings backdrop checkpoint](doc/juxtopposed-references/native/settings-backdrop-20261015/README.md)
+adds native Home blur/shadow in Light/Dark, an honest original-tint fallback over
+separate embedded video and a reproduced incremental QML packaging repair.
+The same native shader fixture passes all 39 original assertions; maintained
+General/host/software backdrop checks pass 12/24/23 with no Qt messages. Actual
+GNU Make reproduces the old exit-0/stale-type failure and passes the repaired
+metadata closure. Three native app checks quit normally and preserve the checked
+human settings. Hardware-video blur, performance/DPI/full fidelity and the other
+categories remain open; new-head CI must be checked separately. The native
+window-size drift is being diagnosed without a guessed geometry correction.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.

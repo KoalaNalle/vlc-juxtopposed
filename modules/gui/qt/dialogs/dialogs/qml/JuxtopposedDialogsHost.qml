@@ -14,6 +14,7 @@ Item {
     property var appearance: null
     property real uiScale: 1
     property url assetBase: "qrc:/juxtopposed/"
+    property Item backdropSource: null
     property Item fallbackFocusItem: null
     readonly property bool qmlModalVisible: globalSettingsDialog.visible || networkStreamDialog.visible
                                              || newPlaylistDialog.visible || conversionDialog.visible
@@ -46,6 +47,7 @@ Item {
     JuxtopposedGlobalSettings {
         id: globalSettingsDialog
         parent: root
+        backdropSource: root.backdropSource
         preferences: root.mainCtx.generalPreferences
         appearance: root.appearance
         uiScale: root.uiScale

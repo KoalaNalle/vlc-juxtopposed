@@ -54,6 +54,7 @@ messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
 
 from juxtopposed_general_preferences_fixture import GeneralPreferences as Preferences
+from juxtopposed_backdrop_fixture import software_backdrop_state
 
 app = QGuiApplication([])
 preferences = Preferences()
@@ -82,6 +83,7 @@ C.ApplicationWindow {{
             return colors[value] || value
         }}
     }}
+    Rectangle {{ id: backdropUnderlay; objectName: "settingsTestUnderlay"; anchors.fill: parent; color: window.color }}
     C.Button {{ id: opener; objectName: "opener"; text: "Settings"; onClicked: dialog.showDialog(opener) }}
     Shortcut {{ id: transport; objectName: "transport"; sequence: "Space"; enabled: !dialog.visible; onActivated: window.transportCount++ }}
     Component {{ id: suppliedInterface; FocusScope {{
@@ -98,6 +100,7 @@ C.ApplicationWindow {{
     Settings.JuxtopposedGlobalSettings {{
         id: dialog; parent: window.contentItem
         preferences: preferencesAdapter
+        backdropSource: backdropUnderlay
         assetBase: "{asset_url}"
         categoryPages: ({{interface: suppliedInterface}})
         categorySearchTerms: ({{interface: ["layout", "toolbar"]}})
@@ -176,6 +179,7 @@ assert dialog.property('visible') and item('globalSettingsSearch').hasActiveFocu
 assert preferences.reloads == 1 and preferences.requests == [], 'Opening wrote a preference'
 assert not item('transport').property('enabled')
 assert [dialog.property('width'), dialog.property('height')] == [1048, 865]
+backdrop_state = software_backdrop_state(window, dialog, item('settingsTestUnderlay'))
 # A reference capture without a focus ring is taken after genuine pointer focus.
 click('globalCategorygeneral')
 shot('general-natural-component.png')
@@ -417,13 +421,13 @@ QTest.qWait(50)
 assert teardown_done == [True], 'The QML engine was not explicitly destroyed'
 assert messages == [], messages
 qmlformat = Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')
-for qml_source in [proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml']:
+for qml_source in [proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml', proposal / 'qml/JuxtopposedSettingsBackdrop.qml', proposal / 'qml/JuxtopposedSettingsBackdropEffect.qml']:
     result = subprocess.run([str(qmlformat), '--ignore-settings', str(qml_source)], stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE, text=True, timeout=20)
     assert result.returncode == 0 and not result.stderr, (qml_source.name, result.returncode, result.stderr)
 verification = {'passed': True, 'cases': cases, 'geometry': geometry, 'messages': messages,
-    'assets': asset_paths, 'visibleAssetInstances': visible_assets,
-    'sourceSha256': {str(path.relative_to(repo)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in [*[proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml'], Path(__file__).resolve()]},
+    'assets': asset_paths, 'visibleAssetInstances': visible_assets, 'backdropSoftwareFallback': backdrop_state,
+    'sourceSha256': {str(path.relative_to(repo)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in [*[proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml', proposal / 'qml/JuxtopposedSettingsBackdrop.qml', proposal / 'qml/JuxtopposedSettingsBackdropEffect.qml'], Path(__file__).resolve()]},
     'designFixtureSha256': hashlib.sha256(reference.read_bytes()).hexdigest(),
     'scope': 'Integrated production General QML and assets with strict supplied QObject preferences, software-rendered offscreen. Geometry, static asset identities/slots, component keyboard/pointer/focus/search/write/error behavior only.',
     'nativePersistencePickerAppearanceDiagnosticsAcceptance': False,

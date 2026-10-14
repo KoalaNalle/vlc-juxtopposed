@@ -338,6 +338,10 @@ Item {
 
         JuxtopposedDialogsHost {
             anchors.fill: parent
+            // Popup visuals live in Overlay, outside this capture source.
+            // Embedded video can be a separate native surface that Qt Quick
+            // cannot capture. Preserve the original translucent tint there.
+            backdropSource: MainCtx.hasEmbededVideo ? null : g_mainInterface
             dialogsProvider: DialogsProvider
             mainCtx: MainCtx
             appearance: JuxtopposedPalette

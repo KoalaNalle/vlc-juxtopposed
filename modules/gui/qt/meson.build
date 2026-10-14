@@ -673,6 +673,8 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
         'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
         'dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
