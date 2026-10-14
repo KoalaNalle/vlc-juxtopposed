@@ -651,3 +651,26 @@ vlc_window_LDADD = ../lib/libvlc.la ../src/libvlccore.la ../compat/libcompat.la
 if HAVE_DYNAMIC_PLUGINS
 noinst_PROGRAMS += vlc-window
 endif
+
+# Explicit opt-in source-compiled SoXR/native ownership diagnostic.
+# Not part of check_PROGRAMS on builds without the optional SoXR dependency.
+EXTRA_PROGRAMS += test_modules_soxr_lifecycle
+test_modules_soxr_lifecycle_SOURCES = modules/audio_filter/soxr_lifecycle.c
+test_modules_soxr_lifecycle_CPPFLAGS = $(AM_CPPFLAGS) $(SOXR_CFLAGS)
+test_modules_soxr_lifecycle_LDADD = $(LIBVLCCORE) $(LIBVLC) $(SOXR_LIBS) $(LIBM)
+if HAVE_WIN32
+# Keep this owned MinGW diagnostic independent of unrelated PATH pthread DLLs.
+# Disable GCC POSIX's automatic dynamic -lpthread, then resolve actual static
+# dependency symbols after the source's libraries in the LDADD order.
+test_modules_soxr_lifecycle_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_soxr_lifecycle_LDADD += -l:libwinpthread.a
+endif
+
+# Explicit actual native FLAC packetizer/guarded header regression.
+EXTRA_PROGRAMS += test_modules_packetizer_flac_eos
+test_modules_packetizer_flac_eos_SOURCES = modules/packetizer/flac_eos.c
+test_modules_packetizer_flac_eos_LDADD = $(LIBVLCCORE) $(LIBVLC)
+if HAVE_WIN32
+test_modules_packetizer_flac_eos_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_packetizer_flac_eos_LDADD += -l:libwinpthread.a
+endif

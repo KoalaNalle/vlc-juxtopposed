@@ -32,6 +32,7 @@
 # include "config.h"
 #endif
 
+#include <limits.h>
 #include <stdbit.h>
 
 #include <vlc_common.h>
@@ -711,9 +712,11 @@ typedef struct
     int i_samples_delay;
 
     FLAC__int32 *p_buffer;
-    unsigned int i_buffer;
+    size_t i_buffer;
 
     block_t *p_chain;
+    bool b_finished;
+    bool b_error;
 
     /*
      * FLAC properties
@@ -745,29 +748,64 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_block;
 
+    if( p_sys->b_error )
+        return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+
     if( samples == 0 )
     {
+        if( p_sys->i_headers == 0 && (bytes != 4 || memcmp(buffer, "fLaC", 4)) )
+        {
+            msg_Err( p_enc, "Invalid FLAC stream marker" );
+            p_sys->b_error = true;
+            return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+        }
         if( p_sys->i_headers == 1 )
         {
             msg_Dbg( p_enc, "Writing STREAMINFO: %zu", bytes );
 
-            /* Backup the STREAMINFO metadata block */
-            p_enc->fmt_out.i_extra = STREAMINFO_SIZE + 8;
-            p_enc->fmt_out.p_extra = xmalloc( STREAMINFO_SIZE + 8);
-            memcpy(p_enc->fmt_out.p_extra, "fLaC", 4);
-            memcpy((uint8_t*)p_enc->fmt_out.p_extra + 4, buffer, STREAMINFO_SIZE );
+            /* The callback includes the four-byte metadata block header. */
+            if( bytes != STREAMINFO_SIZE + 4 ||
+                (buffer[0] & 0x7f) != FLAC__METADATA_TYPE_STREAMINFO ||
+                buffer[1] != 0 || buffer[2] != 0 || buffer[3] != STREAMINFO_SIZE )
+            {
+                msg_Err( p_enc, "Invalid FLAC STREAMINFO block" );
+                p_sys->b_error = true;
+                return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+            }
+            uint8_t *extra = malloc( STREAMINFO_SIZE + 8 );
+            if( unlikely(extra == NULL) )
+            {
+                msg_Err( p_enc, "Cannot allocate FLAC STREAMINFO" );
+                p_sys->b_error = true;
+                return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+            }
+            memcpy(extra, "fLaC", 4);
+            memcpy(extra + 4, buffer, STREAMINFO_SIZE + 4);
             /* Fake this as the last metadata block */
-            ((uint8_t*)p_enc->fmt_out.p_extra)[4] |= 0x80;
+            extra[4] |= 0x80;
+            free( p_enc->fmt_out.p_extra );
+            p_enc->fmt_out.p_extra = extra;
+            p_enc->fmt_out.i_extra = STREAMINFO_SIZE + 8;
         }
         p_sys->i_headers++;
         return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
     }
 
+    if( samples > (unsigned)p_sys->i_samples_delay )
+    {
+        msg_Err( p_enc, "FLAC output exceeds pending samples" );
+        p_sys->b_error = true;
+        return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+    }
     p_block = block_Alloc( bytes );
     /* FLAC__STREAM_ENCODER_MEMORY_ALLOCATION_ERROR would be more appropriate
        but it's not the right type of enum */
     if( unlikely(p_block == NULL) )
+    {
+        msg_Err( p_enc, "Cannot allocate FLAC output block" );
+        p_sys->b_error = true;
         return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
+    }
 
     memcpy( p_block->p_buffer, buffer, bytes );
 
@@ -794,8 +832,9 @@ static void EncoderMetadataCallback( const FLAC__StreamEncoder *encoder,
     VLC_UNUSED(encoder);
     encoder_t *p_enc = (encoder_t *)client_data;
 
-    msg_Err( p_enc, "MetadataCallback: %i", metadata->type );
-    return;
+    /* With no seek/tell callback, the raw mux has already written the initial
+     * STREAMINFO. The final values cannot retroactively rewrite that header. */
+    msg_Dbg( p_enc, "Final FLAC metadata: %i", metadata->type );
 }
 
 /*****************************************************************************
@@ -822,6 +861,9 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_sys->p_buffer = 0;
     p_sys->i_buffer = 0;
     p_sys->i_samples_delay = 0;
+    p_sys->b_finished = false;
+    p_sys->b_error = false;
+    p_sys->i_pts = VLC_TICK_INVALID;
 
     /* Create flac encoder */
     if( !(p_sys->p_flac = FLAC__stream_encoder_new()) )
@@ -879,15 +921,62 @@ static int OpenEncoder( vlc_object_t *p_this )
 /****************************************************************************
  * Encode: the whole thing
  ****************************************************************************
- * This function spits out ogg packets.
+ * Return encoded frames, including the once-only final drain chain.
  ****************************************************************************/
 static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_chain;
 
-    /* FIXME: p_aout_buf is NULL when it's time to flush*/
-    if( unlikely( !p_aout_buf ) ) return NULL;
+    if( p_sys->b_finished || p_sys->b_error )
+        return NULL;
+
+    if( unlikely( !p_aout_buf ) )
+    {
+        /* finish invokes write callbacks synchronously. Keep timestamp/sample
+         * accounting and callback storage alive until it returns. */
+        p_sys->b_finished = true;
+        if( !FLAC__stream_encoder_finish( p_sys->p_flac ) )
+        {
+            msg_Err( p_enc, "FLAC encoder drain failed" );
+            goto error;
+        }
+        if( p_sys->b_error || p_sys->i_samples_delay != 0 )
+        {
+            msg_Err( p_enc, "FLAC encoder drain did not return all samples" );
+            goto error;
+        }
+        goto output;
+    }
+    if( p_aout_buf->i_nb_samples == 0 )
+        return NULL;
+
+    const size_t channels = p_enc->fmt_in.audio.i_channels;
+    if( channels == 0 || p_aout_buf->i_nb_samples > SIZE_MAX / channels ||
+        p_aout_buf->i_nb_samples > (unsigned)(INT_MAX - p_sys->i_samples_delay) )
+    {
+        msg_Err( p_enc, "Invalid FLAC input sample count" );
+        goto error;
+    }
+    const size_t samples = p_aout_buf->i_nb_samples * channels;
+    if( samples > SIZE_MAX / sizeof(FLAC__int32) ||
+        samples > p_aout_buf->i_buffer / sizeof(int16_t) )
+    {
+        msg_Err( p_enc, "Invalid FLAC input buffer size" );
+        goto error;
+    }
+    const size_t required = samples * sizeof(FLAC__int32);
+    if( p_sys->i_buffer < required )
+    {
+        FLAC__int32 *buffer = realloc( p_sys->p_buffer, required );
+        if( unlikely(buffer == NULL) )
+        {
+            msg_Err( p_enc, "Cannot allocate FLAC sample buffer" );
+            goto error;
+        }
+        p_sys->p_buffer = buffer;
+        p_sys->i_buffer = required;
+    }
 
     p_sys->i_pts = p_aout_buf->i_pts -
                 vlc_tick_from_samples( p_sys->i_samples_delay,
@@ -895,26 +984,33 @@ static block_t *Encode( encoder_t *p_enc, block_t *p_aout_buf )
 
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 
-    /* Convert samples to FLAC__int32 */
-    if( p_sys->i_buffer < p_aout_buf->i_buffer * sizeof(FLAC__int32) )
-    {
-        p_sys->p_buffer =
-            xrealloc( p_sys->p_buffer, p_aout_buf->i_buffer * sizeof(FLAC__int32) );
-        p_sys->i_buffer = p_aout_buf->i_buffer * 2;
-    }
-
-    for( unsigned i = 0 ; i < p_aout_buf->i_buffer / 2 ; i++ )
+    /* Convert exactly the interleaved input samples, not trailing padding. */
+    for( size_t i = 0 ; i < samples ; i++ )
     {
         p_sys->p_buffer[i]= ((int16_t *)p_aout_buf->p_buffer)[i];
     }
 
-    FLAC__stream_encoder_process_interleaved( p_sys->p_flac, p_sys->p_buffer,
-                                              p_aout_buf->i_nb_samples );
+    if( !FLAC__stream_encoder_process_interleaved( p_sys->p_flac, p_sys->p_buffer,
+                                                  p_aout_buf->i_nb_samples ) )
+    {
+        msg_Err( p_enc, "FLAC encoding failed: %s",
+                 FLAC__stream_encoder_get_resolved_state_string(p_sys->p_flac) );
+        goto error;
+    }
 
+output:
     p_chain = p_sys->p_chain;
     p_sys->p_chain = 0;
 
     return p_chain;
+
+error:
+    /* The audio encode API has no error return distinct from an empty chain.
+     * Mark the encoder unusable and release only blocks we still own. */
+    p_sys->b_error = true;
+    block_ChainRelease( p_sys->p_chain );
+    p_sys->p_chain = NULL;
+    return NULL;
 }
 
 /*****************************************************************************
@@ -926,6 +1022,9 @@ static void CloseEncoder( encoder_t *p_enc )
 
     FLAC__stream_encoder_delete( p_sys->p_flac );
 
+    /* Returned chains belong to the caller. On close without a normal drain,
+     * release only callback blocks still retained by this encoder. */
+    block_ChainRelease( p_sys->p_chain );
     free( p_sys->p_buffer );
     free( p_sys );
 }

@@ -256,7 +256,7 @@ static inline int FLAC_ParseSyncInfo(const uint8_t *p_buf, unsigned i_buf,
 
     /* Read blocksize */
     if (blocksize_hint) {
-        if(i_header == i_buf)
+        if(i_buf - i_header < (blocksize_hint == 7 ? 2u : 1u))
             return 0;
         blocksize = p_buf[i_header++];
         if (blocksize_hint == 7) {

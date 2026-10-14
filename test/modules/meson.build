@@ -266,3 +266,38 @@ vlc_tests += {
     'link_with' : [libvlc, libvlccore],
     'module_depends' : vlc_plugins_targets.keys()
 }
+
+
+if soxr_dep.found()
+    soxr_native_test_link_args = []
+    soxr_native_test_dependencies = [soxr_dep, m_lib]
+    if host_system == 'windows' and cc.get_id() == 'gcc'
+        soxr_native_test_link_args += ['-static-libgcc', '-no-pthread']
+        soxr_native_test_dependencies += cc.find_library('winpthread', static: true)
+    endif
+    vlc_tests += {
+        'name': 'test_modules_soxr_lifecycle',
+        'sources': files('audio_filter/soxr_lifecycle.c'),
+        'suite': ['modules', 'test_modules'],
+        'link_with': [libvlc, libvlccore],
+        'dependencies': soxr_native_test_dependencies,
+        'link_args': soxr_native_test_link_args,
+    }
+endif
+
+
+flac_native_test_link_args = []
+flac_native_test_dependencies = []
+if host_system == 'windows' and cc.get_id() == 'gcc'
+    flac_native_test_link_args += ['-static-libgcc', '-no-pthread']
+    flac_native_test_dependencies += cc.find_library('winpthread', static: true)
+endif
+vlc_tests += {
+    'name': 'test_modules_packetizer_flac_eos',
+    'sources': files('packetizer/flac_eos.c'),
+    'suite': ['modules', 'test_modules'],
+    'link_with': [libvlc, libvlccore],
+    'module_depends': ['packetizer_flac'],
+    'dependencies': flac_native_test_dependencies,
+    'link_args': flac_native_test_link_args,
+}

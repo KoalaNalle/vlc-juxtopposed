@@ -48,6 +48,13 @@ The output directory must be fresh. Run `test_modules_packetizer_copy.exe` with 
 
 ## Remaining acceptance
 
+The later [FLAC and SoXR native regression bundle](../native/audio-20261014/README.md)
+adds complete FLAC encoder/packetizer/demux draining and resampler ownership
+repairs, with 11 SoXR lifecycle checks, 7 loaded-packetizer checks and 9 complete
+staged encode/decode checks. It preserves exact source/runtime identities and
+failed diagnostic history. Those native gates remain separate from conversion
+dialog, desktop and complete beta acceptance.
+
 Implement a cancellable worker that analyzes real local audio through native VLC, discards obsolete results during media changes, and exposes the waveform to the actual player time/seek controls. Verify silence/short/failed files, bounded resources, shutdown and caching. The redesigned music cover/list/waveform presentation, GUI seek/focus and original visual comparison remain open. Conversion still needs its own source/preset/destination/progress/cancel/failure journey and playable output beyond this isolated export diagnostic.
 
 The existing desktop Firewall prompt still requires user dismissal; no permission choices were made and no replacement GUI was launched to bypass it. Native backend checks above are separate from desktop acceptance. The full milestones 0–8 Goal remains active.

@@ -273,7 +273,10 @@ SoXR_Resample( filter_t *p_filter, soxr_t soxr, block_t *p_in, size_t i_olen )
     if( error )
     {
         msg_Err( p_filter, "soxr_process failed: %s", soxr_strerror( error ) );
+        if( p_out == p_in )
+            p_in = NULL; /* The input/output alias is released once below. */
         block_Release( p_out );
+        p_out = NULL;
         goto error;
     }
     if( unlikely( i_idone < i_ilen ) )
@@ -302,6 +305,90 @@ error:
         block_Release( p_in );
 
     return p_out;
+}
+
+/* Complete both fixed and variable engines before clearing them. The bundled
+ * variable engine reports a placeholder delay; only an actual empty native
+ * drain establishes that all retained output has been produced. */
+static block_t *
+SoXR_Drain( filter_t *p_filter, soxr_t soxr )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    const size_t framesize = p_filter->fmt_out.audio.i_bytes_per_frame;
+    const unsigned rate = p_filter->fmt_out.audio.i_rate;
+    const double pending = ceil(soxr_delay(soxr));
+    if( !isfinite(pending) || pending < 0 || framesize == 0 || rate == 0 )
+        goto invalid;
+    const size_t max_samples = SIZE_MAX / framesize;
+    if( max_samples < 2 || pending >= (double)(max_samples - 2) )
+        goto invalid;
+    const size_t capacity = __MAX(__MAX(p_sys->i_last_olen, (size_t)pending + 2),
+                                 __MIN((size_t)4096, max_samples));
+    if( capacity > max_samples || capacity > UINT_MAX )
+        goto invalid;
+
+    block_t *chain = NULL, **tail = &chain;
+    unsigned samples = 0;
+    /* Fixed delay is an accurate capacity hint; VR must still drain to zero.
+     * A broken engine cannot produce unbounded chunks in one filter call. */
+    for( unsigned attempt = 0; attempt < 64; ++attempt )
+    {
+        block_t *output = block_Alloc(capacity * framesize);
+        if( output == NULL )
+        {
+            if( chain == NULL )
+                return NULL; /* No native consumption: initial OOM is retryable. */
+            goto error;
+        }
+        size_t consumed, produced;
+        soxr_error_t error = soxr_process(soxr, NULL, 0, &consumed,
+                                         output->p_buffer, capacity, &produced);
+        if( error || consumed != 0 || produced > capacity )
+        {
+            msg_Err(p_filter, "soxr drain failed: %s", error ? error : "invalid native counts");
+            block_Release(output);
+            goto error;
+        }
+        if( produced == 0 )
+        {
+            block_Release(output);
+            soxr_clear(soxr);
+            p_sys->i_last_olen = 0;
+            p_sys->last_soxr = NULL;
+            if( chain == NULL )
+                return NULL;
+            block_t *result = chain->p_next ? block_ChainGather(chain) : chain;
+            if( result == NULL )
+            {
+                block_ChainRelease(chain); /* Failed Gather retains its chain. */
+                return NULL;
+            }
+            result->i_nb_samples = samples;
+            result->i_length = vlc_tick_from_samples(samples, rate);
+            return result;
+        }
+        if( produced > UINT_MAX - samples || samples + produced > max_samples )
+        {
+            block_Release(output);
+            goto error;
+        }
+        samples += produced;
+        output->i_buffer = produced * framesize;
+        output->i_nb_samples = produced;
+        output->i_length = vlc_tick_from_samples(produced, rate);
+        *tail = output;
+        tail = &output->p_next;
+    }
+    msg_Err(p_filter, "SoXR drain exceeded its bounded chunk count");
+error:
+    block_ChainRelease(chain);
+    soxr_clear(soxr); /* Partial/error consumption cannot be retried as a full tail. */
+    p_sys->i_last_olen = 0;
+    p_sys->last_soxr = NULL;
+    return NULL;
+invalid:
+    msg_Err(p_filter, "invalid pending SoXR drain size");
+    return NULL;
 }
 
 static size_t
@@ -351,8 +438,14 @@ Resample( filter_t *p_filter, block_t *p_in )
     /* If the new soxr is different than the last one, flush it */
     if( p_sys->last_soxr && soxr != p_sys->last_soxr && p_sys->i_last_olen )
     {
-        p_flushed_out = SoXR_Resample( p_filter, p_sys->last_soxr,
-                                       NULL, p_sys->i_last_olen );
+        p_flushed_out = SoXR_Drain( p_filter, p_sys->last_soxr );
+        if( p_flushed_out == NULL && p_sys->i_last_olen )
+        {
+            /* Initial drain allocation failed without consuming the old engine.
+             * Preserve it for retry instead of overwriting it with a new input. */
+            block_Release(p_in);
+            return NULL;
+        }
         if( soxr )
             msg_Dbg( p_filter, "Using '%s' engine", soxr_engine( soxr ) );
     }
@@ -375,12 +468,14 @@ Resample( filter_t *p_filter, block_t *p_in )
         p_out = block_ChainGather( p_flushed_out );
         if( !p_out )
             goto error;
+        p_flushed_out = NULL; /* Successful gather consumed the chain. */
         p_out->i_nb_samples = i_nb_samples;
     }
     p_out->i_pts = i_pts;
     return p_out;
 error:
-    block_Release( p_in );
+    /* SoXR_Resample consumes its input. A failed gather retains the chain. */
+    block_ChainRelease( p_flushed_out );
     return NULL;
 }
 
@@ -407,8 +502,7 @@ Drain( filter_t *p_filter )
 
     if( p_sys->last_soxr && p_sys->i_last_olen )
     {
-        block_t *p_out = SoXR_Resample( p_filter, p_sys->last_soxr, NULL,
-                                        p_sys->i_last_olen );
+        block_t *p_out = SoXR_Drain( p_filter, p_sys->last_soxr );
         if( p_out != NULL )
         {
             assert( p_sys->i_next_pts != VLC_TICK_INVALID );

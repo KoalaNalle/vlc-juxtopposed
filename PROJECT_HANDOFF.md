@@ -43,6 +43,15 @@ unresolved setting and is not needed for these successful MCP reads.
 
 ## Active Goal progress on 14 October
 
+The later [FLAC and SoXR regression checkpoint](doc/juxtopposed-references/native/audio-20261014/README.md)
+repairs complete short/final FLAC frames, encoder finalization, demux EOF and
+resampler draining/ownership. The Windows native gates pass: 11 source-compiled
+SoXR lifecycle cases with actual SDK/native blocks, 7 actual loaded-packetizer
+cases, and 9 staged FLAC encode/decode cases. Exact source/runtime identities,
+build evidence, original/copy hashes and failed diagnostic history are retained.
+The working package is preserved; these passes do not finish native conversion
+dialog, subtitle timeline, Figma fidelity or final beta packaging.
+
 The native GUI baseline and active full-slice plan were pushed as `7c54e2548b`.
 Both Windows UI checks on that exact revision passed through Code Review.
 The next checkpoint repairs paused-seek clock lateness and a first-picture race;
