@@ -176,6 +176,17 @@ subpicture_t *subpicture_NewFromPicture( vlc_object_t *p_obj,
     return p_subpic;
 }
 
+void subpicture_Invalidate(subpicture_t *subpicture)
+{
+    subpicture_private_t *priv = subpicture->p_private;
+    if (!priv) return;
+    video_format_Clean(&priv->src);
+    video_format_Clean(&priv->dst);
+    video_format_Init(&priv->src, 0);
+    video_format_Init(&priv->dst, 0);
+    priv->display_width = priv->display_height = 0;
+}
+
 void subpicture_Update( subpicture_t *p_subpicture,
                         const video_format_t *p_fmt_src,
                         const video_format_t *p_fmt_dst,

@@ -289,6 +289,7 @@ void PlayerControllerPrivate::UpdateVouts(vout_thread_t **vouts, size_t i_vouts,
     m_deinterlaceMode.resetObject( main_vout );
     m_autoscale.resetObject( main_vout );
     m_videoTransform.resetOutput( main_vout );
+    m_subtitleAppearance.resetOutput( main_vout );
 
     emit q->voutListChanged(vouts, i_vouts);
     if( hadVideo != m_hasVideo )
@@ -588,6 +589,7 @@ static void on_player_track_selection_changed(vlc_player_t *, vlc_es_id_t * unse
             that->UpdateTrackSelection( unselectedPtr.get(), false );
         if (selectedPtr)
             that->UpdateTrackSelection( selectedPtr.get(), true );
+        that->m_subtitleAppearance.refresh();
     });
 }
 
@@ -1208,6 +1210,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
     , m_deinterlace((vout_thread_t*)nullptr, "deinterlace")
     , m_deinterlaceMode((vout_thread_t*)nullptr, "deinterlace-mode")
     , m_autoscale((vout_thread_t*)nullptr, "autoscale")
+    , m_subtitleAppearance(m_player)
     , m_audioStereoMode((audio_output_t*)nullptr, "stereo-mode")
     , m_audioMixMode((audio_output_t*)nullptr, "mix-mode")
     , m_audioDeviceList(m_player)
@@ -1818,6 +1821,12 @@ VideoTransform *PlayerController::getVideoTransform() const
 {
     Q_D(const PlayerController);
     return const_cast<VideoTransform *>(&d->m_videoTransform);
+}
+
+SubtitleAppearance *PlayerController::getSubtitleAppearance() const
+{
+    Q_D(const PlayerController);
+    return const_cast<SubtitleAppearance *>(&d->m_subtitleAppearance);
 }
 
 void PlayerController::setVolume(float volume)

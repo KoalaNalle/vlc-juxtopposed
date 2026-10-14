@@ -97,6 +97,18 @@ VideoTransform = type('VideoTransform', (State,), dict(changed=transform_notific
     **{name: state_property(name, kind, transform_notification)
        for name, kind in {'available': bool, 'flip': int, 'rotation': float}.items()}))
 transform = VideoTransform(dict(available=True, flip=0, rotation=0.))
+class AppearanceBase(State):
+    @Slot()
+    def refresh(self): pass
+appearance_notification = Signal()
+appearance_fields = dict(available=bool, statusText=str, embeddedFormat=bool, fontFamily=str, textColor=str,
+                         outlineColor=str, offset=int, sizeMode=int, fontSize=float,
+                         fontSizeMinimum=float, fontSizeMaximum=float, outlineSize=float, backgroundOpacity=float)
+Appearance = type('Appearance', (AppearanceBase,), dict(changed=appearance_notification,
+    **{name: state_property(name, kind, appearance_notification) for name, kind in appearance_fields.items()}))
+appearance = Appearance(dict(available=True, statusText='Select a text subtitle track to change its appearance.', embeddedFormat=True, fontFamily='Arial', textColor='#FFFFFF',
+    outlineColor='#000000', offset=0, sizeMode=0, fontSize=6.25, fontSizeMinimum=0.1,
+    fontSizeMaximum=50., outlineSize=4., backgroundOpacity=0.))
 class Tracks(QObject):
     @Property(int, constant=True)
     def count(self): return 2
@@ -104,14 +116,14 @@ tracks = Tracks()
 choices = {name: Choices() for name in ['zoom', 'aspectRatio', 'crop', 'deinterlace', 'deinterlaceMode', 'audioStereoMode', 'audioMixMode']}
 fields = dict(isStarted=bool, hasVideoOutput=bool, ratechangable=bool, rate=float,
               audioDelayMS=int, subtitleDelayMS=int, secondarySubtitleDelayMS=int, subtitleFPS=float,
-              equalizer=QObject, videoTransform=QObject, audioTracks=QObject, subtitleTracks=QObject)
+              equalizer=QObject, videoTransform=QObject, subtitleAppearance=QObject, audioTracks=QObject, subtitleTracks=QObject)
 fields.update({name: QObject for name in choices})
 player_notification = Signal()
 Player = type('Player', (State,), dict(changed=player_notification,
     **{name: state_property(name, kind, player_notification) for name, kind in fields.items()}))
 player = Player(dict(isStarted=True, hasVideoOutput=True, ratechangable=True, rate=1.,
                     audioDelayMS=0, subtitleDelayMS=0, secondarySubtitleDelayMS=0, subtitleFPS=0.,
-                    equalizer=eq, videoTransform=transform, audioTracks=tracks, subtitleTracks=tracks, **choices))
+                    equalizer=eq, videoTransform=transform, subtitleAppearance=appearance, audioTracks=tracks, subtitleTracks=tracks, **choices))
 class Dialogs(QObject):
     def __init__(self): super().__init__(); self.actions = []
     @Slot()
@@ -257,10 +269,48 @@ Item {
     switch(3)
     accessible(page(), 'Subtitle track delay').valueRequested.emit(0.250)
     assert player.writes[-1] == ('subtitleDelayMS', 250)
+    assert not appearance.writes
+    appearance.engine('textColor', '#FF0000')
+    QTest.qWait(20)
+    color_editor = accessible(accessible(page(), 'Text color'), 'settingTextEditor')
+    assert color_editor.property('text') == '#FF0000' and not appearance.writes
+    # Scroll via the production focus handler before editing the lower fields.
+    color_editor.forceActiveFocus(Qt.TabFocusReason)
+    QTest.qWait(20)
+    click(color_editor)
+    QTest.keyClick(view, Qt.Key_A, Qt.ControlModifier)
+    for character in '#00ff00': QTest.keyClick(view, Qt.Key(ord(character.upper())))
+    QTest.keyClick(view, Qt.Key_Return)
+    QTest.qWait(20)
+    assert appearance.writes[-1] == ('textColor', '#00ff00'), (appearance.writes, color_editor.property('text'))
+    before_invalid_color = list(appearance.writes)
+    QTest.keyClick(view, Qt.Key_A, Qt.ControlModifier)
+    for character in 'bad': QTest.keyClick(view, Qt.Key(ord(character.upper())))
+    QTest.keyClick(view, Qt.Key_Return)
+    QTest.qWait(20)
+    assert appearance.writes == before_invalid_color and color_editor.property('text') == '#00ff00'
+    pixel_button = accessible(page(), 'Pixels')
+    pixel_button.forceActiveFocus(Qt.TabFocusReason)
+    QTest.qWait(20)
+    click(pixel_button)
+    assert appearance.writes[-1] == ('sizeMode', 1)
+    assert accessible(page(), 'Font size').property('unit') == ' px'
+    accessible(page(), 'Font size').valueRequested.emit(24.)
+    assert appearance.writes[-1] == ('fontSize', 24.)
+    accessible(page(), 'Subtitle offset').valueRequested.emit(20.)
+    assert appearance.writes[-1] == ('offset', 20)
+    accessible(page(), 'Outline thickness').valueRequested.emit(3.)
+    assert appearance.writes[-1] == ('outlineSize', 3.)
+    accessible(page(), 'Background opacity').valueRequested.emit(50.)
+    assert appearance.writes[-1] == ('backgroundOpacity', 50.)
+    appearance.engine('available', False)
+    QTest.qWait(20)
+    assert not accessible(page(), 'Font size').isEnabled() and not color_editor.isEnabled()
+    appearance.engine('available', True)
     # Loading/destroying tab controls must not make additional engine writes.
-    before = (list(player.writes), list(eq.writes), list(transform.writes))
+    before = (list(player.writes), list(eq.writes), list(transform.writes), list(appearance.writes))
     for index in range(4): switch(index)
-    assert before == (player.writes, eq.writes, transform.writes), (before, player.writes, eq.writes, transform.writes)
+    assert before == (player.writes, eq.writes, transform.writes, appearance.writes), (before, player.writes, eq.writes, transform.writes, appearance.writes)
     player.engine('isStarted', False)
     switch(0)
     assert not accessible(page(), 'Speed').isEnabled()
@@ -271,6 +321,12 @@ Item {
         for index in range(4):
             switch(index)
             assert view.grabWindow().save(str(args.output_dir / f'settings-{index}-{width}-{scale}.png'))
+    style.factor = 1.; style.changed.emit(); view.resize(400, 600)
+    switch(0); switch(3)
+    assert view.grabWindow().save(str(args.output_dir / 'subtitle-appearance-top.png'))
+    accessible(accessible(page(), 'Background opacity'), 'settingValueEditor').forceActiveFocus(Qt.TabFocusReason)
+    QTest.qWait(20)
+    assert view.grabWindow().save(str(args.output_dir / 'subtitle-appearance-bottom.png'))
     QTest.keyClick(view, Qt.Key_Escape)
     QTest.qWait(20)
     assert not popup.property('visible')

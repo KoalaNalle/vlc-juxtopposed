@@ -227,7 +227,7 @@ T.Popup {
         }
         subtitlesContent: Component {
             SettingsPage {
-                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, sync]
+                keyboardControls: [subtitleDelay.editor, secondaryDelay.editor, subtitleFPS.editor, embedded, subtitleFont.editor, subtitleColor.editor, outlineColor.editor, subtitleOffset.editor, relativeSize, pixelSize, fontSize.editor, outlineSize.editor, backgroundOpacity.editor, sync]
 
                 SectionLabel {
                     text: qsTr("Synchronization")
@@ -282,6 +282,157 @@ T.Popup {
 
                     onMoveFocusRequested: direction => root.focusSetting(subtitleFPS.editor, direction)
                     onValueRequested: value => Player.subtitleFPS = value
+                }
+                SectionLabel {
+                    text: qsTr("Appearance")
+                }
+                SectionLabel {
+                    Layout.fillWidth: true
+                    visible: !Player.subtitleAppearance.available
+                    text: Player.subtitleAppearance.statusText
+                    wrapMode: Text.WordWrap
+                }
+                ToggleSetting {
+                    id: embedded
+
+                    checked: Player.subtitleAppearance.embeddedFormat
+                    enabled: Player.subtitleAppearance.available
+                    text: qsTr("Embedded sub format")
+
+                    onClicked: Player.subtitleAppearance.embeddedFormat = checked
+                }
+                TextSetting {
+                    id: subtitleFont
+
+                    enabled: Player.subtitleAppearance.available
+                    title: qsTr("Subtitle font")
+                    value: Player.subtitleAppearance.fontFamily
+
+                    onMoveFocusRequested: direction => root.focusSetting(subtitleFont.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.fontFamily = value
+                }
+                TextSetting {
+                    id: subtitleColor
+
+                    colorField: true
+                    enabled: Player.subtitleAppearance.available
+                    title: qsTr("Text color")
+                    value: Player.subtitleAppearance.textColor
+
+                    onMoveFocusRequested: direction => root.focusSetting(subtitleColor.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.textColor = value
+                }
+                TextSetting {
+                    id: outlineColor
+
+                    colorField: true
+                    enabled: Player.subtitleAppearance.available
+                    title: qsTr("Outline color")
+                    value: Player.subtitleAppearance.outlineColor
+
+                    onMoveFocusRequested: direction => root.focusSetting(outlineColor.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.outlineColor = value
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: subtitleOffset
+
+                    Layout.fillWidth: true
+                    decimals: 0
+                    enabled: Player.subtitleAppearance.available
+                    from: -2000
+                    sliderVisible: false
+                    title: qsTr("Subtitle offset")
+                    to: 2000
+                    uiScale: root.uiScale
+                    unit: " px"
+                    value: Player.subtitleAppearance.offset
+
+                    onMoveFocusRequested: direction => root.focusSetting(subtitleOffset.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.offset = Math.round(value)
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    enabled: Player.subtitleAppearance.available
+                    opacity: enabled ? 1 : 0.35
+
+                    SectionLabel {
+                        Layout.fillWidth: true
+                        text: qsTr("Size values")
+                    }
+                    RowLayout {
+                        Layout.minimumWidth: 0
+                        Layout.preferredWidth: 190 * root.uiScale
+                        spacing: 2 * root.uiScale
+                        uniformCellSizes: true
+
+                        FlipButton {
+                            id: relativeSize
+
+                            checked: Player.subtitleAppearance.sizeMode === 0
+                            text: qsTr("Relative")
+
+                            onClicked: Player.subtitleAppearance.sizeMode = 0
+                        }
+                        FlipButton {
+                            id: pixelSize
+
+                            checked: Player.subtitleAppearance.sizeMode === 1
+                            text: qsTr("Pixels")
+
+                            onClicked: Player.subtitleAppearance.sizeMode = 1
+                        }
+                    }
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: fontSize
+
+                    Layout.fillWidth: true
+                    decimals: 2
+                    enabled: Player.subtitleAppearance.available
+                    from: Player.subtitleAppearance.fontSizeMinimum
+                    sliderVisible: false
+                    title: qsTr("Font size")
+                    to: Player.subtitleAppearance.fontSizeMaximum
+                    uiScale: root.uiScale
+                    unit: Player.subtitleAppearance.sizeMode === 1 ? " px" : "%"
+                    value: Player.subtitleAppearance.fontSize
+
+                    onMoveFocusRequested: direction => root.focusSetting(fontSize.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.fontSize = value
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: outlineSize
+
+                    Layout.fillWidth: true
+                    decimals: 1
+                    enabled: Player.subtitleAppearance.available
+                    from: 0
+                    sliderVisible: false
+                    title: qsTr("Outline thickness")
+                    to: 50
+                    uiScale: root.uiScale
+                    unit: Player.subtitleAppearance.sizeMode === 1 ? " px" : "%"
+                    value: Player.subtitleAppearance.outlineSize
+
+                    onMoveFocusRequested: direction => root.focusSetting(outlineSize.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.outlineSize = value
+                }
+                Widgets.JuxtopposedSettingSlider {
+                    id: backgroundOpacity
+
+                    Layout.fillWidth: true
+                    decimals: 1
+                    enabled: Player.subtitleAppearance.available
+                    from: 0
+                    sliderVisible: false
+                    title: qsTr("Background opacity")
+                    to: 100
+                    uiScale: root.uiScale
+                    unit: "%"
+                    value: Player.subtitleAppearance.backgroundOpacity
+
+                    onMoveFocusRequested: direction => root.focusSetting(backgroundOpacity.editor, direction)
+                    onValueRequested: value => Player.subtitleAppearance.backgroundOpacity = value
                 }
                 ActionButton {
                     id: sync
@@ -379,6 +530,8 @@ T.Popup {
         onTabRequested: index => {
             if (index === 2)
                 Player.equalizer.refresh();
+            else if (index === 3)
+                Player.subtitleAppearance.refresh();
         }
     }
 
@@ -557,6 +710,96 @@ T.Popup {
 
                 spacing: 12 * root.uiScale
                 width: flick.width
+            }
+        }
+    }
+    component TextSetting: C.Control {
+        id: textSetting
+
+        property bool colorField: false
+        property alias editor: field
+        property string title: ""
+        property string value: ""
+
+        signal moveFocusRequested(int direction)
+        signal valueRequested(string value)
+
+        Layout.fillWidth: true
+        implicitHeight: 40 * root.uiScale
+        implicitWidth: 360 * root.uiScale
+        opacity: enabled ? 1 : 0.35
+        padding: 0
+
+        contentItem: RowLayout {
+            spacing: 12 * root.uiScale
+
+            C.Label {
+                Layout.fillWidth: true
+                Layout.minimumWidth: 0
+                color: "#969696"
+                elide: Text.ElideRight
+                font.family: inter.name
+                font.pixelSize: 14 * root.uiScale
+                text: textSetting.title
+            }
+            C.TextField {
+                id: field
+
+                property bool dirty: false
+
+                Accessible.name: textSetting.title
+                Layout.preferredHeight: 32 * root.uiScale
+                Layout.preferredWidth: Math.min(144 * root.uiScale, textSetting.width * 0.48)
+                bottomPadding: 4 * root.uiScale
+                color: "#969696"
+                font.family: inter.name
+                font.pixelSize: 14 * root.uiScale
+                maximumLength: textSetting.colorField ? 7 : 256
+                objectName: "settingTextEditor"
+                padding: 10 * root.uiScale
+                rightPadding: (textSetting.colorField ? 34 : 10) * root.uiScale
+                selectByMouse: true
+                topPadding: 4 * root.uiScale
+
+                background: Rectangle {
+                    border.color: field.activeFocus ? "#D37918" : "#252525"
+                    border.width: root.uiScale
+                    color: "#090909"
+                    radius: 4 * root.uiScale
+                }
+
+                Keys.onDownPressed: textSetting.moveFocusRequested(1)
+                Keys.onUpPressed: textSetting.moveFocusRequested(-1)
+                onEditingFinished: {
+                    if (dirty) {
+                        const input = text.trim();
+                        if (input && (!textSetting.colorField || /^#[0-9a-fA-F]{6}$/.test(input)) && input !== textSetting.value)
+                            textSetting.valueRequested(input);
+                        text = textSetting.value;
+                    }
+                    dirty = false;
+                }
+                onTextEdited: dirty = true
+
+                Rectangle {
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8 * root.uiScale
+                    anchors.verticalCenter: parent.verticalCenter
+                    border.color: "#404040"
+                    border.width: root.uiScale
+                    color: textSetting.colorField ? textSetting.value : "transparent"
+                    height: width
+                    radius: 2 * root.uiScale
+                    visible: textSetting.colorField
+                    width: 20 * root.uiScale
+                }
+                Binding {
+                    property: "text"
+                    restoreMode: Binding.RestoreNone
+                    target: field
+                    value: textSetting.value
+                    when: !field.activeFocus || !field.dirty
+                }
             }
         }
     }

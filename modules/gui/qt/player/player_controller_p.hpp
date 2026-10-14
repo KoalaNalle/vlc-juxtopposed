@@ -24,6 +24,7 @@
 #include "input_models.hpp"
 #include "audio_equalizer.hpp"
 #include "video_transform.hpp"
+#include "subtitle_appearance.hpp"
 #include "util/varchoicemodel.hpp"
 #include "util/shared_input_item.hpp"
 #include "util/renderer_manager.hpp"
@@ -176,6 +177,7 @@ public:
     VLCVarChoiceModel m_deinterlaceMode;
     QVLCBool m_autoscale;
     VideoTransform m_videoTransform;
+    SubtitleAppearance m_subtitleAppearance;
     bool            m_hasVideo = false;
     bool            m_fullscreen = false;
     bool            m_wallpaperMode = false;

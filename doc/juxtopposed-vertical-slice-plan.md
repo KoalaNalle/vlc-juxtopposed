@@ -18,7 +18,7 @@ The first slice covers the breadth of the design. Subsequent passes bring each c
 
 ## Current baseline
 
-The Windows x64 Qt 6.8.3 debug package builds and its baseline GUI loads. The redesigned playback bar, queue tabs, library navigation/header/compact rows and four-tab settings panel are implemented. Nine component suites pass. Native backend checks verify library indexing/history, actual equalizer PCM and rendered flip/rotation pixels; the latest complete GUI journeys await the existing firewall prompt's user dismissal.
+The Windows x64 Qt 6.8.3 debug package builds and its baseline GUI loads. The redesigned playback bar, queue tabs, library navigation/header/compact rows and four-tab settings panel are implemented. Nine component suites pass. Native backend checks verify library indexing/history, actual equalizer PCM, rendered flip/rotation and current-paused-cue subtitle appearance; the latest complete GUI journeys await the existing firewall prompt's user dismissal.
 
 Home retains VLC's presentation with a connected native folder picker. Remaining library/title/folder layouts, settings/effects/subtitle appearance, subtitle timeline and presets, waveform, conversion screens, preferences and full light appearance require further design work.
 
@@ -89,4 +89,4 @@ The Goal is active without an explicit deadline or usage budget. No follow-up sc
 
 ## Next concrete action
 
-Continue the confirmed subtitle appearance/effects surfaces using saved exports and the video, preserving real backend actions and separate component/native evidence. Keep completing the reference inventory. When desktop input becomes available, verify the built folder-picker/browse/search/play/return/resume journey and settings/media-switch/focus paths before accepting those milestones. The coverage ledger and latest checkpoint records identify the remaining full-slice work.
+Continue subtitle duration factor and the remaining confirmed effects surfaces using saved exports and the video, preserving real backend actions and separate component/native evidence. Extend subtitle appearance to other renderers and persistent preferences, and keep completing the reference inventory. When desktop input becomes available, verify the built folder-picker/browse/search/play/return/resume journey and settings/media-switch/focus paths before accepting those milestones. The coverage ledger and latest checkpoint records identify the remaining full-slice work.

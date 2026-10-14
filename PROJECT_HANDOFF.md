@@ -125,6 +125,19 @@ DLL retained. Desktop interaction remains pending at the firewall prompt;
 non-square/hardware variants and restart persistence retain open gates. Continue
 the remaining subtitle/effects/preferences surfaces under the complete plan.
 
+The [subtitle appearance checkpoint](doc/juxtopposed-references/settings/subtitle-appearance-checkpoint.md)
+adds embedded formatting, font/colour/outline/background, offset and Relative/Pixels
+controls. The rebuilt core invalidates cached subtitle cue formats safely, and
+Freetype applies changes to the current paused cue while retaining playback-message
+styling. Seven native output checks pass, including actual font-family/size/scale,
+colours, outline, background, a measured 20px offset and unselected/output guards.
+All nine UI suites, the core clock/pipe checks, packaged paused seeking and preceding
+audio/video diagnostics pass on the updated runtime. Core/Freetype/Qt builds pass
+and are staged together with each old DLL recoverable. The evidence records exact
+hashes, component/native captures and separate GUI/format/persistence/visual gates.
+Desktop input remains pending; duration factor, presets/timeline, remaining effects,
+preferences/themes and the complete integrated slice are still active work.
+
 ## Scope and design credit
 
 Implement Juxtopposed's VLC redesign inside VLC while preserving playback,

@@ -34,6 +34,7 @@
 
 #include <vlc_common.h>
 #include <vlc_filter.h>
+#include <vlc_modules.h>
 #include <vlc_spu.h>
 #include <vlc_vector.h>
 #include <vlc_vout_display.h>
@@ -109,6 +110,8 @@ struct spu_private_t {
     int channel;             /**< number of subpicture channels registered */
     filter_t *text;                              /**< text renderer module */
     vlc_mutex_t textlock;
+    int64_t text_style_revision;
+    int text_scale;
     filter_t *scale_yuvp;                     /**< scaling module for YUVP */
     filter_t *scale;                    /**< scaling module (all but YUVP) */
     bool crop_highlight;                     /**< force cropping of subpicture */
@@ -326,11 +329,14 @@ static int spu_get_attachments(filter_t *filter,
 
 static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
 {
+    spu_private_t *sys = container_of(spu, spu_private_t, spu);
+    if (sys->vout) var_SetBool(sys->vout, "sub-text-style-supported", false);
     filter_t *text = vlc_custom_create(spu, sizeof(*text), "spu text");
     if (!text)
         return NULL;
 
     es_format_Init(&text->fmt_in, VIDEO_ES, 0);
+    var_Create(text, "sub-text-is-subtitle", VLC_VAR_BOOL);
 
     es_format_Init(&text->fmt_out, VIDEO_ES, 0);
     text->fmt_out.video.i_width          =
@@ -356,6 +362,9 @@ static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
         return NULL;
     }
     assert( text->ops != NULL );
+    if (sys->vout)
+        var_SetBool(sys->vout, "sub-text-style-supported",
+                    strcmp(module_get_object(text->p_module), "freetype") == 0);
 
     return text;
 }
@@ -417,6 +426,7 @@ static void region_FixFmt(subpicture_region_t *region)
 
 static subpicture_region_t *SpuRenderText(spu_t *spu,
                           const subpicture_region_t *region,
+                          bool subtitle,
                           unsigned output_width,
                           unsigned output_height,
                           const vlc_fourcc_t *chroma_list)
@@ -442,6 +452,7 @@ static subpicture_region_t *SpuRenderText(spu_t *spu,
     text->fmt_out.video.i_visible_height = output_height;
     assert(region->i_x != INT_MAX && region->i_y != INT_MAX);
 
+    var_SetBool(text, "sub-text-is-subtitle", subtitle);
     subpicture_region_t *rendered_region = text->ops->render(text, region, chroma_list);
     assert(rendered_region == NULL || !subpicture_region_IsText(rendered_region));
 
@@ -1439,7 +1450,7 @@ static vlc_render_subpicture *SpuRenderSubpictures(spu_t *spu,
             if (unlikely(subpicture_region_IsText( region )))
             {
                 subpicture_region_t *rendered_text =
-                    SpuRenderText(spu, region,
+                    SpuRenderText(spu, region, subpic->b_subtitle,
                             i_original_width, i_original_height,
                             chroma_list);
                 if ( rendered_text  == NULL)
@@ -1781,7 +1792,7 @@ static void spu_PrerenderText(spu_t *spu, subpicture_t *p_subpic,
         if(!subpicture_region_IsText( region ))
             continue;
         subpicture_region_t *rendered_text =
-            SpuRenderText(spu, region,
+            SpuRenderText(spu, region, p_subpic->b_subtitle,
                         i_original_picture_width, i_original_picture_height,
                         chroma_list);
         if (rendered_text == NULL)
@@ -1965,6 +1976,7 @@ spu_t *spu_Create(vlc_object_t *object, vout_thread_t *vout)
     vlc_mutex_init(&sys->lock);
 
     sys->margin = var_InheritInteger(spu, "sub-margin");
+    sys->text_scale = var_InheritInteger(spu, "sub-text-scale");
     sys->secondary_margin = var_InheritInteger(spu, "secondary-sub-margin");
 
     sys->secondary_alignment = var_InheritInteger(spu,
@@ -2319,6 +2331,25 @@ vlc_render_subpicture *spu_Render(spu_t *spu,
         place.y      = 0;
         place.width  = fmt_dst->i_visible_width;
         place.height = fmt_dst->i_visible_height;
+    }
+
+    const int64_t revision = sys->vout ? var_GetInteger(sys->vout, "sub-text-style-revision") : 0;
+    const int scale = var_InheritInteger(spu, "sub-text-scale");
+    if (revision != sys->text_style_revision || scale != sys->text_scale)
+    {
+        // Wait for the background renderer before resetting cached cue formats.
+        // The subtitle updater retains the original text and can regenerate it.
+        spu_PrerenderPause(sys);
+        vlc_mutex_lock(&sys->lock);
+        for (size_t c = 0; c < sys->channels.size; ++c)
+            for (size_t e = 0; e < sys->channels.data[c].entries.size; ++e)
+            {
+                subpicture_t *subpic = sys->channels.data[c].entries.data[e].subpic;
+                if (subpic->b_subtitle) subpicture_Invalidate(subpic);
+            }
+        vlc_mutex_unlock(&sys->lock);
+        sys->text_style_revision = revision;
+        sys->text_scale = scale;
     }
 
     /* wake up prerenderer, we have some video size and chroma */
