@@ -88,6 +88,8 @@ endif
 if HAVE_WIN32
 libqt_plugin_la_CXXFLAGS += $(LIBCOMCXXFLAGS)
 libqt_plugin_la_LIBADD += $(LIBCOM) -lcomctl32 -luuid -ldwmapi
+libqt_plugin_la_LIBADD += -lntdll
+libqt_plugin_la_LDFLAGS += -Wl,--wrap=pthread_key_delete
 endif
 if UPDATE_CHECK
 libqt_plugin_la_CPPFLAGS += -DUPDATE_CHECK
@@ -616,7 +618,8 @@ libqt_plugin_la_SOURCES += \
 	maininterface/win32windoweffects_module.cpp \
 	maininterface/win32windoweffects_module.hpp \
 	util/csdmenu_win32.c \
-	util/csdmenu_win32.h
+	util/csdmenu_win32.h \
+	util/winpthreads_shutdown.cpp
 
 nodist_libqt_plugin_la_SOURCES += maininterface/mainctx_win32.moc.cpp \
 	maininterface/compositor_win7.moc.cpp
@@ -2382,6 +2385,8 @@ endif
 endif
 
 EXTRA_DIST += tests/test_juxtopposed_subtitle_timeline.py tests/test_page_loader_routes.py
+EXTRA_DIST += tests/test_music_network_navigation.py tests/run_music_network_navigation.py \
+	tests/test_playlist_single_play.py tests/run_playlist_single_play.py
 
 if ENABLE_QT
 if HAVE_QT_QTEST

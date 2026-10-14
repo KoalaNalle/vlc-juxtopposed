@@ -10,6 +10,8 @@ qt_extra_deps = []
 qt_extra_flags = ['-DQT_STRICT_ITERATORS','-DQT_USE_QSTRINGBUILDER','-DQT_NO_CAST_TO_ASCII','-DQT_NO_CAST_FROM_BYTEARRAY']
 qt_cppargs = []
 qt_link_args = [gc_sections_linkargs]
+qt_plugin_extra_link_args = []
+qt_plugin_extra_deps = []
 
 qt6_dep = dependency('qt6',
     # Note that Qt < 6.2.5 does not provide pc files!
@@ -597,6 +599,14 @@ if host_system == 'windows'
         'maininterface/compositor_dcomp.cpp',
         'maininterface/compositor_dcomp_acrylicsurface.cpp',
     )
+    if have_mingw
+        qt_plugin_sources += files('util/winpthreads_shutdown.cpp')
+        qt_plugin_extra_deps += [
+            cpp.find_library('winpthread', static: true),
+            cpp.find_library('ntdll'),
+        ]
+        qt_plugin_extra_link_args += '-Wl,--wrap=pthread_key_delete'
+    endif
 endif
 
 if (x11_dep.found() and
@@ -1355,11 +1365,11 @@ if qt6_dep.found()
         'name' : 'qt',
         'sources' : [qt6pre_files, qt6pre_qrc, shader_targets, shaders_processed, qt_sources, qt_plugin_sources],
         'extra_files' : [shader_files],
-        'dependencies' : [qt_extra_deps, qt6_dep, corefoundation_dep],
+        'dependencies' : [qt_extra_deps, qt_plugin_extra_deps, qt6_dep, corefoundation_dep],
         'include_directories' : qt_include_dir,
         'c_args' : qt_extra_flags,
         'cpp_args' : [qt_extra_flags, qt_cppargs],
-        'link_args' : qt_link_args,
+        'link_args' : [qt_link_args, qt_plugin_extra_link_args],
         'link_with' : qmllibs,
         'plugin_dir' : 'gui',
     }

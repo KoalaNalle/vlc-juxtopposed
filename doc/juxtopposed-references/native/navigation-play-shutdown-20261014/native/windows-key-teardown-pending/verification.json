@@ -1,0 +1,72 @@
+{
+  "expectedOutcomesObserved": true,
+  "cases": [
+    {
+      "variant": "baseline",
+      "mode": 0,
+      "pid": 35760,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "9aeb57a36821050737250bea14d17c43391274ac8e1fcbdcec365c0e1ef4e154"
+    },
+    {
+      "variant": "baseline",
+      "mode": 1,
+      "pid": 23536,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "9aeb57a36821050737250bea14d17c43391274ac8e1fcbdcec365c0e1ef4e154"
+    },
+    {
+      "variant": "baseline",
+      "mode": 2,
+      "pid": 33692,
+      "timedOut": true,
+      "terminationConfirmed": false,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": false,
+      "dllSha256": "9aeb57a36821050737250bea14d17c43391274ac8e1fcbdcec365c0e1ef4e154"
+    },
+    {
+      "variant": "fixed",
+      "mode": 0,
+      "pid": 19328,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "cc32dca0a0921fd5afc8bb47820853136136add0ec74251750d3e58d8350c180"
+    },
+    {
+      "variant": "fixed",
+      "mode": 1,
+      "pid": 16324,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "cc32dca0a0921fd5afc8bb47820853136136add0ec74251750d3e58d8350c180"
+    },
+    {
+      "variant": "fixed",
+      "mode": 2,
+      "pid": 7008,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "cc32dca0a0921fd5afc8bb47820853136136add0ec74251750d3e58d8350c180"
+    }
+  ],
+  "scope": "Actual Windows MinGW static DLL and real winpthreads keys: normal operations, explicit FreeLibrary, and process-exit destruction with a worker holding the TLS reader lock. Baseline exit remains failed acceptance. No actual Qt GUI acceptance."
+}

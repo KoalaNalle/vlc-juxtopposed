@@ -125,7 +125,10 @@ Widgets.PageLoader {
                 root._showServiceNode(tree, deviceModel.source_name, reason)
             }
 
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "source_root"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
 
             NetworkDeviceModel {
                 id: deviceModel
@@ -163,7 +166,10 @@ Widgets.PageLoader {
                     root._showServiceNode(tree, source_name, reason)
             }
             onHomeButtonClicked: (tree, reason) => root._showServiceHome(reason)
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "source_browse"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
 
             model: NetworkMediaModel {
                 id: mediaModel

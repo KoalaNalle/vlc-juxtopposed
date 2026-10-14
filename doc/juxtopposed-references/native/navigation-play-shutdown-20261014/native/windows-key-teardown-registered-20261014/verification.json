@@ -1,0 +1,39 @@
+{
+  "expectedOutcomesObserved": true,
+  "cases": [
+    {
+      "variant": "fixed",
+      "mode": 0,
+      "pid": 19216,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "052e2c8d0b85e516447dda787920973cfe8f98eb2180763bad9870c7d91b6802"
+    },
+    {
+      "variant": "fixed",
+      "mode": 1,
+      "pid": 28880,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "052e2c8d0b85e516447dda787920973cfe8f98eb2180763bad9870c7d91b6802"
+    },
+    {
+      "variant": "fixed",
+      "mode": 2,
+      "pid": 29404,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "winApiExitCode": 0,
+      "expectedOutcomeObserved": true,
+      "featurePassed": true,
+      "dllSha256": "052e2c8d0b85e516447dda787920973cfe8f98eb2180763bad9870c7d91b6802"
+    }
+  ],
+  "scope": "Actual Windows MinGW static DLL and real winpthreads keys: normal operations, explicit FreeLibrary, and process-exit destruction with a worker holding the TLS reader lock. Baseline exit remains failed acceptance. No actual Qt GUI acceptance."
+}

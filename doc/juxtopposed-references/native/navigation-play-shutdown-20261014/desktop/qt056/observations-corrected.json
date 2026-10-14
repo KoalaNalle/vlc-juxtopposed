@@ -1,0 +1,92 @@
+{
+  "scope": "Original Qt056 desktop run; useful scoped checks and two actual Network defects retained. Not a clean native pass.",
+  "qtSha256": "05662582c5fac80f43c7b3e256034a53483eafabfc1aa650cec31d25479563a5",
+  "pid": 29628,
+  "winApiExitCode": 0,
+  "normalExitAccepted": false,
+  "monitors": {
+    "allVisibleActions": "Monitor2",
+    "observedOriginX": -1920,
+    "observedOriginY": 357,
+    "windowWidth": 1920,
+    "windowHeight": 1032
+  },
+  "nativeObservations": [
+    "Home shows generated fixtures; initial update-check error notice observed and dismissed, later recurred when MainDisplay was recreated.",
+    "Home opens chapter fixture, settled paused at displayed00:00/00:18; Back retains it in the mini player.",
+    "Empty-card native Play keeps Playlists and the paused chapter primary. Queue afterward contains only that one chapter item.",
+    "One filled-card native Play appends exactly the three playlist entries to the existing one-item queue, for four ordered rows. Playback ran through the three short entries and returned to Playlists; no paused-first-track acceptance is inferred.",
+    "Albums loads two native items. Keyboard Tab/Right/Right/Return opens the second Unknown title album with the single 30-second Juxtopposed Waveform Fixture.",
+    "Albums to Home and Back visibly restores the second selection. Immediate Return from the History-button focus did not reopen contents; subsequent Tab/Down/caption input did not establish a completed refocus/reopen journey. Focus remains an open gate.",
+    "Artists loads two native items. Keyboard Open reaches the second Generated test audio artist, its one song and real album.",
+    "Artist details to Home and Back returns to Generated test audio, one song and the same album.",
+    "Genres loads the genuine empty state. Populated genre/album selection restoration has not been tested.",
+    "Network Browse loads native standard folders and two local drives, then opens a Windows firewall permission prompt. Further UI input stopped pending human Cancel. Interface Network discovery starts separately from the disabled ML discovery flag."
+  ],
+  "queueBefore": [
+    "Juxtopposed Native Chapter Fixture"
+  ],
+  "queueAfter": [
+    "Juxtopposed Native Chapter Fixture",
+    "Home Artist Alpha one",
+    "home-video.mp4",
+    "home-video.mp4"
+  ],
+  "screenshotsSha256": {
+    "01-home-initial.jpg": "414f86ebb6a363f0bce4f915bc7bba9672f0b4d0fb03e7d5b610b48cb1ae0d26",
+    "02-paused-primary.jpg": "17699a38fe5e05fea887e909f954f968b70493f2a668168ad347a339c1e5e6f3",
+    "03-playlists-before-empty-play.jpg": "8c472e594d53be927e482dad2a3095bdee2d1e5bc1ee7d8b59d9fc499607bba2",
+    "04-empty-play-keeps-paused-primary.jpg": "7cdf23cb24d34b362e4c3d238309a965d95afcf1879a422978fa15cb6743785a",
+    "05-queue-one-before-filled-play.jpg": "70e7c3dd5782b91baaac65c1ac5383d498eb5f0fa04a5c8fd53d8e3091a2f593",
+    "06-filled-play-appends-three-once.jpg": "921988702b25d422355ef79749686a33bd2af9ee4b5fabc2b3e2ad269777fbf5",
+    "07-four-item-queue-after-playback.jpg": "74fc2c756ca73158ba1f0926649738209c0d42b96a7d936a2218ed66b17f98a0",
+    "08-second-album-real-track.jpg": "6d933791ead60281c3215f1eb1b9b7e2e72f8c137998d4a9add0184a0379fde8",
+    "09-home-after-album.jpg": "e9d80e4051ceb845891425c5628c053975b6463d5b988498c71e133799eefaeb",
+    "10-back-restores-second-album.jpg": "c7db396940dc3485d65b563020fa520e8cb46270f08630fbe3988622b1e05654",
+    "11-artists-native-model.jpg": "71235a2423745b9d2c3d48203e53242d53acb40edd435f245689ccd3d2bc4688",
+    "12-second-artist-native-details.jpg": "2da477eafb4b207609563e2bcf96462d2eb07cce806b55935b4a97eeb22b7a1d",
+    "13-back-restores-native-artist.jpg": "d1b07e450fffa9c92e45a14739b5227820e3b392e9447b71a2d464371a31efc5",
+    "14-genres-native-empty-state.jpg": "dd89350c2c208e658602f023e43ce7ab61d2b85ec008923b802eee51a60cb734"
+  },
+  "uiaSha256": {
+    "queue-after-filled-uia.txt": "a4c605cdd50c6531481a4dd234ab2abf920d385be202a77db471dd6ba8567ba5",
+    "queue-before-filled-uia.txt": "0b1f7ef67249532bc9512c863af9668e90d024ed4ec7f448632b232d6a633267"
+  },
+  "privacy": "Network captures 15 through 18, full native log, live preferences and databases remain private. Public proof uses only generated-fixture captures 01 through 14.",
+  "separateGates": [
+    "Populated genre/album paths",
+    "Music playlist route",
+    "Network folders/device/tree/service restoration",
+    "Grid/list view replacement with real native models",
+    "Immediate keyboard focus after History buttons",
+    "Rapid same-route generations",
+    "Restart/clean profile",
+    "Figma/native fidelity",
+    "Narrow/DPI/theme variants",
+    "Final package"
+  ],
+  "normalCtrlQRequested": true,
+  "normalExitObserved": false,
+  "boundedExitMonitor": {
+    "pid": 29628,
+    "initialWinApiExitCode": 259,
+    "waitResult": 258,
+    "winApiExitCode": 0,
+    "timedOut": true
+  },
+  "navigationPropertyErrors": [
+    "qt warning: (default) qrc:/qt/qml/VLC/Network/BrowseDeviceView.qml:189: TypeError: Cannot call method 'forceActiveFocus' of undefined"
+  ],
+  "logSha256": "89856e2338539017c8424589c67383b61d07b504db642a5b6c791560daf9f6e1",
+  "logPublished": false,
+  "laterObservations": [
+    "Human allowed the Network firewall prompt. Private and Public allow rules observed; administrator launch of the prepared Private-only helper was canceled, with no rule changes applied.",
+    "Native drive and authorized Media-tree navigation succeeded; fourth child selection returned after Home/Back and survived grid-to-list replacement.",
+    "A later seventh-child list selection was visibly retained in grid, but the next Home/Back restored the first row. This is failed broader history acceptance.",
+    "Final QML log records BrowseDeviceView forceActiveFocus on an undefined currentItem during native pointer input. This is failed clean Network input acceptance.",
+    "Ctrl+Q closed the window; the preserved watcher returned timeout and subsequently queried actual process exit zero. No bounded-wait pass is inferred."
+  ],
+  "terminationConfirmed": false,
+  "retainedProcessEntryAndDllLockObserved": true,
+  "interpretationCorrection": "Original processStillActive=false and normalExitObserved=true were unsupported: owned wait timed out despite exit status zero. No termination pass is accepted for Qt056. Original bytes and their identity remain retained privately."
+}

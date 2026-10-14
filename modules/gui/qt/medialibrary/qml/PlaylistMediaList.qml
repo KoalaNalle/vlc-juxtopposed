@@ -338,6 +338,8 @@ MainViewLoader {
 
                 dragItem: dragItemPlaylist
 
+                playbackEnabled: model.count !== 0
+
 
                 //---------------------------------------------------------------------------------
                 // Events
@@ -345,8 +347,6 @@ MainViewLoader {
                 onItemClicked: (modifier, select) => { gridView.leftClickOnItem(modifier, index, select) }
 
                 onItemDoubleClicked: showList(model, Qt.MouseFocusReason)
-
-                onPlayClicked: if (model.id) MediaLib.addAndPlay(model.id)
 
                 onContextMenuButtonClicked: (_, globalMousePos) => {
                     gridView.rightClickOnItem(index);

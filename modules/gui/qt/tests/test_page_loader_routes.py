@@ -199,9 +199,6 @@ FocusScope {
     function setCurrentItem(index) { currentIndex = index }
     function setCurrentItemFocus(reason) { forceActiveFocus(reason) }
     function positionViewAtIndex(index, mode) {}
-    Component.onCompleted: {
-        if (selectionModel.hasSelection) currentIndex = selectionModel.selectedIndexes[0].row;
-    }
 }
 ''')
 for filename, role, alias_name, child, count in [

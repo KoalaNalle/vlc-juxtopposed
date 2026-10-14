@@ -41,6 +41,10 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_navigation.py --output-dir ui-previews/navigation
       - name: Check leaf route properties and saved selection restoration
         run: python modules/gui/qt/tests/test_page_loader_routes.py --repo-root . --mode fixed --output-dir ui-previews/page-loader
+      - name: Check Music and Network history model readiness
+        run: python modules/gui/qt/tests/run_music_network_navigation.py --repo-root . --mode fixed --output-dir ui-previews/music-network-navigation
+      - name: Check playlist Play request ownership and empty-state routing
+        run: python modules/gui/qt/tests/run_playlist_single_play.py --repo-root . --overlay . --mode fixed --output-dir ui-previews/playlist-single-play
       - name: Check library header and compact media rows
         run: python modules/gui/qt/tests/test_juxtopposed_library.py --output-dir ui-previews/library
       - name: Check production settings tabs and engine bindings

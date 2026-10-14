@@ -110,6 +110,17 @@ Loader {
     // the index to "go to" when the view is loaded
     property int initialIndex: -1
     property bool _pendingInitialIndexReset: false
+    property int _rememberedIndex: -1
+    property Item _trackedView: null
+
+    Connections {
+        target: root.currentItem
+        function onCurrentIndexChanged() {
+            if (!root._pendingInitialIndexReset && root.currentItem === root._trackedView
+                    && root.currentItem.currentIndex >= 0)
+                root._rememberedIndex = root.currentItem.currentIndex
+        }
+    }
 
     // used in custom focus management for explicit "focusReason" transfer
     property var setCurrentItemFocus: currentItem?.setCurrentItemFocus ?? setCurrentItemFocusDefault
@@ -151,11 +162,16 @@ Loader {
         isLoadingChanged() // in case boolean default value is `true`, currently it is not
     }
 
-    onModelChanged: resetFocus()
+    onModelChanged: {
+        _rememberedIndex = -1
+        resetFocus()
+    }
 
     onInitialIndexChanged: resetFocus()
 
     onLoaded: {
+        const previousIndex = _rememberedIndex
+        _trackedView = item
         // Padding is supposed to be the margins of the content,
         // propagating padding is not conventional. But we have
         // to do this because that is what `PageLoader` through
@@ -175,6 +191,12 @@ Loader {
         // A cached model may have its initial index before the view exists.
         // Consume that request once; later grid/list switches retain selection.
         if (_pendingInitialIndexReset) resetFocus()
+        else if (previousIndex >= 0 && previousIndex < count) {
+            currentItem.setCurrentItem(previousIndex)
+            if (currentItem.hasOwnProperty("positionViewAtIndex"))
+                currentItem.positionViewAtIndex(previousIndex, ItemView.Contain)
+        } else if (currentItem.currentIndex >= 0)
+            _rememberedIndex = currentItem.currentIndex
     }
 
     Connections {
@@ -206,6 +228,7 @@ Loader {
             currentItem.positionViewAtIndex(index, ItemView.Contain)
 
         currentItem.setCurrentItem(index)
+        _rememberedIndex = index
         _pendingInitialIndexReset = false
     }
 

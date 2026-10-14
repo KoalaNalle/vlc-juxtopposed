@@ -851,6 +851,141 @@ The installed VLC and original working package are preserved. Pending broader
 history and playlist Play repairs live in ignored proposals and have not yet
 changed this built source checkpoint. The full beta Goal remains active.
 
+## Later Music/Network, playlist and Windows quit repair
+
+The preceding Qt checkpoint was pushed as `909958b4a7eb23463cd7370ec135b88e568b93e3`.
+Both associated GitHub Windows jobs passed all seventeen suites; the draft PR
+records their complete Code Review diagnostics and separate native scopes.
+
+The reviewed eight-file Music/Network restoration and two-file playlist Play
+repairs are now integrated locally. Their supplied Qt gates pass twenty-seven
+and thirteen cases respectively. The unchanged playlist oracle reproduces
+exactly seven original failures: empty-card view changes and duplicate requests.
+Its new never-cleared diagnostic ledger also covers startup, creation and
+explicit QML-object/engine teardown. All nineteen local component/source suites
+pass, including both newly registered CI launchers. These are component results.
+
+The fresh incremental Qt DLL is
+`05662582c5fac80f43c7b3e256034a53483eafabfc1aa650cec31d25479563a5`.
+The build regenerated ignored `modules/gui/qt/Makefile.in`; original pre-build
+and post-generation manifests retain that sole generated-file transition.
+An initial staging rejection and unsuccessful launch attempts remain setup
+history, with no accepted native result. Corrected staging and explicit
+PowerShell launch started the actual test GUI as PID 29628.
+
+Actual monitor-2 tests establish empty-card Play preserving the library and
+paused chapter primary; one filled-card Play adds the three ordered playlist
+entries once to the existing one-item queue. The four-row queue preserves the
+repeated video, and those three short entries play through to normal return.
+Albums opens the second real album's single waveform track; Home/Back visibly
+restores that overview selection. Immediate Return from the History-button
+focus did not reopen it, so completed refocus/activation remains unaccepted.
+Artists opens the second genuine artist and returns to that same identity,
+song count and album after Home/Back. Genres shows its actual empty state;
+populated genre routes and broader model/view replacement remain open.
+
+Network Browse reached standard folders/drives and started interface discovery,
+which is separate from the disabled ML discovery flag. Windows then opened a
+firewall prompt for this new executable path. The human allowed it. A later
+administrator run applied and independently verified 36 owned rules for twelve
+exact programs, including this path: Private TCP/UDP restricted to LocalSubnet,
+Public/Domain inbound blocked, broad prompt-generated rules disabled. Firewall
+profile and Defender settings were preserved. No permission handoff is pending.
+
+The original Qt056 native run exposed two Network defects. A later list/grid
+selection looked retained, but Home/Back reset it to row zero. Its flushed log
+also records BrowseDeviceView calling forceActiveFocus on an undefined
+currentItem. Ctrl+Q closed the window and the process reported exit status zero,
+but the owned wait timed out; CIM still lists one thread and the GUI DLL remains
+locked. An exact-PID taskkill reports no running instance. Exit status alone is
+not proof of completed process termination. Preserve this shutdown failure.
+Original captures and exact limits remain ignored in
+`build-windows/music-playlist-desktop-v2-20261014`; Network/user-path captures,
+preferences, databases and the full native log are excluded from public proof.
+
+Root repaired MainViewLoader's cursor retention through view replacement and
+changed BrowseDeviceView to use the existing grid/list setCurrentItemFocus
+method. The loader test fixture previously restored its own cursor from the
+selection, masking the actual grid's default-zero behavior; that convenience
+was removed. The same stricter eleven-case test now fails before the source
+repair and passes afterward. All nineteen current Windows component suites
+pass again. The new incremental Qt DLL is
+`ca793b4c45c54ada9ec6c0d00b7ef35ab07391541ec17034bc163eb6ccf84a68`,
+with 1072 source identities frozen in
+`build-windows/navigation-native-fixed-source-freeze-20261014.json`.
+
+Staging initially rejected the retained process entry. A premature cache/launch
+attempt started no app; a later guarded DLL replacement also stopped at the
+Windows file lock. Preserve those setup attempts. The original plugin root is
+unchanged. The same reviewed development executable now loads a separate
+`plugins-navigation-native-fixed-20261014` root, with actual startup log evidence
+of that directory. That native GUI was PID 30824, on monitor 2, with an
+isolated generated-fixture profile under
+`build-windows/navigation-native-fixed-desktop-20261014`.
+
+The rebuilt pointer path opens the drive and authorized Media folder without
+the prior QML error so far. Fourth-row grid selection survives list conversion;
+a later seventh-row selection remains selected after returning to grid. However,
+the next Home/Back returns to the parent drive instead of the Media subtree.
+This history journey remains failed acceptance. Native NavigationHistory skips
+frames whose NetworkTreeItem input pointer is no longer in its media tree;
+whether asynchronous refresh invalidated this particular child is still an
+inference requiring native reproduction. A later settled journey returned to
+the same subtree and fourth selection after grid/list and Home/Back. Keep the
+first failure and broader native tree lifetime gate open. Ctrl+Q still timed
+out with an unsignaled process handle despite reported exit status zero.
+
+The [new integrated checkpoint proof](doc/juxtopposed-references/native/navigation-play-shutdown-20261014/README.md)
+preserves those failures and the strict paired 27-case Music/Network, 13-case
+playlist and 11-case cursor checks. The original cursor fixture restored its
+own index and masked the production default-zero bug; the stricter helper now
+fails before the production repair and passes afterward. Nineteen exact local
+component/source suites pass; the workflow now registers both new launchers.
+
+A separate actual GUI playback/automatic-quit check reproduced the retained
+process without Network browsing or Computer Use observation/input. Read-only
+noninvasive debugging mapped its remaining thread into winpthreads TLS-key
+deletion during the C++ static key destructor. A real Windows static-DLL fixture
+reproduces the reader-lock/process-detach deadlock. Its original exit case times
+out despite exit status zero; normal key operations and explicit FreeLibrary
+pass. The proposed final-process-only wrapper passes all three cases, then an
+actual Qt prototype fully terminates after playback. No forced cleanup counts
+as acceptance, and the original failing processes/results are preserved.
+
+The wrapper is now registered in both Qt build systems; Windows module link
+flags are kept out of Meson test targets. Ordinary key deletion and explicit
+unload use the real implementation. Two failed Automake setup attempts are
+retained. The successful ordinary Autotools build produces Qt
+`7c7f99054ee0017faf5cd2dd538f7775f3b45c4cf0505a173a54f733e13fddaf`.
+Its final post-generation manifest freezes 1,073 Qt-directory files. Relative
+to v2, Makefile.am was corrected before the final build and Makefile.in was
+regenerated; no exact final pre-build manifest or clean beta build is claimed.
+Meson registration is source-reviewed only.
+
+The exact registered wrapper passes its three native DLL cases. Actual GUI
+playback and automatic quit terminates in 10.828 seconds with exit zero.
+Monitor-2 pointer input then opens the authorized subtree, keeps its fourth
+selection through grid-to-list and Home/Back, and normal Ctrl+Q fully terminates
+PID 26676: signaled owned wait, exit zero, no later process entry and released
+Qt DLL file lock. Its flushed log has no QML property/call/reference errors.
+The fresh app initially restored a 306x353 window before being maximized on
+monitor 2; that geometry behavior remains open. Generated-profile tests do not
+establish first-run/clean-profile acceptance. The 132 provenance pairs include
+only generated-fixture captures; Network captures, full native logs, personal
+media/preferences/databases remain private. The earlier Qt056 observation
+booleans confusing exit status with termination are explicitly corrected in
+this new proof, with the original identity and failing wait preserved.
+
+One new Figma MCP design-context call cached original Global Settings node
+`999:5047` at 1048x865, its screenshot and all twenty unchanged SVG assets.
+Three assets have exact existing repository matches. No Global Settings UI has
+been implemented from this new reference yet. Reuse VLC's `ColorSchemeModel`
+for System/Day/Night; Figma's Dark/Light/System order differs from its native
+indices. Full thirteen-category preferences, appearance, embedded cues,
+renderer expiry, native focus/DPI/fidelity and final clean packaging remain
+required beta work. Keep the draft PR and full beta Goal open; this scoped
+incremental checkpoint does not accept the complete beta or final package.
+
 ## Code map
 
 | Responsibility | Main locations |
