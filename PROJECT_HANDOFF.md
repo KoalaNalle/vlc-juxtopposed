@@ -544,6 +544,31 @@ Capture screenshots from the actual VLC Windows window and record media,
 Windows/Qt versions, display scale and reproduction steps. Native build and
 runtime acceptance remain open until those checks are actually performed.
 
+## Advanced reference and audio export checkpoint
+
+The [advanced audit](doc/juxtopposed-references/advanced/reference-notes.md)
+preserves thirteen original video frames with hashes. Home, music waveform,
+subtitle scope/presets/timeline, New Playlist, Open Network Stream and profile
+menus are confirmed. The former conversion attribution near 13:10 was actually
+Open Network Stream; conversion dialog geometry remains unresolved. Exact UI
+geometry, assets and unshown states still need references; milestone 0 remains
+in progress.
+
+The [audio export checkpoint](doc/juxtopposed-references/advanced/audio-drain-checkpoint.md)
+repairs the copy packetizer's lost final packet and the transcode resampler's
+undrained tail. The same native diagnostic fails against the preceding plugins
+and passes after repair: complete 30-second PCM at 8/44.1 kHz, byte-identical
+source-rate PCM, valid WAV and 300 actual waveform peaks. The copy-module
+ownership contract and clock/ES/pipe/equalizer/video/packaged-seek regressions
+pass. Both plugins build and are staged in the separate slice package with
+rollback copies; the working home package is preserved. The asynchronous model,
+player waveform GUI and conversion journey are still incomplete.
+
+Next: connect real local audio analysis to the player with cancellation and
+media-switch guards, then implement the confirmed waveform presentation. Keep
+the full 0–8 Goal active and the draft PR/desktop/visual gates open. The existing
+Firewall prompt still requires user dismissal; no permission choices were made.
+
 ## Remaining design work and proposed order
 
 The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)

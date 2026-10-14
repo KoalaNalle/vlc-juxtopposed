@@ -344,9 +344,20 @@ error:
         error = true;
     } while( p_audio_bufs );
 
-    /* Drain encoder */
+    /* Drain filters before the encoder. Resamplers can retain the final audio
+     * samples even when the decoder is already drained. */
     if( unlikely( !error && in == NULL ) && transcode_encoder_opened( id->encoder ) )
     {
+        block_t *tail = id->p_af_chain ? aout_FiltersDrain(id->p_af_chain) : NULL;
+        while (tail != NULL)
+        {
+            block_t *next = tail->p_next;
+            tail->p_next = NULL;
+            tail->i_dts = tail->i_pts;
+            block_ChainAppend(out, transcode_encoder_encode(id->encoder, tail));
+            block_Release(tail);
+            tail = next;
+        }
         transcode_encoder_drain( id->encoder, out );
     }
 

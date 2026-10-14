@@ -75,6 +75,7 @@ check_PROGRAMS = \
 	test_modules_lua_extension \
 	test_modules_misc_medialibrary \
 	test_modules_packetizer_helpers \
+	test_modules_packetizer_copy \
 	test_modules_packetizer_hxxx \
 	test_modules_packetizer_h264 \
 	test_modules_packetizer_h266 \
@@ -362,6 +363,8 @@ test_modules_misc_medialibrary_SOURCES = modules/misc/medialibrary.c
 test_modules_misc_medialibrary_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_helpers_SOURCES = modules/packetizer/helpers.c
 test_modules_packetizer_helpers_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_packetizer_copy_SOURCES = modules/packetizer/copy.c
+test_modules_packetizer_copy_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_hxxx_SOURCES = modules/packetizer/hxxx.c
 test_modules_packetizer_hxxx_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_h264_SOURCES = modules/packetizer/h264.c \
