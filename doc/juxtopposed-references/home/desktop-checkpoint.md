@@ -53,7 +53,10 @@ first-run wizard; that owned test was terminated and relaunched with an exact
 copy of the existing preferences, preserving the user's previous choices.
 
 An independent route audit found that video folders and playlists can seed
-their first visit through ordinary library routes. Audio-only folders currently
-lack such a route. A successful Add Folder → validated native entry-point visit
-repair is being prepared separately; no invented folder IDs or completed Home
-visit acceptance are claimed here.
+their first visit through ordinary library routes. The subsequent audio-only
+Add Folder → validated native entry-point visit repair is now built and pushed.
+The [later actual desktop journey](audio-folder-desktop-20261014/README.md)
+proves an added two-track audio-only directory, native folder/player route,
+play/pause/Back and retained card/contents after normal quit and restart in the
+existing test profile. Fresh-user first-folder setup, complete visits/reset/
+opt-out/errors and full Home acceptance remain open.

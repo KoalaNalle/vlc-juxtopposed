@@ -29,7 +29,12 @@ the [beta plan](doc/juxtopposed-beta-plan.md) expands the earlier
 pushing each built and verified runnable checkpoint. The GUI
 fixes below form the first checkpoint. Code Review reports the preceding remote
 revision `561fd18388` passed the Windows UI workflow; both Windows checks on the
-latest pushed `7ff50d23fd` also passed. Figma MCP access was restored on
+preceding pushed `7ff50d23fd` also passed. Both exact-head Windows UI checks on
+the latest `8e257f915c` checkpoint passed all fourteen suites. That checkpoint
+adds native playlist creation, reliable Home folder visits and honest unknown
+durations. A later [audio-only folder desktop journey](doc/juxtopposed-references/home/audio-folder-desktop-20261014/README.md)
+also passed in the existing test profile; fresh-user/full Home acceptance stays
+open. Figma MCP access was restored on
 14 October after the user connected a Professional Full seat. Page inventory,
 high-fidelity Home/New Playlist/subtitle-timeline context and screenshots now
 read successfully. Reuse the [saved MCP reference inventory](doc/juxtopposed-references/figma/20261014/README.md),
