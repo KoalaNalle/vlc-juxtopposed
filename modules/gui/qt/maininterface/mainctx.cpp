@@ -37,6 +37,7 @@
 #include "subtitle_preset_model.hpp"
 #include "general_preferences_model.hpp"
 #include "interface_preferences_model.hpp"
+#include "playback_preferences_model.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
 
@@ -231,6 +232,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     m_generalPreferences = new GeneralPreferencesModel(p_intf, m_colorScheme, settings, this);
     // Default Consumers gates remain false until each native behavior is verified.
     m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, this);
+    // Precise-seek capability stays gated until actual native app acceptance.
+    m_playbackPreferences = new PlaybackPreferencesModel(p_intf, this);
 
     /* Get the available interfaces */
     m_extraInterfaces = new VLCVarChoiceModel(VLC_OBJECT(p_intf->intf), "intf-add", this);
@@ -337,6 +340,9 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    // Playback borrows native player/playlist state; destroy it before Qt/native teardown.
+    delete m_playbackPreferences;
+    m_playbackPreferences = nullptr;
     // Both services borrow settings; destroy them before those dependencies.
     delete m_interfacePreferences;
     m_interfacePreferences = nullptr;

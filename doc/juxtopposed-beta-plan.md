@@ -54,8 +54,23 @@ checks pass 10/12/24/23; four normal desktop quits preserve human configuration
 and cover decorations/Unicode-path restart, validation rollback and Light/Dark.
 Eight Interface settings remain explicitly unavailable until native consumer
 checks pass. Skin picker/parser, tray, remaining categories, DPI/full fidelity and
-the final beta package remain open. Exact new-head CI is pending (25 Windows
-commands); this bounded checkpoint does not accept the full Interface surface.
+the final beta package remain open. All four jobs on Interface head `04189f5271`
+pass (25 Windows commands, two Ubuntu workers); this bounded checkpoint does not
+accept the full Interface surface.
+
+The [native global Playback checkpoint](juxtopposed-references/native/playback-settings-20261015/README.md)
+adds all 19 authored values with two unavailable capabilities, the expanded
+time-shift fields and accurate native live/restart behavior. Its registered
+isolated playlist/player fixture passes 23/0/0, including four fresh-player rate
+rows and three locked-save/retry rows. Three actual app journeys verify saved
+speed/repeat after restart, current-versus-next speed, live queue changes,
+visible lower-field validation and paused red/blue seeks, then quit normally
+with checked human files unchanged. A strict old/new validation oracle becomes
+15 passing component groups; General/Interface/host/software retain 12/10/24/23.
+An intermittent earlier Home glyph-painting issue remains open despite the final
+clean launch. Native picker and broader media/precision/thumbnail/resume/privacy,
+full Figma/DPI and beta package gates remain open. New-head CI is pending with
+26 Windows commands. This is bounded Playback acceptance, not the complete beta.
 
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 

@@ -43,3 +43,9 @@ original exports from Player - Light (`2425:13624`), volume background
 designer's clipped 53px preview group, not a stretched clipped fragment.
 Dynamic clipping to native volume and Light/Dark asset selection are functional
 adaptations; the original artwork retains Juxtopposed's attribution above.
+
+The playback-settings-*.svg files are unchanged original exports from the
+Playback Global Settings frames 3062:12552 and 3072:13408. Their information,
+chevron, slider-tick and selected Playback artwork retains the same CC BY 4.0
+authorship and license above. Dynamic native settings, byte-labelled time-shift
+presets, keyboard focus and small-window layouts are implementation adaptations.

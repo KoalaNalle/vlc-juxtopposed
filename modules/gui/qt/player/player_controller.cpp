@@ -22,6 +22,7 @@
 
 #include "dialogs/extensions/extensions_manager.hpp"
 #include "player_controller.hpp"
+#include "util/playback_seek_policy.hpp"
 #include "player_controller_p.hpp"
 #include "util/shared_input_item.hpp"
 
@@ -1432,7 +1433,7 @@ void PlayerController::setTime(VLCTime new_time)
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )
         return;
-    vlc_player_SetTime( d->m_player, new_time.toVLCTick() );
+    vlc_player_SeekByTime( d->m_player, new_time.toVLCTick(), qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_ABSOLUTE );
 }
 
 void PlayerController::setPosition(double position)
@@ -1444,7 +1445,7 @@ void PlayerController::setPosition(double position)
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )
         return;
-    vlc_player_SetPosition( d->m_player, position );
+    vlc_player_SeekByPos( d->m_player, position, qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_ABSOLUTE );
 }
 
 void PlayerController::jumpFwd()
@@ -1455,7 +1456,7 @@ void PlayerController::jumpFwd()
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )
         return;
-    vlc_player_JumpTime( d->m_player, vlc_tick_from_sec( i_interval ) );
+    vlc_player_SeekByTime( d->m_player, vlc_tick_from_sec( i_interval ), qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_RELATIVE );
 }
 
 void PlayerController::jumpBwd()
@@ -1466,7 +1467,7 @@ void PlayerController::jumpBwd()
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )
         return;
-    vlc_player_JumpTime( d->m_player, vlc_tick_from_sec( -i_interval ) );
+    vlc_player_SeekByTime( d->m_player, vlc_tick_from_sec( -i_interval ), qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_RELATIVE );
 }
 
 void PlayerController::jumpTime(VLCTime i_time)
@@ -1476,7 +1477,7 @@ void PlayerController::jumpTime(VLCTime i_time)
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )
         return;
-    vlc_player_JumpTime( d->m_player, i_time.toVLCTick() );
+    vlc_player_SeekByTime( d->m_player, i_time.toVLCTick(), qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_RELATIVE );
 }
 
 void PlayerController::jumpToPos( double new_pos )
@@ -1487,7 +1488,7 @@ void PlayerController::jumpToPos( double new_pos )
         if( !d->isCurrentItemSynced() )
             return;
         if( vlc_player_IsStarted( d->m_player ) )
-            vlc_player_SetPosition( d->m_player, new_pos );
+            vlc_player_SeekByPos( d->m_player, new_pos, qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_ABSOLUTE );
     }
     emit seekRequested( new_pos );
 }

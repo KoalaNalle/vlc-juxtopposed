@@ -45,7 +45,19 @@ messages. Four desktop journeys quit normally, preserve checked human files,
 and verify title-bar/Unicode-path restart, validation rollback and Light/Dark
 lower sections. General and Interface are enabled, with eight Interface controls
 explicitly unavailable. Actual picker/parser, tray, native new-consumer/DPI/full
-fidelity and full beta gates remain open; new-head CI is pending (25 commands).
+fidelity and full beta gates remain open. All four jobs on Interface head
+`04189f5271` pass, including 25 commands in each Windows job.
+
+The [native global Playback follow-up](native/playback-settings-20261015/README.md)
+adds the 19-value page, native 23/0/0 playlist/player fixture and three normal
+desktop quits with checked human files preserved. Saved speed/repeat restart,
+current-versus-next speed, actual live queue changes, visible lower-field
+validation and paused red/blue pointer seeks pass within the recorded scope.
+The strict original/new validation oracle passes 15 final groups, with existing
+12/10/24/23 General/Interface/host/software checks retained. Two Playback
+capabilities, ten other categories, native picker/broader media, intermittent
+startup glyph painting and full fidelity/package gates remain open. New-head
+CI is pending with 26 Windows commands.
 
 The active target is the [first publishable beta](../juxtopposed-beta-plan.md), covering complete confirmed surfaces and actions. Figma MCP access for copy `zdNUYRVOH9lEtIxMYvh8DV` was restored on 14 October with a Professional Full seat. Successful page inventory, high-fidelity Home/New Playlist/subtitle-timeline contexts, screenshots and prototype-link reads are preserved in the [MCP reference inventory](figma/20261014/README.md). Browser control still has a separate saved site block; do not circumvent it. Reuse cached MCP, video and measured queue references; complete reference/state reconciliation and visual acceptance remain open. The supplied 20:59.915 AV1 walkthrough has been sampled into 63 overview frames and 24 closer library-region frames. Local overview/contact sheets are in `build-windows/reference-video-frames`; exact frames are in `library-reference-frames`. [Library reference notes](library/reference-notes.md) preserve three exact-time frames, tentative geometry and the native mapping. Video frames include the original VLC, commentary, advertisements and concept UI: identify the actual redesign before measuring it.
 
@@ -79,7 +91,7 @@ The active target is the [first publishable beta](../juxtopposed-beta-plan.md), 
 | Subtitle presets | Exact 08:00 [menu](advanced/0480-subtitle-presets.png), appearance footer around 07:55 | Save/apply real appearance/delay/track preferences | [Compiled preset port](advanced/subtitle-preset-checkpoint.md): 10 real persistence/selection/rendered-output checks, 8 actual normal-lock PlayerController checks and the existing 11 appearance regressions pass; all 13 component suites pass. Native Save/apply/restart menu journey, folder/playlist scope, other renderers and exact dialog/visual acceptance remain pending: implementing |
 | Subtitle timeline | Exact 06:59 [cue strip](advanced/0419-subtitle-timeline.png), editorial zoom | Extract real cue times, show current/elapsed cue, seek and shift native timing | Cue/edit state geometry and new extraction backend: specified in part, port pending; text editing/export remains unconfirmed |
 | Music player / waveform | Exact 12:18 [player](advanced/0738-music-player.png), 12:20 detail: cover/list/blur and rounded elapsed/future bars | Native local source folder/metadata/queue, real decoded peaks and native seeking | [Compiled source-folder/cover port](advanced/music-player-checkpoint.md), 7 native folder and 6 timer checks, 11 component suites; desktop initial pause/duration, search/clear/queue fallback, waveform seek/resume/Back and video replacement pass within recorded scope. Actual art blur, other codecs/tracks, native narrow/DPI, lyrics/settings and visual acceptance remain open |
-| Global Settings | Exact 17:50 plus cached Figma General/Interface frames; App/Media/System groups confirmed | Preferences entry; persistent native settings | General and bounded Interface model/UI/restart checks pass; eight Interface controls, eleven other categories and full shared state/fidelity/package gates remain open: implementing |
+| Global Settings | Exact 17:50 plus cached Figma General/Interface/Playback frames; App/Media/System groups confirmed | Preferences entry; persistent native settings | General and bounded Interface/Playback native model/UI/restart checks pass; eight Interface and two Playback capabilities, ten other categories and full shared state/fidelity/package gates remain open: implementing |
 | Appearance and interface settings | Cached Figma General `999:5047` and Interface `3046:10057` | Preferences/appearance; real theme and Interface settings | Native theme/accent persistence, original artwork, Home blur/video shadow, bounded Interface validation/title-bar restart pass; System events, full-video blur, eight native consumer rows, DPI and full fidelity remain open: implementing |
 | First-run theme setup | Exact 19:50; distinct three-card/preview/accent/Back/Next step | First-run flow; persist chosen theme/accent and advance | Confirmed surface; remaining setup sequence, backend mapping and implementation: reference specified, port pending |
 | User profiles / customization | Exact 19:35 [profile menu](advanced/1175-profile-menu.png); layout and other settings confirmed by narration | Save/switch actual layout and preferences | Existing toolbar profiles are partial support; full customizer/profile-save/shortcut layouts and settings scope: reference needed |

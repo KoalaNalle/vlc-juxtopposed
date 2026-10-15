@@ -83,8 +83,24 @@ validation rollback and Dark/Light lower-section checks on monitor 2.
 General and Interface are now enabled; eight Interface controls remain explicitly
 unavailable pending native consumer acceptance. Actual skin picker/parser, tray,
 other categories, DPI/full Figma fidelity and clean beta packaging remain open.
-This checkpoint adds two Windows CI commands (25 total); check its exact-head
-remote results separately. Continue the full beta goal.
+All four jobs on Interface head `04189f5271` pass, including all 25 ordered
+Windows commands and both Ubuntu remake workers. Continue the full beta goal.
+
+The latest [global Playback checkpoint](doc/juxtopposed-references/native/playback-settings-20261015/README.md)
+adds the 19-value native page and authored Advanced time-shift rows. Its ordinary
+Windows build succeeds; the registered isolated native playlist/player fixture
+passes 23/0/0, including saved-rate restarts and three real locked-save recovery
+rows. Actual desktop checks restore 1.25×/Repeat All after restart, verify the
+main player's rate and queue, preserve the current rate while changing the next
+startup default, and apply Repeat Off immediately. A scrolled validation error
+now remains visible beside its focused field; the original/new strict oracle
+fails before and passes 15 groups after. General/Interface/host/software checks
+remain 12/10/24/23. Three desktop runs quit normally and preserve human files;
+final paused pointer seeks show red then blue frames. Precise-seek mode and
+thumbnails remain unavailable, ten other categories are unfinished, and native
+picker/media/DPI/full-fidelity/package gates stay open. Earlier startup Home
+glyph fragments, despite a clean final launch, retain an unresolved rendering
+gate. New-head CI is pending with 26 Windows commands.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.

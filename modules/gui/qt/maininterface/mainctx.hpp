@@ -70,8 +70,10 @@ class MediaLib;
 class ColorSchemeModel;
 class GeneralPreferencesModel;
 class InterfacePreferencesModel;
+class PlaybackPreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -122,6 +124,7 @@ class MainCtx : public QObject
     Q_PROPERTY(ColorSchemeModel* colorScheme READ getColorScheme CONSTANT FINAL)
     Q_PROPERTY(GeneralPreferencesModel* generalPreferences READ getGeneralPreferences CONSTANT FINAL)
     Q_PROPERTY(InterfacePreferencesModel* interfacePreferences READ getInterfacePreferences CONSTANT FINAL)
+    Q_PROPERTY(PlaybackPreferencesModel* playbackPreferences READ getPlaybackPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -257,6 +260,7 @@ public:
     inline ColorSchemeModel* getColorScheme() const { return m_colorScheme; }
     inline GeneralPreferencesModel* getGeneralPreferences() const { return m_generalPreferences; }
     inline InterfacePreferencesModel* getInterfacePreferences() const { return m_interfacePreferences; }
+    inline PlaybackPreferencesModel* getPlaybackPreferences() const { return m_playbackPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -480,6 +484,7 @@ protected:
     ColorSchemeModel*    m_colorScheme = nullptr;
     GeneralPreferencesModel* m_generalPreferences = nullptr;
     InterfacePreferencesModel* m_interfacePreferences = nullptr;
+    PlaybackPreferencesModel* m_playbackPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // Immutable application-start snapshot for the new Interface consumers.
     int m_startupControlsAutoHide = -1;

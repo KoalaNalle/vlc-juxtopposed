@@ -82,6 +82,7 @@ moc_headers = files(
     'maininterface/mainctx.hpp',
     'maininterface/general_preferences_model.hpp',
     'maininterface/interface_preferences_model.hpp',
+    'maininterface/playback_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
     'maininterface/navigationmodel.hpp',
@@ -319,6 +320,8 @@ qt_plugin_sources = files(
     'maininterface/mainctx.cpp',
     'maininterface/general_preferences_model.cpp',
     'maininterface/interface_preferences_model.cpp',
+    'maininterface/playback_preferences_model.cpp',
+    'util/playback_seek_policy.hpp',
     'util/checked_preferences_store.cpp',
     'util/checked_preferences_store.hpp',
     'util/fullscreen_screen_policy.hpp',
@@ -326,6 +329,7 @@ qt_plugin_sources = files(
     'maininterface/mainctx.hpp',
     'maininterface/general_preferences_model.hpp',
     'maininterface/interface_preferences_model.hpp',
+    'maininterface/playback_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.cpp',
@@ -680,6 +684,7 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
         'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml',
@@ -1555,6 +1560,29 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'link_args': interface_preferences_test_link_args,
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, interface_preferences_test_deps]
+        }
+
+        playback_preferences_test_sources = files('tests/test_playback_preferences.cpp', 'tests/test_playback_preferences.hpp',
+                                                  'tests/playback_preferences_probe.c',
+                                                  'maininterface/playback_preferences_model.cpp', 'util/checked_preferences_store.cpp')
+        playback_preferences_test_deps = []
+        playback_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            playback_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            playback_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            playback_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_playback_preferences',
+            'sources': playback_preferences_test_sources,
+            # Generate the included .moc from the exact declaration-only header.
+            'moc_sources': files('tests/test_playback_preferences.hpp'),
+            'moc_headers': files('maininterface/playback_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': playback_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, playback_preferences_test_deps]
         }
 
         shared_modal_test_python = find_program('python3')

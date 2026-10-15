@@ -53,21 +53,32 @@ Item {
         appearance: root.appearance
         uiScale: root.uiScale
         assetBase: root.assetBase
-        title: selectedCategory === "interface" ? qsTr("Interface Settings") : qsTr("Global Settings")
-        categoryPages: ("interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
-            ? ({interface: interfacePage}) : ({})
-        categorySearchTerms: ({interface: [qsTr("Skin"), qsTr("Use a custom skin"), qsTr("Skin file"), qsTr("Window"), qsTr("Play video inside main window"), qsTr("Resize window to fit video"), qsTr("Remember window size and position"), qsTr("Keep window above other windows"), qsTr("Show window decorations"), qsTr("Show the file name in the title bar"), qsTr("Open fullscreen on"), qsTr("Playback Controls"), qsTr("Start in compact mode"), qsTr("Auto-hide the controls"), qsTr("Hide after"), qsTr("Show controls in fullscreen"), qsTr("Notifications and System Tray"), qsTr("Show a system tray icon"), qsTr("Start minimized to the tray"), qsTr("Show a popup when the track changes"), qsTr("Popup duration"), qsTr("Playlist"), qsTr("Show the playlist as a tree")]})
-        onAboutToShow: if (selectedCategory === "interface" && "interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
-            root.mainCtx.interfacePreferences.reload()
-        onCategoryRequested: category => {
-            if (category === "interface" && "interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
-                root.mainCtx.interfacePreferences.reload()
+        title: selectedCategory === "playback" ? qsTr("Playback Preferences")
+            : selectedCategory === "interface" ? qsTr("Interface Settings") : qsTr("Global Settings")
+        categoryPages: {
+            const pages = {}
+            if ("interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences) pages.interface = interfacePage
+            if ("playbackPreferences" in root.mainCtx && root.mainCtx.playbackPreferences) pages.playback = playbackPage
+            return pages
         }
+        categorySearchTerms: ({playback: [qsTr("Startup"), qsTr("Tracks"), qsTr("Order"), qsTr("Seeking"), qsTr("Files & Discs"), qsTr("Advanced Options"), qsTr("Continue where you left off"), qsTr("Start playing as soon as a file opens"), qsTr("Default playback speed"), qsTr("Pause when another app uses audio"), qsTr("Preferred video quality"), qsTr("Preferred menu language"), qsTr("Default audio track"), qsTr("Default subtitle track"), qsTr("Repeat"), qsTr("Shuffle"), qsTr("Stop after each item"), qsTr("When playback finishes"), qsTr("Seek precisely"), qsTr("Show thumbnail while scrubbing"), qsTr("Default optical drive"), qsTr("Repair damaged AVI files"), qsTr("Load matching .mkv files from the same folder"), qsTr("Time-shift buffer folder"), qsTr("Time-shift buffer size")], interface: [qsTr("Skin"), qsTr("Use a custom skin"), qsTr("Skin file"), qsTr("Window"), qsTr("Play video inside main window"), qsTr("Resize window to fit video"), qsTr("Remember window size and position"), qsTr("Keep window above other windows"), qsTr("Show window decorations"), qsTr("Show the file name in the title bar"), qsTr("Open fullscreen on"), qsTr("Playback Controls"), qsTr("Start in compact mode"), qsTr("Auto-hide the controls"), qsTr("Hide after"), qsTr("Show controls in fullscreen"), qsTr("Notifications and System Tray"), qsTr("Show a system tray icon"), qsTr("Start minimized to the tray"), qsTr("Show a popup when the track changes"), qsTr("Popup duration"), qsTr("Playlist"), qsTr("Show the playlist as a tree")]})
+        function reloadCategory(category) {
+            const key = category === "playback" ? "playbackPreferences" : category === "interface" ? "interfacePreferences" : ""
+            if (key.length && key in root.mainCtx && root.mainCtx[key]) root.mainCtx[key].reload()
+        }
+        onAboutToShow: reloadCategory(selectedCategory)
+        onCategoryRequested: category => reloadCategory(category)
         onAdvancedRequested: Qt.callLater(() => {
             if (!root.qmlModalVisible && !root.dialogsProvider.prefsDialogVisible)
                 root.dialogsProvider.expertPrefsDialog()
         })
         onFallbackFocusRequested: root.restoreViewFocus()
+    }
+    Component {
+        id: playbackPage
+        JuxtopposedPlaybackSettings {
+            playbackPreferences: "playbackPreferences" in root.mainCtx ? root.mainCtx.playbackPreferences : null
+        }
     }
     Component {
         id: interfacePage

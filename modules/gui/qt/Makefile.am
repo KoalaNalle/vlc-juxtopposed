@@ -183,6 +183,8 @@ libqt_plugin_la_SOURCES = \
 	maininterface/mainctx.cpp \
 	maininterface/general_preferences_model.cpp maininterface/general_preferences_model.hpp \
 	maininterface/interface_preferences_model.cpp maininterface/interface_preferences_model.hpp \
+	maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
+	util/playback_seek_policy.hpp \
 	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
 	util/fullscreen_screen_policy.hpp \
 	util/interface_language_map.hpp \
@@ -483,6 +485,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/mainctx.moc.cpp \
 	maininterface/general_preferences_model.moc.cpp \
 	maininterface/interface_preferences_model.moc.cpp \
+	maininterface/playback_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
 	maininterface/navigationmodel.moc.cpp \
@@ -839,6 +842,12 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/playback-settings-1ab84.svg \
+	pixmaps/juxtopposed/playback-settings-1f9fe.svg \
+	pixmaps/juxtopposed/playback-settings-764c9.svg \
+	pixmaps/juxtopposed/playback-settings-8ba8e.svg \
+	pixmaps/juxtopposed/playback-settings-97863.svg \
+	pixmaps/juxtopposed/playback-settings-bc944.svg \
 	pixmaps/juxtopposed/interface-settings-1ab84.svg \
 	pixmaps/juxtopposed/interface-settings-8ba8e.svg \
 	pixmaps/juxtopposed/volume-background-light.svg \
@@ -1150,6 +1159,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml \
@@ -2540,3 +2550,39 @@ endif
 # Actual toolbar FSM with original policy/timer oracle and supplied native boundary.
 EXTRA_DIST += tests/test_interface_toolbar_policy.py tests/tst_InterfaceToolbarPolicy.qml \
     tests/fixtures/interface_toolbar/MainCtx.qml tests/fixtures/interface_toolbar/Player.qml
+
+# Playback maintained native-shaped contract and exact original asset ledger.
+EXTRA_DIST += tests/test_juxtopposed_playback_settings.py \
+    tests/fixtures/juxtopposed_playback_fields.json tests/fixtures/juxtopposed_playback_assets.json
+
+# Genuine Playback model/save/live-policy fixture. Its declaration-only header
+# is the MOC input; direct Windows .exe targets must order that included output.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_playback_preferences.moc: $(srcdir)/tests/test_playback_preferences.hpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_playback_preferences_SOURCES = tests/test_playback_preferences.cpp \
+    tests/test_playback_preferences.hpp tests/playback_preferences_probe.c \
+    maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
+    util/checked_preferences_store.cpp util/checked_preferences_store.hpp util/playback_seek_policy.hpp
+nodist_test_qt_playback_preferences_SOURCES = tests/test_playback_preferences.moc \
+    maininterface/playback_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_playback_preferences.moc
+CLEANFILES += tests/test_playback_preferences.moc
+tests/test_qt_playback_preferences-test_playback_preferences.$(OBJEXT): tests/test_playback_preferences.moc
+test_qt_playback_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_playback_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_playback_preferences_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_playback_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_playback_preferences
+TESTS += test_qt_playback_preferences
+if HAVE_WIN32
+test_qt_playback_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_playback_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_playback_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_playback_preferences_LDADD += -latomic
+endif
+endif
+endif

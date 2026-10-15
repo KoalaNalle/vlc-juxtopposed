@@ -25,7 +25,7 @@ C.Dialog {
         {key: "interface", title: qsTr("Interface"), group: qsTr("App"), icon: "global-settings-1bf8a.svg", selectedIcon: "global-settings-f1a4a.svg", mirror: false},
         {key: "privacy", title: qsTr("Privacy"), group: qsTr("App"), icon: "global-settings-7d179.svg", mirror: false},
         {key: "controls", title: qsTr("Controls"), group: qsTr("App"), icon: "global-settings-36bfa.svg", mirror: false},
-        {key: "playback", title: qsTr("Playback"), group: qsTr("Media"), icon: "global-settings-ad68b.svg", mirror: false},
+        {key: "playback", title: qsTr("Playback"), group: qsTr("Media"), icon: "global-settings-ad68b.svg", selectedIcon: "playback-settings-bc944.svg", mirror: false},
         {key: "video", title: qsTr("Video"), group: qsTr("Media"), icon: "global-settings-ec3f6.svg", mirror: true},
         {key: "audio", title: qsTr("Audio"), group: qsTr("Media"), icon: "audio.svg", mirror: false},
         {key: "subtitles", title: qsTr("Subtitles"), group: qsTr("Media"), icon: "subtitles.svg", mirror: false},
