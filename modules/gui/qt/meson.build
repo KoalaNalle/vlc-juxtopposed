@@ -83,6 +83,8 @@ moc_headers = files(
     'maininterface/general_preferences_model.hpp',
     'maininterface/interface_preferences_model.hpp',
     'maininterface/playback_preferences_model.hpp',
+    'maininterface/audio_preferences_model.hpp',
+    'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
     'maininterface/navigationmodel.hpp',
@@ -321,6 +323,11 @@ qt_plugin_sources = files(
     'maininterface/general_preferences_model.cpp',
     'maininterface/interface_preferences_model.cpp',
     'maininterface/playback_preferences_model.cpp',
+    'maininterface/audio_preferences_model.cpp',
+    'maininterface/video_preferences_model.cpp',
+    'util/audio_defaults_policy.hpp',
+    'util/audio_windows_devices.cpp',
+    'util/audio_windows_devices.hpp',
     'util/playback_seek_policy.hpp',
     'util/checked_preferences_store.cpp',
     'util/checked_preferences_store.hpp',
@@ -330,6 +337,8 @@ qt_plugin_sources = files(
     'maininterface/general_preferences_model.hpp',
     'maininterface/interface_preferences_model.hpp',
     'maininterface/playback_preferences_model.hpp',
+    'maininterface/audio_preferences_model.hpp',
+    'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.cpp',
@@ -685,6 +694,8 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedAudioSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedVideoSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml',
@@ -1202,6 +1213,8 @@ if qt6_dep.found()
         qt_extra_deps += [
             cc.find_library('dwmapi'),
             cc.find_library('comctl32'),
+            cc.find_library('ole32'),
+            cc.find_library('uuid'),
         ]
     endif
 
@@ -1583,6 +1596,68 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'link_args': playback_preferences_test_link_args,
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, playback_preferences_test_deps]
+        }
+
+        audio_preferences_test_sources = files('tests/test_audio_preferences.cpp', 'util/checked_preferences_store.cpp', 'maininterface/audio_preferences_model.cpp', 'tests/general_preferences_probe.c', 'tests/audio_preferences_pcm_probe.c', 'util/audio_windows_devices.cpp', 'player/audio_equalizer.cpp', 'util/variables.cpp')
+        audio_preferences_test_deps = []
+        audio_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            audio_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            audio_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            audio_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        if host_system == 'windows'
+            audio_preferences_test_deps += [cpp.find_library('ole32'), cpp.find_library('uuid')]
+        endif
+        vlc_tests += {
+            'name': 'test_qt_audio_preferences',
+            'sources': audio_preferences_test_sources,
+            'moc_sources': files('tests/test_audio_preferences.cpp'),
+            'moc_headers': files('maininterface/audio_preferences_model.hpp', 'player/audio_equalizer.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': audio_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, audio_preferences_test_deps]
+        }
+
+        video_preferences_test_sources = files('tests/test_video_preferences.cpp', 'util/checked_preferences_store.cpp', 'maininterface/video_preferences_model.cpp', 'tests/video_preferences_probe.c')
+        video_preferences_test_deps = []
+        video_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            video_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            video_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            video_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_video_preferences',
+            'sources': video_preferences_test_sources,
+            'moc_sources': files('tests/test_video_preferences.cpp'),
+            'moc_headers': files('maininterface/video_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': video_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, video_preferences_test_deps]
+        }
+
+        checked_float_preferences_test_sources = files('tests/test_checked_float_preferences.cpp', 'util/checked_preferences_store.cpp', 'tests/general_preferences_probe.c')
+        checked_float_preferences_test_deps = []
+        checked_float_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            checked_float_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            checked_float_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            checked_float_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_checked_float_preferences',
+            'sources': checked_float_preferences_test_sources,
+            'moc_sources': files('tests/test_checked_float_preferences.cpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': checked_float_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, checked_float_preferences_test_deps]
         }
 
         shared_modal_test_python = find_program('python3')

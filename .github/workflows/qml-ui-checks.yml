@@ -77,6 +77,10 @@ jobs:
         run: python modules/gui/qt/tests/test_interface_toolbar_policy.py --output-dir ui-previews/interface-toolbar-policy
       - name: Check Playback native choices, picker guards and authored assets
         run: python modules/gui/qt/tests/test_juxtopposed_playback_settings.py --output-dir ui-previews/playback-settings
+      - name: Check Audio native choices, defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_audio_settings.py --output-dir ui-previews/audio-settings
+      - name: Check Video native choices, defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_video_settings.py --output-dir ui-previews/video-settings
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

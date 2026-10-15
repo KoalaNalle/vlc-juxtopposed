@@ -49,3 +49,16 @@ Playback Global Settings frames 3062:12552 and 3072:13408. Their information,
 chevron, slider-tick and selected Playback artwork retains the same CC BY 4.0
 authorship and license above. Dynamic native settings, byte-labelled time-shift
 presets, keyboard focus and small-window layouts are implementation adaptations.
+
+The audio-settings-*.svg files are unchanged original exports from Audio
+Defaults 3073:15879 and the expanded Effects 3180:17537 and Advanced
+3180:17645 references. Original artwork and design retain Juxtopposed
+authorship and the CC BY 4.0 license above. The native value ranges, dynamic
+frequencies/device choices, unknown-state controls and narrow layouts are
+implementation adaptations.
+
+The video-settings-*.svg files are unchanged original exports from Video
+Defaults 3073:14187 and expanded 3073:15375. Original design and artwork
+retain Juxtopposed attribution and CC BY 4.0 above. Native defaults, practical
+hundredth-step picture controls, explicit reset confirmation and small-window
+layouts are implementation adaptations.

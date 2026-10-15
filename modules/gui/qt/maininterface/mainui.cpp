@@ -7,6 +7,8 @@
 #include "maininterface/general_preferences_model.hpp"
 #include "maininterface/interface_preferences_model.hpp"
 #include "maininterface/playback_preferences_model.hpp"
+#include "maininterface/video_preferences_model.hpp"
+#include "maininterface/audio_preferences_model.hpp"
 
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlqmltypes.hpp"
@@ -251,6 +253,8 @@ void MainUI::registerQMLTypes()
         qmlRegisterUncreatableType<GeneralPreferencesModel>(uri, versionMajor, versionMinor, "GeneralPreferencesModel", "Use MainCtx.generalPreferences");
         qmlRegisterUncreatableType<InterfacePreferencesModel>(uri, versionMajor, versionMinor, "InterfacePreferencesModel", "Use MainCtx.interfacePreferences");
         qmlRegisterUncreatableType<PlaybackPreferencesModel>(uri, versionMajor, versionMinor, "PlaybackPreferencesModel", "Use MainCtx.playbackPreferences");
+        qmlRegisterUncreatableType<VideoPreferencesModel>(uri, versionMajor, versionMinor, "VideoPreferencesModel", "Use MainCtx.videoPreferences");
+        qmlRegisterUncreatableType<AudioPreferencesModel>(uri, versionMajor, versionMinor, "AudioPreferencesModel", "Use MainCtx.audioPreferences");
         qmlRegisterTypesAndRevisions<SearchCtx>(uri, versionMajor);
         qmlRegisterTypesAndRevisions<SortCtx>(uri, versionMajor);
         qmlRegisterUncreatableType<UINotifier>(uri, versionMajor, versionMinor, "UINotifier", "");

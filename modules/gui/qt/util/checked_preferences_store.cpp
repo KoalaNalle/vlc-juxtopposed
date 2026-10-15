@@ -11,6 +11,8 @@
 #include <QFile>
 #include <QDir>
 #include <memory>
+#include <cmath>
+#include <QLocale>
 namespace {
 QString tr(const char *text) { return QCoreApplication::translate("GeneralPreferencesModel", text); }
 bool reject(QString &error, const QString &message) { error = message; return false; }
@@ -69,16 +71,34 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
 {
     error.clear();
     if (!m_intf) return reject(error, tr("The native preferences service is unavailable."));
+    QVariantMap requested = changes;
     QVariantMap before;
-    for (auto it = changes.cbegin(); it != changes.cend(); ++it) {
+    for (auto it = requested.begin(); it != requested.end(); ++it) {
         const auto key = it.key().toUtf8();
         const int type = config_GetType(key.constData());
-        if ((it.value().typeId() == QMetaType::QString && type != VLC_VAR_STRING)
+        if (type == VLC_VAR_FLOAT) {
+            // Models supply strict numeric fields as float/double. Preserve
+            // the exact native float and its physical six-decimal serializer
+            // round trip; do not report success after silently losing digits.
+            if (it.value().typeId() != QMetaType::Float && it.value().typeId() != QMetaType::Double)
+                return reject(error, tr("This native preference requires a number."));
+            const float value = it.value().toFloat();
+            bool valid = false;
+            const float serialized = QLocale::c().toFloat(QString::number(double(value), 'f', 6), &valid);
+            if (!std::isfinite(value) || !valid || serialized != value)
+                return reject(error, tr("This number cannot be saved without losing precision. Use at most six decimal places."));
+            it.value() = QVariant::fromValue(value);
+        } else if ((it.value().typeId() == QMetaType::QString && type != VLC_VAR_STRING)
             || (it.value().typeId() != QMetaType::QString
                 && type != VLC_VAR_BOOL && type != VLC_VAR_INTEGER))
             return reject(error, tr("This build does not provide the requested native preference."));
-        before.insert(it.key(), type == VLC_VAR_STRING
-            ? QVariant(nativeString(key.constData())) : QVariant(qlonglong(config_GetInt(key.constData()))));
+        // Retain the existing integer/bool conversion contract even if an
+        // internal caller supplied a numeric QVariant with a float metatype.
+        if (type != VLC_VAR_FLOAT && type != VLC_VAR_STRING)
+            it.value() = QVariant::fromValue(qlonglong(it.value().toLongLong()));
+        before.insert(it.key(), type == VLC_VAR_STRING ? QVariant(nativeString(key.constData()))
+            : type == VLC_VAR_FLOAT ? QVariant::fromValue(config_GetFloat(key.constData()))
+            : QVariant(qlonglong(config_GetInt(key.constData()))));
     }
     auto assign = [](const QVariantMap &values) {
         for (auto it = values.cbegin(); it != values.cend(); ++it) {
@@ -86,15 +106,19 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
             if (it.value().typeId() == QMetaType::QString) {
                 const auto text = it.value().toString().toUtf8();
                 config_PutPsz(key.constData(), text.constData());
-            } else config_PutInt(key.constData(), it.value().toLongLong());
+            } else if (it.value().typeId() == QMetaType::Float)
+                config_PutFloat(key.constData(), it.value().toFloat());
+            else config_PutInt(key.constData(), it.value().toLongLong());
         }
     };
-    assign(changes);
+    assign(requested);
     bool matches = true;
-    for (auto it = changes.cbegin(); it != changes.cend(); ++it) {
+    for (auto it = requested.cbegin(); it != requested.cend(); ++it) {
         const auto key = it.key().toUtf8();
         matches &= it.value().typeId() == QMetaType::QString
             ? nativeString(key.constData()) == it.value().toString()
+            : it.value().typeId() == QMetaType::Float
+            ? config_GetFloat(key.constData()) == it.value().toFloat()
             : config_GetInt(key.constData()) == it.value().toLongLong();
     }
     if (!matches) {
@@ -110,9 +134,11 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
     // returned success on a failed final rename. Defaults are commented by
     // VLC's serializer, so remove just that one leading comment marker.
     if (saved) {
-        for (auto it = changes.cbegin(); it != changes.cend(); ++it) {
+        for (auto it = requested.cbegin(); it != requested.cend(); ++it) {
             const QByteArray expected = it.key().toUtf8() + '=' + (it.value().typeId() == QMetaType::QString
-                ? it.value().toString().toUtf8() : QByteArray::number(it.value().toLongLong()));
+                ? it.value().toString().toUtf8() : it.value().typeId() == QMetaType::Float
+                ? QByteArray::number(double(it.value().toFloat()), 'f', 6)
+                : QByteArray::number(it.value().toLongLong()));
             bool found = false;
             for (auto line : bytes.split('\n')) {
                 if (line.endsWith('\r')) line.chop(1);

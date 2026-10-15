@@ -18,6 +18,7 @@ C.Pane {
     property string duration: "00:00:00"
     property real position: 0
     property real volume: 0
+    property real volumeStep: 0.05
     property real maximumVolume: 1.25
     property bool playing: false
     property bool muted: false
@@ -248,7 +249,7 @@ C.Pane {
                 from: 0
                 to: Math.max(0.01, root.maximumVolume)
                 value: root.volume
-                stepSize: 0.05
+                stepSize: root.volumeStep
                 activeFocusOnTab: true
                 Accessible.name: qsTr("Volume")
                 opacity: root.muted ? 0.5 : 1
@@ -308,7 +309,7 @@ C.Pane {
                     acceptedDevices: PointerDevice.AllDevices
                     onWheel: (event) => {
                         const delta = event.angleDelta.y || event.angleDelta.x
-                        root.volumeRequested(Math.max(volume.from, Math.min(volume.to, volume.value + delta / 120 * 0.05)))
+                        root.volumeRequested(Math.max(volume.from, Math.min(volume.to, volume.value + delta / 120 * root.volumeStep)))
                         event.accepted = true
                     }
                 }

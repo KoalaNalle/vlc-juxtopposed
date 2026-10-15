@@ -26,8 +26,8 @@ C.Dialog {
         {key: "privacy", title: qsTr("Privacy"), group: qsTr("App"), icon: "global-settings-7d179.svg", mirror: false},
         {key: "controls", title: qsTr("Controls"), group: qsTr("App"), icon: "global-settings-36bfa.svg", mirror: false},
         {key: "playback", title: qsTr("Playback"), group: qsTr("Media"), icon: "global-settings-ad68b.svg", selectedIcon: "playback-settings-bc944.svg", mirror: false},
-        {key: "video", title: qsTr("Video"), group: qsTr("Media"), icon: "global-settings-ec3f6.svg", mirror: true},
-        {key: "audio", title: qsTr("Audio"), group: qsTr("Media"), icon: "audio.svg", mirror: false},
+        {key: "video", title: qsTr("Video"), group: qsTr("Media"), icon: "global-settings-ec3f6.svg", selectedIcon: "video-settings-7aced.svg", mirror: true},
+        {key: "audio", title: qsTr("Audio"), group: qsTr("Media"), icon: "audio.svg", selectedIcon: "audio-settings-5f3f8.svg", mirror: false},
         {key: "subtitles", title: qsTr("Subtitles"), group: qsTr("Media"), icon: "subtitles.svg", mirror: false},
         {key: "library", title: qsTr("Library"), group: qsTr("Media"), icon: "global-settings-cf6e1.svg", mirror: true},
         {key: "network", title: qsTr("Network"), group: qsTr("System"), icon: "global-settings-6db55.svg", mirror: true},
@@ -112,6 +112,7 @@ C.Dialog {
         if (!page) return
         const assignments = {preferences: () => root.preferences, appearance: () => root.appearance,
             uiScale: () => root.uiScale, assetBase: () => root.assetBase,
+            viewportHeight: () => pageScroll.height,
             searchText: () => {
                 const category = root.categories.find(category => category.key === root.selectedCategory)
                 const query = searchField.text.trim().toLocaleLowerCase()

@@ -69,8 +69,24 @@ with checked human files unchanged. A strict old/new validation oracle becomes
 15 passing component groups; General/Interface/host/software retain 12/10/24/23.
 An intermittent earlier Home glyph-painting issue remains open despite the final
 clean launch. Native picker and broader media/precision/thumbnail/resume/privacy,
-full Figma/DPI and beta package gates remain open. New-head CI is pending with
-26 Windows commands. This is bounded Playback acceptance, not the complete beta.
+full Figma/DPI and beta package gates remain open. All four jobs on Playback head
+`9282165c2a` pass, including 26 ordered Windows commands and both Ubuntu workers.
+This is bounded Playback acceptance, not the complete beta.
+
+The [native Audio/Video checkpoint](juxtopposed-references/native/audio-video-settings-20261015/README.md)
+adds authored separate pages and shared checked native float persistence. Its
+ordinary Windows build succeeds; native Audio 31 and Video 23 pass without
+failures/skips, with float-store 9, Interface 14, Playback 23 and controller 5/11
+regressions. Original General objects replay against the actual store at 29/0/1,
+31/0/1 and private required fault 3/0/0. A same-object native Audio pair reproduces
+the minimum-value rounding defect and verifies its repair without widening integer
+bounds. Actual PCM, snapshots, five picture filters and locked-save recovery are
+covered within the recorded fixture scope. Audio/Video components pass 17/15;
+three desktop journeys quit normally and preserve human files, restoring custom
+EQ and gray/black/gray defaults, preserving current playback and showing lower
+validation errors. Nine Audio controls, wallpaper, eight remaining categories,
+actual picker/Reset UI, full hardware/media/DPI/Figma fidelity and clean beta
+packaging remain open. New-head CI is pending with 28 Windows commands.
 
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 

@@ -53,17 +53,21 @@ Item {
         appearance: root.appearance
         uiScale: root.uiScale
         assetBase: root.assetBase
-        title: selectedCategory === "playback" ? qsTr("Playback Preferences")
+        title: selectedCategory === "video" ? qsTr("Video Defaults")
+            : selectedCategory === "audio" ? qsTr("Audio Defaults")
+            : selectedCategory === "playback" ? qsTr("Playback Preferences")
             : selectedCategory === "interface" ? qsTr("Interface Settings") : qsTr("Global Settings")
         categoryPages: {
             const pages = {}
             if ("interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences) pages.interface = interfacePage
             if ("playbackPreferences" in root.mainCtx && root.mainCtx.playbackPreferences) pages.playback = playbackPage
+            if ("audioPreferences" in root.mainCtx && root.mainCtx.audioPreferences) pages.audio = audioPage
+            if ("videoPreferences" in root.mainCtx && root.mainCtx.videoPreferences) pages.video = videoPage
             return pages
         }
-        categorySearchTerms: ({playback: [qsTr("Startup"), qsTr("Tracks"), qsTr("Order"), qsTr("Seeking"), qsTr("Files & Discs"), qsTr("Advanced Options"), qsTr("Continue where you left off"), qsTr("Start playing as soon as a file opens"), qsTr("Default playback speed"), qsTr("Pause when another app uses audio"), qsTr("Preferred video quality"), qsTr("Preferred menu language"), qsTr("Default audio track"), qsTr("Default subtitle track"), qsTr("Repeat"), qsTr("Shuffle"), qsTr("Stop after each item"), qsTr("When playback finishes"), qsTr("Seek precisely"), qsTr("Show thumbnail while scrubbing"), qsTr("Default optical drive"), qsTr("Repair damaged AVI files"), qsTr("Load matching .mkv files from the same folder"), qsTr("Time-shift buffer folder"), qsTr("Time-shift buffer size")], interface: [qsTr("Skin"), qsTr("Use a custom skin"), qsTr("Skin file"), qsTr("Window"), qsTr("Play video inside main window"), qsTr("Resize window to fit video"), qsTr("Remember window size and position"), qsTr("Keep window above other windows"), qsTr("Show window decorations"), qsTr("Show the file name in the title bar"), qsTr("Open fullscreen on"), qsTr("Playback Controls"), qsTr("Start in compact mode"), qsTr("Auto-hide the controls"), qsTr("Hide after"), qsTr("Show controls in fullscreen"), qsTr("Notifications and System Tray"), qsTr("Show a system tray icon"), qsTr("Start minimized to the tray"), qsTr("Show a popup when the track changes"), qsTr("Popup duration"), qsTr("Playlist"), qsTr("Show the playlist as a tree")]})
+        categorySearchTerms: ({video: [qsTr("Output"), qsTr("Picture"), qsTr("Deinterlacing"), qsTr("Framing"), qsTr("Snapshots"), qsTr("Advanced Options"), qsTr("Enable video"), qsTr("Start videos in fullscreen"), qsTr("Stop the screensaver during playback"), qsTr("Play video as desktop wallpaper"), qsTr("Hue"), qsTr("Brightness"), qsTr("Contrast"), qsTr("Saturation"), qsTr("Gamma"), qsTr("Reset picture"), qsTr("Method"), qsTr("Aspect ratio"), qsTr("Crop"), qsTr("Scale video to the window"), qsTr("Zoom"), qsTr("Position in the window"), qsTr("Save to"), qsTr("File name prefix"), qsTr("Format"), qsTr("Size"), qsTr("Number files sequentially"), qsTr("Show a preview after capture"), qsTr("Custom aspect ratios"), qsTr("Custom crop ratios"), qsTr("Monitor pixel aspect ratio"), qsTr("Time-shift buffer size"), qsTr("Reset picture adjustments")], audio: [qsTr("Output"), qsTr("Volume"), qsTr("Loudness"), qsTr("Effects"), qsTr("Tracks"), qsTr("Visualization"), qsTr("Advanced Options"), qsTr("Enable audio"), qsTr("Output device"), qsTr("Speaker setup"), qsTr("Maximum volume"), qsTr("Startup volume"), qsTr("Volume step"), qsTr("Normalize loudness"), qsTr("Target level"), qsTr("Night mode"), qsTr("Replay gain"), qsTr("Replay gain preamp"), qsTr("Equalizer"), qsTr("Equalizer preset"), qsTr("Two-pass"), qsTr("Spatial audio"), qsTr("Spatial audio mode"), qsTr("Stereo widening"), qsTr("Compressor"), qsTr("Pitch shift"), qsTr("Chorus/flanger"), qsTr("Karaoke"), qsTr("Preferred audio language"), qsTr("Audio delay"), qsTr("Visualizer"), qsTr("Pass compressed audio to the receiver"), qsTr("Detect Dolby Surround"), qsTr("Resampling quality"), qsTr("Media role"), qsTr("Visualization size"), qsTr("Open Equalizer"), qsTr("Preamp"), qsTr("Equalizer bands"), qsTr("Equalizer preamp")], playback: [qsTr("Startup"), qsTr("Tracks"), qsTr("Order"), qsTr("Seeking"), qsTr("Files & Discs"), qsTr("Advanced Options"), qsTr("Continue where you left off"), qsTr("Start playing as soon as a file opens"), qsTr("Default playback speed"), qsTr("Pause when another app uses audio"), qsTr("Preferred video quality"), qsTr("Preferred menu language"), qsTr("Default audio track"), qsTr("Default subtitle track"), qsTr("Repeat"), qsTr("Shuffle"), qsTr("Stop after each item"), qsTr("When playback finishes"), qsTr("Seek precisely"), qsTr("Show thumbnail while scrubbing"), qsTr("Default optical drive"), qsTr("Repair damaged AVI files"), qsTr("Load matching .mkv files from the same folder"), qsTr("Time-shift buffer folder"), qsTr("Time-shift buffer size")], interface: [qsTr("Skin"), qsTr("Use a custom skin"), qsTr("Skin file"), qsTr("Window"), qsTr("Play video inside main window"), qsTr("Resize window to fit video"), qsTr("Remember window size and position"), qsTr("Keep window above other windows"), qsTr("Show window decorations"), qsTr("Show the file name in the title bar"), qsTr("Open fullscreen on"), qsTr("Playback Controls"), qsTr("Start in compact mode"), qsTr("Auto-hide the controls"), qsTr("Hide after"), qsTr("Show controls in fullscreen"), qsTr("Notifications and System Tray"), qsTr("Show a system tray icon"), qsTr("Start minimized to the tray"), qsTr("Show a popup when the track changes"), qsTr("Popup duration"), qsTr("Playlist"), qsTr("Show the playlist as a tree")]})
         function reloadCategory(category) {
-            const key = category === "playback" ? "playbackPreferences" : category === "interface" ? "interfacePreferences" : ""
+            const key = category === "video" ? "videoPreferences" : category === "audio" ? "audioPreferences" : category === "playback" ? "playbackPreferences" : category === "interface" ? "interfacePreferences" : ""
             if (key.length && key in root.mainCtx && root.mainCtx[key]) root.mainCtx[key].reload()
         }
         onAboutToShow: reloadCategory(selectedCategory)
@@ -73,6 +77,18 @@ Item {
                 root.dialogsProvider.expertPrefsDialog()
         })
         onFallbackFocusRequested: root.restoreViewFocus()
+    }
+    Component {
+        id: audioPage
+        JuxtopposedAudioSettings {
+            audioPreferences: "audioPreferences" in root.mainCtx ? root.mainCtx.audioPreferences : null
+        }
+    }
+    Component {
+        id: videoPage
+        JuxtopposedVideoSettings {
+            videoPreferences: "videoPreferences" in root.mainCtx ? root.mainCtx.videoPreferences : null
+        }
     }
     Component {
         id: playbackPage

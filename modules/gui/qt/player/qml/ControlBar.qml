@@ -150,6 +150,12 @@ T.Pane {
                       ? "-" + root.formatTime(Player.remainingTime)
                       : root.formatTime(Player.length)
             volume: Player.volume
+            volumeStep: ("audioPreferences" in MainCtx && MainCtx.audioPreferences
+                         && MainCtx.audioPreferences.capabilities.volumeStep === true
+                         && typeof MainCtx.audioPreferences.values.volumeStep === "number"
+                         && Number.isFinite(Number(MainCtx.audioPreferences.values.volumeStep))
+                         && MainCtx.audioPreferences.values.volumeStep > 0)
+                ? MainCtx.audioPreferences.values.volumeStep / 100 : 0.05
             maximumVolume: MainCtx.maxVolume / 100
             muted: Player.muted
             playing: Player.playingState === Player.PLAYING_STATE_PLAYING

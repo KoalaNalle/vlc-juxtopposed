@@ -184,6 +184,9 @@ libqt_plugin_la_SOURCES = \
 	maininterface/general_preferences_model.cpp maininterface/general_preferences_model.hpp \
 	maininterface/interface_preferences_model.cpp maininterface/interface_preferences_model.hpp \
 	maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
+	maininterface/audio_preferences_model.cpp maininterface/audio_preferences_model.hpp \
+	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
+	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
 	util/playback_seek_policy.hpp \
 	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
 	util/fullscreen_screen_policy.hpp \
@@ -486,6 +489,8 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/general_preferences_model.moc.cpp \
 	maininterface/interface_preferences_model.moc.cpp \
 	maininterface/playback_preferences_model.moc.cpp \
+	maininterface/audio_preferences_model.moc.cpp \
+	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
 	maininterface/navigationmodel.moc.cpp \
@@ -842,6 +847,18 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/audio-settings-1ab84.svg \
+	pixmaps/juxtopposed/audio-settings-1f9fe.svg \
+	pixmaps/juxtopposed/audio-settings-5f3f8.svg \
+	pixmaps/juxtopposed/audio-settings-764c9.svg \
+	pixmaps/juxtopposed/audio-settings-8ba8e.svg \
+	pixmaps/juxtopposed/audio-settings-97863.svg \
+	pixmaps/juxtopposed/video-settings-1ab84.svg \
+	pixmaps/juxtopposed/video-settings-1f9fe.svg \
+	pixmaps/juxtopposed/video-settings-764c9.svg \
+	pixmaps/juxtopposed/video-settings-7aced.svg \
+	pixmaps/juxtopposed/video-settings-8ba8e.svg \
+	pixmaps/juxtopposed/video-settings-97863.svg \
 	pixmaps/juxtopposed/playback-settings-1ab84.svg \
 	pixmaps/juxtopposed/playback-settings-1f9fe.svg \
 	pixmaps/juxtopposed/playback-settings-764c9.svg \
@@ -1160,6 +1177,8 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedAudioSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml \
@@ -2586,3 +2605,110 @@ test_qt_playback_preferences_LDADD += -latomic
 endif
 endif
 endif
+
+# Audio maintained native-shaped UI and strict original artwork ledger.
+EXTRA_DIST += tests/test_juxtopposed_audio_settings.py \
+    tests/fixtures/juxtopposed_audio_fields.json tests/fixtures/juxtopposed_audio_assets.json
+
+# Video maintained native-shaped UI and strict original artwork ledger.
+EXTRA_DIST += tests/test_juxtopposed_video_settings.py \
+    tests/fixtures/juxtopposed_video_fields.json tests/fixtures/juxtopposed_video_assets.json
+
+# Exact frozen Audio/Video/native float fixture bodies; no skipped desired rows.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_audio_preferences.moc: $(srcdir)/tests/test_audio_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_audio_preferences_SOURCES = tests/test_audio_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    maininterface/audio_preferences_model.cpp \
+    maininterface/audio_preferences_model.hpp \
+    tests/general_preferences_probe.c \
+    tests/audio_preferences_pcm_probe.c \
+    util/audio_defaults_policy.hpp \
+    util/audio_windows_devices.cpp \
+    util/audio_windows_devices.hpp \
+    player/audio_equalizer.cpp \
+    player/audio_equalizer.hpp \
+    util/variables.cpp \
+    util/variables.hpp
+nodist_test_qt_audio_preferences_SOURCES = tests/test_audio_preferences.moc \
+    maininterface/audio_preferences_model.moc.cpp \
+    player/audio_equalizer.moc.cpp \
+    util/variables.moc.cpp
+BUILT_SOURCES += tests/test_audio_preferences.moc
+CLEANFILES += tests/test_audio_preferences.moc
+tests/test_qt_audio_preferences-test_audio_preferences.$(OBJEXT): tests/test_audio_preferences.moc
+test_qt_audio_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_audio_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_preferences
+TESTS += test_qt_audio_preferences
+if HAVE_WIN32
+test_qt_audio_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_audio_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_audio_preferences_LDADD += -lntdll $(LIBCOM) -luuid
+endif
+if HAVE_LIBATOMIC
+test_qt_audio_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_audio_preferences_LDADD += -latomic
+endif
+
+tests/test_video_preferences.moc: $(srcdir)/tests/test_video_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_video_preferences_SOURCES = tests/test_video_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    maininterface/video_preferences_model.cpp \
+    maininterface/video_preferences_model.hpp \
+    tests/video_preferences_probe.c
+nodist_test_qt_video_preferences_SOURCES = tests/test_video_preferences.moc \
+    maininterface/video_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_video_preferences.moc
+CLEANFILES += tests/test_video_preferences.moc
+tests/test_qt_video_preferences-test_video_preferences.$(OBJEXT): tests/test_video_preferences.moc
+test_qt_video_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_video_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_video_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_video_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_video_preferences
+TESTS += test_qt_video_preferences
+if HAVE_WIN32
+test_qt_video_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_video_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_video_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_video_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_video_preferences_LDADD += -latomic
+endif
+
+tests/test_checked_float_preferences.moc: $(srcdir)/tests/test_checked_float_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_checked_float_preferences_SOURCES = tests/test_checked_float_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    tests/general_preferences_probe.c
+nodist_test_qt_checked_float_preferences_SOURCES = tests/test_checked_float_preferences.moc
+BUILT_SOURCES += tests/test_checked_float_preferences.moc
+CLEANFILES += tests/test_checked_float_preferences.moc
+tests/test_qt_checked_float_preferences-test_checked_float_preferences.$(OBJEXT): tests/test_checked_float_preferences.moc
+test_qt_checked_float_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_checked_float_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_checked_float_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_checked_float_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_checked_float_preferences
+TESTS += test_qt_checked_float_preferences
+if HAVE_WIN32
+test_qt_checked_float_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_checked_float_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_checked_float_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_checked_float_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_checked_float_preferences_LDADD += -latomic
+endif
+
+endif
+endif
+
+EXTRA_DIST += tests/generate_owned_audio_fixture.py

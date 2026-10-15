@@ -100,7 +100,27 @@ final paused pointer seeks show red then blue frames. Precise-seek mode and
 thumbnails remain unavailable, ten other categories are unfinished, and native
 picker/media/DPI/full-fidelity/package gates stay open. Earlier startup Home
 glyph fragments, despite a clean final launch, retain an unresolved rendering
-gate. New-head CI is pending with 26 Windows commands.
+gate. All four jobs on Playback head `9282165c2a` pass, including all 26 ordered
+Windows commands and both Ubuntu remake workers.
+
+The [global Audio/Video checkpoint](doc/juxtopposed-references/native/audio-video-settings-20261015/README.md)
+adds separate native models and authored pages with shared checked float storage.
+The ordinary Windows build succeeds; registered Audio/Video fixtures pass 31/23
+with no failures/skips, alongside float-store 9, Interface 14, Playback 23 and
+existing controller 5/11 passes. Original General objects replay against the
+actual float store at 29/0/1, 31/0/1 and required private fault 3/0/0. The same
+compiled added Audio oracle reproduces two native minimum-write failures before
+the model repair and passes all 31 afterward. PCM uses the actual playlist/player;
+the corrected Video reset fixture retains its original thresholds/color proof.
+Earlier failures remain preserved. Audio/Video component workers pass 17/15 with
+visible field errors, original assets and precise dirty-value handling. Three
+desktop journeys quit normally and preserve checked human settings, covering
+custom EQ restart, gray/black/restored-gray picture defaults, current-player
+isolation, visible rollback and the exact native float minimum. Nine Audio
+controls and wallpaper remain unavailable; eight other categories, picker/Reset
+UI, hardware/media/DPI/full Figma fidelity and final clean packaging stay open.
+The final ordinary Qt identity is recorded in the linked evidence. New-head CI
+is pending with 28 Windows commands; the complete beta remains unfinished.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.
