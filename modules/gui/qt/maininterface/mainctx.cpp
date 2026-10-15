@@ -40,6 +40,8 @@
 #include "playback_preferences_model.hpp"
 #include "video_preferences_model.hpp"
 #include "audio_preferences_model.hpp"
+#include "subtitles_preferences_model.hpp"
+#include "library_preferences_model.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
 
@@ -240,6 +242,15 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     m_videoPreferences = new VideoPreferencesModel(p_intf, this);
     // Audio native consumer acceptance gates remain false.
     m_audioPreferences = new AudioPreferencesModel(p_intf, this);
+    // Native placement/shortcut consumers passed the full subtitle renderer suite.
+    SubtitlesPreferencesModel::Consumers subtitleConsumers;
+    subtitleConsumers.primaryAlignment = true;
+    subtitleConsumers.feedbackDuration = true;
+    subtitleConsumers.shortcutFeedback = true;
+    m_subtitlesPreferences = new SubtitlesPreferencesModel(p_intf, m_subtitlePresets,
+        subtitleConsumers, this);
+    // Library consumers remain gated until their native acceptance is complete.
+    m_libraryPreferences = new LibraryPreferencesModel(p_intf, this);
 
     /* Get the available interfaces */
     m_extraInterfaces = new VLCVarChoiceModel(VLC_OBJECT(p_intf->intf), "intf-add", this);
@@ -346,6 +357,10 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_libraryPreferences;
+    m_libraryPreferences = nullptr;
+    delete m_subtitlesPreferences;
+    m_subtitlesPreferences = nullptr;
     delete m_audioPreferences;
     m_audioPreferences = nullptr;
     delete m_videoPreferences;

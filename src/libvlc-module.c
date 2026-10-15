@@ -1806,6 +1806,11 @@ vlc_module_begin ()
     add_bool( "spu-fill", true, SPU_FULL_TEXT, SPU_FULL_LONGTEXT )
         change_safe ()
     add_bool( "osd", true, OSD_TEXT, OSD_LONGTEXT )
+    add_bool("osd-shortcut-feedback", true, N_("Show shortcut feedback"),
+        N_("Show shortcut text, icons and sliders without disabling explicit filename messages."))
+    add_integer_with_range("osd-feedback-duration", -1, -1, 5000,
+        N_("Shortcut feedback duration in milliseconds"),
+        N_("-1 retains native text and widget durations; explicit values use 500 to 5000 ms."))
     add_module("text-renderer", "text renderer", "any",
                TEXTRENDERER_TEXT, TEXTRENDERER_LONGTEXT)
 
@@ -1847,6 +1852,9 @@ vlc_module_begin ()
                     SUB_FILTER_TEXT, SUB_FILTER_LONGTEXT)
 
     set_section( N_( "Multiple Subtitles" ) , NULL )
+    add_integer_with_range("sub-primary-alignment", -1, -1, 8,
+        N_("Default primary subtitle vertical placement"),
+        N_("-1 preserves authored placement; 0 center, 4 top, 8 bottom. Relative primary subtitles only."))
     add_integer( "secondary-sub-alignment", -1, SECONDARY_SUB_POSITION_TEXT,
                  SECONDARY_SUB_POSITION_LONGTEXT )
         change_integer_list( pi_sub_align_values, ppsz_sub_align_descriptions )

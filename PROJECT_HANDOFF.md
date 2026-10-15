@@ -16,6 +16,59 @@ Codex session on the home computer.
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
 | Immediate priority | Complete the first publishable beta against all confirmed Juxtopposed design surfaces |
 
+The latest subtitle crash repair changes only the FreeType shadow rendering path.
+It skips disabled, invisible or missing shadows and removes the obsolete shifted
+main-glyph substitute. The ordinary Windows renderer build succeeds, and the
+unchanged native subtitle preferences suite now completes **37 passed, 0 failed,
+0 errors, 0 skipped**, with normal exit and checked human configuration unchanged.
+The earlier full run stopped during appearance testing with exit `0xC0000374`.
+See [verification](doc/juxtopposed-references/native/subtitle-shadow-repair-20261015/verification.json)
+and [native results](doc/juxtopposed-references/native/subtitle-shadow-repair-20261015/native-results.txt).
+The fixed renderer and original DLL are preserved under ignored
+`build-windows/subtitles-renderer-repair-20261015`; the accepted isolated runtime
+is `build-windows/subtitles-cached-renderer-repair-r2-runtime-20261015`.
+The initial r1 staging attempt failed before test execution because Windows
+denied hard-link creation; r2 uses ordinary copies. The earlier twelve proposal
+files are preserved in `build-windows/subtitle-shadow-originals-20261015-180453.zip`
+with their originals unchanged. No archived review scripts were run for this
+repair. MainCtx's three subtitle consumer flags (primary alignment, shortcut
+feedback and feedback duration) are now enabled after native acceptance.
+The main launcher package, `build-windows/package`, now contains the fixed Core,
+Qt and FreeType binaries. Its previous plugins and full portable profile are
+backed up under `plugins-before-subtitles-20261015` and
+`build-windows/subtitles-main-package-backup-20261015` respectively.
+
+At the user's model-switch checkpoint, the main package passed a monitor-2
+desktop journey: Subtitles settings render, Shadow OFF and red text save through
+actual keyboard input, the matching external SRT renders red without shadow,
+and both values restore in settings after normal quit/restart. Playback remained
+stable through 1m39s. Both launches quit normally. Screenshots, logs and an exact
+receipt are in `build-windows/subtitles-main-desktop-20261015/verification.json`.
+The original package profile was restored, retaining monitor-2 window geometry;
+the test profile is preserved separately. The two checked personal VLC config
+files are unchanged. GUI vertical-position/feedback and embedded-language
+checks, broader formats/presets, final visual acceptance and beta packaging are
+still open. The source and recorded evidence are included in this development
+checkpoint; it does not establish final beta acceptance.
+
+Library settings source integration is also prepared: MainCtx ownership, QML
+registration, Host/resources and build/CI registrations are installed. Actual
+integrated component checks pass: Library 11 groups, Host 24 checks/12 directed
+transitions/9 busy guards, and Subtitles 15 groups, all with zero Qt messages.
+All four Library consumer flags remain false. These source additions are newer
+than the main package and have NOT had a native build or desktop acceptance.
+Read `build-windows/library-beta-rework-ui-20261015/integration-applied.json`
+and `build-windows/library-beta-rework-backend-20261015/RESUME.md` before resuming.
+The backend's `metadata-revision/` is INCOMPLETE and must not be applied/built;
+`ipc-revision/` is proposed and untested. No shared Library runtime consumer
+changes were applied. Resume the unfinished subtitle GUI checks and complete
+Library cancellation/optional-enrichment/IPC validation before enabling them.
+The full beta goal is paused and incomplete at the user's end-of-day request.
+No build or GUI test was left running. The partial metadata/IPC proposals remain
+local in the ignored build area and are excluded from the source checkpoint.
+See the tracked [desktop checkpoint](doc/juxtopposed-references/native/subtitles-desktop-20261015/README.md)
+and [Library integration status](doc/juxtopposed-references/native/library-settings-20261015/README.md).
+
 The latest [General Settings checkpoint](doc/juxtopposed-references/native/general-settings-20261015/README.md)
 opens the original General layout through Preferences/Ctrl+P, with native saved
 language/theme/accent, startup and logging controls. The ordinary Windows build

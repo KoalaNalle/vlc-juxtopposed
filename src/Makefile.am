@@ -361,6 +361,7 @@ libvlccore_la_SOURCES = \
 	video_output/video_output.c \
 	video_output/video_text.c \
 	video_output/video_epg.c \
+	video_output/osd_feedback_duration.h \
 	video_output/video_widgets.c \
 	video_output/vout_subpictures.c \
 	video_output/vout_spuregion_helper.h \

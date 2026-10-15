@@ -62,3 +62,13 @@ Defaults 3073:14187 and expanded 3073:15375. Original design and artwork
 retain Juxtopposed attribution and CC BY 4.0 above. Native defaults, practical
 hundredth-step picture controls, explicit reset confirmation and small-window
 layouts are implementation adaptations.
+
+The subtitles-settings-*.svg files are unchanged original exports from
+Subtitle Defaults 3180:17989 and expanded 6536:13908. Original design and
+artwork retain Juxtopposed attribution and CC BY 4.0 above. The supplied native
+choices, editable numeric convenience presets and narrow layouts are explicit
+implementation adaptations.
+
+The library-settings-*.svg assets are unchanged Juxtopposed exports from
+Library frame 6542:15251, under the same CC BY 4.0 attribution above. Existing
+assets are reused only when their complete bytes match the supplied originals.

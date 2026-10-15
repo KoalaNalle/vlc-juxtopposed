@@ -81,6 +81,10 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_audio_settings.py --output-dir ui-previews/audio-settings
       - name: Check Video native choices, defaults and authored assets
         run: python modules/gui/qt/tests/test_juxtopposed_video_settings.py --output-dir ui-previews/video-settings
+      - name: Check Subtitles native defaults, units, capability gates and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitles_settings.py --output-dir ui-previews/subtitles-settings
+      - name: Check Library choices, saved defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_library_settings.py --output-dir ui-previews/library-settings
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

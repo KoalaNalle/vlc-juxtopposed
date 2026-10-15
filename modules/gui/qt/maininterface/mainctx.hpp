@@ -73,11 +73,15 @@ class InterfacePreferencesModel;
 class PlaybackPreferencesModel;
 class VideoPreferencesModel;
 class AudioPreferencesModel;
+class SubtitlesPreferencesModel;
+class LibraryPreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/video_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/audio_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/subtitles_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/library_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -131,6 +135,8 @@ class MainCtx : public QObject
     Q_PROPERTY(PlaybackPreferencesModel* playbackPreferences READ getPlaybackPreferences CONSTANT FINAL)
     Q_PROPERTY(VideoPreferencesModel* videoPreferences READ getVideoPreferences CONSTANT FINAL)
     Q_PROPERTY(AudioPreferencesModel* audioPreferences READ getAudioPreferences CONSTANT FINAL)
+    Q_PROPERTY(SubtitlesPreferencesModel* subtitlesPreferences READ getSubtitlesPreferences CONSTANT FINAL)
+    Q_PROPERTY(LibraryPreferencesModel* libraryPreferences READ getLibraryPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -269,6 +275,8 @@ public:
     inline PlaybackPreferencesModel* getPlaybackPreferences() const { return m_playbackPreferences; }
     inline VideoPreferencesModel* getVideoPreferences() const { return m_videoPreferences; }
     inline AudioPreferencesModel* getAudioPreferences() const { return m_audioPreferences; }
+    inline SubtitlesPreferencesModel* getSubtitlesPreferences() const { return m_subtitlesPreferences; }
+    inline LibraryPreferencesModel* getLibraryPreferences() const { return m_libraryPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -495,6 +503,8 @@ protected:
     PlaybackPreferencesModel* m_playbackPreferences = nullptr;
     VideoPreferencesModel* m_videoPreferences = nullptr;
     AudioPreferencesModel* m_audioPreferences = nullptr;
+    SubtitlesPreferencesModel* m_subtitlesPreferences = nullptr;
+    LibraryPreferencesModel* m_libraryPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // Immutable application-start snapshot for the new Interface consumers.
     int m_startupControlsAutoHide = -1;

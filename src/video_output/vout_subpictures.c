@@ -129,6 +129,7 @@ struct spu_private_t {
      * Secondary sub margin is not absolute to enable overlap detection.
      */
     int secondary_margin;
+    int primary_alignment;         /**< Relative primary vertical default */
     int secondary_alignment;       /**< Force alignment for secondary subs */
     subtitles_positions_vector subs_pos;
 
@@ -1061,6 +1062,14 @@ static struct subpicture_region_rendered *SpuRenderRegion(spu_t *spu,
     else
         i_align = region->i_align;
 
+    /* Preserve secondary, absolute/ASS positions, OSD and horizontal alignment. */
+    if (subpic->b_subtitle && !region->b_absolute &&
+        channel_order != VLC_VOUT_ORDER_SECONDARY &&
+        (sys->primary_alignment == 0 || sys->primary_alignment == SUBPICTURE_ALIGN_TOP ||
+         sys->primary_alignment == SUBPICTURE_ALIGN_BOTTOM))
+        i_align = (i_align & ~(SUBPICTURE_ALIGN_TOP | SUBPICTURE_ALIGN_BOTTOM))
+                | sys->primary_alignment;
+
     SpuRegionPlace(&x_offset, &y_offset,
                    subpic, region, i_align);
 
@@ -1991,6 +2000,8 @@ spu_t *spu_Create(vlc_object_t *object, vout_thread_t *vout)
     sys->margin = var_InheritInteger(spu, "sub-margin");
     sys->text_scale = var_InheritInteger(spu, "sub-text-scale");
     sys->secondary_margin = var_InheritInteger(spu, "secondary-sub-margin");
+
+    sys->primary_alignment = var_InheritInteger(spu, "sub-primary-alignment");
 
     sys->secondary_alignment = var_InheritInteger(spu,
                                                   "secondary-sub-alignment");

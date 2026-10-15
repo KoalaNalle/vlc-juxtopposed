@@ -84,6 +84,8 @@ moc_headers = files(
     'maininterface/interface_preferences_model.hpp',
     'maininterface/playback_preferences_model.hpp',
     'maininterface/audio_preferences_model.hpp',
+    'maininterface/subtitles_preferences_model.hpp',
+    'maininterface/library_preferences_model.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
@@ -324,6 +326,8 @@ qt_plugin_sources = files(
     'maininterface/interface_preferences_model.cpp',
     'maininterface/playback_preferences_model.cpp',
     'maininterface/audio_preferences_model.cpp',
+    'maininterface/subtitles_preferences_model.cpp',
+    'maininterface/library_preferences_model.cpp',
     'maininterface/video_preferences_model.cpp',
     'util/audio_defaults_policy.hpp',
     'util/audio_windows_devices.cpp',
@@ -338,6 +342,8 @@ qt_plugin_sources = files(
     'maininterface/interface_preferences_model.hpp',
     'maininterface/playback_preferences_model.hpp',
     'maininterface/audio_preferences_model.hpp',
+    'maininterface/subtitles_preferences_model.hpp',
+    'maininterface/library_preferences_model.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
@@ -695,6 +701,8 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedAudioSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml',
         'dialogs/dialogs/qml/JuxtopposedVideoSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
@@ -1658,6 +1666,26 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'link_args': checked_float_preferences_test_link_args,
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, checked_float_preferences_test_deps]
+        }
+
+        subtitles_preferences_test_sources = files('tests/test_subtitles_preferences.cpp', 'maininterface/subtitles_preferences_model.cpp', 'player/subtitle_appearance.cpp', 'maininterface/subtitle_preset_model.cpp', 'util/variables.cpp', 'tests/subtitles_preferences_probe.c', 'util/checked_preferences_store.cpp')
+        subtitles_preferences_test_deps = []
+        subtitles_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            subtitles_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            subtitles_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            subtitles_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_subtitles_preferences',
+            'sources': subtitles_preferences_test_sources,
+            'moc_sources': files('tests/test_subtitles_preferences.cpp'),
+            'moc_headers': files('maininterface/subtitles_preferences_model.hpp', 'player/subtitle_appearance.hpp', 'maininterface/subtitle_preset_model.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': subtitles_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, subtitles_preferences_test_deps]
         }
 
         shared_modal_test_python = find_program('python3')

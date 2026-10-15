@@ -185,6 +185,8 @@ libqt_plugin_la_SOURCES = \
 	maininterface/interface_preferences_model.cpp maininterface/interface_preferences_model.hpp \
 	maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
 	maininterface/audio_preferences_model.cpp maininterface/audio_preferences_model.hpp \
+	maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
+	maininterface/library_preferences_model.cpp maininterface/library_preferences_model.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
 	util/playback_seek_policy.hpp \
@@ -490,6 +492,8 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/interface_preferences_model.moc.cpp \
 	maininterface/playback_preferences_model.moc.cpp \
 	maininterface/audio_preferences_model.moc.cpp \
+	maininterface/subtitles_preferences_model.moc.cpp \
+	maininterface/library_preferences_model.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
@@ -847,6 +851,13 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/library-settings-f12f7.svg \
+	pixmaps/juxtopposed/subtitles-settings-1ab84.svg \
+	pixmaps/juxtopposed/subtitles-settings-1f9fe.svg \
+	pixmaps/juxtopposed/subtitles-settings-4d76e.svg \
+	pixmaps/juxtopposed/subtitles-settings-764c9.svg \
+	pixmaps/juxtopposed/subtitles-settings-8ba8e.svg \
+	pixmaps/juxtopposed/subtitles-settings-97863.svg \
 	pixmaps/juxtopposed/audio-settings-1ab84.svg \
 	pixmaps/juxtopposed/audio-settings-1f9fe.svg \
 	pixmaps/juxtopposed/audio-settings-5f3f8.svg \
@@ -1178,6 +1189,8 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedAudioSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
@@ -2712,3 +2725,52 @@ endif
 endif
 
 EXTRA_DIST += tests/generate_owned_audio_fixture.py
+
+EXTRA_DIST += tests/test_juxtopposed_subtitles_settings.py \
+    tests/fixtures/juxtopposed_subtitles_fields.json tests/fixtures/juxtopposed_subtitles_assets.json
+
+# Exact desired native subtitle oracle; actual ordinary production store object.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_subtitles_preferences.moc: $(srcdir)/tests/test_subtitles_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_subtitles_preferences_SOURCES = tests/test_subtitles_preferences.cpp \
+    maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
+    player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+    maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+    util/variables.cpp util/variables.hpp tests/subtitles_preferences_probe.c \
+    util/checked_preferences_store.hpp
+nodist_test_qt_subtitles_preferences_SOURCES = tests/test_subtitles_preferences.moc \
+    maininterface/subtitles_preferences_model.moc.cpp player/subtitle_appearance.moc.cpp \
+    maininterface/subtitle_preset_model.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_subtitles_preferences.moc
+CLEANFILES += tests/test_subtitles_preferences.moc
+# Order the object, not a conditional program target: Automake owns its recipe.
+tests/test_qt_subtitles_preferences-test_subtitles_preferences.$(OBJEXT): tests/test_subtitles_preferences.moc
+test_qt_subtitles_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_subtitles_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitles_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitles_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitles_preferences
+TESTS += test_qt_subtitles_preferences
+if HAVE_WIN32
+test_qt_subtitles_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_subtitles_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_subtitles_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_subtitles_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_subtitles_preferences_LDADD += -latomic
+endif
+endif
+endif
+EXTRA_DIST += tests/generate_subtitles_fixtures.sh
+
+# Library settings component and supplied model contract.
+EXTRA_DIST += tests/test_juxtopposed_library_settings.py tests/juxtopposed_library_preferences_fixture.py \
+    tests/fixtures/juxtopposed_library_fields.json tests/fixtures/juxtopposed_library_assets.json
+
+# This consumer fixture needs the private diagnostic Core and WinMsg recipe.
+# Distribute its sources without linking diagnostic exports into shipping Core.
+EXTRA_DIST += tests/test_library_preferences.cpp tests/library_preferences_probe.c \
+    tests/library_fixture_fetcher.c
