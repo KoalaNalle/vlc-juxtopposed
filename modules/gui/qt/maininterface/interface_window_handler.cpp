@@ -53,6 +53,12 @@ const Qt::Key InterfaceWindowHandler::kc[10] =
 };
 
 InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* mainCtx, QWindow* window, QObject *parent)
+    : InterfaceWindowHandler(_p_intf, mainCtx, window, parent, GeometryRestorePolicy::Immediate)
+{
+}
+
+InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* mainCtx, QWindow* window,
+                                             QObject *parent, GeometryRestorePolicy geometryRestore)
     : QObject(parent)
     , p_intf(_p_intf)
     , m_window(window)
@@ -70,7 +76,8 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
     m_window->setIcon( QApplication::windowIcon() );
     m_window->setOpacity( var_InheritFloat( p_intf, "qt-opacity" ) );
 
-    QVLCTools::restoreWindowPosition( getSettings(), m_window, QSize(600, 420) );
+    if (geometryRestore == GeometryRestorePolicy::Immediate)
+        restoreWindowGeometry();
 
     // this needs to be called asynchronously
     // otherwise QQuickWidget won't initialize properly
@@ -173,6 +180,11 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
     });
 
     m_window->installEventFilter(this);
+}
+
+void InterfaceWindowHandler::restoreWindowGeometry()
+{
+    QVLCTools::restoreWindowPosition( getSettings(), m_window, QSize(600, 420) );
 }
 
 InterfaceWindowHandler::~InterfaceWindowHandler()

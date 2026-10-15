@@ -57,6 +57,15 @@ type without manual stamp changes or another make invocation. The actual app
 restores Light and quits normally with checked human settings unchanged. This
 checkpoint's CI, hardware-video blur and the broader beta gates remain open.
 
+The [Windows geometry checkpoint](doc/juxtopposed-references/native/window-restore-20261015/README.md)
+restores the saved client rectangle after native title-bar initialization. The
+same exact-size oracle fails both original shrinking runs and passes two corrected
+CSD plus two standard-title-bar restarts. Maximize/fullscreen/normal transitions
+and two ordinary noninstrumented launches also pass; all seven corrected runs
+quit normally and preserve checked human settings. Other DPI/missing geometry and
+startup-state gates remain open. All four CI jobs on preceding shadow head
+`23700d1dec` pass; geometry-head CI must be checked separately.
+
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.
 Basic native startup/plugin loading and Qt GUI loading pass. Initial real-video

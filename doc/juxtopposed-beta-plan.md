@@ -33,6 +33,13 @@ shader assertions and maintained 12/24/23 checks pass, and the app quits normall
 with checked human settings unchanged. All four preceding backdrop-head CI jobs
 pass; this new checkpoint's CI and full video blur remain separate open gates.
 
+The [Windows geometry follow-up](juxtopposed-references/native/window-restore-20261015/README.md)
+fixes the reproduced restart shrink by restoring the saved client rectangle after
+native frame initialization. Exact original/fixed restart oracles, both title-bar
+modes, native maximize/fullscreen restoration and two ordinary app launches pass.
+Other DPI/missing geometry/startup states and this new head's CI remain separate;
+all four preceding shadow-head CI jobs pass. This does not finish the beta.
+
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 
 Original design and artwork belong to [Juxtopposed](https://www.youtube.com/@juxtopposed). Source references are the [community design](https://www.figma.com/community/file/1691465999134370980/vlc-redesign), [accessible design copy](https://www.figma.com/design/zdNUYRVOH9lEtIxMYvh8DV/VLC-Redesign--Community-), unchanged manual exports and the supplied local walkthrough. Preserve designer artwork bytes, provenance and the existing CC BY 4.0/Inter/VLC license materials.

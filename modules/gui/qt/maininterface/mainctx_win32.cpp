@@ -891,13 +891,20 @@ bool MainCtxWin32::createWindowWithoutRedirectionSurfaceImpl(QWindow *window)
 // InterfaceWindowHandlerWin32
 
 InterfaceWindowHandlerWin32::InterfaceWindowHandlerWin32(qt_intf_t *_p_intf, MainCtx* mainCtx, QWindow* window, QObject *parent)
-    : InterfaceWindowHandler(_p_intf, mainCtx, window, parent)
+    : InterfaceWindowHandler(_p_intf, mainCtx, window, parent,
+                             (mainCtx->platformHandlesResizeWithCSD() || mainCtx->platformHandlesShadowsWithCSD())
+                                 ? GeometryRestorePolicy::AfterNativeDecoration
+                                 : GeometryRestorePolicy::Immediate)
 {
     assert(mainCtx);
     if (mainCtx->platformHandlesResizeWithCSD() || mainCtx->platformHandlesShadowsWithCSD())
     {
         assert(mainCtx->platformHandlesResizeWithCSD() && mainCtx->platformHandlesShadowsWithCSD());
         m_CSDWindowEventHandler = new CSDWin32EventHandler(mainCtx, window, window);
+        // The handler's synchronous frame-change establishes the native
+        // client margins. Restore the client rectangle after that transition,
+        // before the base constructor's queued startup-state policy runs.
+        restoreWindowGeometry();
     }
 
     auto mainCtxWin32 = qobject_cast<MainCtxWin32*>(mainCtx);

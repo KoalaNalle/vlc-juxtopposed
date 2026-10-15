@@ -67,6 +67,14 @@ private:
     bool applyKeyEvent(QKeyEvent * event) const;
 
 protected:
+    // Native decorations must finish establishing the client frame before
+    // the saved client rectangle is restored. Other platforms keep the
+    // original constructor order through the public delegating constructor.
+    enum class GeometryRestorePolicy { Immediate, AfterNativeDecoration };
+    InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* mainCtx, QWindow* window,
+                           QObject *parent, GeometryRestorePolicy geometryRestore);
+    void restoreWindowGeometry();
+
     virtual void updateCSDWindowSettings();
 
 protected:
