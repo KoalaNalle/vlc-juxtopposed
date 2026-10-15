@@ -66,6 +66,7 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
 {
     assert(m_window);
     assert(m_mainCtx);
+    m_rememberGeometry = m_mainCtx->rememberWindowGeometry();
 
     if (m_mainCtx->useClientSideDecoration())
         m_window->setFlag(Qt::FramelessWindowHint);
@@ -84,7 +85,7 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
     QMetaObject::invokeMethod(this, [this]()
     {
         WindowStateHolder::holdOnTop( m_window,  WindowStateHolder::INTERFACE, m_mainCtx->isInterfaceAlwaysOnTop() );
-        WindowStateHolder::holdFullscreen( m_window,  WindowStateHolder::INTERFACE, m_window->visibility() == QWindow::FullScreen );
+        WindowStateHolder::holdFullscreen(m_window, WindowStateHolder::INTERFACE, m_window->visibility() == QWindow::FullScreen, m_mainCtx->fullscreenScreen());
 
         if (m_mainCtx->isHideAfterCreation())
             m_window->hide();
@@ -92,9 +93,10 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
 
     m_window->setTitle("");
 
-    if( var_InheritBool( p_intf, "qt-name-in-title" ) )
+    if (m_mainCtx->showMediaNameInTitle())
     {
         connect( THEMIM, &PlayerController::nameChanged, m_window, &QWindow::setTitle );
+        m_window->setTitle(THEMIM->getName());
     }
 
     connect( m_window, &QWindow::screenChanged, m_mainCtx, &MainCtx::updateIntfScaleFactor );
@@ -184,14 +186,25 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
 
 void InterfaceWindowHandler::restoreWindowGeometry()
 {
-    QVLCTools::restoreWindowPosition( getSettings(), m_window, QSize(600, 420) );
+    if (m_rememberGeometry)
+        QVLCTools::restoreWindowPosition(getSettings(), m_window, QSize(600, 420));
+    else {
+        // Leave the existing geometry blob untouched. Use this window's
+        // launch screen; do not move other dialogs or select primary globally.
+        m_window->resize(QSize(600, 420));
+        if (const auto screen = m_window->screen()) {
+            const auto available = screen->availableGeometry();
+            m_window->setPosition(available.center() - QPoint(m_window->width()/2, m_window->height()/2));
+        }
+    }
 }
 
 InterfaceWindowHandler::~InterfaceWindowHandler()
 {
     m_window->removeEventFilter(this);
     /* Save this size */
-    QVLCTools::saveWindowPosition(getSettings(), m_window);
+    if (m_rememberGeometry)
+        QVLCTools::saveWindowPosition(getSettings(), m_window);
     assert(qApp);
     if (!qApp->property("isDying").toBool())
     {
@@ -410,7 +423,7 @@ void InterfaceWindowHandler::setInterfaceVisible(bool visible, bool _requestActi
 
 void InterfaceWindowHandler::setFullScreen( bool fs )
 {
-    WindowStateHolder::holdFullscreen(m_window, WindowStateHolder::INTERFACE, fs);
+    WindowStateHolder::holdFullscreen(m_window, WindowStateHolder::INTERFACE, fs, m_mainCtx->fullscreenScreen());
 }
 
 void InterfaceWindowHandler::setInterfaceFullScreen( bool fs )

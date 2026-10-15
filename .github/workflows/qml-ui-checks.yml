@@ -71,6 +71,10 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_light_volume.py --output-dir ui-previews/light-volume
       - name: Check production backdrop software alpha, updates and lifecycle
         run: python modules/gui/qt/tests/test_juxtopposed_settings_backdrop.py --output-dir ui-previews/settings-backdrop
+      - name: Check Interface native contract, assets and guarded host routing
+        run: python modules/gui/qt/tests/test_juxtopposed_interface_settings.py --output-dir ui-previews/interface-settings
+      - name: Check actual toolbar FSM modes, transitions, locks and real timers
+        run: python modules/gui/qt/tests/test_interface_toolbar_policy.py --output-dir ui-previews/interface-toolbar-policy
       - name: Save rendered previews and verification details
         if: always()
         uses: actions/upload-artifact@v4

@@ -358,6 +358,17 @@ vlc_module_begin ()
     add_bool( "qt-minimal-view", false, QT_MINIMAL_MODE_TEXT,
               nullptr )
 
+    // Internal General/Interface preferences consumers; legacy behavior is
+    // preserved until the corresponding explicit mode/delay is selected.
+    add_bool("qt-remember-window-geometry", true,
+             N_("Remember the main window geometry"), nullptr)
+    add_integer_with_range("qt-controls-auto-hide", -1, -1, 2,
+             N_("Automatically hide player controls"), nullptr)
+    add_integer_with_range("qt-controls-hide-timeout", -1, -1, 10000,
+             N_("Player controls hide delay in milliseconds"), nullptr)
+    add_integer_with_range("qt-notification-duration", 3000, 0, 10000,
+             N_("Track notification duration hint in milliseconds"), nullptr)
+
     add_bool( "qt-system-tray", true, SYSTRAY_TEXT, SYSTRAY_LONGTEXT)
 
     add_integer( "qt-notification", NOTIFICATION_MINIMIZED,

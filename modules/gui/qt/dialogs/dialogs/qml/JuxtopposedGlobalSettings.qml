@@ -36,6 +36,7 @@ C.Dialog {
         {key: "extensions", title: qsTr("Extensions"), group: qsTr("System"), icon: "global-settings-05bc9.svg", mirror: false}
     ]
     readonly property var generalSearchTerms: [qsTr("General"), qsTr("Appearance"), qsTr("Interface language"), qsTr("Theme"), qsTr("Accent color"), qsTr("Startup"), qsTr("Show confirmation and error dialogs"), qsTr("Check for updates automatically"), qsTr("Diagnostics"), qsTr("Developer mode"), qsTr("Save a log"), qsTr("Log file"), qsTr("Log details"), qsTr("Advanced Options")]
+    readonly property bool busy: !!pageLoader.item && "busy" in pageLoader.item && pageLoader.item.busy
     readonly property color accent: appearance ? appearance.accent : "#D37918"
     signal advancedRequested()
     signal categoryRequested(string category)
@@ -49,7 +50,7 @@ C.Dialog {
     width: Math.min(implicitWidth, Math.max(0, parent.width - 32 * uiScale))
     height: Math.min(implicitHeight, Math.max(0, parent.height - 32 * uiScale))
     padding: 0
-    closePolicy: C.Popup.CloseOnEscape
+    closePolicy: busy ? C.Popup.NoAutoClose : C.Popup.CloseOnEscape
 
     function tone(value) { return appearance ? appearance.color(value) : value }
     function hasPage(key) { return key === "general" || !!categoryPages[key] }
@@ -61,7 +62,7 @@ C.Dialog {
         return words.some(word => word.toLocaleLowerCase().includes(query))
     }
     function chooseCategory(key) {
-        if (!hasPage(key)) return false
+        if (busy || !hasPage(key)) return false
         selectedCategory = key
         pageScroll.contentY = 0
         categoryRequested(key)
@@ -74,11 +75,14 @@ C.Dialog {
         return true
     }
     function showDialog(returnItem) {
+        if (visible && busy) return
         if (!visible) {
             focusReturnItem = returnItem
             if (preferences) preferences.reload()
             open()
         }
+        const page = pageLoader.item
+        if (page && "focusActivePopup" in page && page.focusActivePopup()) return
         searchField.forceActiveFocus(Qt.PopupFocusReason)
     }
     function focusItems() {
@@ -136,6 +140,7 @@ C.Dialog {
         C.TextField {
             id: searchField
             objectName: "globalSettingsSearch"
+            readOnly: root.busy
             x: 8 * root.uiScale; y: 8 * root.uiScale
             width: Math.min(200 * root.uiScale, Math.max(0, parent.width - 80 * root.uiScale)); height: 34 * root.uiScale
             activeFocusOnTab: true; selectByMouse: true
@@ -168,6 +173,7 @@ C.Dialog {
         C.Button {
             id: closeButton
             objectName: "globalSettingsClose"
+            enabled: !root.busy
             anchors.right: parent.right; anchors.rightMargin: 14 * root.uiScale; anchors.verticalCenter: parent.verticalCenter
             width: 32 * root.uiScale; height: 32 * root.uiScale
             padding: 0; activeFocusOnTab: true
@@ -225,7 +231,7 @@ C.Dialog {
                                 width: parent.width; height: 40 * root.uiScale
                                 property bool selected: modelData.key === root.selectedCategory
                                 activeFocusOnTab: true
-                                enabled: root.hasPage(modelData.key)
+                                enabled: !root.busy && root.hasPage(modelData.key)
                                 padding: 4 * root.uiScale
                                 Accessible.name: modelData.title
                                 Accessible.role: Accessible.PageTab

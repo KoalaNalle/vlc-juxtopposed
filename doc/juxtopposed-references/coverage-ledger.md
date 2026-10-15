@@ -6,9 +6,9 @@ The [15 October General Settings checkpoint](native/general-settings-20261015/RE
 records an integrated native General page and shared modal routing, 29/0/1 ordinary
 backend results, three normal app quits and actual Light/Purple/Unicode logging
 restart restoration. The new production component suites and GNU-make oracle pass
-locally. This advances functional/native General coverage; the twelve other
-categories, backdrop/Light volume fidelity, Reset and final package acceptance
-remain open. Retain the broader surface gates below.
+locally. Later bounded checkpoints below supersede the original General-only
+category and backdrop/volume status. Complete surface fidelity, Reset and final
+package acceptance remain open. Retain the broader surface gates below.
 
 The [Light volume follow-up](native/light-volume-20261015/README.md) verifies exact
 original artwork selection and bounded native volume/theme actions. It does not
@@ -25,14 +25,27 @@ also passes above real paused video in Light/Dark, with Home blur retained.
 Original native shader assertions, maintained 12/24/23 checks, first-invocation
 native QML registration and ordinary app shutdown pass. All four CI jobs on the
 preceding backdrop head are green. Full video blur and broader fidelity remain
-open; this follow-up's CI must be checked separately.
+open; all four jobs on this follow-up subsequently passed.
 
 The [Windows client-size restoration proof](native/window-restore-20261015/README.md)
 reproduces the old per-restart shrink and passes the same exact desired oracle
 after native frame initialization is reordered. Both title-bar modes, native
 maximize/fullscreen returns and ordinary app restarts pass within the recorded
-same-screen/DPR scope. All four preceding shadow-head CI jobs pass; other DPI,
-startup states, full fidelity and this new head's CI remain separate gates.
+same-screen/DPR scope. All four jobs on geometry head `ba175cfc69` pass, including
+23 commands in each Windows job and both Ubuntu remake workers. Other DPI,
+startup states and full fidelity remain separate gates.
+
+The [native Interface follow-up](native/interface-settings-20261015/README.md)
+passes the registered 14-case native model/store fixture, private original
+General desired/policy/fault replays (29/0/1, 31/0/1, 3/0/0), and a hidden
+QWindow screen-policy fixture (6/0/0). The unchanged toolbar component oracle
+reproduces two failures and passes 25/0/0 after a state-target correction.
+Production Interface/General/host/software checks pass 10/12/24/23 with no Qt
+messages. Four desktop journeys quit normally, preserve checked human files,
+and verify title-bar/Unicode-path restart, validation rollback and Light/Dark
+lower sections. General and Interface are enabled, with eight Interface controls
+explicitly unavailable. Actual picker/parser, tray, native new-consumer/DPI/full
+fidelity and full beta gates remain open; new-head CI is pending (25 commands).
 
 The active target is the [first publishable beta](../juxtopposed-beta-plan.md), covering complete confirmed surfaces and actions. Figma MCP access for copy `zdNUYRVOH9lEtIxMYvh8DV` was restored on 14 October with a Professional Full seat. Successful page inventory, high-fidelity Home/New Playlist/subtitle-timeline contexts, screenshots and prototype-link reads are preserved in the [MCP reference inventory](figma/20261014/README.md). Browser control still has a separate saved site block; do not circumvent it. Reuse cached MCP, video and measured queue references; complete reference/state reconciliation and visual acceptance remain open. The supplied 20:59.915 AV1 walkthrough has been sampled into 63 overview frames and 24 closer library-region frames. Local overview/contact sheets are in `build-windows/reference-video-frames`; exact frames are in `library-reference-frames`. [Library reference notes](library/reference-notes.md) preserve three exact-time frames, tentative geometry and the native mapping. Video frames include the original VLC, commentary, advertisements and concept UI: identify the actual redesign before measuring it.
 
@@ -66,8 +79,8 @@ The active target is the [first publishable beta](../juxtopposed-beta-plan.md), 
 | Subtitle presets | Exact 08:00 [menu](advanced/0480-subtitle-presets.png), appearance footer around 07:55 | Save/apply real appearance/delay/track preferences | [Compiled preset port](advanced/subtitle-preset-checkpoint.md): 10 real persistence/selection/rendered-output checks, 8 actual normal-lock PlayerController checks and the existing 11 appearance regressions pass; all 13 component suites pass. Native Save/apply/restart menu journey, folder/playlist scope, other renderers and exact dialog/visual acceptance remain pending: implementing |
 | Subtitle timeline | Exact 06:59 [cue strip](advanced/0419-subtitle-timeline.png), editorial zoom | Extract real cue times, show current/elapsed cue, seek and shift native timing | Cue/edit state geometry and new extraction backend: specified in part, port pending; text editing/export remains unconfirmed |
 | Music player / waveform | Exact 12:18 [player](advanced/0738-music-player.png), 12:20 detail: cover/list/blur and rounded elapsed/future bars | Native local source folder/metadata/queue, real decoded peaks and native seeking | [Compiled source-folder/cover port](advanced/music-player-checkpoint.md), 7 native folder and 6 timer checks, 11 component suites; desktop initial pause/duration, search/clear/queue fallback, waveform seek/resume/Back and video replacement pass within recorded scope. Actual art blur, other codecs/tracks, native narrow/DPI, lyrics/settings and visual acceptance remain open |
-| Global Settings | Exact 17:50; General plus App/Media/System category groups confirmed | Preferences entry; persistent native settings | Structure/reference confirmed; category layouts, real settings/restart and short/narrow states: reference specified, port pending |
-| Appearance and interface settings | Exact 17:50 General and nearby content frames | Preferences/appearance; real theme settings | Accent/theme controls confirmed; full dark/light, persistence and shared components: reference specified, port pending |
+| Global Settings | Exact 17:50 plus cached Figma General/Interface frames; App/Media/System groups confirmed | Preferences entry; persistent native settings | General and bounded Interface model/UI/restart checks pass; eight Interface controls, eleven other categories and full shared state/fidelity/package gates remain open: implementing |
+| Appearance and interface settings | Cached Figma General `999:5047` and Interface `3046:10057` | Preferences/appearance; real theme and Interface settings | Native theme/accent persistence, original artwork, Home blur/video shadow, bounded Interface validation/title-bar restart pass; System events, full-video blur, eight native consumer rows, DPI and full fidelity remain open: implementing |
 | First-run theme setup | Exact 19:50; distinct three-card/preview/accent/Back/Next step | First-run flow; persist chosen theme/accent and advance | Confirmed surface; remaining setup sequence, backend mapping and implementation: reference specified, port pending |
 | User profiles / customization | Exact 19:35 [profile menu](advanced/1175-profile-menu.png); layout and other settings confirmed by narration | Save/switch actual layout and preferences | Existing toolbar profiles are partial support; full customizer/profile-save/shortcut layouts and settings scope: reference needed |
 

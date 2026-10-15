@@ -182,6 +182,9 @@ libqt_plugin_la_SOURCES = \
 	maininterface/interface_window_handler.hpp \
 	maininterface/mainctx.cpp \
 	maininterface/general_preferences_model.cpp maininterface/general_preferences_model.hpp \
+	maininterface/interface_preferences_model.cpp maininterface/interface_preferences_model.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
+	util/fullscreen_screen_policy.hpp \
 	util/interface_language_map.hpp \
 	maininterface/mainctx.hpp \
 	maininterface/mainctx_submodels.cpp maininterface/mainctx_submodels.hpp \
@@ -479,6 +482,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/interface_window_handler.moc.cpp \
 	maininterface/mainctx.moc.cpp \
 	maininterface/general_preferences_model.moc.cpp \
+	maininterface/interface_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
 	maininterface/navigationmodel.moc.cpp \
@@ -835,6 +839,8 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/interface-settings-1ab84.svg \
+	pixmaps/juxtopposed/interface-settings-8ba8e.svg \
 	pixmaps/juxtopposed/volume-background-light.svg \
 	pixmaps/juxtopposed/volume-fill-light.svg \
 	pixmaps/juxtopposed/global-settings-05bc9.svg \
@@ -1143,6 +1149,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml \
@@ -2477,3 +2484,59 @@ EXTRA_DIST += tests/juxtopposed_backdrop_fixture.py tests/test_juxtopposed_setti
 
 # Warm list-only QML metadata and preserved stale-include regression.
 EXTRA_DIST += tests/test_qml_module_lists.py tests/fixtures/qml_dependencies_stable_cmp_recipe.inc
+
+# Interface maintained contract, authored assets and historical OFF-skin negative.
+EXTRA_DIST += tests/test_juxtopposed_interface_settings.py \
+    tests/fixtures/juxtopposed_interface_settings_assets.json \
+    tests/fixtures/juxtopposed_interface_v1_obsolete.json \
+    tests/fixtures/juxtopposed_interface_v1_original.py.txt
+
+# Genuine Interface storage/model fixture. Runtime must discover the matching
+# rebuilt Qt plugin options; missing/stale options fail the original assertions.
+if ENABLE_QT
+if HAVE_QT_QTEST
+test_qt_interface_preferences_SOURCES = tests/test_interface_preferences.cpp \
+    tests/interface_preferences_probe.c maininterface/interface_preferences_model.cpp \
+    maininterface/interface_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/checked_preferences_store.hpp
+nodist_test_qt_interface_preferences_SOURCES = tests/test_interface_preferences.moc \
+    maininterface/interface_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_interface_preferences.moc
+CLEANFILES += tests/test_interface_preferences.moc
+tests/test_qt_interface_preferences-test_interface_preferences.$(OBJEXT): tests/test_interface_preferences.moc
+test_qt_interface_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_interface_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_interface_preferences_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_interface_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_interface_preferences
+TESTS += test_qt_interface_preferences
+
+# Real QApplication/static platform imports: opt-in actual desktop gate only.
+test_qt_fullscreen_screen_policy_SOURCES = tests/test_fullscreen_screen_policy.cpp util/fullscreen_screen_policy.hpp
+nodist_test_qt_fullscreen_screen_policy_SOURCES = tests/test_fullscreen_screen_policy.moc
+BUILT_SOURCES += tests/test_fullscreen_screen_policy.moc
+CLEANFILES += tests/test_fullscreen_screen_policy.moc
+tests/test_qt_fullscreen_screen_policy-test_fullscreen_screen_policy.$(OBJEXT): tests/test_fullscreen_screen_policy.moc
+test_qt_fullscreen_screen_policy_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_fullscreen_screen_policy_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_fullscreen_screen_policy_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_fullscreen_screen_policy_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+EXTRA_PROGRAMS = test_qt_fullscreen_screen_policy
+if HAVE_WIN32
+test_qt_interface_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_interface_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_interface_preferences_LDADD += -lntdll
+test_qt_fullscreen_screen_policy_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_fullscreen_screen_policy_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_fullscreen_screen_policy_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_interface_preferences_LDADD += -latomic
+test_qt_fullscreen_screen_policy_LDADD += -latomic
+endif
+endif
+endif
+
+# Actual toolbar FSM with original policy/timer oracle and supplied native boundary.
+EXTRA_DIST += tests/test_interface_toolbar_policy.py tests/tst_InterfaceToolbarPolicy.qml \
+    tests/fixtures/interface_toolbar/MainCtx.qml tests/fixtures/interface_toolbar/Player.qml

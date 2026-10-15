@@ -81,6 +81,7 @@ moc_headers = files(
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.hpp',
     'maininterface/general_preferences_model.hpp',
+    'maininterface/interface_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
     'maininterface/navigationmodel.hpp',
@@ -317,9 +318,14 @@ qt_plugin_sources = files(
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.cpp',
     'maininterface/general_preferences_model.cpp',
+    'maininterface/interface_preferences_model.cpp',
+    'util/checked_preferences_store.cpp',
+    'util/checked_preferences_store.hpp',
+    'util/fullscreen_screen_policy.hpp',
     'util/interface_language_map.hpp',
     'maininterface/mainctx.hpp',
     'maininterface/general_preferences_model.hpp',
+    'maininterface/interface_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.cpp',
@@ -673,6 +679,7 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
         'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml',
@@ -1527,6 +1534,27 @@ if qt6_dep.found()
             'include_directories': [qt_include_dir, include_directories('../../../src')],
             'link_with': [libvlccore, libvlc],
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        interface_preferences_test_sources = files('tests/test_interface_preferences.cpp', 'tests/interface_preferences_probe.c',
+                                                   'maininterface/interface_preferences_model.cpp', 'util/checked_preferences_store.cpp')
+        interface_preferences_test_deps = []
+        interface_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            interface_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            interface_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            interface_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_interface_preferences',
+            'sources': interface_preferences_test_sources,
+            'moc_sources': files('tests/test_interface_preferences.cpp'),
+            'moc_headers': files('maininterface/interface_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': interface_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, interface_preferences_test_deps]
         }
 
         shared_modal_test_python = find_program('python3')

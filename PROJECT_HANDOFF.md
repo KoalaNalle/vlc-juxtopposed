@@ -22,7 +22,7 @@ language/theme/accent, startup and logging controls. The ordinary Windows build
 and backend run pass (29 passed, 0 failed, one separately injected fault case
 skipped); three native app runs quit normally and preserve the checked human VLC
 configuration. Light/Purple and Unicode Errors-only logging restore after restart.
-General is the only enabled category; the other twelve remain unfinished.
+At that checkpoint General was the only enabled category.
 The new maintained General/shared-dialog suites and actual GNU-make remake oracle
 pass locally; exact new-head remote CI must be checked separately. Backdrop blur,
 Light volume artwork, native Reset, remaining categories and final licensed clean
@@ -55,7 +55,8 @@ blur remains operational. The same 39 native shader assertions and maintained
 12/24/23 checks pass. The first ordinary build includes the newly added Shadow
 type without manual stamp changes or another make invocation. The actual app
 restores Light and quits normally with checked human settings unchanged. This
-checkpoint's CI, hardware-video blur and the broader beta gates remain open.
+checkpoint's four CI jobs subsequently passed. Hardware-video blur and the broader
+beta gates remain open.
 
 The [Windows geometry checkpoint](doc/juxtopposed-references/native/window-restore-20261015/README.md)
 restores the saved client rectangle after native title-bar initialization. The
@@ -64,7 +65,26 @@ CSD plus two standard-title-bar restarts. Maximize/fullscreen/normal transitions
 and two ordinary noninstrumented launches also pass; all seven corrected runs
 quit normally and preserve checked human settings. Other DPI/missing geometry and
 startup-state gates remain open. All four CI jobs on preceding shadow head
-`23700d1dec` pass; geometry-head CI must be checked separately.
+`23700d1dec` and geometry head `ba175cfc69` pass, including all 23 commands in
+both geometry-head Windows jobs and both Ubuntu remake checks.
+
+The latest [Interface checkpoint](doc/juxtopposed-references/native/interface-settings-20261015/README.md)
+adds the separate 18-value Interface page and shared checked preferences store.
+Its ordinary Windows build and registered native Interface fixture pass 14/0/0;
+the private original General objects replay against the actual extracted store
+at 29/0/1, 31/0/1 and a separate required sync/close-fault 3/0/0. These General
+fixtures are not newly tracked/registered suites. A hidden QWindow screen-policy
+fixture passes 6/0/0; visible fullscreen acceptance remains open. The same toolbar
+component oracle reproduces two failures and passes all 25 cases after a single
+transition-target correction. Interface/General/host/software checks pass
+10/12/24/23 without Qt messages. Four app journeys quit normally and preserve
+checked human settings, including decorations and Unicode skin-path restart,
+validation rollback and Dark/Light lower-section checks on monitor 2.
+General and Interface are now enabled; eight Interface controls remain explicitly
+unavailable pending native consumer acceptance. Actual skin picker/parser, tray,
+other categories, DPI/full Figma fidelity and clean beta packaging remain open.
+This checkpoint adds two Windows CI commands (25 total); check its exact-head
+remote results separately. Continue the full beta goal.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.

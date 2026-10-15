@@ -60,6 +60,12 @@ FocusScope {
                                         &&
                                         (MainCtx.intfMainWindow.visibility !== Window.FullScreen))
 
+    // Legacy pinning forces windowed controls visible. Explicit auto-hide
+    // modes may hide the docked controls while preserving their layout mode.
+    readonly property bool _controlsForcedVisible: _controlsUnderVideo
+        && (MainCtx.controlAutoHideMode < 0 || MainCtx.controlAutoHideMode === 0
+            || (MainCtx.controlAutoHideMode === 1 && MainCtx.intfMainWindow.visibility !== Window.FullScreen))
+
     property bool _keyPressed: false
 
     // Settings
@@ -96,8 +102,8 @@ FocusScope {
         rootPlayer.Navigation.defaultKeyReleaseAction(event)
     }
 
-    on_ControlsUnderVideoChanged: {
-        lockUnlockAutoHide(_controlsUnderVideo)
+    on_ControlsForcedVisibleChanged: {
+        lockUnlockAutoHide(_controlsForcedVisible)
     }
 
     // Functions
@@ -279,7 +285,7 @@ FocusScope {
                         //short interval for mouse events
                         if (Player.isInteractive)
                             interactiveAutoHideTimer.restart()
-                        else
+                        if (!Player.isInteractive || MainCtx.controlAutoHideMode >= 0)
                             playerToolbarVisibilityFSM.mouseMove();
                     }
 
@@ -1070,7 +1076,7 @@ FocusScope {
                   resumeVisible)
 
         focus: true
-        title: playerSpecializationLoader.item?.musicPresentationActive ? "" : Player.title
+        title: playerSpecializationLoader.item?.musicPresentationActive || !MainCtx.showMediaNameInTitle ? "" : Player.title
 
         pinControls: MainCtx.pinVideoControls
 
@@ -1101,7 +1107,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
         }
 
         onTogglePlaylistVisibility: playlistVisibility.togglePlaylistVisibility()
@@ -1446,7 +1452,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
         }
 
         onRequestLockUnlockAutoHide: (lock) => rootPlayer.lockUnlockAutoHide(lock)
@@ -1498,6 +1504,23 @@ FocusScope {
         }
     }
 
+    // Passive observation adds audio-mode reveal without intercepting music
+    // buttons, swipes, drag operations or existing context menus.
+    HoverHandler {
+        enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0
+        blocking: false
+        target: null
+        onPointChanged: playerToolbarVisibilityFSM.mouseMove()
+        onHoveredChanged: if (hovered) playerToolbarVisibilityFSM.mouseMove()
+    }
+    PointHandler {
+        enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0
+        acceptedDevices: PointerDevice.TouchScreen
+        target: null
+        onActiveChanged: if (active) playerToolbarVisibilityFSM.mouseMove()
+        onPointChanged: if (active) playerToolbarVisibilityFSM.mouseMove()
+    }
+
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.BackButton
@@ -1517,7 +1540,7 @@ FocusScope {
         Keys.onPressed: (event) => {
             if (Player.isInteractive)
                 interactiveAutoHideTimer.restart()
-            else
+            if (!Player.isInteractive || MainCtx.controlAutoHideMode >= 0)
                 playerToolbarVisibilityFSM.keyboardMove()
         }
     }

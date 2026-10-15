@@ -31,6 +31,7 @@ Item {
         // Check every operation before closing any modal. A request must never
         // cancel a running job or partly mutate the dialog state before failing.
         for (const other of dialogs) {
+            if (other !== dialog && other.visible && "busy" in other && other.busy) return false
             if (other !== dialog && other.visible && "controller" in other
                     && other.controller && other.controller.busy) return false
         }
@@ -52,13 +53,31 @@ Item {
         appearance: root.appearance
         uiScale: root.uiScale
         assetBase: root.assetBase
-        // Interface has a frozen body, but its native service/consumers are
-        // pending. With no category Component the existing shell disables it.
+        title: selectedCategory === "interface" ? qsTr("Interface Settings") : qsTr("Global Settings")
+        categoryPages: ("interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
+            ? ({interface: interfacePage}) : ({})
+        categorySearchTerms: ({interface: [qsTr("Skin"), qsTr("Use a custom skin"), qsTr("Skin file"), qsTr("Window"), qsTr("Play video inside main window"), qsTr("Resize window to fit video"), qsTr("Remember window size and position"), qsTr("Keep window above other windows"), qsTr("Show window decorations"), qsTr("Show the file name in the title bar"), qsTr("Open fullscreen on"), qsTr("Playback Controls"), qsTr("Start in compact mode"), qsTr("Auto-hide the controls"), qsTr("Hide after"), qsTr("Show controls in fullscreen"), qsTr("Notifications and System Tray"), qsTr("Show a system tray icon"), qsTr("Start minimized to the tray"), qsTr("Show a popup when the track changes"), qsTr("Popup duration"), qsTr("Playlist"), qsTr("Show the playlist as a tree")]})
+        onAboutToShow: if (selectedCategory === "interface" && "interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
+            root.mainCtx.interfacePreferences.reload()
+        onCategoryRequested: category => {
+            if (category === "interface" && "interfacePreferences" in root.mainCtx && root.mainCtx.interfacePreferences)
+                root.mainCtx.interfacePreferences.reload()
+        }
         onAdvancedRequested: Qt.callLater(() => {
             if (!root.qmlModalVisible && !root.dialogsProvider.prefsDialogVisible)
                 root.dialogsProvider.expertPrefsDialog()
         })
         onFallbackFocusRequested: root.restoreViewFocus()
+    }
+    Component {
+        id: interfacePage
+        JuxtopposedInterfaceSettings {
+            interfacePreferences: "interfacePreferences" in root.mainCtx ? root.mainCtx.interfacePreferences : null
+            onAdvancedRequested: {
+                globalSettingsDialog.close()
+                globalSettingsDialog.advancedRequested()
+            }
+        }
     }
     JuxtopposedNetworkDialog {
         id: networkStreamDialog

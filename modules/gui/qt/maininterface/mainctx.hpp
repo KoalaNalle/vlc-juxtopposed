@@ -69,7 +69,9 @@ class VLCSystray;
 class MediaLib;
 class ColorSchemeModel;
 class GeneralPreferencesModel;
+class InterfacePreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -91,7 +93,7 @@ public:
         VIDEO = 2,
     };
 
-    static bool holdFullscreen( QWindow* window, Source source, bool hold );
+    static bool holdFullscreen(QWindow* window, Source source, bool hold, int screenIndex = -1);
 
 
     static bool holdOnTop( QWindow* window, Source source, bool hold );
@@ -119,6 +121,7 @@ class MainCtx : public QObject
     Q_PROPERTY(Grouping grouping READ grouping WRITE setGrouping NOTIFY groupingChanged FINAL)
     Q_PROPERTY(ColorSchemeModel* colorScheme READ getColorScheme CONSTANT FINAL)
     Q_PROPERTY(GeneralPreferencesModel* generalPreferences READ getGeneralPreferences CONSTANT FINAL)
+    Q_PROPERTY(InterfacePreferencesModel* interfacePreferences READ getInterfacePreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -137,6 +140,10 @@ class MainCtx : public QObject
     Q_PROPERTY(float safeArea READ safeArea NOTIFY safeAreaChanged FINAL)
     Q_PROPERTY(VideoSurfaceProvider* videoSurfaceProvider READ getVideoSurfaceProvider WRITE setVideoSurfaceProvider NOTIFY hasEmbededVideoChanged FINAL)
     Q_PROPERTY(int mouseHideTimeout READ mouseHideTimeout NOTIFY mouseHideTimeoutChanged FINAL)
+    // Startup policies: this Interface foundation explicitly reports restart.
+    Q_PROPERTY(int controlAutoHideMode READ controlAutoHideMode CONSTANT FINAL)
+    Q_PROPERTY(int controlsHideTimeout READ controlsHideTimeout NOTIFY mouseHideTimeoutChanged FINAL)
+    Q_PROPERTY(bool showMediaNameInTitle READ showMediaNameInTitle CONSTANT FINAL)
     Q_PROPERTY(bool albumSections READ albumSections WRITE setAlbumSections NOTIFY albumSectionsChanged FINAL)
     Q_PROPERTY(bool lyricsMode READ lyricsMode WRITE setLyricsMode NOTIFY lyricsModeChanged FINAL)
     Q_PROPERTY(bool usingTouch READ usingTouch NOTIFY usingTouchChanged FINAL)
@@ -249,6 +256,7 @@ public:
     inline bool lyricsMode() const { return m_lyricsMode; }
     inline ColorSchemeModel* getColorScheme() const { return m_colorScheme; }
     inline GeneralPreferencesModel* getGeneralPreferences() const { return m_generalPreferences; }
+    inline InterfacePreferencesModel* getInterfacePreferences() const { return m_interfacePreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -289,6 +297,14 @@ public:
     void setVideoSurfaceProvider(VideoSurfaceProvider* videoSurfaceProvider);
 
     int mouseHideTimeout() const { return m_mouseHideTimeout; }
+    int controlAutoHideMode() const { return m_startupControlsAutoHide; }
+    int controlsHideTimeout() const {
+        return m_startupControlsHideTimeout < 0 ? m_mouseHideTimeout : m_startupControlsHideTimeout;
+    }
+    bool showMediaNameInTitle() const { return m_startupShowMediaNameInTitle; }
+    bool rememberWindowGeometry() const { return m_startupRememberGeometry; }
+    int notificationDuration() const { return m_startupNotificationDuration; }
+    int fullscreenScreen() const { return m_startupFullscreenScreen; }
 
     bool usingTouch() const { return m_usingTouch; }
 
@@ -463,7 +479,15 @@ protected:
     Grouping             m_grouping = GROUPING_NONE;
     ColorSchemeModel*    m_colorScheme = nullptr;
     GeneralPreferencesModel* m_generalPreferences = nullptr;
+    InterfacePreferencesModel* m_interfacePreferences = nullptr;
     bool                 m_windowTitlebar = true;
+    // Immutable application-start snapshot for the new Interface consumers.
+    int m_startupControlsAutoHide = -1;
+    int m_startupControlsHideTimeout = -1;
+    bool m_startupShowMediaNameInTitle = true;
+    bool m_startupRememberGeometry = true;
+    int m_startupNotificationDuration = 3000;
+    int m_startupFullscreenScreen = -1;
     // NOTE: Ideally this should be a QVLCBool.
     bool                 m_hasToolbarMenu = false;
     bool                 m_canShowVideoPIP = false;

@@ -9,9 +9,10 @@ adds the real native General page, shared modal ownership and live theme/accent
 propagation. Ordinary native backend tests pass 29/0/1; the actual app restores
 Light/Purple and Unicode Errors-only logging after restart, and three normal quits
 preserve the checked existing user configuration. Maintained General/shared-host
-tests and the actual GNU-make resource-remake oracle pass locally. General is the
-only enabled category; Interface/Privacy and the other ten bodies, backdrop blur,
-Light volume, Reset, broader design acceptance and final packaging remain open.
+tests and the actual GNU-make resource-remake oracle pass locally. General was the
+only enabled category at that checkpoint. The later bounded checkpoints below
+supersede its Interface, Light-volume and backdrop status; full Reset, broader
+design acceptance and final packaging remain open.
 
 The following [Light volume checkpoint](juxtopposed-references/native/light-volume-20261015/README.md)
 closes the original Light background/full-fill selection gap with a rebuilt native
@@ -31,14 +32,30 @@ keeps the original shadow over real native video in Light/Dark and preserves Hom
 blur. Its first ordinary build includes the new QML type, original 39 native
 shader assertions and maintained 12/24/23 checks pass, and the app quits normally
 with checked human settings unchanged. All four preceding backdrop-head CI jobs
-pass; this new checkpoint's CI and full video blur remain separate open gates.
+pass; this checkpoint's four CI jobs subsequently passed too. Full video blur
+remains an open gate.
 
 The [Windows geometry follow-up](juxtopposed-references/native/window-restore-20261015/README.md)
 fixes the reproduced restart shrink by restoring the saved client rectangle after
 native frame initialization. Exact original/fixed restart oracles, both title-bar
 modes, native maximize/fullscreen restoration and two ordinary app launches pass.
-Other DPI/missing geometry/startup states and this new head's CI remain separate;
-all four preceding shadow-head CI jobs pass. This does not finish the beta.
+Other DPI/missing geometry/startup states remain separate. All four jobs on
+geometry head `ba175cfc69` pass, including 23 commands in each Windows job and the
+two Ubuntu remake workers. This does not finish the beta.
+
+The [native Interface checkpoint](juxtopposed-references/native/interface-settings-20261015/README.md)
+adds the 18-value page, a shared checked store and registered native Interface
+tests (14/0/0). Private original General desired/policy/fault replays against the
+actual production objects pass 29/0/1, 31/0/1 and 3/0/0; these are not newly
+registered General suites. Hidden native screen-policy checks pass 6/0/0. The
+same supplied-boundary toolbar component oracle fails twice before a single
+state-target repair and then passes all 25 cases. Interface/General/host/software
+checks pass 10/12/24/23; four normal desktop quits preserve human configuration
+and cover decorations/Unicode-path restart, validation rollback and Light/Dark.
+Eight Interface settings remain explicitly unavailable until native consumer
+checks pass. Skin picker/parser, tray, remaining categories, DPI/full fidelity and
+the final beta package remain open. Exact new-head CI is pending (25 Windows
+commands); this bounded checkpoint does not accept the full Interface surface.
 
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 

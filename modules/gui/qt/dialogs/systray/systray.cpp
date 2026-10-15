@@ -38,6 +38,7 @@ VLCSystray::VLCSystray(MainCtx* ctx, QObject* parent)
     assert(m_intf);
 
     m_notificationSetting = var_InheritInteger(m_intf, "qt-notification");
+    m_notificationDuration = m_ctx->notificationDuration();
 
     QIcon iconVLC;
     if( m_ctx->useXmasCone() )
@@ -128,7 +129,9 @@ void VLCSystray::updateTooltipName( const QString& name )
             ( m_notificationSetting == NOTIFICATION_MINIMIZED && (windowVisiblity == QWindow::Hidden || windowVisiblity == QWindow::Minimized)))
         {
             const auto showMessageTemplate = [this, &name](const auto &icon) {
-                showMessage( qtr( "VLC media player" ), name, icon, 3000 );
+                // Qt/Windows treat this as a duration hint, not a guaranteed
+                // expiration time. Preserve genuine OS notifications.
+                showMessage(qtr("VLC media player"), name, icon, m_notificationDuration);
             };
 
             assert(m_intf);

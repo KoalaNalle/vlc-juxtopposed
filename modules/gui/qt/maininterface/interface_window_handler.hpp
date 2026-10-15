@@ -88,6 +88,7 @@ protected:
     bool m_isWindowTiled = false;
 
     bool m_pauseOnMinimize ;
+    bool m_rememberGeometry = true; // Same construction policy for restore/save.
     bool m_maximizedView = false;
     bool m_hideAfterCreation  = false; // --qt-start-minimized
 
