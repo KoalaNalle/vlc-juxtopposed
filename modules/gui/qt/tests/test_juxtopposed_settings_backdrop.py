@@ -28,7 +28,7 @@ runtime = args.output_dir / 'qml'
 runtime.mkdir()
 identities = {}
 relative = 'modules/gui/qt/dialogs/dialogs/qml/'
-for name in ['JuxtopposedSettingsBackdrop.qml', 'JuxtopposedSettingsBackdropEffect.qml']:
+for name in ['JuxtopposedSettingsBackdrop.qml', 'JuxtopposedSettingsBackdropEffect.qml', 'JuxtopposedSettingsBackdropShadow.qml']:
     source = REPO / relative / name
     identities[source.relative_to(REPO).as_posix()] = hashlib.sha256(source.read_bytes()).hexdigest()
     shutil.copyfile(source, runtime / name)

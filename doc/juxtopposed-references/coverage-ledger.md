@@ -20,6 +20,13 @@ GNU-make original/fixed metadata closure. Shader assertions, software 12/24/23
 checks and three normal native quits pass. Hardware-video blur, performance/DPI,
 complete fidelity and other categories remain open.
 
+The [independent settings shadow](native/settings-shadow-20261015/README.md)
+also passes above real paused video in Light/Dark, with Home blur retained.
+Original native shader assertions, maintained 12/24/23 checks, first-invocation
+native QML registration and ordinary app shutdown pass. All four CI jobs on the
+preceding backdrop head are green. Full video blur and broader fidelity remain
+open; this follow-up's CI must be checked separately.
+
 The active target is the [first publishable beta](../juxtopposed-beta-plan.md), covering complete confirmed surfaces and actions. Figma MCP access for copy `zdNUYRVOH9lEtIxMYvh8DV` was restored on 14 October with a Professional Full seat. Successful page inventory, high-fidelity Home/New Playlist/subtitle-timeline contexts, screenshots and prototype-link reads are preserved in the [MCP reference inventory](figma/20261014/README.md). Browser control still has a separate saved site block; do not circumvent it. Reuse cached MCP, video and measured queue references; complete reference/state reconciliation and visual acceptance remain open. The supplied 20:59.915 AV1 walkthrough has been sampled into 63 overview frames and 24 closer library-region frames. Local overview/contact sheets are in `build-windows/reference-video-frames`; exact frames are in `library-reference-frames`. [Library reference notes](library/reference-notes.md) preserve three exact-time frames, tentative geometry and the native mapping. Video frames include the original VLC, commentary, advertisements and concept UI: identify the actual redesign before measuring it.
 
 | Surface | Reference / dimensions | Entry and real action | States and present status |

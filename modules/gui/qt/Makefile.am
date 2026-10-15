@@ -1145,6 +1145,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml \
 	dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \

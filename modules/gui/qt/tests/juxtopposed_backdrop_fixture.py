@@ -12,6 +12,9 @@ def software_backdrop_state(window, dialog, expected_source):
     assert not background.property('effectsAvailable') and not background.property('blurReady')
     loader = background.findChild(QObject, 'globalSettingsBackdropEffectLoader')
     assert loader is not None and not loader.property('active') and loader.property('item') is None
+    shadow = background.findChild(QObject, 'globalSettingsBackdropShadowLoader')
+    assert shadow is not None and not shadow.property('active') and shadow.property('item') is None
+    assert background.findChild(QObject, 'globalSettingsBackdropShadow') is None
     assert background.property('capturedSource') is None
     assert background.property('fillOpacity') == .95
     scale = background.property('uiScale')

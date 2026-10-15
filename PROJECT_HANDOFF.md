@@ -45,8 +45,17 @@ General/host/software backdrop checks pass 12/24/23 with no Qt messages. Actual
 GNU Make reproduces the old exit-0/stale-type failure and passes the repaired
 metadata closure. Three native app checks quit normally and preserve the checked
 human settings. Hardware-video blur, performance/DPI/full fidelity and the other
-categories remain open; new-head CI must be checked separately. The native
-window-size drift is being diagnosed without a guessed geometry correction.
+categories remain open. All four CI jobs on backdrop head `c736003b53` pass,
+including all 23 commands in both Windows jobs. The native window-size drift is
+being diagnosed without a guessed geometry correction.
+
+The [independent settings shadow checkpoint](doc/juxtopposed-references/native/settings-shadow-20261015/README.md)
+retains the original shadow above separate native video in Light/Dark, while Home
+blur remains operational. The same 39 native shader assertions and maintained
+12/24/23 checks pass. The first ordinary build includes the newly added Shadow
+type without manual stamp changes or another make invocation. The actual app
+restores Light and quits normally with checked human settings unchanged. This
+checkpoint's CI, hardware-video blur and the broader beta gates remain open.
 
 Fetch the latest branch tip to receive this document as well as the code. A full Windows
 x64 debug application has now been compiled and packaged on the home machine.

@@ -28,17 +28,6 @@ Item {
     readonly property size nativeCaptureSize: Qt.size(Math.max(1, Math.ceil(captureRect.width * blur.eDPR)),
                                                     Math.max(1, Math.ceil(captureRect.height * blur.eDPR)))
 
-    Widgets.RoundedRectangleShadow {
-        objectName: "globalSettingsBackdropShadow"
-        // CSS shadow 0px 8px 15px 0px rgba(0,0,0,.46): its Gaussian
-        // standard deviation is half the CSS shadow blur-radius.
-        blurRadius: 7.5 * root.uiScale
-        xOffset: 0
-        yOffset: 8 * root.uiScale
-        radius: 14 * root.uiScale
-        color: Qt.rgba(0, 0, 0, .46)
-        compensationFactor: 3
-    }
     ShaderEffectSource {
         id: capture
         objectName: "globalSettingsBackdropCapture"

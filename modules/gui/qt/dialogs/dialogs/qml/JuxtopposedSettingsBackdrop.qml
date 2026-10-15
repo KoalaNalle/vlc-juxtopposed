@@ -73,6 +73,15 @@ Item {
         function onAfterAnimating() { root.updateCaptureGeometry() }
     }
     Loader {
+        id: shadowLoader
+        objectName: "globalSettingsBackdropShadowLoader"
+        anchors.fill: parent
+        active: root.active && root.effectsAvailable && root.width > 0 && root.height > 0
+        // Keep GPU-only types unloaded on software renderers.
+        source: active ? "JuxtopposedSettingsBackdropShadow.qml" : ""
+        onLoaded: item.uiScale = Qt.binding(() => root.uiScale)
+    }
+    Loader {
         id: effectLoader
         objectName: "globalSettingsBackdropEffectLoader"
         anchors.fill: parent

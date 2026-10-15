@@ -26,6 +26,13 @@ metadata; the final ordinary build opens its actual settings types and quits
 normally. Hardware-video blur, performance/DPI/full fidelity, geometry drift and
 the remaining beta gates are unfinished.
 
+The [independent settings shadow follow-up](juxtopposed-references/native/settings-shadow-20261015/README.md)
+keeps the original shadow over real native video in Light/Dark and preserves Home
+blur. Its first ordinary build includes the new QML type, original 39 native
+shader assertions and maintained 12/24/23 checks pass, and the app quits normally
+with checked human settings unchanged. All four preceding backdrop-head CI jobs
+pass; this new checkpoint's CI and full video blur remain separate open gates.
+
 The user authorizes Figma inspection and asks that MCP calls be conserved. MCP access was restored on 14 October with a Professional Full seat: page inventory and high-fidelity Home, New Playlist, subtitle-timeline and its original settings-toggle context/screenshots now read successfully. The [saved MCP inventory](juxtopposed-references/figma/20261014/README.md) identifies the single Page 1 and canonical nodes; metadata alone does not establish visual acceptance. The separate saved browser-site block remains unresolved and must not be circumvented. Root owns MCP access checks and shared integration/build/Git/package work; reuse cached references before requesting more context.
 
 Original design and artwork belong to [Juxtopposed](https://www.youtube.com/@juxtopposed). Source references are the [community design](https://www.figma.com/community/file/1691465999134370980/vlc-redesign), [accessible design copy](https://www.figma.com/design/zdNUYRVOH9lEtIxMYvh8DV/VLC-Redesign--Community-), unchanged manual exports and the supplied local walkthrough. Preserve designer artwork bytes, provenance and the existing CC BY 4.0/Inter/VLC license materials.
