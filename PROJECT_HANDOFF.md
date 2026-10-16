@@ -125,6 +125,22 @@ resampler timestamp discontinuity remains open: 16,000 samples span two seconds
 but packet timestamps start late and overlap/gap. This is not full A/V-sync,
 complete beta, desktop/DPI/Windows 11 or final clean-package acceptance.
 
+The guest [fixed-rate audio clock checkpoint](doc/juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
+closes the previously traced stereo-to-mono export timestamp defect. SoXR's fixed
+converter keeps a rational emitted-sample clock, including drain/flush and unknown
+PTS without losing PCM. Generic no-clock chains now convert rates in their fixed
+pipeline; clocked playback retains its adaptive branch. The same native test goes
+from 15/16 failing to 16 passing; the full export goes from 27 gaps/overlaps to zero,
+retaining all 16,000 samples. Lifecycle 11, Audio preferences 32, Waveform 9, full
+PCM and nine exact-count FLAC cases pass, including strict/repeated 88,200 samples.
+Final-tuple ordinary playback and native 18/42/9/37 plus 4/25/8 pass normally.
+Core is `6038664a7b4b02c19bcba38dbe6c09716d1dfbcf55b3b8dae4f7d2ddf876cc4a`;
+SoXR is `4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16`.
+GUI/WAV/file writer/clean transcode remain preserved. Work is under
+`build-windows/beta-soxr-clock-20261017`. Broader A/V sync, SDI hardware,
+desktop/DPI/visual, complete settings/surfaces, Windows 11 and the final clean
+licensed beta package remain open.
+
 ## Project and current checkpoint
 
 | Item | Value |

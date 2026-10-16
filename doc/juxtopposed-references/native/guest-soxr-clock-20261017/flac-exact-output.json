@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "strict-88200",
+      "sourceFrames": 88200,
+      "sourceRate": 44100,
+      "expectedFrames": 88200,
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-one",
+      "sourceFrames": 1,
+      "sourceRate": 44100,
+      "expectedFrames": 1,
+      "decodedFrames": 1,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-seventeen",
+      "sourceFrames": 17,
+      "sourceRate": 44100,
+      "expectedFrames": 17,
+      "decodedFrames": 17,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-B-minus-one",
+      "sourceFrames": 4095,
+      "sourceRate": 44100,
+      "expectedFrames": 4095,
+      "decodedFrames": 4095,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-B",
+      "sourceFrames": 4096,
+      "sourceRate": 44100,
+      "expectedFrames": 4096,
+      "decodedFrames": 4096,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-B-plus-one",
+      "sourceFrames": 4097,
+      "sourceRate": 44100,
+      "expectedFrames": 4097,
+      "decodedFrames": 4097,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "boundary-two-B-plus-seventeen",
+      "sourceFrames": 8209,
+      "sourceRate": 44100,
+      "expectedFrames": 8209,
+      "decodedFrames": 8209,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "repeat-88200",
+      "sourceFrames": 88200,
+      "sourceRate": 44100,
+      "expectedFrames": 88200,
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "passed": true,
+      "peak": 0.396728515625
+    },
+    {
+      "name": "resample-8000-to-44100",
+      "sourceFrames": 16000,
+      "sourceRate": 8000,
+      "expectedFrames": 88200,
+      "decodedFrames": 88200,
+      "exactPcm": null,
+      "passed": true,
+      "peak": 0.43792724609375
+    }
+  ],
+  "allFrameCountsExact": true,
+  "allEightSourceRatePcmIdentical": true
+}

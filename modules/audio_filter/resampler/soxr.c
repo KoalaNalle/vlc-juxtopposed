@@ -88,6 +88,10 @@ typedef struct
     double  f_fixed_ratio;
     size_t  i_last_olen;
     vlc_tick_t i_next_pts;
+    date_t fixed_input_pts;
+    date_t fixed_output_pts;
+    vlc_tick_t fixed_pts_offset;
+    bool fixed_pts_valid;
 } filter_sys_t;
 
 static block_t *Resample( filter_t *, block_t * );
@@ -137,6 +141,12 @@ Open( vlc_object_t *p_obj, bool b_change_ratio )
         return VLC_ENOMEM;
 
     p_sys->i_next_pts = VLC_TICK_INVALID;
+    date_Init( &p_sys->fixed_input_pts, p_filter->fmt_in.audio.i_rate, 1 );
+    date_Init( &p_sys->fixed_output_pts, p_filter->fmt_out.audio.i_rate, 1 );
+    date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+    date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+    p_sys->fixed_pts_offset = 0;
+    p_sys->fixed_pts_valid = false;
 
     /* Setup SoXR */
     int64_t i_vlc_q = var_InheritInteger( p_obj, "soxr-resampler-quality" );
@@ -479,19 +489,60 @@ error:
     return NULL;
 }
 
+static void
+FixedTimestamp( filter_sys_t *p_sys, block_t *p_out )
+{
+    const vlc_tick_t start = date_Get( &p_sys->fixed_output_pts );
+    const vlc_tick_t end = date_Increment( &p_sys->fixed_output_pts,
+                                           p_out->i_nb_samples );
+    p_out->i_length = end - start;
+    p_out->i_pts = p_sys->fixed_pts_valid
+                ? start + p_sys->fixed_pts_offset : VLC_TICK_INVALID;
+    p_sys->i_next_pts = p_sys->fixed_pts_valid
+                     ? end + p_sys->fixed_pts_offset : VLC_TICK_INVALID;
+}
+
 static block_t *
 FixedResample( filter_t *p_filter, block_t *p_in )
 {
-    /* "audio converter" with fixed ratio */
+    /* Fixed conversion emits buffered samples from earlier input calls. Its
+     * output clock follows emitted samples, including fractional tick remainders.
+     * Adaptive playback's input-media-clock contract in Resample is separate. */
     filter_sys_t *p_sys = p_filter->p_sys;
-    const vlc_tick_t i_pts = p_in->i_pts;
     assert( p_sys->vr_soxr == NULL );
+
+    if( p_in->i_flags & BLOCK_FLAG_DISCONTINUITY )
+        Flush( p_filter );
+
+    if( p_in->i_pts != VLC_TICK_INVALID )
+    {
+        const vlc_tick_t expected = date_Get( &p_sys->fixed_input_pts );
+        if( !p_sys->fixed_pts_valid )
+        {
+            /* Retain unanchored PCM. A later timestamp also locates the
+             * buffered samples that arrived before it. */
+            p_sys->fixed_pts_offset = p_in->i_pts - expected;
+            p_sys->fixed_pts_valid = true;
+        }
+        else
+        {
+            const vlc_tick_t delta = p_in->i_pts - expected
+                                  - p_sys->fixed_pts_offset;
+            if( delta < -1 || delta > 1 )
+                /* Follow source-clock changes without discarding PCM or
+                 * resetting either sample clock's fractional remainder. */
+                p_sys->fixed_pts_offset += delta;
+        }
+    }
+    date_Increment( &p_sys->fixed_input_pts, p_in->i_nb_samples );
 
     const size_t i_olen = SoXR_GetOutLen( p_in->i_nb_samples,
                                           p_sys->f_fixed_ratio );
     block_t *p_out = SoXR_Resample( p_filter, p_sys->soxr, p_in, i_olen );
     if( p_out )
-        p_out->i_pts = i_pts;
+        FixedTimestamp( p_sys, p_out );
+    else
+        Flush( p_filter ); /* A consumed/dropped input cannot extend this clock. */
     return p_out;
 }
 
@@ -503,7 +554,19 @@ Drain( filter_t *p_filter )
     if( p_sys->last_soxr && p_sys->i_last_olen )
     {
         block_t *p_out = SoXR_Drain( p_filter, p_sys->last_soxr );
-        if( p_out != NULL )
+        if( p_sys->vr_soxr == NULL )
+        {
+            if( p_out != NULL )
+                FixedTimestamp( p_sys, p_out );
+            if( p_sys->last_soxr == NULL )
+            {
+                date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+                date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+                p_sys->fixed_pts_offset = 0;
+                p_sys->fixed_pts_valid = false;
+            }
+        }
+        else if( p_out != NULL )
         {
             assert( p_sys->i_next_pts != VLC_TICK_INVALID );
             p_out->i_pts = p_sys->i_next_pts;
@@ -526,4 +589,8 @@ Flush( filter_t *p_filter )
         p_sys->last_soxr = NULL;
     }
     p_sys->i_next_pts = VLC_TICK_INVALID;
+    date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+    date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+    p_sys->fixed_pts_offset = 0;
+    p_sys->fixed_pts_valid = false;
 }

@@ -681,3 +681,8 @@ if HAVE_WIN32
 test_modules_packetizer_flac_eos_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
 test_modules_packetizer_flac_eos_LDADD += -l:libwinpthread.a
 endif
+
+# Real optional SoXR module timestamp regression.
+EXTRA_PROGRAMS += test_modules_soxr_timestamps
+test_modules_soxr_timestamps_SOURCES = modules/audio_filter/soxr_timestamps.c
+test_modules_soxr_timestamps_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)

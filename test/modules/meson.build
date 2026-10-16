@@ -285,6 +285,14 @@ vlc_tests += {
 
 
 if soxr_dep.found()
+    vlc_tests += {
+        'name': 'test_modules_soxr_timestamps',
+        'sources': files('audio_filter/soxr_timestamps.c'),
+        'suite': ['modules', 'test_modules'],
+        'link_with': [libvlc, libvlccore],
+        'dependencies': [m_lib],
+        'module_depends': ['soxr'],
+    }
     soxr_native_test_link_args = []
     soxr_native_test_dependencies = [soxr_dep, m_lib]
     if host_system == 'windows' and cc.get_id() == 'gcc'

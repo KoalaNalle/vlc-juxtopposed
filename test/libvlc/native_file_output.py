@@ -92,6 +92,7 @@ peak = max((abs(sample[0]) for sample in struct.iter_unpack('<h', pcm)), default
 identities = {}
 for relative in ('vlc.exe', 'libvlc.dll', 'libvlccore.dll',
                  'plugins/demux/libwav_plugin.dll',
+                 'plugins/audio_filter/libsoxr_plugin.dll',
                  'plugins/access_output/libaccess_output_file_plugin.dll',
                  'plugins/stream_out/libstream_out_transcode_plugin.dll'):
     identities[relative] = hashlib.sha256((package / relative).read_bytes()).hexdigest()

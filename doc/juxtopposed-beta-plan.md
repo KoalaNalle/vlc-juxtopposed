@@ -4,6 +4,16 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest fixed-rate audio clock checkpoint](juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
+closes the specific export timestamp discontinuity found during WAV/PCR work.
+SoXR fixed conversion now keeps an exact sample clock and preserves unanchored
+PCM; no-clock chains perform fixed conversion before their normally transparent
+final resampler. The adaptive playback branch is unchanged. Sixteen loaded-module/
+chain cases, lifecycle 11, Audio preferences 32, Waveform 9, strict PCM/FLAC tails,
+ordinary playback and final-tuple native 18/42/9/37 plus 4/25/8 pass. The full export
+has zero gaps/overlaps with every sample. Broader A/V sync, SDI hardware, complete
+settings/surfaces, native visual/DPI, Windows 11 and final clean packaging remain open.
+
 The [guest WAV/PCR checkpoint](juxtopposed-references/native/guest-wav-pcr-20261017/README.md)
 repairs missing WAV packet duration and partial-read arithmetic. Nine actual
 demux cases go from all failing to all passing; the same clean export runner

@@ -672,8 +672,10 @@ aout_filters_t *aout_FiltersNewWithClock(vlc_object_t *obj, vlc_clock_t *clock,
                      &input_format, &output_format, NULL);
     free(visual);
 
-    /* convert to the output format (minus resampling) if necessary */
-    output_format.i_rate = input_format.i_rate;
+    /* A clocked output adjusts drift in the final adaptive resampler.
+     * Generic chains (transcoding/SDI) first perform fixed-rate conversion;
+     * their final resampler is normally a transparent 1:1 pass-through. */
+    output_format.i_rate = clock != NULL ? input_format.i_rate : outfmt->i_rate;
     if (aout_FiltersPipelineCreate (obj, filters->tab, &filters->count,
                               AOUT_MAX_FILTERS, &input_format, &output_format))
     {
