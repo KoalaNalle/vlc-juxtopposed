@@ -14,6 +14,7 @@
 #include <vlc_player.h>
 #include <vlc_playlist.h>
 #include <vlc_input.h>
+#include <vlc_aout.h>
 #include <QUrl>
 #include <QDir>
 #include <QFile>
@@ -52,7 +53,7 @@ class TestAudioPreferences final : public QObject
     }
     bool openNative() {
         const QByteArray option=QByteArray("--config=")+m_config.toUtf8();
-        const char *args[]={"--no-ignore-config","--no-media-library","--quiet",option.constData()};
+        const char *args[]={"--no-ignore-config","--no-media-library","--quiet","--vout=vdummy",option.constData()};
         m_instance=libvlc_new(ARRAY_SIZE(args),args);if(!m_instance)return false;
         m_intf=vlc_object_create<qt_intf_t>(vlc_test_general_instance_object(m_instance));
         if(!m_intf)return false;m_model=std::make_unique<AudioPreferencesModel>(m_intf);return true;
@@ -323,6 +324,35 @@ private slots:
         QSignalSpy frequencies(m_model.get(),&AudioPreferencesModel::equalizerFrequenciesChanged);
         const bool old=config_GetInt("equalizer-vlcfreqs");config_PutInt("equalizer-vlcfreqs",!old);m_model->reload();
         QCOMPARE(frequencies.size(),1);QCOMPARE(m_model->equalizerFrequencies()[0].toDouble(),old?31.25:60.);
+    }
+    void genuineOutputVisualizationCallbackSurvivesFilterRestart() {
+        const auto fixture=qEnvironmentVariable("VLC_AUDIO_DEFAULTS_FIXTURE");
+        QVERIFY(!fixture.isEmpty()&&QFileInfo(fixture).isFile());
+        QVERIFY(module_exists("visual"));QVERIFY(startOwnedPcm(fixture));
+        QTRY_VERIFY_WITH_TIMEOUT(m_buffers.load()>5,10000);
+        std::unique_ptr<audio_output_t,decltype(&aout_Release)> aout(
+            vlc_player_aout_Hold(m_intf->p_player),aout_Release);
+        QVERIFY(aout);
+        QCOMPARE(var_Type(aout.get(),"visual")&VLC_VAR_CLASS,VLC_VAR_STRING);
+        auto value=[&aout](const char *name) {
+            char *raw=var_GetString(aout.get(),name);
+            const QString result=QString::fromUtf8(raw?raw:"");free(raw);return result;
+        };
+        // Only the production filter callback maps a named effect to the
+        // internal visualization module and requests the live filter restart.
+        QCOMPARE(var_SetString(aout.get(),"visual","spectrum"),VLC_SUCCESS);
+        QCOMPARE(value("audio-visual"),QStringLiteral("visual"));
+        QCOMPARE(value("effect-list"),QStringLiteral("spectrum"));
+        auto count=m_buffers.load();QTRY_VERIFY_WITH_TIMEOUT(m_buffers.load()>count+4,10000);
+        QCOMPARE(var_SetString(aout.get(),"visual",""),VLC_SUCCESS);
+        QCOMPARE(value("audio-visual"),QStringLiteral("none"));
+        count=m_buffers.load();QTRY_VERIFY_WITH_TIMEOUT(m_buffers.load()>count+4,10000);
+        // The restarted pipeline must install its own callback again.
+        QCOMPARE(var_SetString(aout.get(),"visual","scope"),VLC_SUCCESS);
+        QCOMPARE(value("audio-visual"),QStringLiteral("visual"));
+        QCOMPARE(value("effect-list"),QStringLiteral("scope"));
+        QCOMPARE(var_SetString(aout.get(),"visual",""),VLC_SUCCESS);
+        QCOMPARE(value("audio-visual"),QStringLiteral("none"));
     }
     void genuineSavedDefaultsDriveNewOutputAndLiveEqualizerPcm() {
         const auto fixture=qEnvironmentVariable("VLC_AUDIO_DEFAULTS_FIXTURE");

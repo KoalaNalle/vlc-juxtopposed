@@ -90,6 +90,24 @@ core/GUI and ordinary package are preserved. Work is under
 `build-windows/beta-audio-output-20261017`. Missing-visual-callback and PCR-match
 errors remain independently reproduced and open, along with full beta gates.
 
+The guest [audio-visualization checkpoint](doc/juxtopposed-references/native/guest-audio-visualization-20261017/README.md)
+repairs missing-variable callback registration/cleanup in generic audio filters,
+and prevents no-clock export/waveform chains from opening inherited visualizers.
+The same PCM runner goes from two callback errors to zero by changing only core.
+A configured-visualizer probe stalled before the clock guard and was explicitly
+stopped as a failed diagnostic; the repaired export finishes normally. Actual
+playing-output spectrum/off/scope callbacks survive filter restarts. Audio
+preferences pass 32/0/0/0 and AudioWaveform 9/0/0/0, including a configured
+visualizer worker, with complete PCM/peaks and no callback/write errors. Native
+18/42/9/37 plus 4 timeline/25 timer/8 subtitle-controller cases pass, all normal
+exits and zero failures/errors/skips. A separate ordinary runtime passes default
+redesigned/traditional video/audio and local HLS with zero QML/callback/write
+errors. Core is `da2989f73d5fc1040104ee745c13538375a6381e8f2d37d0979bb0a5af9c6345`,
+GUI remains `fe6113bd9b4203c3e9daf1dd8405e63dfe3c1a06e7d8c40fb735d16db3bb71ea`.
+Work is under `build-windows/beta-visual-callback-20261017`; baseline package and
+previous runtimes are preserved. The short stereo-to-mono PCR-match error and
+full beta/visual/DPI/Windows 11/final clean package gates remain open.
+
 ## Project and current checkpoint
 
 | Item | Value |

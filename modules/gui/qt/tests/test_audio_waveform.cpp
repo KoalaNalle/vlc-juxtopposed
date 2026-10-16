@@ -6,6 +6,7 @@
 #include "player/audio_waveform.hpp"
 #include <vlc/vlc.h>
 #include <vlc_player.h>
+#include <vlc_configuration.h>
 #include <QDataStream>
 #include <QElapsedTimer>
 #include <QFile>
@@ -62,6 +63,28 @@ private slots:
         QVERIFY(m_player);
         m_waveform = std::make_unique<AudioWaveform>(vlc_test_media_player_object(m_player));
         m_waveform->setEnabled(true);
+    }
+    void configuredVisualizationDoesNotEnterWorker()
+    {
+        struct RestoreVisualization {
+            char *visual = config_GetPsz("audio-visual");
+            char *effects = config_GetPsz("effect-list");
+            ~RestoreVisualization() {
+                config_PutPsz("audio-visual", visual);
+                config_PutPsz("effect-list", effects);
+                free(visual);free(effects);
+            }
+        } restore;
+        config_PutPsz("audio-visual", "visual");
+        config_PutPsz("effect-list", "spectrum");
+        // A fresh worker must decode rather than serve the main worker's cache.
+        AudioWaveform independent(vlc_test_media_player_object(m_player));
+        independent.setSource(m_fixture);
+        independent.setEnabled(true);
+        QTRY_VERIFY_WITH_TIMEOUT(!independent.loading(), 15000);
+        QVERIFY2(independent.available(), qPrintable(independent.error()));
+        QCOMPARE(independent.durationSeconds(), 30.0);
+        QCOMPARE(independent.peaks().size(), 300);
     }
     void fullNativeDecodeAndCache()
     {

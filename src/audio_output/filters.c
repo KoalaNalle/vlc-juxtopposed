@@ -369,6 +369,7 @@ struct aout_filters
     struct aout_filter resampler; /**< The resampler */
     int resampling; /**< Current resampling (Hz) */
     vlc_clock_t *clock_source;
+    bool visual_callback;
 
     unsigned count; /**< Number of filters */
     struct aout_filter tab[AOUT_MAX_FILTERS]; /**< Configured user filters
@@ -565,8 +566,13 @@ aout_filters_t *aout_FiltersNewWithClock(vlc_object_t *obj, vlc_clock_t *clock,
     audio_sample_format_t input_format = *infmt;
     audio_sample_format_t output_format = *outfmt;
 
-    /* Callbacks (before reading values and also before return statement) */
-    var_AddCallback (obj, "visual", VisualizationCallback, NULL);
+    /* Transcoding also uses this API, without an audio output's visual
+     * variable. Only register its callback when the variable exists, and
+     * remember the registration for both cleanup paths. */
+    filters->visual_callback =
+        (var_Type(obj, "visual") & VLC_VAR_CLASS) == VLC_VAR_STRING;
+    if (filters->visual_callback)
+        var_AddCallback(obj, "visual", VisualizationCallback, NULL);
 
     if (!AOUT_FMT_LINEAR(outfmt))
     {   /* Non-linear output: just convert formats, no filters/visu */
@@ -658,7 +664,9 @@ aout_filters_t *aout_FiltersNewWithClock(vlc_object_t *obj, vlc_clock_t *clock,
         free (str);
     }
 
-    char *visual = var_InheritString(obj, "audio-visual");
+    /* Visualizations request a video output driven by this source clock.
+     * Generic filter chains, including transcoding, have no such clock. */
+    char *visual = clock != NULL ? var_InheritString(obj, "audio-visual") : NULL;
     if (visual != NULL && strcasecmp(visual, "none"))
         AppendFilter(obj, "visualization", visual, filters,
                      &input_format, &output_format, NULL);
@@ -691,7 +699,8 @@ aout_filters_t *aout_FiltersNewWithClock(vlc_object_t *obj, vlc_clock_t *clock,
 
 error:
     aout_FiltersPipelineDestroy (filters->tab, filters->count);
-    var_DelCallback(obj, "visual", VisualizationCallback, NULL);
+    if (filters->visual_callback)
+        var_DelCallback(obj, "visual", VisualizationCallback, NULL);
     free (filters);
     return NULL;
 }
@@ -766,7 +775,8 @@ void aout_FiltersDelete (vlc_object_t *obj, aout_filters_t *filters)
     if (filters->resampler.f != NULL)
         aout_FiltersPipelineDestroy(&filters->resampler, 1);
     aout_FiltersPipelineDestroy (filters->tab, filters->count);
-    var_DelCallback(obj, "visual", VisualizationCallback, NULL);
+    if (filters->visual_callback)
+        var_DelCallback(obj, "visual", VisualizationCallback, NULL);
     free (filters);
 }
 

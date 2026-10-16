@@ -4,6 +4,17 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest audio-visualization checkpoint](juxtopposed-references/native/guest-audio-visualization-20261017/README.md)
+repairs generic audio-filter callback ownership and prevents no-clock export/
+waveform chains from opening inherited visualizations. Native playing-output
+visualizer callbacks/restarts work; Audio preferences pass 32 cases and waveform
+passes nine, including configured visualization, with complete PCM/peaks and no
+callback/write errors. The new ordinary tuple and native 18/42/9/37 plus
+4/25/8 controller regressions pass normally. A stalled intermediate configured
+probe required explicit owned-process cleanup and remains diagnostic only.
+The independent short stereo-to-mono PCR-match failure stays open, along with
+full native visual/DPI, settings/surfaces and final clean beta/Windows 11 gates.
+
 The [guest file-output checkpoint](juxtopposed-references/native/guest-file-output-20261017/README.md)
 repairs zero-byte blocks discarding later payload. An identical native test goes
 from five failures to all eight passing; full headless transcode writes go from
