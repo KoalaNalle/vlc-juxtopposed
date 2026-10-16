@@ -25,6 +25,7 @@ import QtQuick.Window
 import VLC.MainInterface
 import VLC.Style
 import VLC.PlayerControls
+import VLC.Player
 import VLC.Playlist
 import VLC.Widgets as Widgets
 import VLC.Menus as Menus
@@ -59,7 +60,9 @@ FocusScope{
 
     // Private
 
-    property bool _showTopBar: (pinControls === false || showToolbar === false)
+    readonly property bool _juxtopposedControls: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
+
+    property bool _showTopBar: _juxtopposedControls || (pinControls === false || showToolbar === false)
 
     property bool _showCenterText: (pinControls && showToolbar === false && showCSD)
 
@@ -455,7 +458,7 @@ FocusScope{
 
             Navigation.parentItem: root
             Navigation.leftItem: backBtn
-            Navigation.rightItem: playlistButton
+            Navigation.rightItem: fullscreenButton.visible ? fullscreenButton : playlistButton
 
             onClicked: contextMenu.popup(this.mapToGlobal(0, height))
 
@@ -479,6 +482,24 @@ FocusScope{
             }
         }
 
+        JuxtopposedButton {
+            id: fullscreenButton
+            anchors.verticalCenter: parent.verticalCenter
+            visible: root._juxtopposedControls
+            enabled: Player.hasVideoOutput
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            source: "qrc:/juxtopposed/" + JuxtopposedPalette.icon("fullscreen.svg")
+            mirrorIcon: true
+            description: Player.fullscreen ? qsTr("Leave fullscreen") : qsTr("Fullscreen")
+            Navigation.parentItem: root
+            Navigation.leftItem: menuSelector.visible ? menuSelector : backBtn
+            Navigation.rightItem: playlistButton
+            Keys.priority: Keys.AfterItem
+            Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
+            onClicked: Player.fullscreen = !Player.fullscreen
+            onHoveredChanged: root.requestLockUnlockAutoHide(hovered)
+        }
+
         PlaylistPane.PlaylistToggleButton {
             id: playlistButton
 
@@ -498,7 +519,8 @@ FocusScope{
             plListView: root.plListView
             
             Navigation.parentItem: root
-            Navigation.leftItem: menuSelector.visible ? menuSelector : backBtn
+            Navigation.leftItem: fullscreenButton.visible ? fullscreenButton
+                                                           : menuSelector.visible ? menuSelector : backBtn
 
             onClicked: togglePlaylistVisibility()
 

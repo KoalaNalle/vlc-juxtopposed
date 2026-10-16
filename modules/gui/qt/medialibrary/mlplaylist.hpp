@@ -50,6 +50,7 @@ private:
     int64_t m_duration;
 
     unsigned int m_count;
+    uint32_t m_nbDurationUnknown;
     unsigned int m_nbAudio;
     unsigned int m_nbVideo;
     unsigned int m_nbUnknown;

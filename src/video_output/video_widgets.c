@@ -36,6 +36,7 @@
 #include <vlc_filter.h>
 
 #include "vout_spuregion_helper.h"
+#include "osd_feedback_duration.h"
 
 #define STYLE_EMPTY 0
 #define STYLE_FILLED 1
@@ -286,7 +287,8 @@ static void OSDWidgetDestroy(subpicture_t *subpic)
 
 static void OSDWidget(vout_thread_t *vout, int channel, vlc_osd_widget_type type, int position)
 {
-    if (!var_InheritBool(vout, "osd"))
+    if (!var_InheritBool(vout, "osd") ||
+        !var_InheritBool(vout, "osd-shortcut-feedback"))
         return;
     if (type == OSD_HOR_SLIDER || type == OSD_VERT_SLIDER)
         position = VLC_CLIP(position, 0, 100);
@@ -315,7 +317,8 @@ static void OSDWidget(vout_thread_t *vout, int channel, vlc_osd_widget_type type
 
     subpic->i_channel  = channel;
     subpic->i_start    = vlc_tick_now();
-    subpic->i_stop     = subpic->i_start + VLC_TICK_FROM_MS(1200);
+    subpic->i_stop     = subpic->i_start
+                         + vlc_osd_feedback_duration(VLC_OBJECT(vout), VLC_TICK_FROM_MS(1200));
     subpic->b_ephemer  = true;
     subpic->b_fade     = true;
 

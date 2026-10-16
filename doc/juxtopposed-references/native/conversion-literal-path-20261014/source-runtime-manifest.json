@@ -1,0 +1,176 @@
+{
+  "hashAlgorithm": "SHA-256",
+  "date": "2026-10-14",
+  "source": {
+    "beforeControllerSha256": "24c11c75379063b26a4d4916191898fe31c1dbebf195c8832d643609d12a2bbd",
+    "afterControllerSha256": "cb0cc5d60efcff1025513d19f1a708811b3b8d755148c0f5cce4107e6ac492c5",
+    "unchangedTestSha256": "374d1a620138d965526026db737568bf929d73b59e6a76c80e41b1bdbaf6ba91",
+    "unchangedHelperSha256": "72bbb19933dcc70d05adfe3280b15d8224f889bea8fe9d8a6c5d5d9e981aae78",
+    "originalTenTestAndScaffoldingByteIdentityVerified": true,
+    "sourceContractSha256": {
+      "modules/access_output/file.c": "dc198f4f653277107c83c2d4b9b0dbc4cee2f7c881cffab805a8b28a91e501a2",
+      "src/config/chain.c": "c624c188e9056d8a6b812091ba11b738ca6fc543809b0f6ac0561ea846f8e8f7",
+      "src/text/strings.c": "5e03bbc0b0d840e82267f56bfba48835f041a1ba9b54a21fb9f5c7b7e896db96",
+      "modules/gui/qt/util/soutchain.cpp": "3918e468f34749779d3214af61b32876d24307d04834b65ca3cf63d7fa0fd049"
+    }
+  },
+  "executables": {
+    "setupOnly": {
+      "repositoryPath": "build-windows/literal-conversion-before-test.exe",
+      "sha256": "0ec465471a693e58c9a376bdfcba2ff692b883e9c7706b87007bb85294742321"
+    },
+    "before": {
+      "repositoryPath": "build-windows/literal-conversion-before-corrected-test.exe",
+      "sha256": "b18938fe52be26f10ef7fc73202315d1c5e5fd4ef70f48216575d7dfb1f595ed"
+    },
+    "after": {
+      "repositoryPath": "build-windows/literal-conversion-after-test.exe",
+      "sha256": "3f50907297511b145bf8360f8c4294cd954293a23717388675ab202c051fd522"
+    }
+  },
+  "selectedRuntimeRepositoryPath": "build-windows/slice-home-route-package-20261014",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+    "vlc-preparser.exe": "a9ea9f82ede90f338ec2afd731daba660d7c636e4789b330139c8fe1835fe1f6"
+  },
+  "selectedModules": [
+    {
+      "capability": "audio converter",
+      "module": "audio_format",
+      "resolvedPackageDll": "plugins\\audio_filter\\libaudio_format_plugin.dll",
+      "sha256": "bded8569fcf0ffcdaedc1f02d2a635fd894974349716476d490d0089fcb31484"
+    },
+    {
+      "capability": "audio converter",
+      "module": "simple_channel_mixer",
+      "resolvedPackageDll": "plugins\\audio_filter\\libsimple_channel_mixer_plugin.dll",
+      "sha256": "79e254422d7881c83bdf47a63abe4e5e19806c22b5718200e699e33f001c9253"
+    },
+    {
+      "capability": "audio converter",
+      "module": "trivial",
+      "resolvedPackageDll": "plugins\\audio_filter\\libtrivial_channel_mixer_plugin.dll",
+      "sha256": "1150ef159de0d5398f0d9224bd3b4e6213a4fe04712357c37dbe9ed3fe8636ba"
+    },
+    {
+      "capability": "audio decoder",
+      "module": "araw",
+      "resolvedPackageDll": "plugins\\codec\\libaraw_plugin.dll",
+      "sha256": "940f74063bc1b95827bc08971c861dfe405a7bdc28bf1af380e4013f67abe568"
+    },
+    {
+      "capability": "audio decoder",
+      "module": "flac",
+      "resolvedPackageDll": "plugins\\codec\\libflac_plugin.dll",
+      "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+    },
+    {
+      "capability": "audio encoder",
+      "module": "araw",
+      "resolvedPackageDll": "plugins\\codec\\libaraw_plugin.dll",
+      "sha256": "940f74063bc1b95827bc08971c861dfe405a7bdc28bf1af380e4013f67abe568"
+    },
+    {
+      "capability": "audio encoder",
+      "module": "flac",
+      "resolvedPackageDll": "plugins\\codec\\libflac_plugin.dll",
+      "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+    },
+    {
+      "capability": "audio resampler",
+      "module": "soxr",
+      "resolvedPackageDll": "plugins\\audio_filter\\libsoxr_plugin.dll",
+      "sha256": "d5600210c4932d41efdb1d2d6c7783965369f43f9c7ce6b9e5720d2bd0fb039d"
+    },
+    {
+      "capability": "sout access",
+      "module": "file",
+      "resolvedPackageDll": "plugins\\access_output\\libaccess_output_file_plugin.dll",
+      "sha256": "5bde233135e376db2c9e9ed3a90bf9986675f31f300ae8ed3da8abc170f4235f"
+    },
+    {
+      "capability": "sout filter",
+      "module": "transcode",
+      "resolvedPackageDll": "plugins\\stream_out\\libstream_out_transcode_plugin.dll",
+      "sha256": "b6b841ea079d4121fc288bfe43f4436f7bd632042ad8c8cff46e83a67559c984"
+    },
+    {
+      "capability": "sout mux",
+      "module": "dummy",
+      "resolvedPackageDll": "plugins\\mux\\libmux_dummy_plugin.dll",
+      "sha256": "e1b56657942d68bbd1827e42d343d5b720fc4e2124bfcae63851759fc256d03f"
+    }
+  ],
+  "actualRuns": {
+    "before": {
+      "exitCode": 1,
+      "totals": "10 passed, 1 failed, 0 skipped, 0 blacklisted, 3251ms",
+      "failureCase": "inheritedFileFormatKeepsLiteralPercentDestination",
+      "failureAssertionLine": 271,
+      "nativePathRewriteLines": [
+        924,
+        932
+      ]
+    },
+    "after": {
+      "exitCode": 0,
+      "totals": "Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, 4453ms",
+      "orderedPassCases": [
+        "initTestCase",
+        "localValidationAndNoOverwrite",
+        "realFlacAndActualPlayback",
+        "inheritedRunTimeAndInputChoicesDoNotTrim",
+        "inheritedFileFormatKeepsLiteralPercentDestination",
+        "corruptSourceDoesNotPublish",
+        "destinationRaceIsPreserved",
+        "runningCancellationAndReuse",
+        "independentPrimaryQueueAndPausedClock",
+        "runningWorkerShutdown",
+        "cleanupTestCase"
+      ],
+      "literalEncodeAndValidationChainLines": [
+        929,
+        1097
+      ]
+    }
+  },
+  "capturedSyntheticEvidence": {
+    "sourceWavSha256": "51ab004a7d0a25f8d451adb7abb2d123dafb811c14cfadb5350292cc746a7a51",
+    "convertedFlacSha256": "8584ab48c00e29a202918a0b629005274510784313ef9fde30ac875b96809b36",
+    "sourceWavBytes": 176484,
+    "convertedFlacBytes": 25715,
+    "provenance": "These retained files come from the unchanged realFlacAndActualPlayback case. The new literal-percent case output and raw PCM were not separately retained.",
+    "newCaseOutputProof": "Actual native case passes ordinary FL32/44100/mono playback, more than two callbacks, stopped state, 88200 +/- 100 samples, peak between 0.3 and 0.5; not exact PCM equality."
+  },
+  "buildProof": {
+    "owner": "Root one-writer",
+    "ownerReportedAllBuildExitCodes": 0,
+    "before": [
+      "MOC tests/test_conversion_controller.moc",
+      "CXX test_conversion_controller",
+      "CXX conversion_controller",
+      "CXXLD test_qt_conversion_controller.exe"
+    ],
+    "after": [
+      "Unchanged test MOC/object reused",
+      "CXX conversion_controller",
+      "CXXLD test_qt_conversion_controller.exe"
+    ],
+    "scope": "Actual Automake compile/link logs and saved executable identities plus native execution. Meson was not configured or built for this proof."
+  },
+  "setupHistory": {
+    "executionPerformed": false,
+    "acceptedBaseline": false,
+    "reason": "Initial endswith filename routing skipped the new C++ slot; printed source hashes exposed it before any native run. Its build succeeded but is setup history only."
+  },
+  "scope": {
+    "nativeLiteralFileOutputAccepted": true,
+    "packagedGuiAcceptance": false,
+    "originalFigmaConversionFormAcceptance": false,
+    "broaderVideoFormatsProfilesAcceptance": false,
+    "fullPickerProviderAndWindowLifetimeAcceptance": false,
+    "exactDesktopPcmProof": "The separately retained 1323000-frame desktop-output proof has a different fixture and remains a separate result.",
+    "binariesUserdataAndMediaCopied": false
+  }
+}

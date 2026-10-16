@@ -32,6 +32,7 @@ Widgets.PageExt {
     title: model.name
 
     property alias model: loader.model
+    property alias initialIndex: loader.initialIndex
     property var headerPath: model.path ?? []
 
     property var contextMenu

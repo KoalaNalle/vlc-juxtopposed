@@ -1342,6 +1342,12 @@ fromJSON_vlc_preparser_msg_req(struct serdes_sys *sys,
     }
     if (req->type == VLC_PREPARSER_MSG_REQ_TYPE_PARSE) {
         json_object_to_int(obj, "options", &req->options, &err);
+        /* Older requests omit the field and keep the child's legacy default. */
+        req->show_hiddenfiles = -1;
+        if (json_get(obj, "show_hiddenfiles") != NULL) {
+            json_object_to_integer(obj, "show_hiddenfiles", &req->show_hiddenfiles,
+                                   &err, -1, 1);
+        }
     } else {
         if (req->type == VLC_PREPARSER_MSG_REQ_TYPE_THUMBNAIL_TO_FILES) {
             json_array_foreach_ref(obj, "outputs", v, &err) {

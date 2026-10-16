@@ -60,6 +60,12 @@ FocusScope {
                                         &&
                                         (MainCtx.intfMainWindow.visibility !== Window.FullScreen))
 
+    // Legacy pinning forces windowed controls visible. Explicit auto-hide
+    // modes may hide the docked controls while preserving their layout mode.
+    readonly property bool _controlsForcedVisible: _controlsUnderVideo
+        && (MainCtx.controlAutoHideMode < 0 || MainCtx.controlAutoHideMode === 0
+            || (MainCtx.controlAutoHideMode === 1 && MainCtx.intfMainWindow.visibility !== Window.FullScreen))
+
     property bool _keyPressed: false
 
     // Settings
@@ -96,8 +102,8 @@ FocusScope {
         rootPlayer.Navigation.defaultKeyReleaseAction(event)
     }
 
-    on_ControlsUnderVideoChanged: {
-        lockUnlockAutoHide(_controlsUnderVideo)
+    on_ControlsForcedVisibleChanged: {
+        lockUnlockAutoHide(_controlsForcedVisible)
     }
 
     // Functions
@@ -279,7 +285,7 @@ FocusScope {
                         //short interval for mouse events
                         if (Player.isInteractive)
                             interactiveAutoHideTimer.restart()
-                        else
+                        if (!Player.isInteractive || MainCtx.controlAutoHideMode >= 0)
                             playerToolbarVisibilityFSM.mouseMove();
                     }
 
@@ -357,6 +363,28 @@ FocusScope {
 
                 property real topPadding: playerSpecializationLoader.topPadding
                 property real bottomPadding: playerSpecializationLoader.bottomPadding
+                readonly property bool musicPresentationActive: musicView.active
+
+                Rectangle {
+                    anchors.fill: parent
+                    visible: musicView.active && !(musicView.item?.artworkReady ?? false)
+                    color: "#151515"
+                }
+
+                Binding {
+                    target: Player.waveform
+                    property: "source"
+                    value: Player.url
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+
+                Binding {
+                    target: Player.waveform
+                    property: "enabled"
+                    value: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
+                           && Player.audioTracks.count === 1 && Player.videoTracks.count === 0
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
 
                 // Whether the full lyrics view is active
                 readonly property bool lyricsMode: MainCtx.lyricsMode
@@ -370,9 +398,98 @@ FocusScope {
                         lyricsLoader.item.lyricsSyncToPlayback = true
                 }
 
+                Binding {
+                    target: Player.musicFolder
+                    property: "sourceUrl"
+                    value: Player.url
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                Binding {
+                    target: Player.musicFolder
+                    property: "enabled"
+                    value: controlBar.redesigned && Player.videoTracks.count === 0
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                Binding {
+                    target: MainCtx
+                    property: "useGlobalShortcuts"
+                    when: musicView.active && (musicView.item?.editingOrMenuActive ?? false)
+                    value: false
+                    restoreMode: Binding.RestoreBindingOrValue
+                }
+                PlaylistListModel {
+                    id: audioQueue
+                    playlist: MainPlaylistController.playlist
+                }
+                Loader {
+                    id: musicView
+                    z: 1
+                    objectName: "juxtopposedMusicLoader"
+                    anchors.fill: parent
+                    anchors.topMargin: audioFocusScope.topPadding
+                    anchors.bottomMargin: audioFocusScope.bottomPadding
+                    focus: true
+                    active: controlBar.redesigned && Player.videoTracks.count === 0
+                            && !audioFocusScope.lyricsLayoutActive
+                    sourceComponent: JuxtopposedMusicPlayer {
+                        uiScale: VLCStyle.dp(1, VLCStyle.scale)
+                        iconFontFamily: VLCIcons.fontFamily
+                        backIcon: VLCIcons.back
+                        moreIcon: VLCIcons.more
+                        addIcon: VLCIcons.add
+                        searchIcon: VLCIcons.search
+                        preferencesIcon: VLCIcons.settings
+                        artwork: Player.artwork.toString().length ? VLCAccessImage.uri(Player.artwork) : ""
+                        fallbackArtwork: VLCStyle.noArtAlbumCover
+                        title: Player.title
+                        artist: Player.artist
+                        folderAvailable: Player.musicFolder.available
+                        folderName: Player.musicFolder.name
+                        sourceModel: folderMode ? Player.musicFolder : audioQueue
+                        itemCount: folderMode ? Player.musicFolder.count : audioQueue.count
+                        currentIndex: folderMode ? Player.musicFolder.currentIndex : audioQueue.currentIndex
+                        busy: Player.musicFolder.busy
+                        error: displayFolder ? Player.musicFolder.error : ""
+                        searchPattern: folderMode ? Player.musicFolder.searchPattern : ""
+                        sortAscending: Player.musicFolder.sortAscending
+                        lyricsAvailable: Player.hasLyrics
+                        lyricsEnabled: MainCtx.lyricsMode
+                        libraryAvailable: MainCtx.mediaLibraryAvailable
+                        libraryBusy: MainCtx.mediaLibraryAvailable && !MainCtx.mediaLibrary.idle
+                        navigationRoutes: [
+                            {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
+                             uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
+                            {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
+                             uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
+                            {key: "network", text: qsTr("Network"), icon: VLCIcons.topbar_network,
+                             uri: ["network"], enabled: true},
+                            {key: "playlists", text: qsTr("Playlists"), icon: VLCIcons.playlist,
+                             uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable}
+                        ]
+                        onActivationRequested: row => {
+                            if (folderMode) Player.musicFolder.addAndPlay(row)
+                            else MainPlaylistController.goTo(row, true)
+                        }
+                        onAddRequested: DialogsProvider.simpleOpenDialog(false)
+                        onBackRequested: MainCtx.playerView = false
+                        onFolderOpenRequested: Qt.openUrlExternally(Player.musicFolder.folderUrl)
+                        onRefreshRequested: Player.musicFolder.refresh()
+                        onSearchRequested: pattern => Player.musicFolder.searchPattern = pattern
+                        onSortRequested: Player.musicFolder.sortAscending = !Player.musicFolder.sortAscending
+                        onLyricsRequested: MainCtx.lyricsMode = !MainCtx.lyricsMode
+                        onPreferencesRequested: DialogsProvider.prefsDialog()
+                        onRouteRequested: (route, reason) => {
+                            History.push(route, {}, reason)
+                            MainCtx.playerView = false
+                        }
+                        onControlsFocusRequested: reason => controlBar.forceActiveFocus(reason)
+                    }
+                }
+
                 // background image
                 Widgets.DualKawaseBlur {
                     id: blurredBackground
+                    visible: !musicView.active || (musicView.item?.artworkReady ?? false)
 
                     // Six pass is free here since we release the intermediate layers
                     // through unsetting `live` (see `liveTimer`):
@@ -388,10 +505,12 @@ FocusScope {
                     readonly property real dar: parent.width / parent.height
 
                     anchors.centerIn: parent
-                    width: (cover.sar < dar) ? parent.width :  parent.height * cover.sar
-                    height: (cover.sar < dar) ? parent.width / cover.sar :  parent.height
+                    readonly property real sourceAspectRatio: musicView.active ? (musicView.item?.artworkAspectRatio ?? 1) : (cover.sar > 0 ? cover.sar : 1)
+                    width: (sourceAspectRatio < dar) ? parent.width : parent.height * sourceAspectRatio
+                    height: (sourceAspectRatio < dar) ? parent.width / sourceAspectRatio : parent.height
 
-                    source: textureProviderIndirection
+                    source: musicView.active ? (musicView.item?.artworkTextureProvider ?? textureProviderIndirection)
+                                             : textureProviderIndirection
 
                     postprocess: true
                     tint: bgtheme.palette.isDark ? "black" : "white"
@@ -457,6 +576,7 @@ FocusScope {
 
                 MouseArea {
                     id: centerContent
+                    visible: !musicView.active
 
                     readonly property ColorContext colorContext: ColorContext {
                         id: centerTheme
@@ -947,14 +1067,16 @@ FocusScope {
 
         // NOTE: With pinned controls, the top controls are hidden when switching to
         //       fullScreen. Except when resume is visible
-        visible: (MainCtx.pinVideoControls === false
+        visible: (controlBar.redesigned
+                  ||
+                  MainCtx.pinVideoControls === false
                   ||
                   MainCtx.intfMainWindow.visibility !== Window.FullScreen
                   ||
                   resumeVisible)
 
         focus: true
-        title: Player.title
+        title: playerSpecializationLoader.item?.musicPresentationActive || !MainCtx.showMediaNameInTitle ? "" : Player.title
 
         pinControls: MainCtx.pinVideoControls
 
@@ -985,7 +1107,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
         }
 
         onTogglePlaylistVisibility: playlistVisibility.togglePlaylistVisibility()
@@ -1040,7 +1162,12 @@ FocusScope {
             right: parent.right
             bottom: parent.bottom
 
-            bottomMargin: parent.height - rootPlayer.positionSliderY
+            topMargin: controlBar.redesigned ? (rootPlayer._controlsUnderVideo
+                                               ? VLCStyle.dp(20, VLCStyle.scale)
+                                               : Math.max(VLCStyle.dp(60, VLCStyle.scale), topBar.reservedHeight)) : 0
+            rightMargin: controlBar.redesigned ? VLCStyle.dp(20, VLCStyle.scale) : 0
+            bottomMargin: controlBar.redesigned ? controlBar.height + VLCStyle.dp(20, VLCStyle.scale)
+                                               : parent.height - rootPlayer.positionSliderY
         }
 
         focus: false
@@ -1096,9 +1223,9 @@ FocusScope {
         sourceComponent: PlaylistPane {
             id: playlistView
 
-            property real maximumWidth: (rootPlayer.width + playlistView.rightPadding) / 2
+            property real maximumWidth: Math.max(minimumWidth, (rootPlayer.width + playlistView.rightPadding) / 2)
 
-            implicitWidth: Helpers.clamp(MainCtx.playqueuePanel.width
+            implicitWidth: Helpers.clamp(playlistView.preferredWidth
                                  , playlistView.minimumWidth
                                  , playlistView.maximumWidth)
             height: playlistpopup.height
@@ -1108,8 +1235,10 @@ FocusScope {
 
             wheelEnabled: true
 
-            rightPadding: VLCStyle.applicationHorizontalMargin
+            rightPadding: juxtopposed ? 0 : VLCStyle.applicationHorizontalMargin
             topPadding:  {
+                if (juxtopposed)
+                    return 0
                 if (rootPlayer._controlsUnderVideo)
                     return VLCStyle.margin_normal
                 else
@@ -1119,7 +1248,7 @@ FocusScope {
             bottomPadding: 0
 
             background: Rectangle {
-                color: windowTheme.bg.primary.alpha(0.8)
+                color: playlistView.juxtopposed ? "transparent" : windowTheme.bg.primary.alpha(0.8)
             }
 
             view.fadingEdge.pixelAlignedForDPR: !controlBar.visible
@@ -1292,9 +1421,9 @@ FocusScope {
 
         focus: true
 
-        rightPadding: VLCStyle.applicationHorizontalMargin
-        leftPadding: VLCStyle.applicationHorizontalMargin
-        bottomPadding: VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall
+        rightPadding: redesigned ? 0 : VLCStyle.applicationHorizontalMargin
+        leftPadding: redesigned ? 0 : VLCStyle.applicationHorizontalMargin
+        bottomPadding: redesigned ? 0 : VLCStyle.applicationVerticalMargin + VLCStyle.margin_xsmall
 
         textPosition: (MainCtx.pinVideoControls)
                       ? ControlBar.TimeTextPosition.LeftRightSlider
@@ -1323,7 +1452,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsUnderVideo) ? "visible" : "hidden"
+            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
         }
 
         onRequestLockUnlockAutoHide: (lock) => rootPlayer.lockUnlockAutoHide(lock)
@@ -1375,6 +1504,23 @@ FocusScope {
         }
     }
 
+    // Passive observation adds audio-mode reveal without intercepting music
+    // buttons, swipes, drag operations or existing context menus.
+    HoverHandler {
+        enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0
+        blocking: false
+        target: null
+        onPointChanged: playerToolbarVisibilityFSM.mouseMove()
+        onHoveredChanged: if (hovered) playerToolbarVisibilityFSM.mouseMove()
+    }
+    PointHandler {
+        enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0
+        acceptedDevices: PointerDevice.TouchScreen
+        target: null
+        onActiveChanged: if (active) playerToolbarVisibilityFSM.mouseMove()
+        onPointChanged: if (active) playerToolbarVisibilityFSM.mouseMove()
+    }
+
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.BackButton
@@ -1394,7 +1540,7 @@ FocusScope {
         Keys.onPressed: (event) => {
             if (Player.isInteractive)
                 interactiveAutoHideTimer.restart()
-            else
+            if (!Player.isInteractive || MainCtx.controlAutoHideMode >= 0)
                 playerToolbarVisibilityFSM.keyboardMove()
         }
     }

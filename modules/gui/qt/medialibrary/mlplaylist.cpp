@@ -31,6 +31,7 @@ MLPlaylist::MLPlaylist(const vlc_ml_playlist_t * data)
     , m_name(qfu(data->psz_name))
     , m_duration(data->i_duration)
     , m_count(data->i_nb_media)
+    , m_nbDurationUnknown(data->i_nb_duration_unknown)
     , m_nbAudio(data->i_nb_audio)
     , m_nbVideo(data->i_nb_video)
     , m_nbUnknown(data->i_nb_unknown)
@@ -56,6 +57,10 @@ void MLPlaylist::setName(const QString & name)
 
 VLCDuration MLPlaylist::getDuration() const
 {
+    // Native duration is the sum of known lengths. An empty zero remains
+    // valid, and mixed playlists keep their native partial known subtotal.
+    if (m_count > 0 && m_nbDurationUnknown == m_count)
+        return {};
     return VLCDuration::fromMS(m_duration);
 }
 

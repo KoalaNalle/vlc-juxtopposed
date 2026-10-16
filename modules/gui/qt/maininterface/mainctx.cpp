@@ -32,8 +32,18 @@
 #include <QJSEngine>
 
 #include "mainctx.hpp"
+#include "util/fullscreen_screen_policy.hpp"
 #include "mainctx_submodels.hpp"
+#include "subtitle_preset_model.hpp"
+#include "general_preferences_model.hpp"
+#include "interface_preferences_model.hpp"
+#include "playback_preferences_model.hpp"
+#include "video_preferences_model.hpp"
+#include "audio_preferences_model.hpp"
+#include "subtitles_preferences_model.hpp"
+#include "library_preferences_model.hpp"
 #include "medialibrary/mlhelper.hpp"
+#include "medialibrary/mlhomeactivity.hpp"
 
 #include "compositor.hpp"
 #include "util/renderer_manager.hpp"
@@ -135,6 +145,20 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     : p_intf(_p_intf)
     , m_csdButtonModel {std::make_unique<CSDButtonModel>(this, this)}
 {
+    // Read new Interface startup policies once. Recreating a Player or tray
+    // later in this process must not mix newly-saved values with CONSTANT QML
+    // bindings from a previously-created Player.
+    if (config_GetType("qt-controls-auto-hide") == VLC_VAR_INTEGER)
+        m_startupControlsAutoHide = var_InheritInteger(p_intf, "qt-controls-auto-hide");
+    if (config_GetType("qt-controls-hide-timeout") == VLC_VAR_INTEGER)
+        m_startupControlsHideTimeout = var_InheritInteger(p_intf, "qt-controls-hide-timeout");
+    m_startupShowMediaNameInTitle = var_InheritBool(p_intf, "qt-name-in-title");
+    if (config_GetType("qt-remember-window-geometry") == VLC_VAR_BOOL)
+        m_startupRememberGeometry = var_InheritBool(p_intf, "qt-remember-window-geometry");
+    if (config_GetType("qt-notification-duration") == VLC_VAR_INTEGER)
+        m_startupNotificationDuration = var_InheritInteger(p_intf, "qt-notification-duration");
+    m_startupFullscreenScreen = var_InheritInteger(p_intf, "qt-fullscreen-screennumber");
+
     // If `playlist-autostart` is set, and there are initial files
     // we don't bother loading main display just to unload it
     // immediately after. Instead, we directly load the player
@@ -159,6 +183,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
      **/
 
     settings = getSettings();
+    m_subtitlePresets = new SubtitlePresetModel(p_intf->p_player, THEMIM->getSubtitleAppearance(),
+        settings, VLC_OBJECT(p_intf), this);
     m_colorScheme = new ColorSchemeModel(this);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
@@ -206,6 +232,31 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
 
     loadPrefs(false);
     loadFromSettingsImpl(false);
+    // Snapshot startup preferences after the native theme/settings restore.
+    m_generalPreferences = new GeneralPreferencesModel(p_intf, m_colorScheme, settings, this);
+    // Default Consumers gates remain false until each native behavior is verified.
+    m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, this);
+    // Precise-seek capability stays gated until actual native app acceptance.
+    m_playbackPreferences = new PlaybackPreferencesModel(p_intf, this);
+    // Video native consumer acceptance gates remain false.
+    m_videoPreferences = new VideoPreferencesModel(p_intf, this);
+    // Audio native consumer acceptance gates remain false.
+    m_audioPreferences = new AudioPreferencesModel(p_intf, this);
+    // Native placement/shortcut consumers passed the full subtitle renderer suite.
+    SubtitlesPreferencesModel::Consumers subtitleConsumers;
+    subtitleConsumers.primaryAlignment = true;
+    subtitleConsumers.feedbackDuration = true;
+    subtitleConsumers.shortcutFeedback = true;
+    m_subtitlesPreferences = new SubtitlesPreferencesModel(p_intf, m_subtitlePresets,
+        subtitleConsumers, this);
+    // Opening/folder consumers passed native and actual two-process acceptance.
+    // Metadata cancellation/fallback and local/network scopes passed separately.
+    LibraryPreferencesModel::Consumers libraryConsumers;
+    libraryConsumers.instancePolicy = true;
+    libraryConsumers.openingQueue = true;
+    libraryConsumers.hiddenAttributes = true;
+    libraryConsumers.metadataFetch = true;
+    m_libraryPreferences = new LibraryPreferencesModel(p_intf, libraryConsumers, this);
 
     /* Get the available interfaces */
     m_extraInterfaces = new VLCVarChoiceModel(VLC_OBJECT(p_intf->intf), "intf-add", this);
@@ -312,6 +363,25 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_libraryPreferences;
+    m_libraryPreferences = nullptr;
+    delete m_subtitlesPreferences;
+    m_subtitlesPreferences = nullptr;
+    delete m_audioPreferences;
+    m_audioPreferences = nullptr;
+    delete m_videoPreferences;
+    m_videoPreferences = nullptr;
+    // Playback borrows native player/playlist state; destroy it before Qt/native teardown.
+    delete m_playbackPreferences;
+    m_playbackPreferences = nullptr;
+    // Both services borrow settings; destroy them before those dependencies.
+    delete m_interfacePreferences;
+    m_interfacePreferences = nullptr;
+    // Tear down the service while its settings/native colour dependencies live.
+    delete m_generalPreferences;
+    m_generalPreferences = nullptr;
+    delete m_subtitlePresets;
+    m_subtitlePresets = nullptr;
 
     if ( !p_intf->preferencesResetPending)
     {
@@ -449,6 +519,8 @@ void MainCtx::loadPrefs(const bool callSignals)
 
     loadFromVLCOption(m_maxVolume, "qt-max-volume", &MainCtx::maxVolumeChanged);
 
+    loadFromVLCOption(m_juxtopposedControls, "qt-juxtopposed-controls", &MainCtx::juxtopposedControlsChanged);
+
     loadFromVLCOption(m_pinVideoControls, "qt-pin-controls", &MainCtx::pinVideoControlsChanged);
 
     loadFromVLCOption(m_pinOpacity, "qt-fs-opacity", &MainCtx::pinOpacityChanged);
@@ -510,7 +582,11 @@ void MainCtx::loadFromSettingsImpl(const bool callSignals)
 
 void MainCtx::reloadPrefs()
 {
+    if (p_intf->preferencesResetPending && m_medialib && m_medialib->homeActivity())
+        m_medialib->homeActivity()->clearVisits();
     loadPrefs(true);
+    if (p_intf->preferencesResetPending) m_subtitlePresets->reload();
+    else m_subtitlePresets->refreshDefaults();
 }
 
 void MainCtx::onInputChanged( bool hasInput )
@@ -542,6 +618,11 @@ void MainCtx::onVOutChanged( bool video )
 #endif
 void MainCtx::sendHotkey(Qt::Key key , Qt::KeyboardModifiers modifiers)
 {
+    // Direct QML and wheel dispatch must obey the same shared-modal boundary
+    // as the native window event filter. Do not create a provider during setup.
+    const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
+    if (dialogs && dialogs->qmlDialogVisible()) return;
+
     QKeyEvent event(QEvent::KeyPress, key, modifiers );
     int vlckey = qtEventToVLCKey(&event);
     var_SetInteger(vlc_object_instance(p_intf), "key-pressed", vlckey);
@@ -549,6 +630,11 @@ void MainCtx::sendHotkey(Qt::Key key , Qt::KeyboardModifiers modifiers)
 
 void MainCtx::sendVLCHotkey(int vlcHotkey)
 {
+    // Direct QML and wheel dispatch must obey the same shared-modal boundary
+    // as the native window event filter. Do not create a provider during setup.
+    const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
+    if (dialogs && dialogs->qmlDialogVisible()) return;
+
     var_SetInteger(vlc_object_instance(p_intf), "key-pressed", vlcHotkey);
 }
 
@@ -1138,35 +1224,9 @@ bool MainCtx::useXmasCone() const
             && var_InheritBool( p_intf, "qt-icon-change" );
 }
 
-bool WindowStateHolder::holdFullscreen(QWindow *window, Source source, bool hold)
+bool WindowStateHolder::holdFullscreen(QWindow *window, Source source, bool hold, int screenIndex)
 {
-    QVariant prop = window->property("__windowFullScreen");
-    bool ok = false;
-    unsigned fullscreenCounter = prop.toUInt(&ok);
-    if (!ok)
-        fullscreenCounter = 0;
-
-    if (hold)
-        fullscreenCounter |= source;
-    else
-        fullscreenCounter &= ~source;
-
-    Qt::WindowStates oldflags = window->windowStates();
-    Qt::WindowStates newflags;
-
-    if( fullscreenCounter != 0 )
-        newflags = oldflags | Qt::WindowFullScreen;
-    else
-        newflags = oldflags & ~Qt::WindowFullScreen;
-
-    window->setProperty("__windowFullScreen", QVariant::fromValue(fullscreenCounter));
-
-    if( newflags != oldflags )
-    {
-        window->setWindowStates( newflags );
-    }
-
-    return fullscreenCounter != 0;
+    return vlc::qt::holdWindowFullscreen(window, unsigned(source), hold, screenIndex);
 }
 
 bool WindowStateHolder::holdOnTop(QWindow *window, Source source, bool hold)

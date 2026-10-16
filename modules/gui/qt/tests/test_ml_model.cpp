@@ -21,6 +21,8 @@
 #endif
 
 #include "../medialibrary/mlbasemodel.hpp"
+#include "../medialibrary/mlmedia.hpp"
+#include "../medialibrary/mlplaylist.hpp"
 #include "vlc_stub_modules.hpp"
 
 #include <memory>
@@ -168,6 +170,84 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(m_model->getCount(), 1000u, 100);
     }
 
+
+    void testUnknownMediaDurationFormatting()
+    {
+        // Exercise the production native-row constructor and public formatter,
+        // including the -1 ms external-media value seen on first playlist save.
+        // This target's ML stub does not claim a database discovery journey.
+        vlc_ml_file_list_t files{};
+        vlc_ml_media_t row{};
+        row.i_id = 1;
+        row.i_type = VLC_ML_MEDIA_TYPE_UNKNOWN;
+        row.p_files = &files;
+        row.i_duration = -1;
+        const MLMedia external(&row);
+        QVERIFY(!external.duration().valid());
+        QCOMPARE(external.duration().formatShort(), QString("--:--"));
+        QCOMPARE(external.duration().formatHMS(), QString("--:--"));
+
+        row.i_duration = 0;
+        const MLMedia zero(&row);
+        QVERIFY(zero.duration().valid());
+        QCOMPARE(zero.duration().asMilliseconds(), int64_t(0));
+        QCOMPARE(zero.duration().formatHMS(0), QString("00:00"));
+
+        row.i_type = VLC_ML_MEDIA_TYPE_AUDIO;
+        row.i_duration = 500;
+        const MLMedia shortAudio(&row);
+        QVERIFY(shortAudio.duration().valid());
+        QCOMPARE(shortAudio.duration().asMilliseconds(), int64_t(500));
+
+        row.i_type = VLC_ML_MEDIA_TYPE_VIDEO;
+        row.i_duration = 2000;
+        const MLMedia video(&row);
+        QVERIFY(video.duration().valid());
+        QCOMPARE(video.duration().formatShort(), QString("00:02"));
+
+        const auto signedDelay = VLCDuration::fromMS(-650);
+        QVERIFY(signedDelay.valid());
+        QCOMPARE(signedDelay.asMilliseconds(), int64_t(-650));
+    }
+
+    void testAllUnknownPlaylistDurationFormatting()
+    {
+        // Duration-knownness uses the native duration counter, independently
+        // of media TYPE. Known audio/video can also have unknown lengths.
+        vlc_ml_playlist_t row{};
+        row.i_id = 17;
+        row.i_nb_media = 3;
+        row.i_nb_audio = 1;
+        row.i_nb_video = 2;
+        row.i_nb_unknown = 0;
+        row.i_nb_duration_unknown = 3;
+        row.i_duration = 0;
+        const MLPlaylist allUnknown(&row);
+        QVERIFY(!allUnknown.getDuration().valid());
+        QCOMPARE(allUnknown.getDuration().formatShort(), QString("--:--"));
+
+        row.i_nb_media = 0;
+        row.i_nb_audio = row.i_nb_video = 0;
+        row.i_nb_duration_unknown = 0;
+        const MLPlaylist empty(&row);
+        QVERIFY(empty.getDuration().valid());
+        QCOMPARE(empty.getDuration().asMilliseconds(), int64_t(0));
+
+        row.i_nb_media = 3;
+        row.i_nb_audio = row.i_nb_video = row.i_nb_unknown = 1;
+        row.i_nb_duration_unknown = 1;
+        row.i_duration = 4000;
+        const MLPlaylist partialKnown(&row);
+        QVERIFY(partialKnown.getDuration().valid());
+        QCOMPARE(partialKnown.getDuration().asMilliseconds(), int64_t(4000));
+        QCOMPARE(partialKnown.getDuration().formatShort(), QString("00:04"));
+
+        row.i_nb_duration_unknown = 0;
+        row.i_duration = 0;
+        const MLPlaylist knownZero(&row);
+        QVERIFY(knownZero.getDuration().valid());
+        QCOMPARE(knownZero.getDuration().asMilliseconds(), int64_t(0));
+    }
 
     void testGetIndexFromID()
     {

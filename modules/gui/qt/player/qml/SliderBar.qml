@@ -30,6 +30,8 @@ T.ProgressBar {
 
     readonly property real _hoveredScalingFactor: 1.8
     property int barHeight: VLCStyle.dp(5, VLCStyle.scale)
+    property bool showHandle: true
+    property string waveformStatus: ""
     readonly property real _scaledBarHeight: control.barHeight * _hoveredScalingFactor
     readonly property real _scaledY: (-control.barHeight / 2) * (control._hoveredScalingFactor - 1)
 
@@ -89,6 +91,9 @@ T.ProgressBar {
 
         if (Player.hasChapters)
             _text += " - " + Player.chapters.getNameAtPosition(control._tooltipPosition)
+
+        if (control.waveformStatus.length)
+            _text += "\n" + control.waveformStatus
 
         return _text
     }
@@ -568,7 +573,7 @@ T.ProgressBar {
     Rectangle {
         id: sliderHandle
 
-        property int _size: control.barHeight * 3
+        property int _size: control.showHandle ? control.barHeight * 3 : 0
 
         x: (control.visualPosition * control.availableWidth) - width / 2
         y: (control.barHeight - height) / 2
@@ -625,7 +630,7 @@ T.ProgressBar {
             }
         ]
 
-        state: (hoverHandler.hovered || control.visualFocus)
+        state: control.showHandle && (hoverHandler.hovered || control.visualFocus)
                ? ((control._currentChapterHovered || (Player.hasChapters && fsm._state === fsm.fsmHeld)) ? "visibleLarge" : "visible")
                : "hidden"
     }

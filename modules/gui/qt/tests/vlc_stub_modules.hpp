@@ -55,7 +55,7 @@ struct VLCTestingEnv
     VLCTestingEnv();
     ~VLCTestingEnv();
 
-    bool init();
+    bool init(bool nativePlayerFixture = false);
 
     //should be valid after init
     libvlc_instance_t* libvlc = nullptr;
@@ -70,6 +70,11 @@ struct VLCTestingEnv
 
     //if set to false no render discovery will be found
     bool renderDiscoveryProbeEnabled = true;
+
+private:
+    // Explicit native-player fixtures do not depend on executable static
+    // module registration, which dynamic Windows builds do not support.
+    intf_thread_t *m_ownedInterface = nullptr;
 };
 
 #endif /* QT_VLC_STUB_MODULES */

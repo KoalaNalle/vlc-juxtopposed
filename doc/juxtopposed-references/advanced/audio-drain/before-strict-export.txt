@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Modding\vlc-juxtopposed\test\libvlc\native_audio_drain.py", line 107, in <module>
+    raw, resampled = export(8000, 'raw')
+                     ^^^^^^^^^^^^^^^^^^^
+  File "C:\Modding\vlc-juxtopposed\test\libvlc\native_audio_drain.py", line 99, in export
+    assert count == expected, {'rate': rate, 'mux': mux, 'samples': count, 'expected': expected}
+           ^^^^^^^^^^^^^^^^^
+AssertionError: {'rate': 8000, 'mux': 'raw', 'samples': 239362, 'expected': 240000}

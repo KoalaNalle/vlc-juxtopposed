@@ -1,0 +1,515 @@
+{
+  "recordedAtUtc": "2026-10-14T10:06:18Z",
+  "scope": "Original native9/component evidence preserved; final native10, separate Home native11, and eight scoped actual Windows New Playlist captures",
+  "desktopGuiAccepted": false,
+  "figmaVisualAccepted": false,
+  "nativeRhiAccepted": false,
+  "activePrimaryPlaybackPreservationTested": false,
+  "completeVerticalSliceAccepted": false,
+  "desktopEvidencePendingRootAppend": false,
+  "reference": {
+    "file": "doc/juxtopposed-references/advanced/0808-new-playlist.png",
+    "videoTime": "13:28",
+    "sha256": "ed120d4d766376bd4fe907140b4fb18f233c5c33caafb4cba079a91815c3e672",
+    "originalVideoSha256RecordedInReferenceEvidence": "70b0ccfa8276acd8fbdf876b96233ebde13aab922acb4f618ef7c31c422aff08",
+    "originalDesign": "Juxtopposed",
+    "initialDialogLogicalSize": [
+      670,
+      554
+    ],
+    "geometryProvisional": true,
+    "reason": "Editorial video zoom; not measured Figma geometry"
+  },
+  "nativeSuite": {
+    "record": "native-results.txt",
+    "verification": "native-verification.json",
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0,
+    "blacklisted": 0,
+    "elapsedMs": 5250,
+    "cases": [
+      "initTestCase",
+      "validationAndSelectionOrder",
+      "rollbackAndPartialFailure",
+      "actualMixedSaveWithoutPlayback",
+      "actualThumbnailWriteFailureRollsBack",
+      "actualEmptyPlaylist",
+      "persistenceAfterRestart",
+      "submittedSaveCompletesBeforeModelDestruction",
+      "cleanupTestCase"
+    ],
+    "injectedFailureCases": [
+      "rollbackAndPartialFailure"
+    ],
+    "nativeQueueScope": "Fresh primary queue stays empty and current index -1; no already playing input or nonempty queue tested",
+    "actualWriteFailureScope": "A real file obstructs artwork directory creation; real native incomplete playlist rollback succeeds",
+    "unprovedFailures": [
+      "Disk exhaustion at atomic PNG commit",
+      "Naturally occurring native delete failure"
+    ]
+  },
+  "components": {
+    "record": "component-verification.json",
+    "scope": "Actual production QML, supplied controller state, offscreen software renderer. No native save/file-picker/restart proof.",
+    "qmlMessages": [],
+    "virtualizedSelection": {
+      "suppliedCount": 128,
+      "renderedRows": 13
+    },
+    "geometry": [
+      {
+        "width": 1050,
+        "height": 760,
+        "scale": 1,
+        "dialogWidth": 670.0,
+        "dialogHeight": 554.0
+      },
+      {
+        "width": 640,
+        "height": 420,
+        "scale": 1,
+        "dialogWidth": 608.0,
+        "dialogHeight": 388.0
+      },
+      {
+        "width": 960,
+        "height": 600,
+        "scale": 1.5,
+        "dialogWidth": 912.0,
+        "dialogHeight": 552.0
+      },
+      {
+        "width": 1280,
+        "height": 720,
+        "scale": 2,
+        "dialogWidth": 1216.0,
+        "dialogHeight": 656.0
+      }
+    ],
+    "aggregatePassed": 14,
+    "aggregateRecord": "component-suites-verification.json"
+  },
+  "compiledQtPlugin": {
+    "source": "build-windows/staged-new-playlist-libqt_plugin.dll",
+    "sha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+    "buildPassedReportedByRoot": true,
+    "buildRepair": "Fixed stale dialogs/qml.deps before successful native GUI build",
+    "desktopAcceptedAtCheckpoint": false
+  },
+  "sourceHashesRecordedAtCheckpoint": [
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_data.hpp",
+      "sha256": "003829a8b0a88a164391df5024490042220d9be27107bc4286997320d2262dfe"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_data.cpp",
+      "sha256": "93509b45ebb4ae2a70104e608c1dd8198be9a122bebbf00708bbce8b79d02d08"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_model.hpp",
+      "sha256": "82c22213ce5034992828f38efbb130afa75205aaf0ff78cf64579d046112bd20"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_model.cpp",
+      "sha256": "356a406a93a49652f586009afa429f7256de21435e04cf9cd83552566d150d36"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml",
+      "sha256": "5a4c5f3ee8b8430943329202d361dfc53f465ee4c0dad94f2ffbaa96bc0f13b1"
+    },
+    {
+      "file": "modules/gui/qt/tests/test_new_playlist.cpp",
+      "sha256": "2002736e1b7b73406a6516722ca30f50ff3ebaac1590d16607579cdfcf68b15a"
+    },
+    {
+      "file": "modules/gui/qt/tests/test_juxtopposed_new_playlist.py",
+      "sha256": "be2a3c4d1bd7f1bb5a67e76cbd15eb193a3591d5ade3cdc29333f064d547ceca"
+    }
+  ],
+  "excludedPrivateArtifacts": [
+    "Native userdata",
+    "Qt preferences",
+    "Media library database",
+    "Decoder/stdout/stderr logs"
+  ],
+  "files": [
+    {
+      "file": "native-results.txt",
+      "source": "build-windows/playlist-native-first-20261014/results.txt",
+      "sourceSha256": "d0327fb8b71fc2b194b667f4588fb17628f10bd5565c691422a28c4da68ff3f3",
+      "sha256": "bdc66700c7cf38a8e68046caf4c0d974bb4cbf96ed1998ebdcc8b3904bf718dd",
+      "bytes": 786,
+      "evidence": "Actual QtTest result; includes separately identified injected-backend case"
+    },
+    {
+      "file": "native-verification.json",
+      "source": "build-windows/playlist-native-first-20261014/verification.json",
+      "sourceSha256": "ac83825149cffc7ca1b58a18c70d6f2c0832e9e8429908753512fb7d88ce9ff1",
+      "sha256": "ac83825149cffc7ca1b58a18c70d6f2c0832e9e8429908753512fb7d88ce9ff1",
+      "bytes": 1230,
+      "evidence": "Actual native runner verification, generated fixture/test/core hashes"
+    },
+    {
+      "file": "component-verification.json",
+      "source": "build-windows/playlist-root-components-20261014/new-playlist-component-verification.json",
+      "sourceSha256": "bfee1633d04516821205e8f6446b9e96714c63e05a7aafa863f8a4cfcac3f192",
+      "sha256": "bfee1633d04516821205e8f6446b9e96714c63e05a7aafa863f8a4cfcac3f192",
+      "bytes": 1353,
+      "evidence": "Production QML with supplied controller; software/offscreen only"
+    },
+    {
+      "file": "new-playlist-empty-component.png",
+      "source": "build-windows/playlist-root-components-20261014/new-playlist-empty-component.png",
+      "sourceSha256": "09a8b2c4e1865a0d8c25a6ee58c0c4d61efac27cc6e913cb7ba80d43e5ae6d3a",
+      "sha256": "09a8b2c4e1865a0d8c25a6ee58c0c4d61efac27cc6e913cb7ba80d43e5ae6d3a",
+      "bytes": 21359,
+      "evidence": "Supplied-controller component preview, not desktop"
+    },
+    {
+      "file": "new-playlist-selected-component.png",
+      "source": "build-windows/playlist-root-components-20261014/new-playlist-selected-component.png",
+      "sourceSha256": "411673adb7d313bfc3a6e45f2b7d053335dbb94a95ecb1abc215002ed2263c23",
+      "sha256": "411673adb7d313bfc3a6e45f2b7d053335dbb94a95ecb1abc215002ed2263c23",
+      "bytes": 26762,
+      "evidence": "Supplied-controller component preview, not desktop"
+    },
+    {
+      "file": "new-playlist-short-component.png",
+      "source": "build-windows/playlist-root-components-20261014/new-playlist-short-component.png",
+      "sourceSha256": "a326d7450cb5cd4d714f762c4d5cc59910922b023fe367048130dbfee266dea1",
+      "sha256": "a326d7450cb5cd4d714f762c4d5cc59910922b023fe367048130dbfee266dea1",
+      "bytes": 16046,
+      "evidence": "Supplied-controller component preview, not desktop"
+    },
+    {
+      "file": "component-suites-verification.json",
+      "source": "build-windows/playlist-fourteen-components-20261014/verification.json",
+      "sourceSha256": "c0fb1e7acfeddb6a4979415da168352f00957b2ff05f2e8ea1c7e5e4f42c7403",
+      "sha256": "c0fb1e7acfeddb6a4979415da168352f00957b2ff05f2e8ea1c7e5e4f42c7403",
+      "bytes": 999,
+      "evidence": "Aggregate 14 Python component/source suite exit codes, not native/desktop"
+    },
+    {
+      "file": "component-regression-new-playlist-verification.json",
+      "source": "build-windows/playlist-fourteen-components-20261014/new-playlist/new-playlist-component-verification.json",
+      "sourceSha256": "bfee1633d04516821205e8f6446b9e96714c63e05a7aafa863f8a4cfcac3f192",
+      "sha256": "bfee1633d04516821205e8f6446b9e96714c63e05a7aafa863f8a4cfcac3f192",
+      "bytes": 1353,
+      "evidence": "Separate broader-run New Playlist supplied-controller component result"
+    },
+    {
+      "file": "native-final-results.txt",
+      "source": "build-windows/playlist-native-final-20261014/results.txt",
+      "sourceSha256": "062d14c9339ddf01df0ea09e91876e4427b9c91bf6a2c065fa5710fc5772566a",
+      "sha256": "a9112a88cae8489dbf805c5e50664488a28d95e1ddd8d65d42344e50abaa301b",
+      "bytes": 866,
+      "evidence": "Actual final native QtTest; 10 PASS includes separately identified injected-backend case. CRLF normalized to LF."
+    },
+    {
+      "file": "native-final-verification.json",
+      "source": "build-windows/playlist-native-final-20261014/verification.json",
+      "sourceSha256": "e9cb49144d2e94676b20b833adc4e033eb8a65f182df633bed12900971f4ff3a",
+      "sha256": "e9cb49144d2e94676b20b833adc4e033eb8a65f182df633bed12900971f4ff3a",
+      "bytes": 1288,
+      "evidence": "Actual final native verification with generated fixture/test/core hashes; no private paths or logs."
+    },
+    {
+      "file": "home-bootstrap-native-results.txt",
+      "source": "build-windows/home-bootstrap-native-20261014T105911Z/results.txt",
+      "sourceSha256": "bf50984798e7cc75dbe4f5d38bdc979e0af0788759e6bbe294b715cecc09ea33",
+      "sha256": "c66b0b483aa0363e139c451647d011b947dbfa18fbe2672d34e9032ff3c4b038",
+      "bytes": 983,
+      "evidence": "Separate actual Home helper/event/store native QtTest; 11 PASS. CRLF normalized to LF."
+    },
+    {
+      "file": "home-bootstrap-native-verification.json",
+      "source": "build-windows/home-bootstrap-native-20261014T105911Z/verification.json",
+      "sourceSha256": "70134d1ff05c7f4ae7e1540d1b43b9e7d4bd2d426283ac2718282b7abcca8011",
+      "sha256": "4e546e581bab4a7485774258506d04a5dfa8c74531f09d614ffc2d12ee72cdab",
+      "bytes": 3648,
+      "evidence": "Sanitized separate Home runner verification; retains exact runtime/core/helper/fixture hashes and finite-process results."
+    },
+    {
+      "file": "01-thumbnail-preview.jpg",
+      "source": "build-windows/playlist-desktop-20261014/01-thumbnail-preview.jpg",
+      "sourceSha256": "1186248fde2228f89aae165f31db0d0e589fe4caa78c471ccaf957320439d123",
+      "sha256": "1186248fde2228f89aae165f31db0d0e589fe4caa78c471ccaf957320439d123",
+      "bytes": 103450,
+      "evidence": "Actual named New Playlist modal with generated image selected through native picker; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2530,
+        1377
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "02-reordered-repeated-files.jpg",
+      "source": "build-windows/playlist-desktop-20261014/02-reordered-repeated-files.jpg",
+      "sourceSha256": "6cfa6421260a9f3f8be90334537c39ace86683bf7ca1690b056cbea1eda9ad70",
+      "sha256": "6cfa6421260a9f3f8be90334537c39ace86683bf7ca1690b056cbea1eda9ad70",
+      "bytes": 104480,
+      "evidence": "Actual ordered alpha-one.flac/home-video.mp4/home-video.mp4 selection after native picker and audio moved up; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2530,
+        1377
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "03-saved-native-order.jpg",
+      "source": "build-windows/playlist-desktop-20261014/03-saved-native-order.jpg",
+      "sourceSha256": "14445e74a5c8b3b1c38751af04fef1705c4b3fe151ba355aa2ca90257f7c709b",
+      "sha256": "14445e74a5c8b3b1c38751af04fef1705c4b3fe151ba355aa2ca90257f7c709b",
+      "bytes": 80575,
+      "evidence": "Actual saved native playlist route, ordered repeated entries; historical unknown row duration defect -1ms visible; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2530,
+        1377
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "04-native-copied-thumbnail.jpg",
+      "source": "build-windows/playlist-desktop-20261014/04-native-copied-thumbnail.jpg",
+      "sourceSha256": "1cc260b38d8b7d403dac04a0b91171536fa928cb3fdb782d0cb830b90ca48b08",
+      "sha256": "1cc260b38d8b7d403dac04a0b91171536fa928cb3fdb782d0cb830b90ca48b08",
+      "bytes": 79699,
+      "evidence": "Actual native playlist card/copied cover; honest 3 Other and historical all-unknown total zero visible; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2530,
+        1377
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "05-restarted-home-thumbnail.jpg",
+      "source": "build-windows/playlist-desktop-20261014/05-restarted-home-thumbnail.jpg",
+      "sourceSha256": "920ed27efb955f80e90d704356b6625d0df342cc50db75077f5d22519928c4ad",
+      "sha256": "920ed27efb955f80e90d704356b6625d0df342cc50db75077f5d22519928c4ad",
+      "bytes": 99339,
+      "evidence": "Actual warm-restarted Home copied playlist cover; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2514,
+        1369
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "06-restarted-home-route-order.jpg",
+      "source": "build-windows/playlist-desktop-20261014/06-restarted-home-route-order.jpg",
+      "sourceSha256": "35eb38a161cc02afb79ccca7e8781f8692316dde523d85c0d0b05bff92a46f29",
+      "sha256": "35eb38a161cc02afb79ccca7e8781f8692316dde523d85c0d0b05bff92a46f29",
+      "bytes": 79865,
+      "evidence": "Actual Home card activation returns alpha/video/video order; historical unknown duration defect visible; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2514,
+        1369
+      ],
+      "qtPluginSha256": "b943a87f8c255661b27d3ff56d6dc3636ffeb9f871fc4a6100a289829c97579b",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "07-repaired-unknown-row-durations.jpg",
+      "source": "build-windows/playlist-desktop-20261014/07-repaired-unknown-row-durations.jpg",
+      "sourceSha256": "1af3263418885718fd76d951b9e95fb80a4937ccaab9851a03d0aec832accf7a",
+      "sha256": "1af3263418885718fd76d951b9e95fb80a4937ccaab9851a03d0aec832accf7a",
+      "bytes": 76951,
+      "evidence": "Actual rebuilt Qt native playlist rows show --:-- for genuine unknown durations; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2498,
+        1361
+      ],
+      "qtPluginSha256": "88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    },
+    {
+      "file": "08-repaired-unknown-playlist-total.jpg",
+      "source": "build-windows/playlist-desktop-20261014/08-repaired-unknown-playlist-total.jpg",
+      "sourceSha256": "2f9603c8a4896df5fed3e8bb746b49073b3c08444d6848427ba067032dec14dc",
+      "sha256": "2f9603c8a4896df5fed3e8bb746b49073b3c08444d6848427ba067032dec14dc",
+      "bytes": 75942,
+      "evidence": "Actual rebuilt Qt playlist total --:--; copied cover and honest native 3 Other retained; actual Windows capture, not supplied-controller component.",
+      "pixelSize": [
+        2498,
+        1361
+      ],
+      "qtPluginSha256": "88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6",
+      "bytesPreserved": true,
+      "privateVisibleDataReview": "Only app chrome and generated fixture names visible; no private paths or user media."
+    }
+  ],
+  "updatedAtUtc": "2026-10-14T11:10:17.681126+00:00",
+  "desktopObservedJourneyPassed": true,
+  "completeBetaAccepted": false,
+  "nativeFinalSuite": {
+    "record": "native-final-results.txt",
+    "verification": "native-final-verification.json",
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "blacklisted": 0,
+    "elapsedMs": 3607,
+    "cases": [
+      "initTestCase",
+      "validationAndSelectionOrder",
+      "rollbackAndPartialFailure",
+      "actualMixedSaveWithoutPlayback",
+      "actualExternalMediaUnknownDurationWithoutDiscovery",
+      "actualThumbnailWriteFailureRollsBack",
+      "actualEmptyPlaylist",
+      "persistenceAfterRestart",
+      "submittedSaveCompletesBeforeModelDestruction",
+      "cleanupTestCase"
+    ],
+    "injectedFailureCases": [
+      "rollbackAndPartialFailure"
+    ],
+    "nativeQueueScope": "Fresh primary queue stays empty and current index -1; no already playing input or nonempty queue tested",
+    "addedCaseScope": "Actual native external UNKNOWN media and duration -1; individual/all-unknown --:--, empty zero, mixed known subtotal, signed negative delay and unchanged discovered audio/video/root counts",
+    "source": "build-windows/playlist-native-final-20261014"
+  },
+  "homeNativeSuite": {
+    "record": "home-bootstrap-native-results.txt",
+    "verification": "home-bootstrap-native-verification.json",
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "blacklisted": 0,
+    "elapsedMs": 4228,
+    "cases": [
+      "initTestCase",
+      "persistentVisitTypesAndLifetime",
+      "malformedStoredVisits",
+      "preferencesResetDoesNotRestoreCachedVisits",
+      "realFolderPlaylistAndArtistMetadata",
+      "warmRestartAndDeletedPlaylist",
+      "blockedStoragePreservesAcceptedVisitsAndDocument",
+      "blockedClearPreservesAcceptedVisitsAndDocument",
+      "addedFolderRequestStateAndReset",
+      "actualAudioOnlyAddedFolderAndMixedRouteRestart",
+      "cleanupTestCase"
+    ],
+    "ownedProcessElapsedSeconds": 4.328,
+    "finiteTimeoutSeconds": 150,
+    "timedOut": false,
+    "exitCode": 0,
+    "coreHashesMatch": true,
+    "source": "build-windows/home-bootstrap-native-20261014T105911Z",
+    "scope": "Production Home store, snapshot and request helpers; real native ML indexing/events/restart. No full MLHomeActivity runner, Home QML, folder picker or desktop claim.",
+    "actualFailureScope": "Blocked parent path prevents real QSettings writes/clear; accepted cache/document and restart are preserved",
+    "appJourneyNotEstablished": [
+      "Full MLHomeActivity QObject/runner wiring",
+      "Add Folder picker",
+      "Audio-only first-folder Home/play/restart"
+    ]
+  },
+  "compiledQtPluginLatest": {
+    "source": "build-windows/staged-home-bootstrap-libqt_plugin.dll",
+    "sha256": "88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6",
+    "buildPassedReportedByRoot": true,
+    "scope": "Integrated Home bootstrap and duration repairs; captures07-08",
+    "completeDesktopAccepted": false,
+    "packageReleaseAccepted": false
+  },
+  "desktopObservations": {
+    "observer": "Root",
+    "source": "build-windows/playlist-desktop-20261014",
+    "captures": [
+      "01-thumbnail-preview.jpg",
+      "02-reordered-repeated-files.jpg",
+      "03-saved-native-order.jpg",
+      "04-native-copied-thumbnail.jpg",
+      "05-restarted-home-thumbnail.jpg",
+      "06-restarted-home-route-order.jpg",
+      "07-repaired-unknown-row-durations.jpg",
+      "08-repaired-unknown-playlist-total.jpg"
+    ],
+    "initialQtCaptureNumbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "rebuiltQtCaptureNumbers": [
+      7,
+      8
+    ],
+    "observedActions": [
+      "Native New Playlist modal",
+      "Title entry",
+      "Native image picker",
+      "Native ordered media picker",
+      "Repeated video selection",
+      "Audio reorder up",
+      "Real native save",
+      "Copied native cover",
+      "Warm restart Home cover",
+      "Home activation retains alpha/video/video order",
+      "Latest individual and all-unknown --:-- durations"
+    ],
+    "metadataScope": "Unindexed external entries remain genuine native UNKNOWN/Other; do not claim automatic tags/audio-video classification",
+    "historicalDurationDefectCaptures": [
+      3,
+      4,
+      6
+    ],
+    "durationRepairCaptures": [
+      7,
+      8
+    ],
+    "remainingGates": [
+      "Already playing primary preservation",
+      "Desktop drop",
+      "Desktop empty creation",
+      "Cancel/Escape/focus",
+      "Error/busy/partial-save interactions",
+      "Native DPI/light/RHI fidelity and exact geometry"
+    ],
+    "completeDesktopAccepted": false
+  },
+  "latestSourceHashesRecordedAtUpdate": [
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_data.hpp",
+      "sha256": "003829a8b0a88a164391df5024490042220d9be27107bc4286997320d2262dfe"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_data.cpp",
+      "sha256": "93509b45ebb4ae2a70104e608c1dd8198be9a122bebbf00708bbce8b79d02d08"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_model.hpp",
+      "sha256": "82c22213ce5034992828f38efbb130afa75205aaf0ff78cf64579d046112bd20"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/new_playlist_model.cpp",
+      "sha256": "356a406a93a49652f586009afa429f7256de21435e04cf9cd83552566d150d36"
+    },
+    {
+      "file": "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml",
+      "sha256": "5a4c5f3ee8b8430943329202d361dfc53f465ee4c0dad94f2ffbaa96bc0f13b1"
+    },
+    {
+      "file": "modules/gui/qt/tests/test_new_playlist.cpp",
+      "sha256": "cad8d8842b7d35c394c539538ff9661d705f28dc2ccfbd507ebd720cc4c01e03"
+    },
+    {
+      "file": "modules/gui/qt/tests/test_juxtopposed_new_playlist.py",
+      "sha256": "be2a3c4d1bd7f1bb5a67e76cbd15eb193a3591d5ade3cdc29333f064d547ceca"
+    }
+  ]
+}

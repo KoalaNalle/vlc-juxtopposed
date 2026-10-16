@@ -1519,7 +1519,9 @@ static int ModuleThread_PlayVideo( vlc_input_decoder_t *p_owner, picture_t *p_pi
             return VLC_ENOENT;
     }
 
-    if( p_owner->b_first && p_owner->b_waiting )
+    /* Buffering may finish before the first picture arrives after a paused
+     * seek. Force that picture too, so it replaces the old paused frame. */
+    if( p_owner->b_first && (p_owner->b_waiting || p_owner->output_paused) )
     {
         msg_Dbg( p_dec, "Received first picture" );
         p_owner->b_first = false;
@@ -2062,10 +2064,11 @@ static void *DecoderThread( void *p_data )
                 p_owner->b_idle = true;
                 vlc_cond_signal( &p_owner->wait_acknowledge );
 
-                if (p_owner->frames_countdown > 0)
+                if (p_owner->cat == VIDEO_ES && p_owner->frames_countdown > 0)
                 {
-                    /* next-frames are requested but the FIFO is empty, ask for
-                     * more buffering */
+                    /* Only video frame stepping needs more input. Subtitle
+                     * decoders can consume cues already buffered for a paused
+                     * seek, but must not drive the input to EOF on their own. */
                     decoder_Notify( p_owner, frame_next_need_data, true );
                 }
                 vlc_fifo_Wait( p_owner->p_fifo );

@@ -204,6 +204,11 @@ preparser_task_ExecCallback(struct preparser_task *task, int status)
             assert(task->cbs.parser != NULL);
             if (task->cbs.parser->on_subtree_added != NULL
                     && res_msg->res.subtree != NULL) {
+                /* The child deserializes a separate root item. Consumers use
+                 * the submitted item's identity to find the playlist entry. */
+                input_item_t *copy = res_msg->res.subtree->p_item;
+                res_msg->res.subtree->p_item = input_item_Hold(task->item);
+                input_item_Release(copy);
                 task->cbs.parser->on_subtree_added(&task->req,
                                                    res_msg->res.subtree,
                                                    task->cbs_userdata);
@@ -984,6 +989,20 @@ preparser_req_NewParse(void *opaque, input_item_t *item, int options,
         return NULL;
     }
     preparser_task_InitPush(task, options, &task_cbs, cbs_userdata);
+
+    /* The child does not load this instance's preferences or item options.
+     * Snapshot the effective directory policy for this request without
+     * modifying the submitted item or the child's process-wide settings. */
+    if (options & VLC_PREPARSER_OPTION_SUBITEMS) {
+        vlc_object_t *vars = vlc_object_create(sys->parent, sizeof(*vars));
+        if (vars == NULL) {
+            preparser_task_req_Release(&task->req);
+            return NULL;
+        }
+        input_item_ApplyOptions(vars, item);
+        task->req_msg.req.show_hiddenfiles = var_InheritBool(vars, "show-hiddenfiles");
+        vlc_object_delete(vars);
+    }
 
     return &task->req;
 }

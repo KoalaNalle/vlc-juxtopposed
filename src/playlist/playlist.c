@@ -38,11 +38,14 @@ vlc_playlist_New(vlc_object_t *parent, enum vlc_playlist_preparsing rec,
     vlc_playlist_t *playlist = malloc(sizeof(*playlist));
     if (unlikely(!playlist))
         return NULL;
+    playlist->metadata_network = false;
+    playlist->fetcher = NULL;
 
     if (rec != VLC_PLAYLIST_PREPARSING_DISABLED)
     {
+        playlist->metadata_network = var_InheritBool(parent, "metadata-network-access");
         const struct vlc_preparser_cfg cfg = {
-            .types = VLC_PREPARSER_TYPE_PARSE | VLC_PREPARSER_TYPE_FETCHMETA_LOCAL,
+            .types = VLC_PREPARSER_TYPE_PARSE,
             .max_parser_threads = preparse_max_threads,
             .timeout = preparse_timeout,
 #if !defined(HAVE_VLC_EXTERNAL_PREPARSER)
@@ -57,6 +60,15 @@ vlc_playlist_New(vlc_object_t *parent, enum vlc_playlist_preparsing rec,
             free(playlist);
             return NULL;
         }
+        const struct vlc_preparser_cfg fetch_cfg = {
+            .types = VLC_PREPARSER_TYPE_FETCHMETA_ALL,
+            .max_parser_threads = 1,
+            .timeout = preparse_timeout,
+            .external_process = false,
+        };
+        /* Optional lookup stays in this instance after isolated file parsing.
+         * Failure to create it must not prevent playback or embedded parsing. */
+        playlist->fetcher = vlc_preparser_New(parent, &fetch_cfg);
     }
     else
         playlist->parser = NULL;
@@ -67,6 +79,8 @@ vlc_playlist_New(vlc_object_t *parent, enum vlc_playlist_preparsing rec,
     {
         if (playlist->parser != NULL)
             vlc_preparser_Delete(playlist->parser);
+        if (playlist->fetcher != NULL)
+            vlc_preparser_Delete(playlist->fetcher);
         free(playlist);
         return NULL;
     }
@@ -93,6 +107,8 @@ vlc_playlist_Delete(vlc_playlist_t *playlist)
     if (playlist->parser != NULL) {
         vlc_preparser_Delete(playlist->parser);
     }
+    if (playlist->fetcher != NULL)
+        vlc_preparser_Delete(playlist->fetcher);
 
     vlc_playlist_PlayerDestroy(playlist);
     randomizer_Destroy(&playlist->randomizer);

@@ -90,6 +90,8 @@ typedef struct
     FT_Stroker     p_stroker;       /* handle to path stroker object */
 
     text_style_t  *p_default_style;
+    text_style_t  *p_original_style;
+    bool use_embedded_style;
     text_style_t  *p_forced_style;  /* Renderer overridings */
 
     char *psz_fontfile;
@@ -106,7 +108,8 @@ typedef struct
     /* Current scaling of the text, default is 100 (%) */
     int               i_scale;
     int               i_font_default_size;
-    int               i_outline_thickness;
+    float             i_outline_thickness;
+    float             outline_pixels;
 
     vlc_fourcc_t      i_forced_chroma;
 

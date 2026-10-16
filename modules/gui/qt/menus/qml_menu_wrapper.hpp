@@ -480,6 +480,7 @@ signals:
 public slots:
     void popup(int currentIndex, QPoint pos );
 private:
+    QVector<int> sourceSelectedIndexes() const;
     std::unique_ptr<QMenu> m_menu;
 };
 

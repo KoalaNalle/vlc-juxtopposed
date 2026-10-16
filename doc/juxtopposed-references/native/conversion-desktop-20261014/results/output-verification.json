@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "timedOut": false,
+  "processTimeoutSeconds": 55,
+  "stageTimeoutSeconds": 40,
+  "maxDecodedPcmBytes": 4194304,
+  "checkerSha256": "2d0123c82aa9a89d34f78e3d674f1ab73b62bf5428181dc280544a004d318821",
+  "frozenBindingsSha256": "3ff0fc044cf2fdce8d20cc864698c043912b353f21660d2f807947b1423ac609",
+  "sourceSha256": "661d2ee20c2ea5952c89f7ec0e295e27cfc29b5ebfb054b49c9ce0a90153921c",
+  "convertedSha256": "6aa147941667f0a2f20db8034701daa280e954499dc34ffb7a9cf72c274879a1",
+  "selectedPackage": "/checkout/build-windows\\slice-conversion-modal-package-20261014",
+  "source": "/checkout/build-windows\\duration-fixtures-20261014\\waveform-audio.wav",
+  "converted": "/checkout/build-windows\\conversion-modal-desktop-20261014\\converted-native.flac",
+  "isolatedUserdata": true,
+  "exclusivePluginRoot": "/checkout/build-windows\\slice-conversion-modal-package-20261014\\plugins",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "scope": "Read-only independent native complete output check; actual desktop UI/control/primary state and broader conversion/Figma gates remain separate.",
+  "exitCode": 0,
+  "worker": {
+    "passed": true,
+    "scope": "Independent native complete decode of actual desktop-created FLAC; no pointer/control/primary-player/Figma acceptance.",
+    "libvlcVersion": "4.0.0-dev Otto Chriek",
+    "sourceFormat": {
+      "channels": 1,
+      "widthBytes": 2,
+      "rate": 44100,
+      "frames": 1323000,
+      "compression": "NONE"
+    },
+    "decode": {
+      "states": [
+        1,
+        2,
+        5,
+        4
+      ],
+      "reasons": [
+        1
+      ],
+      "callbackErrors": [],
+      "drains": 1,
+      "finalState": 4,
+      "elapsedSeconds": 28.95300000000134,
+      "audioDecoderModules": [
+        "flac",
+        "flac"
+      ],
+      "startupErrors": [],
+      "eos": true
+    },
+    "sourceSha256": "661d2ee20c2ea5952c89f7ec0e295e27cfc29b5ebfb054b49c9ce0a90153921c",
+    "convertedSha256": "6aa147941667f0a2f20db8034701daa280e954499dc34ffb7a9cf72c274879a1",
+    "sourcePcmSha256": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+    "decodedPcmSha256": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+    "decodedFrames": 1323000,
+    "expectedFrames": 1323000,
+    "decodedBytes": 2646000,
+    "exactPcm": true,
+    "exactFinal64Samples": true,
+    "sourceAmplitude": {
+      "peakSample": 13107,
+      "rmsSample": 6147.821796899357,
+      "nonzeroSamples": 1322400
+    },
+    "decodedAmplitude": {
+      "peakSample": 13107,
+      "rmsSample": 6147.821796899357,
+      "nonzeroSamples": 1322400
+    },
+    "sourceFilePreserved": true,
+    "convertedFilePreserved": true,
+    "selectedFlacDecoderAudit": {
+      "passed": true,
+      "resolvedPackageDll": "plugins/codec/libflac_plugin.dll",
+      "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2",
+      "basis": "Actual selected decoder log under exclusive package root plus package DLL identity; no memory-map claim."
+    },
+    "nativeLogSha256": "d733b7d40d27244c85bb4fe0ee62d3b0154e6decb9ecb66ea790a664509acef4"
+  },
+  "evidenceSha256": {
+    "worker-verification.json": "6b6ae9c1bdec6c24f8f9d38a36c6ab57a6c3f058b696649f88d1284ac799aa3e",
+    "complete-decode.log": "d733b7d40d27244c85bb4fe0ee62d3b0154e6decb9ecb66ea790a664509acef4",
+    "complete-decoded.pcm": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+    "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

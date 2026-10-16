@@ -1,0 +1,13 @@
+********* Start testing of TestSubtitlePresets *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestSubtitlePresets::initTestCase()
+PASS   : TestSubtitlePresets::saveApplyDefaultAndActualPixels()
+PASS   : TestSubtitlePresets::batchedSnapshotNotifications()
+FAIL!  : TestSubtitlePresets::freshPlayerAndSettingsRestore() '!colored(frame("restart-restored-red"), true).isEmpty()' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_subtitle_presets.cpp(229) : failure location
+FAIL!  : TestSubtitlePresets::actualTrackSelectionIsRestored() 'selected() != savedTrack && !selected().isEmpty()' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_subtitle_presets.cpp(249) : failure location
+FAIL!  : TestSubtitlePresets::dualTrackOutputRolesAndLiveDurationCommands() 'roles() == qMakePair(secondId, firstId)' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_subtitle_presets.cpp(286) : failure location
+FAIL!  : TestSubtitlePresets::unavailableCorruptStorageAndWriteFailure() 'm_presets->apply("default")' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_subtitle_presets.cpp(344) : failure location

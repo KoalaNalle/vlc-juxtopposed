@@ -1,0 +1,25 @@
+# Exact line-numbered excerpts of before-conversion-native.log; path labels sanitized.
+
+# Original lines 919-940
+919: main debug: creating audio output
+920: main debug: looking for audio output module matching "amem,none": 1 candidates
+921: main debug: using audio output module "amem"
+922: main debug: keeping audio output
+923: main debug: Creating an input for playback'source 'quoted, audio.wav'
+924: main debug: creating stream output chain `transcode{acodec=flac,channels=2,samplerate=44100,ab=128}:std{access=file{no-overwrite},mux=flac,dst='/tmp/native/literal-conversion-before-corrected-test-ipWTxL/literal 100%% %Y/.vlc-convert-zVSfoP/audio.flac'}'
+925: main debug: stream=`std'
+926: main debug: looking for sout output module matching "std": 2 candidates
+927: main debug: set config option: sout-standard-access to file{no-overwrite}
+928: main debug: set config option: sout-standard-mux to flac
+929: main debug: set config option: sout-standard-dst to /tmp/native/literal-conversion-before-corrected-test-ipWTxL/literal 100%% %Y/.vlc-convert-zVSfoP/audio.flac
+930: main debug: looking for sout access module matching "file": 1 candidates
+931: main debug: set config option: sout-file-overwrite to (null)
+932: file error: cannot create /tmp/native/literal-conversion-before-corrected-test-ipWTxL/literal 100% 2026/.vlc-convert-zVSfoP/audio.flac: No error
+933: main debug: no sout access modules matched with name file
+934: stream_out_standard error: no suitable sout access module for `file{no-overwrite}/flac:///tmp/native/literal-conversion-before-corrected-test-ipWTxL/literal 100%% %Y/.vlc-convert-zVSfoP/audio.flac'
+935: main debug: no sout output modules matched with name std
+936: main debug: destroying chain... (name=(null))
+937: main debug: destroying chain done
+938: main error: failed to create stream output chain `transcode{acodec=flac,channels=2,samplerate=44100,ab=128}:std{access=file{no-overwrite},mux=flac,dst='/tmp/native/literal-conversion-before-corrected-test-ipWTxL/literal 100%% %Y/.vlc-convert-zVSfoP/audio.flac'}'
+939: main error: cannot start stream output instance, aborting
+940: main debug: destroying input for 'source 'quoted, audio.wav'

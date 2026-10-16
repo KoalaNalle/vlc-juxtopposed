@@ -1,0 +1,55 @@
+********* Start testing of TestLibraryPreferences *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestLibraryPreferences::initTestCase()
+PASS   : TestLibraryPreferences::exactApiAndDefaultGates()
+PASS   : TestLibraryPreferences::legacyOpeningProfileRemainsUnmapped()
+PASS   : TestLibraryPreferences::typedInvalidInputsLeaveEverythingUnchanged()
+PASS   : TestLibraryPreferences::genuineNativeStorageAndFreshReads(recursion)
+PASS   : TestLibraryPreferences::genuineNativeStorageAndFreshReads(hidden)
+PASS   : TestLibraryPreferences::genuineNativeStorageAndFreshReads(metadata)
+PASS   : TestLibraryPreferences::genuineNativeStorageAndFreshReads(library)
+PASS   : TestLibraryPreferences::realLockedSaveRollbackAndRetry()
+PASS   : TestLibraryPreferences::actualInstanceDecision(legacy-file-only)
+PASS   : TestLibraryPreferences::actualInstanceDecision(legacy-master)
+PASS   : TestLibraryPreferences::actualInstanceDecision(legacy-cli)
+PASS   : TestLibraryPreferences::actualInstanceDecision(exclude-file)
+PASS   : TestLibraryPreferences::actualInstanceDecision(exclude-cli)
+PASS   : TestLibraryPreferences::actualInstanceDecision(follow-master-off)
+PASS   : TestLibraryPreferences::actualInstanceDecision(follow-master-on)
+PASS   : TestLibraryPreferences::actualInstanceDecision(unknown-preserved)
+PASS   : TestLibraryPreferences::actualSenderMode(legacy-play)
+PASS   : TestLibraryPreferences::actualSenderMode(legacy-append)
+PASS   : TestLibraryPreferences::actualSenderMode(replace)
+PASS   : TestLibraryPreferences::actualSenderMode(append)
+PASS   : TestLibraryPreferences::actualReceiverQueue(replace)
+PASS   : TestLibraryPreferences::actualReceiverQueue(append)
+PASS   : TestLibraryPreferences::invalidExplicitOpenDoesNotMutate(leading-option)
+PASS   : TestLibraryPreferences::invalidExplicitOpenDoesNotMutate(trailing-bytes)
+PASS   : TestLibraryPreferences::invalidExplicitOpenDoesNotMutate(embedded-null)
+PASS   : TestLibraryPreferences::hiddenNativeFolderEntries(hidden-off)
+PASS   : TestLibraryPreferences::hiddenNativeFolderEntries(hidden-on)
+PASS   : TestLibraryPreferences::hiddenNativeFolderEntries(ml-style-explicit-override)
+PASS   : TestLibraryPreferences::hiddenNativeFolderEntries(external-hidden-off)
+FAIL!  : TestLibraryPreferences::hiddenNativeFolderEntries(external-hidden-on) Compared values are not the same
+   Actual   (rows.contains(uri(dot))): 0
+   Expected (show||explicitOverride) : 1
+[repo]/build-windows/library-morning-20261016/maintained-input/input/tests/test_library_preferences.cpp(233) : failure location
+FAIL!  : TestLibraryPreferences::hiddenNativeFolderEntries(external-explicit-override) Compared values are not the same
+   Actual   (rows.contains(uri(dot))): 0
+   Expected (show||explicitOverride) : 1
+[repo]/build-windows/library-morning-20261016/maintained-input/input/tests/test_library_preferences.cpp(233) : failure location
+PASS   : TestLibraryPreferences::playingDirectoryUsesHiddenPreference(hidden-off)
+PASS   : TestLibraryPreferences::playingDirectoryUsesHiddenPreference(hidden-on)
+PASS   : TestLibraryPreferences::realQueueRecursion(none)
+PASS   : TestLibraryPreferences::realQueueRecursion(collapse)
+PASS   : TestLibraryPreferences::realQueueRecursion(expand)
+PASS   : TestLibraryPreferences::disablingLibraryPreservesRealRootsPlaylistFavoriteHistoryAndHome()
+PASS   : TestLibraryPreferences::externalFolderSubtreeRetainsSubmittedItem()
+FAIL!  : TestLibraryPreferences::externalDirectoryPolicyChangesBetweenRequests() Compared values are not the same
+   Actual   (state.urls.contains(uri(dot))): 0
+   Expected (show||override)               : 1
+[repo]/build-windows/library-morning-20261016/maintained-input/input/tests/test_library_preferences.cpp(310) : failure location
+PASS   : TestLibraryPreferences::externalFolderExpansionDoesNotWaitForOptionalArtwork()
+PASS   : TestLibraryPreferences::cleanupTestCase()
+Totals: 39 passed, 3 failed, 0 skipped, 0 blacklisted, 16254ms
+********* Finished testing of TestLibraryPreferences *********

@@ -1,0 +1,45 @@
+{
+  "passed": false,
+  "timedOut": false,
+  "testExeSha256": "19301722f8066eec95a350cc34194c5e0caac5c17e5e4df84a7f9d0152039cab",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "productionExtraction": {
+    "sourceSha256": {
+      "modules/gui/qt/maininterface/interface_window_handler.cpp": "a0153ccfbb49d1f5e9fb8b81bea00b21a5e63c5424542d0dd74823c53357cae5",
+      "modules/gui/qt/maininterface/mainctx.cpp": "025bcf34108679e33865136a19df44ea34f897e24f1a8174dce281ab9c4ec101"
+    },
+    "includeSha256": "6288020ad8ba1cb830c2681128b1be9e3d988001818c656549b6583fbd8d0826",
+    "scope": "Exact production key-only event branch, applyKeyEvent, sendHotkey and sendVLCHotkey. Other window/interface methods are not extracted."
+  },
+  "processTimeoutSeconds": 30,
+  "scope": "QCore-only exact production key-method/branch bodies with dependency adapters; detached Qt key/metadata receiver press-release delivery and native LibVLC key-pressed callbacks. Window/controls/focus/scene, full MainCtx/provider lifetime and actual production modal/transport acceptance remain separate.",
+  "exitCode": 1,
+  "cases": [
+    "initTestCase",
+    "absentProviderPreservesDirectDispatch",
+    "mouseFocusOutsideModalDispatchesNativeKeys",
+    "modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch",
+    "outsideModalQtNavigationPolicyRemains",
+    "cleanupTestCase"
+  ],
+  "compiledSourceIdentityMatches": true,
+  "actualOrderedPassCases": [
+    "initTestCase",
+    "absentProviderPreservesDirectDispatch",
+    "mouseFocusOutsideModalDispatchesNativeKeys",
+    "outsideModalQtNavigationPolicyRemains",
+    "cleanupTestCase"
+  ],
+  "exactTotals": [],
+  "rejectedStatuses": [
+    "FAIL!  :"
+  ],
+  "evidenceHashes": {
+    "resultsSha256": "6f2c75ca68179d8cb105c77e1d7b37555908d5b66bf1de53d5ddd9565a51784c",
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "5b5127f50d9f8f0ea8e6f7e9d3bc05e59556aa85ec4e746f8840afc39a5e25d9"
+  }
+}

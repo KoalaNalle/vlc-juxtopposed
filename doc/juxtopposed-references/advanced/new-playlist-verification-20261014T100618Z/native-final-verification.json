@@ -1,0 +1,30 @@
+{
+  "exitCode": 0,
+  "passed": true,
+  "cases": [
+    "initTestCase",
+    "validationAndSelectionOrder",
+    "rollbackAndPartialFailure",
+    "actualMixedSaveWithoutPlayback",
+    "actualExternalMediaUnknownDurationWithoutDiscovery",
+    "actualThumbnailWriteFailureRollsBack",
+    "actualEmptyPlaylist",
+    "persistenceAfterRestart",
+    "submittedSaveCompletesBeforeModelDestruction",
+    "cleanupTestCase"
+  ],
+  "evidence": "Actual native library, ordered repeated mixed playlist, copied PNG, restart and owner shutdown; no desktop GUI claim.",
+  "injectedFailureCases": [
+    "rollbackAndPartialFailure"
+  ],
+  "isolatedUserdata": true,
+  "fixtureSha256": {
+    "alpha-one.flac": "8c55b68cfcbfc170a62c8052c6c70fc88f10ceb3d39603e52927dccf753bf678",
+    "alpha-two.flac": "15be3040737e73b0abe8e578d97f1d24ca05452ef1c8e7de98e3959f6fc201c9",
+    "beta-one.flac": "891d48b902b232aace1a79261277292c0f7c8d494e0867ead041cd979626da8d",
+    "beta-two.flac": "2373cac56d89738480f56c3f479a36189b5b8c7851919113cae4e1cb4419cdfc",
+    "home-video.mp4": "0571bc71b3f7a7b65fb0dfad6da390e9108ba37b0d736eba6cc354b55916e205"
+  },
+  "testExeSha256": "a26b29c4154d8e248b2bc00079a1085abcfbc2a1c4580f07e0857aa53072287e",
+  "coreSha256": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+}

@@ -1,0 +1,31 @@
+{
+  "scope": "Actual static cleanup method and registry implementation under process-local owned HKCU fixtures",
+  "records": [
+    {
+      "variant": "baseline",
+      "exitCode": 1,
+      "terminationConfirmed": true,
+      "stdoutLines": [
+        "row=0 child=0 initialLang=1 preserve=FAIL",
+        "row=1 child=1 initialLang=1 preserve=PASS",
+        "row=2 child=0 initialLang=0 preserve=FAIL"
+      ],
+      "expectedOracle": true,
+      "exeSha256": "3ac4cac6978512b5cca541d09949e641dfbda9679dcd3bf272396862369d32e1"
+    },
+    {
+      "variant": "fixed",
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "stdoutLines": [
+        "row=0 child=0 initialLang=1 preserve=PASS",
+        "row=1 child=1 initialLang=1 preserve=PASS",
+        "row=2 child=0 initialLang=0 preserve=PASS"
+      ],
+      "expectedOracle": true,
+      "exeSha256": "bb4c98e4fc61482a8bf86be14a5a175bcce86c6990b5181a7604b65febc69884"
+    }
+  ],
+  "humanRegistryUntouched": true,
+  "realResetJourneyAccepted": false
+}

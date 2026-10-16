@@ -65,9 +65,7 @@ private:
     bool m_videoFullScreen = false;
     bool m_autoresize = false;
 
-    QScreen* m_lastWinScreen = nullptr;
 
-    bool m_hasWayland = false;
 };
 
 #endif // VIDEOWINDOWHANDLER_HPP

@@ -206,6 +206,9 @@ void VLCMenuBar::FileMenu(qt_intf_t *p_intf, QMenu *menu)
 
     menu->addSeparator();
 
+    if (mi && mi->juxtopposedControls() && mi->hasMediaLibrary())
+        addDPStaticEntry(menu, qtr("New Playlist..."), ":/menu/ic_playlist.svg", &DialogsProvider::newPlaylistDialog);
+
     addDPStaticEntry( menu, qfut( I_PL_SAVE ), "", &DialogsProvider::savePlayingToPlaylist,
         "Ctrl+Y" );
 

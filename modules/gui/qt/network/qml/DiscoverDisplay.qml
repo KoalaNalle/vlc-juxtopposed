@@ -33,6 +33,7 @@ Widgets.PageLoader {
             displayText: qsTr("Services"),
             default: true,
             name: "services",
+            nested: true,
             url: "qrc:///qt/qml/VLC/Network/ServicesHomeDisplay.qml"
         }, {
             displayText: qsTr("URL"),

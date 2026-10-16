@@ -361,6 +361,7 @@ libvlccore_la_SOURCES = \
 	video_output/video_output.c \
 	video_output/video_text.c \
 	video_output/video_epg.c \
+	video_output/osd_feedback_duration.h \
 	video_output/video_widgets.c \
 	video_output/vout_subpictures.c \
 	video_output/vout_spuregion_helper.h \
@@ -680,6 +681,13 @@ check_PROGRAMS = \
 	test_cpp_list
 
 TESTS = $(check_PROGRAMS) check_symbols
+
+if HAVE_WIN32
+if !HAVE_WINSTORE
+test_win32_pipe_SOURCES = test/win32_pipe.c
+check_PROGRAMS += test_win32_pipe
+endif
+endif
 
 test_block_SOURCES = test/block_test.c
 test_block_LDADD = $(LDADD) $(LIBS_libvlccore)

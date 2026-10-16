@@ -75,6 +75,7 @@ check_PROGRAMS = \
 	test_modules_lua_extension \
 	test_modules_misc_medialibrary \
 	test_modules_packetizer_helpers \
+	test_modules_packetizer_copy \
 	test_modules_packetizer_hxxx \
 	test_modules_packetizer_h264 \
 	test_modules_packetizer_h266 \
@@ -137,7 +138,11 @@ check_SCRIPTS = \
 # Disabled tests:
 EXTRA_PROGRAMS = \
 	test_src_input_stream_net \
+	test_libvlc_native_library_slice \
 	$(NULL)
+
+test_libvlc_native_library_slice_SOURCES = libvlc/native_library_slice.c
+test_libvlc_native_library_slice_LDADD = $(LIBVLCCORE) $(LIBVLC)
 
 EXTRA_DIST = \
 	modules/lua/extensions/extensions.lua \
@@ -358,6 +363,8 @@ test_modules_misc_medialibrary_SOURCES = modules/misc/medialibrary.c
 test_modules_misc_medialibrary_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_helpers_SOURCES = modules/packetizer/helpers.c
 test_modules_packetizer_helpers_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_packetizer_copy_SOURCES = modules/packetizer/copy.c
+test_modules_packetizer_copy_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_hxxx_SOURCES = modules/packetizer/hxxx.c
 test_modules_packetizer_hxxx_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_h264_SOURCES = modules/packetizer/h264.c \
@@ -643,4 +650,27 @@ vlc_window_LDADD = ../lib/libvlc.la ../src/libvlccore.la ../compat/libcompat.la
 # cannot link static plugins currently anyway.
 if HAVE_DYNAMIC_PLUGINS
 noinst_PROGRAMS += vlc-window
+endif
+
+# Explicit opt-in source-compiled SoXR/native ownership diagnostic.
+# Not part of check_PROGRAMS on builds without the optional SoXR dependency.
+EXTRA_PROGRAMS += test_modules_soxr_lifecycle
+test_modules_soxr_lifecycle_SOURCES = modules/audio_filter/soxr_lifecycle.c
+test_modules_soxr_lifecycle_CPPFLAGS = $(AM_CPPFLAGS) $(SOXR_CFLAGS)
+test_modules_soxr_lifecycle_LDADD = $(LIBVLCCORE) $(LIBVLC) $(SOXR_LIBS) $(LIBM)
+if HAVE_WIN32
+# Keep this owned MinGW diagnostic independent of unrelated PATH pthread DLLs.
+# Disable GCC POSIX's automatic dynamic -lpthread, then resolve actual static
+# dependency symbols after the source's libraries in the LDADD order.
+test_modules_soxr_lifecycle_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_soxr_lifecycle_LDADD += -l:libwinpthread.a
+endif
+
+# Explicit actual native FLAC packetizer/guarded header regression.
+EXTRA_PROGRAMS += test_modules_packetizer_flac_eos
+test_modules_packetizer_flac_eos_SOURCES = modules/packetizer/flac_eos.c
+test_modules_packetizer_flac_eos_LDADD = $(LIBVLCCORE) $(LIBVLC)
+if HAVE_WIN32
+test_modules_packetizer_flac_eos_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_packetizer_flac_eos_LDADD += -l:libwinpthread.a
 endif

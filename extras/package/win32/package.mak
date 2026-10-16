@@ -65,6 +65,8 @@ endif
 		do cp "$(srcdir)/$$file" "$(win32_destdir)/$${file}.txt"; \
 	done
 	cp "$(srcdir)/README.md" "$(win32_destdir)/README.txt"
+	cp "$(srcdir)/modules/gui/qt/pixmaps/juxtopposed/Inter-LICENSE.txt" "$(win32_destdir)/Inter-LICENSE.txt"
+	cp "$(srcdir)/modules/gui/qt/pixmaps/juxtopposed/ATTRIBUTION.md" "$(win32_destdir)/Juxtopposed-ATTRIBUTION.txt"
 
 	cp $(srcdir)/share/icons/vlc.ico $(win32_destdir)
 	for plugindir in $(pkglibdir)/plugins/*/; do \

@@ -1,0 +1,29 @@
+{
+  "finalHarnessSha256": "d382d07ae429900c85a632252042065c798dadce2a258ebe941a74e5b2e67fd7",
+  "precedingCoreHarnessSha256": "30259cc18ee0c2d31a54c7e08a82d6d1141bfb51e387759dfc11fa269e4474e4",
+  "helperSha256": "4e24c90196b520868a4b57e4a09abcad01e0766ca733eea417aa228155bac2a9",
+  "change": "Remove only event.ignore() before synchronous Qt key delivery; QKeyEvent default accepted state is the Qt Quick delivery contract.",
+  "orderedCases": [
+    "initTestCase",
+    "absentProviderPreservesDirectDispatch",
+    "mouseFocusOutsideModalDispatchesNativeKeys",
+    "modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch",
+    "outsideModalQtNavigationPolicyRemains",
+    "cleanupTestCase"
+  ],
+  "sixCasesOrAssertionsChanged": false,
+  "registeredSourcesChanged": false,
+  "extractedRoutingChanged": false,
+  "helperGatesChanged": false,
+  "newFinalNativeAcceptance": false,
+  "precedingCoreAppNativeEvidence": {
+    "verification.json": "2fc8fe26a8018b10f3b157846186e100161b1c48f210f6741a4247f7981a3f93",
+    "results.txt": "9f9c6df5abbcd38771e6b9674cffd0af08952e7dc7bf9bbaa857ad10456f0acb",
+    "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.txt": "5b5127f50d9f8f0ea8e6f7e9d3bc05e59556aa85ec4e746f8840afc39a5e25d9"
+  },
+  "firstTimeoutPreservedSha256": "6bc3041ead41b4560d1e5701f7749ee84b546c9ced3ba15afb07ce4862b11fa1",
+  "scope": "Detached QCore-only manual Qt metadata/key event receivers and real native LibVLC callbacks. No window/controls/focus/scene or complete provider/transport lifetime acceptance.",
+  "sourceContract": "Bundled Qt6.8.3 QQuickItemPrivate::deliverKeyEvent begins Q_ASSERT(e->isAccepted()); default QKeyEvent construction is accepted.",
+  "rootNextGate": "Compile this exact final harness against preserved before include, require concrete modal native-dispatch failure, then restore guarded include and require exact six ordered passes."
+}

@@ -167,6 +167,7 @@ signals:
 
 private:
     void updatePalette();
+    bool reloadAccentColor();
 
     void makeLightPalette();
     void makeDarkPalette();
@@ -174,6 +175,9 @@ private:
 
 private:
     MainCtx* m_ctx = nullptr;
+    QMetaObject::Connection m_preferencesConnection;
+    QString m_accentConfiguration;
+    bool m_componentComplete = false;
 
     ColorSchemeModel::ColorScheme m_source = ColorSchemeModel::ColorScheme::Day;
     bool m_isDark = false;

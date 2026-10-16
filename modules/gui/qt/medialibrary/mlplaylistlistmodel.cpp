@@ -33,6 +33,7 @@
 #include "mlhelper.hpp"
 #include "mlcustomcover.hpp"
 #include "mlplaylist.hpp"
+#include "dialogs/new_playlist_data.hpp"
 
 //-------------------------------------------------------------------------------------------------
 // Static variables
@@ -80,7 +81,15 @@ void appendMediaIntoPlaylist(vlc_medialibrary_t* ml, int64_t playlistId, const s
 
 /* explicit */ MLPlaylistListModel::MLPlaylistListModel(QObject * parent)
     : MLBaseModel(parent)
-    , m_coverSize(MLPLAYLISTMODEL_COVER_WIDTH, MLPLAYLISTMODEL_COVER_HEIGHT) {}
+    , m_coverSize(MLPLAYLISTMODEL_COVER_WIDTH, MLPLAYLISTMODEL_COVER_HEIGHT)
+{
+    if (auto *provider = Singleton<DialogsProvider>::getInstance<false>())
+        connect(provider, &DialogsProvider::newPlaylistSaved, this, [this](MLItemId) {
+            // Native create/append events precede the copied cover commit.
+            // Refresh roles only after the save worker finishes its artwork.
+            emit resetRequested();
+        });
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -368,6 +377,8 @@ bool MLPlaylistListModel::setTransactionPending(const bool value)
 
 QString MLPlaylistListModel::getCover(const MLPlaylist * playlist) const
 {
+    const auto artwork = newPlaylistArtwork(newPlaylistArtworkDirectory(), playlist->getId().id);
+    if (!artwork.isEmpty()) return artwork;
     return MLCustomCover::url(playlist->getId()
                             , m_coverSize
                             , m_coverDefault

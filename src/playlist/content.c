@@ -234,6 +234,8 @@ vlc_playlist_Clear(vlc_playlist_t *playlist)
 
     if (playlist->parser != NULL)
         vlc_preparser_Cancel(playlist->parser, NULL);
+    if (playlist->fetcher != NULL)
+        vlc_preparser_Cancel(playlist->fetcher, NULL);
 
     vlc_playlist_ClearItems(playlist);
     vlc_playlist_ItemsReset(playlist);
@@ -316,6 +318,8 @@ vlc_playlist_Remove(vlc_playlist_t *playlist, size_t index, size_t count)
         if (playlist->parser != NULL
                 && item->preparser_req != NULL)
             vlc_preparser_Cancel(playlist->parser, item->preparser_req);
+        if (playlist->fetcher != NULL && item->metadata_req != NULL)
+            vlc_preparser_Cancel(playlist->fetcher, item->metadata_req);
 
         vlc_playlist_item_Release(item);
     }
@@ -353,6 +357,8 @@ vlc_playlist_Replace(vlc_playlist_t *playlist, size_t index,
     if (playlist->parser != NULL
             && old->preparser_req != NULL)
         vlc_preparser_Cancel(playlist->parser, old->preparser_req);
+    if (playlist->fetcher != NULL && old->metadata_req != NULL)
+        vlc_preparser_Cancel(playlist->fetcher, old->metadata_req);
     vlc_playlist_item_Release(old);
     playlist->items.data[index] = item;
 

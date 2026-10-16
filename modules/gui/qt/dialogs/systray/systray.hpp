@@ -50,6 +50,7 @@ private:
     qt_intf_t* m_intf = nullptr;
 
     int m_notificationSetting = 0;
+    int m_notificationDuration = 3000;
 
     std::unique_ptr<QMenu> m_menu;
 };

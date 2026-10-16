@@ -108,7 +108,8 @@ static int dummy_select( const char *str )
 
 static int compar_void(const void *a, const void *b, void *data)
 {
-    const char *sa = a, *sb = b;
+    const char *sa = *(const char *const *)a;
+    const char *sb = *(const char *const *)b;
     int (*cmp)(const char **, const char **) = data;
 
     return cmp(&sa, &sb);

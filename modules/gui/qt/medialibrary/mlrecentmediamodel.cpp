@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "mlrecentmediamodel.hpp"
+#include "mlhomeactivity.hpp"
 
 MLRecentMediaModel::MLRecentMediaModel( QObject* parent )
     : MLMediaModel( parent )
@@ -52,6 +53,8 @@ QHash<int, QByteArray> MLRecentMediaModel::roleNames() const
 
 void MLRecentMediaModel::clearHistory()
 {
+    if (m_mediaLib->homeActivity())
+        m_mediaLib->homeActivity()->clearVisits();
     m_mediaLib->runOnMLThread(this,
     //ML thread
     [](vlc_medialibrary_t* ml){

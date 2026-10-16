@@ -28,11 +28,14 @@ Widgets.GridItem {
     id: root
 
     property bool showNewIndicator: false
+
+    // Collection delegates can block Play while retaining their separate Open action.
+    property bool playbackEnabled: true
     
     property var labels
 
     function play() {
-        if ( model.id !== undefined ) {
+        if ( root.playbackEnabled && model.id !== undefined ) {
             MediaLib.addAndPlay( model.id )
             MainCtx.playerView = true
         }

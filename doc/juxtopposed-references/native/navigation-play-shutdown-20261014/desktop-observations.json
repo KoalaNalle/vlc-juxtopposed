@@ -1,0 +1,31 @@
+{
+  "scope": "Actual Windows incremental Qt playback/quit and settled folder-navigation checks. Earlier runtime results remain separate; not full beta or visual-fidelity acceptance.",
+  "qtSha256": "7c7f99054ee0017faf5cd2dd538f7775f3b45c4cf0505a173a54f733e13fddaf",
+  "sourceFreezeSha256": "d6d3f2c1126a5efdd0b69b47578b8d62c75d5457a7ff49dd2f0d00860e32f811",
+  "nativeLogSha256": "5654213abd6ee2d42bde1e3de6338e95ec7008e2ed8048f27f90ee052d152d1a",
+  "nativeLogPublished": false,
+  "originalQt056ObservationsSha256": "5f51ff5e6442194e211f19bb594383cc0f480efa193eda1e22fa25048d1aec22",
+  "originalQt056CorrectionApplied": true,
+  "observed": [
+    "The fresh app initially restored a 306x353 window on monitor 2. An unavailable accessibility Maximise action had no cached bounds; a refreshed observed title-bar click maximised it to 1920x1032 on the same monitor.",
+    "Home displayed five generated media items.",
+    "Native Network Browse started actual discovery and showed five standard folders and two drives, with no permission prompt.",
+    "Pointer double-click opened the actual drive and authorized Media subtree. Single-click selected its fourth child.",
+    "Grid-to-list retained the fourth selected child. Home/Back returned to the same Media subtree with the fourth row still selected.",
+    "Normal Ctrl+Q fully terminated the owned process: signaled Windows wait and exit zero. A subsequent process inventory found no such PID; the exact Qt DLL opens with no sharing, confirming the file lock is released.",
+    "The flushed log has QApp completion and logger shutdown, and no recorded QML property/call/reference errors."
+  ],
+  "knownFailuresRetained": [
+    "Qt056 lost a later child cursor and raised BrowseDeviceView forceActiveFocus TypeError; its quit wait timed out.",
+    "Qtca793 first Home/Back returned to the parent drive; a later settled fourth-row journey passed. Asynchronous tree invalidation remains a hypothesis, and rapid/same-route/native lifetime acceptance remains open.",
+    "Qtca793 quit after Network and a separate automatic playback/quit check both timed out despite reported exit zero."
+  ],
+  "diagnosticScope": "Read-only noninvasive stack from the failed automatic-quit Qt process mapped through winpthreads condition wait, rwlock writer and pthread_key_delete into the static C++ thread-exit key destructor. A real-worker/static-DLL paired fixture reproduced the exit lock and preserved it as failed acceptance.",
+  "diagnosticsOriginalSha256": "f49df7b16dfb1e34a2b78373352dc81c1ebf3816cfba6493ebe410f672bb0a49",
+  "limits": [
+    "Generated-fixture profile; not first-run/clean-profile acceptance.",
+    "Restored tiny window, broader focus, keyboard reactivation, populated genres, rapid tree refresh, restart, DPI/theme and Figma layout/state fidelity remain open.",
+    "The ordinary Autotools MinGW build is exercised. Meson registration is source-reviewed only.",
+    "No original media, user paths, Network captures, native full log, preferences or database is published."
+  ]
+}

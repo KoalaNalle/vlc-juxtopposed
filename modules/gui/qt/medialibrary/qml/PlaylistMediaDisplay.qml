@@ -32,6 +32,11 @@ import VLC.Style
 Widgets.PageExt {
     id: root
 
+    Component.onCompleted: {
+        if (MainCtx.juxtopposedControls)
+            MediaLib.homeActivity.recordVisit(root.parentId)
+    }
+
     property bool isMusic: true
 
     // NOTE: This is used to determine which media(s) shall be displayed.

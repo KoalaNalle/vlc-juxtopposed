@@ -22,6 +22,13 @@
 #include "player_controller.hpp"
 #include "util/variables.hpp"
 #include "input_models.hpp"
+#include "audio_equalizer.hpp"
+#include "audio_waveform.hpp"
+#include "player_timer_point.hpp"
+#include "local_music_folder.hpp"
+#include "video_transform.hpp"
+#include "subtitle_appearance.hpp"
+#include "subtitle_cue_timeline.hpp"
 #include "util/varchoicemodel.hpp"
 #include "util/shared_input_item.hpp"
 #include "util/renderer_manager.hpp"
@@ -59,8 +66,12 @@ public:
     void UpdateProgram(vlc_player_list_action action, const vlc_player_program *prgm);
     void UpdateVouts(vout_thread_t **vouts, size_t i_vouts, vlc_player_vout_action action);
     void UpdateTrackSelection(vlc_es_id_t *trackid, bool selected);
-    void UpdateSpuOrder(vlc_es_id_t *es_id, enum vlc_vout_order spu_order);
+    // The borrowed ID is only valid while the player lock is held.
+    vlc_es_id_t *selectedSecondarySubtitle() const;
+    // GUI-thread refresh; notifications are emitted after unlocking.
+    void RefreshSubtitleDelays();
     int interpolateTime(vlc_tick_t system_now);
+    void resetTimer(bool hasInput);
     bool isCurrentItemSynced();
 
     // Lazily reads m_syltRaw (the raw sylt-data buffer captured during
@@ -133,13 +144,14 @@ public:
 
     VLCDuration  m_audioDelay;
     VLCDuration  m_subtitleDelay;
+    // Invalid means inherit category delay; never store INT64_MAX as a duration.
     VLCDuration  m_secondarySubtitleDelay;
     float        m_subtitleFPS = 1.0;
 
     //timer
     vlc_player_timer_id* m_player_timer = nullptr;
     vlc_player_timer_id* m_player_timer_smpte = nullptr;
-    struct vlc_player_timer_point m_player_time;
+    struct vlc_player_timer_point m_player_time = vlc::qt::invalidPlayerTimerPoint();
     bool seeking = false;
     QTimer m_position_timer;
     QTimer m_time_timer;
@@ -173,6 +185,9 @@ public:
     VLCVarChoiceModel m_deinterlace;
     VLCVarChoiceModel m_deinterlaceMode;
     QVLCBool m_autoscale;
+    VideoTransform m_videoTransform;
+    SubtitleAppearance m_subtitleAppearance;
+    SubtitleCueTimeline m_subtitleTimeline;
     bool            m_hasVideo = false;
     bool            m_fullscreen = false;
     bool            m_wallpaperMode = false;
@@ -185,6 +200,9 @@ public:
     bool            m_muted = false;
     AudioDeviceModel m_audioDeviceList;
     VLCVarChoiceModel m_audioVisualization;
+    AudioEqualizer m_equalizer;
+    AudioWaveform m_waveform;
+    LocalMusicFolderModel m_musicFolder;
 
     //misc
     bool            m_recording = false;

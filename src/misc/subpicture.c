@@ -32,9 +32,11 @@
 #include <vlc_common.h>
 #include <vlc_image.h>
 #include <vlc_subpicture.h>
+#include <vlc_threads.h>
 #include "subpicture.h"
 
 #include <limits.h>
+#include <stdatomic.h>
 
 struct subpicture_private_t
 {
@@ -42,6 +44,13 @@ struct subpicture_private_t
     video_format_t dst;
     unsigned display_width;
     unsigned display_height;
+    atomic_bool stop_changed;
+    _Atomic vlc_tick_t requested_stop;
+    vlc_mutex_t timing_lock;
+    bool has_timing;
+    vlc_tick_t source_start;
+    vlc_tick_t display_start;
+    float rate;
 };
 
 subpicture_t *subpicture_New( const subpicture_updater_t *p_upd )
@@ -68,6 +77,10 @@ subpicture_t *subpicture_New( const subpicture_updater_t *p_upd )
         video_format_Init( &p_private->dst, 0 );
         p_private->display_width = 0;
         p_private->display_height = 0;
+        atomic_init(&p_private->stop_changed, false);
+        atomic_init(&p_private->requested_stop, VLC_TICK_INVALID);
+        vlc_mutex_init(&p_private->timing_lock);
+        p_private->has_timing = false;
 
         p_subpic->updater   = *p_upd;
         p_subpic->p_private = p_private;
@@ -174,6 +187,57 @@ subpicture_t *subpicture_NewFromPicture( vlc_object_t *p_obj,
 
     vlc_spu_regions_push( &p_subpic->regions, p_region );
     return p_subpic;
+}
+
+void subpicture_SetStopTime(subpicture_t *subpicture, vlc_tick_t stop)
+{
+    subpicture_private_t *priv = subpicture->p_private;
+    if (!priv) { subpicture->i_stop = stop; return; }
+    atomic_store(&priv->requested_stop, stop);
+    atomic_store(&priv->stop_changed, true);
+}
+
+bool subpicture_GetStopTime(const subpicture_t *subpicture, vlc_tick_t *stop)
+{
+    const subpicture_private_t *priv = subpicture->p_private;
+    if (!priv || !atomic_load(&priv->stop_changed)) return false;
+    *stop = atomic_load(&priv->requested_stop);
+    return true;
+}
+
+void subpicture_SetSourceTiming(subpicture_t *subpicture, vlc_tick_t source,
+                               vlc_tick_t display, float rate)
+{
+    subpicture_private_t *priv = subpicture->p_private;
+    if (!priv) return;
+    vlc_mutex_lock(&priv->timing_lock);
+    priv->source_start = source;
+    priv->display_start = display;
+    priv->rate = rate;
+    priv->has_timing = true;
+    vlc_mutex_unlock(&priv->timing_lock);
+}
+
+vlc_tick_t subpicture_GetSourceTime(const subpicture_t *subpicture, vlc_tick_t date)
+{
+    subpicture_private_t *priv = subpicture->p_private;
+    if (!priv) return date;
+    vlc_mutex_lock(&priv->timing_lock);
+    if (priv->has_timing)
+        date = priv->source_start + (vlc_tick_t)((date - priv->display_start) * priv->rate);
+    vlc_mutex_unlock(&priv->timing_lock);
+    return date;
+}
+
+void subpicture_Invalidate(subpicture_t *subpicture)
+{
+    subpicture_private_t *priv = subpicture->p_private;
+    if (!priv) return;
+    video_format_Clean(&priv->src);
+    video_format_Clean(&priv->dst);
+    video_format_Init(&priv->src, 0);
+    video_format_Init(&priv->dst, 0);
+    priv->display_width = priv->display_height = 0;
 }
 
 void subpicture_Update( subpicture_t *p_subpicture,

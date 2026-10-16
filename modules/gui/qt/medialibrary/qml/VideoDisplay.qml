@@ -45,11 +45,13 @@ Widgets.PageLoader {
 
     pageModel: [{
             name: "all",
+            nested: true,
             default: true,
             displayText: qsTr("All"),
             url: "qrc:///qt/qml/VLC/MediaLibrary/VideoAllDisplay.qml"
         },{
             name: "playlists",
+            nested: true,
             displayText: qsTr("Playlists"),
             url: "qrc:///qt/qml/VLC/MediaLibrary/VideoPlaylistsDisplay.qml"
         }

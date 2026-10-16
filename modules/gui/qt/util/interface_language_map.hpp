@@ -1,0 +1,72 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
+// Extracted unchanged from the existing VLC simple preferences language table.
+#ifndef VLC_QT_INTERFACE_LANGUAGE_MAP_HPP
+#define VLC_QT_INTERFACE_LANGUAGE_MAP_HPP
+#include "qt.hpp"
+static const struct {
+    const char iso[6];
+    const char name[34];
+
+} interface_language_map[] = {
+    { "auto",  N_("Auto") },
+    { "en",    "American English" },
+    { "ar",    "عربي" },
+    { "bn",    "বাংলা" },
+    { "pt_BR", "Português Brasileiro" },
+    { "en_GB", "British English" },
+    { "el",    "Νέα Ελληνικά" },
+    { "bg",    "български език" },
+    { "ca",    "Català" },
+    { "zh_TW", "正體中文" },
+    { "cs",    "Čeština" },
+    { "cy",    "Cymraeg" },
+    { "da",    "Dansk" },
+    { "nl",    "Nederlands" },
+    { "fi",    "Suomi" },
+    { "et",    "eesti keel" },
+    { "eu",    "Euskara" },
+    { "fr",    "Français" },
+    { "ga",    "Gaeilge" },
+    { "gd",    "Gàidhlig" },
+    { "gl",    "Galego" },
+    { "ka",    "ქართული" },
+    { "de",    "Deutsch" },
+    { "he",    "עברית" },
+    { "hr",    "hrvatski" },
+    { "hu",    "Magyar" },
+    { "hy",    "հայերեն" },
+    { "is",    "íslenska" },
+    { "id",    "Bahasa Indonesia" },
+    { "it",    "Italiano" },
+    { "ja",    "日本語" },
+    { "ko",    "한국어" },
+    { "lt",    "lietuvių" },
+    { "mn",    "Монгол хэл" },
+    { "ms",    "Melayu" },
+    { "nb",    "Bokmål" },
+    { "nn",    "Nynorsk" },
+    { "kk",    "Қазақ тілі" },
+    { "km",    "ភាសាខ្មែរ" },
+    { "ne",    "नेपाली" },
+    { "oc",    "Occitan" },
+    { "fa",    "فارسی" },
+    { "pl",    "Polski" },
+    { "pt_PT", "Português" },
+    { "pa",    "ਪੰਜਾਬੀ" },
+    { "ro",    "Română" },
+    { "ru",    "Русский" },
+    { "zh_CN", "简体中文" },
+    { "si",    "සිංහල" },
+    { "sr",    "српски" },
+    { "sk",    "Slovensky" },
+    { "sl",    "slovenščina" },
+    { "ckb",   "کوردیی سۆرانی" },
+    { "es",    "Español" },
+    { "sv",    "Svenska" },
+    { "te",    "తెలుగు" },
+    { "tr",    "Türkçe" },
+    { "uk",    "украї́нська мо́ва" },
+    { "vi",    "tiếng Việt" },
+    { "wa",    "Walon" }
+};
+#endif

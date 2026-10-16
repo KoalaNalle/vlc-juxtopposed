@@ -16,6 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 import QtQuick
+import QtQuick.Window
 
 import VLC.MainInterface
 import VLC.Util
@@ -59,9 +60,17 @@ FSM {
     property alias isVisible: fsmVisible.active
 
     property int lockCount: 0 // Track the number of locks
-    property int timeoutDuration: MainCtx.mouseHideTimeout
+    readonly property int autoHideMode: MainCtx.controlAutoHideMode
+    readonly property bool fullscreen: MainCtx.intfMainWindow.visibility === Window.FullScreen
+    // -1 preserves the established video-only legacy state machine. New
+    // modes apply equally to music/video, without changing the docking layout.
+    readonly property bool automaticallyHide: autoHideMode < 0 ? MainCtx.hasEmbededVideo
+        : autoHideMode === 2 || (autoHideMode === 1 && fullscreen)
+    readonly property bool interactionMayReveal: autoHideMode >= 0 || !Player.isInteractive
+    property int timeoutDuration: MainCtx.controlsHideTimeout
+    onAutomaticallyHideChanged: updateVideoEmbed()
 
-    initialState: ((Player.isInteractive && MainCtx.hasEmbededVideo))
+    initialState: ((autoHideMode < 0 && Player.isInteractive && MainCtx.hasEmbededVideo))
                   ? fsmHidden : fsmVisible
  
     signalMap: ({
@@ -82,7 +91,7 @@ FSM {
         FSMState {
             id: fsmNormalVisible
 
-            initialState: MainCtx.hasEmbededVideo ? fsmVideoMode : fsmAudioMode
+            initialState: fsm.automaticallyHide ? fsmVideoMode : fsmAudioMode
  
             transitions: ({
                 lock: {
@@ -96,7 +105,7 @@ FSM {
  
                 transitions: ({
                     updateVideoEmbed: {
-                        guard: () => MainCtx.hasEmbededVideo,
+                        guard: () => fsm.automaticallyHide,
                         target: fsmVideoMode
                     }
                 })
@@ -108,7 +117,7 @@ FSM {
                 function enter() {
                     timeout.interval = fsm.timeoutDuration;
 
-                    if (!Player.isInteractive)
+                    if (fsm.interactionMayReveal)
                         timeout.restart();
                 }
 
@@ -118,26 +127,27 @@ FSM {
  
                 transitions: ({
                     updateVideoEmbed: {
-                        guard: () => !MainCtx.hasEmbededVideo,
+                        guard: () => !fsm.automaticallyHide,
                         target: fsmAudioMode
                     },
                     askShow: {
+                        guard: () => fsm.automaticallyHide,
                         target: fsmHidden,
                     },
                     timeout: {
                         target: fsmHidden,
                     },
                     mouseMove: {
-                        guard: () => !Player.isInteractive,
+                        guard: () => fsm.interactionMayReveal,
                         action: () => { 
-                            fsm.timeoutDuration = MainCtx.mouseHideTimeout;
+                            fsm.timeoutDuration = MainCtx.controlsHideTimeout;
                         },
                         target: fsmVideoMode
                     },
                     keyboardMove: {
-                        guard: () => !Player.isInteractive,
+                        guard: () => fsm.interactionMayReveal,
                         action: () => { 
-                            fsm.timeoutDuration = MainCtx.mouseHideTimeout * 2
+                            fsm.timeoutDuration = MainCtx.controlsHideTimeout * 2
                         },
                         target: fsmVideoMode
                     }
@@ -174,17 +184,21 @@ FSM {
         }
 
         transitions: ({
+            updateVideoEmbed: {
+                guard: () => !fsm.automaticallyHide,
+                target: fsmAudioMode
+            },
             mouseMove: {
-                guard: () => !Player.isInteractive,
+                guard: () => fsm.interactionMayReveal,
                 action: () => {
-                    fsm.timeoutDuration = MainCtx.mouseHideTimeout
+                    fsm.timeoutDuration = MainCtx.controlsHideTimeout
                 },
                 target: fsmVisible
             },
             keyboardMove: {
-                guard: () => !Player.isInteractive,
+                guard: () => fsm.interactionMayReveal,
                 action: () => {
-                    fsm.timeoutDuration = MainCtx.mouseHideTimeout * 2
+                    fsm.timeoutDuration = MainCtx.controlsHideTimeout * 2
                 },
                 target: fsmVisible
             },

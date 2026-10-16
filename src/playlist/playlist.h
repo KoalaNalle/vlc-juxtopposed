@@ -49,9 +49,11 @@ struct vlc_playlist
 {
     vlc_player_t *player;
     vlc_preparser_t *parser;
+    vlc_preparser_t *fetcher;
     libvlc_int_t *libvlc;
     enum vlc_playlist_media_stopped_action stopped_action;
     enum vlc_playlist_preparsing recursive;
+    bool metadata_network; /**< Startup policy; preferences take effect after restart. */
     /* all remaining fields are protected by the lock of the player */
     struct vlc_player_listener_id *player_listener;
     playlist_item_vector_t items;

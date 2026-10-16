@@ -254,6 +254,7 @@ Item {
         DropArea {
             anchors.fill: parent
             z: -1
+            enabled: !DialogsProvider.qmlDialogVisible
 
             onEntered: (drag) => {
                 // Do not handle internal drag here:
@@ -333,6 +334,24 @@ Item {
         Loader {
             asynchronous: true
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
+        }
+
+        JuxtopposedDialogsHost {
+            anchors.fill: parent
+            // Popup visuals live in Overlay, outside this capture source.
+            // Embedded video can be a separate native surface that Qt Quick
+            // cannot capture. Preserve the original translucent tint there.
+            backdropSource: MainCtx.hasEmbededVideo ? null : g_mainInterface
+            dialogsProvider: DialogsProvider
+            mainCtx: MainCtx
+            appearance: JuxtopposedPalette
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            fallbackFocusItem: viewLoader.item
+            onPlaylistRequested: playlist => {
+                MainCtx.playerView = false
+                History.push(["playlists", "list"], {parentId: playlist, title: DialogsProvider.newPlaylist.name.trim()}, Qt.PopupFocusReason)
+            }
+            onPlaylistSaved: MainCtx.mediaLibrary?.homeActivity?.refresh()
         }
 
         Loader {

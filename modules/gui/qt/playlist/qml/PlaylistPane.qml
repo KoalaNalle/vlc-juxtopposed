@@ -27,6 +27,8 @@ import VLC.Widgets as Widgets
 import VLC.Util
 import VLC.Playlist
 import VLC.Style
+import VLC.Dialogs
+import VLC.Player
 
 T.Pane {
     id: root
@@ -37,11 +39,26 @@ T.Pane {
     readonly property ListSelectionModel selectionModel: listView?.selectionModel ?? null
 
     property bool useAcrylic: true
+    readonly property bool juxtopposed: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
+    property int currentTab: 0
+    onCurrentTabChanged: {
+        if (currentTab !== 0)
+            searchBox?.retract()
+    }
+    property int durationRevision: 0
+    property int queueSelectionRevision: 0
+    readonly property int queueSelectionCount: {
+        queueSelectionRevision
+        return root.selectionModel?.selectedIndexesFlat.length ?? 0
+    }
 
     readonly property real minimumWidth: contentItem.Layout.minimumWidth +
                                          leftPadding +
                                          rightPadding +
-                                         2 * (VLCStyle.margin_xsmall)
+                                         (juxtopposed ? 0 : 2 * VLCStyle.margin_xsmall)
+    readonly property real preferredWidth: juxtopposed && MainCtx.playqueuePanel.width < minimumWidth
+                                               ? VLCStyle.dp(400, VLCStyle.scale)
+                                               : MainCtx.playqueuePanel.width
 
     readonly property ListView listView: contentItem.listView
 
@@ -59,7 +76,7 @@ T.Pane {
     implicitHeight: Math.max(implicitBackgroundHeight + topInset + bottomInset,
                              implicitContentHeight + topPadding + bottomPadding)
 
-    verticalPadding: VLCStyle.margin_normal
+    verticalPadding: juxtopposed ? 0 : VLCStyle.margin_normal
 
     Accessible.role: Accessible.Pane
     Accessible.name: qsTr("Play Queue")
@@ -79,6 +96,14 @@ T.Pane {
 
         view: root.listView
 
+        // PlaylistDelegate supplies source rows for dragged items. Texture
+        // providers, unlike item data, are looked up in the filtered view.
+        getTextureProvider: function(index) {
+            const viewIndex = listView.mapSourceToView(index)
+            return viewIndex < 0 ? null
+                                 : listView.itemAtIndex.call(null, viewIndex)?.artworkTextureProvider ?? null
+        }
+
         onRequestData: (indexes, resolve, reject) => {
             resolve(indexes.map((index) => {
                 const item = root.model.itemAt(index)
@@ -91,7 +116,7 @@ T.Pane {
         }
 
         onRequestInputItems: (indexes, data, resolve, reject) => {
-            resolve(root.model.getItemsForIndexes((indexes?.length > 0) ? indexes : root.selectionModel.selectedIndexesFlat))
+            resolve(root.model.getItemsForIndexes((indexes?.length > 0) ? indexes : listView.mappedSelectedIndexes()))
         }
     }
 
@@ -104,7 +129,11 @@ T.Pane {
         controler: MainPlaylistController
         ctx: MainCtx
 
-        onJumpToCurrentPlaying: listView.positionViewAtIndex( MainPlaylistController.currentIndex, ItemView.Center)
+        onJumpToCurrentPlaying: {
+            const viewIndex = listView.mapSourceToView(MainPlaylistController.currentIndex)
+            if (viewIndex >= 0)
+                listView.positionViewAtIndex(viewIndex, ItemView.Center)
+        }
     }
 
     background: Widgets.AcrylicBackground {
@@ -112,18 +141,282 @@ T.Pane {
         tintColor: theme.bg.primary
     }
 
-    contentItem: ColumnLayout {
-        spacing: VLCStyle.margin_xxsmall
+    Binding {
+        target: root.background
+        property: "visible"
+        when: root.juxtopposed
+        value: false
+    }
 
-        Layout.minimumWidth: Math.min(Math.max(noContentInfoColumn.implicitWidth,
+    function queueDuration() : var {
+        root.durationRevision // Refresh when duration roles change without a row-count change.
+        const count = listView.model.rowCount()
+        if (count <= 0)
+            return null
+        const durations = []
+        for (let i = 0; i < count; ++i)
+            durations.push(listView.model.data(listView.model.index(i, 0), PlaylistListModel.DurationRole))
+        return durations[0].sum(durations)
+    }
+
+    function formatQueueDuration(duration) : string {
+        if (!duration || !duration.valid())
+            return ""
+        const hours = duration.toHours()
+        const minutes = duration.toMinutes()
+        const seconds = duration.toSeconds()
+        if (hours > 0)
+            return qsTr("%1h %2m").arg(hours).arg(minutes % 60)
+        if (minutes > 0)
+            return qsTr("%1m %2s").arg(minutes).arg(seconds % 60)
+        return qsTr("%1s").arg(seconds)
+    }
+
+    function formatChapterTime(time) : string {
+        if (!time || !time.valid())
+            return "—"
+        const seconds = time.toSeconds()
+        const hours = Math.floor(seconds / 3600).toString().padStart(2, "0")
+        const minutes = Math.floor(seconds / 60 % 60).toString().padStart(2, "0")
+        const remainder = (seconds % 60).toString().padStart(2, "0")
+        return hours + ":" + minutes + ":" + remainder
+    }
+
+    function queueSummary() : string {
+        const countText = listView.count === 1 ? qsTr("%1 item").arg(listView.count)
+                                              : qsTr("%1 items").arg(listView.count)
+        const durationText = root.formatQueueDuration(root.queueDuration())
+        return durationText ? qsTr("%1 - %2").arg(countText).arg(durationText) : countText
+    }
+
+    function formatQueueRepeatMode(mode) : string {
+        switch (mode) {
+        case PlaylistController.PLAYBACK_REPEAT_ALL:
+            return qsTr("Repeat all")
+        case PlaylistController.PLAYBACK_REPEAT_CURRENT:
+            return qsTr("Repeat current item")
+        default:
+            return qsTr("Repeat off")
+        }
+    }
+
+    function showQueueSort() {
+        const entries = sort.model.map((entry) => {
+            const checked = entry.criteria === sort.sortKey
+            return { "text": entry.text, "checked": checked,
+                     "order": checked ? sort.sortOrder : undefined }
+        })
+        const button = queuePanel.sortButton
+        sort._menu.popup(button.mapToGlobal(0, button.height), false, entries)
+    }
+
+    Binding {
+        target: searchBox.popup
+        property: "parent"
+        when: root.juxtopposed
+        value: queuePanel
+    }
+    Binding {
+        target: searchBox.popup
+        property: "x"
+        when: root.juxtopposed
+        value: Math.max(0, queuePanel.width - searchBox.popup.width - 20 * VLCStyle.scale)
+    }
+    Binding {
+        target: searchBox.popup
+        property: "y"
+        when: root.juxtopposed
+        value: 50 * VLCStyle.scale
+    }
+    Connections {
+        target: searchBox.popup
+        function onClosed() {
+            if (!root.juxtopposed)
+                return
+            if (root.currentTab === 0)
+                listView.forceActiveFocus(Qt.ShortcutFocusReason)
+            else if (root.currentTab === 1)
+                bookmarksLoader.item?.forceActiveFocus(Qt.ShortcutFocusReason)
+            else
+                chaptersView.forceActiveFocus(Qt.ShortcutFocusReason)
+        }
+    }
+
+    contentItem: ColumnLayout {
+        spacing: root.juxtopposed ? 0 : VLCStyle.margin_xxsmall
+
+        Layout.minimumWidth: root.juxtopposed ? VLCStyle.dp(320, VLCStyle.scale)
+                                             : Math.min(Math.max(noContentInfoColumn.implicitWidth,
                                                titleRowLayout.implicitWidth ),
                                       /* Minimum width should not be too large, we rely on elision otherwise: */
                                       Window.width / 3) + (headerColumn.Layout.leftMargin + headerColumn.Layout.rightMargin)
 
         readonly property ListView listView: listView
 
+        JuxtopposedQueuePanel {
+            id: queuePanel
+            visible: root.juxtopposed
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            uiScale: VLCStyle.scale
+            activeTab: root.currentTab
+            summary: root.currentTab === 1 ? ((bookmarksLoader.item?.count ?? 0) === 1
+                                                 ? qsTr("%1 Bookmark").arg(bookmarksLoader.item.count)
+                                                 : qsTr("%1 Bookmarks").arg(bookmarksLoader.item?.count ?? 0))
+                                          : root.queueSummary()
+            showSort: root.currentTab === 0
+            showRepeat: root.currentTab === 0
+            showShuffle: root.currentTab === 0
+            showToolbar: root.currentTab !== 2
+            showRemove: root.currentTab !== 2
+            showAdd: root.currentTab !== 2
+            toolbarContentHeight: root.currentTab === 0 ? 28 : 24
+            sortEnabled: MainPlaylistController.count > 1
+            repeatEnabled: !MainPlaylistController.empty
+            shuffleEnabled: MainPlaylistController.count > 1
+            removeEnabled: root.currentTab === 0 ? root.queueSelectionCount > 0
+                          : root.currentTab === 1 && (bookmarksLoader.item?.selectionCount ?? 0) > 0
+            addEnabled: root.currentTab === 0 || (root.currentTab === 1 && (bookmarksLoader.item?.canAdd ?? false))
+            addDescription: root.currentTab === 1 ? qsTr("Add bookmark") : qsTr("Add files")
+            removeDescription: root.currentTab === 1 ? qsTr("Remove selected bookmarks") : qsTr("Remove selected items")
+            repeatActive: MainPlaylistController.repeatMode !== PlaylistController.PLAYBACK_REPEAT_NONE
+            repeatDescription: root.formatQueueRepeatMode(MainPlaylistController.repeatMode)
+            shuffleActive: MainPlaylistController.random
+            onTabRequested: (index) => root.currentTab = index
+            onSortRequested: root.showQueueSort()
+            onRepeatRequested: MainPlaylistController.toggleRepeatMode()
+            onShuffleRequested: MainPlaylistController.toggleRandom()
+            onRemoveRequested: {
+                if (root.currentTab === 1) {
+                    bookmarksLoader.item?.removeSelected()
+                    return
+                }
+                if (root.currentTab !== 0)
+                    return
+                const items = listView.mappedSelectedIndexes()
+                if (items.length > 0)
+                    root.model.removeItems(items)
+            }
+            onAddRequested: {
+                if (root.currentTab === 0)
+                    DialogsProvider.simpleOpenDialog(false)
+                else if (root.currentTab === 1)
+                    bookmarksLoader.item?.addBookmark()
+            }
+        }
+
+        Loader {
+            id: bookmarksLoader
+            parent: queuePanel.bodyContainer
+            anchors.fill: parent
+            active: root.juxtopposed && MainCtx.mediaLibraryAvailable
+            visible: root.currentTab === 1
+            source: "JuxtopposedBookmarkList.qml"
+            onLoaded: item.navigationParent = root
+        }
+
+        T.Label {
+            parent: queuePanel.bodyContainer
+            anchors.centerIn: parent
+            visible: root.juxtopposed && root.currentTab === 1 && !MainCtx.mediaLibraryAvailable
+            text: qsTr("Bookmarks require the media library")
+            color: "#969696"
+            font.pixelSize: 14 * VLCStyle.scale
+        }
+
+        Widgets.ListViewExt {
+            id: chaptersView
+            parent: queuePanel.bodyContainer
+            anchors.fill: parent
+            visible: root.juxtopposed && root.currentTab === 2
+            enabled: visible
+            model: Player.chapters
+            selectionModel: ListSelectionModel { model: chaptersView.model }
+            spacing: 12 * VLCStyle.scale
+            clip: true
+            focus: true
+            Navigation.parentItem: root
+            Navigation.upItem: queuePanel.chaptersButton
+            Accessible.role: Accessible.List
+            Accessible.name: qsTr("Chapters")
+
+            function activate(index) {
+                if (index >= 0 && index < count)
+                    Player.chapters.selectChapter(index)
+            }
+            onActionAtIndex: (index) => activate(index)
+
+            delegate: T.Control {
+                id: chapterRow
+                required property int index
+                required property string display
+                required property var time
+                required property bool checked
+                readonly property bool selected: chaptersView.selectionModel.selectedIndexesFlat.includes(index)
+                width: chaptersView.width
+                height: 32 * VLCStyle.scale
+                padding: 0
+                hoverEnabled: true
+                Accessible.role: Accessible.ListItem
+                Accessible.name: display
+                Accessible.selected: selected
+                Accessible.description: checked ? qsTr("Current chapter, %1").arg(contentItem.durationText)
+                                                : contentItem.durationText
+                Accessible.onPressAction: chaptersView.activate(index)
+
+                readonly property ColorContext colorContext: ColorContext {
+                    id: chapterTheme
+                    colorSet: ColorContext.Item
+                    focused: chapterRow.activeFocus
+                    hovered: chapterRow.hovered
+                    enabled: chapterRow.enabled
+                }
+                background: Widgets.AnimatedBackground {
+                    color: chapterRow.selected || chapterRow.checked ? chapterTheme.bg.highlight
+                           : chapterRow.hovered ? chapterTheme.bg.primary : "transparent"
+                    border.color: chapterRow.visualFocus ? chapterTheme.visualFocus : "transparent"
+                    enabled: chapterTheme.initialized
+                }
+                contentItem: JuxtopposedQueueRow {
+                    uiScale: VLCStyle.scale
+                    showMove: false
+                    chapterNumber: chapterRow.index + 1
+                    title: chapterRow.display
+                    durationText: root.formatChapterTime(chapterRow.time)
+                    titleColor: chapterRow.checked || chapterRow.selected ? chapterTheme.fg.primary : "#969696"
+                }
+                TapHandler {
+                    acceptedDevices: PointerDevice.AllDevices & ~PointerDevice.TouchScreen
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    gesturePolicy: TapHandler.ReleaseWithinBounds
+                    onSingleTapped: {
+                        chapterRow.forceActiveFocus(Qt.MouseFocusReason)
+                        chaptersView.selectionModel.updateSelection(point.modifiers, chaptersView.currentIndex, chapterRow.index)
+                        chaptersView.currentIndex = chapterRow.index
+                    }
+                    onDoubleTapped: (eventPoint, button) => {
+                        if (button === Qt.LeftButton)
+                            chaptersView.activate(chapterRow.index)
+                    }
+                }
+                DelegateTouchTapHandler {
+                    delegate: chapterRow
+                    onSingleTapped: chaptersView.activate(chapterRow.index)
+                }
+            }
+
+            T.Label {
+                anchors.centerIn: parent
+                visible: chaptersView.count === 0
+                text: qsTr("No chapters in this media")
+                color: "#969696"
+                font.pixelSize: 14 * VLCStyle.scale
+            }
+        }
+
         Column {
             id: headerColumn
+            visible: !root.juxtopposed
 
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -209,7 +502,9 @@ T.Pane {
                     displayRegexToggleButton: true
                     displayCaseSensitiveToggleButton: true
 
-                    popup.width: Math.max(popup.implicitWidth, root.contentItem?.width * 0.6)
+                    popup.width: root.juxtopposed ? Math.min(Math.max(popup.implicitWidth, root.contentItem.width * 0.6),
+                                                           queuePanel.width - 40 * VLCStyle.scale)
+                                                 : Math.max(popup.implicitWidth, root.contentItem?.width * 0.6)
                     popup.topPadding: VLCStyle.margin_xxsmall
 
                     Navigation.parentItem: root
@@ -233,22 +528,7 @@ T.Pane {
                     if (listView.count <= 0)
                         return "" // Not visible otherwise
 
-                    let duration
-                    const model = listView.model
-                    if (model instanceof PlaylistListModel) {
-                        duration = model.duration
-                    } else {
-                        // Proxy model, we need to use `QAbstractItemModel` api:
-
-                        duration = []
-                        for (let i = 0; i < listView.count; ++i) {
-                            const itemDuration = model.data(model.index(i, 0), PlaylistListModel.DurationRole)
-                            console.assert(itemDuration !== undefined && itemDuration !== null) // typeof `vlcDuration`
-                            duration.push(itemDuration)
-                        }
-                        duration = duration[0].sum(duration)
-                    }
-
+                    const duration = root.queueDuration()
                     return qsTr("%1 elements, %2").arg(listView.count).arg(duration.formatLong())
                 }
             }
@@ -256,12 +536,13 @@ T.Pane {
 
         Item {
             // Spacer
+            visible: !root.juxtopposed
 
             implicitHeight: VLCStyle.margin_xsmall
         }
 
         RowLayout {
-            visible: listView.count !== 0
+            visible: !root.juxtopposed && listView.count !== 0
 
             Layout.fillHeight: false
             Layout.leftMargin: VLCStyle.margin_normal
@@ -324,11 +605,20 @@ T.Pane {
             }
         }
 
-        Widgets.ListViewExt {
-            id: listView
-
+        Item {
+            id: legacyQueueHost
+            visible: !root.juxtopposed
             Layout.fillWidth: true
             Layout.fillHeight: true
+        }
+
+        Widgets.ListViewExt {
+            id: listView
+            parent: root.juxtopposed ? queuePanel.bodyContainer : legacyQueueHost
+            anchors.fill: parent
+            visible: !root.juxtopposed || root.currentTab === 0
+            spacing: root.juxtopposed ? 12 * VLCStyle.scale : 0
+            onModelChanged: root.queueSelectionRevision++
 
             selectionModel: ListSelectionModel {
                 model: listView.model
@@ -375,33 +665,58 @@ T.Pane {
                 }
             }
 
-            fadingEdge.backgroundColor: (root.background && (root.background.color.a >= 1.0)) ? root.background.color
+            fadingEdge.backgroundColor: root.juxtopposed ? Qt.rgba(14 / 255, 14 / 255, 14 / 255, 0.95)
+                                      : (root.background && (root.background.color.a >= 1.0)) ? root.background.color
                                                                                               : Qt.alpha(root.background.color, 0.0)
 
-            function mappedSelectedIndexes() : var {
-                let mappedSelectedIndexes
+            function mapViewToSource(index) : int {
+                if (index < 0 || index >= listView.count)
+                    return -1
 
+                const sourceIndex = (listView.model instanceof AbstractProxyModel)
+                        ? listView.model.mapToSource(listView.model.index(index, 0)).row
+                        : index
+                return sourceIndex >= 0 && sourceIndex < root.model.count ? sourceIndex : -1
+            }
+
+            function mapSourceToView(index) : int {
+                if (index < 0 || index >= root.model.count)
+                    return -1
+
+                const viewIndex = (listView.model instanceof AbstractProxyModel)
+                        ? listView.model.mapFromSource(root.model.index(index, 0)).row
+                        : index
+                return viewIndex >= 0 && viewIndex < listView.count ? viewIndex : -1
+            }
+
+            function mappedSelectedIndexes() : var {
                 if (!listView.selectionModel)
                     return [] // unlikely
 
                 const selectedIndexes = listView.selectionModel.selectedIndexesFlat
-                if (listView.proxyModel && listView.model === listView.proxyModel) {
-                    mappedSelectedIndexes = []
-                    for (let i = 0; i < selectedIndexes.length; ++i) {
-                        const mappedIndex = listView.model.mapToSource(listView.model.index(selectedIndexes[i], 0))
-                        mappedSelectedIndexes.push(mappedIndex.row)
-                    }
-                } else {
-                    mappedSelectedIndexes = selectedIndexes
+                const sourceIndexes = []
+                for (let i = 0; i < selectedIndexes.length; ++i) {
+                    const sourceIndex = listView.mapViewToSource(selectedIndexes[i])
+                    if (sourceIndex >= 0)
+                        sourceIndexes.push(sourceIndex)
                 }
 
-                return mappedSelectedIndexes
+                // The playlist move/remove APIs require ascending source rows,
+                // whereas selection order follows the user's clicks.
+                return sourceIndexes.sort((a, b) => a - b)
             }
 
-            isDropAcceptableFunc: function(drop, index) {
-                if (drop.source === dragItem)
-                    return Helpers.itemsMovable(listView.mappedSelectedIndexes(), index)
-                else if (Helpers.isValidInstanceOf(drop.source, Widgets.DragItem))
+            // Row drop zones already map their targets to source coordinates.
+            // Keep those distinct from the footer and queue-toggle drops, which
+            // append to the complete queue even when its tail is filtered out.
+            function isSourceDropAcceptable(drop, index) : bool {
+                if (index < 0 || index > root.model.count)
+                    return false
+
+                if (drop.source === dragItem) {
+                    const sourceIndexes = listView.mappedSelectedIndexes()
+                    return sourceIndexes.length > 0 && Helpers.itemsMovable(sourceIndexes, index)
+                } else if (Helpers.isValidInstanceOf(drop.source, Widgets.DragItem))
                     return true
                 else if (drop.hasUrls)
                     return true
@@ -409,7 +724,10 @@ T.Pane {
                     return false
             }
 
-            acceptDropFunc: function(index, drop) {
+            function acceptSourceDrop(index, drop) : var {
+                if (!listView.isSourceDropAcceptable(drop, index))
+                    return Promise.resolve()
+
                 const item = drop.source;
 
                 // NOTE: Move implementation.
@@ -442,6 +760,14 @@ T.Pane {
                 return Promise.resolve()
             }
 
+            isDropAcceptableFunc: function(drop, index) {
+                return listView.isSourceDropAcceptable(drop, root.model.count)
+            }
+
+            acceptDropFunc: function(index, drop) {
+                return listView.acceptSourceDrop(root.model.count, drop)
+            }
+
             property int shiftIndex: -1
 
             onShowContextMenu: (globalPos) => {
@@ -463,12 +789,16 @@ T.Pane {
             Component.onCompleted: {
                 // WARNING: Tracking the current item and not the current index is intentional here.
                 MainPlaylistController.currentItemChanged.connect(listView, () => {
+                    const viewIndex = listView.mapSourceToView(MainPlaylistController.currentIndex)
+                    if (viewIndex < 0)
+                        return // The playing item can be filtered out.
+
                     // FIXME: Qt does not provide the `contentY` with `positionViewAtIndex()` for us
                     //        to animate. For that reason, we capture the new `contentY`, adjust
                     //        `contentY` to it is old value then enable the animation and set `contentY`
                     //        to its new value.
                     const oldContentY = listView.contentY
-                    listView.positionViewAtIndex(MainPlaylistController.currentIndex, ListView.Contain)
+                    listView.positionViewAtIndex(viewIndex, ListView.Contain)
                     const newContentY = listView.contentY
                     if (Math.abs(oldContentY - newContentY) >= Number.EPSILON) {
                         contentYBehavior.enabled = false
@@ -487,28 +817,42 @@ T.Pane {
                 target: listView.model
 
                 function onRowsInserted() {
+                    root.durationRevision++
                     if (listView.currentIndex === -1)
                         listView.currentIndex = 0
                 }
 
                 function onModelReset() {
+                    root.durationRevision++
+                    root.queueSelectionRevision++
                     if (listView.currentIndex === -1 && listView.count > 0)
                         listView.currentIndex = 0
                 }
+                function onDataChanged(topLeft, bottomRight, roles) {
+                    if ((roles?.length ?? 0) === 0 || roles.includes(PlaylistListModel.DurationRole))
+                        root.durationRevision++
+                }
+                function onRowsRemoved() {
+                    root.durationRevision++
+                    root.queueSelectionRevision++
+                }
+                function onRowsMoved() { root.durationRevision++ }
+                function onLayoutChanged() { root.durationRevision++ }
             }
 
             delegate: PlaylistDelegate {
                 id: delegate
 
                 width: listView.contentWidth
-                rightPadding: Math.max(listView.T.ScrollBar.vertical.width, VLCStyle.margin_normal)
+                juxtopposed: root.juxtopposed
+                rightPadding: juxtopposed ? 0 : Math.max(listView.T.ScrollBar.vertical.width, VLCStyle.margin_normal)
 
                 contextMenu: root.contextMenu
 
                 dragItem: root.dragItem
 
-                isDropAcceptable: listView.isDropAcceptableFunc
-                acceptDrop: listView.acceptDropFunc
+                isDropAcceptable: listView.isSourceDropAcceptable
+                acceptDrop: listView.acceptSourceDrop
 
                 onContainsDragChanged: listView.updateItemContainsDrag(this, containsDrag)
 
@@ -521,31 +865,21 @@ T.Pane {
             }
 
             Keys.onDeletePressed: {
-                let items
-
-                const selectedIndexes = selectionModel.selectedIndexesFlat
-                if (listView.proxyModel && listView.model === listView.proxyModel) {
-                    items = []
-                    for (let i = 0; i < selectedIndexes.length; ++i) {
-                        const mappedIndex = listView.proxyModel.mapToSource(listView.proxyModel.index(selectedIndexes[i], 0))
-                        items.push(mappedIndex.row)
-                    }
-                } else {
-                    items = selectedIndexes
-                }
+                const items = listView.mappedSelectedIndexes()
 
                 if (items.length > 0)
                     root.model.removeItems(items)
             }
 
             Navigation.parentItem: root
-            Navigation.upItem: sort
+            Navigation.upItem: root.juxtopposed ? queuePanel.sortButton : sort
 
             onActionAtIndex: (index) => {
-                if (index < 0)
+                const sourceIndex = listView.mapViewToSource(index)
+                if (sourceIndex < 0)
                     return
 
-                MainPlaylistController.goTo(index, true)
+                MainPlaylistController.goTo(sourceIndex, true)
             }
 
             Column {
@@ -615,8 +949,17 @@ T.Pane {
     }
 
     Keys.priority: Keys.AfterItem
-    Keys.forwardTo: listView
-    Keys.onPressed: (event) => root.Navigation.defaultKeyAction(event)
+    Keys.forwardTo: !root.juxtopposed || root.currentTab === 0 ? [listView]
+                  : root.currentTab === 1 && bookmarksLoader.item ? [bookmarksLoader.item]
+                  : root.currentTab === 2 ? [chaptersView] : []
+    Keys.onPressed: (event) => {
+        if (root.juxtopposed && root.currentTab === 0 && event.matches(StandardKey.Find)) {
+            searchBox.expandAndFocus()
+            event.accepted = true
+        } else {
+            root.Navigation.defaultKeyAction(event)
+        }
+    }
 
     component PlaylistToggleButton : Widgets.IconToolButton {
         id: playlistBtn

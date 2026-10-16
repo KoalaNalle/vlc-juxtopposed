@@ -1,0 +1,39 @@
+{
+  "checkerSha256": "2d0123c82aa9a89d34f78e3d674f1ab73b62bf5428181dc280544a004d318821",
+  "frozenBindingsSha256": "3ff0fc044cf2fdce8d20cc864698c043912b353f21660d2f807947b1423ac609",
+  "verificationSha256": "1445c5061ff823d9e3d679a7d37cb27815027f11c5c805a97979b74286ea537a",
+  "evidenceRepositoryPath": "build-windows/conversion-desktop-output-native-20261014",
+  "sourceRepositoryPath": "build-windows/duration-fixtures-20261014/waveform-audio.wav",
+  "sourceSha256": "661d2ee20c2ea5952c89f7ec0e295e27cfc29b5ebfb054b49c9ce0a90153921c",
+  "desktopOutputRepositoryPath": "build-windows/conversion-modal-desktop-20261014/converted-native.flac",
+  "desktopOutputSha256": "6aa147941667f0a2f20db8034701daa280e954499dc34ffb7a9cf72c274879a1",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "evidenceSha256": {
+    "worker-verification.json": "6b6ae9c1bdec6c24f8f9d38a36c6ab57a6c3f058b696649f88d1284ac799aa3e",
+    "complete-decode.log": "d733b7d40d27244c85bb4fe0ee62d3b0154e6decb9ecb66ea790a664509acef4",
+    "complete-decoded.pcm": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+    "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "actualResult": {
+    "passed": true,
+    "exitCode": 0,
+    "exactDecodedFrames": 1323000,
+    "exactDecodedPcmBytes": 2646000,
+    "completePcmEquality": true,
+    "exactFinal64Samples": true,
+    "cleanEos": true,
+    "sourceAndDesktopOutputPreserved": true
+  },
+  "notClaimed": [
+    "actual desktop picker/control/save path verification",
+    "primary-player transport/state/queue behavior",
+    "full conversion/video/profile coverage",
+    "original Figma conversion form acceptance"
+  ],
+  "noProductionOrFrozenHelperEdits": true,
+  "scope": "Read-only independent native decoder in fresh userdata and owned55s process; not desktop automation."
+}

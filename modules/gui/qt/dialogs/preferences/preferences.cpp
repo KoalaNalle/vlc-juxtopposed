@@ -432,9 +432,9 @@ void PrefsDialog::reset()
         p_intf->p_mi->reloadFromSettings();
 
 #ifdef _WIN32
-        simple_panels[0]->cleanLang();
+        SPrefsPanel::cleanLang();
 #endif
-
+        emit preferencesReset();
     }
 }
 

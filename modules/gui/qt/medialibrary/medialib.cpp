@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "medialib.hpp"
+#include "mlhomeactivity.hpp"
 #include "mlhelper.hpp"
 #include "playlist/playlist_controller.hpp"
 #include "util/shared_input_item.hpp"
@@ -24,6 +25,7 @@
 #include <utility>
 
 #include <QQmlEngine>
+#include <QFileInfo>
 
 MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlistController, QObject *_parent)
     : QObject( _parent )
@@ -37,10 +39,13 @@ MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlist
     m_event_cb.reset( vlc_ml_event_register_callback( m_ml, MediaLib::onMediaLibraryEvent,
                                                       this ) );
     m_runner = new ThreadRunner();
+    if (_intf->mainSettings)
+        m_homeActivity = std::make_unique<MLHomeActivity>(this, _intf->mainSettings, _intf);
 }
 
 MediaLib::~MediaLib()
 {
+    m_homeActivity.reset();
     m_runner->destroy();
 }
 
@@ -105,6 +110,32 @@ static void convertQVariantListToPlaylistMedias(vlc_medialibrary_t* ml, QVariant
         }
         // else ignore
     }
+}
+
+void MediaLib::addFolder(const QUrl &folder)
+{
+    if (!folder.isLocalFile() || !QFileInfo(folder.toLocalFile()).isDir())
+    {
+        emit folderAddFailed(folder);
+        return;
+    }
+
+    // Pending state exists before native discovery can publish its root event.
+    const auto serial = m_homeActivity ? m_homeActivity->beginFolderAddition(folder) : 0;
+    struct Context { bool accepted = false, existingRoot = false; };
+    runOnMLThread<Context>(this,
+        [folder](vlc_medialibrary_t *ml, Context &ctx) {
+            // Successful root-added events are emitted only once. A root
+            // already indexed before this user action is also a genuine visit.
+            ctx.existingRoot = lookupMLHomeAddedFolder(ml, folder).status == MLHomeFolderLookup::Ready;
+            ctx.accepted = vlc_ml_add_folder(ml,
+                qtu(folder.toString(QUrl::FullyEncoded))) == VLC_SUCCESS;
+        },
+        [this, folder, serial](quint64, Context &ctx) {
+            if (m_homeActivity) m_homeActivity->completeFolderAddition(serial, ctx.accepted, ctx.existingRoot);
+            if (!ctx.accepted)
+                emit folderAddFailed(folder);
+        }, "ML_FOLDER_ADD_QUEUE");
 }
 
 MLItemId MediaLib::deserializeMlItemIdFromString(const QString& serialized_id) {
@@ -356,6 +387,17 @@ void MediaLib::onMediaLibraryEvent( void* data, const vlc_ml_event_t* event )
     MediaLib* self = static_cast<MediaLib*>( data );
     switch ( event->i_type )
     {
+        case VLC_ML_EVENT_ENTRY_POINT_ADDED:
+        {
+            if (!event->entry_point_added.b_success)
+            {
+                const QUrl folder = QUrl::fromEncoded(event->entry_point_added.psz_entry_point);
+                QMetaObject::invokeMethod(self, [self, folder]() {
+                    emit self->folderAddFailed(folder);
+                }, Qt::QueuedConnection);
+            }
+            break;
+        }
         case VLC_ML_EVENT_PARSING_PROGRESS_UPDATED:
         {
             int percent =  event->parsing_progress.i_percent;

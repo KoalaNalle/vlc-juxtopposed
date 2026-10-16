@@ -36,12 +36,21 @@ vlc_player_osd_HoldAll(vlc_player_t *player, size_t *count)
     vout_thread_t **vouts;
     input_resource_HoldVouts(player->resource, &vouts, count);
 
+    size_t kept = 0;
     for (size_t i = 0; i < *count; ++i)
     {
+        /* Disabled shortcut feedback must not flush an existing title. */
+        if (!var_InheritBool(vouts[i], "osd-shortcut-feedback"))
+        {
+            vout_Release(vouts[i]);
+            continue;
+        }
+        vouts[kept++] = vouts[i];
         vout_FlushSubpictureChannel(vouts[i], VOUT_SPU_CHANNEL_OSD);
         vout_FlushSubpictureChannel(vouts[i], VOUT_SPU_CHANNEL_OSD_HSLIDER);
         vout_FlushSubpictureChannel(vouts[i], VOUT_SPU_CHANNEL_OSD_HSLIDER);
     }
+    *count = kept;
     return vouts;
 }
 

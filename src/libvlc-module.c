@@ -1806,6 +1806,11 @@ vlc_module_begin ()
     add_bool( "spu-fill", true, SPU_FULL_TEXT, SPU_FULL_LONGTEXT )
         change_safe ()
     add_bool( "osd", true, OSD_TEXT, OSD_LONGTEXT )
+    add_bool("osd-shortcut-feedback", true, N_("Show shortcut feedback"),
+        N_("Show shortcut text, icons and sliders without disabling explicit filename messages."))
+    add_integer_with_range("osd-feedback-duration", -1, -1, 5000,
+        N_("Shortcut feedback duration in milliseconds"),
+        N_("-1 retains native text and widget durations; explicit values use 500 to 5000 ms."))
     add_module("text-renderer", "text renderer", "any",
                TEXTRENDERER_TEXT, TEXTRENDERER_LONGTEXT)
 
@@ -1829,6 +1834,17 @@ vlc_module_begin ()
                  SUB_MARGIN_LONGTEXT )
     add_integer_with_range( "sub-text-scale", 100, 10, 500,
                SUB_TEXT_SCALE_TEXT, SUB_TEXT_SCALE_LONGTEXT )
+    add_bool("sub-text-style-enabled", false, N_("Custom subtitle appearance"), NULL)
+    add_bool("sub-text-style-embedded", true, N_("Use embedded subtitle formatting"), NULL)
+    add_string("sub-text-style-font", "", N_("Subtitle font family"), NULL)
+    add_rgb("sub-text-style-color", 0xFFFFFF, N_("Subtitle text color"), NULL)
+    add_rgb("sub-text-style-outline-color", 0, N_("Subtitle outline color"), NULL)
+    add_integer_with_range("sub-text-style-size-mode", 0, 0, 1, N_("Subtitle size units"), NULL)
+    add_float_with_range("sub-text-style-relative-size", 6.25, 0.1, 50, N_("Subtitle size in video height percent"), NULL)
+    add_float_with_range("sub-text-style-pixel-size", 18, 1, 512, N_("Subtitle size in pixels"), NULL)
+    add_float_with_range("sub-text-style-relative-outline", 4, 0, 50, N_("Subtitle outline in font size percent"), NULL)
+    add_float_with_range("sub-text-style-pixel-outline", 2, 0, 50, N_("Subtitle outline in pixels"), NULL)
+    add_integer_with_range("sub-text-style-background-opacity", 0, 0, 255, N_("Subtitle background opacity"), NULL)
     set_section( N_( "Overlays" ) , NULL )
     add_module_list("sub-source", "sub source", NULL,
                     SUB_SOURCE_TEXT, SUB_SOURCE_LONGTEXT)
@@ -1836,6 +1852,9 @@ vlc_module_begin ()
                     SUB_FILTER_TEXT, SUB_FILTER_LONGTEXT)
 
     set_section( N_( "Multiple Subtitles" ) , NULL )
+    add_integer_with_range("sub-primary-alignment", -1, -1, 8,
+        N_("Default primary subtitle vertical placement"),
+        N_("-1 preserves authored placement; 0 center, 4 top, 8 bottom. Relative primary subtitles only."))
     add_integer( "secondary-sub-alignment", -1, SECONDARY_SUB_POSITION_TEXT,
                  SECONDARY_SUB_POSITION_LONGTEXT )
         change_integer_list( pi_sub_align_values, ppsz_sub_align_descriptions )
@@ -2170,6 +2189,13 @@ vlc_module_begin ()
         change_volatile ()
     add_bool( "one-instance-when-started-from-file", true,
               ONEINSTANCEWHENSTARTEDFROMFILE_TEXT, NULL )
+    add_integer("one-instance-file-manager-policy", -1,
+        N_("File-manager single-instance policy"),
+        N_("-1 preserves the legacy policy; 0 excludes file-manager launches; 1 follows one-instance."))
+        change_integer_range(-1, 1)
+    add_integer("playlist-open-mode", -1, N_("External opening policy"),
+        N_("-1 preserves legacy play/enqueue; 0 replaces the queue; 1 appends without changing the current item."))
+        change_integer_range(-1, 1)
     add_bool( "playlist-enqueue", false, PLAYLISTENQUEUE_TEXT,
               PLAYLISTENQUEUE_LONGTEXT )
 #endif

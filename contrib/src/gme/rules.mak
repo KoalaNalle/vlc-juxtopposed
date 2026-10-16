@@ -25,4 +25,10 @@ GME_CONF := -DENABLE_UBSAN=OFF
 	$(HOSTVARS_CMAKE) $(CMAKE) $(GME_CONF)
 	+$(CMAKEBUILD)
 	$(CMAKEINSTALL)
+ifdef HAVE_WIN32
+ifndef HAVE_CLANG
+# Keep GCC exception handling static for VLC's restricted Windows plugin loader.
+	sed -i -e 's/ -lgcc_s/ -lgcc_eh/g' "$(PREFIX)/lib/pkgconfig/libgme.pc"
+endif
+endif
 	touch $@

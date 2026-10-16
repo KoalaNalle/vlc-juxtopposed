@@ -39,6 +39,12 @@ T.Popup {
 
     height: VLCStyle.dp(296, VLCStyle.scale)
 
+    function showTracks(column) {
+        stackView.pop(null)
+        open()
+        Qt.callLater(() => trackList.focusTrack(column))
+    }
+
     // Animations
 
     Behavior on width {
@@ -84,6 +90,7 @@ T.Popup {
         }
 
         initialItem: TracksListPage {
+            id: trackList
             trackMenuController: trackMenuController
         }
 
