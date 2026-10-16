@@ -4,6 +4,14 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest teardown follow-up](juxtopposed-references/native/guest-teardown-20261017/README.md)
+repairs six deferred callbacks writing to destroyed targets. A freshly rebuilt
+ordinary GUI passes default redesigned/traditional finite playback (seven QML
+diagnostics before, zero after), local HLS and two short local MKV samples, all
+normal exits. Component checks and fourteen QML parses pass. This is incremental
+Windows 10 acceptance of those reproduced warnings; full-file playback, native
+visual/DPI, waveform/transcode triage and complete beta/package gates stay open.
+
 The [guest live-clock checkpoint](juxtopposed-references/native/guest-live-clock-20261016/README.md)
 now passes native and ordinary-runtime checks for relative live clocks, paused
 seek-to-zero and adaptive pause/buffering order. An identical tightened test
@@ -12,7 +20,7 @@ GUI/core/launcher tuple passes native 18/42/9/37 plus 4 timeline, 25 timer and
 8 subtitle-controller cases; three tightened and five earlier fresh-process live
 journeys also pass, all normal exits. Five startup cases, component checks and
 eleven QML parses pass. Default redesigned/traditional finite playback and local
-HLS pass after actual Qt/QML resource rebuilding. Finite teardown still produces
+HLS pass after actual Qt/QML resource rebuilding. The teardown follow-up above closes its reproduced
 delayed QML callback warnings. Full native visual/DPI, public stream/protocol,
 remaining surfaces and coherent final beta-package/Windows 11 gates remain open.
 

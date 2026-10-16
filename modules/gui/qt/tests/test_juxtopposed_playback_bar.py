@@ -42,7 +42,9 @@ app.setFont(QFont(QFontDatabase.applicationFontFamilies(font_id)[0]))
 qml_files = ['JuxtopposedButton.qml', 'JuxtopposedSeekBackground.qml',
              'JuxtopposedPlaybackBar.qml', 'ControlBar.qml', 'TopBar.qml',
              'Player.qml', 'TracksMenu.qml', 'TracksListPage.qml',
-             'SliderBar.qml', 'PlaybackSettingsMenu.qml', 'controlbarcontrols/ArtworkInfoWidget.qml']
+             'SliderBar.qml', 'PlaybackSettingsMenu.qml', 'controlbarcontrols/ArtworkInfoWidget.qml',
+             'MiniPlayer.qml', '../../maininterface/qml/MainDisplay.qml',
+             '../../maininterface/qml/SideNavigationPane.qml']
 for name in qml_files:
     result = subprocess.run([str(Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')),
                              '--ignore-settings', str(qml / name)],

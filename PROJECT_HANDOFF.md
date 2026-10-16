@@ -50,6 +50,18 @@ waveform/visual-callback triage, popup movement, broader protocol coverage,
 independent visual/DPI review and complete clean beta/Windows 11 acceptance.
 This is a local incremental checkpoint; no new publication was authorized.
 
+The guest [teardown follow-up](doc/juxtopposed-references/native/guest-teardown-20261017/README.md)
+now removes those reproduced delayed-callback warnings. Six callbacks check
+whether their target still exists. The rebuilt ordinary GUI passes default
+redesigned/traditional finite playback and local HLS with zero QML diagnostics
+and normal exits; both finite modes previously logged seven. Short samples of
+two user-authorized local MKVs also decode video/audio and quit normally with
+zero QML diagnostics. Playback component checks and fourteen QML parses pass.
+GUI is `952f6810d5ba72db8e7f0cc0820eb60b4e5f813aa922ec551b6d310a833195ab`,
+with the same accepted core/launcher. The ordinary baseline is preserved; work
+is under `build-windows/beta-teardown-20261017`. Popup movement and the remaining
+full beta gates are still open.
+
 ## Project and current checkpoint
 
 | Item | Value |
