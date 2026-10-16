@@ -2,6 +2,12 @@
 
 Updated 15 October 2026. Milestone 0 is **in progress**. This is an initial inventory, not a complete screen audit or an acceptance claim. Original design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed).
 
+16 October guest follow-up: [actual Windows Library startup policy](native/guest-startup-20261016/README.md)
+passes all five native original/fixed cases after removing the launcher's forced
+ON argument. The old executable fails both saved-OFF cases. The core default is
+still OFF; first-run GUI setup, wider Library surface, visual fidelity and final
+package verification remain separate open gates. This does not accept a full row.
+
 The [15 October General Settings checkpoint](native/general-settings-20261015/README.md)
 records an integrated native General page and shared modal routing, 29/0/1 ordinary
 backend results, three normal app quits and actual Light/Purple/Unicode logging

@@ -3,6 +3,20 @@
 Updated: **16 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
+The active vacation checkout is now **E:\Modding\vlc-juxtopposed**. Read
+E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
+using historical home commands below. WSL 2 and fresh native build/test readiness
+are verified on the guest; all development data stays on E:.
+
+The first guest beta [startup-policy checkpoint](doc/juxtopposed-references/native/guest-startup-20261016/README.md)
+reproduces saved Library OFF being overridden by the actual Windows launcher,
+then removes that forced argument. All five real-process startup cases pass with
+the rebuilt launcher; the old launcher fails both saved-OFF cases. Saved ON and
+explicit CLI overrides remain functional. The native default remains OFF, which
+the unfinished first-run flow must handle explicitly. The ordinary package is
+preserved. Live timeline semantics, movable popup native acceptance and the full
+beta scope remain open; this checkpoint does not establish a complete beta.
+
 ## Project and current checkpoint
 
 | Item | Value |

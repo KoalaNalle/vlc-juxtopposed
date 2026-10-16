@@ -135,7 +135,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
     int j = 0;
     WCHAR *lang = NULL;
 
-    argv[j++] = strdup("--media-library");
+    /* Honor the saved Library preference. Explicit user arguments below can
+     * still override it; a launcher-supplied value would always win over vlcrc. */
     argv[j++] = strdup("--no-ignore-config");
     for (int i = 1; i < argc; i++)
     {

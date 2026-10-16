@@ -2777,6 +2777,6 @@ EXTRA_DIST += tests/test_library_preferences.cpp tests/library_preferences_probe
 
 EXTRA_DIST += tests/test_library_ipc_errors.py tests/library_ipc_receiver_errors.c \
     tests/library_ipc_sender_errors.c tests/test_library_opening_process.cpp \
-    tests/native_library/prepare.py tests/native_library/run.py \
+    tests/native_library/prepare.py tests/native_library/run.py tests/native_library/startup.py \
     tests/native_library/preferences.mk tests/native_library/modules.mk \
     tests/native_library/process.mk tests/native_library/README.md

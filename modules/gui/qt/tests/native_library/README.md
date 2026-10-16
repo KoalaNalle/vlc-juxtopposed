@@ -37,6 +37,22 @@ tests do not establish a hard deadline for third-party code that ignores VLC's
 interrupt mechanism. Full provider/service coverage, final GUI fidelity and beta
 packaging remain separate acceptance work.
 
+The separate real-launcher regression exercises `WinMain`, saved Library ON/OFF
+(including VLC's commented default-OFF representation), explicit CLI overrides,
+native module loading and owned database creation. It uses the ordinary package
+without adding private modules or modifying that package:
+
+```powershell
+python "$repo/modules/gui/qt/tests/native_library/startup.py" `
+  --package "$package" --launcher "$rebuiltLauncher" --output-dir "$work/startup"
+```
+
+Omit `--launcher` to test the package's own executable. Every run requires a new
+output directory. Its runtime has an empty portable directory, and each case has
+owned config/userdata/log paths. A timeout retains its live PID as a failed result.
+Fresh profiles follow the core default (Library OFF); saved ON and explicit
+`--media-library` remain supported. This does not accept first-run GUI setup.
+
 From a configured Linux/WSL build, set `repo`, `build` and `work` to absolute
 paths for the checkout, its configured Windows build, and a fresh ignored output
 directory. Retain the toolchain PATH used for the ordinary build. For example:

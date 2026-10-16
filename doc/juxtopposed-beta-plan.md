@@ -4,6 +4,14 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest startup-policy checkpoint](juxtopposed-references/native/guest-startup-20261016/README.md)
+repairs the Windows launcher's saved-Library-OFF override. Its real-process
+original/fixed pair exposes two failures before repair and passes all five cases
+afterward, including saved ON and CLI overrides. The core default remains OFF;
+fresh first-run Library setup and complete GUI/visual/package acceptance stay
+open. Guest build/tool readiness is recorded under E:\Codex\migration-20261016;
+the complete beta goal continues on the E: checkout without publication permission.
+
 The latest [16 October live-service checkpoint](juxtopposed-references/native/live-services-20261016/README.md)
 plays the supplied Yle TV2 HLS stream and downloads real MusicBrainz/Cover Art
 Archive artwork during a fresh library import. Native metadata/opening/process/
@@ -45,7 +53,8 @@ behavior, with normal quits and checked personal configuration preserved.
 
 The opening, metadata and live-service work is included in this source checkpoint;
 its remote CI must be checked separately from baseline acceptance. The actual
-Windows launcher still overrides saved media-library OFF,
+Windows launcher overrode saved media-library OFF at that checkpoint (repaired
+by the later guest startup-policy checkpoint above),
 and the earlier transient isolated parser window lacks a retained diagnosis to
 compare with the now-repaired private fixture assertion. Full Library/beta
 acceptance still requires public-provider coverage, full design/media
