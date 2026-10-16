@@ -78,6 +78,18 @@ Two short local MKV samples use D3D11VA on the GTX 1080 and decode/quit normally
 baseline package is preserved; work is under `build-windows/beta-popup-20261017`.
 The full beta and waveform/transcode/PCR triage remain open.
 
+The guest [file-output checkpoint](doc/juxtopposed-references/native/guest-file-output-20261017/README.md)
+repairs empty blocks being treated as file-write failures and discarding later
+payload. The identical loaded-module test fails five of eight checks before,
+then passes all eight after repair. The ordinary headless transcode path goes
+from twelve write errors to zero while retaining exactly 16,000 samples. Native
+AudioWaveform passes 8/0/0/0; full 30-second raw/WAV regressions preserve exact
+240,000/1,323,000/240,000 sample counts and source-rate byte equality. All exit
+normally. File plugin is `c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6`;
+core/GUI and ordinary package are preserved. Work is under
+`build-windows/beta-audio-output-20261017`. Missing-visual-callback and PCR-match
+errors remain independently reproduced and open, along with full beta gates.
+
 ## Project and current checkpoint
 
 | Item | Value |

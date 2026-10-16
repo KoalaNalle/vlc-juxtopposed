@@ -4,6 +4,15 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest file-output checkpoint](juxtopposed-references/native/guest-file-output-20261017/README.md)
+repairs zero-byte blocks discarding later payload. An identical native test goes
+from five failures to all eight passing; full headless transcode writes go from
+twelve errors to zero with an exact 16,000-sample output. Native AudioWaveform
+passes eight cases, and 30-second PCM regressions retain exact sample counts,
+source-rate byte equality and all 300 peaks. Core/GUI and the ordinary package
+are unchanged. Missing-visual-callback and PCR-match errors remain open; this
+module result does not finish waveform GUI, conversion codecs or full beta.
+
 The [guest teardown follow-up](juxtopposed-references/native/guest-teardown-20261017/README.md)
 repairs six deferred callbacks writing to destroyed targets. A freshly rebuilt
 ordinary GUI passes default redesigned/traditional finite playback (seven QML

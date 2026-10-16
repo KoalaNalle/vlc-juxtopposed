@@ -1,4 +1,12 @@
 vlc_tests += {
+    'name' : 'test_modules_access_output_file',
+    'sources' : files('access_output/file.c'),
+    'suite' : ['modules', 'test_modules'],
+    'link_with' : [libvlc, libvlccore],
+    'module_depends' : ['access_output_file'],
+}
+
+vlc_tests += {
     'name' : 'test_modules_lua_extension',
     'sources' : files('lua/extension.c'),
     'suite' : ['modules', 'test_modules'],

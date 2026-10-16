@@ -1,0 +1,63 @@
+{
+  "original": {
+    "process": {
+      "exitCode": 1,
+      "normalExit": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.281
+    },
+    "checks": 8,
+    "failures": 5,
+    "runtimeSha256": {
+      "test_modules_access_output_file.exe": "9fd74bca69bcf2f86ef61601cf420d9d830c4f6aeaeb7a2e9b61e988fc846f50",
+      "libssp-0.dll": "0b4cf4b0a5f4ceb08bc2b95e7837b72ce24c2a5e906c93edd2661facbcfe5173",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "9bed2917f2537e207210dbcf5ac9d14da36d6f2435bb00a471d675f1d26fb69b",
+      "plugins/access_output/libaccess_output_file_plugin.dll": "5bde233135e376db2c9e9ed3a90bf9986675f31f300ae8ed3da8abc170f4235f"
+    },
+    "results": [
+      "PASS: NULL chain",
+      "FAIL: single empty block",
+      "FAIL: all-empty chain",
+      "PASS: data after empty writes",
+      "FAIL: leading/interleaved/trailing empty blocks",
+      "FAIL: empty block must not discard later payload",
+      "FAIL: exact complete output and caller-owned descriptor survives close",
+      "PASS: genuine write failure remains an error",
+      "RESULT: 8 checks, 5 failures"
+    ]
+  },
+  "repaired": {
+    "process": {
+      "exitCode": 0,
+      "normalExit": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.094
+    },
+    "checks": 8,
+    "failures": 0,
+    "runtimeSha256": {
+      "test_modules_access_output_file.exe": "9fd74bca69bcf2f86ef61601cf420d9d830c4f6aeaeb7a2e9b61e988fc846f50",
+      "libssp-0.dll": "0b4cf4b0a5f4ceb08bc2b95e7837b72ce24c2a5e906c93edd2661facbcfe5173",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "9bed2917f2537e207210dbcf5ac9d14da36d6f2435bb00a471d675f1d26fb69b",
+      "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6"
+    },
+    "results": [
+      "PASS: NULL chain",
+      "PASS: single empty block",
+      "PASS: all-empty chain",
+      "PASS: data after empty writes",
+      "PASS: leading/interleaved/trailing empty blocks",
+      "PASS: empty block must not discard later payload",
+      "PASS: exact complete output and caller-owned descriptor survives close",
+      "PASS: genuine write failure remains an error",
+      "RESULT: 8 checks, 0 failures"
+    ]
+  },
+  "onlyChangedBinary": [
+    "plugins/access_output/libaccess_output_file_plugin.dll"
+  ]
+}

@@ -82,6 +82,14 @@ static ssize_t Write( sout_access_out_t *p_access, block_t *p_buffer )
 
     while( p_buffer )
     {
+        if (p_buffer->i_buffer == 0)
+        {
+            block_t *next = p_buffer->p_next;
+            block_Release(p_buffer);
+            p_buffer = next;
+            continue;
+        }
+
         ssize_t val = write(fd, p_buffer->p_buffer, p_buffer->i_buffer);
         if (val <= 0)
         {
