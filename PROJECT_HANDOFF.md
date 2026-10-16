@@ -17,6 +17,16 @@ the unfinished first-run flow must handle explicitly. The ordinary package is
 preserved. Live timeline semantics, movable popup native acceptance and the full
 beta scope remain open; this checkpoint does not establish a complete beta.
 
+The guest blue-screen dump at 22:41:58 resolves to
+`dxgkrnl!DXGVIRTUALMACHINE::IsWsl2Guest` in `vmwp.exe` during virtual-GPU removal.
+CPU/RAM exhaustion is not established. Host WSL now has `gpuSupport=false`,
+4 GiB RAM/two CPUs and E: swap; a lightweight boot and normal shutdown passed
+with no GPU VMBus bindings. Use `JOBS=1`, `make -j1` and one native workload at
+a time. Raw crash evidence stays outside Git under
+E:\Codex\migration-20261016\logs\crash-20261016-2243. The live-stream diagnostic
+timed out before the host crash, so its captured timer points are observations,
+not accepted pause/resume/shutdown results. Do not rerun it unchanged.
+
 ## Project and current checkpoint
 
 | Item | Value |
