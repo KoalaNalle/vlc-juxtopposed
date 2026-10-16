@@ -141,6 +141,21 @@ GUI/WAV/file writer/clean transcode remain preserved. Work is under
 desktop/DPI/visual, complete settings/surfaces, Windows 11 and the final clean
 licensed beta package remain open.
 
+The guest [history-clear checkpoint](doc/juxtopposed-references/native/guest-history-clear-20261017/README.md)
+repairs the media-library wrapper discarding a real database failure. The same
+native executable/runner changes only the ML DLL: one failing check becomes seven
+passes, with rejected writes preserving checked history/data, successful retry,
+retained favorites/playlist/preferences and restart. Final ordinary playback and
+native 18/42/9/37 regressions pass normally. The media-library DLL is
+`fd70207d3067a8ce38e1cb9e8a3df6630da78bc39a0eff4402cd08484a916e90`; core/GUI/SoXR
+retain the preceding tuple. Work is under `build-windows/beta-privacy-20261017`.
+The [fresh Privacy reference/audit](doc/juxtopposed-references/figma/20261017/privacy/README.md)
+archives all nine original controls, high-fidelity context, screenshot and 17 SVGs.
+One planned Figma request was used (seven planned/two reserved remain). Full
+Privacy controller/page, remember-position storage permission, exclusion semantics,
+clear UI/worker/input coordination, shared metadata and Last.fm behavior remain
+open. Complete beta/visual/DPI/Windows 11/final clean-package gates are unchanged.
+
 ## Project and current checkpoint
 
 | Item | Value |

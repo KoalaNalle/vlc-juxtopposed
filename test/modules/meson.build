@@ -325,3 +325,21 @@ vlc_tests += {
     'dependencies': flac_native_test_dependencies,
     'link_args': flac_native_test_link_args,
 }
+
+# The companion runner creates fresh userdata and installs/removes a real
+# SQLite rejection trigger while this process waits on its control pipe.
+# Build explicitly; running the executable alone is not a default suite test.
+if medialibrary_dep.found()
+    executable('test_modules_medialibrary_history',
+        files('misc/medialibrary_history.c'),
+        build_by_default: false,
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        include_directories: vlc_include_dirs,
+        dependencies: [libvlccore_deps, opengl_dep],
+        c_args: [
+            '-DSRCDIR="@0@"'.format(vlc_src_root + '/test/'),
+            '-DTOP_BUILDDIR="@0@"'.format(vlc_build_root),
+            '-DTOP_SRCDIR="@0@"'.format(vlc_src_root),
+        ],
+        win_subsystem: 'console')
+endif

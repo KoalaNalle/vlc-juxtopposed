@@ -4,6 +4,17 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest history-clear checkpoint](juxtopposed-references/native/guest-history-clear-20261017/README.md)
+repairs discarded database failure results; seven actual native SQLite rejection/
+retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37.
+The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
+archives all nine authored rows and original assets with one context request
+including its screenshot. Seven planned/two reserved Figma calls remain. The
+source mounts seven category bodies; Privacy, Controls, Network, Performance,
+Recording and Extensions still lack bodies. Privacy is not accepted by this
+backend repair: its controller/page, storage/exclusion policies, clear coordination
+and metadata/Last.fm behavior remain open, alongside all full beta gates below.
+
 The [guest fixed-rate audio clock checkpoint](juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
 closes the specific export timestamp discontinuity found during WAV/PCR work.
 SoXR fixed conversion now keeps an exact sample clock and preserves unanchored

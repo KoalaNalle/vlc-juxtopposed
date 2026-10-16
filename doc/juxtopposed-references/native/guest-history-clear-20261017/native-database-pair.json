@@ -1,0 +1,80 @@
+{
+  "onlyChangedBinaries": [
+    "plugins/misc/libmedialibrary_plugin.dll"
+  ],
+  "original": {
+    "passed": false,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "runtimeSha256": {
+      "test_modules_medialibrary_history.exe": "a6c1b261de262deb382e4623f216f13ad7a753378e177dc0c259a9573028f839",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "6038664a7b4b02c19bcba38dbe6c09716d1dfbcf55b3b8dae4f7d2ddf876cc4a",
+      "plugins/misc/libmedialibrary_plugin.dll": "9148201ea3b80f09f3642c2b1b43e1e4ebcdbf5087a606e81d53ba83855d19a6"
+    },
+    "databaseWithinOwnedUserdata": true,
+    "realDatabaseWriteRejectionInstalled": true,
+    "failedClearDataUnchanged": true,
+    "writeRejectionRemovedForRetry": true,
+    "exitCode": 1,
+    "terminationConfirmed": true,
+    "stdoutReaderTerminated": true,
+    "normalExit": false,
+    "passLines": [
+      "PASS: failed transaction leaves history and saved data unchanged",
+      "PASS: clear succeeds after database failure is removed",
+      "PASS: successful clear removes both history scopes and playback progress",
+      "PASS: favorites, named playlist and explicit preferences survive clear",
+      "PASS: clearing an empty history is repeatable",
+      "PASS: cleared history and retained data survive native restart"
+    ],
+    "failLines": [
+      "FAIL: database failure reaches native caller"
+    ]
+  },
+  "repaired": {
+    "passed": true,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "runtimeSha256": {
+      "test_modules_medialibrary_history.exe": "a6c1b261de262deb382e4623f216f13ad7a753378e177dc0c259a9573028f839",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "6038664a7b4b02c19bcba38dbe6c09716d1dfbcf55b3b8dae4f7d2ddf876cc4a",
+      "plugins/misc/libmedialibrary_plugin.dll": "fd70207d3067a8ce38e1cb9e8a3df6630da78bc39a0eff4402cd08484a916e90"
+    },
+    "databaseWithinOwnedUserdata": true,
+    "realDatabaseWriteRejectionInstalled": true,
+    "failedClearDataUnchanged": true,
+    "writeRejectionRemovedForRetry": true,
+    "exitCode": 0,
+    "terminationConfirmed": true,
+    "stdoutReaderTerminated": true,
+    "normalExit": true,
+    "passLines": [
+      "PASS: database failure reaches native caller",
+      "PASS: failed transaction leaves history and saved data unchanged",
+      "PASS: clear succeeds after database failure is removed",
+      "PASS: successful clear removes both history scopes and playback progress",
+      "PASS: favorites, named playlist and explicit preferences survive clear",
+      "PASS: clearing an empty history is repeatable",
+      "PASS: cleared history and retained data survive native restart"
+    ],
+    "failLines": []
+  },
+  "imports": [
+    "ADVAPI32.dll",
+    "KERNEL32.dll",
+    "MPR.dll",
+    "libvlccore.dll",
+    "msvcrt.dll"
+  ],
+  "importsUnchanged": true,
+  "sourceSha256": {
+    "modules/misc/medialibrary/medialibrary.cpp": "39d0a44e0947e4996698b5a5d63f621302e05ee36d23aae51ea10c6679964587",
+    "include/vlc_media_library.h": "7d9c4c5ca2469522e4ddb8c2dfec040cb02692471187bec037afc015de50a65c",
+    "test/modules/misc/medialibrary_history.c": "6bf8e4e7389981f8fbd0cf8dd61674cd9b82a019f6eebc3b40c67514f58c4b3c",
+    "test/libvlc/native_history_clear.py": "ec8d81621e6b6ba92d191c5df28eb0e7d6e44f2ea0d032829d61c07f0000bccd",
+    "test/Makefile.am": "413fb0e165cafc6a074acce0de9e81898123d779936e4d5dc141824ee191e266",
+    "test/modules/meson.build": "602fa8eed405359dcf4b0d2aff09ec441ba0f0e2d686b26ef1d3b7cf7d64757d"
+  }
+}

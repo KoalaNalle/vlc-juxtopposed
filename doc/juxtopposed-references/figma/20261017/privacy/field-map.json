@@ -1,0 +1,86 @@
+{
+  "category": "Privacy",
+  "originalFields": 9,
+  "completeCategoryAccepted": false,
+  "fields": [
+    {
+      "key": "saveRecentlyPlayed",
+      "nodeId": "3062:11949",
+      "originalLabel": "Save recently played items",
+      "nativeOption": "save-recentplay",
+      "nativeConsumers": [
+        "src/player/medialib.c",
+        "modules/gui/qt/medialibrary/mlhomeactivity.cpp",
+        "modules/gui/qt/dialogs/open/open_panels.cpp",
+        "modules/gui/qt/maininterface/mainctx.cpp"
+      ],
+      "status": "Existing native option; Privacy controller/page and live/current-input semantics unimplemented"
+    },
+    {
+      "key": "rememberPlaybackPosition",
+      "nodeId": "3062:11955",
+      "originalLabel": "Remember the playback position",
+      "nativeOption": null,
+      "relatedNativeOption": "restore-playback-pos",
+      "status": "Dedicated save permission missing. The Playback restore enum is a separate preference and must not be used as a storage-permission substitute."
+    },
+    {
+      "key": "historyExclusion",
+      "nodeId": "3062:12469",
+      "controlNodeId": "3176:16428",
+      "originalLabel": "Never remember items matching",
+      "nativeOption": null,
+      "obsoleteRelatedOption": "qt-recentplay-filter",
+      "status": "No current native exclusion consumer. Matching semantics need a documented functional interpretation; storage, restoration and Home visits must agree."
+    },
+    {
+      "key": "clearHistory",
+      "nodeId": "3062:12484",
+      "controlNodeId": "3062:12486",
+      "originalLabel": "Clear history now",
+      "action": "vlc_ml_clear_history(VLC_ML_HISTORY_TYPE_GLOBAL)",
+      "status": "Native database failure propagation repaired and real failure/retry fixture added. Privacy UI busy/error/retry, Home-visit coordination and active/retiring playback generations remain open."
+    },
+    {
+      "key": "internetMetadata",
+      "nodeId": "3062:11967",
+      "originalLabel": "Fetch titles and cover art from the internet",
+      "nativeOption": "metadata-network-access",
+      "sharedPreference": "Library.metadataSource",
+      "status": "Existing native metadata consumers verified in Library work; Privacy page, shared refresh and persistence mapping remain unimplemented."
+    },
+    {
+      "key": "submitPlayedTracks",
+      "nodeId": "3062:12499",
+      "originalLabel": "Submit played tracks to last.fm",
+      "nativeOption": "extraintf",
+      "nativeModule": "audioscrobbler",
+      "status": "Audioscrobbler source and DLL are present. Actual load/activation, interface-list preservation, restart behavior and service/transport coverage remain open; no submissions made."
+    },
+    {
+      "key": "lastfmUsername",
+      "nodeId": "3062:12524",
+      "controlNodeId": "3176:16431",
+      "originalLabel": "Last.fm username",
+      "nativeOption": "lastfm-username",
+      "status": "Native configuration exists; Privacy validation/persistence and UI unimplemented."
+    },
+    {
+      "key": "lastfmSecondCredential",
+      "nodeId": "3062:12545",
+      "controlNodeId": "3176:16433",
+      "originalLabel": "Last.fm username",
+      "candidateNativeOption": "lastfm-password",
+      "interpretation": "The design repeats the username label. The native backend has separate username/password options. Password interpretation is an inference requiring explicit documented adaptation before implementation.",
+      "status": "Ambiguous label preserved; no speculative input implementation."
+    },
+    {
+      "key": "lastfmSubmissionUrl",
+      "nodeId": "3062:12535",
+      "controlNodeId": "3176:16435",
+      "originalLabel": "Last.fm submission URL",
+      "nativeOption": "scrobbler-url",
+      "status": "Native legacy backend expects a host and constructs HTTP internally. URL/transport/authentication behavior and genuine service coverage need work before accepting this field."
+    }
+  ]
+}

@@ -614,7 +614,8 @@ int MediaLibrary::Control( int query, va_list args )
         case VLC_ML_CLEAR_HISTORY:
         {
             const auto type = static_cast<medialibrary::HistoryType>( va_arg(args, int) );
-            m_ml->clearHistory( type );
+            if ( !m_ml->clearHistory( type ) )
+                return VLC_EGENERIC;
             break;
         }
         case VLC_ML_NEW_EXTERNAL_MEDIA:

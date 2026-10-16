@@ -619,7 +619,7 @@ enum vlc_ml_control
     VLC_ML_RESUME_BACKGROUND,       /**< no args; can't fail */
 
     /* Misc operations */
-    VLC_ML_CLEAR_HISTORY,           /**< arg1: vlc_ml_history_type_t; can't fail */
+    VLC_ML_CLEAR_HISTORY,           /**< arg1: vlc_ml_history_type_t; can fail */
 
     /* Create media */
     VLC_ML_NEW_EXTERNAL_MEDIA,      /**< arg1: const char*; arg2(out): vlc_ml_media_t** */
