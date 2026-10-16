@@ -1,6 +1,6 @@
 # VLC Juxtopposed redesign — project handoff
 
-Updated: **16 October 2026**. Read this file first when continuing from a new
+Updated: **17 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
 The active vacation checkout is now **E:\Modding\vlc-juxtopposed**. Read
@@ -26,6 +26,29 @@ a time. Raw crash evidence stays outside Git under
 E:\Codex\migration-20261016\logs\crash-20261016-2243. The live-stream diagnostic
 timed out before the host crash, so its captured timer points are observations,
 not accepted pause/resume/shutdown results. Do not rerun it unchanged.
+
+The guest [live-clock checkpoint](doc/juxtopposed-references/native/guest-live-clock-20261016/README.md)
+now has native and ordinary-runtime verification. Window-relative live display
+time is separate from raw stream time; paused finite seek-to-zero is valid,
+and pending live position seeks cannot become subtitle timestamps. ControlPause
+now defers before stopping data needed for buffering. The tightened test queues
+seek and pause under one NORMAL player lock: the identical executable fails
+against the old core and passes against the repaired core. The new tuple passes
+4 timeline, 25 timer, 8 subtitle-controller and the unchanged 18/42/9/37 Library/
+Subtitle preferences cases, all normal exits with zero failures/errors/skips.
+Three tightened and five earlier fresh-process live journeys also pass, as do
+five startup-policy cases, playback component checks and eleven QML parses.
+
+The ordinary Qt GUI and QML resources rebuilt with all 1,245 frozen source inputs
+unchanged. A separate runtime passes default redesigned and explicit traditional
+video/silent audio playback, decoded frames/D3D11/WASAPI, local HLS and normal
+quit. GUI is `a5016c8c7f11b512e761fec3113bfafa24db48845e0a0ff764f227ea18738487`;
+core is `9bed2917f2537e207210dbcf5ac9d14da36d6f2435bb00a471d675f1d26fb69b`.
+Artifacts stay under `build-windows/beta-live-clock-20261016`. Existing delayed
+QML callback warnings in finite playback teardown remain open, along with the
+waveform/visual-callback triage, popup movement, broader protocol coverage,
+independent visual/DPI review and complete clean beta/Windows 11 acceptance.
+This is a local incremental checkpoint; no new publication was authorized.
 
 ## Project and current checkpoint
 

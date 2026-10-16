@@ -1753,10 +1753,18 @@ if qt6_dep.found()
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
-        vlc_tests += {
-            'name': 'test_qt_player_subtitle_delay',
+        foreach controller_test : ['player_subtitle_delay', 'player_timeline']
+          controller_test_sources = []
+          controller_test_deps = []
+          controller_test_link_args = []
+          if controller_test == 'player_timeline' and host_system == 'windows' and have_mingw
+            controller_test_sources += files('util/winpthreads_shutdown.cpp')
+            controller_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            controller_test_link_args += '-Wl,--wrap=pthread_key_delete'
+          endif
+          vlc_tests += {
+            'name': 'test_qt_' + controller_test,
             'sources': files('tests/vlc_stub_modules.cpp',
-                             'tests/test_player_subtitle_delay.cpp',
                              'player/player_controller.cpp',
                              'player/input_models.cpp',
                              'player/audio_equalizer.cpp',
@@ -1777,8 +1785,8 @@ if qt6_dep.found()
                              'widgets/native/customwidgets.cpp',
                              'widgets/native/animators.cpp',
                              'util/soutchain.cpp',
-                             'util/imagehelper.cpp'),
-            'moc_sources': files('tests/test_player_subtitle_delay.cpp'),
+                             'util/imagehelper.cpp') + files('tests/test_' + controller_test + '.cpp') + controller_test_sources,
+            'moc_sources': files('tests/test_' + controller_test + '.cpp'),
             'moc_headers': files('player/player_controller.hpp',
                                  'player/input_models.hpp',
                                  'player/audio_equalizer.hpp',
@@ -1800,8 +1808,10 @@ if qt6_dep.found()
             'suite': ['qt'],
             'include_directories': qt_include_dir,
             'link_with': [libvlccore, libvlc],
-            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep] + controller_test_deps,
+            'link_args': controller_test_link_args
         }
+        endforeach
 
         vlc_tests += {
             'name': 'test_qt_native_bookmarks_chapters',

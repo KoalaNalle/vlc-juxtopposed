@@ -42,7 +42,7 @@ app.setFont(QFont(QFontDatabase.applicationFontFamilies(font_id)[0]))
 qml_files = ['JuxtopposedButton.qml', 'JuxtopposedSeekBackground.qml',
              'JuxtopposedPlaybackBar.qml', 'ControlBar.qml', 'TopBar.qml',
              'Player.qml', 'TracksMenu.qml', 'TracksListPage.qml',
-             'SliderBar.qml', 'PlaybackSettingsMenu.qml']
+             'SliderBar.qml', 'PlaybackSettingsMenu.qml', 'controlbarcontrols/ArtworkInfoWidget.qml']
 for name in qml_files:
     result = subprocess.run([str(Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')),
                              '--ignore-settings', str(qml / name)],
@@ -91,6 +91,22 @@ click_signal('juxtopposedAudio', 'audioRequested')
 click_signal('juxtopposedSubtitles', 'subtitlesRequested')
 click_signal('juxtopposedSettings', 'settingsRequested')
 click_signal('juxtopposedQueue', 'queueRequested')
+click_signal('juxtopposedDuration', 'durationRequested')
+
+# A live seek window has a position, not a fixed media duration. The LIVE
+# indicator must not offer the remaining-time toggle used by finite files.
+root.setProperty('live', True)
+root.setProperty('duration', 'LIVE')
+root.setProperty('durationInteractive', False)
+duration = item('juxtopposedDuration')
+assert duration.property('text') == 'LIVE' and not duration.property('enabled')
+duration_spy = QSignalSpy(root.durationRequested)
+QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, center(duration))
+assert duration_spy.count() == 0, 'LIVE indicator emitted a duration toggle'
+assert view.grabWindow().save(str(out / 'playback-bar-live.png'))
+root.setProperty('live', False)
+root.setProperty('duration', '00:25:40')
+root.setProperty('durationInteractive', True)
 click_signal('juxtopposedDuration', 'durationRequested')
 
 # Keyboard activation and volume changes must produce the same native hooks.
@@ -232,5 +248,5 @@ for resource in resources.findall(".//qresource[@prefix='/juxtopposed']/file"):
 errors = [m for m in messages if 'Error' in m or 'Unable' in m or 'Cannot' in m or 'binding loop' in m.lower()]
 assert not errors, errors
 (out / 'playback-bar-verification.json').write_text(json.dumps({'geometry':geometry,'messages':messages}, indent=2))
-print('Passed: nine click actions, arrow navigation, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, asset geometry, real peak display/colours, waveform seeking, silence and fallback.')
+print('Passed: nine click actions, LIVE indicator and duration-toggle guard, arrow navigation, keyboard playback/volume, seek, engine synchronization, disabled buttons, five width/scale layouts, asset geometry, real peak display/colours, waveform seeking, silence and fallback.')
 print('Native VLC compilation and actual media playback still require the VLC Windows build environment.')

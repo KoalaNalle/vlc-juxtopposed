@@ -122,7 +122,7 @@ T.Pane {
             // Length might not be reported in some cases, for that reason we should check both and use the bigger one.
 
             // Some extra space to compensate non-monospaced fonts ("-" takes more space than ":", double "-" for guarantee)
-            return (Player.time.isSubHour() && Player.length.isSubHour()) ? "00--00" : "00--00--00"
+            return (Player.displayTime.isSubHour() && Player.length.isSubHour()) ? "00--00" : "00--00--00"
         }
     }
 
@@ -144,11 +144,14 @@ T.Pane {
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
             background: Rectangle { color: JuxtopposedPalette.color(root.subtitleTimelineVisible ? "#F2191919" : "#1B1B1B") }
             elapsed: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowStartTicks ?? 0)
-                                                  : root.formatTime(Player.time)
+                                                  : root.formatTime(Player.displayTime)
             duration: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowEndTicks ?? 0)
+                     : Player.live ? qsTr("LIVE")
                      : MainCtx.showRemainingTime && Player.remainingTime.valid()
                       ? "-" + root.formatTime(Player.remainingTime)
                       : root.formatTime(Player.length)
+            live: Player.live && !root.subtitleTimelineVisible
+            durationInteractive: root.subtitleTimelineVisible || !Player.live
             volume: Player.volume
             volumeStep: ("audioPreferences" in MainCtx && MainCtx.audioPreferences
                          && MainCtx.audioPreferences.capabilities.volumeStep === true
@@ -189,7 +192,7 @@ T.Pane {
             onQueueRequested: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible
             onDurationRequested: {
                 if (root.subtitleTimelineVisible) bar.seekItem?.followPosition()
-                else MainCtx.showRemainingTime = !MainCtx.showRemainingTime
+                else if (!Player.live) MainCtx.showRemainingTime = !MainCtx.showRemainingTime
             }
             onRequestLockUnlockAutoHide: (lock) => root.requestLockUnlockAutoHide(lock)
 
@@ -331,7 +334,7 @@ T.Pane {
 
                     text: {
                         const length = Player.length
-                        return Player.time.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0)
+                        return Player.displayTime.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0)
                     }
                     color: theme.fg.primary
                     font: timeTextMetrics.font
@@ -356,7 +359,7 @@ T.Pane {
 
                     readonly property bool showRemainingTime: (MainCtx.showRemainingTime && Player.remainingTime.valid())
 
-                    text: showRemainingTime
+                    text: Player.live ? qsTr("LIVE") : showRemainingTime
                           ? "-" + Player.remainingTime.formatHMS()
                           : Player.length.formatHMS()
                     color: mediaTime.color
@@ -379,6 +382,7 @@ T.Pane {
                     anchors.verticalCenter: (parent === pseudoRow) ? parent.verticalCenter : undefined
 
                     TapHandler {
+                        enabled: !Player.live
                         onTapped: (eventPoint, button) => {
                             MainCtx.showRemainingTime = !MainCtx.showRemainingTime
                         }
@@ -391,7 +395,7 @@ T.Pane {
                     Widgets.ToolTipExt {
                         colorContext.palette: theme.palette
 
-                        visible: mediaRemainingTimeHover.hovered && MainCtx.showRemainingTime && Player.rate !== 1
+                        visible: !Player.live && mediaRemainingTimeHover.hovered && MainCtx.showRemainingTime && Player.rate !== 1
                         delay: VLCStyle.delayToolTipAppear
                         text: {
                             if (!visible)

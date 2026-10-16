@@ -16,6 +16,8 @@ C.Pane {
     property url assetBase: "qrc:/juxtopposed/"
     property string elapsed: "00:00:00"
     property string duration: "00:00:00"
+    property bool live: false
+    property bool durationInteractive: true
     property real position: 0
     property real volume: 0
     property real volumeStep: 0.05
@@ -174,7 +176,8 @@ C.Pane {
                 font.family: inter.name
                 font.pixelSize: 15 * root.uiScale
                 horizontalAlignment: Text.AlignHCenter
-                Accessible.ignored: true
+                Accessible.name: root.live ? qsTr("Position in live window: %1").arg(text)
+                                          : qsTr("Elapsed time: %1").arg(text)
             }
 
             Loader {
@@ -200,8 +203,10 @@ C.Pane {
                 height: 28 * root.uiScale
                 padding: 8 * root.uiScale
                 text: root.duration
+                enabled: root.durationInteractive
                 activeFocusOnTab: true
-                Accessible.name: qsTr("Duration or remaining time: %1").arg(text)
+                Accessible.name: root.live && !root.durationInteractive ? qsTr("Live stream")
+                    : qsTr("Duration or remaining time: %1").arg(text)
                 background: Rectangle {
                     radius: 6 * root.uiScale
                     color: parent.hovered ? JuxtopposedPalette.color("#303030") : "transparent"

@@ -85,7 +85,7 @@ T.ProgressBar {
         if (hoverHandler.hovered)
             _text = length.scale(Widgets.PointingToolTipAttached.instance.pos.x / control.width)
         else
-            _text = Player.time
+            _text = Player.displayTime
 
         _text = _text.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0)
 

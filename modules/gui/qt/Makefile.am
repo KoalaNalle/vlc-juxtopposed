@@ -2272,9 +2272,8 @@ if ENABLE_QT
 if HAVE_QT_QTEST
 # Actual native subtitle preset persistence and rendered-output diagnostic.
 # Actual PlayerController callbacks on the native NORMAL-lock playlist player.
-test_qt_player_subtitle_delay_SOURCES = \
+qt_player_controller_test_sources = \
 	tests/vlc_stub_modules.cpp \
-	tests/test_player_subtitle_delay.cpp \
 	player/player_controller.cpp \
 	player/input_models.cpp \
 	player/audio_equalizer.cpp \
@@ -2317,8 +2316,7 @@ test_qt_player_subtitle_delay_SOURCES = \
 	widgets/native/animators.hpp \
 	util/soutchain.hpp \
 	util/imagehelper.hpp
-nodist_test_qt_player_subtitle_delay_SOURCES = \
-	tests/test_player_subtitle_delay.moc \
+qt_player_controller_test_moc_sources = \
 	player/player_controller.moc.cpp \
 	player/input_models.moc.cpp \
 	player/audio_equalizer.moc.cpp \
@@ -2337,6 +2335,8 @@ nodist_test_qt_player_subtitle_delay_SOURCES = \
 	dialogs/extensions/extensions.moc.cpp \
 	widgets/native/customwidgets.moc.cpp \
 	widgets/native/animators.moc.cpp
+test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_sources) tests/test_player_subtitle_delay.cpp
+nodist_test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_moc_sources) tests/test_player_subtitle_delay.moc
 BUILT_SOURCES += tests/test_player_subtitle_delay.moc
 CLEANFILES += tests/test_player_subtitle_delay.moc
 test_qt_player_subtitle_delay_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
@@ -2346,6 +2346,29 @@ test_qt_player_subtitle_delay_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_player_subtitle_delay
 TESTS += test_qt_player_subtitle_delay
 
+# The same production controller dependencies, exercised through local HLS.
+test_qt_player_timeline_SOURCES = \
+	$(qt_player_controller_test_sources) \
+	tests/test_player_timeline.cpp
+nodist_test_qt_player_timeline_SOURCES = \
+	$(qt_player_controller_test_moc_sources) \
+	tests/test_player_timeline.moc
+BUILT_SOURCES += tests/test_player_timeline.moc
+CLEANFILES += tests/test_player_timeline.moc
+tests/test_qt_player_timeline-test_player_timeline.$(OBJEXT): tests/test_player_timeline.moc
+test_qt_player_timeline_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_timeline_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_timeline_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_timeline_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+if HAVE_WIN32
+test_qt_player_timeline_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_player_timeline_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_player_timeline_LDADD += -lntdll
+endif
+check_PROGRAMS += test_qt_player_timeline
+TESTS += test_qt_player_timeline
+EXTRA_DIST += tests/native_timeline_fixtures.sh tests/native_timeline_server.py \
+	tests/run_native_timeline.py tests/README.native-timeline.md
 
 test_qt_subtitle_presets_SOURCES = \
 	tests/vlc_stub_modules.cpp tests/test_subtitle_presets.cpp tests/media_player_probe.c \

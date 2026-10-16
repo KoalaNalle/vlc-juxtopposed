@@ -1,8 +1,20 @@
 # VLC Juxtopposed: first publishable beta plan
 
-16 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
+17 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
+
+The [guest live-clock checkpoint](juxtopposed-references/native/guest-live-clock-20261016/README.md)
+now passes native and ordinary-runtime checks for relative live clocks, paused
+seek-to-zero and adaptive pause/buffering order. An identical tightened test
+executable fails against the old core and passes against the repair. The new
+GUI/core/launcher tuple passes native 18/42/9/37 plus 4 timeline, 25 timer and
+8 subtitle-controller cases; three tightened and five earlier fresh-process live
+journeys also pass, all normal exits. Five startup cases, component checks and
+eleven QML parses pass. Default redesigned/traditional finite playback and local
+HLS pass after actual Qt/QML resource rebuilding. Finite teardown still produces
+delayed QML callback warnings. Full native visual/DPI, public stream/protocol,
+remaining surfaces and coherent final beta-package/Windows 11 gates remain open.
 
 The [guest startup-policy checkpoint](juxtopposed-references/native/guest-startup-20261016/README.md)
 repairs the Windows launcher's saved-Library-OFF override. Its real-process

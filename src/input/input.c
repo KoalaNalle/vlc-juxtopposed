@@ -1745,6 +1745,19 @@ static void ControlPause(input_thread_t *p_input, vlc_tick_t i_control_date,
 {
     int i_state = PAUSE_S;
 
+    /* Keep the demuxer feeding a buffer whose pause is deferred. Pausing an
+     * adaptive live demux first would stop the very data needed to finish that
+     * buffer, leaving the pending pause stuck until playback is stopped. */
+    if (can_defer &&
+        input_priv(p_input)->master->b_can_pause &&
+        es_out_GetBuffering(input_priv(p_input)->p_es_out))
+    {
+        input_priv(p_input)->b_pause_after_buffering = true;
+        return;
+    }
+
+    input_priv(p_input)->b_pause_after_buffering = false;
+
     if( input_priv(p_input)->master->b_can_pause )
     {
         demux_t *p_demux = input_priv(p_input)->master->p_demux;
@@ -1755,23 +1768,6 @@ static void ControlPause(input_thread_t *p_input, vlc_tick_t i_control_date,
             return;
         }
     }
-
-    /* Check if in buffering state, and if so, deferred the pasue
-     * instead of trying to pause the media playback right away, since
-     * the playback and the clocks are not even configured yet.
-     *
-     * We must avoid switching to PAUSE_S here, so that we keep the
-     * property that PAUSE_S implies es_out is paused. We'll handle the
-     * pause as soon as buffering is done. */
-    if (can_defer &&
-        input_priv(p_input)->master->b_can_pause &&
-        es_out_GetBuffering(input_priv(p_input)->p_es_out))
-    {
-        input_priv(p_input)->b_pause_after_buffering = true;
-        return;
-    }
-
-    input_priv(p_input)->b_pause_after_buffering = false;
 
     /* */
     if( es_out_SetPauseState( input_priv(p_input)->p_es_out,

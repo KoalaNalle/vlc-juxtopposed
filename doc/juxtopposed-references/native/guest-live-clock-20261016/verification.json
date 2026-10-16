@@ -1,0 +1,57 @@
+{
+  "platform": "Windows 10 Pro x64 build 19045",
+  "betaAccepted": false,
+  "sourceBaseHead": "afaa0b58f96aca354576a5e09cefc1de0fe16cbf",
+  "sourceSha256": {
+    "modules/gui/qt/Makefile.am": "8e550afb75fcd35e9260149b0053666808ae91285868ff43adaa3babcb86fc9b",
+    "modules/gui/qt/meson.build": "f5d35a5a8a2fa45b3652b9bd4cee51b4430fe712d6f145adf30dd3bdfece8f2a",
+    "modules/gui/qt/player/player_controller.cpp": "4968602707eb0a0ec19d58317d84727d3188e7bb1e6952cf698ed178171cab2f",
+    "modules/gui/qt/player/player_controller.hpp": "017c36df07b8254959cb2b401b9d2b719f608b2d821e3822cc7412a29c951318",
+    "modules/gui/qt/player/player_timer_point.hpp": "74249ebfa0775396e7eae70b5ee65bfe1764fc88e2f7b28f68d3373e61a987fd",
+    "modules/gui/qt/tests/native_timeline_fixtures.sh": "d11d89bd49f75d537dcaf87b26bfc7cc555de3cd51b26f26299cbde5bffb1751",
+    "modules/gui/qt/tests/native_timeline_server.py": "4a122f1f9b3c879c0553100279f9a4a70f13441ec4c0d673036a3f7069048a1d",
+    "modules/gui/qt/tests/README.native-timeline.md": "0b53d90bcec202938d8210c01fcf261371aa22fdb27b4af14b507e6a46becd09",
+    "modules/gui/qt/tests/run_native_timeline.py": "eb84550f9d19108bc8173a4f218972ffcd7993b01574a746dd7bb8cb2b1101b0",
+    "modules/gui/qt/tests/test_juxtopposed_playback_bar.py": "6ca56ec06aae638e28fbac2a77a7ecaf210dd83aa4597ea5dda0cdd648bdf9d7",
+    "modules/gui/qt/tests/test_player_timeline.cpp": "b1ec3f6bca20722574ede1a4ae81feef5080458e9dce51a9b9d238920ab1f066",
+    "modules/gui/qt/tests/test_player_timer_point.cpp": "1e441d863ba68a64f01ca23bef4d62b4fdb279c7bf2f867ffcfbafc4fa75bde9",
+    "modules/gui/qt/player/qml/ControlBar.qml": "4c9579c6be413af3ef712cd0c78f47218cbfb9a3463bb4dfab78d6ad6168e628",
+    "modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml": "c0d0edf140c81ae4a0ebe0733e191e752fa90fee2cb8aaf32cc94fe356532067",
+    "modules/gui/qt/player/qml/SliderBar.qml": "e9c208ea18bdddd1c1f18b766d20d5d75f6e2a825bc60b49c3201f8994d8bece",
+    "modules/gui/qt/player/qml/controlbarcontrols/ArtworkInfoWidget.qml": "1b0662118462d9e3f6a32c33b69183a5f88ec134c92fde01eaf3cb449a55e45a",
+    "src/input/input.c": "55dd36239fd229a49641909637910607391bf054d9bee1ef13d34b1ffa1254d0",
+    "modules/gui/qt/tests/native_library/run.py": "b3cf941a04be53d90d80e270878513b846ca0e286de058186326116e7834aa68"
+  },
+  "nativeCoreBuildSha256": "9bed2917f2537e207210dbcf5ac9d14da36d6f2435bb00a471d675f1d26fb69b",
+  "guiBuildStatus": "Built successfully; ordinary redesigned/traditional finite playback and local HLS playback passed with normal exits. Existing delayed-QML teardown warnings remain open.",
+  "nativePairUsesSameExecutable": true,
+  "component": {
+    "playbackChecksPassed": true,
+    "qmlFilesParsed": 11,
+    "liveIndicatorGuardPassed": true,
+    "visualFidelityScored": false
+  },
+  "meson": "syntax parsed; native build not run",
+  "automake": "Core, ordinary Qt GUI and maintained native tests built successfully",
+  "guiSha256": "a5016c8c7f11b512e761fec3113bfafa24db48845e0a0ff764f227ea18738487",
+  "timelineExecutableSha256": "e7beff3e0d244d63531f78ce905e7fbfa459304d3e08bc0b3646b3434eb870a3",
+  "scopeLimits": [
+    "Incremental Windows 10 tuple; not a complete clean beta build",
+    "Native live coverage is owned seekable HLS; unknown/unseekable/invalid ranges have helper-level coverage",
+    "No public-service replay, independent visual/DPI score or final Windows 11 acceptance",
+    "Existing waveform/visual-callback and delayed-QML teardown warnings remain open"
+  ],
+  "nativeRegressionCounts": {
+    "metadata": 18,
+    "opening": 42,
+    "process": 9,
+    "subtitlePreferences": 37,
+    "timeline": 4,
+    "timer": 25,
+    "subtitleController": 8,
+    "queuedLiveRepeatProcesses": 3,
+    "priorControllerLiveRepeatProcesses": 5,
+    "startupPolicyCases": 5
+  },
+  "sourceNotes": "GUI source verification precedes later non-runtime test/README updates; R7 timeline source has its own pre-build hash. Production GUI/core code is unchanged."
+}

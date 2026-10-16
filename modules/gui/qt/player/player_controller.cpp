@@ -348,7 +348,10 @@ void PlayerControllerPrivate::RefreshSubtitleDelays()
 void PlayerControllerPrivate::resetTimer(bool hasInput)
 {
     Q_Q(PlayerController);
+    const bool wasLive = m_player_time.live;
     m_player_time = vlc::qt::invalidPlayerTimerPoint();
+    if (wasLive)
+        emit q->liveChanged(false);
     seeking = false;
     m_position_timer.stop();
     m_time_timer.stop();
@@ -582,7 +585,10 @@ static void on_player_capabilities_changed(vlc_player_t *, int old_caps, int new
         bool oldSeekable = old_caps & VLC_PLAYER_CAP_SEEK;
         bool newSeekable = new_caps & VLC_PLAYER_CAP_SEEK;
         if (newSeekable != oldSeekable)
+        {
             emit q->seekableChanged( newSeekable );
+            emit q->displayTimeChanged();
+        }
 
         bool oldRewindable = old_caps & VLC_PLAYER_CAP_REWIND;
         bool newRewindable = new_caps & VLC_PLAYER_CAP_REWIND;
@@ -1056,7 +1062,10 @@ static void on_player_timer_update(const struct vlc_player_timer_point *point,
     that->callAsync([that,point_copy = *point](){
         PlayerController* q = that->q_func();
 
+        const bool wasLive = that->m_player_time.live;
         that->m_player_time = point_copy;
+        if (wasLive != point_copy.live)
+            emit q->liveChanged(point_copy.live);
         bool lengthOrRateChanged = false;
 
         if (that->m_length.toVLCTick() != that->m_player_time.length)
@@ -1133,11 +1142,16 @@ static void on_player_timer_seek(const struct vlc_player_timer_point *point,
         that->callAsync([that,point_copy = *point](){
             PlayerController* q = that->q_func();
 
+            const bool wasLive = that->m_player_time.live;
             that->m_player_time = point_copy;
-            if (that->m_player_time.position > 0)
+            if (wasLive != point_copy.live)
+                emit q->liveChanged(point_copy.live);
+            if (that->m_player_time.position >= 0)
                 that->m_position = that->m_player_time.position;
-            if (that->m_player_time.ts != VLC_TICK_INVALID)
-                that->m_time = that->m_player_time.ts - VLC_TICK_0;
+            that->m_time = vlc::qt::playerSeekTime(point_copy, that->m_time.toVLCTick());
+            // A pause may arrive before the first post-seek output point. Do
+            // not interpolate the seek request's relative ts as a stream clock.
+            that->m_player_time.ts = that->m_time.toVLCTick();
 
             q->updatePosition();
             q->updateTime(VLC_TICK_INVALID, false);
@@ -1980,6 +1994,7 @@ void PlayerController::updateTime(vlc_tick_t system_now, bool forceUpdate)
 
     // Update time properties
     emit timeChanged(d->m_time);
+    emit displayTimeChanged();
     if (d->m_time.valid() && d->m_length.valid() && d->m_time <= VLCTime(d->m_length))
         d->m_remainingTime = VLCTime(d->m_length) - d->m_time;
     else
@@ -2382,6 +2397,13 @@ QABSTRACTLIST_GETTER( RendererManager, getRendererManager, m_rendererManager)
 PRIMITIVETYPE_GETTER(PlayerController::PlayingState, getPlayingState, m_playing_status)
 PRIMITIVETYPE_GETTER(QString, getName, m_name)
 PRIMITIVETYPE_GETTER(VLCTime, getTime, m_time)
+PRIMITIVETYPE_GETTER(bool, isLive, m_player_time.live)
+VLCTime PlayerController::getDisplayTime() const
+{
+    Q_D(const PlayerController);
+    return VLCTime(vlc::qt::playerTimelineTime(d->m_player_time,
+        d->m_time.toVLCTick(), d->m_position, d->m_capabilities & VLC_PLAYER_CAP_SEEK));
+}
 PRIMITIVETYPE_GETTER(VLCDuration, getRemainingTime, m_remainingTime)
 PRIMITIVETYPE_GETTER(double, getPosition, m_position)
 PRIMITIVETYPE_GETTER(VLCDuration, getLength, m_length)

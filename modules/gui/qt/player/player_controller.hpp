@@ -153,6 +153,8 @@ public:
     Q_PROPERTY(QUrl url READ getUrl NOTIFY inputChanged FINAL)
 
     Q_PROPERTY(VLCTime time READ getTime WRITE setTime NOTIFY timeChanged FINAL)
+    Q_PROPERTY(VLCTime displayTime READ getDisplayTime NOTIFY displayTimeChanged FINAL)
+    Q_PROPERTY(bool live READ isLive NOTIFY liveChanged FINAL)
     Q_PROPERTY(VLCTime remainingTime READ getRemainingTime NOTIFY remainingTimeChanged FINAL)
     Q_PROPERTY(double position READ getPosition WRITE setPosition NOTIFY positionChanged FINAL)
     Q_PROPERTY(VLCDuration length READ getLength NOTIFY lengthChanged FINAL)
@@ -343,6 +345,8 @@ public slots:
     float getRate() const;
     void setRate( float );
     VLCTime getTime() const;
+    VLCTime getDisplayTime() const;
+    bool isLive() const;
     void setTime(VLCTime);
     VLCDuration getRemainingTime() const;
     double getPosition() const;
@@ -471,6 +475,8 @@ signals:
     void rateChanged( float );
 
     void timeChanged( VLCTime );
+    void displayTimeChanged();
+    void liveChanged( bool );
     void remainingTimeChanged( VLCTime );
     void positionChanged( double );
     void lengthChanged( VLCDuration );

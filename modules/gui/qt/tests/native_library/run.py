@@ -95,6 +95,7 @@ def main():
     out.mkdir(parents=True, exist_ok=False)
     runtime, results = out / 'runtime', out / 'results'
     runtime.mkdir()
+    (runtime / "portable").mkdir()
     results.mkdir()
     media = out / 'media'
     fixtures(media)
