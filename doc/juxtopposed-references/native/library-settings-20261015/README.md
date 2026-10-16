@@ -1,5 +1,11 @@
 # Library settings integration checkpoint
 
+Historical checkpoint: the [16 October metadata/artwork acceptance](../library-metadata-20261016/README.md)
+supersedes the consumer/build status below. Four consumers now pass maintained
+native and bounded desktop checks, with opening/process regressions preserved;
+full Library/beta acceptance is still incomplete. The maintained replacement
+fixture does not require diagnostic exports from shipping Core.
+
 15 October 2026. The seven-field Library page, original selected icon, native
 preferences model, MainCtx ownership and property, QML registration, shared Host,
 resources, Autotools/Meson and component-CI registrations are integrated in source.

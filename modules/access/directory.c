@@ -40,6 +40,10 @@
 
 #include <vlc_fs.h>
 #include <vlc_url.h>
+#ifdef _WIN32
+# include <windows.h>
+# include <vlc_charset.h>
+#endif
 
 typedef struct
 {
@@ -144,6 +148,24 @@ static int DirRead (stream_t *access, input_item_node_t *node)
 
     while (ret == VLC_SUCCESS && (entry = vlc_readdir(sys->dir)) != NULL)
     {
+#ifdef _WIN32
+        /* Dot-name filtering remains in the generic readdir helper. Native
+         * Windows hidden attributes require this local filesystem check.
+         * An explicit per-input show-hiddenfiles option (ML indexing) wins. */
+        if (!rdh.b_show_hiddenfiles)
+        {
+            char *path;
+            if (asprintf(&path, "%s"DIR_SEP"%s", access->psz_filepath, entry) < 0)
+            { ret = VLC_ENOMEM; break; }
+            wchar_t *wide = ToWide(path);
+            free(path);
+            if (wide == NULL) { ret = VLC_ENOMEM; break; }
+            DWORD attrs = GetFileAttributesW(wide);
+            free(wide);
+            if (attrs != INVALID_FILE_ATTRIBUTES && (attrs & FILE_ATTRIBUTE_HIDDEN))
+                continue;
+        }
+#endif
         struct stat st;
         int type;
 

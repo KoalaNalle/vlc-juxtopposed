@@ -1,8 +1,55 @@
 # VLC Juxtopposed: first publishable beta plan
 
-15 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
+16 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
+
+The latest [16 October live-service checkpoint](juxtopposed-references/native/live-services-20261016/README.md)
+plays the supplied Yle TV2 HLS stream and downloads real MusicBrainz/Cover Art
+Archive artwork during a fresh library import. Native metadata/opening/process/
+subtitles pass 18/42/9/37 and maintained Library UI passes 11 groups. Directory
+comparator/provider-order repair and HTTPS requests are included; optional
+library enrichment now allows ten seconds after a measured 6.672-second public
+transfer. This document belongs to the user-authorized publication checkpoint;
+verify that commit's remote CI separately. Live timeline labels and wider service
+coverage remain open; this is not a release.
+
+Popup follow-up requested on 16 October: true popup windows should be movable
+from their title/header area. Reproduce the apparently immovable Open Network
+Stream dialog without concurrent automation, then cover the shared host,
+modal/focus behavior, multiple monitors and scaled DPI. No implementation is
+included in this checkpoint.
+
+The preceding [16 October metadata checkpoint](juxtopposed-references/native/library-metadata-20261016/README.md)
+enables Library metadata/artwork after native lifecycle, scope, fallback and
+thumbnail-store checks. Final metadata/opening/process/subtitle suites pass
+18/42/9/37 cases with zero failures/errors/skips and normal parent exits.
+Four monitor-2 launches verify embedded tags/cover, indexed album artwork and
+restart persistence; the original portable profile is restored byte for byte and
+checked personal configuration is unchanged. Native network scope uses owned
+local-only providers, so public-service coverage remains separate. The reproduced
+private-provider assertion is repaired. A first subtitle save assertion failed;
+old/new isolated checks and subsequent unchanged full replays pass, with cause unconfirmed.
+Computer Use is available again on monitor 2.
+
+The preceding [16 October morning checkpoint](juxtopposed-references/native/library-opening-20261016/README.md)
+accepts the bounded Library opening/folder slice: single-instance/file-manager
+policy, explicit append/replace, recursion and Windows hidden files. Maintained
+native opening tests pass 42/0/0/0, actual sender/receiver processes 9/0/0/0, and
+the unchanged subtitle regression 37/0/0/0. The same opening executable fails
+three external hidden-policy cases against the earlier runtime and passes the
+matched repair. That checkpoint enabled three Library consumer flags; the latest
+metadata checkpoint above enables the fourth. Actual monitor-2 checks cover saved Top alignment,
+embedded English/Finnish selection, shortcut feedback duration/OFF and folder
+behavior, with normal quits and checked personal configuration preserved.
+
+The opening, metadata and live-service work is included in this source checkpoint;
+its remote CI must be checked separately from baseline acceptance. The actual
+Windows launcher still overrides saved media-library OFF,
+and the earlier transient isolated parser window lacks a retained diagnosis to
+compare with the now-repaired private fixture assertion. Full Library/beta
+acceptance still requires public-provider coverage, full design/media
+acceptance, other unfinished categories and the clean licensed package.
 
 The [15 October General checkpoint](juxtopposed-references/native/general-settings-20261015/README.md)
 adds the real native General page, shared modal ownership and live theme/accent

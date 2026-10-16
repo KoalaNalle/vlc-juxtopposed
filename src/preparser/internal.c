@@ -30,6 +30,7 @@
 #include <vlc_preparser.h>
 #include <vlc_interrupt.h>
 #include <vlc_fs.h>
+#include <vlc_meta.h>
 
 #include "preparser.h"
 #include "input/input_interface.h"
@@ -171,7 +172,7 @@ PreparserRequestNew(struct preparser_sys *preparser, void (*run)(void *), input_
     input_item_Hold(item);
 
     vlc_sem_init(&req_owner->preparse_ended, 0);
-    req_owner->preparse_status = VLC_EGENERIC;
+    req_owner->preparse_status = options & VLC_PREPARSER_TYPE_PARSE ? VLC_EGENERIC : VLC_SUCCESS;
     atomic_init(&req_owner->interrupted, false);
 
     req_owner->runnable.run = run;
@@ -220,7 +221,8 @@ NotifyPreparseEnded(struct vlc_preparser_req *req)
     struct vlc_preparser_req_owner *req_owner = preparser_req_get_owner(req);
     if (atomic_load(&req_owner->interrupted))
         req_owner->preparse_status = -EINTR;
-    else if (req_owner->preparse_status == VLC_SUCCESS)
+    else if (req_owner->preparse_status == VLC_SUCCESS
+             && (req_owner->options & VLC_PREPARSER_TYPE_PARSE))
         input_item_SetPreparsed(req_owner->item);
 
     req_owner->cbs.parser->on_ended(req, req_owner->preparse_status,
@@ -272,13 +274,28 @@ OnParserAttachmentsAdded(input_item_t *item,
 }
 
 static void
-OnArtFetchEnded(input_item_t *item, bool fetched, void *userdata)
+OnArtFetchEnded(input_item_t *item, int status, bool fetched, void *userdata)
 {
     VLC_UNUSED(item);
     VLC_UNUSED(fetched);
 
     struct vlc_preparser_req *req = userdata;
-
+    struct vlc_preparser_req_owner *req_owner = preparser_req_get_owner(req);
+    PreparserRemoveTask(req_owner->preparser, req);
+    /* Providers work on a copy: partial changes from a timed-out/cancelled
+     * enrichment must not overwrite successfully parsed embedded metadata. */
+    if (status == VLC_SUCCESS && !atomic_load(&req_owner->interrupted))
+    {
+        /* Enrichment owns metadata only. Playback may have discovered new
+         * duration, tracks or subtitles since this private copy was made. */
+        vlc_mutex_lock(&item->lock);
+        vlc_mutex_lock(&req_owner->item->lock);
+        vlc_meta_Merge(req_owner->item->p_meta, item->p_meta);
+        vlc_mutex_unlock(&req_owner->item->lock);
+        vlc_mutex_unlock(&item->lock);
+    }
+    if (status != VLC_SUCCESS)
+        req_owner->preparse_status = status;
     NotifyPreparseEnded(req);
     vlc_preparser_req_Release(req);
 }
@@ -329,7 +346,7 @@ Parse(struct vlc_preparser_req *req, vlc_tick_t deadline)
 }
 
 static int
-Fetch(struct vlc_preparser_req *req)
+Fetch(struct vlc_preparser_req *req, vlc_tick_t deadline)
 {
     struct vlc_preparser_req_owner *req_owner = preparser_req_get_owner(req);
 
@@ -337,9 +354,22 @@ Fetch(struct vlc_preparser_req *req)
     if (!fetcher || !(req_owner->options & VLC_PREPARSER_TYPE_FETCHMETA_ALL))
         return VLC_ENOENT;
 
-    return input_fetcher_Push(fetcher, req_owner->item,
+    /* Expanding a container must deliver its parsed children independently of
+     * optional artwork lookup. Its playable children get their own requests. */
+    bool network;
+    enum input_item_type_e type = input_item_GetType(req_owner->item, &network);
+    if ((req_owner->options & VLC_PREPARSER_OPTION_SUBITEMS)
+        && (type == ITEM_TYPE_DIRECTORY || type == ITEM_TYPE_NODE))
+        return VLC_ENOENT;
+
+    input_item_t *copy = input_item_Copy(req_owner->item);
+    if (copy == NULL)
+        return VLC_ENOMEM;
+    int result = input_fetcher_Push(fetcher, copy,
                               req_owner->options & VLC_PREPARSER_TYPE_FETCHMETA_ALL,
-                              &input_fetcher_callbacks, req);
+                              deadline, &input_fetcher_callbacks, req);
+    input_item_Release(copy);
+    return result;
 }
 
 static void
@@ -365,15 +395,22 @@ ParserRun(void *userdata)
         Parse(req, deadline);
     }
 
-    PreparserRemoveTask(preparser, req);
-
-    if (req_owner->preparse_status == VLC_ETIMEOUT || atomic_load(&req_owner->interrupted))
-        goto end;
-
-    int ret = Fetch(req);
-
-    if (ret == VLC_SUCCESS)
-        return; /* Remove the task and notify from the fetcher callback */
+    /* Keep the request registered across the parse -> fetch boundary.
+     * Cancellation and submission use the same lock, so neither phase can
+     * disappear between the cancellation scan and the fetcher's registration. */
+    vlc_mutex_lock(&preparser->lock);
+    if (req_owner->preparse_status != VLC_ETIMEOUT
+        && !atomic_load(&req_owner->interrupted))
+    {
+        req_owner->executor = NULL;
+        if (Fetch(req, deadline) == VLC_SUCCESS)
+        {
+            vlc_mutex_unlock(&preparser->lock);
+            return; /* The fetcher callback removes/notifies the request. */
+        }
+    }
+    vlc_list_remove(&req_owner->node);
+    vlc_mutex_unlock(&preparser->lock);
 
 end:
     NotifyPreparseEnded(req);
@@ -882,7 +919,15 @@ preparser_Submit( void *opaque, struct vlc_preparser_req *req )
         return VLC_SUCCESS;
     }
 
-    if (Fetch(req) != VLC_SUCCESS)
+    vlc_mutex_lock(&preparser->lock);
+    vlc_list_append(&req_owner->node, &preparser->submitted_tasks);
+    const vlc_tick_t deadline = preparser->timeout
+        ? vlc_tick_now() + preparser->timeout : VLC_TICK_INVALID;
+    int result = Fetch(req, deadline);
+    if (result != VLC_SUCCESS)
+        vlc_list_remove(&req_owner->node);
+    vlc_mutex_unlock(&preparser->lock);
+    if (result != VLC_SUCCESS)
     {
         vlc_preparser_req_Release(req); /* task ref only; caller keeps theirs */
         return VLC_EGENERIC;
@@ -896,63 +941,71 @@ static size_t preparser_Cancel( void *opaque, vlc_preparser_req *req )
     assert(opaque != NULL);
     struct preparser_sys *preparser = opaque;
 
-    vlc_mutex_lock(&preparser->lock);
-
-    struct vlc_preparser_req_owner *req_itr;
     size_t count = 0;
-    vlc_list_foreach(req_itr, &preparser->submitted_tasks, node)
+    for (;;)
     {
-        if (req == NULL || req_itr == preparser_req_get_owner(req))
+        vlc_mutex_lock(&preparser->lock);
+        struct vlc_preparser_req_owner *candidate, *req_itr = NULL;
+        vlc_list_foreach(candidate, &preparser->submitted_tasks, node)
+            if ((req == NULL || candidate == preparser_req_get_owner(req))
+                && !atomic_load(&candidate->interrupted))
+            {
+                req_itr = candidate;
+                break;
+            }
+        if (req_itr == NULL)
         {
-            count++;
+            vlc_mutex_unlock(&preparser->lock);
+            break;
+        }
+        count++;
+        PreparserRequestRetain(&req_itr->req);
+        Interrupt(&req_itr->req);
 
-            /* TODO: the fetcher should be cancellable too */
-            bool canceled = req_itr->executor != NULL &&
+        bool fetching = req_itr->executor == NULL;
+        bool canceled = !fetching &&
                             vlc_executor_Cancel(req_itr->executor,
                                                 &req_itr->runnable);
+        if (canceled)
+            vlc_list_remove(&req_itr->node);
+        vlc_mutex_unlock(&preparser->lock);
 
-            if (canceled)
+        /* Queued fetch cancellation may invoke OnArtFetchEnded immediately.
+         * Never enter it with the preparser lock held. The extra request ref
+         * also protects a concurrent completion while cancellation runs. */
+        if (fetching)
+            input_fetcher_Cancel(preparser->fetcher, &req_itr->req);
+        if (canceled)
+        {
+            req_itr->preparse_status = -EINTR;
+            if (req_itr->options & (VLC_PREPARSER_TYPE_PARSE |
+                                    VLC_PREPARSER_TYPE_FETCHMETA_ALL))
             {
-                vlc_list_remove(&req_itr->node);
-                vlc_mutex_unlock(&preparser->lock);
-                req_itr->preparse_status = -EINTR;
-                if (req_itr->options & (VLC_PREPARSER_TYPE_PARSE |
-                                        VLC_PREPARSER_TYPE_FETCHMETA_ALL))
-                {
-                    assert((req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL) == 0);
-                    req_itr->cbs.parser->on_ended(&req_itr->req, req_itr->preparse_status,
-                                                  req_itr->userdata);
-                }
-                else if (req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL)
-                {
-                    assert((req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL_TO_FILES) == 0);
-                    req_itr->cbs.thumbnailer->on_ended(&req_itr->req,
-                                                       req_itr->preparse_status, NULL,
-                                                       req_itr->userdata);
-                }
-                else
-                {
-                    assert(req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL_TO_FILES);
-                    req_itr->cbs.thumbnailer_to_files->on_ended(&req_itr->req,
-                                                                req_itr->preparse_status,
-                                                                NULL, 0,
-                                                                req_itr->userdata);
-                }
-                vlc_preparser_req_Release(&req_itr->req);
-
-                /* Small optimisation in the likely case where the user cancel
-                 * only one task */
-                if (req != NULL)
-                    return count;
-                vlc_mutex_lock(&preparser->lock);
+                assert((req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL) == 0);
+                req_itr->cbs.parser->on_ended(&req_itr->req, req_itr->preparse_status,
+                                              req_itr->userdata);
+            }
+            else if (req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL)
+            {
+                assert((req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL_TO_FILES) == 0);
+                req_itr->cbs.thumbnailer->on_ended(&req_itr->req,
+                                                   req_itr->preparse_status, NULL,
+                                                   req_itr->userdata);
             }
             else
-                /* The task will be finished and destroyed after run() */
-                Interrupt(&req_itr->req);
+            {
+                assert(req_itr->options & VLC_PREPARSER_TYPE_THUMBNAIL_TO_FILES);
+                req_itr->cbs.thumbnailer_to_files->on_ended(&req_itr->req,
+                                                            req_itr->preparse_status,
+                                                            NULL, 0,
+                                                            req_itr->userdata);
+            }
+            vlc_preparser_req_Release(&req_itr->req);
         }
+        vlc_preparser_req_Release(&req_itr->req); /* cancellation's extra ref */
+        if (req != NULL)
+            break;
     }
-
-    vlc_mutex_unlock(&preparser->lock);
 
     return count;
 }

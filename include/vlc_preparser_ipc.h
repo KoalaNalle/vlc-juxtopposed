@@ -81,6 +81,10 @@ struct vlc_preparser_msg_req {
     /* `uri` will be freed so it must be heap allocated or set to
      * NULL before a `vlc_preparser_msg_Clean` call. */
     char *uri;
+
+    /** Parse-only directory policy snapshot: -1 keeps the child's default.
+     * 0/1 carries the effective parent preference, including item overrides. */
+    int show_hiddenfiles;
 };
 
 /**

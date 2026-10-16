@@ -1,6 +1,6 @@
 # VLC Juxtopposed redesign — project handoff
 
-Updated: **15 October 2026**. Read this file first when continuing from a new
+Updated: **16 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
 ## Project and current checkpoint
@@ -10,13 +10,119 @@ Codex session on the home computer.
 | Fork | <https://github.com/KoalaNalle/vlc-juxtopposed> |
 | Working branch | `juxtopposed-playback-bar` |
 | Draft pull request | <https://github.com/KoalaNalle/vlc-juxtopposed/pull/1> |
-| Latest implementation checkpoint | Branch tip; library/settings evidence linked below |
+| Latest implementation checkpoint | 16 October live services plus Library opening/metadata; publication status below |
 | Intended home checkout | `C:\modding\vlc-juxtopposed` |
 | Initial platform | Windows desktop, x64 |
 | Implementation | VLC's existing C++/Qt Quick/QML interface and native playback models |
 | Immediate priority | Complete the first publishable beta against all confirmed Juxtopposed design surfaces |
 
-The latest subtitle crash repair changes only the FreeType shadow rendering path.
+The latest [live-service checkpoint](doc/juxtopposed-references/native/live-services-20261016/README.md)
+plays the supplied Yle TV2 HLS URL through the redesigned Network dialog and
+checks real MusicBrainz / Cover Art Archive / Internet Archive artwork. A fresh
+owned library imports silent public album tags without an embedded cover and
+shows the downloaded Abbey Road artwork. Real transfer took 6.672 seconds;
+optional library lookup now allows ten seconds while file extraction stays
+separate. Native metadata/opening/process/subtitles pass **18/42/9/37**, all
+zero failures/errors/skips with normal exits; maintained Library UI passes 11 groups.
+
+Live tests also reproduce and repair the shared directory comparator passing
+array-slot addresses as filenames, restoring Lua provider priority order. Exact
+compiled-body and actual Windows directory checks fail before and pass after.
+MusicBrainz and Cover Art Archive requests use HTTPS. Legacy fallback services
+are not comprehensively accepted; Last.fm returned HTTP 403. Live elapsed and
+duration labels are inconsistent for the Yle rolling stream and remain open.
+No stream recording, commercial cover image or private fixture module is shipped
+in Git. This document belongs to the user-authorized publication checkpoint;
+verify its commit on the working branch and its remote CI status when continuing.
+Both live-test launches quit normally. The original portable profile is restored
+byte for byte, checked personal configuration is unchanged, and the temporary
+cover created by the headless diagnostic is retained only in ignored test work.
+
+The preceding [metadata checkpoint](doc/juxtopposed-references/native/library-metadata-20261016/README.md)
+enables the fourth Library consumer, `metadataFetch`. Optional lookup is separate
+from file parsing, observes cooperative cancellation/deadlines, and preserves
+embedded metadata/duration/tracks on timeout or removal. Local mode blocks remote
+artwork downloads; internet mode permits the native provider scope after restart.
+Fetched local JPEG/PNG covers reach the library's actual thumbnail store, keeping
+embedded artwork first. Metadata tests pass **18/0/0/0**, opening **42/0/0/0**,
+actual sender/receiver **9/0/0/0**, and unchanged subtitles **37/0/0/0**, all with
+normal parent exit. An identical earlier eight-case lifecycle executable fails
+six cases on the prior Core and passes all eight on the repaired Core.
+
+Four monitor-2 launches show the enabled local mode, real embedded tags/cover,
+indexed album artwork and restart persistence. The original portable directory
+is restored byte for byte, personal VLC config is unchanged, and the matched
+ordinary package has no private providers/probes. At that earlier checkpoint,
+native network scope used owned local-only providers; the live-service checkpoint
+above adds the observed public artwork and Yle paths.
+The reproduced assertion came from a private provider reading an undeclared
+child option; the fixture now checks variable type and uses its explicit child
+environment. The earlier transient morning window lacks enough details to prove
+it was identical. One initial subtitle save failure remains unexplained; isolated
+old/new checks and subsequent complete unchanged replays pass, including the final tuple.
+No subtitle-store change was made. Computer Use is available again, monitor 2.
+Final audit also reproduces and repairs artwork-only requests marking a file
+fully parsed. Enrichment now merges metadata alone, preserving playback details
+updated during lookup; the final 18-case suite checks both behaviors.
+
+The preceding [morning checkpoint](doc/juxtopposed-references/native/library-opening-20261016/README.md)
+completes the bounded Library file-opening/folder slice and pending subtitle
+desktop checks. Ordinary Windows x64 builds pass. The maintained native opening
+suite passes **42/0/0/0**, actual sender/receiver processes pass **9/0/0/0**, and
+the unchanged subtitle regression passes **37/0/0/0**, all with normal parent
+exit. The same 42-case executable produces three expected external hidden-policy
+failures against the earlier runtime, then passes against the matched repair.
+Portable delivery-error branches pass 16 receiver and 8 sender cases.
+
+Three Library consumer flags were enabled after morning native/process/desktop
+acceptance: `instancePolicy`, `openingQueue` and `hiddenAttributes`.
+The metadata checkpoint above supersedes its then-false `metadataFetch` gate. Explicit single-instance/file-manager and
+append/replace settings are connected to production consumers. Folder expansion
+retains the submitted root identity, finishes independently of optional folder
+artwork, and passes the effective Windows hidden-file policy to each external
+preparser request. Core, preparser executable and JSON serializer must be staged
+together; the ordinary package has no private fixture providers/probes.
+
+Seven ordinary monitor-2 launches quit normally. Recursion and Library settings
+restore after restart; hidden ON includes dot/Windows-hidden files and hidden OFF
+adds only visible files on the next opening without rewriting the existing queue.
+Top-aligned embedded English/Finnish subtitles render, V changes the track, and
+saved 2000 ms shortcut feedback expires between recorded 1295/2463 ms observations.
+Feedback OFF survives restart and suppresses shortcut overlays while filename
+display remains operational. The original portable profile is restored with
+monitor-2 geometry retained; both checked personal VLC config files are unchanged.
+No development VLC, preparser or build was left running.
+
+The ordinary package `build-windows/package` contains the final matched binaries;
+exact identities, source hashes, before/after results, screenshots and preservation
+are in the [latest receipt](doc/juxtopposed-references/native/live-services-20261016/verification.json).
+The maintained local reproduction instructions are in
+[native_library](modules/gui/qt/tests/native_library/README.md). The baseline
+commit's two remote CI jobs pass; the publication checkpoint requires its own
+remote CI result. Unrelated pre-existing untracked files remain untouched.
+
+Full Library and beta acceptance remain open. Do not apply the earlier ignored
+`metadata-revision/`; the separately implemented metadata checkpoint above is
+the current source. The actual Windows entry point still forces `--media-library`,
+so saved startup OFF is not accepted. Broader public-provider coverage and live
+timeline semantics remain open beyond the accepted service path above.
+Dark Custom On/Off menu styling, broader media/formats/presets/timeline,
+Figma/DPI acceptance, other categories and the clean licensed beta package remain
+unfinished.
+Continue with a separately scoped checkpoint rather than claiming full beta ready.
+
+### Requested popup follow-up (16 October)
+
+True popup windows should be movable by dragging their title/header area. The
+user noticed that the Open Network Stream URL dialog appeared immovable during
+live testing; simultaneous Computer Use may have affected that observation, so
+reproduce it directly before changing behavior. Audit the shared popup/dialog
+host as well as individual screens, preserve modal ownership and keyboard focus,
+and keep moved windows reachable on multiple monitors and at scaled DPI.
+This is a requested follow-up only; no movement behavior was implemented in
+this checkpoint.
+
+The preceding subtitle crash repair changes only the FreeType shadow rendering path.
 It skips disabled, invisible or missing shadows and removes the obsolete shifted
 main-glyph substitute. The ordinary Windows renderer build succeeds, and the
 unchanged native subtitle preferences suite now completes **37 passed, 0 failed,
@@ -47,23 +153,24 @@ receipt are in `build-windows/subtitles-main-desktop-20261015/verification.json`
 The original package profile was restored, retaining monitor-2 window geometry;
 the test profile is preserved separately. The two checked personal VLC config
 files are unchanged. GUI vertical-position/feedback and embedded-language
-checks, broader formats/presets, final visual acceptance and beta packaging are
-still open. The source and recorded evidence are included in this development
+checks were pending there and are completed within the 16 October scope above;
+broader formats/presets, final visual acceptance and beta packaging remain open.
+The source and recorded evidence are included in this development
 checkpoint; it does not establish final beta acceptance.
 
 Library settings source integration is also prepared: MainCtx ownership, QML
 registration, Host/resources and build/CI registrations are installed. Actual
 integrated component checks pass: Library 11 groups, Host 24 checks/12 directed
 transitions/9 busy guards, and Subtitles 15 groups, all with zero Qt messages.
-All four Library consumer flags remain false. These source additions are newer
-than the main package and have NOT had a native build or desktop acceptance.
+At that 15 October checkpoint all four Library consumer flags remained false and
+the source additions had not had a native build or desktop acceptance. The
+16 October checkpoint above supersedes that opening/folder status.
 Read `build-windows/library-beta-rework-ui-20261015/integration-applied.json`
 and `build-windows/library-beta-rework-backend-20261015/RESUME.md` before resuming.
 The backend's `metadata-revision/` is INCOMPLETE and must not be applied/built;
-`ipc-revision/` is proposed and untested. No shared Library runtime consumer
-changes were applied. Resume the unfinished subtitle GUI checks and complete
-Library cancellation/optional-enrichment/IPC validation before enabling them.
-The full beta goal is paused and incomplete at the user's end-of-day request.
+`ipc-revision/` was proposed and untested then. The current reviewed production
+opening changes and maintained tests are recorded in the newer checkpoint;
+do not reapply the older proposal. The full beta remains incomplete.
 No build or GUI test was left running. The partial metadata/IPC proposals remain
 local in the ignored build area and are excluded from the source checkpoint.
 See the tracked [desktop checkpoint](doc/juxtopposed-references/native/subtitles-desktop-20261015/README.md)

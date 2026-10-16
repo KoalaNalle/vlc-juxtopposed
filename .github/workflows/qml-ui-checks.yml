@@ -4,10 +4,14 @@ on:
   pull_request:
     paths:
       - 'modules/gui/qt/**'
+      - 'src/text/filesystem.c'
+      - 'share/lua/meta/art/**'
       - '.github/workflows/qml-ui-checks.yml'
   push:
     paths:
       - 'modules/gui/qt/**'
+      - 'src/text/filesystem.c'
+      - 'share/lua/meta/art/**'
       - '.github/workflows/qml-ui-checks.yml'
   workflow_dispatch:
 
@@ -104,6 +108,10 @@ jobs:
         run: python modules/gui/qt/tests/test_qml_dependencies.py --output-dir qml-dependency-results
       - name: Check warm QML metadata through preserved old and current remake recipes
         run: python modules/gui/qt/tests/test_qml_module_lists.py --output-dir qml-module-list-results
+      - name: Check Library opening failure and reply branches against production helpers
+        run: python modules/gui/qt/tests/test_library_ipc_errors.py --output-dir library-ipc-error-results
+      - name: Check directory comparator contract and artwork provider ordering
+        run: python modules/gui/qt/tests/test_library_directory_sort.py --output-dir library-directory-sort-results
       - name: Save make logs and generated dependency evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -112,3 +120,5 @@ jobs:
           path: |
             qml-dependency-results/
             qml-module-list-results/
+            library-ipc-error-results/
+            library-directory-sort-results/

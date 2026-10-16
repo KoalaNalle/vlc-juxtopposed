@@ -1125,6 +1125,7 @@ toJSON_vlc_preparser_msg_req(struct serdes_sys *sys,
 
     if (req->type == VLC_PREPARSER_MSG_REQ_TYPE_PARSE) {
         json_stringify(number, sys, "options", req->options);
+        json_stringify(number, sys, "show_hiddenfiles", req->show_hiddenfiles);
     } else {
         if (req->type == VLC_PREPARSER_MSG_REQ_TYPE_THUMBNAIL_TO_FILES) {
             json_stringify_array(toJSON_vlc_thumbnailer_output,

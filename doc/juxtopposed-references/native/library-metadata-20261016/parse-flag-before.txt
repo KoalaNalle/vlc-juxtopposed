@@ -1,0 +1,13 @@
+********* Start testing of TestLibraryPreferences *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestLibraryPreferences::initTestCase()
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(success) '!input_item_IsPreparsed(item.get())' returned FALSE. ()
+[repo]/build-windows/metadata-20261016/prepared-r7/input/tests/test_library_preferences.cpp(439) : failure location
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(timeout)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(parse-timeout)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(active-cancel)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(queued-cancel)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(delete-active)
+PASS   : TestLibraryPreferences::cleanupTestCase()
+Totals: 7 passed, 1 failed, 0 skipped, 0 blacklisted, 1655ms
+********* Finished testing of TestLibraryPreferences *********

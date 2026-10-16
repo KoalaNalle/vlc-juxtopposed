@@ -249,8 +249,14 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     subtitleConsumers.shortcutFeedback = true;
     m_subtitlesPreferences = new SubtitlesPreferencesModel(p_intf, m_subtitlePresets,
         subtitleConsumers, this);
-    // Library consumers remain gated until their native acceptance is complete.
-    m_libraryPreferences = new LibraryPreferencesModel(p_intf, this);
+    // Opening/folder consumers passed native and actual two-process acceptance.
+    // Metadata cancellation/fallback and local/network scopes passed separately.
+    LibraryPreferencesModel::Consumers libraryConsumers;
+    libraryConsumers.instancePolicy = true;
+    libraryConsumers.openingQueue = true;
+    libraryConsumers.hiddenAttributes = true;
+    libraryConsumers.metadataFetch = true;
+    m_libraryPreferences = new LibraryPreferencesModel(p_intf, libraryConsumers, this);
 
     /* Get the available interfaces */
     m_extraInterfaces = new VLCVarChoiceModel(VLC_OBJECT(p_intf->intf), "intf-add", this);

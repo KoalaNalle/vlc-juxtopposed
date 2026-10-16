@@ -68,13 +68,12 @@ private:
     struct ParseContext
     {
         ParseContext( MetadataExtractor* mde, medialibrary::parser::IItem& item )
-            : status( medialibrary::parser::Status::Fatal )
-            , done( false )
+            : done( false )
             , mde( mde )
             , item( item )
         {
         }
-        medialibrary::parser::Status status;
+        int result = VLC_EGENERIC;
         bool done;
         MetadataExtractor* mde;
         medialibrary::parser::IItem& item;
@@ -108,7 +107,10 @@ private:
     vlc::threads::condition_variable m_cond;
     vlc::threads::mutex m_mutex;
     ParseContext* m_currentCtx;
+    bool m_stopping = false;
+    bool m_network;
     LazyPreparser m_parser;
+    LazyPreparser m_fetcher;
 };
 
 class Thumbnailer : public medialibrary::IThumbnailer

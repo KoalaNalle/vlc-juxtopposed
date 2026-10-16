@@ -11,16 +11,62 @@
 #include <vlc_meta.h>
 #include <vlc_meta_fetcher.h>
 #include <vlc_variables.h>
+#include <vlc_fs.h>
+#include <vlc_interrupt.h>
+#ifdef _WIN32
+# include <windows.h>
+#else
+# include <unistd.h>
+#endif
+static bool Active(vlc_object_t *root)
+{
+    return (var_Type(root, "library-fixture-active") == VLC_VAR_BOOL
+            && var_GetBool(root, "library-fixture-active"))
+        || getenv("VLC_LIBRARY_FIXTURE_LOG") != NULL;
+}
+static void Trace(const char *kind)
+{
+    const char *prefix = getenv("VLC_LIBRARY_FIXTURE_LOG");
+    char *path;
+    if (!prefix || asprintf(&path, "%s-%s.log", prefix, kind) < 0)
+        return;
+    FILE *file = vlc_fopen(path, "ab");
+    free(path);
+    if (file) {
+#ifdef _WIN32
+        fprintf(file,"%lu\n",(unsigned long)GetCurrentProcessId());
+#else
+        fprintf(file,"%lu\n",(unsigned long)getpid());
+#endif
+        fclose(file);
+    }
+}
 static int Fetch(vlc_object_t *object)
 {
     meta_fetcher_t *fetcher = (meta_fetcher_t *)object;
     vlc_object_t *root = VLC_OBJECT(vlc_object_instance(object));
-    if (!var_InheritBool(root, "library-fixture-active")) return VLC_EGENERIC;
+    if (!Active(root)) return VLC_EGENERIC;
+    Trace(fetcher->e_scope == FETCHER_SCOPE_LOCAL ? "local" : "network");
+    const char *delay = getenv("VLC_LIBRARY_FIXTURE_DELAY_MS");
+    if (delay && fetcher->e_scope == FETCHER_SCOPE_NETWORK)
+    {
+        input_item_SetTitle(fetcher->p_item, "Uncommitted delayed metadata");
+        vlc_msleep_i11e(VLC_TICK_FROM_MS(atoi(delay)));
+        if (vlc_killed())
+        {
+            Trace("interrupted");
+            return VLC_SUCCESS;
+        }
+    }
     if (fetcher->e_scope == FETCHER_SCOPE_LOCAL)
-        var_IncInteger(root, "library-fixture-local");
+    {
+        if (var_Type(root, "library-fixture-local"))
+            var_IncInteger(root, "library-fixture-local");
+    }
     else
     {
-        var_IncInteger(root, "library-fixture-network");
+        if (var_Type(root, "library-fixture-network"))
+            var_IncInteger(root, "library-fixture-network");
         input_item_SetTitle(fetcher->p_item, "Owned network metadata fixture");
         input_item_SetArtist(fetcher->p_item, "Owned fixture artist");
         input_item_SetAlbum(fetcher->p_item, "Owned fixture album");
@@ -31,10 +77,16 @@ static int Art(vlc_object_t *object)
 {
     meta_fetcher_t *fetcher = (meta_fetcher_t *)object;
     vlc_object_t *root = VLC_OBJECT(vlc_object_instance(object));
-    if (!var_InheritBool(root, "library-fixture-active")) return VLC_EGENERIC;
+    if (!Active(root)) return VLC_EGENERIC;
     if (fetcher->e_scope != FETCHER_SCOPE_LOCAL)
     {
-        char *uri = var_InheritString(root, "library-fixture-art");
+        char *uri = var_Type(root, "library-fixture-art") == VLC_VAR_STRING
+            ? var_GetString(root, "library-fixture-art") : NULL;
+        if (uri == NULL)
+        {
+            const char *test_art = getenv("VLC_LIBRARY_FIXTURE_ART");
+            uri = test_art ? strdup(test_art) : NULL;
+        }
         if (!uri || strncmp(uri, "file://", 7)) { free(uri); return VLC_EGENERIC; }
         input_item_SetArtURL(fetcher->p_item, uri); free(uri);
     }

@@ -2770,7 +2770,13 @@ EXTRA_DIST += tests/generate_subtitles_fixtures.sh
 EXTRA_DIST += tests/test_juxtopposed_library_settings.py tests/juxtopposed_library_preferences_fixture.py \
     tests/fixtures/juxtopposed_library_fields.json tests/fixtures/juxtopposed_library_assets.json
 
-# This consumer fixture needs the private diagnostic Core and WinMsg recipe.
-# Distribute its sources without linking diagnostic exports into shipping Core.
+# Native Library tests compile a private policy bridge and WinMsg probe.
+# No diagnostic exports are added to shipping Core or plugins.
 EXTRA_DIST += tests/test_library_preferences.cpp tests/library_preferences_probe.c \
     tests/library_fixture_fetcher.c
+
+EXTRA_DIST += tests/test_library_ipc_errors.py tests/library_ipc_receiver_errors.c \
+    tests/library_ipc_sender_errors.c tests/test_library_opening_process.cpp \
+    tests/native_library/prepare.py tests/native_library/run.py \
+    tests/native_library/preferences.mk tests/native_library/modules.mk \
+    tests/native_library/process.mk tests/native_library/README.md

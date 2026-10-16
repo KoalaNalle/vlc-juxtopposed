@@ -2189,6 +2189,13 @@ vlc_module_begin ()
         change_volatile ()
     add_bool( "one-instance-when-started-from-file", true,
               ONEINSTANCEWHENSTARTEDFROMFILE_TEXT, NULL )
+    add_integer("one-instance-file-manager-policy", -1,
+        N_("File-manager single-instance policy"),
+        N_("-1 preserves the legacy policy; 0 excludes file-manager launches; 1 follows one-instance."))
+        change_integer_range(-1, 1)
+    add_integer("playlist-open-mode", -1, N_("External opening policy"),
+        N_("-1 preserves legacy play/enqueue; 0 replaces the queue; 1 appends without changing the current item."))
+        change_integer_range(-1, 1)
     add_bool( "playlist-enqueue", false, PLAYLISTENQUEUE_TEXT,
               PLAYLISTENQUEUE_LONGTEXT )
 #endif

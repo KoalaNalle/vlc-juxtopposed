@@ -94,8 +94,15 @@ void LibraryPreferencesModel::refresh()
     queue=service&&m_consumers.openingQueue&&has("playlist-enqueue",VLC_VAR_BOOL)&&has("playlist-open-mode",VLC_VAR_INTEGER);
     hidden=hidden&&m_consumers.hiddenAttributes;
 #endif
-    QVariantMap choices{{QStringLiteral("folderRecursion"),service?recursionChoices():QVariantList{}},
-        {QStringLiteral("metadataSource"),QVariantList{QVariantMap{{QStringLiteral("value"),QStringLiteral("local")},{QStringLiteral("name"),tr("From file and local cache")}},QVariantMap{{QStringLiteral("value"),QStringLiteral("network")},{QStringLiteral("name"),tr("Also allow internet lookups")}}}};
+    QVariantMap choices{
+        {QStringLiteral("folderRecursion"), service ? recursionChoices() : QVariantList{}},
+        {QStringLiteral("metadataSource"), QVariantList{
+            QVariantMap{{QStringLiteral("value"), QStringLiteral("local")},
+                        {QStringLiteral("name"), tr("From file and local cache")}},
+            QVariantMap{{QStringLiteral("value"), QStringLiteral("network")},
+                        {QStringLiteral("name"), tr("Also allow internet lookups")}}
+        }}
+    };
     QVariantMap caps{{QStringLiteral("singleInstance"),instance},{QStringLiteral("fileManagerSingleInstance"),instance&&boolean("one-instance")},
         {QStringLiteral("enqueueInSingleInstance"),queue&&boolean("one-instance")},{QStringLiteral("folderRecursion"),service&&has("recursive",VLC_VAR_STRING)&&!choices.value(QStringLiteral("folderRecursion")).toList().isEmpty()},
         {QStringLiteral("showHiddenFiles"),hidden},

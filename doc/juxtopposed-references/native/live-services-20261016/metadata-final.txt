@@ -1,0 +1,22 @@
+********* Start testing of TestLibraryPreferences *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestLibraryPreferences::initTestCase()
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(success)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(timeout)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(parse-timeout)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(active-cancel)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(queued-cancel)
+PASS   : TestLibraryPreferences::metadataFetchLifecycle(delete-active)
+PASS   : TestLibraryPreferences::automaticQueueMetadataScope(local)
+PASS   : TestLibraryPreferences::automaticQueueMetadataScope(network)
+PASS   : TestLibraryPreferences::automaticLibraryMetadataScope(local)
+PASS   : TestLibraryPreferences::automaticLibraryMetadataScope(network)
+PASS   : TestLibraryPreferences::libraryEnrichmentTimeoutKeepsEmbeddedMetadataAndTracks()
+PASS   : TestLibraryPreferences::libraryShutdownDuringEnrichmentCanResume()
+PASS   : TestLibraryPreferences::externalMetadataProviderBridge(local)
+PASS   : TestLibraryPreferences::externalMetadataProviderBridge(network)
+PASS   : TestLibraryPreferences::queueEnrichmentTimeoutKeepsParsedDetails()
+PASS   : TestLibraryPreferences::removingQueueItemCancelsLookupAndAllowsNextItem()
+PASS   : TestLibraryPreferences::cleanupTestCase()
+Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 19158ms
+********* Finished testing of TestLibraryPreferences *********

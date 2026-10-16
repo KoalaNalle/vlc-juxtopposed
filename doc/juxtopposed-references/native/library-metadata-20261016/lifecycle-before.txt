@@ -1,0 +1,26 @@
+********* Start testing of TestLibraryPreferences *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestLibraryPreferences::initTestCase()
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(success) Compared values are not the same
+   Actual   (first.result)                                                                 : -2147483648
+   Expected (operation==QStringLiteral("success")?VLC_SUCCESS: timeout?VLC_ETIMEOUT:-EINTR): 0
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(415) : failure location
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(timeout) 'first.done.tryAcquire(1,2000)' returned FALSE. ()
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(414) : failure location
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(parse-timeout) 'first.done.tryAcquire(1,2000)' returned FALSE. ()
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(414) : failure location
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(active-cancel) Compared values are not the same
+   Actual   (vlc_preparser_Cancel(parser.get(),request.get())): 0
+   Expected (size_t(1))                                       : 1
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(413) : failure location
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(queued-cancel) Compared values are not the same
+   Actual   (vlc_preparser_Cancel(parser.get(),queued.get())): 0
+   Expected (size_t(1))                                      : 1
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(406) : failure location
+FAIL!  : TestLibraryPreferences::metadataFetchLifecycle(delete-active) Compared values are not the same
+   Actual   (first.result)                                                                 : -2147483648
+   Expected (operation==QStringLiteral("success")?VLC_SUCCESS: timeout?VLC_ETIMEOUT:-EINTR): -4
+[repo]/build-windows/metadata-20261016/prepared-r2/input/tests/test_library_preferences.cpp(415) : failure location
+PASS   : TestLibraryPreferences::cleanupTestCase()
+Totals: 2 passed, 6 failed, 0 skipped, 0 blacklisted, 75858ms
+********* Finished testing of TestLibraryPreferences *********
