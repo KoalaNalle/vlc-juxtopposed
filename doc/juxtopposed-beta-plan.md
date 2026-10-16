@@ -4,6 +4,16 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [guest WAV/PCR checkpoint](juxtopposed-references/native/guest-wav-pcr-20261017/README.md)
+repairs missing WAV packet duration and partial-read arithmetic. Nine actual
+demux cases go from all failing to all passing; the same clean export runner
+changes only WAV and loses its PCR error while retaining every sample. Waveform,
+strict PCM/FLAC boundary counts, native 18/42/9/37 and 4/25/8 regressions and ordinary
+GUI/local HLS checks pass. Diagnostic helper code is absent from production.
+A separate resampler output timestamp discontinuity is now evidenced and stays
+open; zero PCR errors does not accept all A/V sync. Complete surfaces/settings,
+native visual/DPI, final clean package and Windows 11 gates remain open.
+
 The [guest audio-visualization checkpoint](juxtopposed-references/native/guest-audio-visualization-20261017/README.md)
 repairs generic audio-filter callback ownership and prevents no-clock export/
 waveform chains from opening inherited visualizations. Native playing-output

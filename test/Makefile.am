@@ -89,6 +89,7 @@ check_PROGRAMS = \
 	test_modules_codec_cea708_integration \
 	test_modules_keystore \
 	test_modules_demux_json \
+	test_modules_demux_wav_timing \
 	test_modules_demux_libmp4 \
 	test_modules_demux_timestamps \
 	test_modules_demux_timestamps_filter \
@@ -390,6 +391,9 @@ test_modules_keystore_SOURCES = modules/keystore/test.c
 test_modules_keystore_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_tls_SOURCES = modules/misc/tls.c
 test_modules_tls_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_demux_wav_timing_SOURCES = modules/demux/wav_timing.c
+test_modules_demux_wav_timing_LDADD = $(LIBVLCCORE) $(LIBVLC)
+
 test_modules_demux_json_SOURCES = modules/demux/json.c \
 				../modules/demux/json/json.h
 test_modules_demux_json_LDADD = $(LIBVLCCORE) ../modules/libvlc_json.la

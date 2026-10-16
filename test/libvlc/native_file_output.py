@@ -24,6 +24,8 @@ parser.add_argument('--require-clean-visual-callbacks', action='store_true',
                     help='Also require no callbacks targeting a missing visual variable')
 parser.add_argument('--configured-visualizer', action='store_true',
                     help='Exercise export with a configured spectrum visualization and dummy display')
+parser.add_argument('--require-clean-pcr', action='store_true',
+                    help='Also require no transcode input/output PCR mismatch')
 args = parser.parse_args()
 package = args.package.resolve()
 output = args.output_dir.resolve()
@@ -89,6 +91,7 @@ pcm = destination.read_bytes() if destination.exists() and code == 0 else b''
 peak = max((abs(sample[0]) for sample in struct.iter_unpack('<h', pcm)), default=0) if len(pcm) % 2 == 0 else None
 identities = {}
 for relative in ('vlc.exe', 'libvlc.dll', 'libvlccore.dll',
+                 'plugins/demux/libwav_plugin.dll',
                  'plugins/access_output/libaccess_output_file_plugin.dll',
                  'plugins/stream_out/libstream_out_transcode_plugin.dll'):
     identities[relative] = hashlib.sha256((package / relative).read_bytes()).hexdigest()
@@ -104,9 +107,11 @@ report = dict(exitCode=code, normalExit=code == 0 and not forced_cleanup, timedO
               runtimeSha256=identities)
 report['cleanVisualCallbacksRequired'] = args.require_clean_visual_callbacks
 report['configuredVisualizer'] = args.configured_visualizer
+report['cleanPcrRequired'] = args.require_clean_pcr
 report['passed'] = (report['normalExit'] and report['terminationConfirmed']
                     and not timed_out and report['completePcm'] and report['fileWriteErrors'] == 0
-                    and (not args.require_clean_visual_callbacks or report['missingVisualCallbackErrors'] == 0))
+                    and (not args.require_clean_visual_callbacks or report['missingVisualCallbackErrors'] == 0)
+                    and (not args.require_clean_pcr or report['pcrMatchErrors'] == 0))
 (output / 'verification.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
 print(json.dumps(report), flush=True)
 raise SystemExit(0 if report['passed'] else 1)

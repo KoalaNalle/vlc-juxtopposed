@@ -108,6 +108,23 @@ Work is under `build-windows/beta-visual-callback-20261017`; baseline package an
 previous runtimes are preserved. The short stereo-to-mono PCR-match error and
 full beta/visual/DPI/Windows 11/final clean package gates remain open.
 
+The guest [WAV/PCR checkpoint](doc/juxtopposed-references/native/guest-wav-pcr-20261017/README.md)
+repairs missing packet duration at WAV EOF and incorrect partial-packet sample
+arithmetic. The final 50 ms packet now participates in PCR accounting. The same
+real-demux executable goes from nine failures to nine passes; the clean export
+changes only WAV and goes from one PCR error to zero with all 16,000 samples.
+Waveform passes nine cases, complete PCM preserves exact samples/bytes, and all
+nine FLAC boundary cases retain exact frame counts (including 88,200 and its
+repeat). Native 18/42/9/37 and 4/25/8 regressions pass normally. Ordinary redesigned/
+traditional/local HLS checks now have zero QML/write/visual-callback/PCR errors.
+WAV is `541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b`;
+transcode is cleanly rebuilt as `cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c`
+from unchanged, byte-restored PCR helper source. Core/GUI and prior packages are
+preserved. Work is under `build-windows/beta-pcr-20261017`. A separate traced
+resampler timestamp discontinuity remains open: 16,000 samples span two seconds
+but packet timestamps start late and overlap/gap. This is not full A/V-sync,
+complete beta, desktop/DPI/Windows 11 or final clean-package acceptance.
+
 ## Project and current checkpoint
 
 | Item | Value |

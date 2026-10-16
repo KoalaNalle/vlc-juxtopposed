@@ -1,4 +1,12 @@
 vlc_tests += {
+    'name': 'test_modules_demux_wav_timing',
+    'sources': files('demux/wav_timing.c'),
+    'suite': ['modules', 'test_modules'],
+    'link_with': [libvlc, libvlccore],
+    'module_depends': ['wav'],
+}
+
+vlc_tests += {
     'name' : 'test_modules_access_output_file',
     'sources' : files('access_output/file.c'),
     'suite' : ['modules', 'test_modules'],
