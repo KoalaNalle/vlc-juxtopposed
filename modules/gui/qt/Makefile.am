@@ -1183,6 +1183,8 @@ libqml_module_dialogs_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_dialogs_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedMovableDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \

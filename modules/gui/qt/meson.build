@@ -695,6 +695,8 @@ qml_modules += {
     'outdir' : 'VLC/Dialogs',
     'sources': files(
         'dialogs/dialogs/qml/CustomDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedMovableDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml',
         'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
         'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
         'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',

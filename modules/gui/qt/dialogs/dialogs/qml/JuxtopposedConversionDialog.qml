@@ -8,7 +8,7 @@ import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import VLC.Dialogs
 
-C.Dialog {
+JuxtopposedMovableDialog {
     id: root
     objectName: "juxtopposedConversionDialog"
     property var controller
@@ -30,7 +30,6 @@ C.Dialog {
     title: qsTr("Convert")
     modal: true
     focus: true
-    anchors.centerIn: parent
     implicitWidth: 713 * uiScale
     implicitHeight: 560 * uiScale
     width: Math.min(implicitWidth, Math.max(0, parent.width - 32 * uiScale))
@@ -206,6 +205,14 @@ C.Dialog {
         radius: 14 * root.uiScale
         Rectangle { anchors.left: parent.left; anchors.right: parent.right; anchors.bottom: parent.bottom; height: parent.height / 2; color: parent.color }
         FormLabel { anchors.left: parent.left; anchors.leftMargin: 20 * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text: root.title; color: JuxtopposedPalette.color("#8F8F8F") }
+
+        JuxtopposedDialogDragArea {
+            popup: root
+            anchors.left: parent.left
+            anchors.right: closeButton.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+        }
         C.ToolButton {
             id: closeButton
             objectName: "conversionClose"

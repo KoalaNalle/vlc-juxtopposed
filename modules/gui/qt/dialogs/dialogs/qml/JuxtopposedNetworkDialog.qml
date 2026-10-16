@@ -6,7 +6,7 @@ import VLC.Style
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
-C.Dialog {
+JuxtopposedMovableDialog {
     id: root
     property var controller
     property real uiScale: 1
@@ -18,7 +18,6 @@ C.Dialog {
     title: qsTr("Open Network Stream")
     modal: true
     focus: true
-    anchors.centerIn: parent
     implicitWidth: 900 * uiScale
     implicitHeight: 540 * uiScale
     width: Math.min(implicitWidth, Math.max(0, parent.width - 32 * uiScale))
@@ -96,6 +95,14 @@ C.Dialog {
             font.family: inter.name
             font.pixelSize: 14 * root.uiScale
             elide: Text.ElideRight
+        }
+
+        JuxtopposedDialogDragArea {
+            popup: root
+            anchors.left: parent.left
+            anchors.right: closeButton.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
         C.ToolButton {
             id: closeButton

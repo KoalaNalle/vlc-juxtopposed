@@ -14,7 +14,7 @@ REPO=HERE.parents[3]
 FILES=REPO
 os.environ.update(QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QML_DISABLE_DISK_CACHE='1',
                   QT_QPA_FONTDIR=str(REPO/'modules/gui/qt/pixmaps/juxtopposed'))
-from PySide6.QtCore import QObject, Property, Signal, Slot, QEnum, Qt, QUrl, QEvent, QCoreApplication, qInstallMessageHandler
+from PySide6.QtCore import QObject, Property, Signal, Slot, QEnum, Qt, QUrl, QPoint, QEvent, QCoreApplication, qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine, QQmlExpression, qmlContext, qmlRegisterType, qmlRegisterSingletonType, qmlRegisterSingletonInstance, qmlRegisterUncreatableType
 from PySide6.QtQuick import QQuickItem
@@ -282,12 +282,69 @@ close_all();route(0)
 ctx.general.patch(accentIndex=6);QTest.qWait(30)
 check('same General provider drives a live shared accent on the actual mounted shell',expr(dialogs[0],'String(accent)')=='#8e42ff')
 window.grabWindow().save(str(args.output_dir/'global-mounted.png'))
+# Pointer events target the actual production header rather than an adapter.
+# Run Network first so the original immovable dialog is a direct regression.
+movement=[]
+def drag_header(dialog, delta=None, end=None):
+    header=dialog.property('header')
+    start=header.mapToScene(header.boundingRect().center()).toPoint()
+    if end is not None:delta=end-start
+    QTest.mouseMove(window,start);QTest.mousePress(window,Qt.LeftButton,Qt.NoModifier,start)
+    for step in range(1,6):
+        point=start+QPoint(round(delta.x()*step/5),round(delta.y()*step/5))
+        QTest.mouseMove(window,point,10)
+    QTest.mouseRelease(window,Qt.LeftButton,Qt.NoModifier,start+delta)
+    QTest.qWait(25)
+
+def position(dialog):return [dialog.property('x'),dialog.property('y')]
+
+for scale in (1,1.5,2):
+    window.resize(1300,1000)
+    for index in (1,0,2,3):
+        close_all();dialogs[index].setProperty('uiScale',scale)
+        focus('opener');route(index);dialog=dialogs[index]
+        origin=position(dialog);focused=window.activeFocusItem()
+        dx=min(60,round((window.width()-dialog.property('width'))/3))
+        dy=min(40,round((window.height()-dialog.property('height'))/3))
+        drag_header(dialog,QPoint(dx,dy))
+        after=position(dialog)
+        movement.append(dict(dialog=names[index],scale=scale,before=origin,after=after,requestedDelta=[dx,dy]))
+        (args.output_dir/'movement-observation.json').write_text(json.dumps(movement,indent=2)+'\n',encoding='utf-8')
+        check(f'{names[index]} header drag moves both axes at scale {scale}',
+              abs(after[0]-origin[0]-dx)<1.5 and abs(after[1]-origin[1]-dy)<1.5)
+        check(f'{names[index]} drag preserves focus and modal guard at scale {scale}',
+              window.activeFocusItem() is focused and provider.visible and visible()==[i==index for i in range(4)])
+        # Both far corners must keep the complete dialog inside its owner.
+        drag_header(dialog,end=QPoint(1,1));low=position(dialog)
+        drag_header(dialog,end=QPoint(window.width()-1,window.height()-1));high=position(dialog)
+        check(f'{names[index]} header stays reachable at both bounds at scale {scale}',
+              low[0]>=0 and low[1]>=0 and abs(low[0])<1.5 and abs(low[1])<1.5
+              and high[0]+dialog.property('width')<=window.width()+1.5
+              and high[1]+dialog.property('height')<=window.height()+1.5)
+        window.resize(640,420);QTest.qWait(40)
+        check(f'{names[index]} parent shrink keeps header and close reachable at scale {scale}',
+              dialog.property('x')>=0 and dialog.property('y')>=0
+              and dialog.property('x')+dialog.property('width')<=640+1.5
+              and dialog.property('y')+dialog.property('height')<=420+1.5)
+        # The actual close button still receives a click, followed by opener focus.
+        close_names=['globalSettingsClose','networkClose','newPlaylistClose','conversionClose']
+        click(close_names[index]);QTest.qWait(30)
+        check(f'{names[index]} close remains clickable and restores focus at scale {scale}',
+              not provider.visible and window.activeFocusItem().objectName()=='opener')
+        window.resize(1300,1000);route(index);QTest.qWait(25)
+        check(f'{names[index]} reopen centers in owner at scale {scale}',
+              abs(dialog.property('x')-(window.width()-dialog.property('width'))/2)<1.5
+              and abs(dialog.property('y')-(window.height()-dialog.property('height'))/2)<1.5)
+close_all()
+
 check('never-cleared QML message ledger is empty before teardown',not messages)
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));engine.deleteLater()
 QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(40)
 check('actual engine destruction completes without new binding/provider errors',destroyed==[True] and not messages)
 sources=[FILES/path for path in [
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedMovableDialog.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
@@ -300,7 +357,7 @@ sources=[FILES/path for path in [
     'modules/gui/qt/maininterface/mainctx.cpp', 'modules/gui/qt/maininterface/mainctx.hpp',
     'modules/gui/qt/dialogs/dialogs_provider.cpp']]
 for path in sources:identities[str(path.relative_to(REPO))]=hashlib.sha256(path.read_bytes()).hexdigest()
-report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages,
+report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'busyGuards':busy_cases,'popupMovement':movement,'qtMessages':messages,
         'sourceSha256':identities,'scope':'Actual integrated production QML host, General shell/body/palette and three real dialogs; supplied strict controller contracts. Native C++/OS hotkey/expert/save/reset build execution remains Root gate.'}
 (args.output_dir/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'checks':len(checks),'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages}))

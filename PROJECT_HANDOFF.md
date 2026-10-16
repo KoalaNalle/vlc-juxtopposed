@@ -62,6 +62,22 @@ with the same accepted core/launcher. The ordinary baseline is preserved; work
 is under `build-windows/beta-teardown-20261017`. Popup movement and the remaining
 full beta gates are still open.
 
+The guest [popup checkpoint](doc/juxtopposed-references/native/guest-popup-20261017/README.md)
+implements shared header movement for Network, New Playlist, Conversion and
+Global Settings. These item popups stay within their owning window and center
+on reopen. The identical host component test fails original Network movement,
+then passes 96 assertions after repair, including all four dialogs at 1/1.5/2
+component scale, focus/modal guards, resize bounds and close/reopen. All four
+focused dialog suites pass. Actual desktop pointer/DPI/multi-monitor acceptance
+remains open. The one-job GUI/resources build passes with 779 frozen inputs
+unchanged; ordinary redesigned/traditional video/audio and local HLS quit
+normally without QML diagnostics. GUI is
+`fe6113bd9b4203c3e9daf1dd8405e63dfe3c1a06e7d8c40fb735d16db3bb71ea`.
+Two short local MKV samples use D3D11VA on the GTX 1080 and decode/quit normally;
+16/13 late-frame warnings keep sustained playback performance unaccepted. The
+baseline package is preserved; work is under `build-windows/beta-popup-20261017`.
+The full beta and waveform/transcode/PCR triage remain open.
+
 ## Project and current checkpoint
 
 | Item | Value |

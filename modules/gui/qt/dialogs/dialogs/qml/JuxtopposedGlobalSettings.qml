@@ -5,7 +5,7 @@ import QtQuick
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
-C.Dialog {
+JuxtopposedMovableDialog {
     id: root
     objectName: "juxtopposedGlobalSettings"
     required property var preferences
@@ -43,7 +43,6 @@ C.Dialog {
     signal fallbackFocusRequested()
     modal: true
     focus: true
-    anchors.centerIn: parent
     title: qsTr("Global Settings")
     implicitWidth: 1048 * uiScale
     implicitHeight: 865 * uiScale
@@ -161,6 +160,14 @@ C.Dialog {
                 }
                 pageScroll.contentY = 0
             }
+        }
+
+        JuxtopposedDialogDragArea {
+            popup: root
+            anchors.left: searchField.right
+            anchors.right: closeButton.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
         }
         Text {
             objectName: "globalSettingsTitle"

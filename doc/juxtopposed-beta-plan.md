@@ -42,11 +42,16 @@ transfer. This document belongs to the user-authorized publication checkpoint;
 verify that commit's remote CI separately. Live timeline labels and wider service
 coverage remain open; this is not a release.
 
-Popup follow-up requested on 16 October: true popup windows should be movable
-from their title/header area. Reproduce the apparently immovable Open Network
-Stream dialog without concurrent automation, then cover the shared host,
-modal/focus behavior, multiple monitors and scaled DPI. No implementation is
-included in this checkpoint.
+The [guest popup checkpoint](juxtopposed-references/native/guest-popup-20261017/README.md)
+reproduces the immovable Network header and implements shared movement for
+Network/New Playlist/Conversion/Global Settings within the owning window. The
+same component test fails original Network movement and passes 96 assertions
+after repair, covering 1/1.5/2 component scale, focus/modal guards, resize bounds,
+close/reopen; all four focused dialog suites also pass. Rebuilt ordinary GUI
+playback/local HLS passes without QML errors and with normal exits. Actual
+desktop pointer, Windows DPI/multiple monitors and independent visual acceptance
+remain open. Short local MKV samples use D3D11VA on the GTX 1080 but retain late
+frames; sustained smooth playback is not accepted by those startup/seek samples.
 
 The preceding [16 October metadata checkpoint](juxtopposed-references/native/library-metadata-20261016/README.md)
 enables Library metadata/artwork after native lifecycle, scope, fallback and
