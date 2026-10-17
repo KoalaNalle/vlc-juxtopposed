@@ -17,6 +17,23 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The [checked add-on catalog/storage checkpoint](doc/juxtopposed-references/native/guest-addons-catalog-storage-20261017/README.md)
+adds actual discovery/storage/catalog results and checked catalog-save retry,
+without extending public owner/entry layouts. Source d926066e89 stages complete
+resources, refuses existing-file replacement, rolls back owned publications and
+uses Windows same-directory replacement for catalog saves. Invalid XML/IDs and
+Unicode uppercase VLP URLs are handled; legacy UUIDs remain readable. Callback
+inspection is reentrant, duplicate discoveries retain identity and a selected
+replacement supplies its actual installed bytes after removal. Native49/948,
+standard30/587 and ordinary5 pass normally on Core918255/
+storage1f72cd/repositorye480f5
+with unchanged GUId2708b. All11 scoped frozen inputs match. Earlier callback,
+catalog, overwrite/partial-file and stale-package failures remain rejected.
+**Extensions7 is still unmounted:** next consume these APIs in AddonsModel with
+stable selection, checked startup preference and original QML/native journeys.
+Physical rollback-deletion failure and POSIX publication are not runtime-tested;
+full beta quality/package gates remain open.
+
 The [native add-on checkpoint](doc/juxtopposed-references/native/guest-addons-install-remove-20261017/README.md)
 repairs prerequisites for the original Extensions page. Source c37137a1c3
 keeps Install/Remove directed, rejects repeated/busy/unmanaged requests, owns
