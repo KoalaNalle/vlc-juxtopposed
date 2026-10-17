@@ -245,6 +245,7 @@ libvlccore_la_SOURCES = \
 	media_source/media_source.h \
 	media_source/media_tree.c \
 	modules/modules.h \
+	modules/cache_output.h \
 	modules/modules.c \
 	modules/bank.c \
 	modules/cache.c \

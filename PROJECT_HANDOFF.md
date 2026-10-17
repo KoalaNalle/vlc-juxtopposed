@@ -8,6 +8,17 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [plugin Rescan backend](doc/juxtopposed-references/native/guest-plugin-rescan-20261017/README.md)
+now passes native16 with real Unicode generation, Core parser/cold-cache reload,
+playing/paused independence, checked atomic publication, locked-file retry,
+cancellation/deadline/reaping and concurrency guards. A real narrow-argv Unicode
+bug is fixed, and an older Core rejects the new tool before cache writes.
+Coreea9253/generator6c50e5 with unchanged GUI753feb passes ordinary5. All19 scoped
+inputs match; Autotools target resolution and Meson syntax pass. The old
+hardlink-cleanup false positive and subsequent Unicode failure remain rejected.
+Production GUI linking and the Performance page/action are still pending;
+this is a backend foundation, not category or full-beta acceptance.
+
 The [automatic encoder preference](doc/juxtopposed-references/native/guest-encoder-preference-20261017/README.md)
 now has real automatic-selection fallback and explicit-profile precedence.
 Chain7 and global7 export every exact 88,200-sample PCM; the older producer

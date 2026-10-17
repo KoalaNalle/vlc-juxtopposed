@@ -196,6 +196,7 @@ libqt_plugin_la_SOURCES = \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
 	util/playback_seek_policy.hpp \
 	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
+	util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp \
 	util/recent_network_history.cpp util/recent_network_history.hpp \
 	util/fullscreen_screen_policy.hpp \
 	util/interface_language_map.hpp \
@@ -503,6 +504,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/privacy_preferences_model.moc.cpp \
 	maininterface/controls_preferences_model.moc.cpp \
 	maininterface/network_preferences_model.moc.cpp \
+	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
@@ -2895,3 +2897,23 @@ EXTRA_DIST += tests/test_juxtopposed_network_settings.py tests/juxtopposed_netwo
 # Opt-in owned-window test; none of these files enter the ordinary module.
 EXTRA_DIST += tests/native_ui/network_journey.cpp tests/native_ui/network_journey.mk \
     tests/native_ui/run_network_journey.py tests/native_ui/README.md
+
+# Owned Windows integration: invoke through the portable-runtime driver.
+EXTRA_DIST += tests/native_library/cache-rescan.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_plugin_cache_rescan
+test_qt_plugin_cache_rescan_SOURCES = tests/test_plugin_cache_rescan.cpp \
+    tests/library_preferences_probe.c util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp \
+    util/winpthreads_shutdown.cpp
+nodist_test_qt_plugin_cache_rescan_SOURCES = tests/test_plugin_cache_rescan.moc util/plugin_cache_rescan.moc.cpp
+BUILT_SOURCES += tests/test_plugin_cache_rescan.moc
+CLEANFILES += tests/test_plugin_cache_rescan.moc
+test_qt_plugin_cache_rescan_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_plugin_cache_rescan_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_plugin_cache_rescan_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_plugin_cache_rescan_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+endif
+endif
+endif

@@ -42,6 +42,7 @@
 #include "../libvlc.h"
 
 #include <vlc_plugin.h>
+#include <vlc_modules.h>
 #include <errno.h>
 
 #include "config/configuration.h"
@@ -471,7 +472,12 @@ vlc_plugin_t *vlc_cache_load(libvlc_int_t *p_this, const char *dir,
 error:
     msg_Warn( p_this, "plugins cache not loaded (corrupted)" );
 
-    /* TODO: cleanup */
+    while (cache != NULL)
+    {
+        vlc_plugin_t *next = cache->next;
+        vlc_plugin_destroy(cache);
+        cache = next;
+    }
     block_Release(file);
     return NULL;
 }
@@ -726,3 +732,26 @@ vlc_plugin_t *vlc_cache_lookup(vlc_plugin_t **cache, const char *path)
     return NULL;
 }
 #endif /* HAVE_DYNAMIC_PLUGINS */
+
+#undef vlc_module_cache_validate
+bool vlc_module_cache_validate(vlc_object_t *object, const char *directory)
+{
+#ifdef HAVE_DYNAMIC_PLUGINS
+    block_t *backing = NULL;
+    vlc_plugin_t *plugins = vlc_cache_load(vlc_object_instance(object), directory,
+                                         &backing);
+    const bool valid = plugins != NULL;
+    while (plugins != NULL)
+    {
+        vlc_plugin_t *next = plugins->next;
+        vlc_plugin_destroy(plugins);
+        plugins = next;
+    }
+    block_ChainRelease(backing);
+    return valid;
+#else
+    (void)object;
+    (void)directory;
+    return false;
+#endif
+}

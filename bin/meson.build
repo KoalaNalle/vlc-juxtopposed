@@ -67,7 +67,8 @@ if build_vlc and (host_system != 'darwin' or have_osx) and not have_win_store an
 
     vlc_cache_gen_dep = executable('vlc-cache-gen',
         ['cachegen.c'] + vlc_win_extra,
-        link_with: [vlc_libcompat, libvlc],
+        link_with: [vlc_libcompat, libvlc, libvlccore],
+        dependencies: host_system == 'windows' ? [cc.find_library('shell32')] : [],
         link_args: gc_sections_linkargs,
         include_directories: [vlc_include_dirs],
         install: true,

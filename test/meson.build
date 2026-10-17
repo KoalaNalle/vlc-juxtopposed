@@ -28,6 +28,7 @@ foreach vlc_test: vlc_tests
         'env',
         'enabled',
         'wrapper',
+        'register_test',
     ]
 
     foreach key : vlc_test.keys()
@@ -91,6 +92,11 @@ foreach vlc_test: vlc_tests
         c_args: [vlc_test.get('c_args', []), common_args],
         cpp_args: [vlc_test.get('cpp_args', []), common_args],
         objc_args: [vlc_test.get('objc_args', []), common_args])
+
+    # Owned integration targets require an explicit portable-runtime runner.
+    if not vlc_test.get('register_test', true)
+        continue
+    endif
 
     # Handle optional test wrapper (e.g., xvfb-run for X11 tests)
     # The wrapper must be a program object

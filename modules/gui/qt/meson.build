@@ -89,6 +89,7 @@ moc_headers = files(
     'maininterface/privacy_preferences_model.hpp',
     'maininterface/controls_preferences_model.hpp',
     'maininterface/network_preferences_model.hpp',
+    'util/plugin_cache_rescan.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
@@ -344,9 +345,11 @@ qt_plugin_sources = files(
     'util/audio_windows_devices.hpp',
     'util/playback_seek_policy.hpp',
     'util/checked_preferences_store.cpp',
+    'util/plugin_cache_rescan.cpp',
     'util/recent_network_history.cpp',
     'util/recent_network_history.hpp',
     'util/checked_preferences_store.hpp',
+    'util/plugin_cache_rescan.hpp',
     'util/fullscreen_screen_policy.hpp',
     'util/interface_language_map.hpp',
     'maininterface/mainctx.hpp',
@@ -1751,6 +1754,29 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
+
+        if host_system == 'windows'
+            rescan_sources = files('tests/test_plugin_cache_rescan.cpp',
+                'tests/library_preferences_probe.c', 'util/plugin_cache_rescan.cpp')
+            rescan_deps = []
+            rescan_link_args = qt_link_args
+            if have_mingw
+                rescan_sources += files('util/winpthreads_shutdown.cpp')
+                rescan_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                rescan_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_plugin_cache_rescan',
+                'sources': rescan_sources,
+                'moc_sources': files('tests/test_plugin_cache_rescan.cpp'),
+                'moc_headers': files('util/plugin_cache_rescan.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': rescan_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, rescan_deps],
+                'register_test': false,
+            }
+        endif
 
         vlc_tests += {
             'name': 'test_qt_network_stream',

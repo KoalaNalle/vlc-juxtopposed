@@ -4,6 +4,17 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [plugin Rescan backend](juxtopposed-references/native/guest-plugin-rescan-20261017/README.md)
+now passes native16 with real Unicode generation, Core parser/cold-cache reload,
+playing/paused independence, checked atomic publication, locked-file retry,
+cancellation/deadline/reaping and concurrency guards. A real narrow-argv Unicode
+bug is fixed, and an older Core rejects the new tool before cache writes.
+Coreea9253/generator6c50e5 with unchanged GUI753feb passes ordinary5. All19 scoped
+inputs match; Autotools target resolution and Meson syntax pass. The old
+hardlink-cleanup false positive and subsequent Unicode failure remain rejected.
+Production GUI linking and the Performance page/action are still pending;
+this is a backend foundation, not category or full-beta acceptance.
+
 The [automatic encoder preference](juxtopposed-references/native/guest-encoder-preference-20261017/README.md)
 now has real automatic-selection fallback and explicit-profile precedence.
 Chain7 and global7 export every exact 88,200-sample PCM; the older producer

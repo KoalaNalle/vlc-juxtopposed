@@ -71,6 +71,12 @@ ssize_t vlc_module_match(const char *capability, const char *names,
 VLC_API
 void *vlc_module_map(struct vlc_logger *log, module_t *mod);
 
+/** Validate a nonempty plugin cache using the native cache parser.
+ * This reads metadata only: it neither maps plugins nor modifies the module
+ * bank. The directory must contain plugins.dat for this Core's cache format. */
+VLC_API bool vlc_module_cache_validate(vlc_object_t *, const char *directory);
+#define vlc_module_cache_validate(o,d) vlc_module_cache_validate(VLC_OBJECT(o),d)
+
 /**
  * Finds and instantiates the best module of a certain type.
  * All candidates modules having the specified capability and name will be
