@@ -335,12 +335,20 @@ end
 
 password = vlc.var.inherit(nil,"http-password")
 
+local function service_state(state)
+    -- Older Lua binaries can still load this script; only the matched native
+    -- consumer advertises the Controls capability to the settings page.
+    pcall(vlc.var.set, vlc.object.libvlc(), "http-service-state", state)
+end
+
 h = vlc.httpd()
 if password == "" then
     vlc.msg.err("Password unset, insecure web interface disabled")
     vlc.msg.info("Set --http-password on the command line if you want to enable the web interface.")
     p = h:handler("/",nil,nil,callback_nopassword,nil)
+    service_state("password-required")
 else
     load_dir( http_dir )
     a = h:handler("/art",nil,password,callback_art,nil)
+    service_state("active")
 end

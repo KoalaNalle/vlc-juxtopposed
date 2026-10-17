@@ -1,0 +1,41 @@
+{
+  "retainedFrom": "native-input-r12/verification.json",
+  "driverSha256": "1d4af3c39647da351b5dbb4a28cda3829031ebba76dca455fe356d957cf631c3",
+  "oldChainCoreSha256": "186d65be7284e1fdc24003578d7780f2d871c74e3d8eb09018906b18d7c82591",
+  "beforeClickCoreSha256": "351a7b19e0614066de45909da0dc81c339fafa78f02f541cd322bcc6254f1077",
+  "cases": {
+    "old-core-chain": {
+      "passed": true,
+      "timedOut": false,
+      "forcedCleanupUsed": false,
+      "expectedChecks": 2,
+      "ownedPid": 1792,
+      "exitCode": 1,
+      "terminationConfirmed": true,
+      "elapsedSeconds": 18.344,
+      "checks": 2,
+      "failedChecks": [
+        "not ok 2 quoted interface chain preserves colons, order and all option blocks"
+      ],
+      "normalExit": true,
+      "expectedFailure": true
+    },
+    "before-click-core": {
+      "passed": true,
+      "timedOut": false,
+      "forcedCleanupUsed": false,
+      "expectedChecks": 33,
+      "ownedPid": 15616,
+      "exitCode": 1,
+      "terminationConfirmed": true,
+      "elapsedSeconds": 1.828,
+      "checks": 14,
+      "failedChecks": [
+        "not ok 14 double click enters fullscreen without firing pending pause"
+      ],
+      "normalExit": true,
+      "expectedFailure": true,
+      "clickConsumerFailureAfterSuccessfulSetup": true
+    }
+  }
+}

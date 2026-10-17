@@ -684,6 +684,20 @@ VLC_API vlc_tick_t
 vlc_player_GetTime(vlc_player_t *player);
 
 /**
+ * Get the current media time, preferring a pending seek target for controls.
+ *
+ * A paused output may retain its old clock point until playback resumes.
+ * This getter lets a controller display the requested position meanwhile.
+ * A pending target is not confirmation that the demuxer completed the seek.
+ * Position-only seeks without a known timestamp fall back to the output time.
+ *
+ * @param player locked player instance
+ * @return a valid time or VLC_TICK_INVALID, as for vlc_player_GetTime()
+ */
+VLC_API vlc_tick_t
+vlc_player_GetTimeWithSeek(vlc_player_t *player);
+
+/**
  * Get the position of the current media
  *
  * @see vlc_player_cbs.on_position_changed
@@ -694,6 +708,16 @@ vlc_player_GetTime(vlc_player_t *player);
  */
 VLC_API double
 vlc_player_GetPosition(vlc_player_t *player);
+
+/**
+ * Get the current media position, preferring a known pending seek target.
+ *
+ * @see vlc_player_GetTimeWithSeek()
+ * @param player locked player instance
+ * @return a valid position in [0;1] or -1, as for vlc_player_GetPosition()
+ */
+VLC_API double
+vlc_player_GetPositionWithSeek(vlc_player_t *player);
 
 /**
  * Seek the current media by position

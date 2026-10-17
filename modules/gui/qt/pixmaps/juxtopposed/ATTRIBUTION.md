@@ -72,3 +72,10 @@ implementation adaptations.
 The library-settings-*.svg assets are unchanged Juxtopposed exports from
 Library frame 6542:15251, under the same CC BY 4.0 attribution above. Existing
 assets are reused only when their complete bytes match the supplied originals.
+
+The controls-settings-*.svg assets are unchanged Juxtopposed exports from
+Controls frame 6536:14482, under the same CC BY 4.0 attribution above. Their
+original 24px intrinsic sizes and complete bytes are preserved. Checked native
+settings, authenticated remote setup and narrow layouts are implementation
+adaptations; hashes and the original reference are retained under
+doc/juxtopposed-references/figma/20261017/controls.

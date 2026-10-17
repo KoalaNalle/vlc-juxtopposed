@@ -53,164 +53,18 @@ FocusScope {
     }
     function focusActivePopup() { closeChoices(); return false }
     onVisibleChanged: if (!visible) closeChoices()
+    readonly property alias formItem: form
+    readonly property string settingsFontFamily: inter.name
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
-    component SettingLabel: Text {
-        color: root.tone("#8F8F8F")
-        font.family: inter.name
-        font.pixelSize: 14 * root.uiScale
-        textFormat: Text.PlainText
-        wrapMode: Text.WordWrap
-    }
-    component SettingButton: C.Button {
-        id: button
-        enabled: !root.busy
-        implicitHeight: 32 * root.uiScale
-        implicitWidth: 100 * root.uiScale
-        activeFocusOnTab: true
-        font.family: inter.name
-        font.pixelSize: 14 * root.uiScale
-        padding: 0
-        background: Rectangle {
-            color: root.tone(button.down ? "#222222" : "#191919")
-            radius: 6 * root.uiScale
-            border.width: button.visualFocus ? root.uiScale : 0
-            border.color: root.accent
-        }
-        contentItem: SettingLabel {
-            text: button.text
-            font: button.font
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
-        Keys.onTabPressed: event => { if (root.focusNavigator) { root.navigate(button, false); event.accepted = true } }
-        Keys.onBacktabPressed: event => { if (root.focusNavigator) { root.navigate(button, true); event.accepted = true } }
-        onActiveFocusChanged: root.reveal(button)
-    }
-    component SettingRow: Item {
-        id: row
-        required property string title
-        property string help: ""
-        property string infoName: ""
-        property alias helpButton:info
-        property real controlWidth: 320 * root.uiScale
-        property real controlHeight: 36 * root.uiScale
-        default property alias controls: controlHolder.data
-        implicitHeight: root.stacked ? rowLabel.implicitHeight + controlHeight + 20 * root.uiScale : Math.max(rowLabel.implicitHeight, controlHeight) + 10 * root.uiScale
-        width: parent.width
-        Row {
-            id: labelGroup
-            x: 0
-            y: root.stacked ? 5 * root.uiScale : (row.height - height) / 2
-            spacing: 10 * root.uiScale
-            width: root.stacked ? row.width : Math.max(0, row.width - row.controlWidth - 18 * root.uiScale)
-            height: Math.max(rowLabel.implicitHeight, info.visible ? info.height : 0)
-            SettingLabel {
-                id: rowLabel
-                text: row.title
-                width: Math.min(implicitWidth, Math.max(0, labelGroup.width - (info.visible ? info.width + labelGroup.spacing : 0)))
-                anchors.verticalCenter: parent.verticalCenter
-            }
-            C.Button {
-                id: info
-                objectName: row.infoName
-                property bool tipOpen: false
-                width: 18 * root.uiScale; height: 18 * root.uiScale
-                anchors.verticalCenter: parent.verticalCenter
-                visible: row.help.length > 0
-                activeFocusOnTab: true
-                Accessible.description:row.help
-                padding: 0
-                Accessible.name: qsTr("About %1").arg(row.title)
-                background: Item {}
-                contentItem: Item {
-                    Image {
-                        objectName: row.infoName + "Original"
-                        anchors.centerIn: parent
-                        width: 18; height: 18; scale: root.uiScale
-                        source: root.assetBase + "privacy-settings-1f9fe.svg"
-                        Accessible.ignored: true
-                    }
-                }
-                onClicked: tipOpen = !tipOpen
-                onActiveFocusChanged:root.reveal(info)
-                Keys.onTabPressed:event=>{root.navigate(info,false);event.accepted=true}
-                Keys.onBacktabPressed:event=>{root.navigate(info,true);event.accepted=true}
-                C.ToolTip.visible: hovered || visualFocus || tipOpen
-                C.ToolTip.text: row.help
-                C.ToolTip.timeout: 12000
-                onVisibleChanged: if (!visible) tipOpen = false
-            }
-        }
-        Item {
-            id: controlHolder
-            x: root.stacked ? 0 : row.width - width
-            y: root.stacked ? labelGroup.y + labelGroup.height + 10 * root.uiScale : (row.height - height) / 2
-            width: root.stacked ? row.width : Math.min(row.controlWidth, row.width)
-            height: row.controlHeight
-        }
-    }
-    component Toggle: SettingButton {
-        id: toggle
-        FeedbackTip{control:toggle;valueKey:toggle.valueKey}
-        required property string valueKey
-        required property string accessibleTitle
-        readonly property bool custom:typeof root.values[valueKey]!=="boolean"
-        readonly property bool selected: root.values[valueKey] === true
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        width: 68 * root.uiScale; height: 32 * root.uiScale
-        enabled: root.available && !root.busy
-        Accessible.name: accessibleTitle
-        Accessible.role: custom ? Accessible.Button : Accessible.CheckBox
-        Accessible.checkable: !custom
-        Accessible.checked: selected
-        Accessible.description: (custom?qsTr("Custom saved value. Choose On or Off to replace it.")+" ":"")+root.helpFor(valueKey)+(root.failedKey===valueKey&&root.service?" "+root.service.lastError:"")
-        property alias customPopup:customMenu
-        onClicked:if(custom)customMenu.open();else root.write(valueKey,!selected)
-        Keys.onLeftPressed:root.write(valueKey,false)
-        Keys.onRightPressed:root.write(valueKey,true)
-        C.Menu {
-            id:customMenu;objectName:toggle.objectName+"CustomMenu";parent:toggle;focus:true
-            y:toggle.height+2*root.uiScale;width:Math.max(120*root.uiScale,toggle.width)
-            font.family:inter.name;font.pixelSize:14*root.uiScale
-            C.MenuItem{objectName:toggle.objectName+"CustomOn";text:qsTr("On");onTriggered:root.write(toggle.valueKey,true)}
-            C.MenuItem{objectName:toggle.objectName+"CustomOff";text:qsTr("Off");onTriggered:root.write(toggle.valueKey,false)}
-        }
-        background: Rectangle {
-            color: root.tone("#090909"); radius: 6 * root.uiScale
-            border.width: toggle.visualFocus ? root.uiScale : 0; border.color: root.accent
-        }
-        contentItem: Item {
-            Rectangle { visible:!toggle.custom; x: (toggle.selected ? 3 : 32) * root.uiScale; y: 3 * root.uiScale; width: 33 * root.uiScale; height: 26 * root.uiScale; radius: 3 * root.uiScale; color: toggle.selected ? root.accentSelected : root.tone("#191919") }
-            Rectangle { visible:!toggle.custom; x: (toggle.selected ? 39 : 3) * root.uiScale; y: 3 * root.uiScale; width: 26 * root.uiScale; height: 26 * root.uiScale; radius: 3 * root.uiScale; color: toggle.selected ? root.accentDim : root.tone("#404040") }
-            SettingLabel { width:toggle.custom?parent.width:26*root.uiScale;wrapMode:Text.NoWrap;elide:Text.ElideRight;horizontalAlignment:toggle.custom?Text.AlignHCenter:Text.AlignLeft; x: toggle.custom?0:(toggle.selected ? 10 : 36) * root.uiScale; anchors.verticalCenter: parent.verticalCenter; text:toggle.custom?qsTr("Custom"):toggle.selected ? qsTr("ON") : qsTr("OFF"); color: toggle.selected ? root.accent : root.tone("#6B6B6B"); font.pixelSize: 12 * root.uiScale }
-        }
-    }
-    component SectionHeading: SettingLabel {
-        width: parent.width
-        height: 39 * root.uiScale
-        color: root.tone("#C6C6C6")
-        font.pixelSize: 16 * root.uiScale
-        font.weight: Font.Medium
-        verticalAlignment: Text.AlignVCenter
-    }
+    component SettingLabel: JuxtopposedSettingsFields.SettingLabel { settings: root }
+    component SettingButton: JuxtopposedSettingsFields.SettingButton { settings: root }
+    component SettingRow: JuxtopposedSettingsFields.SettingRow { settings: root }
+    component Toggle: JuxtopposedSettingsFields.Toggle { settings: root }
+    component SectionHeading: JuxtopposedSettingsFields.SectionHeading { settings: root }
 
 
     Connections{target:root.service;function onLastErrorChanged(){if(!root.service.lastError.length)root.failedKey=""}}
-    component FeedbackTip:C.ToolTip {
-        id:tip
-        required property Item control
-        required property string valueKey
-        objectName:control.objectName+"ValidationError";parent:control
-        y:-height-4*root.uiScale;width:Math.min(Math.max(control.width,200*root.uiScale),root.width)
-        visible:root.failedKey===valueKey&&root.service&&root.service.lastError.length>0&&control.activeFocus&&control.visible
-        text:root.service?root.service.lastError:"";focus:false;closePolicy:C.Popup.NoAutoClose;timeout:0;padding:8*root.uiScale
-        function reveal(){if(!visible)return;root.reveal(control);Qt.callLater(()=>{if(!visible)return;const p=control.mapToItem(root,0,0);x=Math.max(-p.x,Math.min(0,root.width-p.x-width));if(background)root.focusRevealed(background)})}
-        onVisibleChanged:if(visible)Qt.callLater(reveal)
-        Connections{target:form;function onImplicitHeightChanged(){if(tip.visible)Qt.callLater(tip.reveal)}}
-        contentItem:SettingLabel{text:tip.text;color:"#D98779";Accessible.role:Accessible.StaticText;Accessible.name:text}
-        background:Rectangle{color:root.tone("#191919");radius:4*root.uiScale;border.width:root.uiScale;border.color:"#D98779"}
-    }
+    component FeedbackTip: JuxtopposedSettingsFields.FeedbackTip { settings: root }
     component PreferenceText: C.TextField {
         id: field
         required property string valueKey

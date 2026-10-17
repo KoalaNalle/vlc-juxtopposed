@@ -693,3 +693,8 @@ test_modules_medialibrary_history_SOURCES = modules/misc/medialibrary_history.c
 test_modules_medialibrary_history_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src
 test_modules_medialibrary_history_LDADD = $(LIBVLCCORE) $(LIBVLC)
 EXTRA_DIST += libvlc/native_history_clear.py libvlc/native_history_playback.py
+
+# Opt-in drivers require the owned runtime and private fixture module supplied
+# by native_controls.py / native_controls_http.py; they are not installed.
+EXTRA_DIST += controls-native.mk src/interface/controls.c src/interface/controls_http.c \
+    libvlc/native_controls.py libvlc/native_controls_http.py libvlc/test_http_wheel_ui.py

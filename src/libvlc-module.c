@@ -46,6 +46,7 @@
 #include <vlc_aout.h>
 #include <vlc_vout.h>
 #include <vlc_player.h>
+#include <vlc_mouse.h>
 
 #include "clock/clock.h"
 
@@ -1327,6 +1328,13 @@ static const char *const mouse_wheel_texts[] = {
     N_("Position control"), N_("Position control reversed"),
 };
 
+static const int mouse_click_values[] = {
+    VLC_MOUSE_ACTION_NONE, VLC_MOUSE_ACTION_PLAY_PAUSE, VLC_MOUSE_ACTION_FULLSCREEN,
+};
+static const char *const mouse_click_texts[] = {
+    N_("Do nothing"), N_("Play / Pause"), N_("Toggle fullscreen"),
+};
+
 #define MOUSE_Y_WHEEL_MODE_TEXT N_("Mouse wheel vertical axis control")
 #define MOUSE_Y_WHEEL_MODE_LONGTEXT N_( \
    "The mouse wheel vertical (up/down) axis can control volume, " \
@@ -1970,6 +1978,16 @@ vlc_module_begin ()
     add_string( "http-host", NULL, HTTP_HOST_TEXT, HOST_LONGTEXT )
     add_integer( "http-port", 8080, HTTP_PORT_TEXT, HTTP_PORT_LONGTEXT )
         change_integer_range( 1, 65535 )
+    add_bool("http-wheel-linked", true, N_("Use the same wheel settings"),
+             N_("Use the video-window mouse wheel settings in the web remote."))
+    add_integer("http-wheel-y-mode", 0, N_("Web remote vertical scrolling"),
+                N_("Action for unmodified vertical scrolling in the web remote."))
+        change_integer_list(mouse_wheel_values, mouse_wheel_texts)
+    add_integer("http-wheel-x-mode", 2, N_("Web remote horizontal scrolling"),
+                N_("Action for unmodified horizontal scrolling in the web remote."))
+        change_integer_list(mouse_wheel_values, mouse_wheel_texts)
+    add_bool("http-wheel-reverse", false, N_("Reverse web remote scrolling"),
+             N_("Reverse both wheel axes in the web remote independently of the video window."))
     add_integer( "https-port", 8443, HTTPS_PORT_TEXT, HTTPS_PORT_LONGTEXT )
         change_integer_range( 1, 65535 )
     add_string( "rtsp-host", NULL, RTSP_HOST_TEXT, RTSP_HOST_LONGTEXT )
@@ -2309,6 +2327,15 @@ vlc_module_begin ()
     add_integer( "hotkeys-x-wheel-mode", 2, MOUSE_X_WHEEL_MODE_TEXT,
                  MOUSE_X_WHEEL_MODE_LONGTEXT )
         change_integer_list( mouse_wheel_values, mouse_wheel_texts )
+    add_bool("hotkeys-wheel-reverse", false, N_("Reverse mouse scrolling"),
+             N_("Reverse both mouse-wheel axes. Takes effect after restart."))
+    add_integer("video-singleclick-action", VLC_MOUSE_ACTION_PLAY_PAUSE,
+                N_("Single click on the video"),
+                N_("Action for a video click without dragging. A double click cancels the pending single-click action."))
+        change_integer_list(mouse_click_values, mouse_click_texts)
+    add_integer("video-doubleclick-action", VLC_MOUSE_ACTION_FULLSCREEN,
+                N_("Double click on the video"), N_("Action for a video double click."))
+        change_integer_list(mouse_click_values, mouse_click_texts)
     add_obsolete_integer( "hotkeys-mousewheel-mode" ) /* since 3.0.0 */
 
 #if defined(__APPLE__)

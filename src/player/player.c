@@ -1495,6 +1495,26 @@ vlc_player_GetPosition(vlc_player_t *player)
     return input ? vlc_player_input_GetPos(input, false, vlc_tick_now()) : -1.f;
 }
 
+vlc_tick_t
+vlc_player_GetTimeWithSeek(vlc_player_t *player)
+{
+    if (!vlc_player_get_input_locked(player)) return VLC_TICK_INVALID;
+    bool seeking = true;
+    vlc_tick_t time;
+    return vlc_player_GetTimerPoint(player, &seeking, vlc_tick_now(), &time, NULL) == VLC_SUCCESS
+        ? time : vlc_player_GetTime(player);
+}
+
+double
+vlc_player_GetPositionWithSeek(vlc_player_t *player)
+{
+    if (!vlc_player_get_input_locked(player)) return -1.0;
+    bool seeking = true;
+    double position;
+    return vlc_player_GetTimerPoint(player, &seeking, vlc_tick_now(), NULL, &position) == VLC_SUCCESS
+        ? position : vlc_player_GetPosition(player);
+}
+
 void
 vlc_player_DisplayPosition(vlc_player_t *player)
 {

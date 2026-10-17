@@ -228,7 +228,12 @@ static int vlclua_player_get_time(lua_State *L)
     vlc_player_t *player = vlclua_get_player_internal(L);
 
     vlc_player_Lock(player);
-    vlc_tick_t time = vlc_player_GetTime(player);
+    vlc_tick_t time;
+    /* A paused output has no new clock point until it resumes. Report the
+     * pending seek point to controllers instead of leaving their UI at the
+     * old position. Position-only seeks on an unknown-length input have no
+     * timestamp; retain the ordinary clock fallback in that case. */
+    time = vlc_player_GetTimeWithSeek(player);
     vlc_player_Unlock(player);
 
     lua_pushinteger(L, US_FROM_VLC_TICK(time));
@@ -240,7 +245,7 @@ static int vlclua_player_get_position(lua_State *L)
     vlc_player_t *player = vlclua_get_player_internal(L);
 
     vlc_player_Lock(player);
-    float pos = vlc_player_GetPosition(player);
+    double pos = vlc_player_GetPositionWithSeek(player);
     vlc_player_Unlock(player);
 
     lua_pushnumber(L, pos);

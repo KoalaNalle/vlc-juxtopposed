@@ -149,6 +149,7 @@ libqt_plugin_la_SOURCES = \
 	dialogs/preferences/expert_view.hpp \
 	dialogs/preferences/preferences.cpp \
 	dialogs/preferences/preferences.hpp \
+	dialogs/preferences/controls_shortcuts.cpp dialogs/preferences/controls_shortcuts.hpp \
 	dialogs/preferences/preferences_widgets.cpp \
 	dialogs/preferences/preferences_widgets.hpp \
 	dialogs/preferences/simple_preferences.cpp \
@@ -188,6 +189,8 @@ libqt_plugin_la_SOURCES = \
 	maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
 	maininterface/library_preferences_model.cpp maininterface/library_preferences_model.hpp \
 	maininterface/privacy_preferences_model.cpp maininterface/privacy_preferences_model.hpp \
+	maininterface/controls_preferences_model.cpp maininterface/controls_preferences_model.hpp \
+	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
 	util/playback_seek_policy.hpp \
@@ -497,6 +500,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/subtitles_preferences_model.moc.cpp \
 	maininterface/library_preferences_model.moc.cpp \
 	maininterface/privacy_preferences_model.moc.cpp \
+	maininterface/controls_preferences_model.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
@@ -854,6 +858,24 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/controls-settings-05bc9.svg \
+	pixmaps/juxtopposed/controls-settings-08f95.svg \
+	pixmaps/juxtopposed/controls-settings-1b0f7.svg \
+	pixmaps/juxtopposed/controls-settings-1bf8a.svg \
+	pixmaps/juxtopposed/controls-settings-3ffd5.svg \
+	pixmaps/juxtopposed/controls-settings-432a4.svg \
+	pixmaps/juxtopposed/controls-settings-46129.svg \
+	pixmaps/juxtopposed/controls-settings-66cd9.svg \
+	pixmaps/juxtopposed/controls-settings-6db55.svg \
+	pixmaps/juxtopposed/controls-settings-764c9.svg \
+	pixmaps/juxtopposed/controls-settings-7d179.svg \
+	pixmaps/juxtopposed/controls-settings-80d5a.svg \
+	pixmaps/juxtopposed/controls-settings-97863.svg \
+	pixmaps/juxtopposed/controls-settings-9c2da.svg \
+	pixmaps/juxtopposed/controls-settings-ad68b.svg \
+	pixmaps/juxtopposed/controls-settings-cf6e1.svg \
+	pixmaps/juxtopposed/controls-settings-ec3f6.svg \
+	pixmaps/juxtopposed/controls-settings-f1a4a.svg \
 	pixmaps/juxtopposed/privacy-settings-05bc9.svg \
 	pixmaps/juxtopposed/privacy-settings-08f95.svg \
 	pixmaps/juxtopposed/privacy-settings-1b0f7.svg \
@@ -1214,6 +1236,8 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml \
+	dialogs/dialogs/qml/JuxtopposedControlsSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
@@ -1378,6 +1402,7 @@ libqml_module_player_a_QML = \
 	player/qml/LyricsFlickable.qml \
 	player/qml/MiniPlayer.qml \
 	player/qml/PIPPlayer.qml \
+	player/qml/VideoInputTapHandler.qml \
 	player/qml/Player.qml \
 	player/qml/PlayerControlLayout.qml \
 	player/qml/PlayerPlaylistVisibilityFSM.qml \
@@ -2833,3 +2858,9 @@ EXTRA_DIST += tests/test_juxtopposed_privacy_settings.py tests/juxtopposed_priva
     tests/test_privacy_preferences.cpp tests/privacy_preferences_probe.c tests/native_library/privacy.mk
 
 EXTRA_DIST += tests/native_library/run_privacy.py
+
+EXTRA_DIST += tests/test_controls_preferences.cpp tests/controls_input_fixture.c \
+    tests/test_juxtopposed_controls_settings.py tests/juxtopposed_controls_preferences_fixture.py \
+    tests/test_video_input_tap_handler.py tests/native_library/controls.mk \
+    tests/native_library/controls-modules.mk tests/native_library/run_controls.py \
+    tests/test_controls_dialogs.cpp tests/native_library/controls-dialogs.mk

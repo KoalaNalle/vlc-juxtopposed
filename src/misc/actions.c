@@ -461,7 +461,7 @@ static int add_mapping (void **map, uint32_t keycode, vlc_action_id_t action)
 }
 
 static void add_wheel_mapping (void **map, uint32_t kmore, uint32_t kless,
-                                 int mode)
+                                 int mode, bool reverse)
 {
     vlc_action_id_t amore = ACTIONID_NONE, aless = ACTIONID_NONE;
 
@@ -479,6 +479,13 @@ static void add_wheel_mapping (void **map, uint32_t kmore, uint32_t kless,
             amore = ACTIONID_JUMP_BACKWARD_EXTRASHORT;
             aless = ACTIONID_JUMP_FORWARD_EXTRASHORT;
             break;
+    }
+
+    if (reverse)
+    {
+        const vlc_action_id_t swap = amore;
+        amore = aless;
+        aless = swap;
     }
 
     if (amore != ACTIONID_NONE)
@@ -565,10 +572,16 @@ int libvlc_InternalActionsInit (libvlc_int_t *libvlc)
     as->ppsz_keys[ARRAY_SIZE(s_names2actions)] = NULL;
 
     /* Initialize mouse wheel events */
+    /* Keep the active wheel policy available to linked HTTP remotes. Saved
+     * key mappings only take effect at the next startup. */
+    const bool reverse = var_CreateGetBool(obj, "hotkeys-wheel-reverse");
+    const int xmode = var_CreateGetInteger(obj, "hotkeys-x-wheel-mode");
+    const int ymode = var_CreateGetInteger(obj, "hotkeys-y-wheel-mode");
+    var_Create(obj, "http-wheel-linked", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     add_wheel_mapping (&as->map, KEY_MOUSEWHEELRIGHT, KEY_MOUSEWHEELLEFT,
-                         var_InheritInteger (obj, "hotkeys-x-wheel-mode"));
+                         xmode, reverse);
     add_wheel_mapping (&as->map, KEY_MOUSEWHEELUP, KEY_MOUSEWHEELDOWN,
-                         var_InheritInteger (obj, "hotkeys-y-wheel-mode"));
+                         ymode, reverse);
 
     libvlc_priv(libvlc)->actions = as;
     var_AddCallback (obj, "key-pressed", vlc_key_to_action, &as->map);
@@ -591,6 +604,10 @@ void libvlc_InternalActionsClean (libvlc_int_t *libvlc)
     var_DelCallback (libvlc, "global-key-pressed", vlc_key_to_action,
                      &as->global_map);
     var_DelCallback (libvlc, "key-pressed", vlc_key_to_action, &as->map);
+    var_Destroy(libvlc, "http-wheel-linked");
+    var_Destroy(libvlc, "hotkeys-wheel-reverse");
+    var_Destroy(libvlc, "hotkeys-x-wheel-mode");
+    var_Destroy(libvlc, "hotkeys-y-wheel-mode");
 
     tdestroy (as->global_map, free);
     tdestroy (as->map, free);

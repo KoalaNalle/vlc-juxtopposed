@@ -371,6 +371,9 @@ void vout_CreateVars( vout_thread_t *p_vout )
     /* Mouse coordinates */
     var_Create( p_vout, "mouse-button-down", VLC_VAR_INTEGER );
     var_Create( p_vout, "mouse-moved", VLC_VAR_COORDS );
+    /* 0 cancels a pending click, -1 is a double click, positive values are
+     * single-click candidates with that double-click interval in ms. */
+    var_Create(p_vout, "mouse-click-event", VLC_VAR_INTEGER);
 
     /* Device orientation */
     var_Create( p_vout, "viewpoint-moved", VLC_VAR_ADDRESS );

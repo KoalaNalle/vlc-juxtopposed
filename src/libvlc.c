@@ -54,6 +54,7 @@
 #include <vlc_interface.h>
 
 #include <vlc_actions.h>
+#include <vlc_configuration.h>
 #include <vlc_charset.h>
 #include <vlc_dialog.h>
 #include <vlc_keystore.h>
@@ -110,12 +111,20 @@ static void libvlc_AddInterfaces(libvlc_int_t *libvlc, const char *varname)
     if (str == NULL)
         return;
 
-    char *state;
-    char *intf = strtok_r(str, ":", &state);
-
-    while (intf != NULL) {
-        libvlc_InternalAddIntf(libvlc, intf);
-        intf = strtok_r(NULL, ":", &state);
+    while (str != NULL && *str != '\0') {
+        char *name = NULL;
+        config_chain_t *options = NULL;
+        char *next = config_ChainCreate(&name, &options, str);
+        /* The chain parser recognises quoted/nested option blocks. A colon
+         * inside an option value must not become another interface name. */
+        const size_t consumed = strlen(str) - (next ? strlen(next) + 1 : 0);
+        str[consumed] = '\0';
+        if (name != NULL && *name != '\0')
+            libvlc_InternalAddIntf(libvlc, str);
+        free(name);
+        config_ChainDestroy(options);
+        free(str);
+        str = next;
     }
 
     free(str);

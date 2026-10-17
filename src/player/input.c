@@ -902,6 +902,14 @@ static void
 vlc_player_input_MouseFallback(struct vlc_player_input *input)
 {
     vlc_player_t *player = input->player;
+    if (input != player->input || var_InheritBool(player, "intf-input-blocked"))
+        return;
+    /* The main hotkeys interface owns deferred single/double/drag policy.
+     * Without it, retain the embedding player's ordinary release fallback. */
+    libvlc_int_t *root = vlc_object_instance(player);
+    if (var_Type(root, "mouse-click-policy-player") == VLC_VAR_ADDRESS
+        && var_GetAddress(root, "mouse-click-policy-player") == player)
+        return;
     vlc_player_TogglePause(player);
 }
 

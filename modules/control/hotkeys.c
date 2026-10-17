@@ -40,8 +40,26 @@
 #include <vlc_actions.h>
 #include <vlc_spu.h>
 #include <vlc_executor.h>
+#include <vlc_list.h>
 #include <vlc_vout_osd.h>
 #include "math.h"
+
+struct hotkey_vout
+{
+    intf_thread_t *intf;
+    vout_thread_t *vout;
+    input_item_t *item;
+};
+
+struct click_event
+{
+    struct vlc_list node;
+    input_item_t *item;
+    vout_thread_t *vout; /* Compared only while the player lock protects views. */
+    enum vlc_mouse_action action;
+    uint64_t epoch;
+    vlc_tick_t deadline;
+};
 
 struct intf_sys_t
 {
@@ -62,6 +80,11 @@ struct intf_sys_t
     enum vlc_vout_order spu_channel_order;
 
     vlc_executor_t *executor;
+    vlc_timer_t click_timer;
+    vlc_mutex_t click_lock;
+    struct vlc_list click_events;
+    size_t click_count;
+    uint64_t click_epoch;
 };
 
 static void handle_action(intf_thread_t *, vlc_action_id_t);
@@ -102,7 +125,7 @@ INTF_ACTION_HANDLER(ActionCombo)
 {
     vlc_player_t *player = vlc_playlist_GetPlayer(intf->p_sys->playlist);
     vout_thread_t *vout = vlc_player_vout_Hold(player);
-    bool vrnav = var_GetBool(vout, "viewpoint-changeable");
+    bool vrnav = vout && var_GetBool(vout, "viewpoint-changeable");
     vout_Release(vout);
     switch (action_id)
     {
@@ -1071,6 +1094,156 @@ handle_action(intf_thread_t *intf, vlc_action_id_t action_id)
  * vout callbacks *
  ******************/
 
+static void CancelClick(intf_sys_t *sys)
+{
+    struct vlc_list retired;
+    vlc_list_init(&retired);
+    vlc_mutex_lock(&sys->click_lock);
+    sys->click_epoch++;
+    struct click_event *event;
+    while ((event = vlc_list_first_entry_or_null(
+                &sys->click_events, struct click_event, node)) != NULL)
+    {
+        vlc_list_remove(&event->node);
+        vlc_list_append(&event->node, &retired);
+    }
+    sys->click_count = 0;
+    /* Windows disarm joins callbacks. They may be waiting for this mutex or
+     * the player lock held by a vout/media listener. Leave the one-shot armed;
+     * an empty queue/old epoch makes its eventual callback harmless. Close
+     * joins the timer only after releasing all player/click locks. */
+    vlc_mutex_unlock(&sys->click_lock);
+    while ((event = vlc_list_first_entry_or_null(
+                &retired, struct click_event, node)) != NULL)
+    {
+        vlc_list_remove(&event->node);
+        input_item_Release(event->item);
+        free(event);
+    }
+}
+
+/* Window callbacks only enqueue. In particular, they must not acquire the
+ * player lock while a stopped-vout listener is unregistering those callbacks.
+ * Timer teardown is joined after Close has released the player lock. */
+static void ClickTimer(void *opaque)
+{
+    intf_thread_t *intf = opaque;
+    intf_sys_t *sys = intf->p_sys;
+    vlc_mutex_lock(&sys->click_lock);
+    struct click_event *event = vlc_list_first_entry_or_null(
+        &sys->click_events, struct click_event, node);
+    if (!event)
+    {
+        vlc_mutex_unlock(&sys->click_lock);
+        return;
+    }
+    if (event->deadline > vlc_tick_now())
+    {
+        vlc_timer_schedule(sys->click_timer, true, event->deadline, 0);
+        vlc_mutex_unlock(&sys->click_lock);
+        return;
+    }
+    vlc_list_remove(&event->node);
+    sys->click_count--;
+    struct click_event *next = vlc_list_first_entry_or_null(
+        &sys->click_events, struct click_event, node);
+    if (next) vlc_timer_schedule(sys->click_timer, true, next->deadline, 0);
+    vlc_mutex_unlock(&sys->click_lock);
+
+    vlc_player_t *player = vlc_playlist_GetPlayer(sys->playlist);
+    vlc_player_Lock(player);
+    vlc_mutex_lock(&sys->click_lock);
+    bool valid = event->epoch == sys->click_epoch;
+    vlc_mutex_unlock(&sys->click_lock);
+    bool active_view = false;
+    for (size_t i = 0; i < vlc_array_count(&sys->vouts); i++)
+    {
+        const struct hotkey_vout *view = vlc_array_item_at_index(&sys->vouts, i);
+        if (view->vout == event->vout && view->item == event->item)
+            active_view = true;
+    }
+    if (valid && active_view && vlc_player_GetCurrentMedia(player) == event->item
+        && !var_InheritBool(intf, "intf-input-blocked"))
+    {
+        if (event->action == VLC_MOUSE_ACTION_PLAY_PAUSE)
+            action_handler_PlayerState(intf, player, ACTIONID_PLAY_PAUSE);
+        else if (event->action == VLC_MOUSE_ACTION_FULLSCREEN)
+            var_ToggleBool(event->vout, "fullscreen");
+    }
+    vlc_player_Unlock(player);
+    input_item_Release(event->item);
+    free(event);
+}
+
+static int MouseClickCallback(vlc_object_t *obj, const char *var,
+                              vlc_value_t old, vlc_value_t value, void *opaque)
+{
+    VLC_UNUSED(var); VLC_UNUSED(old);
+    const struct hotkey_vout *view = opaque;
+    intf_thread_t *intf = view->intf;
+    intf_sys_t *sys = intf->p_sys;
+    if (value.i_int <= 0)
+        CancelClick(sys);
+    if (value.i_int == 0 || !view->item || var_GetBool(obj, "viewpoint-changeable")
+        || var_InheritBool(intf, "intf-input-blocked"))
+        return VLC_SUCCESS;
+
+    const bool double_click = value.i_int < 0;
+    enum vlc_mouse_action action = var_InheritInteger(intf,
+        double_click ? "video-doubleclick-action" : "video-singleclick-action");
+    if (!double_click && action == VLC_MOUSE_ACTION_PLAY_PAUSE)
+    {
+        char *legacy = var_InheritString(intf, "mouse-pause-policy");
+        const bool disabled = legacy && !strcmp(legacy, "disabled");
+        free(legacy);
+        if (disabled) return VLC_SUCCESS;
+    }
+    /* Core handles fullscreen double clicks without requiring this interface. */
+    if (action != VLC_MOUSE_ACTION_PLAY_PAUSE
+        && (action != VLC_MOUSE_ACTION_FULLSCREEN || double_click))
+        return VLC_SUCCESS;
+    struct click_event *event = malloc(sizeof(*event));
+    if (!event) return VLC_ENOMEM;
+    vlc_mutex_lock(&sys->click_lock);
+    if (sys->click_count >= 64)
+    {
+        vlc_mutex_unlock(&sys->click_lock);
+        free(event);
+        return VLC_EGENERIC;
+    }
+    event->item = view->item;
+    input_item_Hold(event->item);
+    event->vout = view->vout;
+    event->action = action;
+    event->epoch = sys->click_epoch;
+    event->deadline = vlc_tick_now() + (double_click ? 1 : VLC_TICK_FROM_MS(value.i_int));
+    vlc_list_append(&event->node, &sys->click_events);
+    sys->click_count++;
+    struct click_event *first = vlc_list_first_entry_or_null(
+        &sys->click_events, struct click_event, node);
+    vlc_timer_schedule(sys->click_timer, true, first->deadline, 0);
+    vlc_mutex_unlock(&sys->click_lock);
+    return VLC_SUCCESS;
+}
+
+static int InputBlockedCallback(vlc_object_t *obj, const char *var,
+                                 vlc_value_t old, vlc_value_t value, void *opaque)
+{
+    VLC_UNUSED(var); VLC_UNUSED(old);
+    if (value.b_bool)
+    {
+        var_IncInteger(obj, "intf-input-epoch");
+        CancelClick(opaque);
+    }
+    return VLC_SUCCESS;
+}
+
+static void player_on_media_changed(vlc_player_t *player, input_item_t *item, void *opaque)
+{
+    VLC_UNUSED(player); VLC_UNUSED(item);
+    CancelClick(((intf_thread_t *)opaque)->p_sys);
+}
+
 static int
 MouseButtonCallback(vlc_object_t *obj, char const *var,
                     vlc_value_t oldval, vlc_value_t newval, void *data)
@@ -1160,11 +1333,20 @@ player_on_vout_started(vlc_player_t *player, vout_thread_t *vout, void *data)
     intf_thread_t *intf = data;
     intf_sys_t *sys = intf->p_sys;
 
-    if (unlikely(vlc_array_append(&sys->vouts, vout) != 0))
+    struct hotkey_vout *view = malloc(sizeof(*view));
+    if (!view) return;
+    *view = (struct hotkey_vout) { intf, vout, vlc_player_GetCurrentMedia(player) };
+    if (view->item) input_item_Hold(view->item);
+    if (unlikely(vlc_array_append(&sys->vouts, view) != 0))
+    {
+        if (view->item) input_item_Release(view->item);
+        free(view);
         return;
+    }
 
     var_AddCallback(vout, "mouse-button-down", MouseButtonCallback, intf);
     var_AddCallback(vout, "mouse-moved", MouseMovedCallback, sys);
+    var_AddCallback(vout, "mouse-click-event", MouseClickCallback, view);
 
     if (var_GetBool(vout, "viewpoint-changeable"))
         var_AddCallback(vout, "viewpoint-moved",
@@ -1176,11 +1358,14 @@ player_on_vout_stopped(vlc_player_t *player, vout_thread_t *vout, void *data)
 {
     intf_thread_t *intf = data;
     intf_sys_t *sys = intf->p_sys;
-    ssize_t idx = vlc_array_index_of_item(&sys->vouts, vout);
-
-    if (unlikely(idx < 0))
-        return;
-
+    size_t idx;
+    struct hotkey_vout *view = NULL;
+    for (idx = 0; idx < vlc_array_count(&sys->vouts); idx++)
+    {
+        view = vlc_array_item_at_index(&sys->vouts, idx);
+        if (view->vout == vout) break;
+    }
+    if (idx == vlc_array_count(&sys->vouts)) return;
     vlc_array_remove(&sys->vouts, idx);
 
     if (var_GetBool(vout, "viewpoint-changeable"))
@@ -1189,6 +1374,10 @@ player_on_vout_stopped(vlc_player_t *player, vout_thread_t *vout, void *data)
 
     var_DelCallback(vout, "mouse-moved", MouseMovedCallback, sys);
     var_DelCallback(vout, "mouse-button-down", MouseButtonCallback, intf);
+    var_DelCallback(vout, "mouse-click-event", MouseClickCallback, view);
+    CancelClick(sys);
+    if (view->item) input_item_Release(view->item);
+    free(view);
 }
 
 static void
@@ -1220,6 +1409,8 @@ ActionCallback(vlc_object_t *obj, char const *var,
                vlc_value_t ov, vlc_value_t newval, void *data)
 {
     VLC_UNUSED(obj); VLC_UNUSED(var); VLC_UNUSED(ov);
+    if (var_InheritBool((intf_thread_t *)data, "intf-input-blocked"))
+        return VLC_SUCCESS;
     handle_action(data, newval.i_int);
     return VLC_SUCCESS;
 }
@@ -1232,6 +1423,9 @@ static int
 Open(vlc_object_t *this)
 {
     intf_thread_t *intf = (intf_thread_t *)this;
+    libvlc_int_t *root = vlc_object_instance(intf);
+    if (var_Type(root, "mouse-click-policy-version") == VLC_VAR_INTEGER)
+        return VLC_EGENERIC;
     intf_sys_t *sys = malloc(sizeof(intf_sys_t));
     if (!sys)
         return VLC_ENOMEM;
@@ -1240,9 +1434,29 @@ Open(vlc_object_t *this)
     vlc_array_init(&sys->vouts);
     sys->subsync.audio_time = sys->subsync.subtitle_time = VLC_TICK_INVALID;
     sys->spu_channel_order = VLC_VOUT_ORDER_PRIMARY;
+    sys->executor = NULL;
+    vlc_list_init(&sys->click_events);
+    sys->click_count = 0;
+    sys->click_epoch = 0;
+    vlc_mutex_init(&sys->click_lock);
+    intf->p_sys = sys;
+    if (var_Create(root, "intf-input-blocked", VLC_VAR_BOOL) != VLC_SUCCESS)
+    {
+        intf->p_sys = NULL;
+        free(sys);
+        return VLC_ENOMEM;
+    }
+    if (vlc_timer_create(&sys->click_timer, ClickTimer, intf) != 0)
+    {
+        var_Destroy(root, "intf-input-blocked");
+        intf->p_sys = NULL;
+        free(sys);
+        return VLC_ENOMEM;
+    }
     static struct vlc_player_cbs const player_cbs =
     {
         .on_vout_changed = player_on_vout_changed,
+        .on_current_media_changed = player_on_media_changed,
     };
     vlc_player_t *player = vlc_playlist_GetPlayer(sys->playlist);
     vlc_player_Lock(player);
@@ -1250,12 +1464,22 @@ Open(vlc_object_t *this)
     vlc_player_Unlock(player);
     if (!sys->player_listener)
     {
+        vlc_timer_destroy(sys->click_timer);
+        var_Destroy(root, "intf-input-blocked");
+        intf->p_sys = NULL;
         free(sys);
         return VLC_EGENERIC;
     }
+    /* Only the main playlist player delegates its legacy mouse fallback.
+     * Other LibVLC players in the same instance keep their existing behavior. */
+    var_Create(root, "mouse-click-policy-player", VLC_VAR_ADDRESS);
+    var_SetAddress(root, "mouse-click-policy-player", player);
     var_AddCallback(vlc_object_instance(intf), "key-action", ActionCallback, intf);
 
-    sys->executor = NULL;
+    var_Create(root, "intf-input-epoch", VLC_VAR_INTEGER);
+    var_AddCallback(root, "intf-input-blocked", InputBlockedCallback, sys);
+    var_Create(root, "mouse-click-policy-version", VLC_VAR_INTEGER);
+    var_SetInteger(root, "mouse-click-policy-version", 1);
 
     intf->p_sys = sys;
     return VLC_SUCCESS;
@@ -1271,9 +1495,16 @@ Close(vlc_object_t *this)
     vlc_player_RemoveListener(player, sys->player_listener);
 
     while (sys->vouts.i_count > 0)
-        player_on_vout_stopped(player, vlc_array_item_at_index(&sys->vouts, 0),
-                               intf);
+        player_on_vout_stopped(player,
+            ((struct hotkey_vout *)vlc_array_item_at_index(&sys->vouts, 0))->vout, intf);
     vlc_player_Unlock(player);
+
+    var_DelCallback(vlc_object_instance(intf), "intf-input-blocked", InputBlockedCallback, sys);
+    var_Destroy(vlc_object_instance(intf), "intf-input-epoch");
+    CancelClick(sys);
+    vlc_timer_destroy(sys->click_timer);
+    var_Destroy(vlc_object_instance(intf), "intf-input-blocked");
+    vlc_array_clear(&sys->vouts);
 
     var_DelCallback(vlc_object_instance(intf), "key-action", ActionCallback, intf);
 
@@ -1283,7 +1514,10 @@ Close(vlc_object_t *this)
         vlc_executor_Delete(sys->executor);
     }
 
+    var_Destroy(vlc_object_instance(intf), "mouse-click-policy-version");
+    var_Destroy(vlc_object_instance(intf), "mouse-click-policy-player");
     free(sys);
+    intf->p_sys = NULL;
 }
 
 static void AutoRun(libvlc_int_t *libvlc)

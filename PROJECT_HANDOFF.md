@@ -8,7 +8,19 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
-The latest guest [Library-off history/resume checkpoint](doc/juxtopposed-references/native/guest-history-library-off-20261017/README.md)
+The guest [Controls implementation](doc/juxtopposed-references/native/guest-controls-20261017/README.md)
+mounts all sixteen authored rows and the user's requested **Use the same wheel
+settings** toggle, ON by default. ON shares Mouse/Remotes wheel preferences;
+OFF restores independent remote values without overwriting them. Shared mappings
+need restart; independent remote changes apply live after checked persistence.
+Native input89, controller19, widget/dialog14, authenticated HTTP29 and Controls
+QML8 pass. The new ordinary GUI passes four playback/local-HLS cases; final-tuple
+Library18/42/9, Subtitle37 and player controller4/25/8 also pass normally, with
+no failures/errors/skips or forced cleanup. All 2,001 frozen inputs match.
+Native full-page/browser
+interaction, visual/DPI, Windows 11 and the complete beta remain open.
+
+The preceding [Library-off history/resume checkpoint](doc/juxtopposed-references/native/guest-history-library-off-20261017/README.md)
 adds a lazy history backend without enabling Library browsing, starting indexing
 or changing roots. Native history40/52, controller17 and actual SQLite
 controller9+9 pass. A real decoded-playback regression also repairs whole-media
@@ -18,8 +30,11 @@ journeys and four ordinary GUI/local-HLS cases pass on core `186d65…2591`, GUI
 Home visit storage now permits a genuine locked-file failure/retry. All 1280
 frozen final inputs match, including 1263 unchanged Qt inputs after the Core fix.
 The [original Controls reference](doc/juxtopposed-references/figma/20261017/controls/README.md)
-is archived with all 18 original SVG hashes verified. Six planned/two reserved
-Figma requests remain. The full beta, Last.fm service, native interactive Home/
+is archived with all 18 original SVG hashes verified. The original
+[Network reference](doc/juxtopposed-references/figma/20261017/network/README.md)
+is also cached with its screenshot, ten fields/actions and nineteen original
+SVGs. Five planned/two reserved Figma requests remain. The full beta, Last.fm
+service, native interactive Home/
 dialog journeys, visual/DPI/Windows 11 and clean final-package gates remain open.
 
 The first guest beta [startup-policy checkpoint](doc/juxtopposed-references/native/guest-startup-20261016/README.md)

@@ -162,3 +162,15 @@ executable('vlc-window', 'vlc-window.c',
     c_args: common_args,
     install: false,
     win_subsystem: 'console')
+
+# Owned integration drivers are invoked explicitly by the portable-runtime
+# runners, with their isolated config, fixture modules and loopback services.
+foreach controls_driver : ['controls', 'controls_http']
+    executable('test_' + controls_driver,
+        'src/interface/' + controls_driver + '.c',
+        include_directories: [vlc_include_dirs, include_directories('../src')],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+        win_subsystem: 'console')
+endforeach

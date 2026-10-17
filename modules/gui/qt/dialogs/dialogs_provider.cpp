@@ -32,6 +32,7 @@
 
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
+#include "util/modal_input_guard.hpp"
 #include "network_stream_model.hpp"
 #include "conversion_controller.hpp"
 #include "new_playlist_model.hpp"
@@ -109,6 +110,9 @@ DialogsProvider::DialogsProvider( qt_intf_t *_p_intf )
 
 {
     b_isDying = false;
+    auto *inputGuard = new ModalInputGuard(VLC_OBJECT(p_intf), this);
+    connect(this, &DialogsProvider::qmlDialogVisibleChanged, inputGuard,
+        [this, inputGuard] { inputGuard->setQmlVisible(m_qmlDialogVisible); });
 }
 
 DialogsProvider::~DialogsProvider()

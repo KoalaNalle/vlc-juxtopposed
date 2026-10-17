@@ -43,6 +43,8 @@
 #include "subtitles_preferences_model.hpp"
 #include "library_preferences_model.hpp"
 #include "privacy_preferences_model.hpp"
+#include "controls_preferences_model.hpp"
+#include "dialogs/preferences/controls_shortcuts.hpp"
 #include <vlc_dialog.h>
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
@@ -236,6 +238,16 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     loadFromSettingsImpl(false);
     // Snapshot startup preferences after the native theme/settings restore.
     m_generalPreferences = new GeneralPreferencesModel(p_intf, m_colorScheme, settings, this);
+    ControlsPreferencesModel::Consumers controlsConsumers;
+    controlsConsumers.mousePolicy = true;
+    controlsConsumers.remotePolicy = true;
+    controlsConsumers.openShortcutEditor = [](ControlsPreferencesModel *model) {
+        openControlsShortcutEditor(model, QGuiApplication::focusWindow());
+    };
+    controlsConsumers.openRemoteSetup = [](ControlsPreferencesModel *model) {
+        openControlsRemoteSetup(model, QGuiApplication::focusWindow());
+    };
+    m_controlsPreferences = new ControlsPreferencesModel(p_intf, std::move(controlsConsumers), this);
     // Default Consumers gates remain false until each native behavior is verified.
     m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, this);
     // Precise-seek capability stays gated until actual native app acceptance.
@@ -397,6 +409,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_controlsPreferences;
+    m_controlsPreferences = nullptr;
     delete m_privacyPreferences;
     m_privacyPreferences = nullptr;
     delete m_libraryPreferences;

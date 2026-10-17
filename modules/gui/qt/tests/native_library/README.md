@@ -107,3 +107,40 @@ python3 "$repo/modules/gui/qt/tests/test_library_ipc_errors.py" \
 It compiles exact extracted production helper bodies with deterministic
 dependency failures (16 receiver and eight sender cases). It supplements the
 native and actual-process tests; it does not emulate or establish Windows IPC.
+
+Controls has separate opt-in recipes so private window/display providers never
+enter an ordinary package. Read the configured Makefiles first, then add
+`controls.mk` for `controls-preferences-native`, `controls-dialogs.mk` for
+`controls-dialogs-native`, `controls-modules.mk` for the input fixture module,
+and `test/controls-native.mk` for `controls-input-native` and
+`controls-http-native`. Set their required output variables to owned build
+directories. The widget recipe also takes `CONTROLS_MODEL_OUT`, containing the
+matching freshly compiled controller/store/probe objects. Keep the configured
+toolchain and static Qt dependencies; use one job on the travel computer.
+
+`run_controls.py` runs 19 controller cases by default in an already staged
+portable runtime. For the widget/dialog-input suite including Qt's init/cleanup,
+pass `--executable test_qt_controls_dialogs.exe --expected-cases 14`. These own
+their QApplication, transient parent, shortcuts widget and masked setup dialog.
+The suite also checks nested Qt/QML modal ownership, popups, destruction and
+Windows native-dialog owner disabling through an owned window. It does not
+automate the running VLC desktop or establish desktop DPI review.
+
+`test/libvlc/native_controls.py` stages the ordinary package, matching core and
+hotkeys module, native driver and private fixture provider. Its owned Y4M input
+exercises real click/drag/cancel, modal epochs, media changes, wheel bindings and
+embedding behavior. Optional old-core inputs are expected-failure controls; an
+assertion before successful consumer setup cannot stand in for the click
+regression. `native_controls_http.py` uses an owned silent WAV and authenticated
+loopback listener, the default shared wheel policy, independent settings after
+unlinking, pending Mouse mappings across relinking, bounded wheel requests,
+actual output-clock resume, empty
+password rejection, occupied-port failure and fresh-process retry. Neither
+runner uses personal media or credentials. Each saves exact binary identities
+and normal/forced process-exit evidence in a new output directory.
+
+The maintained PySide6 tests `test_juxtopposed_controls_settings.py`,
+`test_video_input_tap_handler.py` and `test/libvlc/test_http_wheel_ui.py` cover
+the actual QML host/helper and actual browser script through explicit owned
+service/DOM seams. They supplement the native consumers; they do not claim an
+actual browser, final ordinary GUI, visual score or Windows DPI acceptance.

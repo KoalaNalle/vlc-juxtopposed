@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "expectedChecks": 29,
+  "checks": {
+    "authenticated-service-active": true,
+    "unauthenticated-request-rejected": true,
+    "wrong-password-rejected": true,
+    "authenticated-browser-page-mounts-wheel-target-and-script": true,
+    "real-service-serves-exact-tested-browser-wheel-script": true,
+    "real-silent-audio-paused-at-known-volume": true,
+    "wheel-link-is-on-by-default": true,
+    "default-linked-remote-uses-active-physical-vertical-seek": true,
+    "default-linked-remote-uses-active-physical-horizontal-ignore": true,
+    "pending-saved-mouse-mapping-does-not-change-linked-remote-before-restart": true,
+    "remote-vertical-volume-with-physical-vertical-seek": true,
+    "remote-reverse-volume-applies-live": true,
+    "relink-restores-active-mouse-policy-despite-pending-config": true,
+    "unlink-restores-independent-reversed-volume-without-overwriting-it": true,
+    "remote-horizontal-seek-with-physical-horizontal-ignore": true,
+    "legacy-remote-seek-direction": true,
+    "reverse-composes-with-legacy-seek-direction": true,
+    "ignored-remote-axis-has-no-effect": true,
+    "malformed-and-unbounded-wheel-inputs-have-no-effect": true,
+    "status-response-does-not-expose-password": true,
+    "resume-renders-at-requested-paused-seek-position": true,
+    "normal-service-shutdown": true,
+    "empty-password-state-is-explicit": true,
+    "empty-password-does-not-enable-player-commands": true,
+    "password-required-service-shutdown": true,
+    "occupied-port-reports-real-service-failure": true,
+    "failed-service-shutdown": true,
+    "fresh-retry-after-port-released": true,
+    "retried-service-shutdown": true
+  },
+  "processes": {
+    "normal": {
+      "forcedCleanupUsed": false,
+      "normalExit": true,
+      "ownedPid": 16852,
+      "exitCode": 0
+    },
+    "password-empty": {
+      "forcedCleanupUsed": false,
+      "normalExit": true,
+      "ownedPid": 8208,
+      "exitCode": 0
+    },
+    "occupied-port": {
+      "forcedCleanupUsed": false,
+      "normalExit": true,
+      "ownedPid": 9460,
+      "exitCode": 0
+    },
+    "retry-after-port-released": {
+      "forcedCleanupUsed": false,
+      "normalExit": true,
+      "ownedPid": 17632,
+      "exitCode": 0
+    }
+  },
+  "runtimeSha256": {
+    "libvlccore.dll": "218708c12b18fa9e69b9242fd0c0ea38c4ad4f61bf6c9b0798bd7cd8cf91d682",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a",
+    "test_controls_http.exe": "f1702f3bf50cf7aac58729b07f7bee0c4d7bd8fb78465c892499e66abb394361",
+    "plugins/lua/liblua_plugin.dll": "0e52a7072c1e86ed64981281823ed6b1e1739aca0922da54c842db6e16a12d90",
+    "lua/intf/http.luac": "fd6fcb7af986d8b8fb58aa0b6fef14d0929e9e1cda73305173c5d78d9c3f3eff",
+    "lua/intf/modules/httprequests.luac": "4829075cb491c252d34688dcc33eddc26fb51311a144b2641b6f479d87ba217b",
+    "lua/http/js/ui.js": "766b6f31fab2d7c8ef22534266b3b8631e2836f9789056c027eb7c78838203b7"
+  },
+  "initialAudioState": {
+    "state": "paused",
+    "volume": 128.0,
+    "time": 1.353963,
+    "length": 60
+  },
+  "firstRemoteVolume": 141.0,
+  "resumedNativeClockSeconds": 10.050179
+}

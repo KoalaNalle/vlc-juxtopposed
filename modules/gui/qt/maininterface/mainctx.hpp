@@ -76,6 +76,7 @@ class AudioPreferencesModel;
 class SubtitlesPreferencesModel;
 class LibraryPreferencesModel;
 class PrivacyPreferencesModel;
+class ControlsPreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
@@ -84,6 +85,7 @@ Q_MOC_INCLUDE("maininterface/audio_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/subtitles_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/library_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/privacy_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/controls_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -140,6 +142,7 @@ class MainCtx : public QObject
     Q_PROPERTY(SubtitlesPreferencesModel* subtitlesPreferences READ getSubtitlesPreferences CONSTANT FINAL)
     Q_PROPERTY(LibraryPreferencesModel* libraryPreferences READ getLibraryPreferences CONSTANT FINAL)
     Q_PROPERTY(PrivacyPreferencesModel* privacyPreferences READ getPrivacyPreferences CONSTANT FINAL)
+    Q_PROPERTY(ControlsPreferencesModel* controlsPreferences READ getControlsPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -281,6 +284,7 @@ public:
     inline SubtitlesPreferencesModel* getSubtitlesPreferences() const { return m_subtitlesPreferences; }
     inline LibraryPreferencesModel* getLibraryPreferences() const { return m_libraryPreferences; }
     inline PrivacyPreferencesModel* getPrivacyPreferences() const { return m_privacyPreferences; }
+    inline ControlsPreferencesModel* getControlsPreferences() const { return m_controlsPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -510,6 +514,7 @@ protected:
     SubtitlesPreferencesModel* m_subtitlesPreferences = nullptr;
     LibraryPreferencesModel* m_libraryPreferences = nullptr;
     PrivacyPreferencesModel* m_privacyPreferences = nullptr;
+    ControlsPreferencesModel* m_controlsPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // Immutable application-start snapshot for the new Interface consumers.
     int m_startupControlsAutoHide = -1;
