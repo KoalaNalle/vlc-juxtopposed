@@ -247,12 +247,36 @@ QTest.qWait(30)
 assert find(collection, 'homeCollectionItem0').height() == 44
 assert collection_view.grabWindow().save(str(args.output_dir / 'home-collection-component.png'))
 
+# Mixed folders must choose their fallback from the native media kind.
+# Keep both positive audio and video controls, and exercise accessible names
+# with Unicode metadata rather than merely searching source text.
+mixed_rows = SuppliedMediaModel([
+    {'id': 'mixed-audio', 'title': 'Track \u00c4\u00e4', 'main_artist': 'Artist \u65e5\u672c\u8a9e', 'isVideo': False},
+    {'id': 'mixed-video', 'title': 'Clip', 'fileName': 'Clip.mp4', 'isVideo': True, 'progress': .4},
+])
+mixed_view, mixed = load('JuxtopposedHomeCollectionView.qml', {'entries': mixed_rows, 'kind': 'media', 'fallbackIcon': icon('topbar_video')}, 900, 600)
+mixed.setProperty('audioFallbackIcon', icon('topbar_music'))
+QTest.qWait(30)
+audio_card = find(mixed, 'homeCollectionItem0')
+video_card = find(mixed, 'homeCollectionItem1')
+assert audio_card.property('kind') == 'audio' and audio_card.property('fallbackIcon') == icon('topbar_music'), 'Audio in mixed folder must use music fallback'
+assert video_card.property('kind') == 'video' and video_card.property('fallbackIcon') == icon('topbar_video'), 'Video in mixed folder must retain video fallback'
+assert expr(audio_card, 'Accessible.name') == 'Track \u00c4\u00e4 \u2014 Artist \u65e5\u672c\u8a9e', 'Audio accessibility separator must be valid Unicode'
+assert expr(video_card, 'Accessible.name') == 'Clip.mp4'
+mixed_actions = QSignalSpy(mixed.activated)
+click(mixed_view, audio_card)
+assert mixed_actions.count() == 1 and mixed_actions.at(0)[1] == 'audio'
+click(mixed_view, video_card)
+assert mixed_actions.count() == 2 and mixed_actions.at(1)[1] == 'video'
+assert mixed_view.grabWindow().save(str(args.output_dir / 'home-mixed-fallback-component.png'))
+
 warnings = messages
 assert not warnings, warnings
 verification = {'scope': 'Production Home QML with supplied QAbstractListModel/array data; native ML/player/persistence not executed.',
                 'mediaActions': media.count(), 'collectionActions': [folder.count(), playlist.count(), artist.count()],
                 'seeAllActions': see_all.count(), 'fullCollectionCount': collection.property('count'), 'renderedCards': rendered_cards,
                 'dashboardPreviewCardsFrom250Folders': dashboard_folder_cards,
+                'mixedMediaFallbackChecks': 6,
                 'layouts': layouts, 'warnings': warnings, 'imageDependency': 'Unmodified production Widgets.ImageExt', 'imageRenderer': 'Software Image fallback; native RHI rounding not tested'}
 (args.output_dir / 'home-component-verification.json').write_text(json.dumps(verification, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 print('Home dashboard and collection component checks passed.')

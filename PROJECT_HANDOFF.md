@@ -17,6 +17,16 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The latest [Home audio bootstrap checkpoint](doc/juxtopposed-references/native/guest-home-audio-bootstrap-20261017/README.md)
+passes actual Add Folder/cancel/index/play/navigation/privacy/restart82/140/12,
+ordinary playback5 and Home/appearance component checks (43 appearance checks).
+It fixes mixed-folder audio fallback icons and a Unicode accessible-name
+separator. Corebf2940/GUI800199 are the scoped incremental tuple; all1910
+ordinary and five private inputs match. The real Qt chooser and only owned
+Unicode audio data are covered; full Home content, shell-native picker,
+playing/theme/DPI/accessibility/fidelity/platform and clean-package gates remain
+open. Earlier native regressions retain their earlier GUI scope.
+
 The latest [native subtitle preset checkpoint](doc/juxtopposed-references/native/guest-subtitle-presets-ui-20261017/README.md)
 fixes failed-save retry, regenerated-menu closure, visible save errors and
 mouse-focused popup key ownership. Actual paused-player edit/restart/Default

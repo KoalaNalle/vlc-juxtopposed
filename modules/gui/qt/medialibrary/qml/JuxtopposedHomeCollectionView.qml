@@ -13,6 +13,7 @@ FocusScope {
     property url assetBase: "qrc:/juxtopposed/"
     property string iconFontFamily: ""
     property string fallbackIcon: ""
+    property string audioFallbackIcon: ""
     property url fallbackArtwork: ""
     property string kind: "folder"
     property var entries: null
@@ -70,7 +71,7 @@ FocusScope {
             uiScale: root.uiScale
             fontFamily: inter.name
             iconFontFamily: root.iconFontFamily
-            fallbackIcon: root.fallbackIcon
+            fallbackIcon: root.kind === "media" && audio ? root.audioFallbackIcon : root.fallbackIcon
             fallbackArtwork: root.fallbackArtwork
             surfaceColor: root.surfaceColor
             gridMode: root.gridMode

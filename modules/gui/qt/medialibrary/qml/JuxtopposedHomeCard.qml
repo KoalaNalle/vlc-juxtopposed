@@ -39,7 +39,7 @@ C.AbstractButton {
     opacity: enabled ? 1 : 0.5
     Keys.onReturnPressed: clicked()
     Keys.onEnterPressed: clicked()
-    Accessible.name: artist ? title + " â€” " + artist : title
+    Accessible.name: artist ? title + " \u2014 " + artist : title
     Accessible.description: !enabled ? qsTr("This item is unavailable") : video && progress > 0 ? qsTr("Continue watching") : ""
     C.ToolTip.visible: hovered && label.truncated
     C.ToolTip.text: Accessible.name

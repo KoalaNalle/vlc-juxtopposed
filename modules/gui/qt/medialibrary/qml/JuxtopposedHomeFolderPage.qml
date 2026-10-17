@@ -39,6 +39,7 @@ Widgets.PageExt {
         uiScale: VLCStyle.dp(1, VLCStyle.scale)
         iconFontFamily: VLCIcons.fontFamily
         fallbackIcon: VLCIcons.topbar_video
+        audioFallbackIcon: VLCIcons.topbar_music
         loading: media.loading
         emptyText: root.search.pattern ? qsTr("No matching media") : qsTr("This folder has no available media.")
         Navigation.parentItem: root
