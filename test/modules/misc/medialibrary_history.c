@@ -7,6 +7,7 @@
 #include <vlc_configuration.h>
 #include <vlc_media_library.h>
 #include <vlc_url.h>
+#include <vlc_fs.h>
 #include "../../../src/player/player.h"
 #include "../../libvlc/test.h"
 #include "../../../lib/libvlc_internal.h"
@@ -24,12 +25,55 @@ static bool command(const char *expected)
     char buffer[64];
     return fgets(buffer, sizeof(buffer), stdin) && !strcmp(buffer, expected);
 }
-static libvlc_instance_t *new_instance(void)
+static libvlc_instance_t *new_instance(bool library)
 {
-    const char *args[] = {"--ignore-config", "--media-library", "--quiet",
+    const char *args[] = {"--ignore-config", library ? "--media-library" : "--no-media-library", "--quiet",
         "--no-ml-network-discovery", "--no-metadata-network-access",
         "--no-auto-preparse", "--extraintf=", "--control=", "--aout=dummy", "--vout=dummy"};
     return libvlc_new(ARRAY_SIZE(args), args);
+}
+static void disabled_startup_checks(const char *fixture)
+{
+    libvlc_instance_t *vlc = new_instance(false); assert(vlc);
+    libvlc_int_t *root = vlc->p_libvlc_int;
+    char *path;
+    if (asprintf(&path, "%s/ml/ml.db", getenv("VLC_USERDATA_PATH")) < 0) abort();
+    struct stat st;
+    check(!vlc_ml_instance_get(root) && !var_InheritBool(root,"media-library"),
+          "Library off exposes no browsing backend and retains its preference");
+    check(vlc_ml_history_available(root) && vlc_stat(path,&st) != 0,
+          "history capability does not create a database");
+    vlc_player_t *player=vlc_player_New(VLC_OBJECT(root),VLC_PLAYER_LOCK_NORMAL); assert(player);
+    vlc_player_Lock(player);
+    struct vlc_player_history_policy next={false,true,strdup("")};assert(next.exclusion_pattern);
+    vlc_player_SwapHistoryPolicy(player,&next);free(next.exclusion_pattern);
+    char *uri=vlc_path2uri(fixture,NULL);
+    input_item_t *item=input_item_New(uri,"Owned private startup");free(uri);assert(item);
+    assert(vlc_player_SetCurrentMedia(player,item)==VLC_SUCCESS);input_item_Release(item);
+    vlc_player_Unlock(player);vlc_player_Delete(player);
+    check(vlc_stat(path,&st) != 0,"history opt-out does not create the lazy database");
+    vlc_object_t *secondary_owner=vlc_object_create(root,sizeof(*secondary_owner));assert(secondary_owner);
+    player=vlc_player_New(secondary_owner,VLC_PLAYER_LOCK_NORMAL);assert(player);
+    vlc_player_Lock(player);uri=vlc_path2uri(fixture,NULL);
+    item=input_item_New(uri,"Owned secondary input");free(uri);assert(item);
+    assert(vlc_player_SetCurrentMedia(player,item)==VLC_SUCCESS);input_item_Release(item);
+    player->input->position=.5;
+    vlc_player_Unlock(player);vlc_player_Delete(player);vlc_object_delete(secondary_owner);
+    check(vlc_stat(path,&st) != 0,"secondary playback never opens the lazy history backend");
+    player=vlc_player_New(VLC_OBJECT(root),VLC_PLAYER_LOCK_NORMAL);assert(player);
+    vlc_player_Lock(player);
+    check(vlc_player_ClearHistory(player)==VLC_SUCCESS,
+          "explicit clear initializes a fresh history backend with Library off");
+    vlc_player_Unlock(player);vlc_player_Delete(player);
+    vlc_medialibrary_t *ml=vlc_ml_history_get(root);
+    check(ml && ml==vlc_ml_history_get(root) && !vlc_ml_instance_get(root)
+          && !var_InheritBool(root,"media-library"),"lazy history backend is shared without enabling Library");
+    check(vlc_ml_control(ml,VLC_ML_RESUME_BACKGROUND)!=VLC_SUCCESS
+          && vlc_ml_control(ml,VLC_ML_RELOAD_FOLDER,"file:///owned-never-scanned/")!=VLC_SUCCESS
+          && vlc_ml_control(ml,VLC_ML_ADD_FOLDER,"file:///owned-never-scanned/")!=VLC_SUCCESS,
+          "history backend rejects discovery, reload and background resume");
+    check(vlc_ml_count_folders(ml,NULL)==0,"history-only startup and clear add no Library folders");
+    free(path);libvlc_release(vlc);
 }
 static bool retained(vlc_medialibrary_t *ml, int64_t media_id, int64_t playlist_id)
 {
@@ -129,7 +173,8 @@ static void restoration_checks(libvlc_instance_t *vlc, vlc_medialibrary_t *ml, c
     vlc_player_Lock(player);
     input_item_t *item=input_item_New(uri,"Owned restore fixture");assert(item);
     assert(vlc_player_SetCurrentMedia(player,item)==VLC_SUCCESS);input_item_Release(item);
-    check(player->input->ml.restore==VLC_RESTOREPOINT_TITLE&&player->input->ml.states.current_title==3,
+    check(player->input->ml.restore==VLC_RESTOREPOINT_TITLE&&player->input->ml.states.current_title==3
+          &&player->input->ml.pos==.5,
           "permitted saved position arms title restoration under Always policy");
     vlc_player_RestorePlaybackPos(player);vlc_player_RestorePlaybackPos(player);
     check(player->input->ml.states.aspect_ratio&&!strcmp(player->input->ml.states.aspect_ratio,"16:9")
@@ -153,7 +198,9 @@ int main(void)
     if (getenv("VLC_PLUGIN_PATH") == NULL) test_init();
     const char *fixture = getenv("VLC_HISTORY_FIXTURE");
     if (!fixture || !getenv("VLC_USERDATA_PATH")) return 2;
-    libvlc_instance_t *vlc = new_instance();
+    const bool library_off = getenv("VLC_HISTORY_LIBRARY_OFF") != NULL;
+    if (library_off) disabled_startup_checks(fixture);
+    libvlc_instance_t *vlc = new_instance(true);
     if (!vlc) return 2;
     vlc_medialibrary_t *ml = vlc_ml_instance_get(vlc->p_libvlc_int);
     if (!ml) return 2;
@@ -182,6 +229,35 @@ int main(void)
      || vlc_ml_media_update_progress(ml, network_id, .625) != VLC_SUCCESS
      || vlc_ml_count_history(ml, NULL, VLC_ML_HISTORY_TYPE_GLOBAL) != 2)
         return 2;
+    if (library_off)
+    {
+        uri=vlc_path2uri(fixture,NULL);assert(uri);
+        char *cached_uri;if(asprintf(&cached_uri,"%s.cached.wav",uri)<0)abort();free(uri);
+        vlc_ml_media_t *cached=vlc_ml_new_external_media(ml,cached_uri);assert(cached);
+        const int64_t cached_id=cached->i_id;vlc_ml_release(cached);
+        assert(vlc_ml_media_set_type(ml,cached_id,VLC_ML_MEDIA_TYPE_VIDEO)==VLC_SUCCESS);
+        libvlc_release(vlc);
+        // The companion inserts an owned queued task and cached removable path
+        // while no native instance has the database open.
+        printf("SEEDED cached=%"PRId64"\n",cached_id);fflush(stdout);
+        if(!command("offline\n"))return 2;
+        vlc=new_instance(false);assert(vlc);
+        ml=vlc_ml_history_get(vlc->p_libvlc_int);assert(ml);
+        check(!vlc_ml_instance_get(vlc->p_libvlc_int)
+              && retained(ml,local_id,playlist_id),
+              "Library-off history reuses saved favorites, playlists and playback preferences");
+        cached=vlc_ml_get_media(ml,cached_id);
+        check(cached && cached->p_files && cached->p_files->i_nb_items==1
+              && cached->p_files->p_items[0].psz_mrl
+              && !strcmp(cached->p_files->p_items[0].psz_mrl,cached_uri),
+              "history-only reads reconstruct removable media from cached mountpoints");
+        if(cached)vlc_ml_release(cached);
+        cached=vlc_ml_get_media_by_mrl(ml,cached_uri);
+        check(cached && cached->i_id==cached_id,"history-only lookup resolves existing removable media without duplicate rows");
+        if(cached)vlc_ml_release(cached);
+        free(cached_uri);
+    }
+    const size_t original_folder_count=vlc_ml_count_folders(ml,NULL);
     printf("READY local=%"PRId64" network=%"PRId64"\n", local_id, network_id);
     fflush(stdout);
     if (!command("blocked\n")) return 2;
@@ -223,8 +299,8 @@ int main(void)
     check(vlc_ml_clear_history(ml, VLC_ML_HISTORY_TYPE_GLOBAL) == VLC_SUCCESS,
           "clearing an empty history is repeatable");
     libvlc_release(vlc);
-    vlc = new_instance();
-    ml = vlc ? vlc_ml_instance_get(vlc->p_libvlc_int) : NULL;
+    vlc = new_instance(!library_off);
+    ml = vlc ? vlc_ml_history_get(vlc->p_libvlc_int) : NULL;
     check(ml && vlc_ml_count_history(ml, NULL, VLC_ML_HISTORY_TYPE_GLOBAL) == 0
           && retained(ml, local_id, playlist_id), "cleared history and retained data survive native restart");
     if (vlc)
@@ -249,6 +325,11 @@ int main(void)
         vlc_player_Unlock(player);vlc_player_Delete(player);
         check(vlc_ml_count_history(ml,NULL,VLC_ML_HISTORY_TYPE_GLOBAL)==0,
               "retiring input shutdown does not resurrect cleared history");
+        if (library_off)
+            check(!vlc_ml_instance_get(vlc->p_libvlc_int)
+                  && !var_InheritBool(vlc->p_libvlc_int,"media-library")
+                  && vlc_ml_count_folders(ml,NULL)==original_folder_count,
+                  "save, restore, clear and restart keep Library off and roots unchanged");
         libvlc_release(vlc);
     }
     printf("RESULT: %u checks, %u failures\n", checks, failures);

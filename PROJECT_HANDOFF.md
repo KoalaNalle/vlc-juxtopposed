@@ -8,6 +8,20 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The latest guest [Library-off history/resume checkpoint](doc/juxtopposed-references/native/guest-history-library-off-20261017/README.md)
+adds a lazy history backend without enabling Library browsing, starting indexing
+or changing roots. Native history40/52, controller17 and actual SQLite
+controller9+9 pass. A real decoded-playback regression also repairs whole-media
+resume percentages being scaled into a configured clip. Six decoded-history
+journeys and four ordinary GUI/local-HLS cases pass on core `186d65…2591`, GUI
+`843365…9e42` and ML `e3ec5e…c0a`; unchanged native 18/42/9/37 and 4/25/8 pass too.
+Home visit storage now permits a genuine locked-file failure/retry. All 1280
+frozen final inputs match, including 1263 unchanged Qt inputs after the Core fix.
+The [original Controls reference](doc/juxtopposed-references/figma/20261017/controls/README.md)
+is archived with all 18 original SVG hashes verified. Six planned/two reserved
+Figma requests remain. The full beta, Last.fm service, native interactive Home/
+dialog journeys, visual/DPI/Windows 11 and clean final-package gates remain open.
+
 The first guest beta [startup-policy checkpoint](doc/juxtopposed-references/native/guest-startup-20261016/README.md)
 reproduces saved Library OFF being overridden by the actual Windows launcher,
 then removes that forced argument. All five real-process startup cases pass with
@@ -170,10 +184,11 @@ controller14 and real SQLite controller9, component8, ordinary4 and native
 Library18/42/9/Subtitle37 pass, all normal exits with no failures/errors/skips.
 Ordinary runtime is `build-windows/beta-privacy-20261017/ordinary-acceptance-r3/runtime`:
 core `dd8c11…9186`, GUI `fe5d00…0c81`, ML `0a9d2d…44e0`; prior runtimes/baseline
-are preserved. Earlier GUI passes are superseded. Last.fm, Library-disabled
-history/clear, actual Home/legacy clear/visit journeys, native visual/DPI,
+are preserved. Earlier GUI passes are superseded. The Library-disabled backend
+gap from that checkpoint is superseded by the latest history/resume checkpoint
+above. Last.fm, actual Home/legacy clear/visit journeys, native visual/DPI,
 Windows 11, remaining five bodies and full beta/clean-package gates remain open.
-No further Figma call was used.
+That Privacy follow-up used no further Figma call.
 
 ## Project and current checkpoint
 

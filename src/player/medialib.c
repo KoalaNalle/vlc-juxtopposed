@@ -84,6 +84,15 @@ vlc_player_HistoryIsExcluded(const char *pattern, const char *uri, const char *n
     return excluded;
 }
 
+static vlc_medialibrary_t *
+HistoryBackend(vlc_player_t *player)
+{
+    vlc_medialibrary_t *ml = vlc_ml_instance_get(player);
+    if (ml || player->obj.priv->parent != (vlc_object_t *)vlc_object_instance(player))
+        return ml;
+    return vlc_ml_history_get(player);
+}
+
 static bool
 HistoryExcluded(vlc_player_t *player, struct vlc_player_input *input)
 {
@@ -147,7 +156,7 @@ int
 vlc_player_ClearHistory(vlc_player_t *player)
 {
     vlc_player_assert_locked(player);
-    vlc_medialibrary_t *ml = vlc_ml_instance_get(player);
+    vlc_medialibrary_t *ml = HistoryBackend(player);
     if (!ml || vlc_ml_clear_history(ml, VLC_ML_HISTORY_TYPE_GLOBAL) != VLC_SUCCESS)
         return VLC_EGENERIC;
     player->history_epoch++;
@@ -177,7 +186,12 @@ vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
 
     const bool restore_states = var_InheritBool(input->thread, "restore-playback-states");
 
-    vlc_medialibrary_t* ml = vlc_ml_instance_get(input->player);
+    if ((!player->history_policy.save_history || !var_GetBool(input->thread, "save-recentplay"))
+        && !restore_states)
+        return;
+    if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_NEVER && !restore_states)
+        return;
+    vlc_medialibrary_t* ml = HistoryBackend(player);
     if (!ml)
         return;
     input_item_t* item = input_GetItem(input->thread);
@@ -199,6 +213,8 @@ vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
                           && media->f_progress > .0f) ?
                             VLC_RESTOREPOINT_TITLE : VLC_RESTOREPOINT_NONE;
     input->ml.restore_states = restore_states;
+    if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS && media->f_progress > .0f)
+        input->ml.pos = media->f_progress;
     /* If we are aiming at a specific title, wait for it to be added, and
      * only then select it & set the position.
      * If we're not aiming at a specific title, just set the position now.
@@ -206,7 +222,7 @@ vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
     if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS &&
             input->ml.states.current_title == -1 &&
             media->f_progress > .0f)
-        input_SetPosition(input->thread, media->f_progress, false);
+        input_SetMediaPosition(input->thread, media->f_progress, false);
     else if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ASK &&
              media->f_progress > .0f)
     {
@@ -323,7 +339,7 @@ vlc_player_UpdateMLStates(vlc_player_t *player, struct vlc_player_input* input)
         || HistoryExcluded(player, input))
         return;
 
-    vlc_medialibrary_t* ml = vlc_ml_instance_get(player);
+    vlc_medialibrary_t* ml = HistoryBackend(player);
     if (!ml)
         return;
     input_item_t* item = input_GetItem(input->thread);

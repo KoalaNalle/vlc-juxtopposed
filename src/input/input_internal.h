@@ -452,6 +452,8 @@ typedef union
     } time;
     struct {
         bool b_fast_seek;
+        /* Saved history uses whole-media coordinates. Keep f_val's offset. */
+        bool b_absolute_media;
         double f_val;
     } pos;
     struct
@@ -650,6 +652,10 @@ enum input_control_e
 /* Internal helpers */
 
 int input_ControlPush( input_thread_t *, int, const input_control_param_t * );
+
+/* Restore a whole-media fraction, only if it lies in the configured input
+ * start/stop range. Ordinary input_SetPosition() remains range-relative. */
+void input_SetMediaPosition(input_thread_t *, double position, bool fast);
 
 /* XXX for string value you have to allocate it before calling
  * input_ControlPushHelper

@@ -2001,8 +2001,8 @@ test_ml_model_SOURCES = \
 	dialogs/new_playlist_data.hpp dialogs/new_playlist_data.cpp \
 	medialibrary/mlthreadpool.hpp medialibrary/mlthreadpool.cpp \
 	playlist/playlist_controller.hpp playlist/playlist_controller.cpp \
-	playlist/playlist_item.hpp playlist/playlist_item.cpp
-
+	playlist/playlist_item.hpp playlist/playlist_item.cpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
 nodist_test_ml_model_SOURCES = \
 	tests/test_ml_model.moc \
 	util/base_model.moc.cpp \
@@ -2157,7 +2157,8 @@ TESTS += test_qt_audio_waveform
 test_qt_home_activity_SOURCES = \
 	tests/test_home_activity.cpp tests/network_stream_probe.c \
 	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp \
-	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp
+	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
 nodist_test_qt_home_activity_SOURCES = \
 	tests/test_home_activity.moc medialibrary/mlqmltypes.moc.cpp
 BUILT_SOURCES += tests/test_home_activity.moc
@@ -2477,7 +2478,8 @@ test_qt_native_bookmarks_chapters_SOURCES = \
 	playlist/playlist_controller.cpp \
 	playlist/playlist_controller.hpp \
 	playlist/playlist_item.cpp \
-	playlist/playlist_item.hpp
+	playlist/playlist_item.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
 nodist_test_qt_native_bookmarks_chapters_SOURCES = \
 	tests/test_native_bookmarks_chapters.moc \
 	player/player_controller.moc.cpp \

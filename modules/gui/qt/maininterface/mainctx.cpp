@@ -279,7 +279,10 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
         if (m_medialib && m_medialib->homeActivity()) m_medialib->homeActivity()->invalidatePendingVisits();
     };
     localHistory.clearVisits = [this] {
-        if (!m_medialib || !m_medialib->homeActivity()) return QString{};
+        if (!m_medialib || !m_medialib->homeActivity()) {
+            MLHomeVisitStore visits(settings);
+            return visits.clear() ? QString{} : tr("Could not clear folder or playlist activity.");
+        }
         auto *activity=m_medialib->homeActivity();
         activity->clearVisits(); return activity->error();
     };

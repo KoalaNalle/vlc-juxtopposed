@@ -972,6 +972,22 @@ void libvlc_MlRelease( vlc_medialibrary_t* p_ml );
 VLC_API vlc_medialibrary_t* vlc_ml_instance_get( vlc_object_t* p_obj ) VLC_USED;
 #define vlc_ml_instance_get(x) vlc_ml_instance_get( VLC_OBJECT(x) )
 
+/** Availability of a history backend, without opening a database or enabling
+ * library browsing/indexing. The bundled patched SDK provides offline history
+ * access when the Library is disabled; other SDK builds may require Library ON.
+ */
+VLC_API bool vlc_ml_history_available(vlc_object_t *obj) VLC_USED;
+#define vlc_ml_history_available(x) vlc_ml_history_available(VLC_OBJECT(x))
+
+/** Get the shared history backend. Reuses an active Library, otherwise creates
+ * a lazy database-only instance with no parser, discovery or device refresh.
+ * The saved Library preference and explicit roots are unchanged. The returned
+ * borrowed pointer lives until instance cleanup; history/control operations may
+ * still fail and their results must be checked. May block while loading a module.
+ */
+VLC_API vlc_medialibrary_t *vlc_ml_history_get(vlc_object_t *obj) VLC_USED;
+#define vlc_ml_history_get(x) vlc_ml_history_get(VLC_OBJECT(x))
+
 VLC_API void* vlc_ml_get( vlc_medialibrary_t* p_ml, int i_query, ... ) VLC_USED;
 VLC_API int vlc_ml_control( vlc_medialibrary_t* p_ml, int i_query, ... ) VLC_USED;
 VLC_API int vlc_ml_list( vlc_medialibrary_t* p_ml, int i_query,

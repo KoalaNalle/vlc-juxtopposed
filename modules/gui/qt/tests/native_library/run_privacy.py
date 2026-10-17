@@ -24,17 +24,22 @@ try:
         try:code=child.wait(timeout=60);report['forcedCleanupUsed']=False
         except subprocess.TimeoutExpired:child.kill();code=child.wait(timeout=5);report['forcedCleanupUsed']=True
     text=(normal/'qtest.txt').read_text(encoding='utf-8')if(normal/'qtest.txt').exists()else''
-    report.update(exitCode=code,normalExit=code==0 and not report['forcedCleanupUsed'],qtestCases=14)
-    assert report['normalExit']and 'Totals: 14 passed, 0 failed, 0 skipped, 0 blacklisted' in text,text
+    report.update(exitCode=code,normalExit=code==0 and not report['forcedCleanupUsed'],qtestCases=17)
+    assert report['normalExit']and 'Totals: 17 passed, 0 failed, 0 skipped, 0 blacklisted' in text,text
     root=Path(__file__).resolve().parents[5]
     command=[sys.executable,str(root/'test/libvlc/native_history_clear.py'),'--qt-controller','--package',str(package),'--output-dir',str(out/'database-failure')]
     with (out/'pipe-stdout.txt').open('wb')as stdout,(out/'pipe-stderr.txt').open('wb')as stderr:
         pipe=subprocess.run(command,cwd=root,stdout=stdout,stderr=stderr,timeout=80,creationflags=subprocess.CREATE_NO_WINDOW)
     report['databaseFailure']=json.loads((out/'database-failure/verification.json').read_text(encoding='utf-8'))
     assert pipe.returncode==0 and report['databaseFailure']['passed']
+    command=[sys.executable,str(root/'test/libvlc/native_history_clear.py'),'--qt-controller','--library-off','--package',str(package),'--output-dir',str(out/'database-failure-library-off')]
+    with (out/'pipe-off-stdout.txt').open('wb')as stdout,(out/'pipe-off-stderr.txt').open('wb')as stderr:
+        pipe=subprocess.run(command,cwd=root,stdout=stdout,stderr=stderr,timeout=80,creationflags=subprocess.CREATE_NO_WINDOW)
+    report['databaseFailureLibraryOff']=json.loads((out/'database-failure-library-off/verification.json').read_text(encoding='utf-8'))
+    assert pipe.returncode==0 and report['databaseFailureLibraryOff']['passed']
     report['passed']=True
 finally:
     if child is not None and child.poll()is None:child.kill();child.wait(timeout=5)
     (out/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
-print(json.dumps(dict(passed=report['passed'],nativeQtCases=14,realDatabaseControllerChecks=9),indent=2),flush=True)
+print(json.dumps(dict(passed=report['passed'],nativeQtCases=17,realDatabaseControllerChecks=18),indent=2),flush=True)
 raise SystemExit(0 if report['passed']else 1)

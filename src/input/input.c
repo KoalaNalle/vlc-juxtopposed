@@ -191,7 +191,19 @@ void input_SetPosition( input_thread_t *p_input, double f_position, bool b_fast 
 
     param.pos.f_val = f_position;
     param.pos.b_fast_seek = b_fast;
+    param.pos.b_absolute_media = false;
     input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION, &param );
+}
+
+void input_SetMediaPosition(input_thread_t *input, double position, bool fast)
+{
+    if (!(position >= 0. && position <= 1.))
+        return;
+    const input_control_param_t param = {
+        .pos = { .b_fast_seek = fast, .b_absolute_media = true,
+                 .f_val = position },
+    };
+    input_ControlPush(input, INPUT_CONTROL_SET_POSITION, &param);
 }
 
 /**
@@ -1988,7 +2000,7 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
 }
 
 static int ControlSetPosition( input_thread_t *p_input, double val,
-                               bool fast_seek )
+                               bool fast_seek, bool absolute_media )
 {
     input_thread_private_t *priv = input_priv(p_input);
 
@@ -1996,7 +2008,17 @@ static int ControlSetPosition( input_thread_t *p_input, double val,
     if( i_length > 0 )
     {
         /* Calculate the updated position according to the current track duration */
-        if (priv->i_stop != 0)
+        if (absolute_media)
+        {
+            /* A saved percentage belongs to the whole media. Do not scale it
+             * into a newly configured clip, or restore outside that clip. */
+            const double time = val * i_length;
+            const vlc_tick_t end = priv->i_stop != 0 ?
+                                  __MIN(priv->i_stop, i_length) : i_length;
+            if (time < priv->i_start || time >= end)
+                return VLC_SUCCESS;
+        }
+        else if (priv->i_stop != 0)
             val = (priv->i_start + val * (priv->i_stop - priv->i_start)) / i_length;
         else
             val = (priv->i_start + val * (i_length - priv->i_start)) / i_length;
@@ -2112,7 +2134,8 @@ static bool Control( input_thread_t *p_input,
             priv->next_frame_need_data = false;
 
             int i_ret = ControlSetPosition( p_input, param.pos.f_val,
-                                            param.pos.b_fast_seek );
+                                            param.pos.b_fast_seek,
+                                            param.pos.b_absolute_media );
 
             if( i_ret )
                 msg_Err( p_input, "INPUT_CONTROL_SET_POSITION "

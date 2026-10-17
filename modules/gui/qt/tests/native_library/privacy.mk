@@ -29,3 +29,15 @@ $(PROPOSAL_OUT)/test_qt_privacy_preferences.exe: $(PRIVACY_OBJECTS)
 
 $(PROPOSAL_OUT)/recent_network_history.o: $(srcdir)/util/recent_network_history.cpp $(srcdir)/util/recent_network_history.hpp | $(PROPOSAL_OUT)
 	$(CXX) $(PRIVACY_CPPFLAGS) $(QT_QTEST_COMMON_cxxflags) $(CXXFLAGS) -c $< -o $@
+
+# Real Home persistence used by the Library-off local clear callback.
+PRIVACY_OBJECTS += $(PROPOSAL_OUT)/mlhomeactivitydata.o $(PROPOSAL_OUT)/new_playlist_data.o $(PROPOSAL_OUT)/mlqmltypes_moc.o
+$(PROPOSAL_OUT)/test_qt_privacy_preferences.exe: $(PROPOSAL_OUT)/mlhomeactivitydata.o $(PROPOSAL_OUT)/new_playlist_data.o $(PROPOSAL_OUT)/mlqmltypes_moc.o
+$(PROPOSAL_OUT)/mlhomeactivitydata.o: $(srcdir)/medialibrary/mlhomeactivitydata.cpp | $(PROPOSAL_OUT)
+	$(CXX) $(PRIVACY_CPPFLAGS) $(QT_QTEST_COMMON_cxxflags) $(CXXFLAGS) -c $< -o $@
+$(PROPOSAL_OUT)/new_playlist_data.o: $(srcdir)/dialogs/new_playlist_data.cpp | $(PROPOSAL_OUT)
+	$(CXX) $(PRIVACY_CPPFLAGS) $(QT_QTEST_COMMON_cxxflags) $(CXXFLAGS) -c $< -o $@
+$(PROPOSAL_OUT)/mlqmltypes.moc.cpp: $(srcdir)/medialibrary/mlqmltypes.hpp | $(PROPOSAL_OUT)
+	$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+$(PROPOSAL_OUT)/mlqmltypes_moc.o: $(PROPOSAL_OUT)/mlqmltypes.moc.cpp
+	$(CXX) $(PRIVACY_CPPFLAGS) $(QT_QTEST_COMMON_cxxflags) $(CXXFLAGS) -c $< -o $@

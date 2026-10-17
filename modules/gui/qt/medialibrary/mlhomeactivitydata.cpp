@@ -7,6 +7,7 @@
 #include "dialogs/new_playlist_data.hpp"
 #include "mlhelper.hpp"
 #include "qt.hpp"
+#include "util/checked_preferences_store.hpp"
 #include <algorithm>
 #include <limits>
 #include <utility>
@@ -60,7 +61,7 @@ MLHomeVisitStore::MLHomeVisitStore(QSettings *settings) : m_settings(settings)
 
 bool MLHomeVisitStore::record(MLItemId id, qint64 timestamp)
 {
-    if (!m_settings || m_settings->status() != QSettings::NoError || !visitType(id) || timestamp < 0)
+    if (!m_settings || !visitType(id) || timestamp < 0)
         return false;
     auto candidate = m_visits;
     auto &visit = candidate[id];
@@ -72,18 +73,9 @@ bool MLHomeVisitStore::record(MLItemId id, qint64 timestamp)
     const auto ordered = orderedVisits(candidate);
     for (const auto &record : ordered)
         rows.push_back(QVariantMap{{"id", record.id.toString()}, {"count", record.count}, {"lastVisit", record.lastVisit}});
-    const bool hadKey = m_settings->contains(visitKey);
-    const auto previous = m_settings->value(visitKey);
-    m_settings->setValue(visitKey, rows);
-    m_settings->sync();
-    if (m_settings->status() != QSettings::NoError)
-    {
-        // Keep both the accepted cache and QSettings' pending document intact:
-        // its later destructor/retry must not save a failed candidate visit.
-        if (hadKey) m_settings->setValue(visitKey, previous);
-        else m_settings->remove(visitKey);
+    QString error;
+    if (!CheckedPreferencesStore(nullptr).saveSettings(m_settings,visitKey,rows,false,error))
         return false;
-    }
     m_visits = std::move(candidate);
     return true;
 }
@@ -95,18 +87,13 @@ QList<MLHomeVisitStore::Visit> MLHomeVisitStore::visits() const
 
 bool MLHomeVisitStore::clear()
 {
-    if (!m_settings || m_settings->status() != QSettings::NoError)
+    if (!m_settings)
         return false;
-    const bool hadKey = m_settings->contains(visitKey);
-    const auto previous = m_settings->value(visitKey);
-    m_settings->remove(visitKey);
-    m_settings->sync();
-    if (m_settings->status() != QSettings::NoError)
-    {
-        if (hadKey) m_settings->setValue(visitKey, previous);
-        else m_settings->remove(visitKey);
+    // A fresh checked session can retry after a repaired file-sharing failure;
+    // QSettings::status() on the borrowed object retains its first error.
+    QString error;
+    if (!CheckedPreferencesStore(nullptr).saveSettings(m_settings,visitKey,{},true,error))
         return false;
-    }
     m_visits.clear();
     return true;
 }

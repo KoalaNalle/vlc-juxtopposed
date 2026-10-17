@@ -92,6 +92,8 @@ libvlc_int_t * libvlc_InternalCreate( void )
 
     priv = libvlc_priv (p_libvlc);
     vlc_mutex_init(&priv->lock);
+    vlc_mutex_init(&priv->history_lock);
+    priv->history_library = NULL;
     priv->interfaces = NULL;
     priv->main_playlist = NULL;
     priv->p_vlm = NULL;
@@ -370,6 +372,8 @@ void libvlc_InternalCleanup( libvlc_int_t *p_libvlc )
 
     if ( priv->p_media_library )
         libvlc_MlRelease( priv->p_media_library );
+    if (priv->history_library)
+        libvlc_MlRelease(priv->history_library);
 
     if( priv->media_source_provider )
         vlc_media_source_provider_Delete( priv->media_source_provider );

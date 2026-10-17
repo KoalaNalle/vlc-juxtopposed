@@ -7,6 +7,7 @@
 #include "qt.hpp"
 #include "util/recent_network_history.hpp"
 #include "maininterface/compositor.hpp"
+#include "medialibrary/mlhomeactivitydata.hpp"
 #include <vlc/vlc.h>
 #include <vlc_configuration.h>
 #include <vlc_player.h>
@@ -16,6 +17,7 @@
 #include <QThread>
 #include <QFile>
 #include <QSettings>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -44,10 +46,10 @@ class TestPrivacyPreferences final : public QObject
     {
         return {[this]{++invalidations;},[this]{++clears;if(processDuringClear)QCoreApplication::processEvents();return visitError;}};
     }
-    void open()
+    void open(bool library=true)
     {
         const QList<QByteArray> args={QByteArray("--config=")+config.toUtf8(),"--no-ignore-config","--quiet",
-            "--media-library","--no-ml-network-discovery","--no-metadata-network-access","--no-auto-preparse",
+            library ? "--media-library" : "--no-media-library","--no-ml-network-discovery","--no-metadata-network-access","--no-auto-preparse",
             "--extraintf=","--control=","--aout=dummy","--vout=dummy"};
         QList<const char *> argv; for(const auto &a:args)argv.append(a.constData());
         instance=libvlc_new(argv.size(),argv.data()); QVERIFY(instance);
@@ -66,7 +68,7 @@ class TestPrivacyPreferences final : public QObject
 private slots:
     void init()
     {
-        QVERIFY(temp.isValid());caseDir=QDir(temp.path()).filePath(QString::fromLatin1(QTest::currentTestFunction()));
+        QVERIFY(temp.isValid());caseDir=QDir(temp.path()).filePath(QString::fromLatin1(QTest::currentTestFunction())+QString::fromLatin1(QTest::currentDataTag()));
         QVERIFY(QDir().mkpath(caseDir));config=QDir(caseDir).filePath("vlcrc");
         const auto userdata=QDir(caseDir).filePath("userdata");QVERIFY(QDir().mkpath(userdata));
         qputenv("VLC_USERDATA_PATH",userdata.toUtf8());
@@ -146,9 +148,61 @@ private slots:
         QVERIFY(model->setValue("submitPlayedTracks",false));
         interfaces=config_GetPsz("extraintf");QCOMPARE(QByteArray(interfaces),QByteArray("http{host='127.0.0.1:9'}:logger{file='owned:log'}"));free(interfaces);
     }
+    void libraryOffCapabilityDoesNotOpenDatabase()
+    {
+        close();open(false);
+        QVERIFY(!vlc_ml_instance_get(intf));QVERIFY(!var_InheritBool(intf,"media-library"));
+        QVERIFY(model->capabilities().value("clearHistory").toBool());
+        const auto database=QDir(caseDir).filePath("userdata/ml/ml.db");
+        QVERIFY(!QFile::exists(database));model->reload();QVERIFY(!QFile::exists(database));
+        QVERIFY(model->setValue("saveRecentlyPlayed",false));
+        QVERIFY(!QFile::exists(database));QVERIFY(!vlc_ml_instance_get(intf));
+        close();open(false);
+        QVERIFY(!model->values().value("saveRecentlyPlayed").toBool());
+        QVERIFY(model->capabilities().value("clearHistory").toBool());
+        QVERIFY(!QFile::exists(database));
+    }
+    void nativeClearBusyAndLocalSuccess_data()
+    {
+        QTest::addColumn<bool>("library");
+        QTest::newRow("Library-on")<<true;
+        QTest::newRow("Library-off")<<false;
+    }
+    void libraryOffHomeStoreFailureAndRetry()
+    {
+#ifdef _WIN32
+        close();open(false);
+        MLHomeVisitStore visits(settings.get());
+        QVERIFY(visits.record(MLItemId(7,VLC_ML_PARENT_FOLDER),123));
+        QVERIFY(visits.record(MLItemId(9,VLC_ML_PARENT_PLAYLIST),456));
+        const auto previous=bytes(settings->fileName());
+        model.reset();
+        model=std::make_unique<PrivacyPreferencesModel>(intf,settings.get(),
+            PrivacyPreferencesModel::LocalHistory{[]{},[this]{
+                MLHomeVisitStore persisted(settings.get());
+                return persisted.clear() ? QString{} : QStringLiteral("Owned Home store write failure");
+            }});
+        const auto path=settings->fileName();
+        HANDLE locked=CreateFileW(reinterpret_cast<LPCWSTR>(path.utf16()),GENERIC_READ|GENERIC_WRITE,FILE_SHARE_READ|FILE_SHARE_WRITE,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
+        QVERIFY(locked!=INVALID_HANDLE_VALUE);
+        auto unlock=qScopeGuard([&]{CloseHandle(locked);});
+        QVERIFY(model->clearHistory());QTRY_VERIFY_WITH_TIMEOUT(!model->busy(),10000);
+        QVERIFY(!model->lastError().isEmpty());QVERIFY(model->status().isEmpty());
+        QCOMPARE(bytes(path),previous);QCOMPARE(MLHomeVisitStore(settings.get()).visits().size(),2);
+        CloseHandle(locked);unlock.dismiss();
+        QVERIFY(model->clearHistory());QTRY_VERIFY_WITH_TIMEOUT(!model->busy(),10000);
+        QVERIFY(model->lastError().isEmpty());QVERIFY(MLHomeVisitStore(settings.get()).visits().isEmpty());
+        QVERIFY(!vlc_ml_instance_get(intf));QVERIFY(!var_InheritBool(intf,"media-library"));
+        MLHomeVisitStore current(settings.get());
+        QVERIFY(current.record(MLItemId(7,VLC_ML_PARENT_FOLDER),789));
+        QCOMPARE(MLHomeVisitStore(settings.get()).visits().size(),1);
+#endif
+    }
     void nativeClearBusyAndLocalSuccess()
     {
-        auto *ml=vlc_ml_instance_get(intf);QVERIFY(ml);
+        QFETCH(bool,library);
+        if(!library){close();open(false);}
+        auto *ml=vlc_ml_history_get(intf);QVERIFY(ml);
         auto *media=vlc_ml_new_stream(ml,"http://127.0.0.1:9/owned-no-fetch");QVERIFY(media);
         const auto id=media->i_id;vlc_ml_release(media);QCOMPARE(vlc_ml_media_update_progress(ml,id,.5),VLC_SUCCESS);
         settings->setValue("filedialog-path",QStringLiteral("owned-old-location"));settings->setValue("OpenDialog/netMRL",QStringList{QStringLiteral("http://127.0.0.1/old")});settings->sync();
@@ -162,6 +216,8 @@ private slots:
         QCOMPARE(clears,1);QCOMPARE(cleared.size(),1);QCOMPARE(networkCleared.size(),1);
         QVERIFY(!settings->contains("OpenDialog/netMRL"));QCOMPARE(busy.size(),2);
         QVERIFY(!settings->contains("filedialog-path"));QCOMPARE(vlc_ml_count_history(ml,nullptr,VLC_ML_HISTORY_TYPE_GLOBAL),size_t(0));
+        QCOMPARE(vlc_ml_instance_get(intf)!=nullptr,library);
+        QCOMPARE(var_InheritBool(intf,"media-library"),library);
     }
     void partialLocalFailureReportsRetry()
     {
@@ -231,8 +287,9 @@ static int runHistoryFailurePipe()
     const auto config=qEnvironmentVariable("VLC_PRIVACY_PIPE_CONFIG");
     const auto settingsPath=qEnvironmentVariable("VLC_PRIVACY_PIPE_SETTINGS");
     if(config.isEmpty() || settingsPath.isEmpty() || !qEnvironmentVariableIsSet("VLC_USERDATA_PATH"))return 2;
+    const bool libraryOff=qEnvironmentVariableIsSet("VLC_HISTORY_LIBRARY_OFF");
     const QList<QByteArray> args={QByteArray("--config=")+config.toUtf8(),"--no-ignore-config","--quiet",
-        "--media-library","--no-ml-network-discovery","--no-metadata-network-access","--no-auto-preparse",
+        libraryOff ? "--no-media-library" : "--media-library","--no-ml-network-discovery","--no-metadata-network-access","--no-auto-preparse",
         "--extraintf=","--control=","--aout=dummy","--vout=dummy"};
     QList<const char *> argv;for(const auto &a:args)argv.append(a.constData());
     auto *instance=libvlc_new(argv.size(),argv.data());if(!instance)return 2;
@@ -248,7 +305,7 @@ static int runHistoryFailurePipe()
         PrivacyPreferencesModel::LocalHistory{[]{},[&]{++localClears;return QString{};}});
     QObject::connect(model.get(),&PrivacyPreferencesModel::fileDialogHistoryCleared,[&]{++fileSignals;});
     QObject::connect(model.get(),&PrivacyPreferencesModel::networkHistoryCleared,[&]{++networkSignals;});
-    auto *ml=vlc_ml_instance_get(intf);
+    auto *ml=vlc_ml_history_get(intf);
     auto *media=ml?vlc_ml_new_stream(ml,"http://127.0.0.1:9/owned-never-fetched"):nullptr;
     if(!media)return 2;
     const auto id=media->i_id;vlc_ml_release(media);
@@ -270,7 +327,10 @@ static int runHistoryFailurePipe()
     check(model->clearHistory()&&model->busy(),"controller accepts retry after database repair");
     check(wait()&&model->lastError().isEmpty()&&model->status()==QStringLiteral("History cleared."),"controller retry reports success after all stores finish");
     check(localClears==1&&fileSignals==1&&networkSignals==1&&!settings.contains("filedialog-path")&&!settings.contains("OpenDialog/netMRL"),"retry clears Home callback, network URLs and file location exactly once");
-    check(vlc_ml_count_history(ml,nullptr,VLC_ML_HISTORY_TYPE_GLOBAL)==0,"controller retry clears actual native playback history");
+    check(vlc_ml_count_history(ml,nullptr,VLC_ML_HISTORY_TYPE_GLOBAL)==0
+          && (vlc_ml_instance_get(intf)!=nullptr)==!libraryOff
+          && var_InheritBool(intf,"media-library")==!libraryOff,
+          "controller retry clears native history while preserving Library preference and availability");
     model.reset();vlc_player_Delete(intf->p_player);vlc_object_delete(intf);libvlc_release(instance);
     printf("RESULT: %u checks, %u failures\n",checks,failures);fflush(stdout);
     return failures?1:0;

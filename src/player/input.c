@@ -147,6 +147,7 @@ vlc_player_input_SeekByPos(struct vlc_player_input *input, double position,
         &(input_control_param_t) {
             .pos.f_val = position,
             .pos.b_fast_seek = speed == VLC_PLAYER_SEEK_FAST,
+            .pos.b_absolute_media = false,
     });
 
     if (ret == VLC_SUCCESS)
@@ -744,7 +745,7 @@ vlc_player_input_HandleTitleEvent(struct vlc_player_input *input,
                 (size_t)input->ml.states.current_title == ev->selected_idx &&
                 input->ml.pos > .0f)
             {
-                input_SetPosition(input->thread, input->ml.pos, false);
+                input_SetMediaPosition(input->thread, input->ml.pos, false);
             }
             /* Reset the wanted title to avoid forcing it or the position
              * again during the next title change

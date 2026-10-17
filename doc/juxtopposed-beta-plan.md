@@ -9,15 +9,28 @@ repairs discarded database failure results; seven actual native SQLite rejection
 retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37.
 The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
 archives all nine authored rows and original assets with one context request
-including its screenshot. Seven planned/two reserved Figma calls remain. The
+including its screenshot. The later Controls reference below leaves six
+planned/two reserved Figma calls. The
 source now mounts eight category bodies; Controls, Network, Performance,
 Recording and Extensions still lack bodies. The [Privacy policy implementation](juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
 adds independent position-storage permission, shared exclusions, coordinated clear,
 Home/Open Network consumers, metadata sharing and explicit unavailable Last.fm
 states. A first-operation media-library clear crash is repaired. History40, controller14,
 real SQLite controller9, QML8 and final ordinary4/Library18/42/9/Subtitle37 pass.
-Last.fm service, Library-disabled history/clear, actual native GUI journeys,
+Last.fm service, actual native Home/dialog interaction journeys,
 desktop/DPI and complete Privacy/full-beta acceptance remain open.
+
+The [Library-off history/resume checkpoint](juxtopposed-references/native/guest-history-library-off-20261017/README.md)
+now separates history access from browsing/indexing without changing the saved
+Library flag or roots. It passes history40/52, controller17, SQLite controller9+9,
+six actual decoded-history cases, ordinary4, native 18/42/9/37 and 4/25/8. The
+decoded pair also repairs whole-media resume percentages being interpreted in
+clip-relative coordinates. Home visit persistence permits real failure/retry.
+All 1280 final frozen inputs match; final clean packaging and broader Privacy/
+native desktop acceptance remain open. The [original Controls reference](juxtopposed-references/figma/20261017/controls/README.md)
+contains all 16 authored fields/actions and 18 unchanged original SVG assets.
+Its category body remains unmounted; duplicated Remotes rows are recorded
+explicitly without an invented mapping.
 
 The [guest fixed-rate audio clock checkpoint](juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
 closes the specific export timestamp discontinuity found during WAV/PCR work.
