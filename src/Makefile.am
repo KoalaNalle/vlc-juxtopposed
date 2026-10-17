@@ -78,6 +78,7 @@ pluginsinclude_HEADERS.h = \
 	../include/vlc_meta_fetcher.h \
 	../include/vlc_mime.h \
 	../include/vlc_modules.h \
+	../include/vlc_process_priority.h \
 	../include/vlc_mouse.h \
 	../include/vlc_network.h \
 	../include/vlc_objects.h \
@@ -418,6 +419,7 @@ libvlccore_la_SOURCES = \
 	misc/rcu.c \
 	misc/renderer_discovery.c \
 	misc/threads.c \
+	misc/process_priority.c \
 	misc/threads.h \
 	misc/cpu.c \
 	misc/diffutil.c \

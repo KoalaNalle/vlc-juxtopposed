@@ -37,6 +37,7 @@
 #include <vlc_cpu.h>
 #include <vlc_vout_display.h>
 #include <vlc_subpicture.h>
+#include <vlc_process_priority.h>
 #include "libvlc.h"
 #include "modules/modules.h"
 
@@ -1185,6 +1186,15 @@ static const char *const clock_sources_text[] = {
     "Multimedia timers",
 #endif
 };
+static const int process_priority_values[] = {
+    VLC_PROCESS_PRIORITY_INHERIT, VLC_PROCESS_PRIORITY_IDLE,
+    VLC_PROCESS_PRIORITY_BELOW_NORMAL, VLC_PROCESS_PRIORITY_NORMAL,
+    VLC_PROCESS_PRIORITY_ABOVE_NORMAL, VLC_PROCESS_PRIORITY_HIGH,
+};
+static const char *const process_priority_names[] = {
+    N_("Inherit"), N_("Idle"), N_("Below normal"), N_("Normal"),
+    N_("Above normal"), N_("High"),
+};
 #endif
 
 #define PLAYLISTENQUEUE_TEXT N_( \
@@ -2184,6 +2194,16 @@ vlc_module_begin ()
 #ifdef _WIN32
     add_string( "clock-source", "perf", CLOCK_SOURCE_TEXT, NULL )
         change_string_list( clock_sources, clock_sources_text )
+    add_integer("win32-process-priority", VLC_PROCESS_PRIORITY_INHERIT,
+                N_("Windows process priority"),
+                N_("Base process class when real-time scheduling is off: -2 Idle, "
+                   "-1 Below normal, 0 Normal, 1 Above normal, 2 High. "
+                   "The default 3 preserves the inherited class."))
+        change_integer_list(process_priority_values, process_priority_names)
+    add_bool("win32-realtime-priority", false, N_("Real-time process scheduling"),
+             N_("Request the actual Windows real-time process class. "
+                "The request is rejected if Windows does not grant that exact class. "
+                "The base process priority is used when this option is off."))
 #endif
 
 /* Play Queue options */

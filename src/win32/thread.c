@@ -668,20 +668,7 @@ void vlc_threads_setup(libvlc_int_t *vlc)
 {
     SelectClockSource(vlc);
 
-#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP)
-    /* Raise default priority of the current process */
-#ifndef ABOVE_NORMAL_PRIORITY_CLASS
-#   define ABOVE_NORMAL_PRIORITY_CLASS 0x00008000
-#endif
-    if (var_InheritBool(vlc, "high-priority"))
-    {
-        if (SetPriorityClass(GetCurrentProcess(), ABOVE_NORMAL_PRIORITY_CLASS)
-         || SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
-            msg_Dbg(vlc, "raised process priority");
-        else
-            msg_Dbg(vlc, "could not raise process priority");
-    }
-#endif
+    /* Scheduling policy is applied after full CLI and saved config loading. */
 }
 
 #define LOOKUP(s) (((s##_) = (s##_ptr)GetProcAddress(h, #s)) != NULL)

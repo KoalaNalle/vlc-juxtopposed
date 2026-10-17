@@ -30,6 +30,7 @@
 #endif
 #include <vlc_common.h>
 #include <vlc_url.h>
+#include <vlc_process_priority.h>
 #include "../libvlc.h"
 #include "../lib/libvlc_internal.h"
 
@@ -178,8 +179,42 @@ static char **LibraryOpenArguments(int count, const char *const argv[])
     return args;
 }
 
+static void ProcessPriorityConfigure(libvlc_int_t *instance)
+{
+    const int64_t configured = var_InheritInteger(instance, "win32-process-priority");
+    /* Validate the complete native integer before narrowing it to an API
+     * class. Invalid input must not wrap into a different valid class. */
+    int level = configured >= VLC_PROCESS_PRIORITY_IDLE
+        && configured <= VLC_PROCESS_PRIORITY_INHERIT
+        ? (int)configured : VLC_PROCESS_PRIORITY_IDLE - 1;
+    bool realtime = var_InheritBool(instance, "win32-realtime-priority");
+    const bool modern_cli = var_Type(instance, "win32-process-priority")
+        || var_Type(instance, "win32-realtime-priority");
+    const bool legacy_cli = var_Type(instance, "high-priority") != 0;
+    const bool legacy_high = var_InheritBool(instance, "high-priority");
+    if (!modern_cli) {
+        if (legacy_cli) {
+            /* Explicit legacy no-high means no Core scheduling override,
+             * preserving a LibVLC host's inherited class. */
+            level = legacy_high ? VLC_PROCESS_PRIORITY_ABOVE_NORMAL : VLC_PROCESS_PRIORITY_INHERIT;
+            realtime = false;
+        } else if (level == VLC_PROCESS_PRIORITY_INHERIT && !realtime && legacy_high)
+            level = VLC_PROCESS_PRIORITY_ABOVE_NORMAL;
+    }
+    vlc_process_priority_state state;
+    const int result = vlc_process_priority_apply(level, realtime, &state);
+    var_Create(instance, "win32-priority-request-error", VLC_VAR_INTEGER);
+    var_SetInteger(instance, "win32-priority-request-error", state.system_error);
+    var_Create(instance, "win32-priority-rollback-failed", VLC_VAR_BOOL);
+    var_SetBool(instance, "win32-priority-rollback-failed", state.rollback_failed);
+    if (result != VLC_SUCCESS)
+        msg_Warn(instance, "process priority request rejected (Windows error %"PRIu32", rollback failed: %s)",
+                 state.system_error, state.rollback_failed ? "yes" : "no");
+}
+
 void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_argv[] )
 {
+    ProcessPriorityConfigure(p_this);
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
     if( LibrarySingleInstance(p_this) )
     {

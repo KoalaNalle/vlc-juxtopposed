@@ -76,6 +76,7 @@ install_headers(
     'vlc_meta_fetcher.h',
     'vlc_mime.h',
     'vlc_modules.h',
+    'vlc_process_priority.h',
     'vlc_mouse.h',
     'vlc_network.h',
     'vlc_objects.h',

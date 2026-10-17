@@ -708,3 +708,10 @@ EXTRA_DIST += src/network/proxy_transport.c libvlc/native_http_runtime.py \
 EXTRA_DIST += libvlc/native_encoder_preference.py libvlc/native_flac_drain.py \
     libvlc/native_conversion_controller.py libvlc/native_encoder.md
 EXTRA_DIST += libvlc/native_plugin_cache_rescan.py libvlc/native_plugin_cache_rescan.md
+EXTRA_DIST += priority-native.mk libvlc/native_process_priority.py libvlc/native_process_priority.md
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_priority_startup
+test_priority_startup_SOURCES = src/misc/priority_startup.c
+test_priority_startup_LDADD = $(LIBVLC) $(LIBVLCCORE)
+test_priority_startup_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+endif

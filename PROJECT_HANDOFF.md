@@ -8,6 +8,17 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [Windows priority consumer](doc/juxtopposed-references/native/guest-process-priority-20261017/README.md)
+now applies saved policy after config/full CLI parsing. Paired before7 reproduces
+ignored saved high and a flag-like string falsely raising priority; new21 passes
+all base classes, precedence, inheritance and invalid/overflow rejection.
+Exact real-time is not granted on this account; prior class is preserved with
+an explicit error. Only quiet owned children change class and immediately
+restore it. Core0a2ad3 with unchanged GUI753feb passes ordinary5. Sixteen scoped
+hashes/standard target resolution/Meson syntax match. Performance's typed model,
+checked OS/config rollback, page and remaining fields are still pending;
+no category or full-beta acceptance is claimed.
+
 The [plugin Rescan backend](doc/juxtopposed-references/native/guest-plugin-rescan-20261017/README.md)
 now passes native16 with real Unicode generation, Core parser/cold-cache reload,
 playing/paused independence, checked atomic publication, locked-file retry,

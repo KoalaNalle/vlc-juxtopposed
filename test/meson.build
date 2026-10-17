@@ -122,6 +122,15 @@ foreach vlc_test: vlc_tests
     endif
 endforeach
 
+if host_system == 'windows'
+    executable('test_priority_startup', 'src/misc/priority_startup.c',
+        include_directories: [vlc_include_dirs],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+        win_subsystem: 'console')
+endif
+
 if host_machine.system() == 'windows' and not have_win_store
     foreach network_driver : ['proxy_windows', 'settings_consumers', 'proxy_policy', 'proxy_transport']
         executable('test_network_' + network_driver,

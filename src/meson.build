@@ -279,6 +279,7 @@ libvlccore_sources_base = files(
     'misc/keystore.c',
     'misc/renderer_discovery.c',
     'misc/threads.c',
+    'misc/process_priority.c',
     'misc/cpu.c',
     'misc/diffutil.c',
     'misc/epg.c',
