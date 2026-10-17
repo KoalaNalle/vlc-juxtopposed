@@ -4,6 +4,15 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [typed Performance model](juxtopposed-references/native/guest-performance-model-20261017/README.md)
+now passes native16, including checked Unicode persistence, real file-lock
+rollback/retry, compound postproc preservation, exact Windows scheduling and
+OS/config rollback, CLI overrides and actual plugin rescanning. Its production
+build registrations are present; MainCtx/QML mounting, decoder/frame/clock
+consumers and rebuilt ordinary GUI remain pending. The source package is intact.
+Work is paused at the user's request after this checkpoint; the full beta is
+incomplete. Resume with the native consumers and all14-field Performance page.
+
 The [Windows priority consumer](juxtopposed-references/native/guest-process-priority-20261017/README.md)
 now applies saved policy after config/full CLI parsing. Paired before7 reproduces
 ignored saved high and a flag-like string falsely raising priority; new21 passes

@@ -8,6 +8,15 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [typed Performance model](doc/juxtopposed-references/native/guest-performance-model-20261017/README.md)
+now passes native16, including checked Unicode persistence, real file-lock
+rollback/retry, compound postproc preservation, exact Windows scheduling and
+OS/config rollback, CLI overrides and actual plugin rescanning. Its production
+build registrations are present; MainCtx/QML mounting, decoder/frame/clock
+consumers and rebuilt ordinary GUI remain pending. The source package is intact.
+Work is paused at the user's request after this checkpoint; the full beta is
+incomplete. Resume with the native consumers and all14-field Performance page.
+
 The [Windows priority consumer](doc/juxtopposed-references/native/guest-process-priority-20261017/README.md)
 now applies saved policy after config/full CLI parsing. Paired before7 reproduces
 ignored saved high and a flag-like string falsely raising priority; new21 passes

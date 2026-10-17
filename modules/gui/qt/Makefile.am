@@ -191,6 +191,7 @@ libqt_plugin_la_SOURCES = \
 	maininterface/privacy_preferences_model.cpp maininterface/privacy_preferences_model.hpp \
 	maininterface/controls_preferences_model.cpp maininterface/controls_preferences_model.hpp \
 	maininterface/network_preferences_model.cpp maininterface/network_preferences_model.hpp \
+	maininterface/performance_preferences_model.cpp maininterface/performance_preferences_model.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
@@ -504,6 +505,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/privacy_preferences_model.moc.cpp \
 	maininterface/controls_preferences_model.moc.cpp \
 	maininterface/network_preferences_model.moc.cpp \
+	maininterface/performance_preferences_model.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
@@ -2914,6 +2916,28 @@ test_qt_plugin_cache_rescan_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdi
 test_qt_plugin_cache_rescan_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
 test_qt_plugin_cache_rescan_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
 test_qt_plugin_cache_rescan_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+endif
+endif
+endif
+
+# Owned Performance model integration; invoke through its portable-runtime driver.
+EXTRA_DIST += tests/test_performance_preferences.cpp tests/native_library/performance.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_performance_preferences
+test_qt_performance_preferences_SOURCES = tests/test_performance_preferences.cpp \
+    tests/library_preferences_probe.c maininterface/performance_preferences_model.cpp \
+    maininterface/performance_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp util/winpthreads_shutdown.cpp
+nodist_test_qt_performance_preferences_SOURCES = tests/test_performance_preferences.moc \
+    maininterface/performance_preferences_model.moc.cpp util/plugin_cache_rescan.moc.cpp
+BUILT_SOURCES += tests/test_performance_preferences.moc
+CLEANFILES += tests/test_performance_preferences.moc
+test_qt_performance_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_performance_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_performance_preferences_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_performance_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
 endif
 endif
 endif

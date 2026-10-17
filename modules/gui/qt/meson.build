@@ -89,6 +89,7 @@ moc_headers = files(
     'maininterface/privacy_preferences_model.hpp',
     'maininterface/controls_preferences_model.hpp',
     'maininterface/network_preferences_model.hpp',
+    'maininterface/performance_preferences_model.hpp',
     'util/plugin_cache_rescan.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
@@ -337,6 +338,7 @@ qt_plugin_sources = files(
     'maininterface/privacy_preferences_model.cpp',
     'maininterface/controls_preferences_model.cpp',
     'maininterface/network_preferences_model.cpp',
+    'maininterface/performance_preferences_model.cpp',
     'util/modal_input_guard.cpp',
     'util/modal_input_guard.hpp',
     'maininterface/video_preferences_model.cpp',
@@ -362,6 +364,7 @@ qt_plugin_sources = files(
     'maininterface/privacy_preferences_model.hpp',
     'maininterface/controls_preferences_model.hpp',
     'maininterface/network_preferences_model.hpp',
+    'maininterface/performance_preferences_model.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
@@ -1774,6 +1777,27 @@ if qt6_dep.found()
                 'link_with': [libvlccore, libvlc],
                 'link_args': rescan_link_args,
                 'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, rescan_deps],
+                'register_test': false,
+            }
+            performance_sources = files('tests/test_performance_preferences.cpp',
+                'tests/library_preferences_probe.c', 'util/plugin_cache_rescan.cpp',
+                'util/checked_preferences_store.cpp', 'maininterface/performance_preferences_model.cpp')
+            performance_deps = []
+            performance_link_args = qt_link_args
+            if have_mingw
+                performance_sources += files('util/winpthreads_shutdown.cpp')
+                performance_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                performance_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_performance_preferences',
+                'sources': performance_sources,
+                'moc_sources': files('tests/test_performance_preferences.cpp'),
+                'moc_headers': files('util/plugin_cache_rescan.hpp', 'maininterface/performance_preferences_model.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': performance_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, performance_deps],
                 'register_test': false,
             }
         endif
