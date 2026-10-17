@@ -12,7 +12,6 @@
 #include <vlc_cxx_helpers.hpp>
 #include <QByteArrayList>
 #include <QMap>
-#include <QRegularExpression>
 #include <cmath>
 #include <cstring>
 
@@ -91,6 +90,16 @@ struct Postprocessing {
     int quality = -1;
     QByteArray removed, enabled;
 };
+bool optionName(const char *name)
+{
+    const auto alphanumeric = [](unsigned char c) {
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+    };
+    if (!name || !alphanumeric(*name)) return false;
+    for (const char *p = name + 1; *p; ++p)
+        if (!alphanumeric(*p) && *p != '-') return false;
+    return true;
+}
 Postprocessing postprocessing(int replacement = -2)
 {
     Postprocessing result;
@@ -110,8 +119,7 @@ Postprocessing postprocessing(int replacement = -2)
             ++result.count;
             QByteArrayList fields;
             for (auto *entry = options; entry; entry = entry->p_next) {
-                if (!entry->psz_name || !QRegularExpression(QStringLiteral("^[A-Za-z0-9][A-Za-z0-9-]*$"))
-                         .match(QString::fromUtf8(entry->psz_name)).hasMatch()) { result.editable = false; continue; }
+                if (!optionName(entry->psz_name)) { result.editable = false; continue; }
                 if (!strcmp(entry->psz_name, "q")) {
                     bool ok = false;
                     const auto quality = QString::fromUtf8(entry->psz_value ? entry->psz_value : "").toInt(&ok);
@@ -229,18 +237,23 @@ void PerformancePreferencesModel::refresh()
         ? QVariant(filters.quality) : QVariant(QStringLiteral("custom"));
     caps[QStringLiteral("postprocessing")] = caps.value(QStringLiteral("postprocessing")).toBool()
         && config_GetType("video-filter") == VLC_VAR_STRING && module_exists("postproc") && filters.editable;
+    const bool savedRealtime = config_GetType("win32-realtime-priority") == VLC_VAR_BOOL
+        && config_GetInt("win32-realtime-priority") != 0;
     vlc_process_priority_state state;
     const bool priorityAvailable = vlc_process_priority_get(&state) == VLC_SUCCESS;
     caps[QStringLiteral("processPriority")] = caps.value(QStringLiteral("processPriority")).toBool() && priorityAvailable;
     caps[QStringLiteral("realTimePriority")] = caps.value(QStringLiteral("realTimePriority")).toBool() && priorityAvailable;
     if (priorityAvailable) {
-        values[QStringLiteral("realTimePriority")] = state.realtime;
+        // A saved request can be inactive after Windows refuses it. Expose
+        // that mismatch through the shared explicit On/Off choice, so a
+        // pointer user can clear it without falsely showing real-time active.
+        values[QStringLiteral("realTimePriority")] = savedRealtime && !state.realtime
+            ? QVariant(QStringLiteral("requested")) : QVariant(state.realtime);
         if (values.value(QStringLiteral("processPriority")).toLongLong() == VLC_PROCESS_PRIORITY_INHERIT)
             values[QStringLiteral("processPriority")] = state.level;
     }
     values[QStringLiteral("actualPriority")] = priorityAvailable ? className(state) : tr("Unavailable");
-    values[QStringLiteral("prioritySavedRealTime")] = config_GetType("win32-realtime-priority") == VLC_VAR_BOOL
-        && config_GetInt("win32-realtime-priority") != 0;
+    values[QStringLiteral("prioritySavedRealTime")] = savedRealtime;
     caps[QStringLiteral("rescan")] = m_intf && m_consumers.rescan && m_scan->available();
     caps[QStringLiteral("advanced")] = m_intf != nullptr;
     m_values = values; m_capabilities = caps; m_choices = choices; emit valuesChanged();
@@ -252,7 +265,8 @@ QVariantMap PerformancePreferencesModel::applyModes() const
         const auto key = QString::fromLatin1(option.key);
         modes[key] = key == QStringLiteral("realTimePriority") || key == QStringLiteral("processPriority")
             ? QStringLiteral("live") : commandLineOverride(key) ? QStringLiteral("commandLineOverride")
-            : key == QStringLiteral("hardwareDecoder") || key == QStringLiteral("postprocessing") ? QStringLiteral("restart")
+            : key == QStringLiteral("hardwareDecoder") || key == QStringLiteral("postprocessing")
+                || key == QStringLiteral("dropLateFrames") ? QStringLiteral("restart")
             : key == QStringLiteral("encoder") ? QStringLiteral("nextJob") : QStringLiteral("nextInput");
     }
     modes[QStringLiteral("rescan")] = QStringLiteral("restart");
@@ -260,14 +274,18 @@ QVariantMap PerformancePreferencesModel::applyModes() const
 }
 QVariantMap PerformancePreferencesModel::supportNotes() const
 {
+    QString priorityNote = tr("Live Windows process scheduling. Current class: %1. Base levels: -2 Idle, -1 Below normal, 0 Normal, 1 Above normal, 2 High. The base is used when real-time is off. Changes require exact Windows readback and a successful preference save.")
+        .arg(m_values.value(QStringLiteral("actualPriority")).toString());
+    if (m_values.value(QStringLiteral("realTimePriority")).typeId() == QMetaType::QString
+        && m_values.value(QStringLiteral("realTimePriority")).toString() == QStringLiteral("requested"))
+        priorityNote += tr(" A saved real-time request is not active. Choose Off to clear that request.");
     return {
         {QStringLiteral("hardwareDecoder"),tr("Uses the native hardware-decoding flag and device preference after restarting VLC. A device requires compatible hardware; normal software fallback remains available. Off preserves the saved device choice.")},
         {QStringLiteral("postprocessing"),tr("Uses the actual postproc video filter after restarting VLC. Other filters and inline options are preserved. For multiple postproc stages, select Off before choosing one quality.")},
         {QStringLiteral("decodingThreads"),tr("0 selects automatic threading. This build caps explicit HEVC threads at 32 and other video decoders at 16; hardware-only decoding uses one thread. Next input.")},
         {QStringLiteral("loopFilter"),tr("Native avcodec H.264 loop-filter policy for the next input. Other decoders may not use it.")},
-        {QStringLiteral("dropLateFrames"),tr("Native late-video-frame policy for the next input.")},
-        {QStringLiteral("priority"),tr("Live Windows process scheduling. Current class: %1. Base levels: -2 Idle, -1 Below normal, 0 Normal, 1 Above normal, 2 High. The base is used when real-time is off. Changes require exact Windows readback and a successful preference save.")
-            .arg(m_values.value(QStringLiteral("actualPriority")).toString())},
+        {QStringLiteral("dropLateFrames"),tr("Restart VLC to apply the late-frame policy. Video outputs can be reused between media, retaining their current policy.")},
+        {QStringLiteral("priority"),priorityNote},
         {QStringLiteral("encoder"),tr("Preferred encoder for the next automatic conversion job. Explicit profile encoders take precedence; an incompatible or missing preference falls back normally. Running jobs retain their captured preference.")},
         {QStringLiteral("decoder"),tr("Native decoder preference for the next input; available modules and media format determine selection.")},
         {QStringLiteral("clock"),tr("Native input-clock defaults for the next input. Jitter is in milliseconds; reference averaging scales with the input's caching delay. A zero average uses the native fallback.")},

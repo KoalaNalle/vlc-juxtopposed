@@ -354,6 +354,7 @@ input_thread_t * input_Create( vlc_object_t *p_parent, input_item_t *p_item,
 
     priv->b_low_delay = var_InheritBool( p_input, "low-delay" );
     priv->i_jitter_max = VLC_TICK_FROM_MS(var_InheritInteger( p_input, "clock-jitter" ));
+    msg_Dbg( p_input, "clock jitter maximum: %"PRId64" us", priv->i_jitter_max );
 
     /* Remove 'Now playing' info as it is probably outdated */
     input_item_SetNowPlaying( p_item, NULL );
@@ -1232,6 +1233,8 @@ static void UpdatePtsDelay( input_thread_t *p_input )
 
     /* Update cr_average depending on the caching */
     const int i_cr_average = var_GetInteger( p_input, "cr-average" ) * i_pts_delay / DEFAULT_PTS_DELAY;
+    msg_Dbg( p_input, "clock reference averaging: %d (caching %"PRId64" us)",
+             i_cr_average, i_pts_delay );
 
     es_out_SetJitter( input_priv(p_input)->p_es_out, i_pts_delay, 0, i_cr_average );
 }
@@ -3064,6 +3067,7 @@ static int InputSourceInit( input_source_t *in, input_thread_t *p_input,
 
     if( var_GetInteger( p_input, "clock-synchro" ) != -1 )
         in->b_can_pace_control = !var_GetInteger( p_input, "clock-synchro" );
+    msg_Dbg( p_input, "source clock pacing: %d", in->b_can_pace_control );
 
     return VLC_SUCCESS;
 }

@@ -864,6 +864,25 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/performance-settings-05bc9.svg \
+	pixmaps/juxtopposed/performance-settings-08f95.svg \
+	pixmaps/juxtopposed/performance-settings-1b0f7.svg \
+	pixmaps/juxtopposed/performance-settings-1bf8a.svg \
+	pixmaps/juxtopposed/performance-settings-1f9fe.svg \
+	pixmaps/juxtopposed/performance-settings-36bfa.svg \
+	pixmaps/juxtopposed/performance-settings-3ffd5.svg \
+	pixmaps/juxtopposed/performance-settings-432a4.svg \
+	pixmaps/juxtopposed/performance-settings-4dae7.svg \
+	pixmaps/juxtopposed/performance-settings-66cd9.svg \
+	pixmaps/juxtopposed/performance-settings-6db55.svg \
+	pixmaps/juxtopposed/performance-settings-764c9.svg \
+	pixmaps/juxtopposed/performance-settings-7d179.svg \
+	pixmaps/juxtopposed/performance-settings-80d5a.svg \
+	pixmaps/juxtopposed/performance-settings-9c2da.svg \
+	pixmaps/juxtopposed/performance-settings-ad68b.svg \
+	pixmaps/juxtopposed/performance-settings-cf6e1.svg \
+	pixmaps/juxtopposed/performance-settings-ec3f6.svg \
+	pixmaps/juxtopposed/performance-settings-f1a4a.svg \
 	pixmaps/juxtopposed/network-settings-05bc9.svg \
 	pixmaps/juxtopposed/network-settings-08f95.svg \
 	pixmaps/juxtopposed/network-settings-1b0f7.svg \
@@ -1263,6 +1282,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedControlsSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
@@ -2941,3 +2961,8 @@ test_qt_performance_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=
 endif
 endif
 endif
+
+EXTRA_DIST += tests/test_juxtopposed_performance_settings.py tests/juxtopposed_performance_preferences_fixture.py \
+    tests/native_ui/performance_journey.cpp tests/native_ui/run_performance_journey.py
+
+EXTRA_DIST += tests/native_ui/performance_journey.mk

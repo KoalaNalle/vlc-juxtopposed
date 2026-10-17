@@ -45,6 +45,7 @@
 #include "privacy_preferences_model.hpp"
 #include "controls_preferences_model.hpp"
 #include "network_preferences_model.hpp"
+#include "performance_preferences_model.hpp"
 #include "dialogs/preferences/controls_shortcuts.hpp"
 #include <vlc_dialog.h>
 #include "medialibrary/mlhelper.hpp"
@@ -251,6 +252,10 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     m_controlsPreferences = new ControlsPreferencesModel(p_intf, std::move(controlsConsumers), this);
     m_networkPreferences = new NetworkPreferencesModel(p_intf,
         NetworkPreferencesModel::Consumers{true, true, true, true}, this);
+    // Native policy/decoded-output, hardware on/off, priority rollback, encoder
+    // snapshot and isolated rescan checks cover these consumers.
+    m_performancePreferences = new PerformancePreferencesModel(p_intf,
+        PerformancePreferencesModel::Consumers{true, true, true, true, true, true}, this);
     // Default Consumers gates remain false until each native behavior is verified.
     m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, this);
     // Precise-seek capability stays gated until actual native app acceptance.
@@ -414,6 +419,8 @@ MainCtx::~MainCtx()
     m_threadRunner->destroy();
     delete m_controlsPreferences;
     m_controlsPreferences = nullptr;
+    delete m_performancePreferences;
+    m_performancePreferences = nullptr;
     delete m_networkPreferences;
     m_networkPreferences = nullptr;
     delete m_privacyPreferences;

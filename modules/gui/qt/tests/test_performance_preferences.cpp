@@ -217,12 +217,25 @@ private slots:
             QVERIFY(!config_GetInt("win32-realtime-priority")); QVERIFY(!model->lastError().isEmpty());
         }
     }
+    void savedUnappliedRealtimeRemainsExplicitAndClearable()
+    {
+        QVERIFY(model->setValue("processPriority",0));
+        config_PutInt("win32-realtime-priority",1); QCOMPARE(config_SaveConfigFile(intf),0);
+        model->reload(); vlc_process_priority_state state;
+        QCOMPARE(vlc_process_priority_get(&state),VLC_SUCCESS); QVERIFY(!state.realtime);
+        QVERIFY(model->values().value("prioritySavedRealTime").toBool());
+        QCOMPARE(model->values().value("realTimePriority").toString(),QStringLiteral("requested"));
+        QVERIFY(model->setValue("realTimePriority",false));
+        QCOMPARE(config_GetInt("win32-realtime-priority"),0);
+        QCOMPARE(model->values().value("realTimePriority"),QVariant(false));
+    }
     void commandLineOverridesAndApplyTimingAreVisible()
     {
         close(); open(true,{"--avcodec-threads=1","--video-filter=adjust","--no-hw-dec","--codec=avcodec"});
         for (const auto &key : {"decodingThreads","postprocessing","hardwareDecoder","decoder"})
             QCOMPARE(model->applyModes().value(key).toString(),QStringLiteral("commandLineOverride"));
         QCOMPARE(model->applyModes().value("encoder").toString(),QStringLiteral("nextJob"));
+        QCOMPARE(model->applyModes().value("dropLateFrames").toString(),QStringLiteral("restart"));
         QCOMPARE(model->applyModes().value("clockJitter").toString(),QStringLiteral("nextInput"));
         QCOMPARE(model->applyModes().value("processPriority").toString(),QStringLiteral("live"));
         QVERIFY(model->setValue("decodingThreads",4)); QCOMPARE(config_GetInt("avcodec-threads"),4);

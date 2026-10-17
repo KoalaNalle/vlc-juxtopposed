@@ -7,7 +7,7 @@ The user's latest request supersedes the earlier goal of one useful action per s
 ## Release boundaries agreed with the user — 17 October 2026
 
 This clarification takes precedence over older broad parity requirements below.
-Implementation remains paused until the user resumes it.
+The user resumed development under this revised scope; the beta goal is active.
 
 | Release | Scope |
 | --- | --- |
@@ -36,14 +36,18 @@ minor known issues and supported-format/platform limits. This does not require
 claiming every possible VLC feature or media/hardware combination bug-free.
 No designer outreach or new extension implementation is authorized by this plan.
 
-The [typed Performance model](juxtopposed-references/native/guest-performance-model-20261017/README.md)
-now passes native16, including checked Unicode persistence, real file-lock
-rollback/retry, compound postproc preservation, exact Windows scheduling and
-OS/config rollback, CLI overrides and actual plugin rescanning. Its production
-build registrations are present; MainCtx/QML mounting, decoder/frame/clock
-consumers and rebuilt ordinary GUI remain pending. The source package is intact.
-Work is paused at the user's request after this checkpoint; the full beta is
-incomplete. Resume with the native consumers and all14-field Performance page.
+The [Performance page checkpoint](juxtopposed-references/native/guest-performance-page-20261017/README.md)
+mounts all14 original fields/actions in MainCtx and the settings host, with the
+original19 SVGs. Native model17, actual window51/14, software media11, hardware3,
+component Performance6/Network7/Controls8 and ordinary playback5 pass normally.
+The first window passed its actions but crashed on shutdown and remains rejected;
+equivalent ASCII option validation replaces its Qt regex, and both corrected
+window builds pass with regex JIT enabled. Drop frames truthfully requests restart,
+and a saved but unapplied real-time request can be cleared. Coreb283af/ordinary
+GUId36894 are the recorded incremental tuple; all2212 frozen inputs match.
+Full regression, themes/accessibility/DPI/platform and the clean licensed beta
+package remain open. Next: original Recording12 and Extensions7, then remaining
+designed consumers/journeys and quality gates. Do not add vanilla-only scope.
 
 The [Windows priority consumer](juxtopposed-references/native/guest-process-priority-20261017/README.md)
 now applies saved policy after config/full CLI parsing. Paired before7 reproduces
@@ -52,9 +56,8 @@ all base classes, precedence, inheritance and invalid/overflow rejection.
 Exact real-time is not granted on this account; prior class is preserved with
 an explicit error. Only quiet owned children change class and immediately
 restore it. Core0a2ad3 with unchanged GUI753feb passes ordinary5. Sixteen scoped
-hashes/standard target resolution/Meson syntax match. Performance's typed model,
-checked OS/config rollback, page and remaining fields are still pending;
-no category or full-beta acceptance is claimed.
+hashes/standard target resolution/Meson syntax match. The later Performance page checkpoint adds the typed model, checked persistence
+and compiled UI; full category/platform and beta acceptance remain separate.
 
 The [plugin Rescan backend](juxtopposed-references/native/guest-plugin-rescan-20261017/README.md)
 now passes native16 with real Unicode generation, Core parser/cold-cache reload,
@@ -64,8 +67,8 @@ bug is fixed, and an older Core rejects the new tool before cache writes.
 Coreea9253/generator6c50e5 with unchanged GUI753feb passes ordinary5. All19 scoped
 inputs match; Autotools target resolution and Meson syntax pass. The old
 hardlink-cleanup false positive and subsequent Unicode failure remain rejected.
-Production GUI linking and the Performance page/action are still pending;
-this is a backend foundation, not category or full-beta acceptance.
+The later Performance page checkpoint links this backend in production GUI and
+exercises the action. This earlier proof remains scoped to the rescan foundation.
 
 The [automatic encoder preference](juxtopposed-references/native/guest-encoder-preference-20261017/README.md)
 now has real automatic-selection fallback and explicit-profile precedence.
@@ -75,8 +78,9 @@ the start-time snapshot/next-job change, automatic PCM validation, publication,
 cancellation and primary-player independence; strict FLAC9 passes. Ordinary
 Core602632/GUI753feb/transcodeb1a422 passes five generated/local-HLS/Downloads
 smokes normally. All2176 selected inputs match; no private fixtures ship and
-earlier runtimes remain preserved. Performance14's page/other consumers,
-Recording12, Extensions7 and all broader beta gates remain open. Native
+earlier runtimes remain preserved. The later Performance page checkpoint adds
+its other native media consumers. Recording12, Extensions7 and broader beta gates
+remain open. Native
 video/subtitle encoder coverage and complete later-tuple regression are pending.
 
 The [HTTP consumer repair](juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
@@ -117,8 +121,9 @@ retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37
 The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
 archives all nine authored rows and original assets with one context request
 including its screenshot. Controls, Network, Performance, Recording and Extensions references are cached;
-two planned/two reserved Figma calls remain. The source mounts ten category bodies;
-Performance, Recording and Extensions still lack bodies.
+two planned/two reserved Figma calls remain. The source mounts eleven category
+bodies; Recording and Extensions still lack bodies. Mounted categories still
+have remaining native consumer/visual acceptance gates.
 The [Privacy policy implementation](juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
 adds independent position-storage permission, shared exclusions, coordinated clear,
 Home/Open Network consumers, metadata sharing and explicit unavailable Last.fm
@@ -444,7 +449,7 @@ The preserved audit confirms **13 category routes**. Inspect each original page,
 | --- | --- | --- |
 | App | [ ] General; [ ] Interface; [ ] Privacy; [ ] Controls | General visibly contains interface language, Dark/Light/System, accent swatches, confirmation/error dialogs, automatic updates, Developer mode, Save a log, Log file/Browse, Log details and Advanced Options. Other category contents need Figma inspection. |
 | Media | [ ] Playback; [ ] Video; [ ] Audio; [ ] Subtitles; [ ] Library | Playback popup fields are partial reusable support; they do not finish global persistent category pages. Default subtitle track/language and library/history/scanning/reset policies need complete mappings. |
-| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced is mounted with native proxy/buffering/TLS/controller and component evidence; native full-page/visual gates remain. Complete original Performance14, Recording12 (including Browse) and Extensions7 fields/actions are cached; implement their real current consumers and checked persistence. |
+| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced and Performance14 are mounted with focused native controller/consumer/window and component evidence. Full category visual/platform gates remain. Complete original Recording12 (including Browse) and Extensions7 fields/actions are cached; implement their real consumers and checked persistence. |
 
 - [ ] Maintain a per-field mapping: original label/state, native variable/model, units/range/default, configured-versus-live semantics, restart requirement and reset/error outcome.
 - [ ] Verify ordinary Save does not unexpectedly replay a media preset or clear activity; Reset must clear the intended settings and live caches without queued-worker resurrection.
