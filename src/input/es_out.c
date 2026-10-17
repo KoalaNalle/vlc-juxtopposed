@@ -2766,7 +2766,9 @@ static void EsOutSelectEs(es_out_sys_t *p_sys, es_out_id_t *es, bool b_force, en
      * the following vars check. */
     if( !b_force )
     {
-        if( es->fmt.i_cat == VIDEO_ES || es->fmt.i_cat == SPU_ES )
+        /* Streamed subtitle tracks are independent of streamed video. Local
+         * subtitle display still needs video; sout-spu gates stream output. */
+        if( es->fmt.i_cat == VIDEO_ES || (es->fmt.i_cat == SPU_ES && !b_sout) )
         {
             if( !var_GetBool( p_input, b_sout ? "sout-video" : "video" ) )
             {

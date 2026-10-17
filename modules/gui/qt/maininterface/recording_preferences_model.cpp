@@ -92,7 +92,9 @@ RecordingPreferencesModel::RecordingPreferencesModel(qt_intf_t *intf, QSettings 
 {
     m_choices[QStringLiteral("castQuality")] = qualityChoices();
     m_choices[QStringLiteral("encodingPreset")] = stringChoices("sout-x264-preset");
-    m_choices[QStringLiteral("tuning")] = stringChoices("sout-x264-tune");
+    auto tuning = stringChoices("sout-x264-tune");
+    if (!listed(tuning, QString{})) tuning.prepend(choice(QString{}, tr("None")));
+    m_choices[QStringLiteral("tuning")] = tuning;
     refresh();
 }
 void RecordingPreferencesModel::setError(const QString &value)
@@ -111,6 +113,9 @@ void RecordingPreferencesModel::refresh()
         values[key] = !native ? QVariant{} : option.type == VLC_VAR_STRING ? QVariant(nativeText(option.native))
             : option.type == VLC_VAR_BOOL ? QVariant(config_GetInt(option.native) != 0) : QVariant(qlonglong(config_GetInt(option.native)));
     }
+    if (values.value(QStringLiteral("encodingPreset")).toString().isEmpty()
+        && listed(m_choices.value(QStringLiteral("encodingPreset")).toList(), QStringLiteral("medium")))
+        values[QStringLiteral("encodingPreset")] = QStringLiteral("medium");
     values[QStringLiteral("discoverDevices")] = vlc::qt::castDiscoveryEnabled(m_settings);
     values[QStringLiteral("defaultRecordingDirectory")] = QVLCUserDir(VLC_VIDEOS_DIR);
     capabilities[QStringLiteral("discoverDevices")] = m_intf && m_settings && m_consumers.discovery;
@@ -139,10 +144,10 @@ QVariantMap RecordingPreferencesModel::applyModes() const
 QVariantMap RecordingPreferencesModel::supportNotes() const
 {
     return {
-        {QStringLiteral("recordingDirectory"), tr("Existing writable local folder for recordings after opening the next media. Leave empty for VLC's default video or music folder. Running recordings keep their destination.")},
-        {QStringLiteral("nativeRecording"), tr("Allow the source's native recording path when supported; otherwise VLC uses its normal recording fallback. Applies after opening the next media.")},
+        {QStringLiteral("recordingDirectory"), tr("Existing writable local folder for new recordings. Leave empty for VLC's default video or music folder. Running recordings keep their destination; reopen the media to ensure VLC uses a newly saved folder.")},
+        {QStringLiteral("nativeRecording"), tr("Prefer the source's native recording path when supported. Turning this off uses VLC's normal copy/remux fallback; it does not force re-encoding. Applies after opening the next media.")},
         {QStringLiteral("discoverDevices"), tr("Allow device discovery when opening the Cast menu. Turning this off stops discovery; it does not disconnect an active cast.")},
-        {QStringLiteral("castQuality"), tr("Quality for the next cast requiring conversion. Automatic uses VLC's platform default; compatible media can play without conversion. Available devices and codecs still determine the result.")},
+        {QStringLiteral("castQuality"), tr("Default quality for future cast conversion jobs. Automatic uses VLC's platform default; compatible media can play without conversion. Available devices and codecs still determine the result.")},
         {QStringLiteral("playLocally"), tr("Default local playback for the next Stream wizard. Its explicit local-output choice takes precedence. Running streams are unchanged.")},
         {QStringLiteral("streamTracks"), tr("Native output-track defaults for future stream jobs. Explicit media/profile options take precedence. Running jobs keep their existing tracks.")},
         {QStringLiteral("encodingPreset"), tr("Default x264 encoding preset for future streams that use x264. Explicit encoder options take precedence.")},

@@ -1,0 +1,166 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+"""Actual Recording host/page with explicit owned preferences seam.
+Programmatic offscreen coverage; not native history or desktop DPI acceptance.
+"""
+from pathlib import Path
+import argparse,ast,hashlib,json,os,shutil,sys
+from copy import deepcopy
+from enum import IntEnum
+HERE=Path(__file__).resolve().parent
+parser=argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--repo-root',type=Path,default=HERE.parents[3]);parser.add_argument('--output-dir',type=Path,required=True)
+args=parser.parse_args();ROOT=args.repo_root.resolve();results=args.output_dir.resolve();results.mkdir(parents=True,exist_ok=False)
+os.environ.update(QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QML_DISABLE_DISK_CACHE='1',QT_QPA_FONTDIR=str(ROOT/'modules/gui/qt/pixmaps/juxtopposed'))
+from PySide6.QtCore import QObject,Property,Signal,Slot,QEnum,Qt,QUrl,QPointF,QEvent,QCoreApplication,qInstallMessageHandler
+from PySide6.QtGui import QGuiApplication,QKeyEvent,QFontDatabase,QFontInfo
+from PySide6.QtQml import QQmlApplicationEngine,QQmlExpression,qmlContext,qmlRegisterType,qmlRegisterSingletonType,qmlRegisterUncreatableType
+from PySide6.QtQuick import QQuickItem
+from PySide6.QtTest import QTest
+sys.path.insert(0,str(ROOT/'modules/gui/qt/tests'))
+from juxtopposed_general_preferences_fixture import GeneralPreferences as General
+from juxtopposed_library_preferences_fixture import LibraryPreferences
+from juxtopposed_controls_preferences_fixture import ControlsPreferences
+from juxtopposed_recording_preferences_fixture import RecordingPreferences,SEED
+identities={}
+def adapter(relative,name,new_name):
+    source=ROOT/relative;identities[relative]=hashlib.sha256(source.read_bytes()).hexdigest()
+    node=next(n for n in ast.parse(source.read_text(encoding='utf-8')).body if isinstance(n,ast.ClassDef)and n.name==name)
+    node.name=new_name;exec(compile(ast.Module(body=[node],type_ignores=[]),str(source),'exec'),globals());return globals()[new_name]
+Network=adapter('modules/gui/qt/tests/test_juxtopposed_network_dialog.py','Controller','Network')
+Playlist=adapter('modules/gui/qt/tests/test_juxtopposed_new_playlist.py','Controller','Playlist')
+Conversion=adapter('modules/gui/qt/tests/test_juxtopposed_conversion_dialog.py','Controller','Conversion')
+Provider=adapter('modules/gui/qt/tests/test_juxtopposed_dialogs_host.py','Provider','Provider')
+class MainContext(QObject):
+    def __init__(self):super().__init__();self.general=General();self.library=LibraryPreferences();self.controls=ControlsPreferences();self.network=RecordingPreferences()
+    generalPreferences=Property(QObject,lambda s:s.general,constant=True)
+    libraryPreferences=Property(QObject,lambda s:s.library,constant=True)
+    controlsPreferences=Property(QObject,lambda s:s.controls,constant=True)
+    recordingPreferences=Property(QObject,lambda s:s.network,constant=True)
+    useGlobalShortcuts=Property(bool,lambda s:True,constant=True)
+messages=[];qInstallMessageHandler(lambda kind,context,message:messages.append(message))
+app=QGuiApplication([]);ctx=MainContext();model=ctx.network;provider=Provider()
+qmlRegisterUncreatableType(Conversion,'VLC.Dialogs',1,0,'ConversionController','Supplied state enum')
+qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/widgets/qml/TextInputFocus.qml')),'VLC.Widgets',1,0,'TextInputFocus')
+qmlRegisterSingletonType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml')),'VLC.Style',1,0,'JuxtopposedPalette')
+assets=results/'assets';assets.mkdir();qml=results/'qml';qml.mkdir()
+for p in(ROOT/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
+    if p.is_file():shutil.copyfile(p,assets/p.name)
+for p in(ROOT/'modules/gui/qt/dialogs/dialogs/qml').glob('*.qml'):shutil.copyfile(p,qml/p.name)
+engine=QQmlApplicationEngine();engine.rootContext().setContextProperty('suppliedContext',ctx);engine.rootContext().setContextProperty('suppliedProvider',provider)
+driver='''import QtQuick
+import QtQuick.Controls.Basic as C
+import VLC.Style
+import "@QML@" as Dialogs
+C.ApplicationWindow {
+ id:window;visible:true;width:1080;height:897
+ property bool omitLibrary:false
+ QtObject {id:nativePalette;property bool isDark:suppliedContext.generalPreferences.values.theme!==1}
+ Binding {target:JuxtopposedPalette;property:"nativePalette";value:nativePalette}
+ Binding {target:JuxtopposedPalette;property:"preferences";value:suppliedContext.generalPreferences}
+ QtObject {id:generalOnly;property var generalPreferences:suppliedContext.generalPreferences}
+ Rectangle {id:underlay;anchors.fill:parent;color:"#173c66"}
+ C.Button {id:opener;objectName:"opener";text:"Settings";onClicked:suppliedProvider.showGlobalSettingsDialog()}
+ Dialogs.JuxtopposedDialogsHost {anchors.fill:parent;mainCtx:window.omitLibrary?generalOnly:suppliedContext;dialogsProvider:suppliedProvider;appearance:JuxtopposedPalette;assetBase:"@ASSETS@";backdropSource:underlay;fallbackFocusItem:opener}
+}'''.replace('@QML@',qml.as_uri()).replace('@ASSETS@',assets.as_uri()+'/')
+(results/'driver.qml').write_text(driver,encoding='utf-8',newline='\n');engine.loadData(driver.encode('utf-8'),QUrl.fromLocalFile(str(results/'driver.qml')))
+assert engine.rootObjects(),messages;window=engine.rootObjects()[0];checks=[]
+retained={}
+def keep(obj):
+    if obj is not None:retained[id(obj)]=obj
+    return obj
+def item(name):
+    obj=window.findChild(QObject,name)
+    if obj:return keep(obj)
+    queue=[window.contentItem()]
+    while queue:
+        obj=keep(queue.pop())
+        if obj.objectName()==name:return obj
+        queue.extend(obj.childItems())
+    raise AssertionError((name,messages))
+def evaluate(obj,text):
+    expr=QQmlExpression(qmlContext(obj),obj,text);value,_=expr.evaluate();assert not expr.hasError(),expr.error().toString();QTest.qWait(20);return value.toVariant()if hasattr(value,'toVariant')else value
+def focus(name):
+    obj=item(name);obj.setFocus(False);obj.forceActiveFocus(Qt.TabFocusReason);QTest.qWait(25);return obj
+def click(name):
+    obj=focus(name);assert obj.isEnabled()and obj.isVisible(),name
+    QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,obj.mapToScene(QPointF(obj.width()/2,obj.height()/2)).toPoint());QTest.qWait(30)
+def text(value):
+    for char in value:
+        for kind in[QEvent.KeyPress,QEvent.KeyRelease]:QGuiApplication.sendEvent(window,QKeyEvent(kind,0,Qt.NoModifier,char))
+def edit(name,value):
+    focus(name);QTest.keyClick(window,Qt.Key_A,Qt.ControlModifier);QTest.keyClick(window,Qt.Key_Backspace);text(value);QTest.keyClick(window,Qt.Key_Return);QTest.qWait(50)
+def select(name,index):
+    focus(name);QTest.keyClick(window,Qt.Key_Space);QTest.qWait(25);assert evaluate(item(name),'popup.visible');QTest.keyClick(window,Qt.Key_Home)
+    for _ in range(index):QTest.keyClick(window,Qt.Key_Down)
+    QTest.keyClick(window,Qt.Key_Return);QTest.qWait(25)
+def done(name):checks.append(name);print('PASS',name,flush=True)
+
+QTest.qWait(70);click('opener');dialog=item('juxtopposedGlobalSettings');assert evaluate(dialog,'chooseCategory("recording")')
+page=item('juxtopposedRecordingSettings')
+assert page.property('service') is model and dialog.property('title')=='Recording, Casting & Streaming Out'
+assert not model.requests and model.reloads>=1 and len(evaluate(page,'rows'))==10
+assert item('recordingDirectory').property('text')==''
+assert item('recordingDirectory').property('placeholderText')==SEED['defaultRecordingDirectory']
+assert item('recordingCastQuality').property('displayText')=='Automatic'
+assert item('recordingEncodingPreset').property('displayText')=='Medium'
+assert item('recordingTuning').property('displayText')=='None'
+assert not item('recordingPlayLocally').property('selected') and item('recordingIncludeSubtitles').property('selected')
+assert window.grabWindow().save(str(results/'00-recording-defaults-dark.png'))
+focus('recordingNative');QTest.qWait(550)
+assert evaluate(item('recordingNative'),'C.ToolTip.visible') and 'nativeRecording' in evaluate(item('recordingNative'),'C.ToolTip.text')
+done('Original12 fields/actions bind current native-shaped defaults without opening writes; toggle help is visible on keyboard focus')
+edit('recordingDirectory','E:/Records Ää');assert model.state['recordingDirectory']=='E:/Records Ää'
+assert 'next media' in item('recordingStatus').property('text')
+model.reject=True;edit('recordingDirectory','E:/Locked Records')
+assert model.state['recordingDirectory']=='E:/Records Ää' and item('recordingDirectory').property('text')=='E:/Locked Records' and item('recordingError').isVisible()
+model.reject=False;QTest.keyClick(window,Qt.Key_Return);QTest.qWait(30)
+assert model.state['recordingDirectory']=='E:/Locked Records' and not item('recordingError').isVisible()
+for name,key in [('recordingNative','nativeRecording'),('recordingDiscoverDevices','discoverDevices'),('recordingPlayLocally','playLocally'),('recordingIncludeAudio','includeAudio'),('recordingIncludeVideo','includeVideo'),('recordingIncludeSubtitles','includeSubtitles')]:
+ before=model.state[key];click(name);assert model.state[key] is (not before)
+done('Unicode folder edits and all six toggles dispatch typed values; save failure keeps draft and permits retry')
+select('recordingCastQuality',2);assert model.requests[-1]==['castQuality',2]
+select('recordingEncodingPreset',2);assert model.state['encodingPreset']=='fast'
+select('recordingTuning',2);assert model.state['tuning']=='zerolatency'
+select('recordingTuning',0);assert model.state['tuning']==''
+model.reject=True;select('recordingEncodingPreset',1);assert model.state['encodingPreset']=='fast' and item('recordingError').isVisible()
+model.reject=False;select('recordingEncodingPreset',1);assert model.state['encodingPreset']=='ultrafast'
+model.state['tuning']='owned-custom';model.valuesChanged.emit();QTest.qWait(20)
+assert item('recordingTuning').property('currentIndex')==-1 and 'Custom' in item('recordingTuning').property('displayText')
+model.unsupported.add('encodingPreset');model.valuesChanged.emit();QTest.qWait(20);assert not item('recordingEncodingPreset').isEnabled()
+model.unsupported.clear();model.valuesChanged.emit()
+done('Quality/preset/tuning choices retain typed values, None, explicit custom state and unavailable capabilities')
+click('recordingBrowse');assert page.property('busy') and dialog.property('busy')
+assert not item('recordingNative').isEnabled() and not item('globalSettingsClose').isEnabled()
+assert not evaluate(dialog,'chooseCategory("performance")')
+QTest.qWait(500);assert not page.property('busy') and item('recordingDirectory').property('text')=='E:/Owned Videos Ää'
+focus('globalSettingsSearch');text('tuning');QTest.qWait(30)
+assert item('recordingTuningRow').isVisible() and not item('recordingAudioRow').isVisible()
+QTest.keyClick(window,Qt.Key_A,Qt.ControlModifier);QTest.keyClick(window,Qt.Key_Backspace);QTest.qWait(20)
+assert item('recordingAudioRow').isVisible()
+done('Picker busy state blocks competing edits/navigation/close; shared search reveals and restores matching rows')
+manifest=json.loads((ROOT/'doc/juxtopposed-references/figma/20261017/recording/manifest.json').read_text())
+for name in manifest['assets']:
+ assert (assets/('recording-settings-'+name)).read_bytes()==(ROOT/'doc/juxtopposed-references/figma/20261017/recording/assets'/name).read_bytes()
+for name in ['recordingFolderInfoOriginal','recordingQualityInfoOriginal','recordingPresetInfoOriginal','recordingTuningInfoOriginal']:
+ assert item(name).property('width')==18 and item(name).property('source').toString().endswith('recording-settings-1f9fe.svg')
+assert item('globalCategoryrecordingOriginalIcon').property('source').toString().endswith('recording-settings-74961.svg')
+assert item('recordingAdvancedOriginalChevron').property('source').toString().endswith('recording-settings-97863.svg')
+assert window.grabWindow().save(str(results/'01-recording-edits-dark.png'))
+window.setWidth(650);window.setHeight(720);QTest.qWait(50);assert page.property('stacked')
+assert window.grabWindow().save(str(results/'02-recording-narrow-dark.png'))
+ctx.general._values['theme']=1;ctx.general.valuesChanged.emit();QTest.qWait(40)
+assert window.grabWindow().save(str(results/'03-recording-narrow-light.png'))
+window.setWidth(1620);window.setHeight(1345);item('juxtopposedDialogsHost').setProperty('uiScale',1.5);QTest.qWait(50)
+assert item('recordingFolderInfoOriginal').property('scale')==1.5 and item('recordingCastQualityOriginalArrow').property('width')==24
+assert window.grabWindow().save(str(results/'04-recording-light-scale150.png'))
+done('Original SVG bytes/intrinsic sizes, selected sidebar artwork, Dark/Light and narrow/scaled layout remain intact')
+item('juxtopposedDialogsHost').setProperty('uiScale',1);window.setWidth(1080);window.setHeight(897);QTest.qWait(40)
+click('recordingAdvanced');assert model.requests[-1]==['openAdvanced']
+QTest.qWait(30);assert not dialog.property('visible') and provider.experts==1 and provider.native
+done('Original Advanced action closes the shared modal and forwards once to the real provider route')
+errors=[message for message in messages if any(term in message for term in ['ReferenceError','TypeError','is not a type','Unable to assign','Cannot assign','Cannot load','Required property'])]
+assert not errors,errors
+assert len(checks)==6
+(results/'verification.json').write_text(json.dumps(dict(passed=True,checks=checks,checkCount=len(checks),qmlMessages=messages,nativeConsumersAccepted=False,desktopDpiAccepted=False),indent=2)+'\n',encoding='utf-8',newline='\n')
+print('PASS:',len(checks),'Recording QML groups',flush=True)
+window.close();engine.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);app.processEvents()

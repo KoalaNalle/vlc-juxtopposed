@@ -51,7 +51,7 @@ def main():
         # Generate a small synthetic H.264 fixture from the caller's owned video;
         # this keeps loop-filter checks on H.264 rather than only on MPEG-4 Part2.
         generated=out/'owned-h264.ts'
-        chain='#transcode{vcodec=h264,venc=x264{preset=ultrafast,threads=1},acodec=none}:std{access=file,mux=ts,dst='+str(generated).replace('\\','/')+'}'
+        chain='#transcode{threads=1,vcodec=h264,venc=x264{preset=ultrafast},acodec=none}:std{access=file,mux=ts,dst='+str(generated).replace('\\','/')+'}'
         process,text=execute(out/'generate-h264',fixture,['--sout='+chain],{'hw-dec':0,'avcodec-threads':1},frames=False)
         assert process['normalExit'] and generated.exists() and generated.stat().st_size>0
         report['generatedH264']=dict(process=process,sha256=digest(generated),bytes=generated.stat().st_size)

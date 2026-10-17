@@ -709,6 +709,9 @@ EXTRA_DIST += libvlc/native_encoder_preference.py libvlc/native_flac_drain.py \
     libvlc/native_conversion_controller.py libvlc/native_encoder.md
 EXTRA_DIST += libvlc/native_plugin_cache_rescan.py libvlc/native_plugin_cache_rescan.md
 EXTRA_DIST += priority-native.mk libvlc/native_process_priority.py libvlc/native_process_priority.md
+EXTRA_DIST += libvlc/native_recording_preferences.py libvlc/native_recording_preferences.md \
+    libvlc/native_recording_consumers.py libvlc/native_recording_worker.py \
+    libvlc/native_recording_encoders.py libvlc/native_recording_consumers.md
 if HAVE_WIN32
 EXTRA_PROGRAMS += test_priority_startup
 test_priority_startup_SOURCES = src/misc/priority_startup.c

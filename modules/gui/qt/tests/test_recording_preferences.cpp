@@ -87,6 +87,17 @@ private slots:
         QVERIFY(!model->chooseRecordingDirectory()); QVERIFY(!model->openAdvanced());
         QVERIFY(!QFile::exists(config)); QVERIFY(!QFile::exists(interfaceFile));
     }
+    void encoderDefaultsAndNoneChoiceRemainUsable()
+    {
+        QVERIFY(native("sout-x264-preset").isEmpty());
+        QCOMPARE(model->values().value("encodingPreset").toString(),QStringLiteral("medium"));
+        QCOMPARE(model->choices().value("tuning").toList().first().toMap().value("value").toString(),QString{});
+        QVERIFY(model->setValue("tuning",QStringLiteral("zerolatency")));
+        QVERIFY(model->setValue("tuning",QString{})); close(); open();
+        QCOMPARE(native("sout-x264-tune"),QString{});
+        QCOMPARE(model->values().value("tuning").toString(),QString{});
+        QCOMPARE(model->values().value("encodingPreset").toString(),QStringLiteral("medium"));
+    }
     void strictTypesAndChoicesPreserveMemoryAndDisk()
     {
         QVERIFY(model->setValue("includeAudio",false)); const auto before = model->values(); const auto disk = bytes(config);

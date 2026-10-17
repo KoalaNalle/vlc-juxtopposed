@@ -734,6 +734,7 @@ qml_modules += {
         'dialogs/dialogs/qml/JuxtopposedControlsSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedRecordingSettings.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml',
         'dialogs/dialogs/qml/JuxtopposedSettingsFields.qml',
         'dialogs/dialogs/qml/JuxtopposedVideoSettings.qml',

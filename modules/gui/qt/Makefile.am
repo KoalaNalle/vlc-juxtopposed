@@ -866,6 +866,25 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/recording-settings-1b0f7.svg \
+	pixmaps/juxtopposed/recording-settings-764c9.svg \
+	pixmaps/juxtopposed/recording-settings-97863.svg \
+	pixmaps/juxtopposed/recording-settings-1bf8a.svg \
+	pixmaps/juxtopposed/recording-settings-f1a4a.svg \
+	pixmaps/juxtopposed/recording-settings-80d5a.svg \
+	pixmaps/juxtopposed/recording-settings-9c2da.svg \
+	pixmaps/juxtopposed/recording-settings-66cd9.svg \
+	pixmaps/juxtopposed/recording-settings-7d179.svg \
+	pixmaps/juxtopposed/recording-settings-36bfa.svg \
+	pixmaps/juxtopposed/recording-settings-ad68b.svg \
+	pixmaps/juxtopposed/recording-settings-ec3f6.svg \
+	pixmaps/juxtopposed/recording-settings-432a4.svg \
+	pixmaps/juxtopposed/recording-settings-3ffd5.svg \
+	pixmaps/juxtopposed/recording-settings-cf6e1.svg \
+	pixmaps/juxtopposed/recording-settings-6db55.svg \
+	pixmaps/juxtopposed/recording-settings-74961.svg \
+	pixmaps/juxtopposed/recording-settings-05bc9.svg \
+	pixmaps/juxtopposed/recording-settings-1f9fe.svg \
 	pixmaps/juxtopposed/performance-settings-05bc9.svg \
 	pixmaps/juxtopposed/performance-settings-08f95.svg \
 	pixmaps/juxtopposed/performance-settings-1b0f7.svg \
@@ -1285,6 +1304,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedControlsSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedRecordingSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
@@ -2987,6 +3007,9 @@ test_qt_recording_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_src
 test_qt_recording_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
 test_qt_recording_preferences_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
 test_qt_recording_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+
+EXTRA_DIST += tests/test_juxtopposed_recording_settings.py tests/juxtopposed_recording_preferences_fixture.py \
+    tests/native_ui/recording_journey.cpp tests/native_ui/recording_journey.mk tests/native_ui/run_recording_journey.py
 endif
 endif
 endif

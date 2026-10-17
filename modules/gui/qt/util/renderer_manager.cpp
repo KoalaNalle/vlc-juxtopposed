@@ -20,6 +20,7 @@
 #endif
 
 #include "renderer_manager.hpp"
+#include "cast_discovery_policy.hpp"
 
 #include <QApplication>
 #include <QTimer>
@@ -109,6 +110,10 @@ public:
 
     void onRendererAdded(const RendererItemPtr& renderItem) {
         Q_Q(RendererManager);
+        // A discovery callback may already be queued when the preference is
+        // saved. Do not repopulate the model after discovery was disabled.
+        if( !vlc::qt::castDiscoveryEnabled(p_intf->mainSettings) )
+            return;
         QString key = getItemKey(renderItem);
         if( !m_items.contains( key ) )
         {
@@ -393,6 +398,11 @@ bool RendererManager::useRenderer() const
 void RendererManager::StartScan()
 {
     Q_D(RendererManager);
+    if( !vlc::qt::castDiscoveryEnabled(d->p_intf->mainSettings) )
+    {
+        StopScan();
+        return;
+    }
     if( d->m_stop_scan_timer.isActive() )
         return;
 
@@ -425,6 +435,12 @@ void RendererManager::StartScan()
     free( ppsz_names );
     free( ppsz_longnames );
 
+    if( d->m_rds.empty() )
+    {
+        d->setStatus( RendererManager::RendererStatus::FAILED );
+        return;
+    }
+
     d->m_scan_remain = 20;
     d->m_stop_scan_timer.setInterval( 1000 );
     d->m_stop_scan_timer.start();
@@ -436,6 +452,11 @@ void RendererManager::StopScan()
 {
     Q_D(RendererManager);
     d->m_stop_scan_timer.stop();
+    if( d->m_scan_remain != 0 )
+    {
+        d->m_scan_remain = 0;
+        emit scanRemainChanged();
+    }
 
     for ( vlc_renderer_discovery_t* p_rd : d->m_rds )
         vlc_rd_release( p_rd );
@@ -461,4 +482,13 @@ void RendererManager::StopScan()
         }
     }
     d->setStatus( RendererManager::RendererStatus::IDLE );
+}
+
+void RendererManager::applyDiscoveryPolicy()
+{
+    Q_D(RendererManager);
+    if( !vlc::qt::castDiscoveryEnabled(d->p_intf->mainSettings) )
+        StopScan();
+    // Starting is still an explicit Cast-menu action. Stopping a scan keeps
+    // the player's selected renderer and any active cast intact.
 }

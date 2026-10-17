@@ -85,3 +85,10 @@ Juxtopposed design, CC BY 4.0, from Figma node 6543:15649 in file
 zdNUYRVOH9lEtIxMYvh8DV. Original hashes and geometry are retained in
 `doc/juxtopposed-references/figma/20261017/network/manifest.json`.
 The cached screenshot is reference evidence and is not a runtime asset.
+
+Recording settings artwork (`recording-settings-*.svg`) is the unchanged
+original Juxtopposed design, CC BY 4.0, from Figma node 6571:16429 in file
+zdNUYRVOH9lEtIxMYvh8DV. Original hashes and geometry are retained in
+`doc/juxtopposed-references/figma/20261017/recording/manifest.json`.
+Native values, checked persistence, truthful recording help and narrow layouts
+are implementation adaptations. The screenshot remains reference evidence.

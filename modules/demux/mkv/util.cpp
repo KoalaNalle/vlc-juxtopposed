@@ -395,10 +395,20 @@ int UpdatePCR( demux_t * p_demux )
     matroska_segment_c *p_segment = p_sys->GetCurrentVSegment()->CurrentSegment();
 
     vlc_tick_t i_pcr = VLC_TICK_INVALID;
+    bool selected_av = false;
 
     for( const auto & it : p_segment->tracks )
     {
         const auto &track = it.second;
+
+        if( track->p_es &&
+            ( track->fmt.i_cat == VIDEO_ES || track->fmt.i_cat == AUDIO_ES ) )
+        {
+            bool selected = false;
+            es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE, track->p_es,
+                            &selected );
+            selected_av |= selected;
+        }
 
         if( track->i_last_dts == VLC_TICK_INVALID )
             continue;
@@ -411,6 +421,13 @@ int UpdatePCR( demux_t * p_demux )
             i_pcr = track->i_last_dts;
         }
     }
+
+    /* A subtitle-only output still needs the container's clock. Otherwise
+     * neither the input's time limit nor a subtitle slave can advance while
+     * every audio/video block is discarded. Keep the normal decoder clock
+     * whenever an audio or video track is selected. */
+    if( !selected_av )
+        i_pcr = p_sys->i_pts;
 
     if( i_pcr != VLC_TICK_INVALID && i_pcr > p_sys->i_pcr )
     {

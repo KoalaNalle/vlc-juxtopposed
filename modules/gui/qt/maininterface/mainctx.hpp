@@ -79,6 +79,7 @@ class PrivacyPreferencesModel;
 class ControlsPreferencesModel;
 class NetworkPreferencesModel;
 class PerformancePreferencesModel;
+class RecordingPreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
@@ -90,6 +91,7 @@ Q_MOC_INCLUDE("maininterface/privacy_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/controls_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/network_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/performance_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/recording_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -149,6 +151,7 @@ class MainCtx : public QObject
     Q_PROPERTY(ControlsPreferencesModel* controlsPreferences READ getControlsPreferences CONSTANT FINAL)
     Q_PROPERTY(NetworkPreferencesModel* networkPreferences READ getNetworkPreferences CONSTANT FINAL)
     Q_PROPERTY(PerformancePreferencesModel* performancePreferences READ getPerformancePreferences CONSTANT FINAL)
+    Q_PROPERTY(RecordingPreferencesModel* recordingPreferences READ getRecordingPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -293,6 +296,7 @@ public:
     inline ControlsPreferencesModel* getControlsPreferences() const { return m_controlsPreferences; }
     inline NetworkPreferencesModel* getNetworkPreferences() const { return m_networkPreferences; }
     inline PerformancePreferencesModel* getPerformancePreferences() const { return m_performancePreferences; }
+    inline RecordingPreferencesModel* getRecordingPreferences() const { return m_recordingPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -525,6 +529,7 @@ protected:
     ControlsPreferencesModel* m_controlsPreferences = nullptr;
     NetworkPreferencesModel* m_networkPreferences = nullptr;
     PerformancePreferencesModel* m_performancePreferences = nullptr;
+    RecordingPreferencesModel* m_recordingPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // Immutable application-start snapshot for the new Interface consumers.
     int m_startupControlsAutoHide = -1;

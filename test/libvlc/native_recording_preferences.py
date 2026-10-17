@@ -32,9 +32,9 @@ def main():
     results = output / 'results.txt'
     process = run_owned([native, '-o', str(results) + ',txt'], runtime, output / 'test', timeout=120)
     text = results.read_text(encoding='utf-8-sig') if results.exists() else ''
-    expected = ['initTestCase', 'openingAndReloadNeverWriteDefaults', 'disabledConsumersRejectWithoutSaving', 'strictTypesAndChoicesPreserveMemoryAndDisk', 'unicodeRecordingFolderSurvivesRestartAndEmptyRestoresDefault', 'nativeTrackAndEncoderPreferencesPersist', 'customSavedValuesRemainExplicitAndUnchanged', 'failedNativeSaveRestoresValuesThenRetries', 'discoveryPolicyPersistsAndOnlyAcceptedOffRequestsStop', 'rejectedInterfaceSavePreservesDiscoveryAndDoesNotStop', 'commandLineOverridesAndApplyTimingStayVisible', 'headlessPickerAndAdvancedActionsDoNotWrite', 'cleanupTestCase']
+    expected = ['initTestCase', 'openingAndReloadNeverWriteDefaults', 'disabledConsumersRejectWithoutSaving', 'encoderDefaultsAndNoneChoiceRemainUsable', 'strictTypesAndChoicesPreserveMemoryAndDisk', 'unicodeRecordingFolderSurvivesRestartAndEmptyRestoresDefault', 'nativeTrackAndEncoderPreferencesPersist', 'customSavedValuesRemainExplicitAndUnchanged', 'failedNativeSaveRestoresValuesThenRetries', 'discoveryPolicyPersistsAndOnlyAcceptedOffRequestsStop', 'rejectedInterfaceSavePreservesDiscoveryAndDoesNotStop', 'commandLineOverridesAndApplyTimingStayVisible', 'headlessPickerAndAdvancedActionsDoNotWrite', 'cleanupTestCase']
     actual = re.findall(r'^PASS\s+:\s+TestRecordingPreferences::([A-Za-z]\w*)\(\)\s*$', text, re.MULTILINE)
-    totals = re.findall(r'^Totals: 13 passed, 0 failed, 0 skipped, 0 blacklisted, \d+ms\s*$', text, re.MULTILINE)
+    totals = re.findall(r'^Totals: 14 passed, 0 failed, 0 skipped, 0 blacklisted, \d+ms\s*$', text, re.MULTILINE)
     rejected = re.findall(r'^(?:FAIL!?|SKIP|XFAIL|XPASS|BFAIL|BPASS)\s*:', text, re.MULTILINE)
     cleanup_warnings = [line for path in [results, output / 'test/stdout.txt', output / 'test/stderr.txt']
                         if path.exists() for line in path.read_text(encoding='utf-8-sig', errors='replace').splitlines()
