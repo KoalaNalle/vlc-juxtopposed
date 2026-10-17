@@ -2,8 +2,10 @@
 
 The source mounts all nine Network settings and the Advanced Options action from
 the [original reference](../../figma/20261017/network/README.md). This is a local
-implementation checkpoint toward the full beta. Native full-page interaction,
-independent visual/DPI review, Windows 11 and final clean packaging remain open.
+implementation checkpoint toward the full beta. The subsequent [owned native window journeys](../guest-network-window-20261017/README.md)
+pass real edits, native failure/retry, restart and Advanced routing. Full page/
+media/theme interaction, independent visual/DPI review, Windows11 and final
+clean packaging remain open.
 
 The controller reads actual saved values without writing on opening. VLC's
 current buffering defaults are Custom; selecting Normal writes its native

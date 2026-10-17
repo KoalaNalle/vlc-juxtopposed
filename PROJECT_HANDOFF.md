@@ -8,6 +8,15 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [owned native Network window journeys](doc/juxtopposed-references/native/guest-network-window-20261017/README.md)
+now pass 31 editing/failure/retry checks and 11 restart checks in two normal
+processes. They exercise the actual MainCtx/controller, compiled page, pointer
+and key events, native file-lock rejection/retry, masked password persistence
+and the real Advanced QWidget route. Captures cover Dark at observed 100% scale.
+The opt-in private GUI adds one test TU/QtTest to the same production objects;
+the ordinary GUI remains unchanged. Full theme/DPI/media interaction, the
+intermittent subtitle-role stall and the full beta remain open.
+
 The [guest Network implementation](doc/juxtopposed-references/native/guest-network-20261017/README.md)
 mounts all nine original settings and Advanced Options. Actual Windows proxy45,
 file/HTTP buffering and GNU TLS1.2/1.3 each50, native controller17 and QML7 pass.

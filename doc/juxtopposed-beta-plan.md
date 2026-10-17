@@ -4,6 +4,15 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [owned native Network window journeys](juxtopposed-references/native/guest-network-window-20261017/README.md)
+now pass 31 editing/failure/retry checks and 11 restart checks in two normal
+processes. They exercise the actual MainCtx/controller, compiled page, pointer
+and key events, native file-lock rejection/retry, masked password persistence
+and the real Advanced QWidget route. Captures cover Dark at observed 100% scale.
+The opt-in private GUI adds one test TU/QtTest to the same production objects;
+the ordinary GUI remains unchanged. Full theme/DPI/media interaction, the
+intermittent subtitle-role stall and the full beta remain open.
+
 The [guest history-clear checkpoint](juxtopposed-references/native/guest-history-clear-20261017/README.md)
 repairs discarded database failure results; seven actual native SQLite rejection/
 retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37.

@@ -2890,3 +2890,7 @@ EXTRA_DIST += tests/test_controls_preferences.cpp tests/controls_input_fixture.c
 
 EXTRA_DIST += tests/test_network_preferences.cpp tests/native_library/network.mk tests/native_library/run_network.py
 EXTRA_DIST += tests/test_juxtopposed_network_settings.py tests/juxtopposed_network_preferences_fixture.py
+
+# Opt-in owned-window test; none of these files enter the ordinary module.
+EXTRA_DIST += tests/native_ui/network_journey.cpp tests/native_ui/network_journey.mk \
+    tests/native_ui/run_network_journey.py tests/native_ui/README.md
