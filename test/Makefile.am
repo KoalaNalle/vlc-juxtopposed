@@ -717,4 +717,11 @@ EXTRA_PROGRAMS += test_priority_startup
 test_priority_startup_SOURCES = src/misc/priority_startup.c
 test_priority_startup_LDADD = $(LIBVLC) $(LIBVLCCORE)
 test_priority_startup_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+EXTRA_PROGRAMS += test_addons
+test_addons_SOURCES = src/misc/addons.c
+test_addons_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/src
+test_addons_LDADD = $(LIBVLC) $(LIBVLCCORE)
+test_addons_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
 endif
+
+EXTRA_DIST += addons-native.mk libvlc/native_addons.py libvlc/native_addons.md

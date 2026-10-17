@@ -123,6 +123,12 @@ foreach vlc_test: vlc_tests
 endforeach
 
 if host_system == 'windows'
+    executable('test_addons', 'src/misc/addons.c',
+        include_directories: [vlc_include_dirs, include_directories('..', '../src')],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+    )
     executable('test_priority_startup', 'src/misc/priority_startup.c',
         include_directories: [vlc_include_dirs],
         link_with: [libvlc, libvlccore, vlc_libcompat],

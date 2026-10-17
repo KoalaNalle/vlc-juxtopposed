@@ -569,7 +569,10 @@ static int WriteCatalog( addons_storage_t *p_storage,
         vlc_mutex_lock( &p_entry->lock );
         psz_tempstring = NULL;
 
-        if ( ( p_entry->e_state != ADDON_INSTALLED ) ||
+        /* A queued removal has not removed storage yet. Keep its manifest
+         * until that operation succeeds, even while another request saves. */
+        if ( ( p_entry->e_state != ADDON_INSTALLED &&
+               p_entry->e_state != ADDON_UNINSTALLING ) ||
              !( p_entry->e_flags & ADDON_MANAGEABLE ) )
         {
             vlc_mutex_unlock( &p_entry->lock );
@@ -875,7 +878,14 @@ static int Remove( addons_storage_t *p_storage, addon_entry_t *p_entry )
                 free( psz_dir );
                 free( psz_translated_filename );
 
-                vlc_unlink( psz_dest );
+                if ( vlc_unlink( psz_dest ) != 0 && errno != ENOENT )
+                {
+                    msg_Err( p_storage, "could not remove %s: %s", psz_dest,
+                             vlc_strerror_c(errno) );
+                    free( psz_dest );
+                    vlc_mutex_unlock( &p_entry->lock );
+                    return VLC_EGENERIC;
+                }
                 msg_Dbg( p_storage, "removing %s", psz_dest );
 
                 free( psz_dest );

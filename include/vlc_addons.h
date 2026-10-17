@@ -173,7 +173,12 @@ VLC_API int addons_manager_LoadCatalog( addons_manager_t * );
 VLC_API void addons_manager_Gather( addons_manager_t *, const char *psz_uri );
 
 /**
- * Install or Remove the addon identified by its uuid
+ * Install or Remove the addon identified by its uuid.
+ * A successful return accepts an asynchronous operation. Install requires a
+ * manageable, not-installed entry; Remove requires a manageable, installed one.
+ * Requests for an entry already being changed, or in the opposite initial
+ * state, fail without queuing another operation. Completion is reported through
+ * addon_changed; the entry returns to its initial state on a storage failure.
  */
 VLC_API int addons_manager_Install( addons_manager_t *p_manager, const addon_uuid_t uuid );
 VLC_API int addons_manager_Remove( addons_manager_t *p_manager, const addon_uuid_t uuid );
