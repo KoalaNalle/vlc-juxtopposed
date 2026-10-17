@@ -163,6 +163,7 @@ click(selector)
 click(item('subtitlePresetEntry_series'))
 assert controller.actions[-1] == ('apply', 'series')
 assert selector.property('text') == 'Series subtitles'
+assert not evaluate(selector, 'presets.visible')[0], 'Selecting a regenerated entry must close its menu'
 naming()
 editor = item('subtitlePresetName')
 editor.setProperty('text', 'Series subtitles')
@@ -181,6 +182,7 @@ assert selector.property('text') == 'Custom settings'
 click(selector)
 click(item('subtitlePresetEntry_default'))
 assert controller.selectedId == 'default' and not controller.edited
+assert not evaluate(selector, 'presets.visible')[0]
 naming()
 editor.setProperty('text', 'Keep unsaved')
 QTest.keyClick(view, Qt.Key_Escape); QTest.qWait(50)
@@ -228,7 +230,7 @@ assert not unexpected, unexpected
 (args.output_dir / 'subtitle-presets-verification.json').write_text(json.dumps({
     'productionComponent': str(component.relative_to(repo)), 'evidence': 'supplied-controller component only',
     'checks': ['named/default actions', 'empty disabled save', 'error retains name and retry', 'Enter saves trimmed name',
-               'selected/edited states', 'Escape cancels and restores focus', 'unavailable state', 'advanced route', 'three sizes/scales'],
+               'selected/edited states', 'menu closes before regenerated selection', 'Escape cancels and restores focus', 'unavailable state', 'advanced route', 'three sizes/scales'],
     'captures': captures, 'actions': controller.actions, 'qmlMessages': messages,
 }, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 view.close()

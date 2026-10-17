@@ -28,6 +28,7 @@ using vlc_player_locker = vlc_locker<vlc_player_t, vlc_player_Lock, vlc_player_U
 #include <QTest>
 #include <QUrl>
 #include <QJsonDocument>
+#include <QJsonArray>
 #include <QJsonObject>
 #include <QCryptographicHash>
 #include <array>
@@ -376,6 +377,31 @@ private slots:
         QVERIFY(m_model->setValue(QStringLiteral("fontSize"),9.));QCOMPARE(m_style->textColor(),QStringLiteral("#0000FF"));
         QVERIFY(m_presets->edited());QCOMPARE(m_presets->entries(),entries);QCOMPARE(m_presets->selectedId(),selected);QCOMPARE(bytes(settingsFile),stored);
         m_presets.reset();QVERIFY(m_model->setValue(QStringLiteral("fontSize"),10.)); // guarded optional lifetime
+    }
+    void presetFileLockRollbackAndSameObjectRetry()
+    {
+#ifndef _WIN32
+        QSKIP("Real Windows no-delete INI replacement failure fixture");
+#else
+        QVERIFY(makePlainSubtitle());QVERIFY(start(media()));QTRY_VERIFY_WITH_TIMEOUT(!pixels(frame(),0).isEmpty(),10000);
+        const auto file=QDir(m_case).filePath(QStringLiteral("preset-retry.ini"));
+        m_settings=std::make_unique<QSettings>(file,QSettings::IniFormat);
+        m_style=std::make_unique<SubtitleAppearance>(player());
+        {QMutexLocker guard(&m_outputMutex);QVERIFY(m_output);m_style->resetOutput(m_output);}
+        m_presets=std::make_unique<SubtitlePresetModel>(player(),m_style.get(),m_settings.get(),VLC_OBJECT(m_intf));
+        QTRY_VERIFY(m_presets->canSave());QVERIFY(m_presets->save(QStringLiteral("Original")));
+        const auto disk=bytes(file);const auto id=m_presets->selectedId();
+        OwnedNoDeleteLock lock(file);QVERIFY(lock.handle!=INVALID_HANDLE_VALUE);
+        const bool failed=m_presets->save(QStringLiteral("Retried"));const auto failedDisk=bytes(file);
+        const auto failedEntries=m_presets->entries();const auto error=m_presets->error();const auto failedId=m_presets->selectedId();
+        lock.unlock();
+        QVERIFY(!failed);QVERIFY(!error.isEmpty());QCOMPARE(failedDisk,disk);QCOMPARE(failedEntries.size(),2);QCOMPARE(failedId,id);
+        QVERIFY(m_presets->save(QStringLiteral("Retried")));QVERIFY(m_presets->error().isEmpty());QCOMPARE(m_presets->entries().size(),3);
+        QSettings restarted(file,QSettings::IniFormat);restarted.sync();
+        const auto records=QJsonDocument::fromJson(restarted.value(QStringLiteral("Juxtopposed/SubtitlePresets/v1")).toByteArray()).object().value(QStringLiteral("presets")).toArray();
+        QCOMPARE(records.size(),2);QCOMPARE(records[0].toObject().value(QStringLiteral("name")).toString(),QStringLiteral("Original"));
+        QCOMPARE(records[1].toObject().value(QStringLiteral("name")).toString(),QStringLiteral("Retried"));
+#endif
     }
     void corePrimaryPlacementUsesActualSubtitlePixels()
     {

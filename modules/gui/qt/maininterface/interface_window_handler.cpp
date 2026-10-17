@@ -548,6 +548,12 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
 
     QQuickItem * item = p_intf->p_compositor->activeFocusItem();
 
+    // A popup owns its focused controls even after mouse focus, which does
+    // not set visualFocus. Deliver both press and release to that popup.
+    for (auto *owner = item; owner; owner = owner->parentItem())
+        if (owner->isVisible() && owner->inherits("QQuickPopupItem"))
+            return false;
+
     // NOTE: When the item has visual focus we let it handle the key. When the item does not
     //       inherit from QQuickControl we have to declare the 'visualFocus' property ourselves.
     if (item)

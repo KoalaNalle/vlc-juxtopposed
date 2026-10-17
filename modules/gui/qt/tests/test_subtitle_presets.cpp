@@ -420,6 +420,13 @@ private slots:
         QCOMPARE(unwritable.entries().size(), 1); QVERIFY(!blocked.contains(key));
         SubtitleAppearance::Snapshot afterFailedSave; QVERIFY(m_style->snapshot(&afterFailedSave));
         QVERIFY(afterFailedSave == beforeFailedSave);
+        // Retain both the service and QSettings after the rejected write.
+        QVERIFY(QDir().rmdir(blockedPath));
+        QVERIFY(unwritable.save("Retry same native service"));QVERIFY(unwritable.error().isEmpty());
+        QCOMPARE(unwritable.entries().size(),2);
+        QSettings recovered(blockedPath,QSettings::IniFormat);recovered.sync();
+        const auto recoveredRecords=QJsonDocument::fromJson(recovered.value(key).toByteArray()).object().value("presets").toArray();
+        QCOMPARE(recoveredRecords.size(),1);QCOMPARE(recoveredRecords[0].toObject().value("name").toString(),QString("Retry same native service"));
         QVERIFY(m_presets->apply(m_savedId)); QTRY_VERIFY(!m_presets->restoring());
     }
     void staleOutputAndResetDoNotResurrectPresets()

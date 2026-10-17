@@ -28,6 +28,7 @@ ColumnLayout {
         ? [selector, nameEditor, saveButton, cancelButton, advancedButton]
         : [selector, advancedButton]
 
+    signal revealRequested(var item)
     signal advancedRequested
     signal moveFocusRequested(var current, int direction)
 
@@ -50,6 +51,8 @@ ColumnLayout {
             naming = false;
             nameEditor.text = "";
             selector.forceActiveFocus(Qt.PopupFocusReason);
+        } else {
+            Qt.callLater(() => root.revealRequested(presetStatus));
         }
     }
 
@@ -143,7 +146,10 @@ ColumnLayout {
                     color: newPreset.highlighted ? JuxtopposedPalette.color("#242424") : "transparent"
                     radius: 4 * root.uiScale
                 }
-                onTriggered: root.startNaming()
+                onTriggered: {
+                    presets.close();
+                    root.startNaming();
+                }
             }
             Instantiator {
                 model: root.controller.entries
@@ -193,7 +199,12 @@ ColumnLayout {
                             text: entry.checked ? root.checkIcon : ""
                         }
                     }
-                    onTriggered: root.controller.apply(modelData.id)
+                    onTriggered: {
+                        // Applying replaces the entries and can destroy this item.
+                        const presetId = modelData.id;
+                        presets.close();
+                        root.controller.apply(presetId);
+                    }
                 }
                 onObjectAdded: (index, object) => presets.insertItem(index + 1, object)
                 onObjectRemoved: (index, object) => presets.removeItem(object)
@@ -259,6 +270,7 @@ ColumnLayout {
         }
     }
     C.Label {
+        id: presetStatus
         Accessible.name: text
         Layout.fillWidth: true
         color: root.controller.error.length ? JuxtopposedPalette.color("#E39B60") : JuxtopposedPalette.color("#969696")

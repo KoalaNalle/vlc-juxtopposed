@@ -1986,7 +1986,7 @@ if qt6_dep.found()
         vlc_tests += {
             'name': 'test_qt_subtitle_presets',
             'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_subtitle_presets.cpp', 'tests/media_player_probe.c',
-                             'maininterface/subtitle_preset_model.cpp', 'player/subtitle_appearance.cpp', 'util/variables.cpp'),
+                             'maininterface/subtitle_preset_model.cpp', 'player/subtitle_appearance.cpp', 'util/variables.cpp', 'util/checked_preferences_store.cpp'),
             'moc_sources': files('tests/test_subtitle_presets.cpp'),
             'moc_headers': files('maininterface/subtitle_preset_model.hpp', 'player/subtitle_appearance.hpp', 'util/variables.hpp'),
             'suite': ['qt'],

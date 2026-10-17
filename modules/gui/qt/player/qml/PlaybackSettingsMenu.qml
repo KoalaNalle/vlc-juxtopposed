@@ -486,6 +486,7 @@ T.Popup {
                     uiScale: root.uiScale
 
                     onMoveFocusRequested: (current, direction) => root.focusSetting(current, direction)
+                    onRevealRequested: item => panel.loadedPage?.ensureItemVisible(item)
                     onAdvancedRequested: {
                         root.close();
                         DialogsProvider.prefsDialog();
@@ -718,26 +719,27 @@ T.Popup {
             page.forceActiveFocus(reason);
         }
 
-        Connections {
-            function onActiveFocusItemChanged() {
-                const item = page.Window.window?.activeFocusItem;
-                if (!item || !root.visible)
+        function ensureItemVisible(item) {
+            if (!item || !root.visible)
+                return;
+            let ancestor = item;
+            while (ancestor) {
+                if (ancestor === column) {
+                    const top = item.mapToItem(flick.contentItem, 0, 0).y;
+                    if (top < flick.contentY)
+                        flick.contentY = Math.max(0, top);
+                    else if (top + item.height > flick.contentY + flick.height)
+                        flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height), top + item.height - flick.height);
                     return;
-                let ancestor = item;
-                while (ancestor) {
-                    if (ancestor === column) {
-                        const top = item.mapToItem(flick.contentItem, 0, 0).y;
-                        if (top < flick.contentY)
-                            flick.contentY = Math.max(0, top);
-                        else if (top + item.height > flick.contentY + flick.height)
-                            flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height), top + item.height - flick.height);
-                        return;
-                    }
-                    ancestor = ancestor.parent;
                 }
+                ancestor = ancestor.parent;
             }
-
+        }
+        Connections {
             target: page.Window.window
+            function onActiveFocusItemChanged() {
+                page.ensureItemVisible(page.Window.window?.activeFocusItem);
+            }
         }
         Flickable {
             id: flick

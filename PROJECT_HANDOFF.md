@@ -17,6 +17,15 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The latest [native subtitle preset checkpoint](doc/juxtopposed-references/native/guest-subtitle-presets-ui-20261017/README.md)
+fixes failed-save retry, regenerated-menu closure, visible save errors and
+mouse-focused popup key ownership. Actual paused-player edit/restart/Default
+passes136/37/24, native38/10/key-routing6 and ordinary5 pass normally on
+Corebf2940 / GUIeb7532. The observed Escape leak (popup stayed open and main
+window shrank) is repaired; real Space/Escape now preserve clocks, geometry and
+opener focus. Playing UI, theme/DPI/fidelity/platform/clean-package gates remain
+open. Earlier private clock/window hypotheses and fixture failures stay rejected.
+
 The current [settings quality checkpoint](doc/juxtopposed-references/native/guest-beta-settings-quality-20261017/README.md)
 fixes Light search contrast and native accessible names on custom settings
 buttons. Actual playing/paused/restart journeys pass 1652/1653/14 repeated

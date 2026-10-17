@@ -4,6 +4,7 @@
 # include "config.h"
 #endif
 #include "subtitle_preset_model.hpp"
+#include "util/checked_preferences_store.hpp"
 #include <QCryptographicHash>
 #include <QColor>
 #include <QJsonArray>
@@ -294,13 +295,10 @@ bool SubtitlePresetModel::persist(const QList<Preset> &presets, const QHash<QStr
     QJsonObject media; for (auto it = associations.begin(); it != associations.end(); ++it) media[it.key()] = it.value();
     const auto bytes = QJsonDocument(QJsonObject{{"schema", 1}, {"presets", records}, {"media", media}}).toJson(QJsonDocument::Compact);
     if (bytes.size() > MaximumBytes) { fail(qtr("The saved subtitle preset data is too large.")); return false; }
-    const auto previous = m_settings->value(SettingsKey);
-    const bool existed = m_settings->contains(SettingsKey);
-    m_settings->setValue(SettingsKey, bytes); m_settings->sync();
-    if (m_settings->status() != QSettings::NoError) {
-        // Restore the in-memory value too; a later QSettings flush must not
-        // silently turn the reported failed operation into a successful save.
-        if (existed) m_settings->setValue(SettingsKey, previous); else m_settings->remove(SettingsKey);
+    // Use a fresh checked session: QSettings retains its first error even
+    // after a temporary file-sharing failure has been repaired.
+    QString error;
+    if (!CheckedPreferencesStore(nullptr).saveSettings(m_settings, SettingsKey, bytes, false, error)) {
         fail(qtr("The subtitle preset could not be saved. Check access to your settings folder.")); return false;
     }
     return true;
