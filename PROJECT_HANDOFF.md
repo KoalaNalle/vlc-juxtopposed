@@ -17,6 +17,21 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The [native add-on checkpoint](doc/juxtopposed-references/native/guest-addons-install-remove-20261017/README.md)
+repairs prerequisites for the original Extensions page. Source c37137a1c3
+keeps Install/Remove directed, rejects repeated/busy/unmanaged requests, owns
+queued references and fixes shutdown signalling. A locked file keeps its installed
+state/catalog for retry; queued removal keeps its manifest until storage runs.
+Windows user-data overrides retain Unicode. Actual native 31 cases/324 assertions,
+standard-target 12/134 and ordinary playback5 pass normally on
+Core480992/storagefcf6c7
+with unchanged GUId2708b. All14 scoped frozen inputs match; Autotools builds the
+standard target and Meson syntax passes. Reproduced failures remain rejected.
+**Extensions7 is still unmounted.** Reuse the existing native
+`qt-autoload-extensions` preference; next complete checked catalog/installer
+results and selection, then the original seven actions and actual UI journeys.
+Full beta quality/package gates remain open.
+
 The [Recording page checkpoint](doc/juxtopposed-references/native/guest-recording-page-20261017/README.md)
 mounts all12 original fields/actions with the original19 SVGs and the real
 MainCtx/controller. Source f31b2ecce8 preserves the user's approved native

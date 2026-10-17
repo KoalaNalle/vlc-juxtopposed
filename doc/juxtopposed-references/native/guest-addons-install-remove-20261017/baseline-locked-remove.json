@@ -1,0 +1,22 @@
+[
+  {
+    "mode": "install-only",
+    "exitCode": 0,
+    "forcedCleanupUsed": false,
+    "stdout": "ok 1 actual addons manager created\nok 2 owned package converted to native URI\nok 3 actual repository discovery finishes within deadline\nok 4 actual local VLP manifest produces an add-on\nok 5 entry has expected initial installed state\nok 6 native install request admitted\nok 7 native installer finishes within deadline\nok 8 actual package installs successfully\nobserved final state 2\nchecks 8 failures 0\n"
+  },
+  {
+    "mode": "catalog-check",
+    "exitCode": 0,
+    "forcedCleanupUsed": false,
+    "stdout": "ok 1 actual addons manager created\nok 2 actual native catalog loader finishes\nok 3 actual local VLP manifest produces an add-on\nok 4 entry has expected initial installed state\nobserved final state 2\nchecks 4 failures 0\n"
+  },
+  {
+    "mode": "catalog-locked-remove",
+    "exitCode": 3,
+    "forcedCleanupUsed": false,
+    "stdout": "ok 1 actual addons manager created\nok 2 actual native catalog loader finishes\nok 3 actual local VLP manifest produces an add-on\nok 4 entry has expected initial installed state\nok 5 catalog removal request admitted\nok 6 catalog removal finishes within deadline\nnot ok 7 failed removal retains installed state\nobserved final state 0\n",
+    "fileStillPresent": true,
+    "catalogStillTracksFile": false
+  }
+]

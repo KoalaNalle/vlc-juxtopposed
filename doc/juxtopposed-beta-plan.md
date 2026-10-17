@@ -36,6 +36,21 @@ minor known issues and supported-format/platform limits. This does not require
 claiming every possible VLC feature or media/hardware combination bug-free.
 No designer outreach or new extension implementation is authorized by this plan.
 
+The [native add-on checkpoint](juxtopposed-references/native/guest-addons-install-remove-20261017/README.md)
+repairs prerequisites for the original Extensions page. Source c37137a1c3
+keeps Install/Remove directed, rejects repeated/busy/unmanaged requests, owns
+queued references and fixes shutdown signalling. A locked file keeps its installed
+state/catalog for retry; queued removal keeps its manifest until storage runs.
+Windows user-data overrides retain Unicode. Actual native 31 cases/324 assertions,
+standard-target 12/134 and ordinary playback5 pass normally on
+Core480992/storagefcf6c7
+with unchanged GUId2708b. All14 scoped frozen inputs match; Autotools builds the
+standard target and Meson syntax passes. Reproduced failures remain rejected.
+**Extensions7 is still unmounted.** Reuse the existing native
+`qt-autoload-extensions` preference; next complete checked catalog/installer
+results and selection, then the original seven actions and actual UI journeys.
+Full beta quality/package gates remain open.
+
 The [Recording page checkpoint](juxtopposed-references/native/guest-recording-page-20261017/README.md)
 mounts all12 original fields/actions with the original19 SVGs and the real
 MainCtx/controller. Source f31b2ecce8 preserves the user's approved native
