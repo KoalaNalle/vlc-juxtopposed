@@ -17,26 +17,23 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
-The latest [Home content/resume checkpoint](doc/juxtopposed-references/native/guest-home-content-resume-20261018/README.md)
-checks all five sections with real tagged video/audio, actual New Playlist and
-artist models, playing/search/view routes and restart. Two plain old-core runs
-lost the video's resume point; a per-input timer snapshot before detach repairs
-that history save. Two fresh runs pass288/137 each on Core0cdebe/GUI800199;
-the earlier audio/privacy82/140/12 replay also passes on that core. Fresh
-Library18/42/9, Privacy17/database18, queued history40/52, decoded history6,
-upstream player5, native subtitles38 and ordinary playback5 pass normally.
-The Library runner stages immutable binaries with safe hardlinks after an
-E:-full setup failure. Relocated upstream tests use an explicit plugin path,
-private mock demuxer and dynamic test audio module; prior-core controls resolve
-their rejected waits/assertions as setup issues. Core458/privateUI5 and explicit
-player/history producers match; broader inventories differ only in the test
-runtime-staging script and README. Canonical1280×900 with video auto-resize OFF
-and the actual non-native Qt chooser are accepted. Default/narrow geometry,
-unavailable/moved media, rapid changes, broader accessibility/themes/DPI,
-independent fidelity, Windows11 and a clean licensed package remain open.
-The [prior audio checkpoint](doc/juxtopposed-references/native/guest-home-audio-bootstrap-20261017/README.md)
-retains its original GUI fixes and component scope; no full-beta acceptance is
-inferred. All work remains on E: with one heavy task at a time.
+The latest [default-resize Home checkpoint](doc/juxtopposed-references/native/guest-home-default-resize-20261018/README.md)
+reproduces a 16-pixel off-screen floating preview at 320×360 and clamps its width
+to available library space while retaining 16:9. Native populate/reopen/edges
+pass 288/137/112 (537) and ordinary playback 5 pass normally on unchanged
+Core0cdebe / GUIb9b9f3 / MLe3ec5e. Actual default Back/Home/Return, preview bounds,
+temporary inactive-video absence/restoration/rescan while audio continues and
+eight rapid asynchronous Home native-ID requests are accepted. The restored
+video is reindexed; old identity/history preservation is not accepted. The
+ordinary GUI is debug-stripped 105 MB, contains no private QA and is incrementally
+built, not a final clean package. All 1,912 ordinary/six private and prior 458 core
+inputs match. The [previous Home/resume proof](doc/juxtopposed-references/native/guest-home-content-resume-20261018/README.md)
+retains the reproduced resume fix and backend/Privacy/Library/subtitle/player
+regressions with unchanged Core and earlier GUI800199; they are not relabeled
+as a full new-GUI regression. Broader narrow/pointer, moved-source/parent-folder,
+rapid UI/theme/accessibility/DPI/fidelity/platform and clean-package gates remain
+open. Audit the ordered heterogeneous sidebar pins against cached original
+references next; all project work stays on E:, one heavy task at a time.
 
 The latest [native subtitle preset checkpoint](doc/juxtopposed-references/native/guest-subtitle-presets-ui-20261017/README.md)
 fixes failed-save retry, regenerated-menu closure, visible save errors and

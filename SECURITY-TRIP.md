@@ -166,3 +166,15 @@ copy and missing private Windows test modules were resolved as setup failures;
 rejected reports and original incident evidence remain retained. See the
 [scoped proof](doc/juxtopposed-references/native/guest-home-content-resume-20261018/README.md).
 No security-trip cause or full-beta acceptance is established.
+
+## Subsequent default-resize Home checkpoint
+
+18 October 2026: Continued on E:, one heavy task at a time. An explicit native
+negative reproduced a 16-pixel off-screen floating preview at 320×360. The width
+clamp passes native288/137/112 and ordinary playback 5 with normal exits and no
+selected diagnostics or captured fault. Generated-file restoration and eight
+rapid asynchronous native-ID requests pass; native rescanning reindexes the
+restored video, so old identity/history preservation is not accepted. Original
+binaries and rejected fixture assumptions are retained. See the
+[scoped proof](doc/juxtopposed-references/native/guest-home-default-resize-20261018/README.md).
+No security-trip cause or full-beta acceptance is established.

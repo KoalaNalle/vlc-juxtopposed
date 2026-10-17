@@ -271,11 +271,11 @@ void movePreviewAway(){
     check(afterPos.x()>beforePos.x()+200,"actual pointer drag moves floating video away from left-side library controls");
     const auto after=primary();check(player->getInput()==input&&after.value("state")==before.value("state")&&after.value("url")==before.value("url")&&after.value("rate")==before.value("rate")&&after.value("time").toDouble()>=before.value("time").toDouble(),"real preview drag preserves actual input state URL rate and clock");
 }
-void leavePlayer(bool video){
+void leavePlayer(bool video,bool movePreview=true){
     QTest::mouseMove(ownedWindow,QPoint(ownedWindow->width()/2,qMin(80,ownedWindow->height()/2)));settle(350);
     if(video){QQuickItem *back=nullptr;for(auto *object:objects())if(auto *item=qobject_cast<QQuickItem*>(object);item&&item->isVisible()&&item->objectName()==QStringLiteral("IconToolButton")&&item->property("description").toString()==QStringLiteral("Back")){back=item;break;}activate(back);}
     else activate(named(QStringLiteral("musicBack")));
-    until([]{return !context->isPlayerView();},"real player Back returns to library while input continues");toHome();if(video)movePreviewAway();
+    until([]{return !context->isPlayerView();},"real player Back returns to library while input continues");toHome();if(video&&movePreview)movePreviewAway();
 }
 void enterText(QQuickItem *item,const QString &text){activate(item);QTest::keyClick(ownedWindow,Qt::Key_A,Qt::ControlModifier);if(text.isEmpty())QTest::keyClick(ownedWindow,Qt::Key_Backspace);else{QKeyEvent key(QEvent::KeyPress,0,Qt::NoModifier,text);QCoreApplication::sendEvent(ownedWindow,&key);}settle(120);}
 void playlistPicker(){
@@ -313,9 +313,57 @@ void exerciseSections(){
         const auto kind=category==QStringLiteral("continueWatching")?QStringLiteral("video"):category==QStringLiteral("listenAgain")?QStringLiteral("audio"):category==QStringLiteral("frequentFolders")?QStringLiteral("folder"):category==QStringLiteral("frequentPlaylists")?QStringLiteral("playlist"):QStringLiteral("artist");check(named(QStringLiteral("homeCollectionItem0"))->property("kind").toString()==kind,"native collection retains correct media or parent kind");activate(named(QStringLiteral("libraryBack")));homeReady();
     }
 }
+void runEdges(){
+    auto *player=context->getIntf()->p_mainPlayerController;
+    check(var_InheritBool(context->getIntf(),"qt-video-autoresize"),"edge process uses actual default video autoresize");
+    ownedRoot();allCards();
+    activate(named(QStringLiteral("homevideo0")));
+    until([&]{return context->isPlayerView()&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING&&primary().value("time").toDouble()>10000000;},"default-resize Continue Watching starts actual resumed video",15000);
+    until([]{return ownedWindow->width()<640&&ownedWindow->height()<600;},"native default resize follows small video with minimum window bounds");
+    report.insert("defaultPlayerGeometry",QJsonArray{ownedWindow->width(),ownedWindow->height()});capture(QStringLiteral("default-small-player.png"));
+    auto *input=player->getInput();input_item_Hold(input);std::unique_ptr<input_item_t,decltype(&input_item_Release)> held(input,&input_item_Release);const auto before=primary();
+    leavePlayer(true,false);report.insert("defaultHomeGeometry",QJsonArray{ownedWindow->width(),ownedWindow->height()});
+    auto *preview=named(QStringLiteral("pip window"));check(preview!=nullptr,"native floating preview exists after default-size Back");const auto previewBounds=preview->mapRectToScene(preview->boundingRect());report.insert("defaultPreviewBounds",QJsonArray{previewBounds.x(),previewBounds.y(),previewBounds.width(),previewBounds.height()});
+    capture(QStringLiteral("default-preview-bounds.png"));check(QRectF(QPointF{},QSizeF(ownedWindow->size())).contains(previewBounds),"actual floating preview stays inside default-resized owned window");
+    check(player->getInput()==input&&primary().value("time").toDouble()>=before.value("time").toDouble(),"actual Back and Home preserve default-resized playing input");
+    auto *card=named(QStringLiteral("homevideo0"));check(card&&card->isEnabled(),"Continue Watching remains available in default-resized Home");card->forceActiveFocus(Qt::TabFocusReason);settle(200);capture(QStringLiteral("default-small-home.png"));
+    check(card->hasActiveFocus(),"narrow Home video card accepts actual keyboard focus");QTest::keyClick(ownedWindow,Qt::Key_Return);
+    until([&]{return context->isPlayerView()&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING;},"actual Return activates Continue Watching from narrow Home",15000);
+    leavePlayer(true,false);
+    // Separate availability checks use an explicit user-size change, not a
+    // claimed small-window acceptance for the remaining controls.
+    ownedWindow->resize(1280,900);settle(200);movePreviewAway();activate(named(QStringLiteral("homeaudio0")));
+    until([&]{return player->getUrl().fileName()==QStringLiteral("first.flac")&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING;},"actual Listen Again replaces video before inactive-file move",15000);leavePlayer(false);
+    auto *audio=player->getInput();input_item_Hold(audio);std::unique_ptr<input_item_t,decltype(&input_item_Release)> audioHeld(audio,&input_item_Release);const auto audioBefore=primary();
+    const auto folder=QDir(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER")).canonicalPath();const auto base=QDir(qEnvironmentVariable("VLC_OWNED_UI_BASE")).canonicalPath();
+    check(folder.startsWith(base+QLatin1Char('/'))&&base.startsWith(QStringLiteral("E:/")),"file mutation stays inside exact owned E output");
+    struct OwnedMove{QString source,target;bool moved=false;~OwnedMove(){if(moved)QFile::rename(target,source);}} move{QDir(folder).filePath(QStringLiteral("owned-clip.mp4")),QDir(base).filePath(QStringLiteral("temporarily-moved-owned-clip.mp4"))};
+    check(QFileInfo(move.source).isFile()&&!QFileInfo::exists(move.target),"only inactive generated video is eligible for temporary move");
+    until([&]{if(!move.moved)move.moved=QFile::rename(move.source,move.target);return move.moved;},"inactive generated video can be moved within owned E output",15000);
+    auto rescan=[&]{QSignalSpy changes(library(),&MediaLib::idleChanged);library()->reload();until([&]{return changes.count()>0||!library()->idle();},"real media-library reload starts",15000);until([]{return library()->idle()&&!activity()->loading();},"real media-library rescan finishes",30000);};
+    rescan();until([]{auto *video=named(QStringLiteral("homevideo0"));return !video||!video->isEnabled();},"Home removes or disables unavailable actual video after native rescan",15000);
+    report.insert("unavailableHomeMediaCount",activity()->mediaCount());capture(QStringLiteral("home-unavailable-video.png"));
+    check(player->getInput()==audio&&player->getUrl().fileName()==QStringLiteral("first.flac")&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING&&primary().value("time").toDouble()>audioBefore.value("time").toDouble(),"missing inactive video and real rescan preserve playing audio input and advancing clock");
+    check(QFile::rename(move.target,move.source),"generated video can be restored to exact original path");move.moved=false;rescan();until([]{return activity()->mediaCount()==3;},"native rescan restores all three generated files",30000);ownedRoot();
+    contentFolder();playContent(QStringLiteral("owned-clip.mp4"),true);leavePlayer(true,false);ownedWindow->resize(1280,900);settle(200);
+    // Exercise the exact native addAndPlay path used by Home, without claiming
+    // these rapid controller requests are eight pointer-driven UI journeys.
+    struct IdProbe{bool ready=false;qlonglong first=0,second=0;};auto ids=std::make_shared<IdProbe>();
+    const auto firstMrl=QUrl::fromLocalFile(QDir(folder).filePath(QStringLiteral("first.flac"))).toEncoded();const auto secondMrl=QUrl::fromLocalFile(QDir(folder).filePath(QStringLiteral("second.flac"))).toEncoded();
+    library()->runOnMLThread<IdProbe>(library(),[firstMrl,secondMrl](vlc_medialibrary_t *ml,IdProbe &probe){
+        ml_unique_ptr<vlc_ml_media_t> first(vlc_ml_get_media_by_mrl(ml,firstMrl.constData())),second(vlc_ml_get_media_by_mrl(ml,secondMrl.constData()));if(first)probe.first=first->i_id;if(second)probe.second=second->i_id;
+    },[ids](quint64,IdProbe &probe){*ids=probe;ids->ready=true;});
+    until([&]{return ids->ready;},"rapid activation IDs resolve on native media-library worker");check(ids->first>0&&ids->second>0&&ids->first!=ids->second,"rapid activation uses distinct genuine indexed audio IDs");
+    const MLItemId firstId(ids->first,VLC_ML_PARENT_UNKNOWN),secondId(ids->second,VLC_ML_PARENT_UNKNOWN);report.insert("rapidNativeIds",QJsonArray{firstId.toString(),secondId.toString()});
+    for(int i=0;i<8;++i){library()->addAndPlay(i%2?secondId:firstId);settle(60);}
+    until([&]{return player->getUrl().fileName()==QStringLiteral("second.flac")&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING&&primary().value("time").toDouble()>200000&&primary().value("audioTracks").toInt()>0&&primary().value("videoTracks").toInt()==0;},"eight rapid native Home-path requests settle on final audio input",15000);
+    report.insert("rapidNativeControllerRequests",8);report.insert("rapidNativeControllerSpacingMs",60);report.insert("finalRapidPrimary",primary());
+    check(QFileInfo::exists(move.source)&&!QFileInfo::exists(move.target),"owned generated file restored and temporary relocation removed");finish(true);
+}
 void run(){
     try{
         ownedWindow->resize(1280,900);ownedWindow->requestActivate();QAccessible::setActive(true);settle(200);check(library()&&activity()&&history(),"actual Home navigation services available");homeReady();const auto mode=qEnvironmentVariable("VLC_OWNED_UI_MODE");
+        if(mode==QStringLiteral("edges")){runEdges();return;}
         if(mode==QStringLiteral("populate")){
             check(roots().isEmpty()&&activity()->mediaCount()==0,"fresh owned content library has no media or roots");picker(false);until([]{return library()->idle()&&!activity()->loading()&&activity()->mediaCount()==3&&activity()->folders().size()==1;},"native index contains exactly three generated tagged media",30000);ownedRoot();
             contentFolder();playContent(QStringLiteral("First owned track"),false);seekQuarter();leavePlayer(false);contentFolder();playContent(QStringLiteral("owned-clip.mp4"),true);seekQuarter();leavePlayer(true);contentFolder();playContent(QStringLiteral("First owned track"),false);leavePlayer(false);

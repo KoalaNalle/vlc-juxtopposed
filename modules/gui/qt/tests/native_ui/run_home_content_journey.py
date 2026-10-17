@@ -7,9 +7,9 @@ parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--package',type=Path,required=True)
 parser.add_argument('--qa-gui',type=Path,required=True)
 parser.add_argument('--output-dir',type=Path,required=True)
-parser.add_argument('--keep-window-size',action='store_true',help='Exercise configured canonical window with native video auto-resize disabled.')
+parser.add_argument('--keep-window-size',action='store_true',help='Disable native video auto-resize for populate/reopen; edges deliberately uses its default.')
 parser.add_argument('--fixtures',type=Path,required=True)
-parser.add_argument('--modes',nargs='+',choices=['populate','reopen'],default=['populate','reopen'])
+parser.add_argument('--modes',nargs='+',choices=['populate','reopen','edges'],default=['populate','reopen'])
 args=parser.parse_args();ordinary=args.package.resolve();qa=args.qa_gui.resolve();output=args.output_dir.resolve()
 assert ordinary.drive.upper()==qa.drive.upper()==output.drive.upper()=='E:'
 output.mkdir(parents=True,exist_ok=False)
@@ -38,7 +38,7 @@ env.update(QT_ENABLE_REGEXP_JIT='1',QML_DISK_CACHE='aot',QT_DISABLE_SHADER_DISK_
     HOME=str(userdata),USERPROFILE=str(userdata),VLC_USERDATA_PATH=str(userdata))
 cache=run_owned([runtime/'vlc-cache-gen.exe',runtime/'plugins'],runtime,output/'cache')
 assert cache['normalExit']
-report=dict(videoAutoResizeDisabled=args.keep_window_size,passed=False,ordinaryGuiUnchanged=False,privateGuiOnly=True,cases={},fullBetaAccepted=False,
+report=dict(videoAutoResizeDisabled=args.keep_window_size and 'edges' not in args.modes,passed=False,ordinaryGuiUnchanged=False,privateGuiOnly=True,cases={},fullBetaAccepted=False,
     runtimeSha256={name:digest(runtime/name) for name in ['libvlccore.dll','plugins/gui/libqt_plugin.dll','plugins/misc/libaddonsfsstorage_plugin.dll','plugins/misc/libaddonsvorepository_plugin.dll']},
     qaSourceSha256=digest(Path(__file__).with_name('home_content_journey.cpp')),ordinaryGuiSha256=ordinary_sha)
 def save():(output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
@@ -53,10 +53,10 @@ try:
         command=[str(runtime/'vlc.exe'),'--intf=qt','--no-one-instance','--media-library','--no-crashdump',
             '--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
             '--no-ml-network-discovery','--config='+str(configuration),'--file-logging','--log-verbose=2','--verbose=2','--logfile='+str(case/'vlc.log')]
-        if args.keep_window_size:command.append('--no-qt-video-autoresize')
+        if args.keep_window_size and mode!='edges':command.append('--no-qt-video-autoresize')
         command+=['--no-hw-dec','--no-sub-autodetect-file','--gain=0','--restore-playback-pos=0']
         (case/'launch.json').write_text(json.dumps(command,indent=2)+'\n',encoding='utf-8')
-        result=dict(normalExit=False,forcedCleanupUsed=False);report['cases'][mode]=result
+        result=dict(normalExit=False,forcedCleanupUsed=False,videoAutoResizeDisabled='--no-qt-video-autoresize' in command);report['cases'][mode]=result
         kernel=ctypes.WinDLL('kernel32');kernel.SetErrorMode.argtypes=[ctypes.c_uint];kernel.SetErrorMode.restype=ctypes.c_uint
         previous=kernel.SetErrorMode(0x8003)
         try:

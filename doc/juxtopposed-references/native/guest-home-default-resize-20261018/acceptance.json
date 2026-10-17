@@ -1,0 +1,180 @@
+{
+  "date": "2026-10-18",
+  "baseHead": "e0f59ee277eada8261d294101fc7ad03520c8411",
+  "acceptedScope": true,
+  "fullBetaAccepted": false,
+  "oneHeavyTaskAtATime": true,
+  "nativeCases": {
+    "populate": {
+      "checks": 288,
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "selectedDiagnostics": 0,
+      "videoAutoResizeDisabled": true
+    },
+    "reopen": {
+      "checks": 137,
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "selectedDiagnostics": 0,
+      "videoAutoResizeDisabled": true
+    },
+    "edges": {
+      "checks": 112,
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "selectedDiagnostics": 0,
+      "videoAutoResizeDisabled": false
+    }
+  },
+  "nativeChecks": 537,
+  "runtime": {
+    "runtimeSha256": {
+      "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+      "plugins/gui/libqt_plugin.dll": "b9b9f341d8ed60c659a0d006244ac7cfe9dd86848cf99d6f366fcb433fb0e1a7",
+      "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+    },
+    "sourceGuiPreserved": true,
+    "ordinaryGuiStrippedDebug": true
+  },
+  "ordinaryGuiBytes": 105056761,
+  "privateGuiSha256": "d88a4555a277ffb67457536b8c238c4ae5939a8e787457ad74556ba08ddcf6ac",
+  "negative": {
+    "output": "window-r2",
+    "checks": 33,
+    "normalExit": true,
+    "forcedCleanupUsed": false,
+    "error": "actual floating preview stays inside default-resized owned window",
+    "window": [
+      320,
+      360
+    ],
+    "preview": [
+      16,
+      81,
+      320,
+      180
+    ],
+    "ordinaryGuiSha256": "800199d41ccd7814fcdd49c4233323cdf8678fc5bce43722bc877592381eabf0"
+  },
+  "fixed": {
+    "window": [
+      320,
+      360
+    ],
+    "preview": [
+      16,
+      99,
+      288,
+      162
+    ]
+  },
+  "fileCase": {
+    "ownedGeneratedFileOnly": true,
+    "scanRootCount": 1,
+    "duringAbsenceMediaCount": 2,
+    "sourceBytesRestored": true,
+    "temporaryParkedFileRemoved": true,
+    "sourceIdentityAndOldHistoryPreservationNotAccepted": true
+  },
+  "rapidCase": {
+    "path": "MediaLib::addAndPlay(const MLItemId&, const QStringList&), same asynchronous native overload as Home",
+    "requests": 8,
+    "spacingMs": 60,
+    "nativeIds": [
+      "UNKNOWN - 1",
+      "UNKNOWN - 3"
+    ],
+    "finalFileName": "second.flac",
+    "finalAudioTracks": 1,
+    "finalVideoTracks": 0,
+    "finalNativeTime": 1095034,
+    "pointerDrivenUiJourneys": false
+  },
+  "ordinary": {
+    "passed": true,
+    "cases": {
+      "redesigned": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "forcedCleanupUsed": false,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrameCount": 1,
+        "selectedDiagnosticCount": 0
+      },
+      "traditional": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "forcedCleanupUsed": false,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrameCount": 1,
+        "selectedDiagnosticCount": 0
+      },
+      "redesigned-library": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "forcedCleanupUsed": false,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrameCount": 1,
+        "selectedDiagnosticCount": 0
+      },
+      "live": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "forcedCleanupUsed": false,
+        "qtLoaded": true,
+        "adaptiveLoaded": true,
+        "audioDecoderLoaded": true,
+        "decodedFrameCount": 0,
+        "selectedDiagnosticCount": 0
+      },
+      "downloads-sample": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "forcedCleanupUsed": false,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "sourceStatUnchanged": true,
+        "mediaAndFramePrivate": true,
+        "decodedFrameCount": 1,
+        "selectedDiagnosticCount": 0
+      }
+    },
+    "sourceRuntimePreserved": true,
+    "originalPackagePreserved": true,
+    "privateModulesShipped": false
+  },
+  "frozenInputs": {
+    "ordinary-inputs-r1.json": {
+      "entries": 1912,
+      "changed": []
+    },
+    "private-inputs-r4.json": {
+      "entries": 6,
+      "changed": []
+    },
+    "previous-Core-inputs": {
+      "entries": 458,
+      "changed": [],
+      "manifest": "../guest-home-content-resume-20261018/core-inputs-r1.json"
+    }
+  },
+  "sourceSha256": {
+    "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ac915e85745e6f11b7d178703ed4b579dd04a59d331282f31bab6379bbc63198",
+    "modules/gui/qt/tests/native_ui/home_content_journey.cpp": "5b03d266864ab96c036071fa338a9d51d62b9b2e625f4c7b6858fa76e0abfa8c",
+    "modules/gui/qt/tests/native_ui/run_home_content_journey.py": "b73bbd66c6ab349b83ad01173eb5196b5fbf4ea79c727662fd897063d3b712ca"
+  },
+  "remaining": [
+    "Complete narrow-pointer/theme/DPI/screen-reader variants",
+    "Moved source at new path, parent-folder availability, identity/history preservation across rescan",
+    "Rapid pointer-driven UI journeys beyond eight native-ID requests",
+    "All remaining confirmed redesign surfaces including heterogeneous sidebar pins",
+    "Independent fidelity, Windows11 and coherent clean licensed beta package"
+  ]
+}
