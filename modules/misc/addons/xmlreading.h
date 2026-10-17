@@ -30,7 +30,7 @@
         data_pointer.e_type = type;\
     } else
 
-struct
+struct addon_xml_binding
 {
     union
     {
@@ -42,7 +42,7 @@ struct
     {
         TYPE_NONE, TYPE_STRING, TYPE_INTEGER, TYPE_LONG
     } e_type;
-} data_pointer = { {NULL}, TYPE_NONE };
+};
 
 
 static inline int ReadType( const char *value )

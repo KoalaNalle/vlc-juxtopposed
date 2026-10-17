@@ -154,6 +154,16 @@ VLC_API addon_entry_t *addon_entry_Hold(addon_entry_t *);
 VLC_API void addon_entry_Release(addon_entry_t *);
 
 /**
+ * Read the last asynchronous operation's storage and catalog results.
+ * Returns false until an accepted operation has completed both stages, and
+ * resets to false when the next operation is accepted. Call from addon_changed
+ * to capture the result before another request can replace it. The entry state
+ * describes actual storage even when catalog publication failed.
+ */
+VLC_API bool addon_entry_GetOperationResult(addon_entry_t *, int *storage_result,
+                                           int *catalog_result);
+
+/**
  * addons manager lifecycle
  */
 VLC_API addons_manager_t *addons_manager_New( vlc_object_t *,
@@ -165,6 +175,9 @@ VLC_API void addons_manager_Delete( addons_manager_t * );
  * (default "addons storage" module)
  */
 VLC_API int addons_manager_LoadCatalog( addons_manager_t * );
+/** Retry publishing the manager's current installed state after a completed
+ * operation whose catalog result failed. Does not repeat storage mutations. */
+VLC_API int addons_manager_SaveCatalog( addons_manager_t * );
 
 /**
  * Gather addons info from repository (default "addons finder" module)
@@ -172,13 +185,20 @@ VLC_API int addons_manager_LoadCatalog( addons_manager_t * );
  */
 VLC_API void addons_manager_Gather( addons_manager_t *, const char *psz_uri );
 
+/** Checked admission counterpart; completion still calls discovery_ended. */
+VLC_API int addons_manager_GatherChecked( addons_manager_t *, const char *psz_uri );
+/** Capture the completed provider result from inside discovery_ended. */
+VLC_API int addons_manager_GetDiscoveryResult( addons_manager_t * );
+
 /**
  * Install or Remove the addon identified by its uuid.
  * A successful return accepts an asynchronous operation. Install requires a
  * manageable, not-installed entry; Remove requires a manageable, installed one.
  * Requests for an entry already being changed, or in the opposite initial
  * state, fail without queuing another operation. Completion is reported through
- * addon_changed; the entry returns to its initial state on a storage failure.
+ * addon_changed after catalog publication is attempted. Storage failure returns
+ * to the initial state; if rollback leaves owned files, an incomplete install
+ * remains INSTALLED | BROKEN with only those files listed for Remove recovery.
  */
 VLC_API int addons_manager_Install( addons_manager_t *p_manager, const addon_uuid_t uuid );
 VLC_API int addons_manager_Remove( addons_manager_t *p_manager, const addon_uuid_t uuid );
@@ -189,19 +209,30 @@ VLC_API int addons_manager_Remove( addons_manager_t *p_manager, const addon_uuid
 static inline bool addons_uuid_read( const char *psz_uuid, addon_uuid_t *p_uuid )
 {
     if ( !psz_uuid ) return false;
-    if ( strlen( psz_uuid ) < ADDON_UUID_PSZ_SIZE ) return false;
-
-    int i = 0, j = 0;
-    while ( i<ADDON_UUID_PSZ_SIZE )
+    if ( strlen( psz_uuid ) != ADDON_UUID_PSZ_SIZE ) return false;
+    addon_uuid_t parsed = {0};
+    unsigned digits = 0, separators = 0;
+    for (unsigned i = 0; i < ADDON_UUID_PSZ_SIZE; ++i)
     {
-        if ( *( psz_uuid + i ) == '-' )
-            i++;
-        int v;
-        sscanf( psz_uuid + i, "%02x", &v );
-        (*p_uuid)[j++] = v & 0xFF;
-        i+=2;
+        unsigned char c = psz_uuid[i];
+        if (c == '-')
+        {
+            ++separators;
+            continue;
+        }
+        unsigned value;
+        if (c >= '0' && c <= '9') value = c - '0';
+        else if (c >= 'a' && c <= 'f') value = c - 'a' + 10;
+        else if (c >= 'A' && c <= 'F') value = c - 'A' + 10;
+        else return false;
+        if (digits >= ADDON_UUID_SIZE * 2) return false;
+        parsed[digits / 2] = (parsed[digits / 2] << 4) | value;
+        ++digits;
     }
-
+    /* Older VLC catalogs used noncanonical separator positions. Preserve
+     * those IDs while requiring exactly 32 hexadecimal digits and four '-'. */
+    if (digits != ADDON_UUID_SIZE * 2 || separators != 4) return false;
+    memcpy(*p_uuid, parsed, sizeof(parsed));
     return true;
 }
 
@@ -214,7 +245,7 @@ VLC_MALLOC static inline char * addons_uuid_to_psz( const addon_uuid_t * p_uuid 
         char *p = psz;
         while ( i < ADDON_UUID_SIZE )
         {
-            if ( i == 4 || i== 7 || i== 9 || i== 11 )
+            if ( i == 4 || i== 6 || i== 8 || i== 10 )
                 *p++ = '-';
             int v = 0xFF & (*p_uuid)[i];
             sprintf( p, "%02x", v );

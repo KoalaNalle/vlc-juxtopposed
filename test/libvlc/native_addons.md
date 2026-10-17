@@ -16,6 +16,7 @@ python test/libvlc/native_addons.py --runtime E:/owned/source-runtime `
   --probe E:/owned/build/.libs/test_addons.exe `
   --core E:/owned/build/libvlccore.dll `
   --storage E:/owned/build/libaddonsfsstorage_plugin.dll `
+  --repository E:/owned/build/libaddonsvorepository_plugin.dll `
   --output E:/owned/fresh-addons-run
 ```
 
@@ -34,6 +35,20 @@ completion rather than timing sleeps. Raw per-process logs and `results.json`
 remain under the supplied output directory.
 
 This does not accept the redesigned Extensions page, external catalog/network
-behavior, multi-file installation rollback/collisions, catalog-write failure
-reporting, script activation or the native startup preference. Those require
-separate checks before the page can be accepted.
+behavior, script activation or the native startup preference. The current suite
+also checks malformed package/catalog XML and IDs, canonical and legacy UUIDs,
+Unicode uppercase package URLs, reentrant discovery inspection, duplicate-entry
+selection, actual selected replacement bytes, isolated storage/catalog results,
+catalog retry without reinstalling, preserved existing scripts, missing later
+resources, second-file collisions and duplicate manifest resources. Installation
+stages all resources and publishes without replacement; failures clean up only
+files owned by that attempt. A real physical failure denying rollback deletion
+is not injected. POSIX publication is not exercised by this Windows driver.
+
+The first collision baseline modifies the owned pre-existing fixture and the
+missing-resource baseline leaves an untracked file. Those are rejected even when
+the native failure assertions alone pass: final filesystem checks determine the
+case result. Result getters add no fields to the public manager owner/entry ABI;
+callbacks capture results before queuing frontend updates. The manager's checked
+admission and explicit catalog-save APIs let the frontend report and retry actual
+failures. These native checks still require separate model/window acceptance.
