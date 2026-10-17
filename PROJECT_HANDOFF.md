@@ -17,6 +17,18 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The current [original Extensions page checkpoint](doc/juxtopposed-references/native/guest-extensions-page-20261017/README.md)
+mounts all seven original fields/actions with the real shared application model,
+checked startup persistence, stable selection, catalog/local Add, Remove/retry and
+native Advanced/Plugins routes. Native windows5/190, production-catalog17,
+add-ons49/948 and ordinary playback5 pass normally on Corebf2940 / GUI17d870 /
+storage1f72cd / repositorye480f5. The caption-filter lifetime fix passes live and
+late owned-window hit tests. All1910 ordinary/five private inputs match.
+The user's security-trip pause was explicitly resumed; SECURITY-TRIP.md preserves
+its original record. Themes, full focus/accessibility, DPI/monitor variants,
+Windows shell-native chooser, independent visual review, Windows11 and a clean
+licensed package remain open. This accepts scoped Extensions behavior, not beta.
+
 The [checked add-on catalog/storage checkpoint](doc/juxtopposed-references/native/guest-addons-catalog-storage-20261017/README.md)
 adds actual discovery/storage/catalog results and checked catalog-save retry,
 without extending public owner/entry layouts. Source d926066e89 stages complete
@@ -29,8 +41,8 @@ standard30/587 and ordinary5 pass normally on Core918255/
 storage1f72cd/repositorye480f5
 with unchanged GUId2708b. All11 scoped frozen inputs match. Earlier callback,
 catalog, overwrite/partial-file and stale-package failures remain rejected.
-**Extensions7 is still unmounted:** next consume these APIs in AddonsModel with
-stable selection, checked startup preference and original QML/native journeys.
+At this historical backend checkpoint Extensions7 was unmounted; the current
+frontend checkpoint above now supplies its original body and native journeys.
 Physical rollback-deletion failure and POSIX publication are not runtime-tested;
 full beta quality/package gates remain open.
 
@@ -44,7 +56,8 @@ standard-target 12/134 and ordinary playback5 pass normally on
 Core480992/storagefcf6c7
 with unchanged GUId2708b. All14 scoped frozen inputs match; Autotools builds the
 standard target and Meson syntax passes. Reproduced failures remain rejected.
-**Extensions7 is still unmounted.** Reuse the existing native
+At this historical checkpoint Extensions7 was unmounted. The current frontend
+checkpoint above supersedes that status. Reuse the existing native
 `qt-autoload-extensions` preference; next complete checked catalog/installer
 results and selection, then the original seven actions and actual UI journeys.
 Full beta quality/package gates remain open.

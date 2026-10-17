@@ -47,6 +47,8 @@
 #include "network_preferences_model.hpp"
 #include "performance_preferences_model.hpp"
 #include "recording_preferences_model.hpp"
+#include "extensions_preferences_model.hpp"
+#include "dialogs/extensions/extensions_manager.hpp"
 #include "dialogs/preferences/controls_shortcuts.hpp"
 #include <vlc_dialog.h>
 #include "medialibrary/mlhelper.hpp"
@@ -259,6 +261,7 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
         PerformancePreferencesModel::Consumers{true, true, true, true, true, true}, this);
     m_recordingPreferences = new RecordingPreferencesModel(p_intf, settings,
         RecordingPreferencesModel::Consumers{true, true, true, true, true}, this);
+    m_extensionsPreferences = new ExtensionsPreferencesModel(this, this);
     connect(m_recordingPreferences, &RecordingPreferencesModel::discoveryDisabled,
         THEMIM->getRendererManager(), &RendererManager::applyDiscoveryPolicy);
     // Default Consumers gates remain false until each native behavior is verified.
@@ -415,6 +418,16 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     m_threadRunner = new ThreadRunner();
 
     m_initialEffectiveMainInterfaceMode = getEffectiveMainInterfaceMode();
+
+    // The redesigned shell builds native menus on demand. Honor the existing
+    // startup preference even when no Extensions menu has been opened yet.
+    // Load descriptors/menus only; scripts still require explicit activation.
+    if (!p_intf->b_isDialogProvider && var_InheritBool(p_intf, "qt-autoload-extensions"))
+        QTimer::singleShot(0, this, [this] {
+            auto *extensions = ExtensionsManager::getInstance(p_intf);
+            if (!extensions->isLoaded() && !extensions->cannotLoad())
+                extensions->loadExtensions();
+        });
 }
 
 MainCtx::~MainCtx()
@@ -422,6 +435,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_extensionsPreferences;
+    m_extensionsPreferences = nullptr;
     delete m_controlsPreferences;
     m_controlsPreferences = nullptr;
     delete m_performancePreferences;

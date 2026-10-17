@@ -193,6 +193,7 @@ libqt_plugin_la_SOURCES = \
 	maininterface/network_preferences_model.cpp maininterface/network_preferences_model.hpp \
 	maininterface/performance_preferences_model.cpp maininterface/performance_preferences_model.hpp \
 	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
+	maininterface/extensions_preferences_model.cpp maininterface/extensions_preferences_model.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
@@ -508,6 +509,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/network_preferences_model.moc.cpp \
 	maininterface/performance_preferences_model.moc.cpp \
 	maininterface/recording_preferences_model.moc.cpp \
+	maininterface/extensions_preferences_model.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
@@ -1305,6 +1307,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedRecordingSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedExtensionsSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
@@ -3013,3 +3016,6 @@ EXTRA_DIST += tests/test_juxtopposed_recording_settings.py tests/juxtopposed_rec
 endif
 endif
 endif
+
+EXTRA_DIST += tests/test_juxtopposed_extensions_settings.py \
+    tests/native_ui/extensions_journey.cpp tests/native_ui/extensions_journey.mk tests/native_ui/run_extensions_journey.py

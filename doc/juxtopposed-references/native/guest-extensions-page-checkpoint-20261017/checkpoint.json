@@ -1,0 +1,102 @@
+{
+  "time": "2026-10-17T14:25:45.933180+00:00",
+  "sourceHead": "32cd62fc4d71b0b59d6a2e79c7ea72f3a6234112",
+  "workingTreeCommitted": false,
+  "status": "work in progress; runtime acceptance failed",
+  "betaAccepted": false,
+  "recordingDecision": "Preserve VLC native preference; OFF does not force re-encoding.",
+  "ordinaryBuild": {
+    "revision": "r2",
+    "exitCode": 0,
+    "frozen": {
+      "count": 1910,
+      "sha256": "6455036fab62d0284ff4907f50612fa5cca078bf7d65ec0761516e297a543c95",
+      "unchanged": true
+    },
+    "runtime": {
+      "libvlccore.dll": "bf29403169b936e2156bcfcd0f03a38fbbaad0d9b54fd0e7d9e843e4bdb5bc33",
+      "plugins/gui/libqt_plugin.dll": "afd326c3c7962191224a5d25d12fac3e6e5e86bc50a52f9c6267ba555051556f",
+      "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+      "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+    },
+    "qaMarkerPresent": false
+  },
+  "privateFixtureBuild": {
+    "revision": "r1",
+    "exitCode": 0,
+    "frozen": {
+      "count": 4,
+      "sha256": "4c7d5c4c148eece3687e24f19e3c74ecfbf89ac642cd1124c4b36e6378d7eefe",
+      "unchanged": true
+    }
+  },
+  "windowRun": {
+    "passed": false,
+    "ordinaryGuiUnchanged": false,
+    "privateGuiOnly": true,
+    "cases": {
+      "empty": {
+        "normalExit": false,
+        "forcedCleanupUsed": true,
+        "pid": 14308,
+        "exitCode": 1,
+        "elapsedSeconds": 100.09299999999348,
+        "journey": {
+          "checks": [
+            {
+              "name": "real MainCtx and native window ready",
+              "passed": true
+            },
+            {
+              "name": "MainCtx owns Extensions service",
+              "passed": true
+            },
+            {
+              "name": "service owns actual AddonsModel",
+              "passed": true
+            },
+            {
+              "name": "add-on catalog remains lazy before first settings use",
+              "passed": true
+            },
+            {
+              "name": "globalCategoryextensions",
+              "passed": false
+            }
+          ],
+          "error": "globalCategoryextensions",
+          "fullBetaAccepted": false,
+          "ordinaryGuiContainsQa": false,
+          "ownedWindowOnly": true,
+          "passed": false,
+          "startupEngineLoaded": false,
+          "startupPolicy": true,
+          "windowsDpiMatrixAccepted": false
+        },
+        "diagnostics": []
+      }
+    },
+    "fullBetaAccepted": false,
+    "runtimeSha256": {
+      "libvlccore.dll": "bf29403169b936e2156bcfcd0f03a38fbbaad0d9b54fd0e7d9e843e4bdb5bc33",
+      "plugins/gui/libqt_plugin.dll": "147d45a4d2ec46d3f0e1f205d13f729a8af79c30ab4b2dad449627984c36c7f7",
+      "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+      "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+    },
+    "qaSourceSha256": "935149c8560112145b39c3d80f02907f82cd6b14838235a5bd11810a7d4783d9",
+    "ordinaryGuiSha256": "afd326c3c7962191224a5d25d12fac3e6e5e86bc50a52f9c6267ba555051556f"
+  },
+  "ordinaryRuntimeHashRecheckedUnchanged": true,
+  "next": [
+    "Diagnose failed globalCategoryextensions target: record whether missing, disabled, hidden or not yet ready; also record actual settings visibility and categoryPages keys. No page rendering/function acceptance yet.",
+    "Resolve normal quit after this early failure; forced cleanup is rejected evidence.",
+    "Run real page, local package chooser/install/remove/failure/retry/navigation/restart journeys and native startup consumer. startupPolicy=true with startupEngineLoaded=false before explicit menu use requires checking intended native timing.",
+    "Verify original assets/layout, production Find more, legacy shared model, catalog-save retry; register fixture distribution files.",
+    "Run appropriate ordinary playback/regression, then commit accepted source and proof. Full beta quality/platform/package gates remain."
+  ],
+  "paths": {
+    "rawRun": "build-windows/beta-extensions-20261017/window-acceptance-r1",
+    "ordinaryBuildLog": "build-windows/beta-extensions-20261017/page-build-r2.log",
+    "fixtureBuildLog": "build-windows/beta-extensions-20261017/ui-build-r1.log"
+  }
+}

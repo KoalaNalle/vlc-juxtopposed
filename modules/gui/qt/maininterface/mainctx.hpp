@@ -80,6 +80,7 @@ class ControlsPreferencesModel;
 class NetworkPreferencesModel;
 class PerformancePreferencesModel;
 class RecordingPreferencesModel;
+class ExtensionsPreferencesModel;
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
@@ -92,6 +93,7 @@ Q_MOC_INCLUDE("maininterface/controls_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/network_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/performance_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/recording_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/extensions_preferences_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -152,6 +154,7 @@ class MainCtx : public QObject
     Q_PROPERTY(NetworkPreferencesModel* networkPreferences READ getNetworkPreferences CONSTANT FINAL)
     Q_PROPERTY(PerformancePreferencesModel* performancePreferences READ getPerformancePreferences CONSTANT FINAL)
     Q_PROPERTY(RecordingPreferencesModel* recordingPreferences READ getRecordingPreferences CONSTANT FINAL)
+    Q_PROPERTY(ExtensionsPreferencesModel* extensionsPreferences READ getExtensionsPreferences CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
@@ -297,6 +300,7 @@ public:
     inline NetworkPreferencesModel* getNetworkPreferences() const { return m_networkPreferences; }
     inline PerformancePreferencesModel* getPerformancePreferences() const { return m_performancePreferences; }
     inline RecordingPreferencesModel* getRecordingPreferences() const { return m_recordingPreferences; }
+    inline ExtensionsPreferencesModel* getExtensionsPreferences() const { return m_extensionsPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -530,6 +534,7 @@ protected:
     NetworkPreferencesModel* m_networkPreferences = nullptr;
     PerformancePreferencesModel* m_performancePreferences = nullptr;
     RecordingPreferencesModel* m_recordingPreferences = nullptr;
+    ExtensionsPreferencesModel* m_extensionsPreferences = nullptr;
     bool                 m_windowTitlebar = true;
     // Immutable application-start snapshot for the new Interface consumers.
     int m_startupControlsAutoHide = -1;

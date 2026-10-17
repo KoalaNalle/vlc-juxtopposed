@@ -4,6 +4,8 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+Current checkpoint: the [original Extensions page](juxtopposed-references/native/guest-extensions-page-20261017/README.md) is mounted with its real shared native model and all seven designed fields/actions. Native windows5/190, production-catalog17, add-ons49/948 and ordinary playback5 pass normally on the recorded candidate tuple. A real Windows caption-filter shutdown defect is fixed and checked with live/late hit tests. The security-trip pause was explicitly resumed; its historical record is preserved in [SECURITY-TRIP.md](../SECURITY-TRIP.md). Broader theme/accessibility/DPI/platform and clean-package gates remain open. Recording keeps VLC's native preference as requested; OFF does not force re-encoding.
+
 ## Release boundaries agreed with the user — 17 October 2026
 
 This clarification takes precedence over older broad parity requirements below.
@@ -48,8 +50,8 @@ standard30/587 and ordinary5 pass normally on Core918255/
 storage1f72cd/repositorye480f5
 with unchanged GUId2708b. All11 scoped frozen inputs match. Earlier callback,
 catalog, overwrite/partial-file and stale-package failures remain rejected.
-**Extensions7 is still unmounted:** next consume these APIs in AddonsModel with
-stable selection, checked startup preference and original QML/native journeys.
+At this historical backend checkpoint Extensions7 was unmounted; the current
+frontend checkpoint above now supplies its original body and native journeys.
 Physical rollback-deletion failure and POSIX publication are not runtime-tested;
 full beta quality/package gates remain open.
 
@@ -63,7 +65,8 @@ standard-target 12/134 and ordinary playback5 pass normally on
 Core480992/storagefcf6c7
 with unchanged GUId2708b. All14 scoped frozen inputs match; Autotools builds the
 standard target and Meson syntax passes. Reproduced failures remain rejected.
-**Extensions7 is still unmounted.** Reuse the existing native
+At this historical checkpoint Extensions7 was unmounted. The current frontend
+checkpoint above supersedes that status. Reuse the existing native
 `qt-autoload-extensions` preference; next complete checked catalog/installer
 results and selection, then the original seven actions and actual UI journeys.
 Full beta quality/package gates remain open.
@@ -500,7 +503,7 @@ The preserved audit confirms **13 category routes**. Inspect each original page,
 | --- | --- | --- |
 | App | [ ] General; [ ] Interface; [ ] Privacy; [ ] Controls | Original category bodies are mounted with checked persistence. Preserve existing evidence and finish remaining native consumers, complete journeys and theme/fidelity/desktop gates. |
 | Media | [ ] Playback; [ ] Video; [ ] Audio; [ ] Subtitles; [ ] Library | Original category bodies are mounted. Preserve native subtitle/library/history proofs and finish unsupported or gated consumers, full journeys and visual/platform validation. |
-| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced, Performance14 and Recording12 are mounted with focused native controller/consumer/window and component evidence. Full category visual/platform gates remain. Extensions7 is cached and needs its native consumers, checked persistence and original body. |
+| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced, Performance14 and Recording12 are mounted with focused native controller/consumer/window and component evidence. Extensions7 is also mounted with shared native management, checked persistence, original artwork and five actual window journeys (190 checks), plus a production-catalog check. Full category theme/accessibility/DPI/visual/platform gates remain. |
 
 - [ ] Maintain a per-field mapping: original label/state, native variable/model, units/range/default, configured-versus-live semantics, restart requirement and reset/error outcome.
 - [ ] Verify ordinary Save does not unexpectedly replay a media preset or clear activity; Reset must clear the intended settings and live caches without queued-worker resurrection.

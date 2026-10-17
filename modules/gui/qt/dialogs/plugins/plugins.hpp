@@ -31,6 +31,7 @@
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
+#include <QPointer>
 
 class QLabel;
 class QTabWidget;
@@ -151,7 +152,8 @@ private:
     PixmapAnimator *spinnerAnimation;
     bool b_localdone;
     QSignalMapper *signalMapper;
-    std::unique_ptr<AddonsModel> m_model;
+    std::unique_ptr<AddonsModel> m_fallbackModel;
+    QPointer<AddonsModel> m_model;
 };
 
 class PluginTreeItem : public QTreeWidgetItem

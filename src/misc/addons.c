@@ -396,6 +396,9 @@ static void MergeSources( addons_manager_t *p_manager,
                     addon_entry_Release(owner->available);
                 owner->available = p_entry;
                 retained = true;
+                /* The offered archive changed even when its version matches.
+                 * Owners need this discovery event to identify a local Add. */
+                changed = true;
                 if (p_manager_entry->e_state == ADDON_NOTINSTALLED && !owner->operation_pending)
                 {
                     AdoptAvailable(p_manager_entry);

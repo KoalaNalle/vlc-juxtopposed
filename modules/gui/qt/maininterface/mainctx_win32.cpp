@@ -26,6 +26,7 @@
 #endif
 
 #include "mainctx_win32.hpp"
+#include <QPointer>
 
 #include "maininterface/compositor.hpp"
 #include "playlist/playlist_controller.hpp"
@@ -136,7 +137,7 @@ public:
 
     ~CSDWin32EventHandler()
     {
-        QApplication::instance()->removeNativeEventFilter(this);
+        if (auto *app=QApplication::instance()) app->removeNativeEventFilter(this);
     }
 
     static int getSystemMetricsForDpi(int nIndex, UINT dpi)
@@ -183,7 +184,7 @@ public:
     {
         MSG* msg = static_cast<MSG*>( message );
 
-        if ( !m_useClientSideDecoration || (msg->hwnd != WinId(m_window)) )
+        if (!m_mainCtx || !m_window || !m_buttonmodel || !m_useClientSideDecoration || (msg->hwnd != WinId(m_window)))
             return false;
 
         switch ( msg->message )
@@ -446,6 +447,7 @@ public:
 private:
     void updateClientFrame()
     {
+        if (!m_window) return;
         // DwmExtendFrameIntoClientArea() is not necessary when WS_POPUP is not
         // used and platform handles resize (outside), where there is non-client
         // area
@@ -472,6 +474,7 @@ private:
 
     void updateCSDSettings()
     {
+        if (!m_window) return;
         HWND winId = WinId(m_window);
         if ( !winId )
             return;
@@ -504,7 +507,7 @@ private:
 
     void hoverExclusive(CSDButton::ButtonType type)
     {
-        if (Q_UNLIKELY(!qApp) || qApp->property("isDying").toBool())
+        if (Q_UNLIKELY(!qApp) || !m_buttonmodel || qApp->property("isDying").toBool())
             return;
 
         const auto& buttons = m_buttonmodel->windowCSDButtons();
@@ -516,7 +519,7 @@ private:
 
     void handleButtonActionExclusive(CSDButton::ButtonType type, bool pressed)
     {
-        if (Q_UNLIKELY(!qApp) || qApp->property("isDying").toBool())
+        if (Q_UNLIKELY(!qApp) || !m_buttonmodel || qApp->property("isDying").toBool())
             return;
 
         const auto& buttons = m_buttonmodel->windowCSDButtons();
@@ -539,7 +542,7 @@ private:
 
     void resetPressedState()
     {
-        if (Q_UNLIKELY(!qApp) || qApp->property("isDying").toBool())
+        if (Q_UNLIKELY(!qApp) || !m_buttonmodel || qApp->property("isDying").toBool())
             return;
 
         const auto& buttons = m_buttonmodel->windowCSDButtons();
@@ -551,7 +554,7 @@ private:
 
     void setAllUnhovered()
     {
-        if (Q_UNLIKELY(!qApp) || qApp->property("isDying").toBool())
+        if (Q_UNLIKELY(!qApp) || !m_buttonmodel || qApp->property("isDying").toBool())
             return;
 
         const auto& buttons = m_buttonmodel->windowCSDButtons();
@@ -562,10 +565,10 @@ private:
     }
 
     bool m_useClientSideDecoration;
-    QWindow *m_window;
-    CSDButtonModel *m_buttonmodel;
+    QPointer<QWindow> m_window;
+    QPointer<CSDButtonModel> m_buttonmodel;
     bool m_trackingMouse = false;
-    MainCtx *m_mainCtx = nullptr;
+    QPointer<MainCtx> m_mainCtx;
     const bool m_platformHandlesResize;
 };
 
@@ -900,7 +903,9 @@ InterfaceWindowHandlerWin32::InterfaceWindowHandlerWin32(qt_intf_t *_p_intf, Mai
     if (mainCtx->platformHandlesResizeWithCSD() || mainCtx->platformHandlesShadowsWithCSD())
     {
         assert(mainCtx->platformHandlesResizeWithCSD() && mainCtx->platformHandlesShadowsWithCSD());
-        m_CSDWindowEventHandler = new CSDWin32EventHandler(mainCtx, window, window);
+        // The native window can outlive the GUI and MainCtx during shutdown.
+        // Remove its CSD filter with the GUI handler, before those models die.
+        m_CSDWindowEventHandler = new CSDWin32EventHandler(mainCtx, window, this);
         // The handler's synchronous frame-change establishes the native
         // client margins. Restore the client rectangle after that transition,
         // before the base constructor's queued startup-state policy runs.

@@ -32,3 +32,19 @@ private/ordinary binary identities, current fixture source hash and individual
 checks. Timeout/forced cleanup is a failure. Broader settings interactions,
 playing/paused independence, themes, 150/200% Windows DPI, monitor movement and
 independent visual scoring remain separate gates.
+
+The Extensions variant uses `extensions_journey.mk` and
+`run_extensions_journey.py`. Its default five processes cover the empty original
+page, owned Unicode VLP installation/removal and failures/retry, stable selection,
+keyboard Home/End, navigation, native extension menus and startup preference
+restart and command-line override. A real locked catalog separately exercises
+the UI save-retry action without repeating file mutations. Counts come from the report; failed or timed-out runs are rejected.
+The optional `live` mode only fetches the production catalog metadata. It never
+installs third-party packages. The fixture waits for the actual settings host;
+its private CRT configuration reports assertions to stderr instead of hiding a
+startup failure behind a modal assertion dialog. Ordinary VLC is unaffected.
+
+Before rebuilding QML, run `test_juxtopposed_extensions_settings.py --output-dir
+<fresh-output>` with the Qt/PySide6 test runtime. It loads the actual source with
+Qt's semantic property validation: the AOT compiler alone did not reject an
+unsupported Keys signal handler. This guard supplies no native consumer proof.

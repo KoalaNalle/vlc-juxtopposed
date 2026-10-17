@@ -30,6 +30,7 @@
 #include "widgets/native/searchlineedit.hpp"
 #include "dialogs/extensions/extensions_manager.hpp"
 #include "network/addonsmodel.hpp"
+#include "maininterface/extensions_preferences_model.hpp"
 #include "widgets/native/animators.hpp"
 #include "util/imagehelper.hpp"
 #include "util/colorizedsvgicon.hpp"
@@ -405,17 +406,27 @@ AddonsTab::AddonsTab( qt_intf_t *p_intf_ ) : QVLCFrame( p_intf_ )
     connect( installedOnlyBox, &QtCheckboxChanged, this, &AddonsTab::installChecked );
 
     // Model
-    m_model = std::make_unique<AddonsModel>( );
-    //model expect QMLlike behavior
-    m_model->classBegin();
-    m_model->setCtx(p_intf->p_mi);
+    // Share the application manager so the redesigned and native routes cannot
+    // publish competing snapshots of the same installed catalog.
+    if (p_intf->p_mi && p_intf->p_mi->getExtensionsPreferences()) {
+        p_intf->p_mi->getExtensionsPreferences()->ensureReady();
+        m_model = p_intf->p_mi->getExtensionsPreferences()->addons();
+    } else {
+        m_fallbackModel = std::make_unique<AddonsModel>();
+        m_model = m_fallbackModel.get();
+        m_model->classBegin();
+        m_model->setCtx(p_intf->p_mi);
+    }
+    m_model->setTypeFilter(AddonsModel::Type::TYPE_NONE);
+    m_model->setStateFilter(AddonsModel::State::STATE_NONE);
+    m_model->setSearchPattern({});
     connect( signalMapper, &QSignalMapper::mappedInt,
-            m_model.get(), [model = m_model.get()](int mapped){
+            m_model.data(), [model = m_model.data()](int mapped){
                 model->setTypeFilter(static_cast<AddonsModel::Type>(mapped));
             });
 
     connect( searchInput, &SearchLineEdit::textChanged,
-            m_model.get(), &AddonsModel::setSearchPattern );
+            m_model.data(), &AddonsModel::setSearchPattern );
 
 
     // Update button
@@ -426,9 +437,9 @@ AddonsTab::AddonsTab( qt_intf_t *p_intf_ ) : QVLCFrame( p_intf_ )
     switchStack->setCurrentIndex( ONLYLOCALADDONS );
     connect( reposyncButton, &QPushButton::clicked, this, &AddonsTab::reposync );
     connect(
-        m_model.get(), &AddonsModel::loadingChanged,
+        m_model.data(), &AddonsModel::loadingChanged,
         this, [this]() {
-            if ( !m_model->loading()) {
+            if ( m_model && !m_model->loading()) {
                 spinnerAnimation->stop();
                 addonsView->viewport()->update();
             }
@@ -440,7 +451,7 @@ AddonsTab::AddonsTab( qt_intf_t *p_intf_ ) : QVLCFrame( p_intf_ )
 
     // ListView
     addonsView = new QListView( this );
-    addonsView->setModel(m_model.get());
+    addonsView->setModel(m_model.data());
 
     connect( addonsView, &QListView::activated, this, &AddonsTab::moreInformation );
     layout->addWidget( addonsView );
@@ -476,7 +487,7 @@ AddonsTab::AddonsTab( qt_intf_t *p_intf_ ) : QVLCFrame( p_intf_ )
     addonsView->viewport()->installEventFilter( this );
 
     //model expect QMLlike behavior
-    m_model->componentComplete();
+    if (m_fallbackModel) m_model->componentComplete();
 }
 
 AddonsTab::~AddonsTab()
@@ -497,6 +508,7 @@ void AddonsTab::keyPressEvent( QKeyEvent *keyEvent )
 
 bool AddonsTab::eventFilter( QObject *obj, QEvent *event )
 {
+    if (!m_model) return false;
     if ( obj != addonsView->viewport() )
         return false;
 
