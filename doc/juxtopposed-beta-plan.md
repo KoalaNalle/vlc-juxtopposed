@@ -4,6 +4,18 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [automatic encoder preference](juxtopposed-references/native/guest-encoder-preference-20261017/README.md)
+now has real automatic-selection fallback and explicit-profile precedence.
+Chain7 and global7 export every exact 88,200-sample PCM; the older producer
+provides a targeted ignored-preference negative. Actual Conversion12 verifies
+the start-time snapshot/next-job change, automatic PCM validation, publication,
+cancellation and primary-player independence; strict FLAC9 passes. Ordinary
+Core602632/GUI753feb/transcodeb1a422 passes five generated/local-HLS/Downloads
+smokes normally. All2176 selected inputs match; no private fixtures ship and
+earlier runtimes remain preserved. Performance14's page/other consumers,
+Recording12, Extensions7 and all broader beta gates remain open. Native
+video/subtitle encoder coverage and complete later-tuple regression are pending.
+
 The [HTTP consumer repair](juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
 twelve TLS/proxy cases, actual PAC9 with a targeted old-consumer negative,
 object-policy16 and all six HTTP unit executables. Core6823ce/GUI8cf68a pass

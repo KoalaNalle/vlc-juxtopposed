@@ -27,9 +27,14 @@ for name in ['libvlc.dll', 'libvlccore.dll']:
     if adjacent.exists() and digest(adjacent) != digest(package / name):
         raise SystemExit('Adjacent native runtime differs from the selected package: ' + str(adjacent))
 output.mkdir(parents=True, exist_ok=False)
+(executable.parent / 'portable').mkdir(exist_ok=True)
 userdata = output / 'userdata'
 userdata.mkdir()
 environment = os.environ.copy()
+for name in ['temp', 'appdata', 'localappdata']:
+    (output / name).mkdir()
+environment.update(TEMP=str(output / 'temp'), TMP=str(output / 'temp'),
+    APPDATA=str(output / 'appdata'), LOCALAPPDATA=str(output / 'localappdata'))
 # Windows treats VLC_LIB_PATH as the complete plugin inventory; supplementary
 # VLC_PLUGIN_PATH could retain an unrelated inherited/default build inventory.
 environment.pop('VLC_PLUGIN_PATH', None)
@@ -56,17 +61,18 @@ except subprocess.TimeoutExpired as error:
 text = results.read_text(encoding='utf-8-sig') if results.is_file() else ''
 cases = ['initTestCase', 'localValidationAndNoOverwrite', 'realFlacAndActualPlayback',
     'inheritedRunTimeAndInputChoicesDoNotTrim', 'inheritedFileFormatKeepsLiteralPercentDestination',
+    'encoderPreferenceIsCapturedBeforeStarting',
     'corruptSourceDoesNotPublish',
     'destinationRaceIsPreserved', 'runningCancellationAndReuse',
     'independentPrimaryQueueAndPausedClock', 'runningWorkerShutdown', 'cleanupTestCase']
 actual_cases = re.findall(r'^PASS\s+:\s+TestConversionController::([A-Za-z]\w*)\(\)\s*$', text, re.MULTILINE)
-totals = re.findall(r'^Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, \d+ms\s*$', text, re.MULTILINE)
+totals = re.findall(r'^Totals: 12 passed, 0 failed, 0 skipped, 0 blacklisted, \d+ms\s*$', text, re.MULTILINE)
 rejected_statuses = re.findall(r'^(?:FAIL!?|SKIP|XFAIL|XPASS|BFAIL|BPASS)\s*:', text, re.MULTILINE)
 passed = bool(process.returncode == 0 and actual_cases == cases and len(totals) == 1 and not rejected_statuses)
 # Log names identify the actual selected stages. The exact complete plugin
 # root above plus each selected module's package DLL/hash records what was
 # exercised; it does not assert arbitrary unrelated network/media support.
-log_path = output / 'conversion-native.log'
+log_path = output / 'conversion-captured-native.log'
 log_text = log_path.read_text(encoding='utf-8-sig', errors='replace') if log_path.is_file() else ''
 selected = sorted(set(re.findall(r'using (audio encoder|audio decoder|audio resampler|audio converter|sout filter|sout mux|sout access) module "([^"]+)"', log_text)))
 module_aliases = {

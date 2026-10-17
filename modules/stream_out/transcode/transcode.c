@@ -215,6 +215,11 @@ vlc_module_begin ()
                     SFILTER_TEXT, SFILTER_LONGTEXT)
 
     set_section( N_("Miscellaneous"), NULL )
+    add_string( SOUT_CFG_PREFIX "preferred-encoder", "any",
+                N_("Preferred encoder for automatic transcoding"),
+                N_("Try this encoder first for automatic conversion jobs. "
+                   "An encoder selected explicitly in a profile takes precedence. "
+                   "VLC uses its normal selection if the preference cannot encode the output.") )
     add_integer( SOUT_CFG_PREFIX "threads", 0, THREADS_TEXT,
                  THREADS_LONGTEXT )
         change_integer_range( 0, 32 )
@@ -232,7 +237,7 @@ static const char *const ppsz_sout_options[] = {
     "deinterlace-module", "threads", "aenc", "acodec", "ab", "alang",
     "afilter", "samplerate", "channels", "senc", "scodec", "soverlay",
     "sfilter", "high-priority", "maxwidth", "maxheight", "pool-size",
-    "forward-pcr", NULL
+    "forward-pcr", "preferred-encoder", NULL
 };
 
 /*****************************************************************************

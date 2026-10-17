@@ -7,6 +7,7 @@
 #include "util/soutchain.hpp"
 #include <vlc_input_item.h>
 #include <vlc_player.h>
+#include <vlc_configuration.h>
 #include <QDateTime>
 #include <QDir>
 #include <QElapsedTimer>
@@ -124,6 +125,7 @@ QString chain(const QString &output, bool validate)
 }
 
 struct ConversionController::Job {
+    QString preferredEncoder = QStringLiteral("any");
     std::atomic_bool cancel{false}, nativeActive{false};
     std::atomic<State> phase{Starting};
     std::atomic<vlc_tick_t> time{VLC_TICK_INVALID}, length{VLC_TICK_INVALID};
@@ -243,6 +245,11 @@ bool ConversionController::start()
     m_output = QUrl{}; m_error.clear(); m_progress = -1; m_time = 0; m_duration = 0;
     const auto generation = m_generation;
     const auto job = m_job = std::make_shared<Job>();
+    if (m_parent && config_GetType("sout-transcode-preferred-encoder") == VLC_VAR_STRING) {
+        char *preferred = var_InheritString(m_parent, "sout-transcode-preferred-encoder");
+        if (preferred && *preferred) job->preferredEncoder = QString::fromUtf8(preferred);
+        free(preferred);
+    }
     m_state = Starting; emit changed(); m_poll.start();
     m_pool.start([this, source, destination, generation, job] {
         auto result = convert(source, destination, job);
@@ -327,6 +334,12 @@ ConversionController::Result ConversionController::convert(const QString &source
         // stops here, before any independent player or input is created.
         bool preferences = var_Create(configuration.get(), "sout-transcode-aenc", VLC_VAR_STRING) == VLC_SUCCESS
             && var_SetString(configuration.get(), "sout-transcode-aenc", "none") == VLC_SUCCESS;
+        // Keep this job's encoder policy through its native stages. Internal
+        // PCM validation uses ordinary selection independently of that policy.
+        const auto preferred = (validating ? QStringLiteral("any") : job->preferredEncoder).toUtf8();
+        preferences = preferences
+            && var_Create(configuration.get(), "sout-transcode-preferred-encoder", VLC_VAR_STRING) == VLC_SUCCESS
+            && var_SetString(configuration.get(), "sout-transcode-preferred-encoder", preferred.constData()) == VLC_SUCCESS;
         for (const char *name : {"sout-transcode-afilter", "audio-filter", "demux",
                                  "demux-filter", "stream-filter", "input-slave",
                                  "sub-file", "audio-track-id"})

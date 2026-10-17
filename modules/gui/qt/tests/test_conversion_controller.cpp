@@ -19,6 +19,8 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <cstdio>
+#include <mutex>
 
 extern "C" vlc_object_t *vlc_test_media_player_object(libvlc_media_player_t *);
 extern "C" vlc_playlist_t *vlc_test_stream_playlist(libvlc_instance_t *);
@@ -36,6 +38,33 @@ class TestConversionController : public QObject
     std::atomic_uint m_primaryBuffers{0}, m_outputBuffers{0};
     std::atomic<quint64> m_outputSamples{0};
     std::atomic<double> m_peak{0};
+    std::mutex m_encoderMutex;
+    QStringList m_encoderSelections;
+    FILE *m_nativeLog = nullptr;
+    static void nativeLog(void *opaque, int, const libvlc_log_t *, const char *format, va_list args)
+    {
+        char message[256];
+        va_list copy;
+        va_copy(copy, args);
+        vsnprintf(message, sizeof(message), format, copy);
+        va_end(copy);
+        const QString text = QString::fromUtf8(message);
+        auto *self = static_cast<TestConversionController *>(opaque);
+        std::lock_guard<std::mutex> guard(self->m_encoderMutex);
+        // libvlc_log_set replaces the file logger. Retain the complete native
+        // callback stream for the runner's independent loaded-module audit.
+        vfprintf(self->m_nativeLog, format, args);
+        fputc('\n', self->m_nativeLog);
+        if (text.startsWith("using audio encoder module \""))
+            self->m_encoderSelections.append(text.section('"', 1, 1));
+    }
+    QStringList takeEncoderSelections()
+    {
+        std::lock_guard<std::mutex> guard(m_encoderMutex);
+        auto result = m_encoderSelections;
+        m_encoderSelections.clear();
+        return result;
+    }
     static void primaryAudio(void *opaque, const void *, unsigned, int64_t)
     { ++static_cast<TestConversionController *>(opaque)->m_primaryBuffers; }
     static void outputAudio(void *opaque, const void *bytes, unsigned count, int64_t)
@@ -123,6 +152,8 @@ private slots:
         const char *args[] = {"--ignore-config", "--no-media-library", "--no-auto-preparse",
             "--aout=amem,none", "--no-video", "--verbose=2", "--file-logging", "--logfile=conversion-native.log"};
         m_instance = libvlc_new(ARRAY_SIZE(args), args); QVERIFY(m_instance);
+        m_nativeLog = fopen("conversion-captured-native.log", "wb"); QVERIFY(m_nativeLog);
+        libvlc_log_set(m_instance, nativeLog, this);
         m_player = libvlc_media_player_new(m_instance, nullptr, nullptr); QVERIFY(m_player);
         auto *parent = vlc_test_media_player_object(m_player);
         // A real secondary player inherits these variables unless production
@@ -294,6 +325,38 @@ private slots:
         QVERIFY(m_peak > .3 && m_peak < .5);
         noTemporaryDirectories();
     }
+    void encoderPreferenceIsCapturedBeforeStarting()
+    {
+        const auto deletePreferences = [](vlc_object_t *object) { vlc_object_delete(object); };
+        std::unique_ptr<vlc_object_t, decltype(deletePreferences)> preferences(
+            static_cast<vlc_object_t *>(vlc_object_create(
+                vlc_test_media_player_object(m_player), sizeof(vlc_object_t))), deletePreferences);
+        QVERIFY(preferences);
+        QCOMPARE(var_Create(preferences.get(), "sout-transcode-preferred-encoder", VLC_VAR_STRING), VLC_SUCCESS);
+        QCOMPARE(var_SetString(preferences.get(), "sout-transcode-preferred-encoder", "avcodec"), VLC_SUCCESS);
+        ConversionController controller(preferences.get());
+        bool changed = false;
+        int changeResult = VLC_EGENERIC;
+        connect(&controller, &ConversionController::changed, &controller, [&] {
+            if (controller.state() != ConversionController::Starting || changed) return;
+            changed = true;
+            changeResult = var_SetString(preferences.get(), "sout-transcode-preferred-encoder", "flac");
+        });
+        takeEncoderSelections();
+        configure(controller, m_source, output("captured-avcodec.flac"));
+        QVERIFY(controller.start()); QVERIFY(changed); QCOMPARE(changeResult, VLC_SUCCESS);
+        QTRY_VERIFY_WITH_TIMEOUT(!controller.busy(), 15000);
+        QVERIFY2(controller.state() == ConversionController::Succeeded, qPrintable(controller.error()));
+        QCOMPARE(takeEncoderSelections(), (QStringList{"avcodec", "avcodec", "araw", "araw"}));
+        // A subsequent job sees the edited preference; its PCM validation
+        // continues to select an encoder for PCM independently.
+        configure(controller, m_source, output("next-flac.flac"));
+        QVERIFY(controller.start());
+        QTRY_VERIFY_WITH_TIMEOUT(!controller.busy(), 15000);
+        QVERIFY2(controller.state() == ConversionController::Succeeded, qPrintable(controller.error()));
+        QCOMPARE(takeEncoderSelections(), (QStringList{"flac", "flac", "araw", "araw"}));
+        noTemporaryDirectories();
+    }
     void corruptSourceDoesNotPublish()
     {
         QFile file(m_directory.filePath("broken.wav")); QVERIFY(file.open(QIODevice::WriteOnly));
@@ -379,8 +442,9 @@ private slots:
     {
         if (m_playlist) vlc_playlist_Delete(m_playlist);
         if (m_player) libvlc_media_player_release(m_player);
-        if (m_instance) libvlc_release(m_instance);
+        if (m_instance) { libvlc_log_unset(m_instance); libvlc_release(m_instance); }
+        if (m_nativeLog) { fclose(m_nativeLog); m_nativeLog = nullptr; }
     }
 };
 QTEST_GUILESS_MAIN(TestConversionController)
-#include "test_conversion_controller.moc"
+#include <test_conversion_controller.moc>

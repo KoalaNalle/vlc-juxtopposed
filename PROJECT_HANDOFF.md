@@ -8,6 +8,18 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [automatic encoder preference](doc/juxtopposed-references/native/guest-encoder-preference-20261017/README.md)
+now has real automatic-selection fallback and explicit-profile precedence.
+Chain7 and global7 export every exact 88,200-sample PCM; the older producer
+provides a targeted ignored-preference negative. Actual Conversion12 verifies
+the start-time snapshot/next-job change, automatic PCM validation, publication,
+cancellation and primary-player independence; strict FLAC9 passes. Ordinary
+Core602632/GUI753feb/transcodeb1a422 passes five generated/local-HLS/Downloads
+smokes normally. All2176 selected inputs match; no private fixtures ship and
+earlier runtimes remain preserved. Performance14's page/other consumers,
+Recording12, Extensions7 and all broader beta gates remain open. Native
+video/subtitle encoder coverage and complete later-tuple regression are pending.
+
 The [HTTP consumer repair](doc/juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
 twelve TLS/proxy cases, actual PAC9 with a targeted old-consumer negative,
 object-policy16 and all six HTTP unit executables. Core6823ce/GUI8cf68a pass

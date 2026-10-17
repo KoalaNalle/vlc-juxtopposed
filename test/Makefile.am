@@ -705,3 +705,5 @@ EXTRA_DIST += src/network/proxy_policy.c
 EXTRA_DIST += src/network/proxy_transport.c libvlc/native_http_runtime.py \
     libvlc/native_http_policy.py libvlc/native_http_proxy.py libvlc/native_http_pac.py \
     libvlc/generate_http_proxy_tls.sh libvlc/native_http.md
+EXTRA_DIST += libvlc/native_encoder_preference.py libvlc/native_flac_drain.py \
+    libvlc/native_conversion_controller.py libvlc/native_encoder.md

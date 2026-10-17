@@ -2567,6 +2567,7 @@ endif
 endif
 
 EXTRA_DIST += tests/test_juxtopposed_subtitle_timeline.py tests/test_page_loader_routes.py
+EXTRA_DIST += tests/native_library/conversion.mk
 EXTRA_DIST += tests/test_music_network_navigation.py tests/run_music_network_navigation.py \
 	tests/test_playlist_single_play.py tests/run_playlist_single_play.py
 
