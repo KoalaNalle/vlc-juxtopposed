@@ -1,0 +1,61 @@
+{
+  "events": [
+    "/always-127.0.0.1.pac",
+    "/always-media.owned.invalid.pac",
+    "/path-127.0.0.1.pac",
+    "/path-media.owned.invalid.pac",
+    "/query-127.0.0.1.pac",
+    "/query-media.owned.invalid.pac"
+  ],
+  "cases": [
+    {
+      "rule": "always",
+      "url": "http://127.0.0.1:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 1,
+      "proxy": null
+    },
+    {
+      "rule": "always",
+      "url": "http://media.owned.invalid:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 3,
+      "proxy": "127.0.0.1:18080"
+    },
+    {
+      "rule": "path",
+      "url": "http://127.0.0.1:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 1,
+      "proxy": null
+    },
+    {
+      "rule": "path",
+      "url": "http://media.owned.invalid:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 3,
+      "proxy": "127.0.0.1:18080"
+    },
+    {
+      "rule": "query",
+      "url": "http://127.0.0.1:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 1,
+      "proxy": null
+    },
+    {
+      "rule": "query",
+      "url": "http://media.owned.invalid:18081/owned?route=proxy",
+      "result": true,
+      "error": 0,
+      "type": 3,
+      "proxy": "127.0.0.1:18080"
+    }
+  ],
+  "systemSettingsUsed": false
+}

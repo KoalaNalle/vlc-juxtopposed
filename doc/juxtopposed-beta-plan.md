@@ -4,6 +4,17 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+The [HTTP consumer repair](juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
+twelve TLS/proxy cases, actual PAC9 with a targeted old-consumer negative,
+object-policy16 and all six HTTP unit executables. Core6823ce/GUI8cf68a pass
+native Network17/Controls19, resolver45, buffering/TLS1.2 and1.3 each50, two
+actual settings-window processes31/11 and four generated/local-HLS playback
+cases. A corrected bounded Downloads check passes D3D11VA and normal quit;
+the invalid earlier test invocation is retained as failed. Source a5b1cf5e86
+also fixes a real HTTPS CONNECT logger-object crash. Raw credential logging is
+removed and authority scoping is enforced. This focused checkpoint leaves the
+subtitle stall, broader native/visual/DPI/Windows11 and full-beta gates open.
+
 A later owned ordinary-HTTP transport audit confirms that this older tuple
 ignores CLI proxy/direct overrides and drops the path before PAC lookup. The
 initial password negative incorrectly required preemptive authentication without

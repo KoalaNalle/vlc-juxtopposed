@@ -8,6 +8,17 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [HTTP consumer repair](doc/juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
+twelve TLS/proxy cases, actual PAC9 with a targeted old-consumer negative,
+object-policy16 and all six HTTP unit executables. Core6823ce/GUI8cf68a pass
+native Network17/Controls19, resolver45, buffering/TLS1.2 and1.3 each50, two
+actual settings-window processes31/11 and four generated/local-HLS playback
+cases. A corrected bounded Downloads check passes D3D11VA and normal quit;
+the invalid earlier test invocation is retained as failed. Source a5b1cf5e86
+also fixes a real HTTPS CONNECT logger-object crash. Raw credential logging is
+removed and authority scoping is enforced. This focused checkpoint leaves the
+subtitle stall, broader native/visual/DPI/Windows11 and full-beta gates open.
+
 A later owned ordinary-HTTP transport audit confirms that this older tuple
 ignores CLI proxy/direct overrides and drops the path before PAC lookup. The
 initial password negative incorrectly required preemptive authentication without

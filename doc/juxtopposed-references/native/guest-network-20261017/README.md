@@ -7,6 +7,11 @@ pass real edits, native failure/retry, restart and Advanced routing. Full page/
 media/theme interaction, independent visual/DPI review, Windows11 and final
 clean packaging remain open.
 
+The subsequent [HTTP consumer repair](../guest-http-consumers-20261017/README.md)
+closes the confirmed HTTP routing/authentication/logging gaps with actual native
+transport and persistence checks on Core6823ce/GUI8cf68a. The older tuple below
+remains historical evidence; the full beta and subtitle-stall gates remain open.
+
 A later owned ordinary-HTTP transport audit confirms that this older tuple
 ignores CLI proxy/direct overrides and drops the path before PAC lookup. The
 initial password negative incorrectly required preemptive authentication without
