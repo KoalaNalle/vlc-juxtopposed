@@ -114,56 +114,7 @@ FocusScope {
         }
         FeedbackTip { control: field; valueKey: field.valueKey }
     }
-    component Choice: C.ComboBox {
-        id: choice
-        required property string valueKey
-        required property string accessibleTitle
-        readonly property var entries: root.service ? root.service.choices[valueKey] || [] : []
-        anchors.fill: parent
-        model: entries; textRole: "name"; valueRole: "value"
-        enabled: root.editable(valueKey); activeFocusOnTab: true
-        opacity: enabled ? 1 : .5
-        padding: 2 * root.uiScale
-        font.family: inter.name; font.pixelSize: 14 * root.uiScale
-        currentIndex: { for (let i = 0; i < entries.length; ++i) if (entries[i].value === root.values[valueKey]) return i; return -1 }
-        displayText: root.choiceName(valueKey, root.values[valueKey])
-        Accessible.name: accessibleTitle; Accessible.description: root.helpFor(valueKey)
-        onActivated: index => root.write(valueKey, entries[index].value)
-        onActiveFocusChanged: root.reveal(choice)
-        onVisibleChanged: if (!visible) popup.close()
-        Keys.onTabPressed: event => { if (root.focusNavigator) { root.navigate(choice, false); event.accepted = true } }
-        Keys.onBacktabPressed: event => { if (root.focusNavigator) { root.navigate(choice, true); event.accepted = true } }
-        indicator: Item {}
-        background: Rectangle { color: root.tone("#090909"); radius: 6 * root.uiScale; border.width: choice.visualFocus ? root.uiScale : 0; border.color: root.accent }
-        contentItem: Rectangle {
-            radius: 4 * root.uiScale; color: root.tone("#191919")
-            SettingLabel {
-                x: 14 * root.uiScale; anchors.verticalCenter: parent.verticalCenter
-                width: Math.max(0, parent.width - 62 * root.uiScale)
-                text: choice.displayText; elide: Text.ElideRight; wrapMode: Text.NoWrap
-            }
-            Item {
-                width: 24 * root.uiScale; height: width; anchors.right: parent.right; anchors.rightMargin: 14 * root.uiScale; anchors.verticalCenter: parent.verticalCenter
-                Image { objectName: choice.objectName + "OriginalArrow"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "controls-settings-764c9.svg"; Accessible.ignored: true }
-            }
-        }
-        delegate: C.ItemDelegate {
-            required property var modelData
-            required property int index
-            width: choice.width - 4 * root.uiScale; height: 32 * root.uiScale
-            text: root.choiceName(choice.valueKey, modelData.value)
-            font: choice.font; highlighted: choice.highlightedIndex === index
-            contentItem: SettingLabel { text: parent.text; verticalAlignment: Text.AlignVCenter; leftPadding: 12 * root.uiScale }
-            background: Rectangle { color: parent.highlighted ? root.accentSelected : root.tone("#191919"); radius: 4 * root.uiScale }
-        }
-        popup: C.Popup {
-            y: choice.height + 2 * root.uiScale; width: choice.width; padding: 2 * root.uiScale
-            implicitHeight: Math.min(contentItem.implicitHeight + padding * 2, 220 * root.uiScale)
-            contentItem: ListView { clip: true; implicitHeight: contentHeight; model: choice.popup.visible ? choice.delegateModel : null; currentIndex: choice.highlightedIndex; C.ScrollIndicator.vertical: C.ScrollIndicator {} }
-            background: Rectangle { color: root.tone("#191919"); radius: 6 * root.uiScale; border.width: root.uiScale; border.color: root.tone("#404040") }
-        }
-        FeedbackTip { control: choice; valueKey: choice.valueKey }
-    }
+    component Choice: JuxtopposedSettingsChoice { settings: root; arrowAssetName: "controls-settings-764c9.svg" }
     Column {
         id: form; width: root.width; spacing: 20 * root.uiScale
         SettingLabel { objectName: "controlsError"; width: parent.width; text: root.service ? root.service.lastError : ""; visible: text.length > 0; color: "#D98779"; Accessible.name: text }

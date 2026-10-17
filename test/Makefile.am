@@ -698,3 +698,6 @@ EXTRA_DIST += libvlc/native_history_clear.py libvlc/native_history_playback.py
 # by native_controls.py / native_controls_http.py; they are not installed.
 EXTRA_DIST += controls-native.mk src/interface/controls.c src/interface/controls_http.c \
     libvlc/native_controls.py libvlc/native_controls_http.py libvlc/test_http_wheel_ui.py
+
+EXTRA_DIST += network-native.mk src/network/proxy_windows.c src/network/settings_consumers.c \
+    libvlc/native_network_proxy.py libvlc/native_network_settings.py libvlc/generate_network_tls.sh

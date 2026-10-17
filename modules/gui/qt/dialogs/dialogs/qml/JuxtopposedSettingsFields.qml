@@ -163,7 +163,7 @@ Item {
         y:-height-4*tip.settings.uiScale;width:Math.min(Math.max(control.width,200*tip.settings.uiScale),tip.settings.width)
         visible:tip.settings.failedKey===valueKey&&tip.settings.service&&tip.settings.service.lastError.length>0&&control.activeFocus&&control.visible
         text:tip.settings.service?tip.settings.service.lastError:"";focus:false;closePolicy:C.Popup.NoAutoClose;timeout:0;padding:8*tip.settings.uiScale
-        function reveal(){if(!visible)return;tip.settings.reveal(control);Qt.callLater(()=>{if(!visible)return;const p=control.mapToItem(root,0,0);x=Math.max(-p.x,Math.min(0,tip.settings.width-p.x-width));if(background)tip.settings.focusRevealed(background)})}
+        function reveal(){if(!visible)return;tip.settings.reveal(control);Qt.callLater(()=>{if(!visible)return;const p=control.mapToItem(tip.settings,0,0);x=Math.max(-p.x,Math.min(0,tip.settings.width-p.x-width));if(background)tip.settings.focusRevealed(background)})}
         onVisibleChanged:if(visible)Qt.callLater(reveal)
         Connections{target:tip.settings.formItem;function onImplicitHeightChanged(){if(tip.visible)Qt.callLater(tip.reveal)}}
         contentItem:SettingLabel{settings:tip.settings;text:tip.text;color:"#D98779";Accessible.role:Accessible.StaticText;Accessible.name:text}

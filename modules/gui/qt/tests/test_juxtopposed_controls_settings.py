@@ -155,7 +155,11 @@ assert item('controlsScrollWheel').property('currentIndex')==-1
 assert 'Custom' in item('controlsScrollWheel').property('displayText')
 select('controlsScrollWheel',1);assert model.state['scrollWheel']==0
 done('Unavailable consumers and unknown saved enum values remain explicit without selecting an optimistic default')
-focus('globalSettingsSearch');text('reverse');QTest.qWait(30)
+focus('globalSettingsSearch');text('same wheel');QTest.qWait(30)
+assert item('controlsLinkWheelRow').isVisible()
+assert not item('controlsSingleRow').isVisible()
+QTest.keyClick(window,Qt.Key_A,Qt.ControlModifier);QTest.keyClick(window,Qt.Key_Backspace);QTest.qWait(20)
+text('reverse');QTest.qWait(30)
 assert item('controlsReverseRow').isVisible() and item('controlsRemoteReverseRow').isVisible()
 assert not item('controlsSingleRow').isVisible()
 QTest.keyClick(window,Qt.Key_A,Qt.ControlModifier);QTest.keyClick(window,Qt.Key_Backspace);QTest.qWait(30)

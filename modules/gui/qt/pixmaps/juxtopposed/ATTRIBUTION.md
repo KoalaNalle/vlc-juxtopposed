@@ -79,3 +79,9 @@ original 24px intrinsic sizes and complete bytes are preserved. Checked native
 settings, authenticated remote setup and narrow layouts are implementation
 adaptations; hashes and the original reference are retained under
 doc/juxtopposed-references/figma/20261017/controls.
+
+Network settings artwork (`network-settings-*.svg`) is the unchanged original
+Juxtopposed design, CC BY 4.0, from Figma node 6543:15649 in file
+zdNUYRVOH9lEtIxMYvh8DV. Original hashes and geometry are retained in
+`doc/juxtopposed-references/figma/20261017/network/manifest.json`.
+The cached screenshot is reference evidence and is not a runtime asset.

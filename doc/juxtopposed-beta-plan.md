@@ -9,9 +9,9 @@ repairs discarded database failure results; seven actual native SQLite rejection
 retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37.
 The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
 archives all nine authored rows and original assets with one context request
-including its screenshot. Controls and Network references now leave five
-planned/two reserved Figma calls. The source mounts nine category bodies;
-Network, Performance, Recording and Extensions still lack bodies.
+including its screenshot. Controls, Network, Performance, Recording and Extensions references are cached;
+two planned/two reserved Figma calls remain. The source mounts ten category bodies;
+Performance, Recording and Extensions still lack bodies.
 The [Privacy policy implementation](juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
 adds independent position-storage permission, shared exclusions, coordinated clear,
 Home/Open Network consumers, metadata sharing and explicit unavailable Last.fm
@@ -40,9 +40,16 @@ cleanup; all 2,001 frozen inputs match.
 Full native page/browser interaction, independent visual/DPI and full beta
 acceptance remain open. The original
 [Network reference](juxtopposed-references/figma/20261017/network/README.md)
-is cached with its ten fields/actions, screenshot and nineteen SVGs; its body
-is not implemented. Windows system-proxy and native TLS consumers need explicit
-verification before their settings can be claimed functional.
+is cached with its ten fields/actions, screenshot and nineteen SVGs. The
+[Network implementation](juxtopposed-references/native/guest-network-20261017/README.md)
+now mounts them with checked persistence. Real Windows proxy45, actual file/HTTP
+buffering and GNU TLS1.2/1.3 each50, native controller17 and QML7 pass. The new
+ordinary runtime passes four playback/local-HLS cases; Controls19/14/89/29,
+Library18/42/9 and Subtitle37 pass too. The initial player subtitle-role replay
+stalled after five cases. Thirteen focused8-case replays pass, but its cause is
+unresolved: the failed aggregate remains failed and complete player regression
+acceptance stays open. All2318 selected inputs match. Native full-page, visual/DPI,
+Windows11 and clean final packaging remain separate gates.
 
 The [guest fixed-rate audio clock checkpoint](juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
 closes the specific export timestamp discontinuity found during WAV/PCR work.
@@ -330,7 +337,7 @@ The preserved audit confirms **13 category routes**. Inspect each original page,
 | --- | --- | --- |
 | App | [ ] General; [ ] Interface; [ ] Privacy; [ ] Controls | General visibly contains interface language, Dark/Light/System, accent swatches, confirmation/error dialogs, automatic updates, Developer mode, Save a log, Log file/Browse, Log details and Advanced Options. Other category contents need Figma inspection. |
 | Media | [ ] Playback; [ ] Video; [ ] Audio; [ ] Subtitles; [ ] Library | Playback popup fields are partial reusable support; they do not finish global persistent category pages. Default subtitle track/language and library/history/scanning/reset policies need complete mappings. |
-| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Routes are confirmed; original fields, validation, persistence and unavailable states remain unspecified. Do not invent settings to fill the pages. |
+| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced is mounted with native proxy/buffering/TLS/controller and component evidence; native full-page/visual gates remain. Complete original Performance14, Recording12 (including Browse) and Extensions7 fields/actions are cached; implement their real current consumers and checked persistence. |
 
 - [ ] Maintain a per-field mapping: original label/state, native variable/model, units/range/default, configured-versus-live semantics, restart requirement and reset/error outcome.
 - [ ] Verify ordinary Save does not unexpectedly replay a media preset or clear activity; Reset must clear the intended settings and live caches without queued-worker resurrection.

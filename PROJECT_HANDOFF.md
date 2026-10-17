@@ -8,6 +8,19 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The [guest Network implementation](doc/juxtopposed-references/native/guest-network-20261017/README.md)
+mounts all nine original settings and Advanced Options. Actual Windows proxy45,
+file/HTTP buffering and GNU TLS1.2/1.3 each50, native controller17 and QML7 pass.
+The ordinary Core49d4c6/GUIe429f1 runtime passes four playback/local-HLS cases;
+Controls19/14/89/29, Library18/42/9 and Subtitle37 pass on that tuple. The initial
+player replay stalled after five subtitle cases; thirteen later focused8-case
+runs pass, but the cause is unresolved and complete player regression acceptance
+remains open. All2318 selected source hashes match. Native full-page, visual/DPI,
+Windows11 and final packaging remain open. Performance14, Recording12 (including
+Browse) and Extensions7 authored fields/actions are now fully cached; two planned
+and two reserved Figma requests remain. Ten category bodies are mounted; the
+three remaining bodies are not yet implemented.
+
 The guest [Controls implementation](doc/juxtopposed-references/native/guest-controls-20261017/README.md)
 mounts all sixteen authored rows and the user's requested **Use the same wheel
 settings** toggle, ON by default. ON shares Mouse/Remotes wheel preferences;
@@ -33,7 +46,7 @@ The [original Controls reference](doc/juxtopposed-references/figma/20261017/cont
 is archived with all 18 original SVG hashes verified. The original
 [Network reference](doc/juxtopposed-references/figma/20261017/network/README.md)
 is also cached with its screenshot, ten fields/actions and nineteen original
-SVGs. Five planned/two reserved Figma requests remain. The full beta, Last.fm
+SVGs. The newer Performance/Recording/Extensions caches leave two planned/two reserved Figma requests. The full beta, Last.fm
 service, native interactive Home/
 dialog journeys, visual/DPI/Windows 11 and clean final-package gates remain open.
 

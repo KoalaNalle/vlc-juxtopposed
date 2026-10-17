@@ -116,6 +116,19 @@ foreach vlc_test: vlc_tests
     endif
 endforeach
 
+if host_machine.system() == 'windows' and not have_win_store
+    foreach network_driver : ['proxy_windows', 'settings_consumers']
+        executable('test_network_' + network_driver,
+            'src/network/' + network_driver + '.c',
+            include_directories: [vlc_include_dirs, include_directories('../src')],
+            link_with: [libvlc, libvlccore, vlc_libcompat],
+            dependencies: [cc.find_library('winhttp'), cc.find_library('normaliz')],
+            build_by_default: false,
+            install: false,
+            win_subsystem: 'console')
+    endforeach
+endif
+
 libvlc_demux_defines = []
 libvlc_demux_deps = []
 # TODO support !HAVE_DYNAMIC_PLUGINS

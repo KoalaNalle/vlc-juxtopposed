@@ -1970,6 +1970,10 @@ vlc_module_begin ()
 
     set_section( N_( "Network settings" ), NULL )
 
+#if defined(_WIN32) && !defined(VLC_WINSTORE_APP)
+    add_integer("system-proxy-policy-version", 1, NULL, NULL)
+        change_private()
+#endif
     add_integer( "mtu", MTU_DEFAULT, MTU_TEXT, MTU_LONGTEXT )
     add_integer( "ipv4-timeout", 5 * 1000, TIMEOUT_TEXT,
                  TIMEOUT_LONGTEXT )

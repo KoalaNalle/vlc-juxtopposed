@@ -190,6 +190,7 @@ libqt_plugin_la_SOURCES = \
 	maininterface/library_preferences_model.cpp maininterface/library_preferences_model.hpp \
 	maininterface/privacy_preferences_model.cpp maininterface/privacy_preferences_model.hpp \
 	maininterface/controls_preferences_model.cpp maininterface/controls_preferences_model.hpp \
+	maininterface/network_preferences_model.cpp maininterface/network_preferences_model.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
@@ -501,6 +502,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/library_preferences_model.moc.cpp \
 	maininterface/privacy_preferences_model.moc.cpp \
 	maininterface/controls_preferences_model.moc.cpp \
+	maininterface/network_preferences_model.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
@@ -858,6 +860,25 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/network-settings-05bc9.svg \
+	pixmaps/juxtopposed/network-settings-08f95.svg \
+	pixmaps/juxtopposed/network-settings-1b0f7.svg \
+	pixmaps/juxtopposed/network-settings-1bf8a.svg \
+	pixmaps/juxtopposed/network-settings-1f9fe.svg \
+	pixmaps/juxtopposed/network-settings-36bfa.svg \
+	pixmaps/juxtopposed/network-settings-3ffd5.svg \
+	pixmaps/juxtopposed/network-settings-432a4.svg \
+	pixmaps/juxtopposed/network-settings-66cd9.svg \
+	pixmaps/juxtopposed/network-settings-764c9.svg \
+	pixmaps/juxtopposed/network-settings-7d179.svg \
+	pixmaps/juxtopposed/network-settings-7f8c3.svg \
+	pixmaps/juxtopposed/network-settings-80d5a.svg \
+	pixmaps/juxtopposed/network-settings-97863.svg \
+	pixmaps/juxtopposed/network-settings-9c2da.svg \
+	pixmaps/juxtopposed/network-settings-ad68b.svg \
+	pixmaps/juxtopposed/network-settings-cf6e1.svg \
+	pixmaps/juxtopposed/network-settings-ec3f6.svg \
+	pixmaps/juxtopposed/network-settings-f1a4a.svg \
 	pixmaps/juxtopposed/controls-settings-05bc9.svg \
 	pixmaps/juxtopposed/controls-settings-08f95.svg \
 	pixmaps/juxtopposed/controls-settings-1b0f7.svg \
@@ -1237,6 +1258,8 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedControlsSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
@@ -2864,3 +2887,6 @@ EXTRA_DIST += tests/test_controls_preferences.cpp tests/controls_input_fixture.c
     tests/test_video_input_tap_handler.py tests/native_library/controls.mk \
     tests/native_library/controls-modules.mk tests/native_library/run_controls.py \
     tests/test_controls_dialogs.cpp tests/native_library/controls-dialogs.mk
+
+EXTRA_DIST += tests/test_network_preferences.cpp tests/native_library/network.mk tests/native_library/run_network.py
+EXTRA_DIST += tests/test_juxtopposed_network_settings.py tests/juxtopposed_network_preferences_fixture.py
