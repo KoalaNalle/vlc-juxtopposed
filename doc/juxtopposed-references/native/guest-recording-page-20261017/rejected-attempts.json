@@ -1,0 +1,31 @@
+{
+  "accepted": false,
+  "retained": true,
+  "modelDefaults": {
+    "passes": 13,
+    "failures": 1,
+    "reason": "Prior model did not expose native Medium/None correctly."
+  },
+  "videoOffSubtitleSuppression": {
+    "reason": "Old Core dropped the requested SPU track when sout-video was Off; output completed normally with audio only."
+  },
+  "subtitleOnlyClock": {
+    "reason": "Prior MKV consumer had no advancing PCR without selected A/V, and required owned-process deadline cleanup."
+  },
+  "longFixtureReplay": {
+    "reason": "Synthetic source was 60 seconds; initial full-output replay exceeded a 30-second deadline. Corrected generators explicitly limit encoding to two seconds; no playback-clock fix was made for this test error."
+  },
+  "nativeWindowWrongDefault": {
+    "checks": 54,
+    "normalExit": true,
+    "reason": "QA incorrectly assumed sout-spu defaults Off. Production reflected native On correctly; corrected test exercises both directions."
+  },
+  "nativeWindowCheckboxTarget": {
+    "checks": 76,
+    "normalExit": true,
+    "reason": "Generic click targeted the center of a 281px-wide checkbox widget. The successful replay targets its actual indicator at x=6 and verifies visible/enabled state and both actual chains."
+  },
+  "buildInterrupted": {
+    "reason": "Owned R1 build was stopped to add the missing MainCtx Q_MOC_INCLUDE; subsequent frozen builds passed."
+  }
+}

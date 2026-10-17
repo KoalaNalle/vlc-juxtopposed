@@ -36,14 +36,23 @@ minor known issues and supported-format/platform limits. This does not require
 claiming every possible VLC feature or media/hardware combination bug-free.
 No designer outreach or new extension implementation is authorized by this plan.
 
-The [Recording model foundation](juxtopposed-references/native/guest-recording-model-20261017/README.md)
-passes native13 with real Unicode config/INI persistence, file-lock rollback/
-retry, typed track/x264/cast defaults and CLI precedence. All12 native-tested
-inputs match; the registered Autotools target resolves and Meson syntax parses.
-MainCtx/QML construction and actual recording, discovery and Stream consumers
-remain pending; default consumer gates stay false. The native recording toggle
-does not force re-encoding when OFF; its original label was raised as an optional
-product clarification. No forced encoder mode is implemented.
+The [Recording page checkpoint](juxtopposed-references/native/guest-recording-page-20261017/README.md)
+mounts all12 original fields/actions with the original19 SVGs and the real
+MainCtx/controller. Source f31b2ecce8 preserves the user's approved native
+recording preference: OFF keeps normal copy/remux fallback, with clear
+hover/focus help. Native model14, actual window87/15, recording2, output-track8,
+encoder7, ordinary5 and component Recording6/Performance6/Network7/Controls8
+pass normally. Video OFF no longer suppresses streamed SPU; subtitle-only MKV
+advances its clock. Discovery OFF stops real scans while preserving the selected
+renderer, and the real Stream wizard consumes and honors its local-output
+default/explicit choice. Core15544a/ordinary GUId2708b/MKV469751/x264692651 are
+the recorded incremental tuple; all2285 frozen inputs match. Software11 and
+hardware3 pass. Subtitle37 covers the new Core/MKV with the earlier staged GUI,
+separate from final-GUI window/ordinary acceptance. The two earlier UI failures
+were QA default/targeting errors and remain rejected. The prior model13 proof
+is historical. Full regression, live cast receiver, Windows native file dialog,
+theme/accessibility/DPI/platform and a clean licensed beta package remain open.
+Next: original Extensions7, then remaining designed consumers and quality gates.
 
 The [Performance page checkpoint](juxtopposed-references/native/guest-performance-page-20261017/README.md)
 mounts all14 original fields/actions in MainCtx and the settings host, with the
@@ -55,8 +64,9 @@ window builds pass with regex JIT enabled. Drop frames truthfully requests resta
 and a saved but unapplied real-time request can be cleared. Coreb283af/ordinary
 GUId36894 are the recorded incremental tuple; all2212 frozen inputs match.
 Full regression, themes/accessibility/DPI/platform and the clean licensed beta
-package remain open. Next: original Recording12 and Extensions7, then remaining
-designed consumers/journeys and quality gates. Do not add vanilla-only scope.
+package remain open. The newer Recording checkpoint above adds its12 fields/actions;
+Extensions7 and remaining designed consumers/journeys and quality gates stay open.
+Do not add vanilla-only scope.
 
 The [Windows priority consumer](juxtopposed-references/native/guest-process-priority-20261017/README.md)
 now applies saved policy after config/full CLI parsing. Paired before7 reproduces
@@ -88,8 +98,8 @@ cancellation and primary-player independence; strict FLAC9 passes. Ordinary
 Core602632/GUI753feb/transcodeb1a422 passes five generated/local-HLS/Downloads
 smokes normally. All2176 selected inputs match; no private fixtures ship and
 earlier runtimes remain preserved. The later Performance page checkpoint adds
-its other native media consumers. Recording12, Extensions7 and broader beta gates
-remain open. Native
+its other native media consumers. The newer Recording checkpoint above adds
+Recording12; Extensions7 and broader beta gates remain open. Native
 video/subtitle encoder coverage and complete later-tuple regression are pending.
 
 The [HTTP consumer repair](juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
@@ -130,8 +140,8 @@ retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37
 The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
 archives all nine authored rows and original assets with one context request
 including its screenshot. Controls, Network, Performance, Recording and Extensions references are cached;
-two planned/two reserved Figma calls remain. The source mounts eleven category
-bodies; Recording and Extensions still lack bodies. Mounted categories still
+two planned/two reserved Figma calls remain. The source mounts twelve category
+bodies; Extensions still lacks a body. Mounted categories still
 have remaining native consumer/visual acceptance gates.
 The [Privacy policy implementation](juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
 adds independent position-storage permission, shared exclusions, coordinated clear,
@@ -456,9 +466,9 @@ The preserved audit confirms **13 category routes**. Inspect each original page,
 
 | Group | Required categories | Current specification limits |
 | --- | --- | --- |
-| App | [ ] General; [ ] Interface; [ ] Privacy; [ ] Controls | General visibly contains interface language, Dark/Light/System, accent swatches, confirmation/error dialogs, automatic updates, Developer mode, Save a log, Log file/Browse, Log details and Advanced Options. Other category contents need Figma inspection. |
-| Media | [ ] Playback; [ ] Video; [ ] Audio; [ ] Subtitles; [ ] Library | Playback popup fields are partial reusable support; they do not finish global persistent category pages. Default subtitle track/language and library/history/scanning/reset policies need complete mappings. |
-| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced and Performance14 are mounted with focused native controller/consumer/window and component evidence. Full category visual/platform gates remain. Complete original Recording12 (including Browse) and Extensions7 fields/actions are cached; implement their real consumers and checked persistence. |
+| App | [ ] General; [ ] Interface; [ ] Privacy; [ ] Controls | Original category bodies are mounted with checked persistence. Preserve existing evidence and finish remaining native consumers, complete journeys and theme/fidelity/desktop gates. |
+| Media | [ ] Playback; [ ] Video; [ ] Audio; [ ] Subtitles; [ ] Library | Original category bodies are mounted. Preserve native subtitle/library/history proofs and finish unsupported or gated consumers, full journeys and visual/platform validation. |
+| System | [ ] Network; [ ] Performance; [ ] Recording; [ ] Extensions | Network9+Advanced, Performance14 and Recording12 are mounted with focused native controller/consumer/window and component evidence. Full category visual/platform gates remain. Extensions7 is cached and needs its native consumers, checked persistence and original body. |
 
 - [ ] Maintain a per-field mapping: original label/state, native variable/model, units/range/default, configured-versus-live semantics, restart requirement and reset/error outcome.
 - [ ] Verify ordinary Save does not unexpectedly replay a media preset or clear activity; Reset must clear the intended settings and live caches without queued-worker resurrection.

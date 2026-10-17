@@ -17,14 +17,23 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
-The [Recording model foundation](doc/juxtopposed-references/native/guest-recording-model-20261017/README.md)
-passes native13 with real Unicode config/INI persistence, file-lock rollback/
-retry, typed track/x264/cast defaults and CLI precedence. All12 native-tested
-inputs match; the registered Autotools target resolves and Meson syntax parses.
-MainCtx/QML construction and actual recording, discovery and Stream consumers
-remain pending; default consumer gates stay false. The native recording toggle
-does not force re-encoding when OFF; its original label was raised as an optional
-product clarification. No forced encoder mode is implemented.
+The [Recording page checkpoint](doc/juxtopposed-references/native/guest-recording-page-20261017/README.md)
+mounts all12 original fields/actions with the original19 SVGs and the real
+MainCtx/controller. Source f31b2ecce8 preserves the user's approved native
+recording preference: OFF keeps normal copy/remux fallback, with clear
+hover/focus help. Native model14, actual window87/15, recording2, output-track8,
+encoder7, ordinary5 and component Recording6/Performance6/Network7/Controls8
+pass normally. Video OFF no longer suppresses streamed SPU; subtitle-only MKV
+advances its clock. Discovery OFF stops real scans while preserving the selected
+renderer, and the real Stream wizard consumes and honors its local-output
+default/explicit choice. Core15544a/ordinary GUId2708b/MKV469751/x264692651 are
+the recorded incremental tuple; all2285 frozen inputs match. Software11 and
+hardware3 pass. Subtitle37 covers the new Core/MKV with the earlier staged GUI,
+separate from final-GUI window/ordinary acceptance. The two earlier UI failures
+were QA default/targeting errors and remain rejected. The prior model13 proof
+is historical. Full regression, live cast receiver, Windows native file dialog,
+theme/accessibility/DPI/platform and a clean licensed beta package remain open.
+Next: original Extensions7, then remaining designed consumers and quality gates.
 
 The [Performance page checkpoint](doc/juxtopposed-references/native/guest-performance-page-20261017/README.md)
 mounts all14 original fields/actions in MainCtx and the settings host, with the
@@ -36,8 +45,9 @@ window builds pass with regex JIT enabled. Drop frames truthfully requests resta
 and a saved but unapplied real-time request can be cleared. Coreb283af/ordinary
 GUId36894 are the recorded incremental tuple; all2212 frozen inputs match.
 Full regression, themes/accessibility/DPI/platform and the clean licensed beta
-package remain open. Next: original Recording12 and Extensions7, then remaining
-designed consumers/journeys and quality gates. Do not add vanilla-only scope.
+package remain open. The newer Recording checkpoint above adds its12 fields/actions;
+Extensions7 and remaining designed consumers/journeys and quality gates stay open.
+Do not add vanilla-only scope.
 
 The [Windows priority consumer](doc/juxtopposed-references/native/guest-process-priority-20261017/README.md)
 now applies saved policy after config/full CLI parsing. Paired before7 reproduces
@@ -69,8 +79,8 @@ cancellation and primary-player independence; strict FLAC9 passes. Ordinary
 Core602632/GUI753feb/transcodeb1a422 passes five generated/local-HLS/Downloads
 smokes normally. All2176 selected inputs match; no private fixtures ship and
 earlier runtimes remain preserved. The later Performance page checkpoint adds
-its other native media consumers. Recording12, Extensions7 and broader beta gates
-remain open. Native
+its other native media consumers. The newer Recording checkpoint above adds
+Recording12; Extensions7 and broader beta gates remain open. Native
 video/subtitle encoder coverage and complete later-tuple regression are pending.
 
 The [HTTP consumer repair](doc/juxtopposed-references/native/guest-http-consumers-20261017/README.md) now passes five actual CLI policy/authentication cases,
@@ -115,8 +125,9 @@ runs pass, but the cause is unresolved and complete player regression acceptance
 remains open. All2318 selected source hashes match. Native full-page, visual/DPI,
 Windows11 and final packaging remain open. Performance14, Recording12 (including
 Browse) and Extensions7 authored fields/actions are now fully cached; two planned
-and two reserved Figma requests remain. Ten category bodies are mounted; the
-three remaining bodies are not yet implemented.
+and two reserved Figma requests remain. That checkpoint mounted ten bodies;
+the newer Performance/Recording checkpoints bring the source to twelve.
+Extensions is the remaining body; mounted categories still have open quality gates.
 
 The guest [Controls implementation](doc/juxtopposed-references/native/guest-controls-20261017/README.md)
 mounts all sixteen authored rows and the user's requested **Use the same wheel
