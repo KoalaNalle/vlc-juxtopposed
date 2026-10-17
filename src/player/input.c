@@ -1271,6 +1271,7 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     input->normal_time = VLC_TICK_0;
     input->pause_date = VLC_TICK_INVALID;
     input->position = 0.f;
+    input->position_before_stop = -1.;
 
     input->recording = false;
 

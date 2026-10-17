@@ -71,6 +71,8 @@ struct vlc_player_input
     bool live;
 
     double position;
+    /* Timer position captured before detaching this input. */
+    double position_before_stop;
     vlc_tick_t time;
     vlc_tick_t normal_time;
 

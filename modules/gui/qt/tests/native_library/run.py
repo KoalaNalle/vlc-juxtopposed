@@ -3,7 +3,9 @@
 """Run the bounded Windows opening/folder or real-process Library acceptance.
 
 Uses an ordinary package plus private test executables/modules. Everything is
-copied into a fresh owned directory; the supplied package is never modified.
+staged in a fresh owned directory. Immutable binaries use hard links when
+possible; private replacements detach their links before writes. The supplied
+package is never modified.
 The metadata scope uses owned providers with cross-process trace receipts.
 """
 import argparse
@@ -96,22 +98,53 @@ def main():
     runtime, results = out / 'runtime', out / 'results'
     runtime.mkdir()
     (runtime / "portable").mkdir()
+    staging = {'hardlinked': 0, 'copied': 0, 'replacementsDetached': 0}
+    same_volume = package.drive.casefold() == runtime.drive.casefold()
+    def stage_binary(source, destination):
+        destination = Path(destination)
+        if destination.exists():
+            raise FileExistsError(destination)
+        if same_volume:
+            try:
+                os.link(source, destination)
+                staging['hardlinked'] += 1
+                return str(destination)
+            except OSError:
+                # Preserve the old copy behavior on filesystems/link limits
+                # that cannot provide hard links. Copyfile streams the bytes.
+                pass
+        shutil.copyfile(source, destination)
+        staging['copied'] += 1
+        return str(destination)
+    def replace_binary(source, destination):
+        destination = Path(destination).resolve()
+        assert destination.is_relative_to(runtime.resolve())
+        if destination.exists():
+            destination.unlink()
+            staging['replacementsDetached'] += 1
+        shutil.copyfile(source, destination)
+    immutable_names = ('libvlc.dll', 'libvlccore.dll', 'vlc.exe', 'vlc-preparser.exe',
+        'vlc-cache-gen.exe', 'plugins/gui/libqt_plugin.dll',
+        'plugins/control/libwin_msg_plugin.dll', 'plugins/access/libfilesystem_plugin.dll',
+        'plugins/misc/libpreparserserializer_json_plugin.dll',
+        'plugins/misc/libmedialibrary_plugin.dll')
+    source_before = {name: digest(package / name) for name in immutable_names}
     results.mkdir()
     media = out / 'media'
     fixtures(media)
     personal = Path(os.environ['APPDATA']) / 'vlc'
     before = {name: digest(personal / name) if (personal / name).exists() else None
               for name in ('vlcrc', 'vlc-qt-interface.ini')}
-    shutil.copytree(package / 'plugins', runtime / 'plugins', ignore=shutil.ignore_patterns('plugins.dat'))
+    shutil.copytree(package / 'plugins', runtime / 'plugins', ignore=shutil.ignore_patterns('plugins.dat'), copy_function=stage_binary)
     for name in ('libvlc.dll', 'libvlccore.dll', 'vlc.exe', 'vlc-preparser.exe', 'vlc-cache-gen.exe'):
-        shutil.copyfile(package / name, runtime / name)
+        stage_binary(package / name, runtime / name)
     for source, destination in ((args.core, 'libvlccore.dll'),
                                 (args.medialibrary, 'plugins/misc/libmedialibrary_plugin.dll'),
                                 (args.preparser, 'vlc-preparser.exe')):
         if source is not None:
-            shutil.copyfile(source.resolve(), runtime / destination)
+            replace_binary(source.resolve(), runtime / destination)
     program = 'test_qt_library_preferences.exe' if args.scope != 'process' else 'test_library_opening_process.exe'
-    shutil.copyfile(build / '.libs' / program, runtime / program)
+    replace_binary(build / '.libs' / program, runtime / program)
     env = os.environ.copy()
     for name in list(env):
         if name.startswith('VLC_LIBRARY_FIXTURE_'):
@@ -120,10 +153,10 @@ def main():
         env.pop(name, None)
     if args.scope != 'process':
         modules = args.module_build.resolve() / '.libs'
-        shutil.copyfile(modules / 'liblibrary_fixture_fetcher_plugin.dll',
+        replace_binary(modules / 'liblibrary_fixture_fetcher_plugin.dll',
                         runtime / 'plugins/meta_engine/liblibrary_fixture_fetcher_plugin.dll')
         probe = runtime / 'liblibrary_winmsg_probe_plugin.dll'
-        shutil.copyfile(modules / probe.name, probe)
+        replace_binary(modules / probe.name, probe)
         env['VLC_LIBRARY_WINMSG_PLUGIN'] = str(probe)
         env['VLC_LIBRARY_OUTPUT'] = str(results / 'generated')
     else:
@@ -180,10 +213,13 @@ def main():
     report = {'scope': args.scope, 'exitCode': code, 'terminationConfirmed': process.poll() is not None,
               'timedOut': timed_out, 'forcedCleanupUsed': False, 'elapsedSeconds': time.monotonic() - started,
               'counts': counts, 'runtimeSha256': identities, 'personalConfigUnchanged': unchanged,
-              'metadataScopeIncluded': args.scope in ('metadata','metadata-lifecycle')}
+              'metadataScopeIncluded': args.scope in ('metadata','metadata-lifecycle'),
+              'runtimeStaging': staging,
+              'packageBinariesPreserved': source_before == {name: digest(package / name) for name in source_before}}
     (results / 'verification.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report))
     expected = {'opening':42, 'process':9, 'metadata':18, 'metadata-lifecycle':8}[args.scope]
+    assert report['packageBinariesPreserved']
     assert not timed_out and code == 0 and unchanged and report['terminationConfirmed']
     assert counts == {'tests': expected, 'failures': 0, 'errors': 0, 'skipped': 0}
 

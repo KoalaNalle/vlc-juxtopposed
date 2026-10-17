@@ -48,3 +48,25 @@ Before rebuilding QML, run `test_juxtopposed_extensions_settings.py --output-dir
 <fresh-output>` with the Qt/PySide6 test runtime. It loads the actual source with
 Qt's semantic property validation: the AOT compiler alone did not reject an
 unsupported Keys signal handler. This guard supplies no native consumer proof.
+
+The Home variants use `home_journey.mk` / `run_home_journey.py` for the
+owned audio bootstrap/privacy journey and `home_content_journey.mk` /
+`run_home_content_journey.py` for genuine native content in all five sections.
+The latter requires `--fixtures <E-folder>` containing `first.flac`,
+`second.flac` and `owned-clip.mp4`. Use two 60-second tagged audio files with
+one shared album/artist (Travel Artist Ää / Owned Album, tracks 1 and 2) and a
+60-second video. The runner copies only these generated files into its owned
+Unicode scan root; it does not inject models or edit the media database.
+The retained guest proof records the actual FFmpeg recipe and fixture hashes.
+
+The accepted content journey uses `--keep-window-size`, which disables native
+video auto-resize. Default auto-resize and small-window geometry need separate
+acceptance. Real pointer dragging moves the floating video preview before
+activating controls it covers. The File menu's New Playlist action, actual
+file picker, Save, five See All routes, search, view changes, playlist/artist
+cards and Continue Watching are exercised. Seeking and pausing use the native
+player as fixture preparation; route activation uses actual owned-window input.
+The runner sets global resume to Never to check the Home item's explicit resume
+request. Populate/reopen must both pass with normal exits, no forced cleanup,
+no captured fault and no selected QML/assertion diagnostics. The two processes
+must share one owned profile and use matching Core/ordinary/private-GUI inputs.

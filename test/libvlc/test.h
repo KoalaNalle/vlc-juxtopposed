@@ -65,6 +65,26 @@ static const char test_default_sample[] = "mock://";
 
 static inline void test_setup(void)
 {
+    /* Relocated Windows/cross-built tests need their staged plugin tree,
+     * rather than the build host's path baked into TOP_BUILDDIR. */
+    const char *plugin_path = getenv("VLC_TEST_PLUGIN_PATH");
+#ifdef _WIN32
+    _set_error_mode(_OUT_TO_STDERR);
+#endif
+    if (plugin_path != NULL)
+    {
+        char *path = strdup(plugin_path);
+        assert(path != NULL);
+#ifdef _WIN32
+        assert(_putenv_s("VLC_PLUGIN_PATH", path) == 0);
+        assert(_putenv_s("VLC_LIB_PATH", path) == 0);
+#else
+        assert(setenv("VLC_PLUGIN_PATH", path, 1) == 0);
+        assert(setenv("VLC_LIB_PATH", path, 1) == 0);
+#endif
+        free(path);
+        return;
+    }
 #ifdef _WIN32
     _putenv("VLC_PLUGIN_PATH=" TOP_BUILDDIR"/modules");
     _putenv("VLC_LIB_PATH=" TOP_BUILDDIR"/modules");

@@ -370,7 +370,9 @@ vlc_player_UpdateMLStates(vlc_player_t *player, struct vlc_player_input* input)
         && input->position_epoch == player->position_epoch;
     /* Zero records recent activity without retaining a resume point. It does
      * not mark the item as completed or increment the play count. */
-    vlc_ml_media_update_progress(ml, media->i_id, remember ? input->position : 0.);
+    const double position = input->position_before_stop >= 0.
+                          ? input->position_before_stop : input->position;
+    vlc_ml_media_update_progress(ml, media->i_id, remember ? position : 0.);
 
 
     /* If the value changed during the playback, update it in the medialibrary.

@@ -126,6 +126,17 @@ static void
 vlc_player_destructor_AddInput(vlc_player_t *player,
                                struct vlc_player_input *input)
 {
+    /* The timer can already reflect resumed/decoded playback while the last
+     * INPUT_EVENT_TIMES position is still stale. Snapshot it while this input
+     * owns the timer; a later input must never supply this input's history. */
+    if (input == player->input && input->started)
+    {
+        const double position =
+            vlc_player_input_GetPos(input, false, vlc_tick_now());
+        if (position >= 0. && position <= 1.)
+            input->position_before_stop = position;
+    }
+
     if (input->started)
     {
         input->started = false;

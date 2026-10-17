@@ -153,3 +153,16 @@ This was captured before adding this incident file; it is retained to distinguis
 ## Subsequent settings quality checkpoint
 
 2026-10-17T18:31:44.964619+00:00: Continued under the user's E:-only instruction, one heavy task at a time. Fixed observed Light placeholder contrast and unnamed native settings buttons. Playing/paused/restart1652/1653/14, Extensions5/190 and ordinary playback5 pass normally; scoped evidence is in [settings quality](doc/juxtopposed-references/native/guest-beta-settings-quality-20261017/README.md). Earlier native18/42/9/37 and component results are separately scoped there. Failed private assumptions/typo and genuine UI failures remain rejected evidence. No security-trip cause is established and the full beta remains incomplete.
+
+## Subsequent Home content/resume checkpoint
+
+18 October 2026: Continued under the user's E:-only instruction, one heavy task
+at a time. Genuine all-five-section Home journeys reproduced a lost video resume
+point on two plain old-core runs. A current-input timer snapshot before detach
+repairs it; two fresh288/137 journeys, prior audio/privacy234, Library69,
+Privacy17/database18, queued history40/52, decoded history6, five upstream player
+programs, subtitles38 and ordinary playback5 pass normally. E:-full during runtime
+copy and missing private Windows test modules were resolved as setup failures;
+rejected reports and original incident evidence remain retained. See the
+[scoped proof](doc/juxtopposed-references/native/guest-home-content-resume-20261018/README.md).
+No security-trip cause or full-beta acceptance is established.
