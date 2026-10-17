@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Owned native Extensions model/page, file chooser and restart journeys."""
 from pathlib import Path
-import argparse,ctypes,hashlib,json,os,subprocess,sys,time,zipfile
+import argparse,ctypes,hashlib,json,os,subprocess,sys,time,wave,zipfile
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--package',type=Path,required=True)
 parser.add_argument('--qa-gui',type=Path,required=True)
 parser.add_argument('--output-dir',type=Path,required=True)
-parser.add_argument('--modes',nargs='+',choices=['empty','edit','reopen','startup-on','override-off','live'],default=['empty','edit','reopen','startup-on','override-off'])
+parser.add_argument('--modes',nargs='+',choices=['empty','edit','reopen','startup-on','override-off','live','settings-playing','settings-paused','settings-reopen'],default=['empty','edit','reopen','startup-on','override-off'])
 args=parser.parse_args();ordinary=args.package.resolve();qa=args.qa_gui.resolve();output=args.output_dir.resolve()
 assert ordinary.drive.upper()==qa.drive.upper()==output.drive.upper()
 output.mkdir(parents=True,exist_ok=False)
@@ -34,6 +34,11 @@ package=output/'Package Ää 日本語.VLP'
 manifest='''<?xml version="1.0" encoding="UTF-8"?><videolan><addons><addon type="extension" id="8beaeec8-7b16-45f9-83c0-a0ecc57d0401" version="1.0"><name>Aardvark beta fixture</name><creator>Owned test</creator><summary>Owned local package</summary><description>Owned fixture</description><resource type="extension">owned-beta-fixture.lua</resource></addon></addons></videolan>'''
 with zipfile.ZipFile(package,'w') as archive:
     archive.writestr('manifest.xml',manifest);archive.writestr('owned-beta-fixture.lua',payload)
+quality_media=output/'owned-settings-silence.wav'
+if any(mode.startswith('settings-') for mode in args.modes):
+    with wave.open(str(quality_media),'wb') as sound:
+        sound.setnchannels(1);sound.setsampwidth(2);sound.setframerate(8000);sound.writeframes(b'\0\0'*(8000*360))
+
 env=owned_environment(runtime,output)
 for key in ('QML_DISABLE_DISK_CACHE','QML_FORCE_DISK_CACHE','QT_QUICK_BACKEND'):env.pop(key,None)
 env.update(QT_ENABLE_REGEXP_JIT='1',QML_DISK_CACHE='aot',QT_DISABLE_SHADER_DISK_CACHE='1',QT_QPA_PLATFORM='windows',
@@ -56,6 +61,7 @@ try:
             '--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
             '--no-ml-network-discovery','--config='+str(configuration),'--file-logging','--log-verbose=2','--verbose=2','--logfile='+str(case/'vlc.log')]
         if mode=='override-off':command.append('--no-qt-autoload-extensions')
+        if mode in ('settings-playing','settings-paused'):command+=['--gain=0',str(quality_media)]
         (case/'launch.json').write_text(json.dumps(command,indent=2)+'\n',encoding='utf-8')
         result=dict(normalExit=False,forcedCleanupUsed=False);report['cases'][mode]=result
         kernel=ctypes.WinDLL('kernel32');kernel.SetErrorMode.argtypes=[ctypes.c_uint];kernel.SetErrorMode.restype=ctypes.c_uint
@@ -64,7 +70,7 @@ try:
             with (case/'stdout.txt').open('wb') as stdout,(case/'stderr.txt').open('wb') as stderr:
                 started=time.monotonic();child=subprocess.Popen(command,cwd=runtime,env=child_env,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
                 result['pid']=child.pid
-                try:code=child.wait(timeout=100)
+                try:code=child.wait(timeout=180 if mode.startswith('settings-') else 100)
                 except subprocess.TimeoutExpired:
                     result['forcedCleanupUsed']=True;child.kill();code=child.wait(timeout=5)
                 result.update(exitCode=code,normalExit=code==0 and not result['forcedCleanupUsed'],elapsedSeconds=time.monotonic()-started)

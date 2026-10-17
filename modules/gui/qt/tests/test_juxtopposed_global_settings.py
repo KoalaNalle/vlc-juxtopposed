@@ -32,7 +32,7 @@ args.output_dir.mkdir(parents=True, exist_ok=False)
 repo = args.repo_root.resolve()
 os.environ['QT_QPA_FONTDIR'] = str(repo / 'modules/gui/qt/pixmaps/juxtopposed')
 proposal = repo / 'modules/gui/qt/dialogs/dialogs'
-reference = Path(__file__).resolve().parent / 'fixtures/juxtopposed_global_settings_assets.json'
+reference = repo / 'modules/gui/qt/tests/fixtures/juxtopposed_global_settings_assets.json'
 freeze = json.loads(reference.read_text(encoding='utf-8'))
 assert len(freeze['assets']) == 20
 asset_dir = args.output_dir / 'assets'
@@ -58,12 +58,15 @@ from juxtopposed_backdrop_fixture import software_backdrop_state
 
 app = QGuiApplication([])
 preferences = Preferences()
+from juxtopposed_palette_fixture import register_juxtopposed_palette
+register_juxtopposed_palette()
 engine = QQmlApplicationEngine()
 engine.rootContext().setContextProperty('preferencesAdapter', preferences)
 qml_dir_url = QUrl.fromLocalFile(str(proposal / 'qml')).toString()
 asset_url = QUrl.fromLocalFile(str(asset_dir.resolve()) + os.sep).toString()
 driver = f'''import QtQuick
 import QtQuick.Controls.Basic as C
+import VLC.Style
 import "{qml_dir_url}" as Settings
 C.ApplicationWindow {{
     id: window; visible: true; width: 1080; height: 897; color: "#111111"
@@ -83,6 +86,9 @@ C.ApplicationWindow {{
             return colors[value] || value
         }}
     }}
+    QtObject {{ id: actualPlaceholderPalette; property bool isDark: false }}
+    QtObject {{ id: actualPlaceholderView; property var bg: ({{primary: "#FAFAFA"}}); property var fg: ({{primary:"#212121",secondary:"#4D4D4D",negative:"#FF0000"}}); property color separator:"#E0E0E0"; property color accent:"#017F89" }}
+    QtObject {{ id: actualPlaceholderWindow; property var bg: ({{primary:"#EDEDED"}}) }}
     Rectangle {{ id: backdropUnderlay; objectName: "settingsTestUnderlay"; anchors.fill: parent; color: window.color }}
     C.Button {{ id: opener; objectName: "opener"; text: "Settings"; onClicked: dialog.showDialog(opener) }}
     Shortcut {{ id: transport; objectName: "transport"; sequence: "Space"; enabled: !dialog.visible; onActivated: window.transportCount++ }}
@@ -242,6 +248,8 @@ passed('All 20 unchanged asset identities; all 24 actual General image instances
 for name, native in [('generalThemeLight', 1), ('generalThemeSystem', 0), ('generalThemeDark', 2)]:
     click(name)
     assert preferences.requests[-1] == ['theme', native] and item(name).property('selected')
+    accessible_name=QQmlExpression(qmlContext(item(name)),item(name),'Accessible.name').evaluate()[0]
+    assert accessible_name == item(name).property('text') and accessible_name
 reveal('generalThemeDark')
 QTest.keyClick(window, Qt.Key_Right)
 QTest.qWait(20)
@@ -402,6 +410,24 @@ evaluate('dialog.preferences = preferencesAdapter')
 assert item('generalLanguage').property('enabled')
 passed('Injected light/accent palette updates rendered colors; unavailable native object disables real controls without writes or Qt errors')
 
+# Use the actual production palette with controlled native-provider colors,
+# rather than the General test's older injected color-map approximation.
+evaluate('JuxtopposedPalette.nativePalette = actualPlaceholderPalette; JuxtopposedPalette.nativeView = actualPlaceholderView; JuxtopposedPalette.nativeWindow = actualPlaceholderWindow; dialog.appearance = JuxtopposedPalette')
+search_color=item('globalSettingsSearch').property('placeholderTextColor')
+background=item('globalSettingsSearch').property('background').property('color')
+def relative_light(color):
+    channels=[color.redF(),color.greenF(),color.blueF()]
+    linear=[v/12.92 if v<=0.04045 else ((v+0.055)/1.055)**2.4 for v in channels]
+    return sum(v*w for v,w in zip(linear,[0.2126,0.7152,0.0722]))
+light_values=sorted([relative_light(search_color),relative_light(background)])
+light_contrast=(light_values[1]+0.05)/(light_values[0]+0.05)
+evaluate('actualPlaceholderPalette.isDark = true')
+dark_original=item('globalSettingsSearch').property('placeholderTextColor').name()
+placeholder_readability={'lightText':search_color.name(),'lightBackground':background.name(),'lightContrast':light_contrast,'minimumLightContrast':3.0,'darkOriginal':dark_original,'passed':light_contrast>=3.0 and dark_original=='#404040','scope':'Actual production General/Search QML and palette; supplied native-provider colors, not real OS notification or native persistence.'}
+(args.output_dir/'placeholder-readability.json').write_text(json.dumps(placeholder_readability,indent=2)+'\n',encoding='utf-8',newline='\n')
+evaluate('dialog.appearance = suppliedPalette; JuxtopposedPalette.nativePalette = null; JuxtopposedPalette.nativeView = null; JuxtopposedPalette.nativeWindow = null')
+if placeholder_readability['passed']:passed('Actual production palette keeps Light search placeholder readable and preserves original Dark color')
+
 click('generalAdvanced')
 assert not dialog.property('visible') and window.property('advancedRequests') == 1 and item('opener').hasActiveFocus()
 click('opener')
@@ -425,12 +451,13 @@ for qml_source in [proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'q
     result = subprocess.run([str(qmlformat), '--ignore-settings', str(qml_source)], stdout=subprocess.DEVNULL,
         stderr=subprocess.PIPE, text=True, timeout=20)
     assert result.returncode == 0 and not result.stderr, (qml_source.name, result.returncode, result.stderr)
-verification = {'passed': True, 'cases': cases, 'geometry': geometry, 'messages': messages,
+verification = {'passed': placeholder_readability['passed'], 'placeholderReadability': placeholder_readability, 'cases': cases, 'geometry': geometry, 'messages': messages,
     'assets': asset_paths, 'visibleAssetInstances': visible_assets, 'backdropSoftwareFallback': backdrop_state,
-    'sourceSha256': {str(path.relative_to(repo)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in [*[proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml', proposal / 'qml/JuxtopposedSettingsBackdrop.qml', proposal / 'qml/JuxtopposedSettingsBackdropEffect.qml'], Path(__file__).resolve()]},
+    'sourceSha256': {str(path.relative_to(repo)).replace('\\', '/'): hashlib.sha256(path.read_bytes()).hexdigest() for path in [*[proposal / 'qml/JuxtopposedGlobalSettings.qml', proposal / 'qml/JuxtopposedGeneralSettings.qml', proposal / 'qml/JuxtopposedSettingsBackdrop.qml', proposal / 'qml/JuxtopposedSettingsBackdropEffect.qml'], repo / 'modules/gui/qt/style/JuxtopposedPalette.qml', Path(__file__).resolve()]},
     'designFixtureSha256': hashlib.sha256(reference.read_bytes()).hexdigest(),
     'scope': 'Integrated production General QML and assets with strict supplied QObject preferences, software-rendered offscreen. Geometry, static asset identities/slots, component keyboard/pointer/focus/search/write/error behavior only.',
     'nativePersistencePickerAppearanceDiagnosticsAcceptance': False,
     'fullBetaDesignAcceptance': False}
 (args.output_dir / 'verification.json').write_text(json.dumps(verification, indent=2) + '\n', encoding='utf-8', newline='\n')
+assert placeholder_readability['passed'], placeholder_readability
 print('PASS production General component checks. Native app and full design acceptance remain separate.', flush=True)

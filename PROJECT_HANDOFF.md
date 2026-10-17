@@ -17,6 +17,17 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The current [settings quality checkpoint](doc/juxtopposed-references/native/guest-beta-settings-quality-20261017/README.md)
+fixes Light search contrast and native accessible names on custom settings
+buttons. Actual playing/paused/restart journeys pass 1652/1653/14 repeated
+checks, including all13 native categories in Dark/Light and compact keyboard
+traversal. Extensions5/190 and ordinary playback5 pass on Corebf2940 / GUI7015bc;
+component15/272 and the latest five-base repeat73 pass. Fresh native18/42/9/37
+also pass on unchanged Core/plugins with the earlier GUI recorded separately.
+All processes exit normally. System OS notifications, full accessibility,
+DPI/monitor variants, independent fidelity, Windows11 and clean packaging stay
+open. This is scoped quality progress, not full-beta acceptance.
+
 The current [original Extensions page checkpoint](doc/juxtopposed-references/native/guest-extensions-page-20261017/README.md)
 mounts all seven original fields/actions with the real shared application model,
 checked startup persistence, stable selection, catalog/local Add, Remove/retry and

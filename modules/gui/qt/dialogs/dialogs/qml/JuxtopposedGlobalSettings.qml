@@ -52,6 +52,7 @@ JuxtopposedMovableDialog {
     closePolicy: busy ? C.Popup.NoAutoClose : C.Popup.CloseOnEscape
 
     function tone(value) { return appearance ? appearance.color(value) : value }
+    function placeholderTone(value) { return appearance && typeof appearance.placeholderColor === "function" ? appearance.placeholderColor(value) : tone(value) }
     function hasPage(key) { return key === "general" || !!categoryPages[key] }
     function categoryMatches(category) {
         const query = searchField.text.trim().toLocaleLowerCase()
@@ -145,7 +146,7 @@ JuxtopposedMovableDialog {
             width: Math.min(200 * root.uiScale, Math.max(0, parent.width - 80 * root.uiScale)); height: 34 * root.uiScale
             activeFocusOnTab: true; selectByMouse: true
             placeholderText: qsTr("Search")
-            placeholderTextColor: root.tone("#404040"); color: root.tone("#8F8F8F"); selectionColor: root.appearance ? root.appearance.accentSelected : "#371F06"
+            placeholderTextColor: root.placeholderTone("#404040"); color: root.tone("#8F8F8F"); selectionColor: root.appearance ? root.appearance.accentSelected : "#371F06"
             font.family: inter.name; font.pixelSize: 14 * root.uiScale
             leftPadding: 42 * root.uiScale; rightPadding: 8 * root.uiScale
             Accessible.name: qsTr("Search global settings")

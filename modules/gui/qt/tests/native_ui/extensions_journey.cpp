@@ -4,6 +4,8 @@
 #endif
 #include "qt.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/general_preferences_model.hpp"
+#include "player/player_controller.hpp"
 #include "maininterface/extensions_preferences_model.hpp"
 #include "network/addonsmodel.hpp"
 #include "util/csdbuttonmodel.hpp"
@@ -24,6 +26,8 @@
 #include "dialogs/dialogs_provider.hpp"
 #include "dialogs/plugins/plugins.hpp"
 #include <vlc_configuration.h>
+#include <vlc_player.h>
+#include <vlc_input_item.h>
 #include <vlc_interface.h>
 #include <QApplication>
 #include <QFile>
@@ -32,11 +36,17 @@
 #include <QJsonObject>
 #include <QKeyEvent>
 #include <QQmlContext>
+#include <QQmlExpression>
+#include <QAccessible>
+#include <QColor>
+#include <cmath>
+#include <algorithm>
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QSet>
 #include <QTest>
+#include <QSignalSpy>
 #include <QTimer>
 #include <QWidget>
 #include <windows.h>
@@ -145,6 +155,7 @@ void type(const char *name,const QString &value)
 }
 void finish(bool passed,const QString &error={})
 {
+    if(!passed&&ownedWindow)ownedWindow->grabWindow().save(QDir(qEnvironmentVariable("VLC_OWNED_UI_OUTPUT")).filePath("failed-window.png"));
     report.insert("passed",passed);report.insert("error",error);report.insert("checks",checks);
     report.insert("ownedWindowOnly",true);report.insert("ordinaryGuiContainsQa",false);
     report.insert("fullBetaAccepted",false);report.insert("windowsDpiMatrixAccepted",false);
@@ -212,6 +223,164 @@ void picker(bool cancel,const QString &path)
     check(seen,"Add opens the real owned QFileDialog");
     check(!timedOut,"owned file chooser accepts or cancels within its bounded wait");
 }
+
+QVariant settingsValue(QObject *scope, const QString &code)
+{
+    QQmlExpression expression(qmlContext(scope),scope,code);
+    auto value=expression.evaluate();
+    if(expression.hasError())report.insert("settingsExpressionError",expression.error().toString());
+    check(!expression.hasError(),"actual settings expression resolves without error");
+    return value;
+}
+bool visibleFocusCenter(QQuickItem *item)
+{
+    if(!item||!item->isVisible()||!item->isEnabled()||item->window()!=ownedWindow)return false;
+    const auto center=item->mapToScene(item->boundingRect().center());
+    if(!QRectF(QPointF{},QSizeF(ownedWindow->size())).contains(center))return false;
+    for(auto *parent=item->parentItem();parent;parent=parent->parentItem())
+        if(parent->clip()&&!parent->boundingRect().contains(parent->mapFromScene(center)))return false;
+    return true;
+}
+void settingsFocusCycle(QObject *dialog)
+{
+    auto *content=qvariant_cast<QQuickItem*>(dialog->property("contentItem"));
+    auto *header=qvariant_cast<QQuickItem*>(dialog->property("header"));
+    auto *search=qobject_cast<QQuickItem*>(find("globalSettingsSearch"));
+    check(content&&header&&search,"actual settings header, content and search focus target exist");
+    search->forceActiveFocus(Qt::TabFocusReason);settle(50);
+    const int count=settingsValue(dialog,QStringLiteral("focusItems().length")).toInt();
+    check(count>=15&&count<200,"actual settings exposes a bounded complete focus cycle");
+    QJsonArray focusNames;
+    for(int i=0;i<count;++i){
+        QTest::keyClick(ownedWindow,Qt::Key_Tab);settle(30);
+        auto *focus=ownedWindow->activeFocusItem();
+        report.insert("lastFocusTarget",QJsonObject{{"name",focus?focus->objectName():QString{}},{"class",focus?QString::fromLatin1(focus->metaObject()->className()):QString{}},{"category",dialog->property("selectedCategory").toString()}});
+        check(focus&&(focus==content||content->isAncestorOf(focus)||focus==header||header->isAncestorOf(focus)),"Tab remains inside the actual modal settings header or content");
+        if(!visibleFocusCenter(focus))report.insert("unreachableFocus",QJsonObject{{"name",focus?focus->objectName():QString{}},{"class",focus?QString::fromLatin1(focus->metaObject()->className()):QString{}},{"category",dialog->property("selectedCategory").toString()}});
+        check(visibleFocusCenter(focus),"keyboard focus scrolls into the visible owned viewport");
+        QString name;
+        for(auto *object=focus;object&&object!=content&&object!=header;object=object->parentItem()){
+            if(auto *accessible=QAccessible::queryAccessibleInterface(object);accessible){
+                name=accessible->text(QAccessible::Name);if(!name.isEmpty())break;
+            }
+        }
+        if(name.isEmpty())report.insert("unnamedFocus",QJsonObject{{"name",focus->objectName()},{"class",QString::fromLatin1(focus->metaObject()->className())}});
+        check(!name.isEmpty(),"native accessible keyboard target has a meaningful name");
+        focusNames.append(name);
+    }
+    report.insert("lastFocusCycle",focusNames);
+    auto cycles=report.value("focusCycles").toArray();cycles.append(QJsonObject{{"category",dialog->property("selectedCategory").toString()},{"windowWidth",ownedWindow->width()},{"windowHeight",ownedWindow->height()},{"names",focusNames}});report.insert("focusCycles",cycles);
+}
+void checkLightPlaceholder(const char *name)
+{
+    auto *control=find(name);
+    auto *background=control?qvariant_cast<QObject*>(control->property("background")):nullptr;
+    const auto foreground=control?control->property("placeholderTextColor").value<QColor>():QColor{};
+    const auto fill=background?background->property("color").value<QColor>():QColor{};
+    check(foreground.isValid()&&fill.isValid(),"actual native placeholder and background colors resolve");
+    auto luminance=[](double red,double green,double blue){
+        auto linear=[](double value){return value<=.04045?value/12.92:std::pow((value+.055)/1.055,2.4);};
+        return .2126*linear(red)+.7152*linear(green)+.0722*linear(blue);
+    };
+    const auto alpha=foreground.alphaF();
+    const double text=luminance(foreground.redF()*alpha+fill.redF()*(1-alpha),foreground.greenF()*alpha+fill.greenF()*(1-alpha),foreground.blueF()*alpha+fill.blueF()*(1-alpha));
+    const double bg=luminance(fill.redF(),fill.greenF(),fill.blueF());
+    const double contrast=(std::max(text,bg)+.05)/(std::min(text,bg)+.05);
+    auto values=report.value("lightPlaceholderColors").toArray();values.append(QJsonObject{{"control",QString::fromLatin1(name)},{"foreground",foreground.name(QColor::HexArgb)},{"background",fill.name(QColor::HexArgb)},{"contrast",contrast}});report.insert("lightPlaceholderColors",values);
+    check(contrast>=3.,"actual Light search placeholder has readable contrast");
+}
+void runSettingsQuality(const QString &mode)
+{
+    auto *preferences=context->getGeneralPreferences();
+    check(preferences!=nullptr,"actual MainCtx owns General preferences");
+    QAccessible::setActive(true);
+    DialogsProvider::getInstance()->showGlobalSettingsDialog();settle(200);
+    auto *dialog=find("juxtopposedGlobalSettings");
+    check(dialog&&dialog->property("visible").toBool(),"actual settings opens for native quality journey");
+    click("globalCategorygeneral");
+    if(mode==QStringLiteral("settings-reopen")){
+        check(preferences->values().value("theme").toInt()==1&&preferences->values().value("accentIndex").toInt()==6,"theme and accent survive actual process restart");
+        until([&]{return !settingsValue(dialog,QStringLiteral("appearance.dark")).toBool();},"restarted native app renders saved Light theme");
+        check(dialog->property("accent").value<QColor>()==QColor(QStringLiteral("#8e42ff")),"restarted native app renders saved accent");
+        check(ownedWindow->grabWindow().save(QDir(qEnvironmentVariable("VLC_OWNED_UI_OUTPUT")).filePath("restarted-light.png")),"owned restart capture is saved");
+        return;
+    }
+    auto *player=context->getIntf()->p_mainPlayerController;
+    check(player!=nullptr,"actual main player controller exists");
+    until([&]{return player->hasInput()&&player->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING&&player->getPosition()>0;},"owned silent media plays through actual primary player",15000);
+    if(mode==QStringLiteral("settings-paused")){
+        auto *native=context->getIntf()->p_player;vlc_player_Lock(native);vlc_player_Pause(native);vlc_player_Unlock(native);
+        until([&]{return player->getPlayingState()==PlayerController::PLAYING_STATE_PAUSED;},"actual primary player reaches paused state");settle(150);
+    }
+    const auto wanted=player->getPlayingState();
+    auto *input=player->getInput();check(input!=nullptr,"actual primary input identity exists");input_item_Hold(input);
+    std::unique_ptr<input_item_t,decltype(&input_item_Release)> inputOwner(input,&input_item_Release);
+    const auto url=player->getUrl();const auto rate=player->getRate();const auto initialPosition=player->getPosition();
+    auto primaryPreserved=[&]{return player->getInput()==input&&player->getUrl()==url&&player->getPlayingState()==wanted&&qFuzzyCompare(player->getRate(),rate);};
+    type("globalSettingsSearch",QStringLiteral("theme"));QTest::keyClick(ownedWindow,Qt::Key_Space);settle(100);
+    check(primaryPreserved(),"typing Space in real settings search preserves primary input/state/rate");
+    type("globalSettingsSearch",QString{});
+    click("generalAccent4");check(preferences->values().value("accentIndex").toInt()==4,"actual accent control saves through native General preferences");
+    const QStringList categories={QStringLiteral("general"),QStringLiteral("interface"),QStringLiteral("privacy"),QStringLiteral("controls"),QStringLiteral("playback"),QStringLiteral("video"),QStringLiteral("audio"),QStringLiteral("subtitles"),QStringLiteral("library"),QStringLiteral("network"),QStringLiteral("performance"),QStringLiteral("recording"),QStringLiteral("extensions")};
+    QJsonArray visited;
+    for(const auto &theme:QList<QPair<QString,int>>{{QStringLiteral("Dark"),2},{QStringLiteral("Light"),1}}){
+        click("globalCategorygeneral");const auto button=QStringLiteral("generalTheme")+theme.first;click(button.toUtf8().constData());
+        check(preferences->values().value("theme").toInt()==theme.second&&preferences->lastError().isEmpty(),"actual theme control persists native value without error");
+        until([&]{return settingsValue(dialog,QStringLiteral("appearance.dark")).toBool()==(theme.second==2);},"actual native palette applies selected Dark or Light theme");
+        check(dialog->property("accent").value<QColor>()==QColor(QStringLiteral("#18aad3")),"actual native palette propagates selected cyan accent");
+        auto *themeItem=find(button.toUtf8().constData());
+        auto *themeAccessible=themeItem?QAccessible::queryAccessibleInterface(themeItem):nullptr;
+        check(themeAccessible&&!themeAccessible->text(QAccessible::Name).isEmpty()&&themeAccessible->role()==QAccessible::RadioButton&&themeAccessible->state().checked,"actual selected theme exposes named checked radio semantics");
+        QSignalSpy activation(themeItem,SIGNAL(clicked()));check(activation.isValid(),"actual theme action signal can be observed");
+        qobject_cast<QQuickItem*>(themeItem)->forceActiveFocus(Qt::TabFocusReason);QTest::keyClick(ownedWindow,Qt::Key_Space);settle(60);
+        check(activation.count()==1&&primaryPreserved(),"Space activates focused real theme control once without changing primary playback");
+        if(theme.second==1)checkLightPlaceholder("globalSettingsSearch");
+        for(const auto &category:categories){
+            const auto buttonName=QStringLiteral("globalCategory")+category;click(buttonName.toUtf8().constData());
+            check(dialog->property("selectedCategory").toString()==category,"original category pointer action selects actual requested page");
+            auto *loader=find("globalSettingsPageLoader");
+            auto *page=loader?qvariant_cast<QObject*>(loader->property("item")):nullptr;
+            check(page&&page->property("available").toBool(),"original settings category mounts an available real body");
+            const auto property=category+QStringLiteral("Preferences");
+            auto *expected=qvariant_cast<QObject*>(context->property(property.toUtf8().constData()));
+            auto *actual=qvariant_cast<QObject*>(page->property(category==QStringLiteral("general")?"preferences":"service"));
+            check(expected&&actual==expected,"actual category binds exact application native preference service");
+            if(theme.second==1&&category==QStringLiteral("extensions"))checkLightPlaceholder("extensionsSearch");
+            check(primaryPreserved(),"category and theme navigation preserves primary input/state/rate");
+            const auto capture=theme.first.toLower()+QLatin1Char('-')+category+QStringLiteral(".png");
+            check(ownedWindow->grabWindow().save(QDir(qEnvironmentVariable("VLC_OWNED_UI_OUTPUT")).filePath(capture)),"owned actual-theme category capture is saved");
+            visited.append(QJsonObject{{"theme",theme.first},{"category",category},{"body",page->objectName()},{"nativeService",QString::fromLatin1(actual->metaObject()->className())}});
+        }
+    }
+    report.insert("actualThemeCategoryVisits",visited);
+    click("globalCategorygeneral");settingsFocusCycle(dialog);
+    ownedWindow->resize(900,650);settle(200);
+    report.insert("compactWindow",QJsonObject{{"width",ownedWindow->width()},{"height",ownedWindow->height()},{"minimumWidth",ownedWindow->minimumWidth()},{"minimumHeight",ownedWindow->minimumHeight()}});
+    for(const auto &category:categories){
+        const auto button=QStringLiteral("globalCategory")+category;click(button.toUtf8().constData());
+        check(dialog->property("selectedCategory").toString()==category,"compact sidebar navigation reaches every actual category");
+        settingsFocusCycle(dialog);check(primaryPreserved(),"compact keyboard traversal preserves primary input/state/rate");
+    }
+    click("globalCategorygeneral");click("generalThemeSystem");
+    check(preferences->values().value("theme").toInt()==0,"actual System control saves native System preference");
+    check(settingsValue(dialog,QStringLiteral("appearance.nativePalette !== null")).toBool(),"actual System appearance retains native palette provider");
+    report.insert("systemPaletteDark",settingsValue(dialog,QStringLiteral("appearance.dark")).toBool());
+    report.insert("osThemeNotificationChangesTested",false);
+    type("globalSettingsSearch",QStringLiteral("Load add-ons on startup"));
+    check(dialog->property("selectedCategory").toString()==QStringLiteral("extensions"),"real global search routes to original Extensions field");
+    check(find("extensionsLoadOnStartup")->property("visible").toBool(),"real global search reveals requested native field");
+    type("globalSettingsSearch",QString{});click("globalCategorygeneral");
+    click("generalThemeLight");click("generalAccent6");
+    check(preferences->values().value("theme").toInt()==1&&preferences->values().value("accentIndex").toInt()==6,"actual native controls save final restart theme and accent");
+    check(primaryPreserved(),"complete settings journey preserves actual primary input/state/rate");
+    if(wanted==PlayerController::PLAYING_STATE_PAUSED)check(std::abs(player->getPosition()-initialPosition)<.0001,"paused primary clock stays stationary through actual settings journey");
+    else check(player->getPosition()>initialPosition,"playing primary clock advances through actual settings journey");
+    click("globalSettingsClose");check(!dialog->property("visible").toBool()&&primaryPreserved(),"closing actual modal restores app with primary state intact");
+    DialogsProvider::getInstance()->showGlobalSettingsDialog();settle(100);check(dialog->property("visible").toBool(),"actual settings reopens during current primary playback state");
+    QTest::keyClick(ownedWindow,Qt::Key_Escape);settle(100);
+    check(!dialog->property("visible").toBool()&&primaryPreserved(),"Escape closes actual settings while preserving primary playback state");
+}
+
 void run()
 {
     try{
@@ -233,11 +402,12 @@ void run()
             if(alive){RECT rect{};GetWindowRect(ownedHwnd,&rect);SendMessageW(ownedHwnd,WM_NCHITTEST,0,MAKELPARAM(rect.left+5,rect.top+5));}
             QFile file(lateEventFile);if(file.open(QIODevice::WriteOnly))file.write(QJsonDocument(QJsonObject{{"windowAlive",alive},{"ownedLateHitTestSent",alive}}).toJson());
         });
+        const auto mode=qEnvironmentVariable("VLC_OWNED_UI_MODE");
+        if(mode.startsWith(QStringLiteral("settings-"))){runSettingsQuality(mode);finish(true);return;}
         auto *service=context->getExtensionsPreferences();check(service!=nullptr,"MainCtx owns Extensions service");
         auto *model=service->addons();check(model!=nullptr,"service owns actual AddonsModel");
         auto *extensions=ExtensionsManager::getInstance(context->getIntf());
         report.insert("startupEngineLoaded",extensions->isLoaded());
-        const auto mode=qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("startupPolicy",config_GetInt("qt-autoload-extensions")!=0);
         if(mode=="edit"||mode=="startup-on")check(extensions->isLoaded(),"saved On loads installed extension metadata before opening any menu");
         if(mode=="reopen"||mode=="override-off")check(!extensions->isLoaded(),"effective startup Off leaves extension metadata unloaded");

@@ -31,6 +31,7 @@ FocusScope {
     readonly property var focusTargets: [list, localSearch, findMore, add, remove, startup, retry, advanced]
     implicitHeight: form.implicitHeight
     function tone(value) { return appearance ? appearance.color(value) : value }
+    function placeholderTone(value) { return appearance && typeof appearance.placeholderColor === "function" ? appearance.placeholderColor(value) : tone(value) }
     function helpFor(key) { return service ? (service.supportNotes[key] || "") : qsTr("This setting is unavailable in this build.") }
     function matches(value) { return !searchText.trim().length || value.toLocaleLowerCase().includes(searchText.trim().toLocaleLowerCase()) }
     function navigate(item, backwards) { if (focusNavigator) focusNavigator(item, backwards) }
@@ -136,7 +137,7 @@ FocusScope {
                         text: root.addons ? root.addons.searchPattern : ""
                         placeholderText: qsTr("Search"); selectByMouse: true; activeFocusOnTab: true
                         font.family: inter.name; font.pixelSize: 14 * root.uiScale
-                        color: root.tone("#8F8F8F"); placeholderTextColor: root.tone("#404040")
+                        color: root.tone("#8F8F8F"); placeholderTextColor: root.placeholderTone("#404040")
                         selectionColor: root.accentDim; selectedTextColor: root.tone("#C6C6C6")
                         leftPadding: 12 * root.uiScale; rightPadding: 18 * root.uiScale
                         Accessible.name: qsTr("Search add-ons")
@@ -179,6 +180,7 @@ FocusScope {
         }
         SettingButton {
             id: advanced; objectName: "extensionsAdvanced"; width: parent.width; implicitHeight: 38 * root.uiScale
+            Accessible.name: qsTr("Advanced Options")
             visible: root.matches(qsTr("Advanced Options")); enabled: !!root.service && root.service.capabilities.advanced === true && !root.busy
             font.weight: Font.Normal; onClicked: root.runAction(() => root.service.openAdvanced())
             background: Rectangle { radius: 2 * root.uiScale; color: root.tone("#191919"); opacity: 0.95; border.width: advanced.visualFocus ? 2 * root.uiScale : 0; border.color: root.accent }

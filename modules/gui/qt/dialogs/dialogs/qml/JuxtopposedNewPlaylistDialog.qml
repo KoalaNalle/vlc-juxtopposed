@@ -183,7 +183,7 @@ JuxtopposedMovableDialog {
                         text: root.controller ? root.controller.name : ""
                         enabled: root.editable
                         placeholderText: qsTr("e.g., Favorite Videos")
-                        placeholderTextColor: JuxtopposedPalette.color("#404040")
+                        placeholderTextColor: JuxtopposedPalette.placeholderColor("#404040")
                         color: JuxtopposedPalette.color("#C6C6C6")
                         selectionColor: JuxtopposedPalette.color("#6B431C")
                         font.family: inter.name; font.pixelSize: 14 * root.uiScale

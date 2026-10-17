@@ -29,6 +29,11 @@ QtObject {
     readonly property color accentDim: dark && accentIndex === 0 ? "#AB6314"
         : Qt.darker(accent, 1.23)
 
+    // Placeholder text uses foreground colors; dark border tokens also occur in inputs.
+    function placeholderColor(darkValue) {
+        return dark ? darkValue : nativeView ? nativeView.fg.secondary : "#4D4D4D"
+    }
+
     function icon(name) {
         const variants = {"volume.svg": "volume-light.svg",
             "volume-background.svg": "volume-background-light.svg",

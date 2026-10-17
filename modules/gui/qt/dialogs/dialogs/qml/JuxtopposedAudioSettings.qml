@@ -97,6 +97,7 @@ FocusScope {
         implicitHeight: 32 * root.uiScale
         implicitWidth: 100 * root.uiScale
         activeFocusOnTab: true
+        Accessible.name: button.text
         font.family: inter.name
         font.pixelSize: 14 * root.uiScale
         padding: 0

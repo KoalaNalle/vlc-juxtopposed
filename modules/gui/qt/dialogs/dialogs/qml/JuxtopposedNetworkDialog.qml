@@ -188,7 +188,7 @@ JuxtopposedMovableDialog {
                         text: root.controller ? root.controller.urlText : ""
                         enabled: !root.controller || !root.controller.busy
                         placeholderText: qsTr("e.g., https://www.example.com/stream.avi")
-                        placeholderTextColor: JuxtopposedPalette.color("#494949")
+                        placeholderTextColor: JuxtopposedPalette.placeholderColor("#494949")
                         color: JuxtopposedPalette.color("#BEBEBE")
                         selectionColor: JuxtopposedPalette.color("#6B431C")
                         font.family: inter.name
@@ -242,7 +242,7 @@ JuxtopposedMovableDialog {
                     text: root.controller ? root.controller.playlistName : ""
                     enabled: !!root.controller && root.controller.playlistAvailable && !root.controller.busy
                     placeholderText: qsTr("e.g., Favorite TV Channels")
-                    placeholderTextColor: JuxtopposedPalette.color("#494949")
+                    placeholderTextColor: JuxtopposedPalette.placeholderColor("#494949")
                     color: JuxtopposedPalette.color("#BEBEBE")
                     selectionColor: JuxtopposedPalette.color("#6B431C")
                     font.family: inter.name

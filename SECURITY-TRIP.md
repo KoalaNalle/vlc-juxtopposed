@@ -149,3 +149,7 @@ This was captured before adding this incident file; it is retained to distinguis
 ## Resumed after explicit user instruction
 
 2026-10-17T16:15:47+00:00: The user requested “Continue from the security trip checkpoint. Keep everything on E:”. Frozen inputs and ordinary binary hashes matched before resuming. R8 exposed a private fixture window-type assumption; R9 retained its compile failure; corrected R10 passes all five native journeys (190 checks). The metadata-only production catalog run passes 17 checks; native add-ons49/948 and ordinary playback5 pass. All work and outputs stayed in the authorized E: project/tool environment. See [the current Extensions checkpoint](doc/juxtopposed-references/native/guest-extensions-page-20261017/README.md) for scope and remaining gates. This continuation does not establish the cause of the reported security trip.
+
+## Subsequent settings quality checkpoint
+
+2026-10-17T18:31:44.964619+00:00: Continued under the user's E:-only instruction, one heavy task at a time. Fixed observed Light placeholder contrast and unnamed native settings buttons. Playing/paused/restart1652/1653/14, Extensions5/190 and ordinary playback5 pass normally; scoped evidence is in [settings quality](doc/juxtopposed-references/native/guest-beta-settings-quality-20261017/README.md). Earlier native18/42/9/37 and component results are separately scoped there. Failed private assumptions/typo and genuine UI failures remain rejected evidence. No security-trip cause is established and the full beta remains incomplete.

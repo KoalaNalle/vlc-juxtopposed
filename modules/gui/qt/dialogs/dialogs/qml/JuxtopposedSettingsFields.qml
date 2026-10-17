@@ -20,6 +20,7 @@ Item {
         implicitHeight: 32 * button.settings.uiScale
         implicitWidth: 100 * button.settings.uiScale
         activeFocusOnTab: true
+        Accessible.name: button.text
         font.family: button.settings.settingsFontFamily
         font.pixelSize: 14 * button.settings.uiScale
         padding: 0
