@@ -187,10 +187,12 @@ libqt_plugin_la_SOURCES = \
 	maininterface/audio_preferences_model.cpp maininterface/audio_preferences_model.hpp \
 	maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
 	maininterface/library_preferences_model.cpp maininterface/library_preferences_model.hpp \
+	maininterface/privacy_preferences_model.cpp maininterface/privacy_preferences_model.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
 	util/playback_seek_policy.hpp \
 	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
+	util/recent_network_history.cpp util/recent_network_history.hpp \
 	util/fullscreen_screen_policy.hpp \
 	util/interface_language_map.hpp \
 	maininterface/mainctx.hpp \
@@ -494,6 +496,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/audio_preferences_model.moc.cpp \
 	maininterface/subtitles_preferences_model.moc.cpp \
 	maininterface/library_preferences_model.moc.cpp \
+	maininterface/privacy_preferences_model.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
@@ -851,6 +854,23 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/privacy-settings-05bc9.svg \
+	pixmaps/juxtopposed/privacy-settings-08f95.svg \
+	pixmaps/juxtopposed/privacy-settings-1b0f7.svg \
+	pixmaps/juxtopposed/privacy-settings-1bf8a.svg \
+	pixmaps/juxtopposed/privacy-settings-1f9fe.svg \
+	pixmaps/juxtopposed/privacy-settings-36bfa.svg \
+	pixmaps/juxtopposed/privacy-settings-3ffd5.svg \
+	pixmaps/juxtopposed/privacy-settings-432a4.svg \
+	pixmaps/juxtopposed/privacy-settings-66cd9.svg \
+	pixmaps/juxtopposed/privacy-settings-6db55.svg \
+	pixmaps/juxtopposed/privacy-settings-80d5a.svg \
+	pixmaps/juxtopposed/privacy-settings-9c2da.svg \
+	pixmaps/juxtopposed/privacy-settings-a1bba.svg \
+	pixmaps/juxtopposed/privacy-settings-ad68b.svg \
+	pixmaps/juxtopposed/privacy-settings-cf6e1.svg \
+	pixmaps/juxtopposed/privacy-settings-ec3f6.svg \
+	pixmaps/juxtopposed/privacy-settings-f1a4a.svg \
 	pixmaps/juxtopposed/library-settings-f12f7.svg \
 	pixmaps/juxtopposed/subtitles-settings-1ab84.svg \
 	pixmaps/juxtopposed/subtitles-settings-1f9fe.svg \
@@ -1193,6 +1213,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedAudioSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml \
 	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
 	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
@@ -2805,3 +2826,8 @@ EXTRA_DIST += tests/test_library_ipc_errors.py tests/library_ipc_receiver_errors
     tests/native_library/prepare.py tests/native_library/run.py tests/native_library/startup.py \
     tests/native_library/preferences.mk tests/native_library/modules.mk \
     tests/native_library/process.mk tests/native_library/README.md
+
+EXTRA_DIST += tests/test_juxtopposed_privacy_settings.py tests/juxtopposed_privacy_preferences_fixture.py \
+    tests/test_privacy_preferences.cpp tests/privacy_preferences_probe.c tests/native_library/privacy.mk
+
+EXTRA_DIST += tests/native_library/run_privacy.py

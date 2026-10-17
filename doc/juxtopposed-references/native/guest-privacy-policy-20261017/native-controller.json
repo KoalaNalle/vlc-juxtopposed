@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "runtimeSha256": {
+    "test_qt_privacy_preferences.exe": "21bdd89b39b94a408ee4e5ab4147942b28e7908f0a4b552dfb90ea84459c92b5",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "dd8c11ccded80371731f76c43f4b36518a11d6288de02ad0a2fdf4b1537d9186",
+    "plugins/misc/libmedialibrary_plugin.dll": "0a9d2d3980cd37df7b803d3eaee0e091c656764248a3272fde181b011fee44e0"
+  },
+  "forcedCleanupUsed": false,
+  "exitCode": 0,
+  "normalExit": true,
+  "qtestCases": 14,
+  "databaseFailure": {
+    "passed": true,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "runtimeSha256": {
+      "test_qt_privacy_preferences.exe": "21bdd89b39b94a408ee4e5ab4147942b28e7908f0a4b552dfb90ea84459c92b5",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "dd8c11ccded80371731f76c43f4b36518a11d6288de02ad0a2fdf4b1537d9186",
+      "plugins/misc/libmedialibrary_plugin.dll": "0a9d2d3980cd37df7b803d3eaee0e091c656764248a3272fde181b011fee44e0"
+    },
+    "databaseWithinOwnedUserdata": true,
+    "realDatabaseWriteRejectionInstalled": true,
+    "failedClearDataUnchanged": true,
+    "writeRejectionRemovedForRetry": true,
+    "exitCode": 0,
+    "terminationConfirmed": true,
+    "stdoutReaderTerminated": true,
+    "normalExit": true,
+    "passLines": [
+      "PASS: controller begins native clear asynchronously",
+      "PASS: real database failure reaches controller error without success status",
+      "PASS: failed native clear leaves all interface stores untouched",
+      "PASS: failed controller clear preserves player write generation",
+      "PASS: failed controller clear preserves saved URL and file history",
+      "PASS: controller accepts retry after database repair",
+      "PASS: controller retry reports success after all stores finish",
+      "PASS: retry clears Home callback, network URLs and file location exactly once",
+      "PASS: controller retry clears actual native playback history"
+    ],
+    "failLines": []
+  }
+}

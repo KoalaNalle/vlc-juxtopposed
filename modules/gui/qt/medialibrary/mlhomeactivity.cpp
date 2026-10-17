@@ -6,6 +6,8 @@
 #include "mlhomeactivity.hpp"
 #include "medialib.hpp"
 #include "mlhelper.hpp"
+#include <vlc_configuration.h>
+#include <vlc_player.h>
 #include <QDateTime>
 #include <utility>
 
@@ -14,18 +16,30 @@ bool visitType(MLItemId id)
 {
     return id.id > 0 && (id.type == VLC_ML_PARENT_FOLDER || id.type == VLC_ML_PARENT_PLAYLIST);
 }
-bool availableFolder(vlc_medialibrary_t *ml, MLItemId id)
+QByteArray historyPattern()
+{
+    char *raw=config_GetPsz("history-exclude-pattern");
+    const QByteArray value(raw ? raw : ""); free(raw); return value;
+}
+bool excluded(const QUrl &url)
+{
+    const auto pattern=historyPattern(), uri=url.toEncoded(), name=url.fileName().toUtf8();
+    return vlc_player_HistoryIsExcluded(pattern.constData(),uri.constData(),name.constData());
+}
+bool availableFolder(vlc_medialibrary_t *ml, MLItemId id, const QByteArray &pattern)
 {
     ml_unique_ptr<vlc_ml_folder_t> folder(vlc_ml_get_folder(ml, id.id));
-    return folder && folder->b_present && !folder->b_banned && folder->psz_mrl;
+    return folder && folder->b_present && !folder->b_banned && folder->psz_mrl
+        && !vlc_player_HistoryIsExcluded(pattern.constData(),folder->psz_mrl,folder->psz_name);
 }
-bool availablePlaylist(vlc_medialibrary_t *ml, MLItemId id)
+bool availablePlaylist(vlc_medialibrary_t *ml, MLItemId id, const QByteArray &pattern)
 {
-    return static_cast<bool>(ml_unique_ptr<vlc_ml_playlist_t>(vlc_ml_get_playlist(ml, id.id)));
+    ml_unique_ptr<vlc_ml_playlist_t> playlist(vlc_ml_get_playlist(ml,id.id));
+    return playlist && !vlc_player_HistoryIsExcluded(pattern.constData(),playlist->psz_mrl,playlist->psz_name);
 }
-bool available(vlc_medialibrary_t *ml, MLItemId id)
+bool available(vlc_medialibrary_t *ml, MLItemId id, const QByteArray &pattern)
 {
-    return id.type == VLC_ML_PARENT_FOLDER ? availableFolder(ml, id) : availablePlaylist(ml, id);
+    return id.type == VLC_ML_PARENT_FOLDER ? availableFolder(ml,id,pattern) : availablePlaylist(ml,id,pattern);
 }
 }
 
@@ -132,7 +146,7 @@ void MLHomeActivity::recordVisit(MLItemId id)
     struct Context { bool valid = false; };
     const auto epoch = m_visitEpoch.load();
     const auto task = m_library->runOnMLThread<Context>(this,
-        [id](vlc_medialibrary_t *ml, Context &ctx) { ctx.valid = available(ml, id); },
+        [id,pattern=historyPattern()](vlc_medialibrary_t *ml, Context &ctx) { ctx.valid = available(ml,id,pattern); },
         [this, id, epoch](quint64 taskId, Context &ctx) {
             m_tasks.remove(taskId);
             if (epoch != m_visitEpoch.load() || !ctx.valid || (m_interface && !var_InheritBool(m_interface, "save-recentplay")))
@@ -150,11 +164,16 @@ void MLHomeActivity::recordVisit(MLItemId id)
     m_tasks.insert(task);
 }
 
-void MLHomeActivity::clearVisits()
+void MLHomeActivity::invalidatePendingVisits()
 {
     ++m_visitEpoch;
     m_addedFolders.clear();
     m_folderLookupTimer.stop();
+}
+
+void MLHomeActivity::clearVisits()
+{
+    invalidatePendingVisits();
     if (m_store.clear())
     {
         m_folders.clear();
@@ -222,7 +241,7 @@ void MLHomeActivity::beginRefresh()
 
 quint64 MLHomeActivity::beginFolderAddition(const QUrl &folder)
 {
-    if (m_interface && !var_InheritBool(m_interface, "save-recentplay")) return 0;
+    if (excluded(folder) || (m_interface && !var_InheritBool(m_interface, "save-recentplay"))) return 0;
     return m_addedFolders.begin(folder);
 }
 void MLHomeActivity::completeFolderAddition(quint64 serial, bool accepted, bool existingRoot)
@@ -263,6 +282,7 @@ void MLHomeActivity::retryAddedFolders()
                 if (m_interface && !var_InheritBool(m_interface, "save-recentplay"))
                 { m_addedFolders.clear(); break; }
                 if (!m_addedFolders.current(request)) continue;
+                if (excluded(request.folder)) { m_addedFolders.consume(request); continue; }
                 if (folder.status == MLHomeFolderLookup::Missing && !request.deadline.hasExpired())
                 { retry = true; continue; }
                 if (!m_addedFolders.consume(request)) continue;

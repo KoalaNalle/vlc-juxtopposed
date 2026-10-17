@@ -33,6 +33,10 @@
 
 #include "qt.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/privacy_preferences_model.hpp"
+#include "util/recent_network_history.hpp"
+#include <vlc_dialog.h>
+#include <QSignalBlocker>
 #include "open_panels.hpp"
 #include "dialogs/open/open.hpp"
 #include "dialogs/dialogs_provider.hpp" /* Open Subtitle file */
@@ -689,18 +693,13 @@ NetOpenPanel::NetOpenPanel( QWidget *_parent, qt_intf_t *_p_intf ) :
     connect( ui.urlComboBox, &QComboBox::editTextChanged, this, &NetOpenPanel::updateMRL );
     connect( ui.clearHistoryButton, &QPushButton::clicked, this, &NetOpenPanel::clearHistory );
 
-    /* */
-    if( var_InheritBool( p_intf, "save-recentplay" ) )
+    ui.urlComboBox->setMaxCount(8);
+    reloadHistory();
+    if (p_intf->p_mi && p_intf->p_mi->getPrivacyPreferences())
     {
-        b_recentList = true;
-        // FIXME: use MLUrlModel
-        ui.urlComboBox->addItems( getSettings()->value( "OpenDialog/netMRL" ).toStringList() );
-        ui.urlComboBox->setMaxCount( 10 );
-    }
-    else
-    {
-        b_recentList = false;
-        ui.clearHistoryButton->setEnabled( false );
+        auto *privacy=p_intf->p_mi->getPrivacyPreferences();
+        connect(privacy,&PrivacyPreferencesModel::networkHistoryCleared,this,&NetOpenPanel::reloadHistory);
+        connect(privacy,&PrivacyPreferencesModel::historyPolicyChanged,this,&NetOpenPanel::reloadHistory);
     }
 
     QFont smallFont = QApplication::font();
@@ -715,22 +714,16 @@ NetOpenPanel::NetOpenPanel( QWidget *_parent, qt_intf_t *_p_intf ) :
     ui.urlComboBox->setFocus();
 }
 
-NetOpenPanel::~NetOpenPanel()
+NetOpenPanel::~NetOpenPanel() = default;
+
+void NetOpenPanel::reloadHistory()
 {
-    if( !b_recentList ) return;
-
-    /* Create the list with the current items */
-    QStringList mrlList;
-    for( int i = 0; i < ui.urlComboBox->count(); i++ )
-        mrlList << ui.urlComboBox->itemText( i );
-
-    if( mrlList.count() > 0 )
-    {
-        /* Clean the list... */
-        mrlList.removeDuplicates();
-        /* ...and save the 8 last entries */
-        getSettings()->setValue( "OpenDialog/netMRL", mrlList );
-    }
+    const auto draft=ui.urlComboBox->currentText();
+    const QSignalBlocker blocked(ui.urlComboBox);
+    ui.urlComboBox->clear();
+    ui.urlComboBox->addItems(RecentNetworkHistory::load(p_intf,getSettings()));
+    ui.urlComboBox->setEditText(draft);
+    ui.clearHistoryButton->setEnabled(var_InheritBool(p_intf,"save-recentplay"));
 }
 
 void NetOpenPanel::clear()
@@ -740,12 +733,16 @@ void NetOpenPanel::clear()
 
 void NetOpenPanel::onAccept()
 {
-    if( ui.urlComboBox->findText( ui.urlComboBox->currentText() ) == -1 )
-        ui.urlComboBox->insertItem( 0, ui.urlComboBox->currentText());
+    QString error;
+    const auto result=RecentNetworkHistory::record(p_intf,getSettings(),ui.urlComboBox->currentText(),error);
+    if (result==RecentNetworkHistory::Result::Saved) reloadHistory();
+    else if (result==RecentNetworkHistory::Result::Failed)
+        vlc_dialog_display_error(VLC_OBJECT(p_intf),qtu(tr("Could not save network history")),"%s",qtu(error));
 }
 
 void NetOpenPanel::onFocus()
 {
+    reloadHistory();
     ui.urlComboBox->setFocus();
     ui.urlComboBox->lineEdit()->selectAll();
 }
@@ -775,13 +772,15 @@ void NetOpenPanel::updateMRL()
 
 void NetOpenPanel::clearHistory()
 {
-    if( !b_recentList ) return;
-    
-    // Clear the combobox contents
-    ui.urlComboBox->clear();
-    
-    // Clear the stored history
-    getSettings()->remove( "OpenDialog/netMRL" );
+    QString error;
+    if (RecentNetworkHistory::clear(p_intf,getSettings(),error))
+    {
+        // Preserve the traditional explicit Clear action's empty entry field,
+        // while keeping the old draft/history intact if persistence fails.
+        ui.urlComboBox->clear();
+        reloadHistory();
+    }
+    else vlc_dialog_display_error(VLC_OBJECT(p_intf),qtu(tr("Could not clear network history")),"%s",qtu(error));
 }
 
 /**************************************************************************

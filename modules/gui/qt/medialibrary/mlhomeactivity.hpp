@@ -46,6 +46,8 @@ public:
     // Register before the accepted Add Folder job can emit native root events.
     quint64 beginFolderAddition(const QUrl &);
     void completeFolderAddition(quint64 serial, bool accepted, bool existingRoot);
+    // Cancel pending additions/visits without erasing accepted saved visits.
+    void invalidatePendingVisits();
     Q_INVOKABLE void clearVisits();
     Q_INVOKABLE void refresh();
 signals:

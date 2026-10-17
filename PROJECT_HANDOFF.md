@@ -156,6 +156,25 @@ Privacy controller/page, remember-position storage permission, exclusion semanti
 clear UI/worker/input coordination, shared metadata and Last.fm behavior remain
 open. Complete beta/visual/DPI/Windows 11/final clean-package gates are unchanged.
 
+The [guest Privacy policy implementation](doc/juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
+now mounts all nine original rows with a separate native controller, independent
+position-storage permission, bounded shared exclusions, coordinated current/
+retiring-input clear and Home/interface history handling. Open Network records
+accepted opens under live policy and no longer rewrites a cached list on widget
+teardown. Traditional preference reloads update the same consumers. The fresh
+library clear path now initializes SQLite before its transaction; the exact same
+initial Qt executable changes from an access violation to 11 normal passing
+cases when only the ML DLL changes. This is an owned process failure, not a
+Windows crash. The final incremental GUI and source hashes are verified. Native history40,
+controller14 and real SQLite controller9, component8, ordinary4 and native
+Library18/42/9/Subtitle37 pass, all normal exits with no failures/errors/skips.
+Ordinary runtime is `build-windows/beta-privacy-20261017/ordinary-acceptance-r3/runtime`:
+core `dd8c11…9186`, GUI `fe5d00…0c81`, ML `0a9d2d…44e0`; prior runtimes/baseline
+are preserved. Earlier GUI passes are superseded. Last.fm, Library-disabled
+history/clear, actual Home/legacy clear/visit journeys, native visual/DPI,
+Windows 11, remaining five bodies and full beta/clean-package gates remain open.
+No further Figma call was used.
+
 ## Project and current checkpoint
 
 | Item | Value |

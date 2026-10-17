@@ -53,13 +53,7 @@ QHash<int, QByteArray> MLRecentMediaModel::roleNames() const
 
 void MLRecentMediaModel::clearHistory()
 {
-    if (m_mediaLib->homeActivity())
-        m_mediaLib->homeActivity()->clearVisits();
-    m_mediaLib->runOnMLThread(this,
-    //ML thread
-    [](vlc_medialibrary_t* ml){
-        vlc_ml_clear_history(ml, VLC_ML_HISTORY_TYPE_GLOBAL);
-    });
+    m_mediaLib->requestHistoryClear();
 }
 
 void MLRecentMediaModel::onVlcMlEvent( const MLEvent &event )

@@ -170,7 +170,11 @@ public:
      */
     void cancelMLTask(const QObject* object, quint64 taskId);
 
+    // All history actions use the MainCtx-owned coordinated clear service.
+    void requestHistoryClear() { emit historyClearRequested(); }
+
 signals:
+    void historyClearRequested();
     void folderAddFailed(QUrl folder);
     void discoveryStarted();
     void discoveryCompleted();

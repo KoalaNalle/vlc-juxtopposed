@@ -15,7 +15,7 @@ to the adjacent local `assets` directory. The [manifest](manifest.json) records
 unchanged screenshot/SVG bytes, hashes and SVG root dimensions. Original design
 and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed), CC BY 4.0; see
 [designer attribution](../../../../../modules/gui/qt/pixmaps/juxtopposed/ATTRIBUTION.md).
-These files are reference material and are not registered as application assets.
+These archive files remain reference material. The implementation now copies their exact SVG bytes to `privacy-settings-*.svg` application resources, retaining the original dimensions.
 
 The [field map](field-map.json) distinguishes existing native consumers from
 missing permissions and services. Remembering a position is a storage policy;
@@ -37,3 +37,19 @@ This supplies a reliable native result for the future UI; it does not implement
 or accept the complete Privacy controller/page. Search, save/restart/reset,
 normal/narrow/light/DPI presentation, all field consumers and final package
 verification remain open. Reuse this cache before making another reference call.
+
+The current implementation explicitly adapts the duplicated second credential
+label to **Last.fm password**, matching the existing native password option,
+and masks its contents. All four Last.fm rows remain unaccepted: new activation
+and credential/server editing are unavailable pending secure transport and
+service verification. An already enabled legacy submission interface can be
+turned off without removing other extra interfaces; restart is required.
+
+The player now has an independent `remember-playback-pos` permission and a
+`history-exclude-pattern` consumer shared with Home visits. The rule is a
+case-sensitive wildcard substring over URI, decoded local path and item/name;
+`*` matches any sequence and `?` one Unicode scalar, with no regex or escapes.
+Invalid/overlong input or excessive matching work fails closed. Changed policies
+cancel pending writes. Existing accepted history is kept until explicit Clear.
+The page's search, save/error/busy/retry and programmatic narrow/light states
+are implemented; native desktop/DPI and complete category acceptance remain open.

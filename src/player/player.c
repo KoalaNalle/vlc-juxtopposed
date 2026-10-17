@@ -2073,6 +2073,7 @@ vlc_player_Delete(vlc_player_t *player)
     free(player->video_string_ids);
     free(player->audio_string_ids);
     free(player->sub_string_ids);
+    free(player->history_policy.exclusion_pattern);
 
     vlc_player_DestroyTimer(player);
 
@@ -2130,6 +2131,14 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
 
     player->play_and_pause = false;
     player->repeat = 0;
+    player->history_policy.save_history = var_InheritBool(player, "save-recentplay");
+    player->history_policy.remember_position = var_InheritBool(player, "remember-playback-pos");
+    player->history_policy.exclusion_pattern = var_InheritString(player, "history-exclude-pattern");
+    player->history_epoch = player->position_epoch = 0;
+    if (!player->history_policy.exclusion_pattern)
+        player->history_policy.exclusion_pattern = strdup("");
+    if (!player->history_policy.exclusion_pattern)
+        goto error;
 
 #define VAR_CREATE(var, flag) do { \
     if (var_Create(player, var, flag) != VLC_SUCCESS) \
@@ -2137,6 +2146,7 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
 } while(0)
 
     /* player variables */
+    VAR_CREATE("save-recentplay", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     VAR_CREATE("rate", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
     VAR_CREATE("sub-fps", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
     VAR_CREATE("sub-text-scale", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
@@ -2195,6 +2205,7 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
     return player;
 
 error:
+    free(player->history_policy.exclusion_pattern);
     if (aout)
         vlc_player_aout_Deinit(player);
     var_DelCallback(player, "corks", vlc_player_CorkCallback, player);

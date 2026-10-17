@@ -334,7 +334,7 @@ if medialibrary_dep.found()
         files('misc/medialibrary_history.c'),
         build_by_default: false,
         link_with: [libvlc, libvlccore, vlc_libcompat],
-        include_directories: vlc_include_dirs,
+        include_directories: [vlc_include_dirs, include_directories('../../src')],
         dependencies: [libvlccore_deps, opengl_dep],
         c_args: [
             '-DSRCDIR="@0@"'.format(vlc_src_root + '/test/'),

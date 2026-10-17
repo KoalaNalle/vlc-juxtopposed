@@ -130,6 +130,10 @@ struct vlc_player_input
     } ml;
 
     unsigned repeat;
+
+    /* Appended to keep offsets used by existing private native fixtures stable. */
+    uint64_t history_epoch;
+    uint64_t position_epoch;
 };
 
 struct vlc_player_listener_id
@@ -309,6 +313,10 @@ struct vlc_player_t
     } mainloop;
 
     struct vlc_player_timer timer;
+
+    struct vlc_player_history_policy history_policy;
+    uint64_t history_epoch;
+    uint64_t position_epoch;
 };
 
 #ifndef NDEBUG

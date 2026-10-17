@@ -16,6 +16,7 @@ import wave
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--package', type=Path, required=True)
 parser.add_argument('--output-dir', type=Path, required=True)
+parser.add_argument('--qt-controller', action='store_true', help='Run the Qt controller real-database failure/retry mode')
 args = parser.parse_args()
 package = args.package.resolve()
 output = args.output_dir.resolve()
@@ -26,13 +27,18 @@ fixture = output / 'owned.wav'
 with wave.open(str(fixture), 'wb') as stream:
     stream.setnchannels(1); stream.setsampwidth(2); stream.setframerate(8000)
     stream.writeframes(b'\0' * 32000)
-relative = ['test_modules_medialibrary_history.exe', 'libvlc.dll', 'libvlccore.dll',
+program = 'test_qt_privacy_preferences.exe' if args.qt_controller else 'test_modules_medialibrary_history.exe'
+relative = [program, 'libvlc.dll', 'libvlccore.dll',
             'plugins/misc/libmedialibrary_plugin.dll']
 report = dict(passed=False, timedOut=False, forcedCleanupUsed=False,
     runtimeSha256={name: hashlib.sha256((package / name).read_bytes()).hexdigest() for name in relative})
 environment = os.environ | dict(VLC_PLUGIN_PATH=str(package / 'plugins'),
     VLC_USERDATA_PATH=str(output / 'userdata'), VLC_HISTORY_FIXTURE=str(fixture),
     TEMP=str(output / 'temp'), TMP=str(output / 'temp'))
+if args.qt_controller:
+    environment.update(VLC_PRIVACY_PIPE_CONFIG=str(output / 'vlcrc'),
+        VLC_PRIVACY_PIPE_SETTINGS=str(output / 'interface.ini'))
+command = [str(package / program)] + (['--pipe-history-failure'] if args.qt_controller else [])
 child = None
 lines = queue.Queue()
 transcript = []
@@ -45,7 +51,7 @@ previous = kernel32.SetErrorMode(0x0001 | 0x0002 | 0x8000)
 try:
     with (output / 'stderr.txt').open('wb') as stderr:
         try:
-            child = subprocess.Popen([str(package / relative[0])], cwd=output,
+            child = subprocess.Popen(command, cwd=output,
                 env=environment, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                 stderr=stderr, creationflags=subprocess.CREATE_NO_WINDOW)
         finally:
@@ -108,7 +114,7 @@ report['passLines'] = [line for line in transcript if line.startswith('PASS:')]
 report['failLines'] = [line for line in transcript if line.startswith('FAIL:')]
 report['passed'] = (report['normalExit'] and report['stdoutReaderTerminated'] and not report['timedOut']
     and not report['failLines'] and report.get('failedClearDataUnchanged') is True
-    and 'RESULT: 7 checks, 0 failures' in transcript)
+    and ('RESULT: 9 checks, 0 failures' if args.qt_controller else 'RESULT: 40 checks, 0 failures') in transcript)
 with (output / 'verification.json').open('w', encoding='utf-8', newline='\n') as stream:
     stream.write(json.dumps(report, indent=2) + '\n')
 print(json.dumps(report, indent=2), flush=True)

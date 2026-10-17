@@ -42,6 +42,8 @@
 #include "audio_preferences_model.hpp"
 #include "subtitles_preferences_model.hpp"
 #include "library_preferences_model.hpp"
+#include "privacy_preferences_model.hpp"
+#include <vlc_dialog.h>
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
 
@@ -272,6 +274,35 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
 
     const QUrl homeUrl = QUrl::fromLocalFile(QVLCUserDir( VLC_HOME_DIR ));
     m_dialogFilepath = getSettings()->value( "filedialog-path", homeUrl ).toUrl();
+    PrivacyPreferencesModel::LocalHistory localHistory;
+    localHistory.invalidatePendingVisits = [this] {
+        if (m_medialib && m_medialib->homeActivity()) m_medialib->homeActivity()->invalidatePendingVisits();
+    };
+    localHistory.clearVisits = [this] {
+        if (!m_medialib || !m_medialib->homeActivity()) return QString{};
+        auto *activity=m_medialib->homeActivity();
+        activity->clearVisits(); return activity->error();
+    };
+    m_privacyPreferences = new PrivacyPreferencesModel(p_intf, settings, std::move(localHistory), this);
+    connect(m_privacyPreferences,&PrivacyPreferencesModel::metadataPreferenceChanged,
+            m_libraryPreferences,&LibraryPreferencesModel::reload);
+    connect(m_libraryPreferences,&LibraryPreferencesModel::valuesChanged,
+            m_privacyPreferences,&PrivacyPreferencesModel::reload);
+    connect(m_privacyPreferences,&PrivacyPreferencesModel::fileDialogHistoryCleared,this,[this,homeUrl] {
+        m_dialogFilepath=homeUrl;
+    });
+    if (m_medialib) connect(m_medialib,&MediaLib::historyClearRequested,this,[this] {
+        if (m_privacyPreferences->busy()) return;
+        const auto reportFailure=[this] {
+            if (!m_privacyPreferences->lastError().isEmpty())
+                vlc_dialog_display_error(VLC_OBJECT(p_intf),qtu(tr("Could not clear history")),
+                    "%s",qtu(m_privacyPreferences->lastError()));
+        };
+        if (!m_privacyPreferences->clearHistory()) reportFailure();
+        else if (m_privacyPreferences->busy())
+            connect(m_privacyPreferences,&PrivacyPreferencesModel::busyChanged,this,
+                reportFailure,Qt::SingleShotConnection);
+    });
 
     QString platformName = QGuiApplication::platformName();
 
@@ -363,6 +394,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_privacyPreferences;
+    m_privacyPreferences = nullptr;
     delete m_libraryPreferences;
     m_libraryPreferences = nullptr;
     delete m_subtitlesPreferences;
@@ -582,6 +615,7 @@ void MainCtx::loadFromSettingsImpl(const bool callSignals)
 
 void MainCtx::reloadPrefs()
 {
+    if (m_privacyPreferences) m_privacyPreferences->reload();
     if (p_intf->preferencesResetPending && m_medialib && m_medialib->homeActivity())
         m_medialib->homeActivity()->clearVisits();
     loadPrefs(true);

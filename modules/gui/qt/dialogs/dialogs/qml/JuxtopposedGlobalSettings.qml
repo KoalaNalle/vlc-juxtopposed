@@ -23,7 +23,7 @@ JuxtopposedMovableDialog {
     readonly property var categories: [
         {key: "general", title: qsTr("General"), group: qsTr("App"), icon: "global-settings-66cd9.svg", selectedIcon: "global-settings-4dae7.svg", mirror: false},
         {key: "interface", title: qsTr("Interface"), group: qsTr("App"), icon: "global-settings-1bf8a.svg", selectedIcon: "global-settings-f1a4a.svg", mirror: false},
-        {key: "privacy", title: qsTr("Privacy"), group: qsTr("App"), icon: "global-settings-7d179.svg", mirror: false},
+        {key: "privacy", title: qsTr("Privacy"), group: qsTr("App"), icon: "global-settings-7d179.svg", selectedIcon: "privacy-settings-a1bba.svg", mirror: false},
         {key: "controls", title: qsTr("Controls"), group: qsTr("App"), icon: "global-settings-36bfa.svg", mirror: false},
         {key: "playback", title: qsTr("Playback"), group: qsTr("Media"), icon: "global-settings-ad68b.svg", selectedIcon: "playback-settings-bc944.svg", mirror: false},
         {key: "video", title: qsTr("Video"), group: qsTr("Media"), icon: "global-settings-ec3f6.svg", selectedIcon: "video-settings-7aced.svg", mirror: true},
@@ -150,7 +150,7 @@ JuxtopposedMovableDialog {
             leftPadding: 42 * root.uiScale; rightPadding: 8 * root.uiScale
             Accessible.name: qsTr("Search global settings")
             background: Rectangle { color: root.tone("#151515"); radius: 6 * root.uiScale; border.width: searchField.visualFocus ? root.uiScale : 0; border.color: root.accent }
-            Image { objectName: "globalSettingsOriginalSearch"; x: 8 * root.uiScale + (24 * root.uiScale - width) / 2; anchors.verticalCenter: parent.verticalCenter; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + "global-settings-80d5a.svg"; Accessible.ignored: true }
+            Image { objectName: "globalSettingsOriginalSearch"; x: 8 * root.uiScale + (24 * root.uiScale - width) / 2; anchors.verticalCenter: parent.verticalCenter; width: 24; height: 24; scale: root.uiScale; source: root.assetBase + (root.selectedCategory === "privacy" ? "privacy-settings-80d5a.svg" : "global-settings-80d5a.svg"); Accessible.ignored: true }
             Keys.onTabPressed: { root.navigateFocus(searchField, false) }
             Keys.onBacktabPressed: { root.navigateFocus(searchField, true) }
             onTextEdited: {
@@ -187,7 +187,7 @@ JuxtopposedMovableDialog {
             padding: 0; activeFocusOnTab: true
             Accessible.name: qsTr("Close global settings")
             background: Rectangle { color: closeButton.hovered ? root.tone("#191919") : "transparent"; radius: 4 * root.uiScale; border.width: closeButton.visualFocus ? root.uiScale : 0; border.color: root.accent }
-            contentItem: Item { Image { objectName: "globalSettingsOriginalClose"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; mirror: true; source: root.assetBase + "new-playlist-close.svg"; Accessible.ignored: true } }
+            contentItem: Item { Image { objectName: "globalSettingsOriginalClose"; anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale; mirror: true; source: root.assetBase + (root.selectedCategory === "privacy" ? "privacy-settings-9c2da.svg" : "new-playlist-close.svg"); Accessible.ignored: true } }
             Keys.onTabPressed: root.navigateFocus(closeButton, false)
             Keys.onBacktabPressed: root.navigateFocus(closeButton, true)
             onClicked: root.close()
@@ -253,7 +253,9 @@ JuxtopposedMovableDialog {
                                         Image {
                                             objectName: "globalCategory" + modelData.key + "OriginalIcon"
                                             anchors.centerIn: parent; width: 24; height: 24; scale: root.uiScale
-                                            source: root.assetBase + (categoryButton.selected && modelData.selectedIcon ? modelData.selectedIcon : modelData.icon)
+                                            source: root.assetBase + (root.selectedCategory === "privacy"
+                                                ? "privacy-settings-" + ({general:"66cd9",interface:"1bf8a",privacy:"a1bba",controls:"36bfa",playback:"ad68b",video:"ec3f6",audio:"432a4",subtitles:"3ffd5",library:"cf6e1",network:"6db55",performance:"66cd9",recording:"08f95",extensions:"05bc9"}[modelData.key]) + ".svg"
+                                                : (categoryButton.selected && modelData.selectedIcon ? modelData.selectedIcon : modelData.icon))
                                             mirror: modelData.mirror
                                             Accessible.ignored: true
                                         }

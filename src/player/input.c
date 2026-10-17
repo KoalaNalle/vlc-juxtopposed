@@ -1311,6 +1311,8 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     };
 
     input->repeat = player->repeat;
+    input->history_epoch = player->history_epoch;
+    input->position_epoch = player->position_epoch;
 
     input->thread = input_Create(player, item, &cfg);
     if (!input->thread)
@@ -1370,5 +1372,6 @@ vlc_player_input_Delete(struct vlc_player_input *input)
     vlc_vector_destroy(&input->spu_track_vector);
 
     input_Close(input->thread);
+    vlc_ml_release(&input->ml.states);
     free(input);
 }

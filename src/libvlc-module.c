@@ -1943,6 +1943,10 @@ vlc_module_begin ()
         change_safe ()
 
     add_bool( "save-recentplay", true, SAVE_RECENTPLAY, NULL )
+    add_bool( "remember-playback-pos", true, N_("Remember playback positions"),
+              N_("Allow saving and restoring playback positions independently of the restore prompt policy.") )
+    add_string( "history-exclude-pattern", "", N_("Never remember items matching"),
+                N_("Case-sensitive wildcard substring matched against the media URI, decoded local path and name. * matches any sequence, ? one Unicode character. Empty excludes nothing. Applies to automatic playback history and Home visits.") )
 
     add_integer( "restore-playback-pos", VLC_PLAYER_RESTORE_PLAYBACK_POS_ASK,
                  RESTORE_PLAYBACK_POS_TEXT, RESTORE_PLAYBACK_POS_LONGTEXT )

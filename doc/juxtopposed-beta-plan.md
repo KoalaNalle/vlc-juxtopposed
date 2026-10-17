@@ -10,10 +10,14 @@ retry/persistence checks pass, with ordinary playback and final-tuple 18/42/9/37
 The [fresh Privacy audit](juxtopposed-references/figma/20261017/privacy/README.md)
 archives all nine authored rows and original assets with one context request
 including its screenshot. Seven planned/two reserved Figma calls remain. The
-source mounts seven category bodies; Privacy, Controls, Network, Performance,
-Recording and Extensions still lack bodies. Privacy is not accepted by this
-backend repair: its controller/page, storage/exclusion policies, clear coordination
-and metadata/Last.fm behavior remain open, alongside all full beta gates below.
+source now mounts eight category bodies; Controls, Network, Performance,
+Recording and Extensions still lack bodies. The [Privacy policy implementation](juxtopposed-references/native/guest-privacy-policy-20261017/README.md)
+adds independent position-storage permission, shared exclusions, coordinated clear,
+Home/Open Network consumers, metadata sharing and explicit unavailable Last.fm
+states. A first-operation media-library clear crash is repaired. History40, controller14,
+real SQLite controller9, QML8 and final ordinary4/Library18/42/9/Subtitle37 pass.
+Last.fm service, Library-disabled history/clear, actual native GUI journeys,
+desktop/DPI and complete Privacy/full-beta acceptance remain open.
 
 The [guest fixed-rate audio clock checkpoint](juxtopposed-references/native/guest-soxr-clock-20261017/README.md)
 closes the specific export timestamp discontinuity found during WAV/PCR work.

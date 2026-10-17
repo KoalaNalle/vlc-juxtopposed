@@ -534,6 +534,7 @@ int MediaLibrary::Control( int query, va_list args )
         case VLC_ML_SET_FOLDER_PUBLIC:
         case VLC_ML_SET_FOLDER_PRIVATE:
         case VLC_ML_RESUME_BACKGROUND:
+        case VLC_ML_CLEAR_HISTORY:
         case VLC_ML_NEW_EXTERNAL_MEDIA:
         case VLC_ML_NEW_STREAM:
         case VLC_ML_REMOVE_STREAM:

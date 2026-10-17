@@ -690,5 +690,6 @@ test_modules_soxr_timestamps_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
 # Explicit real media-library database failure/retry regression.
 EXTRA_PROGRAMS += test_modules_medialibrary_history
 test_modules_medialibrary_history_SOURCES = modules/misc/medialibrary_history.c
+test_modules_medialibrary_history_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src
 test_modules_medialibrary_history_LDADD = $(LIBVLCCORE) $(LIBVLC)
 EXTRA_DIST += libvlc/native_history_clear.py
