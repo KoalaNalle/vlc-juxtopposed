@@ -4,6 +4,38 @@
 
 The user's latest request supersedes the earlier goal of one useful action per surface. Preserve the [milestones 0–8](juxtopposed-vertical-slice-plan.md) and their completed evidence, but use the beta gates below as the completion criterion. Every confirmed design surface and action must be reachable and functional. A legacy dialog link, supplied controller, placeholder data or a single successful example does not finish a redesigned surface. Supported-format limitations must be explicit and consistent with the advertised feature.
 
+## Release boundaries agreed with the user — 17 October 2026
+
+This clarification takes precedence over older broad parity requirements below.
+Implementation remains paused until the user resumes it.
+
+| Release | Scope |
+| --- | --- |
+| Beta | Bring Juxtopposed's confirmed redesign to life with real behavior and relatively few bugs. Complete the designed surfaces/actions, fidelity, persistence and ordinary playback journeys; fix regressions and deliver a coherent tested package. |
+| V1.0 | Complete coverage of vanilla VLC features in the redesigned application. Discuss further feature placement and behavior with Jux before settling those details. |
+| V1.5 | Explore additional features beyond vanilla parity, such as YouTube and possibly Twitch extensions. These are candidates, not committed specifications. |
+
+For beta, a feature explicitly present in the confirmed design still needs real
+behavior; underlying native work necessary for that behavior remains in scope.
+Do not add vanilla-only screens, workflows or exhaustive feature-parity gates to
+beta merely because VLC already provides them. Retain existing working native
+routes and avoid regressions. A menu entry alone does not imply a newly designed
+dialog when no original dialog is specified. Preserve missing references as
+questions for design discussion rather than inventing new beta geometry.
+
+The earlier disc suggestion is a V1.0 parity/usability discussion item: whole-disc
+DVD/Blu-ray folder playback, ISO handling, Explorer integration and AutoPlay.
+Operating-system ISO mounting is a separate possible enhancement, not an assumed
+missing VLC capability or beta requirement. If the original redesign includes an
+Open Disc entry, keep that entry functional using the existing native route;
+additional disc UX is not automatically a beta blocker.
+
+Beta quality means the designed workflows work reliably, with no known critical
+crash, data-loss or broken normal-flow defects in the accepted paths. Document
+minor known issues and supported-format/platform limits. This does not require
+claiming every possible VLC feature or media/hardware combination bug-free.
+No designer outreach or new extension implementation is authorized by this plan.
+
 The [typed Performance model](juxtopposed-references/native/guest-performance-model-20261017/README.md)
 now passes native16, including checked Unicode persistence, real file-lock
 rollback/retry, compound postproc preservation, exact Windows scheduling and
@@ -402,7 +434,7 @@ All rows below remain unchecked for **complete beta acceptance**, even where exi
 | [ ] First-run theme setup | Settings 19:50 | Distinct Light/Dark/System cards, real preview/accent selection and Back/Next; inspect remaining setup steps and persist completion/selections. Fresh portable launch currently needs separate first-run acceptance. |
 | [ ] Profiles/customization/shortcuts | Advanced 19:35 | Movies/Shows/Music/Work/New profile actions, original Customize Player and Keyboard Shortcuts screens; actual layout plus all designed preference scope, save/switch/restart/reset/conflict handling. Existing toolbar profiles are partial support. |
 
-The source menu additionally requires coverage records for its dialogs/submenus even if the final inspection finds no redesigned body: Open Disc, Capture Device, Recent, Save Playlist to File, Stream, Plugins/Extensions and About. Real native actions need explicit exercised or hardware-unavailable outcomes. A comparison shot of classic VLC or its classic Toolbar Editor is not evidence of a redesigned dialog.
+The beta source menu must preserve the entries confirmed in the original design and keep their existing native routes functional. A dedicated redesigned dialog requires an original reference; no unshown Open Disc, Capture Device, Stream or other vanilla-only form is added to beta by inference. Record those broader parity workflows for V1.0. A comparison shot of classic VLC or its Toolbar Editor is not evidence of a redesigned dialog.
 
 ## Complete Global Settings routes
 
@@ -481,4 +513,4 @@ Choose the actual four nodes only after a successful permitted inventory; unknow
 - [ ] Decide and document portable-versus-installer distribution, package size/dependency completeness, version/beta naming and signing status. Test installation/unpacking/launch/cleanup for the selected artifact; an installer alone is not playback acceptance.
 - [ ] Complete independent review of the final change and visual evidence, push the reviewable beta source revision, and create the chosen publishable artifact through Root's workflow once its actual gates pass. No publication or release completion is claimed by this plan.
 
-Beta acceptance requires all confirmed behavior above and one coherent verified package. Newly discovered design requirements expand the inventory; unconfirmed text editing/export, unknown conversion geometry or unavailable category references stay explicit until inspection resolves them. Do not silently reduce the user's feature-complete beta request back to the earlier vertical slice.
+Beta acceptance requires the confirmed redesign behavior, stability and one coherent verified package under the release boundaries above. Newly confirmed original design requirements update the beta inventory; vanilla-only parity belongs to V1.0, and additional extensions are V1.5 candidates. Unconfirmed text editing/export, unknown conversion geometry and unavailable category references remain explicit design questions. The beta still implements the complete confirmed redesign rather than the earlier one-action-per-surface slice.

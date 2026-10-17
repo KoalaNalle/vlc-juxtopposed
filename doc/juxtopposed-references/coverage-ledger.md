@@ -2,6 +2,14 @@
 
 Updated 15 October 2026. Milestone 0 is **in progress**. This is an initial inventory, not a complete screen audit or an acceptance claim. Original design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed).
 
+17 October release-scope clarification: apply the current
+[beta/V1.0/V1.5 boundaries](../juxtopposed-beta-plan.md#release-boundaries-agreed-with-the-user--17-october-2026)
+when reconciling this older ledger. Beta implements and stabilizes the confirmed
+original redesign. Vanilla-only parity workflows belong to V1.0; new YouTube
+and possible Twitch extensions are V1.5 candidates. Keep original designed
+entries functional without inventing unshown dialog layouts. Broader disc,
+ISO, Explorer and AutoPlay improvements do not independently block beta.
+
 16 October guest follow-up: [actual Windows Library startup policy](native/guest-startup-20261016/README.md)
 passes all five native original/fixed cases after removing the launcher's forced
 ON argument. The old executable fails both saved-OFF cases. The core default is

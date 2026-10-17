@@ -8,6 +8,15 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
+The user clarified the [release boundaries](doc/juxtopposed-beta-plan.md#release-boundaries-agreed-with-the-user--17-october-2026):
+**Beta brings the confirmed Juxtopposed redesign to life and stabilizes it;
+V1.0 covers vanilla VLC parity, with further details to discuss with Jux;
+V1.5 may add YouTube/Twitch extensions.** Do not expand beta with vanilla-only
+screens or disc/ISO/Explorer/AutoPlay polish. Original designed actions still
+need real behavior and existing native routes must remain functional. New
+extensions are tentative. No designer contact is authorized. Development stays
+paused; this update changes planning only.
+
 The [typed Performance model](doc/juxtopposed-references/native/guest-performance-model-20261017/README.md)
 now passes native16, including checked Unicode persistence, real file-lock
 rollback/retry, compound postproc preservation, exact Windows scheduling and
