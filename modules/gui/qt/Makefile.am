@@ -192,6 +192,7 @@ libqt_plugin_la_SOURCES = \
 	maininterface/controls_preferences_model.cpp maininterface/controls_preferences_model.hpp \
 	maininterface/network_preferences_model.cpp maininterface/network_preferences_model.hpp \
 	maininterface/performance_preferences_model.cpp maininterface/performance_preferences_model.hpp \
+	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
@@ -506,6 +507,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/controls_preferences_model.moc.cpp \
 	maininterface/network_preferences_model.moc.cpp \
 	maininterface/performance_preferences_model.moc.cpp \
+	maininterface/recording_preferences_model.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
@@ -2966,3 +2968,25 @@ EXTRA_DIST += tests/test_juxtopposed_performance_settings.py tests/juxtopposed_p
     tests/native_ui/performance_journey.cpp tests/native_ui/run_performance_journey.py
 
 EXTRA_DIST += tests/native_ui/performance_journey.mk
+
+# Owned Recording model integration; invoke through its isolated runtime driver.
+EXTRA_DIST += tests/test_recording_preferences.cpp tests/native_library/recording.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_recording_preferences
+test_qt_recording_preferences_SOURCES = tests/test_recording_preferences.cpp \
+    tests/library_preferences_probe.c maininterface/recording_preferences_model.cpp \
+    maininterface/recording_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/checked_preferences_store.hpp util/cast_discovery_policy.hpp util/winpthreads_shutdown.cpp
+nodist_test_qt_recording_preferences_SOURCES = tests/test_recording_preferences.moc \
+    maininterface/recording_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_recording_preferences.moc
+CLEANFILES += tests/test_recording_preferences.moc
+test_qt_recording_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_recording_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_recording_preferences_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_recording_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+endif
+endif
+endif

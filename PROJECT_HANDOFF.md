@@ -17,6 +17,15 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The [Recording model foundation](doc/juxtopposed-references/native/guest-recording-model-20261017/README.md)
+passes native13 with real Unicode config/INI persistence, file-lock rollback/
+retry, typed track/x264/cast defaults and CLI precedence. All12 native-tested
+inputs match; the registered Autotools target resolves and Meson syntax parses.
+MainCtx/QML construction and actual recording, discovery and Stream consumers
+remain pending; default consumer gates stay false. The native recording toggle
+does not force re-encoding when OFF; its original label was raised as an optional
+product clarification. No forced encoder mode is implemented.
+
 The [Performance page checkpoint](doc/juxtopposed-references/native/guest-performance-page-20261017/README.md)
 mounts all14 original fields/actions in MainCtx and the settings host, with the
 original19 SVGs. Native model17, actual window51/14, software media11, hardware3,

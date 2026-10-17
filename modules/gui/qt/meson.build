@@ -90,6 +90,7 @@ moc_headers = files(
     'maininterface/controls_preferences_model.hpp',
     'maininterface/network_preferences_model.hpp',
     'maininterface/performance_preferences_model.hpp',
+    'maininterface/recording_preferences_model.hpp',
     'util/plugin_cache_rescan.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
@@ -339,8 +340,10 @@ qt_plugin_sources = files(
     'maininterface/controls_preferences_model.cpp',
     'maininterface/network_preferences_model.cpp',
     'maininterface/performance_preferences_model.cpp',
+    'maininterface/recording_preferences_model.cpp',
     'util/modal_input_guard.cpp',
     'util/modal_input_guard.hpp',
+    'util/cast_discovery_policy.hpp',
     'maininterface/video_preferences_model.cpp',
     'util/audio_defaults_policy.hpp',
     'util/audio_windows_devices.cpp',
@@ -365,6 +368,7 @@ qt_plugin_sources = files(
     'maininterface/controls_preferences_model.hpp',
     'maininterface/network_preferences_model.hpp',
     'maininterface/performance_preferences_model.hpp',
+    'maininterface/recording_preferences_model.hpp',
     'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
@@ -1799,6 +1803,27 @@ if qt6_dep.found()
                 'link_with': [libvlccore, libvlc],
                 'link_args': performance_link_args,
                 'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, performance_deps],
+                'register_test': false,
+            }
+            recording_sources = files('tests/test_recording_preferences.cpp',
+                'tests/library_preferences_probe.c',
+                'util/checked_preferences_store.cpp', 'maininterface/recording_preferences_model.cpp')
+            recording_deps = []
+            recording_link_args = qt_link_args
+            if have_mingw
+                recording_sources += files('util/winpthreads_shutdown.cpp')
+                recording_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                recording_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_recording_preferences',
+                'sources': recording_sources,
+                'moc_sources': files('tests/test_recording_preferences.cpp'),
+                'moc_headers': files('maininterface/recording_preferences_model.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': recording_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, recording_deps],
                 'register_test': false,
             }
         endif
