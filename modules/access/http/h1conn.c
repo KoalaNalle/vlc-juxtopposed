@@ -154,7 +154,8 @@ static struct vlc_http_stream *vlc_h1_stream_open(struct vlc_http_conn *c,
     if (unlikely(payload == NULL))
         return NULL;
 
-    vlc_http_dbg(CO(conn), "outgoing request:\n%.*s", (int)len, payload);
+    /* The formatted headers may contain origin or proxy credentials. */
+    vlc_http_dbg(CO(conn), "outgoing %s request", vlc_http_msg_get_method(req));
     val = vlc_tls_Write(conn->conn.tls, payload, len);
     free(payload);
 

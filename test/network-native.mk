@@ -18,3 +18,17 @@ $(NETWORK_OUT)/settings_consumers.o: $(srcdir)/src/network/settings_consumers.c 
 	$(CC) $(NETWORK_CPPFLAGS) $(CFLAGS) -c $< -o $@
 $(NETWORK_OUT)/test_network_settings.exe: $(NETWORK_OUT)/settings_consumers.o
 	$(LIBTOOL) --tag=CC --mode=link $(CC) $(CFLAGS) $(AM_LDFLAGS) -Wc,-static -o $@ $< $(LIBVLC) $(LIBVLCCORE)
+
+.PHONY: network-proxy-policy-native
+network-proxy-policy-native: $(NETWORK_OUT)/test_network_proxy_policy.exe
+$(NETWORK_OUT)/proxy_policy.o: $(srcdir)/src/network/proxy_policy.c $(srcdir)/src/network/proxy_windows.c $(top_srcdir)/src/win32/netconf.c | $(NETWORK_OUT)
+	$(CC) $(NETWORK_CPPFLAGS) $(CFLAGS) -c $< -o $@
+$(NETWORK_OUT)/test_network_proxy_policy.exe: $(NETWORK_OUT)/proxy_policy.o
+	$(LIBTOOL) --tag=CC --mode=link $(CC) $(CFLAGS) $(AM_LDFLAGS) -Wc,-static -o $@ $< $(LIBVLC) $(LIBVLCCORE) -lwinhttp -lnormaliz
+
+.PHONY: network-pac-transport-native
+network-pac-transport-native: $(NETWORK_OUT)/test_network_pac_transport.exe
+$(NETWORK_OUT)/proxy_transport.o: $(srcdir)/src/network/proxy_transport.c $(srcdir)/src/network/proxy_windows.c $(top_srcdir)/src/win32/netconf.c | $(NETWORK_OUT)
+	$(CC) $(NETWORK_CPPFLAGS) $(CFLAGS) -c $< -o $@
+$(NETWORK_OUT)/test_network_pac_transport.exe: $(NETWORK_OUT)/proxy_transport.o
+	$(LIBTOOL) --tag=CC --mode=link $(CC) $(CFLAGS) $(AM_LDFLAGS) -Wc,-static -o $@ $< $(LIBVLC) $(LIBVLCCORE) -lwinhttp -lnormaliz

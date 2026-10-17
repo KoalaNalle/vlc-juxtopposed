@@ -51,6 +51,7 @@
 #include <vlc_threads.h>
 #include <vlc_tls.h>
 #include "transport.h"
+#include "test_transport.h"
 
 const char vlc_module_name[] = "test_http_tunnel";
 
@@ -90,7 +91,7 @@ static void proxy_client_process(int fd)
 
     const char resp[] = "HTTP/1.1 500 Failure\r\n\r\n";
 
-    val = write(fd, resp, strlen(resp));
+    val = send(fd, resp, strlen(resp), 0);
     assert((size_t)val == strlen(resp));
     shutdown(fd, SHUT_WR);
 }
@@ -103,13 +104,20 @@ static void *proxy_thread(void *data)
 
     for (;;)
     {
+        vlc_testcancel();
+        struct pollfd ready = { .fd = *lfd, .events = POLLIN };
+        if (vlc_poll(&ready, 1, 100) <= 0) continue;
         int cfd = accept4(*lfd, NULL, NULL, SOCK_CLOEXEC);
         if (cfd == -1)
             continue;
 
         int canc = vlc_savecancel();
+#ifdef _WIN32
+        unsigned long blocking = 0;
+        assert(ioctlsocket(cfd, FIONBIO, &blocking) == 0);
+#endif
         proxy_client_process(cfd);
-        vlc_close(cfd);
+        net_Close(cfd);
         connection_count++;
         vlc_restorecancel(canc);
     }
@@ -134,7 +142,7 @@ static int server_socket(unsigned *port)
     if (bind(fd, &addr.sa, addrlen)
      || getsockname(fd, &addr.sa, &addrlen))
     {
-        vlc_close(fd);
+        net_Close(fd);
         return -1;
     }
 
@@ -144,6 +152,7 @@ static int server_socket(unsigned *port)
 
 int main(void)
 {
+    assert(vlc_http_test_network_init() == 0);
     char *url;
     unsigned port;
     bool two = false;
@@ -170,9 +179,15 @@ int main(void)
 
     if (listen(*lfd, 255))
     {
-        vlc_close(*lfd);
+        net_Close(*lfd);
         return 77;
     }
+
+#ifdef _WIN32
+    /* Winsock accept is not a native thread cancellation point. */
+    unsigned long nonblocking = 1;
+    assert(ioctlsocket(*lfd, FIONBIO, &nonblocking) == 0);
+#endif
 
     vlc_thread_t th;
     if (vlc_clone(&th, proxy_thread, lfd))
@@ -185,7 +200,7 @@ int main(void)
     vlc_join(th, NULL);
     assert(connection_count > 0);
     free(url);
-    vlc_close(*lfd);
+    net_Close(*lfd);
     free(lfd);
     return 0;
 }

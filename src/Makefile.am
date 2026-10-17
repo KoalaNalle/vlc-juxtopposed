@@ -378,6 +378,7 @@ libvlccore_la_SOURCES = \
 	network/http_auth.c \
 	network/httpd.c \
 	network/io.c \
+	network/proxy.c network/proxy.h \
 	network/udp.c \
 	network/rootbind.c \
 	network/stream.c \

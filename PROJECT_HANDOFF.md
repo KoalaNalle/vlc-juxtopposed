@@ -8,15 +8,17 @@ E:\Modding\AGENTS.md and E:\Codex\migration-20261016\GUEST-SETUP.md before
 using historical home commands below. WSL 2 and fresh native build/test readiness
 are verified on the guest; all development data stays on E:.
 
-A later owned ordinary-HTTP transport audit reproduces three consumer failures:
-CLI proxy override, CLI direct override and saved HTTP proxy password all route
-or authenticate incorrectly on this tuple. All three processes terminate
-normally and return the wrong owned payload. Source tracing also shows the
-modern connection manager omits the request path before PAC lookup. These need
-consumer fixes and actual transport regressions; the 45 resolver/static-proxy
-checks above do not cover them. The ordinary smoke's `--http-proxy=direct://`
-argument alone therefore does not establish avoidance of system proxy settings.
-No cause for the separate subtitle stall is established.
+A later owned ordinary-HTTP transport audit confirms that this older tuple
+ignores CLI proxy/direct overrides and drops the path before PAC lookup. The
+initial password negative incorrectly required preemptive authentication without
+a 407 challenge. A corrected 407 replay authenticates through the legacy backend,
+but exposes the synthetic password in its debug log; the whole application does
+support that authentication fallback. This corrects the earlier broader password
+failure claim. The 45 resolver/static-proxy checks do not cover these consumer
+behaviors. Subsequent consumer repairs and native transport checks are in
+progress; do not treat this older tuple as acceptance of them. The ordinary
+smoke's direct argument alone does not prove system-policy avoidance on this
+older Core. The separate subtitle stall remains unexplained.
 
 The [owned native Network window journeys](doc/juxtopposed-references/native/guest-network-window-20261017/README.md)
 now pass 31 editing/failure/retry checks and 11 restart checks in two normal

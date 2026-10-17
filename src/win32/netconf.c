@@ -29,6 +29,7 @@
 #include <vlc_network.h>
 #include <vlc_url.h>
 #include <vlc_charset.h>
+#include "../network/proxy.h"
 #ifndef VLC_WINSTORE_APP
 # include <windows.h>
 # include <winhttp.h>
@@ -191,6 +192,16 @@ out:
     return proxy;
 }
 #endif
+
+char *vlc_getSystemProxyUrl(const char *psz_url)
+{
+#ifndef VLC_WINSTORE_APP
+    return system_proxy(psz_url);
+#else
+    VLC_UNUSED(psz_url);
+    return NULL;
+#endif
+}
 
 char *vlc_getProxyUrl(const char *psz_url)
 {

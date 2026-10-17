@@ -61,6 +61,12 @@ struct vlc_http_msg *vlc_http_resp_create(unsigned status) VLC_USED;
  */
 void vlc_http_msg_destroy(struct vlc_http_msg *);
 
+/** Copy request metadata, excluding connection-scoped Proxy-Authorization.
+ * The connection manager supplies proxy credentials only to its selected proxy.
+ * Payload streams are not copied.
+ */
+struct vlc_http_msg *vlc_http_req_copy(const struct vlc_http_msg *) VLC_USED;
+
 /**
  * Formats a header field.
  *

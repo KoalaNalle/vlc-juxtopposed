@@ -83,6 +83,7 @@ vlc_module_end ()
 typedef struct
 {
     vlc_tls_t *stream;
+    vlc_tls_client_t *proxy_creds;
 
     /* From uri */
     vlc_url_t url;
@@ -147,6 +148,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     p_sys->stream = NULL;
+    p_sys->proxy_creds = NULL;
     p_sys->b_proxy = false;
     p_sys->psz_proxy_passbuf = NULL;
     p_sys->psz_mime = NULL;
@@ -219,26 +221,25 @@ static int Open( vlc_object_t *p_this )
 
     /* Check proxy */
     msg_Dbg(p_access, "querying proxy for %s", psz_url);
-    psz = vlc_getProxyUrl(psz_url);
+    psz = vlc_getProxyUrlForObject(VLC_OBJECT(p_access), psz_url);
     if( psz != NULL )
     {
-        msg_Dbg(p_access, "proxy: %s", psz);
+        msg_Dbg(p_access, "using HTTP proxy");
         p_sys->b_proxy = true;
         vlc_UrlParse( &p_sys->proxy, psz );
         free( psz );
 
-        psz = var_InheritString( p_access, "http-proxy-pwd" );
-        if( psz )
-            p_sys->proxy.psz_password = p_sys->psz_proxy_passbuf = psz;
-
-        if( p_sys->proxy.psz_host == NULL || *p_sys->proxy.psz_host == '\0' )
+        if( p_sys->proxy.psz_host == NULL || *p_sys->proxy.psz_host == '\0'
+            || p_sys->proxy.psz_protocol == NULL
+            || (strcasecmp(p_sys->proxy.psz_protocol, "http")
+                && strcasecmp(p_sys->proxy.psz_protocol, "https")))
         {
             msg_Warn( p_access, "invalid proxy host" );
             goto error;
         }
         if( p_sys->proxy.i_port <= 0 )
         {
-            p_sys->proxy.i_port = 80;
+            p_sys->proxy.i_port = !strcasecmp(p_sys->proxy.psz_protocol, "https") ? 443 : 80;
         }
     }
     else
@@ -346,6 +347,7 @@ disconnect:
 
 error:
     vlc_credential_clean( &credential );
+    if (p_sys->proxy_creds) vlc_tls_ClientDelete(p_sys->proxy_creds);
     vlc_UrlClean( &p_sys->url );
     if( p_sys->b_proxy )
         vlc_UrlClean( &p_sys->proxy );
@@ -368,6 +370,9 @@ static void Close( vlc_object_t *p_this )
     stream_t     *p_access = (stream_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
 
+    Disconnect( p_access );
+    if (p_sys->proxy_creds) vlc_tls_ClientDelete(p_sys->proxy_creds);
+
     vlc_UrlClean( &p_sys->url );
     if( p_sys->b_proxy )
         vlc_UrlClean( &p_sys->proxy );
@@ -384,7 +389,6 @@ static void Close( vlc_object_t *p_this )
     free( p_sys->psz_username );
     free( p_sys->psz_password );
 
-    Disconnect( p_access );
 }
 
 /* Read data from the socket */
@@ -706,8 +710,14 @@ static int Connect( stream_t *p_access )
 
     /* Open connection */
     assert(p_sys->stream == NULL); /* No open sockets (leaking fds is BAD) */
-    p_sys->stream = vlc_tls_SocketOpenTCP(VLC_OBJECT(p_access),
-                                          srv.psz_host, srv.i_port);
+    if (p_sys->b_proxy && !strcasecmp(srv.psz_protocol, "https")) {
+        if (!p_sys->proxy_creds) p_sys->proxy_creds = vlc_tls_ClientCreate(VLC_OBJECT(p_access));
+        if (p_sys->proxy_creds)
+            p_sys->stream = vlc_tls_SocketOpenTLS(p_sys->proxy_creds,
+                srv.psz_host, srv.i_port, "https", NULL, NULL);
+    } else
+        p_sys->stream = vlc_tls_SocketOpenTCP(VLC_OBJECT(p_access),
+                                              srv.psz_host, srv.i_port);
     if (p_sys->stream == NULL)
     {
         msg_Err( p_access, "cannot connect to %s:%d", srv.psz_host, srv.i_port );
@@ -715,7 +725,7 @@ static int Connect( stream_t *p_access )
         return -1;
     }
 
-    msg_Dbg( p_access, "sending request:\n%s", stream.ptr );
+    msg_Dbg( p_access, "sending HTTP GET request");
     val = vlc_tls_Write(p_sys->stream, stream.ptr, stream.length);
     free( stream.ptr );
 

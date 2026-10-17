@@ -18,7 +18,7 @@ cat > "$work/extensions.txt" <<'CONF'
 basicConstraints=critical,CA:FALSE
 keyUsage=critical,digitalSignature
 extendedKeyUsage=serverAuth
-subjectAltName=DNS:owned-network.invalid
+subjectAltName=DNS:owned-network.invalid,IP:127.0.0.1,IP:::1
 CONF
 openssl x509 -req -sha512 -days 2 -in "$work/server.csr" -CA "$work/trust/ca.pem" -CAkey "$work/ca.key" -CAcreateserial -extfile "$work/extensions.txt" -extensions server -out "$work/server.pem"
 cat "$work/server.pem" "$work/trust/ca.pem" > "$work/server-chain.pem"

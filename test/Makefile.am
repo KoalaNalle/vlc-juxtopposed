@@ -701,3 +701,7 @@ EXTRA_DIST += controls-native.mk src/interface/controls.c src/interface/controls
 
 EXTRA_DIST += network-native.mk src/network/proxy_windows.c src/network/settings_consumers.c \
     libvlc/native_network_proxy.py libvlc/native_network_settings.py libvlc/generate_network_tls.sh
+EXTRA_DIST += src/network/proxy_policy.c
+EXTRA_DIST += src/network/proxy_transport.c libvlc/native_http_runtime.py \
+    libvlc/native_http_policy.py libvlc/native_http_proxy.py libvlc/native_http_pac.py \
+    libvlc/generate_http_proxy_tls.sh libvlc/native_http.md

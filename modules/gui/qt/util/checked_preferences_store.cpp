@@ -101,6 +101,13 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
             : QVariant(qlonglong(config_GetInt(key.constData()))));
     }
     auto assign = [](const QVariantMap &values) {
+        // Do not expose an old proxy secret with a new authority while the
+        // per-key native setters run. Do the same before a failed write rolls
+        // back to its previous endpoint. Core snapshots this pair together.
+        if (values.contains(QStringLiteral("http-proxy"))
+            && values.contains(QStringLiteral("http-proxy-pwd"))
+            && nativeString("http-proxy") != values.value(QStringLiteral("http-proxy")).toString())
+            config_PutPsz("http-proxy-pwd", "");
         for (auto it = values.cbegin(); it != values.cend(); ++it) {
             const auto key = it.key().toUtf8();
             if (it.value().typeId() == QMetaType::QString) {
