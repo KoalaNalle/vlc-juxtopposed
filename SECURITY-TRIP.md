@@ -190,3 +190,20 @@ accepted run; generated files and ordinary binaries were preserved. The original
 security-trip cause remains unknown; no new detector payload or automatic approval
 rejection was received. See the [scoped proof](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md).
 Full beta/fidelity/package gates and source-browser empty SVG warning triage remain open.
+
+## Subsequent network artwork checkpoint
+
+18 October 2026: Continued on E:, one heavy task at a time. Last substantive work:
+read the saved pin checkpoint; traced empty artwork calls with a private-only
+colorizer diagnostic; received six marked QML errors at NetworkGridItem.qml:58;
+then reproduced four original warnings with the unchanged GUI and stricter runner.
+The diagnostic's first link failed due to a missing private make prerequisite;
+its corrected R2 link succeeded. This was a test-harness failure, not a detector response.
+Guarded the real artwork binding and rebuilt the ordinary/private modules sequentially.
+Received normal native203/70/68/72 and ordinary5 results with zero Qt warning lines;
+input inventories, generated media and prior runtime preservation all pass.
+No new security detector payload, automatic approval rejection or crash was received.
+The original security-trip cause remains unknown. The temporary diagnostic is absent
+from both accepted modules; the test journey is absent from the ordinary module.
+All owned jobs are terminal. See the [scoped proof](doc/juxtopposed-references/native/guest-network-artwork-20261018/README.md).
+Full beta/fidelity/package gates and original sidebar geometry/Home/Recent remain open.

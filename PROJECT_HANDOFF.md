@@ -17,7 +17,18 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
-The latest [sidebar pins checkpoint](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md)
+The latest [network artwork follow-up](doc/juxtopposed-references/native/guest-network-artwork-20261018/README.md) closes the empty SVG
+requests during pinned folder/source browsing. A private diagnostic traced the caller
+and an unchanged-GUI negative passed 203 functional checks while failing the new
+warning gate. The real grid binding now waits for its artwork role. Fresh native
+203/70/68/72 (413) and ordinary5 pass normally, with zero Qt warning lines in all
+nine processes, on Core0cdebe / GUIf891112fc48f / MLe3ec5e. All 1,916 ordinary/seven private
+inputs and prior 458 Core/eight store inputs match. Current ordinary runtime is
+build-windows/beta-network-artwork-20261018/ordinary-runtime-r1. All owned jobs are
+terminal. Original sidebar217/50/Home/Recent and the remaining complete redesign,
+variants/fidelity/platform/clean package gates remain open. E: only, one heavy task.
+
+The previous [sidebar pins checkpoint](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md)
 adds ordered typed pins, native activation and checked persistence. Native203/70/68/72,
 cold-store 22, component 19 and strict ordinary5 pass normally on Core0cdebe / GUIa7af1c /
 MLe3ec5e. Existing navigation/Home/appearance 43 pass. All 1,916 ordinary/five private/
@@ -27,9 +38,9 @@ fixed. Named-signal/syntax warnings now fail the runners. Manual pins survive hi
 clear, ML OFF and cold restart; replacement DB IDs cannot retarget them. Actual local
 source enumeration, paused/playing independence, locked unpin retry and missing-file
 restoration pass. The original sidebar geometry/Home/Recent and complete fidelity are
-still open. Two empty SVG requests in ML-enabled source browsing remain for triage;
+still open. Its empty source-browser SVG warnings are closed by the follow-up above;
 remote/drop/native-dialog/theme/DPI/platform and clean packaging gates remain open.
-Current ordinary runtime is build-windows/beta-sidebar-pins-20261018/ordinary-runtime-r6.
+That checkpoint used build-windows/beta-sidebar-pins-20261018/ordinary-runtime-r6.
 All owned jobs are terminal; full beta remains incomplete and active, E: only, one
 heavy task at a time. Continue the original complete redesign scope after this checkpoint.
 
