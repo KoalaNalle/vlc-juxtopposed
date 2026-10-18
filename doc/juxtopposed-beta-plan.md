@@ -1,5 +1,15 @@
 # VLC Juxtopposed: first publishable beta plan
 
+Departure override — 18 October 2026: development paused for the user's return
+home. [RETURN-HOME.md](../RETURN-HOME.md) is the current status and ordered next
+steps. Native R5 window/navigation16/3150 and component21 are scoped passes;
+ordinary local HLS crashed in AUDIOSES, so the new ordinary candidate is rejected.
+The Qt cache lifecycle patch compiled one dependency object; the final GUI, new
+cache tests and original Videos/Music assets are not natively rebuilt/replayed.
+Both extra approved Figma reads are used. Full beta is incomplete. The earlier
+checkpoint paragraphs below retain their historical source/logging scope.
+
+
 Latest scoped checkpoint: the [shared Home/player title strip](juxtopposed-references/native/guest-shared-strip-20261018/README.md) now uses the original 40px geometry and nine original SVG slots with real native controls/menu and existing typed player navigation. Thirteen native processes/2,012 checks, component12 and strict ordinary5 pass normally with zero Qt warnings on ordinary GUI63aa786f2b6d/Core0cdebe/MLe3ec5e. Live native media switching reproduced and fixed name notification ordering. Production1,935/private6/component13 inputs and retained Core458/store8/thread4/original-untracked5 match. Cached references were reused with no new MCP reads. The full beta remains active and incomplete: system drag/double-click, OS DPI/Windows11, broader themes/accessibility/font states, short-height drawer, remaining Home/Recent/player fidelity and clean licensed packaging remain open. Two original icons still await the pending reference-budget decision. All owned jobs are terminal; E: only, one heavy task at a time.
 
 18 October 2026. **Target: a feature-complete Windows beta of Juxtopposed's design, committed in Git with a reproducible runnable package. Status: incomplete; this document is a plan, not beta acceptance.**

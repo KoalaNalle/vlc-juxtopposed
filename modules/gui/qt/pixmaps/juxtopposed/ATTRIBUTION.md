@@ -112,3 +112,8 @@ Original 24px roots and the 18px menu root are preserved. Folder and Close reuse
 identical existing exports. Runtime palette coloring/horizontal reflection and
 scaled wrappers follow the original slots. Cached screenshots remain reference
 evidence only; no screenshot is used as a runtime asset.
+
+The unchanged `sidebar-videos-7c4e4.svg` and `sidebar-music-61ad2.svg` exports
+come from Videos (71:857) and Songs (71:851), respectively. Their approved
+focused-read contexts, reference renders and exact hashes are recorded in
+`doc/juxtopposed-references/figma/sidebar-icons-20261018/`.

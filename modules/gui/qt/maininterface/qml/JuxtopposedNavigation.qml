@@ -80,6 +80,11 @@ C.Pane {
         if (target.button) {
             if (target.button === addButton) pinList.positionViewAtEnd()
             else pinList.positionViewAtBeginning()
+            // Header routes can exceed a short player drawer's viewport.
+            const top = target.button.mapToItem(pinList, 0, 0).y
+            if (top < 0) pinList.contentY += top
+            else if (top + target.button.height > pinList.height)
+                pinList.contentY += top + target.button.height - pinList.height
             target.button.forceActiveFocus(reason)
         } else focusPin(target.pin, reason)
     }

@@ -26,9 +26,9 @@ JuxtopposedNavigation {
     routes: [
         {key: "home", artwork: "sidebar-home-504e1.svg", inactiveArtwork: "sidebar-home-inactive-27471.svg", mirror: true, text: qsTr("Home"), icon: VLCIcons.home,
          uri: ["home"], enabled: true},
-        {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
+        {key: "video", artwork: "sidebar-videos-7c4e4.svg", mirror: false, text: qsTr("Videos"), icon: VLCIcons.topbar_video,
          uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
-        {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
+        {key: "music", artwork: "sidebar-music-61ad2.svg", mirror: false, text: qsTr("Music"), icon: VLCIcons.topbar_music,
          uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
         {key: "network", artwork: "sidebar-network-6db55.svg", mirror: true, text: qsTr("Network"), icon: VLCIcons.topbar_network,
          uri: ["network"], enabled: true},

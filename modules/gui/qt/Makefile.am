@@ -875,6 +875,8 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
 	pixmaps/juxtopposed/sidebar-home-inactive-27471.svg \
 	pixmaps/juxtopposed/sidebar-home-504e1.svg \
+	pixmaps/juxtopposed/sidebar-videos-7c4e4.svg \
+	pixmaps/juxtopposed/sidebar-music-61ad2.svg \
 	pixmaps/juxtopposed/sidebar-network-6db55.svg \
 	pixmaps/juxtopposed/sidebar-playlists-c9326.svg \
 	pixmaps/juxtopposed/sidebar-recent-50e8b.svg \

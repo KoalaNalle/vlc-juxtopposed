@@ -1,5 +1,17 @@
 # VLC Juxtopposed redesign — project handoff
 
+Departure override — **18 October 2026**: read [RETURN-HOME.md](RETURN-HOME.md)
+first. The user requested ramp-down, a return-home report, a Git commit/push and
+an SSD copy list. Development is paused for departure; the full beta is incomplete.
+The [window/navigation checkpoint](doc/juxtopposed-references/native/guest-window-navigation-20261018/README.md)
+records native R5 16/3150 and component21, but the ordinary HLS candidate crashed
+in AUDIOSES and is rejected. A separate Qt cache shutdown fix compiled one SDK
+object, leaving 204 archive members unchanged. Final GUI/native cache/icon tests
+are not rebuilt or replayed. Both approved extra Figma reads were spent and
+original Videos/Music assets are now saved/bound; no extra reads remain.
+WSL is stopped for a cold disk copy. Historical checkpoint claims below retain
+their earlier source/logging scope and do not accept the departure source.
+
 Updated: **18 October 2026**. Read this file first when continuing from a new
 Codex session on the home computer.
 
@@ -58,9 +70,9 @@ are preserved. All owned jobs are terminal; five unrelated untracked files remai
 
 Full sidebar, Recent fidelity and beta remain incomplete. The internal Recent
 composition is provisional where no original full-page reference was supplied.
-Two exact Videos/Music icons remain unresolved: the parent export returns a gear.
-The 8+2 budget is exhausted and a two-read question is still pending. Canonical
-nodes 71:857/71:851 are grounded; do not spend further reads before approval. The
+The prior wrong-gear export was superseded at departure by the two approved
+focused reads (71:857/71:851). Correct originals are saved; final native validation
+remains pending. The extra two-read budget is fully spent. The
 [preceding shell checkpoint](doc/juxtopposed-references/native/guest-sidebar-shell-20261018/README.md)
 retains original 217/50 geometry and six route assets. Broader Recent selection/
 scroll/search/sort/error states, Home identity after database replacement, complete

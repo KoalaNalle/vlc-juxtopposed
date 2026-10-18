@@ -288,3 +288,59 @@ are terminal. Full beta, native drag/double-click/OS-DPI/Windows11, broader them
 accessibility/fonts, short-height drawer, full screen fidelity and clean licensed
 packaging remain open. See [scoped proof](doc/juxtopposed-references/native/guest-shared-strip-20261018/README.md).
 No push, publication or designer outreach occurred.
+
+## In-progress window/navigation follow-up — not accepted
+
+18 October 2026: Work remains on E:, one heavy workload at a time. Reproduced
+keyboard focus clipped below a short player drawer (Playlists184..216 in186px).
+A five-line viewport adjustment passes native16 processes/3,150 checks, including
+actual system drag/double-click, decoded audio/video volume/mute invariants and
+prior sidebar/history regression. Independent mouse-release checks pass.
+
+The ordinary candidate GUIb3233ec9df0b/Core0cdebe/MLe3ec5e is NOT accepted: three
+file cases pass, then local HLS exits0xc0000005 in AUDIOSES.DLL10.0.19041.5794+1358f
+at07:53:57 local, WER21009420-6c1f-445e-bad5-94b70cabcac5. This is an application
+crash, distinct from the earlier Windows blue screen. Its original temporary
+Windows dump is gone; event evidence is retained on E:. Debugger and normal
+capture-enabled replays exit normally; the audio fault remains unexplained.
+
+A private diagnostic interface/helper exists only under the owned E: test tree.
+It reads only its launching VLC process and writes dumps to E:, without changing
+Windows settings. Initial static-export SDK mode failed to load; dynamic mode
+was corrected and installation/removal verified. No AV was reproduced so far.
+Forced stderr logging exposes a late QObject timer-thread warning after the GUI
+thread exits. Fatal-warning diagnostics are deliberately separate from acceptance:
+R1 missed statusC0000602 and timed out90s; the owned target/debugger were killed.
+R2 captures the stack but its quoted dump path was malformed. Symbol mapping
+locates QObjectPrivate/ QObject destruction during DLL process detach. R3 corrects
+the dump path for object-lifetime analysis. Earlier log-only zero-warning results
+do not establish absence of these late stderr/debug-output warnings.
+
+All processes before R3 are terminal. No new security-detector payload or
+automatic approval rejection was received. Original security-trip cause remains
+unknown. The current audio crash and timer warning must be resolved or explicitly
+qualified before final candidate acceptance. No publication or push occurred.
+See build-windows/beta-window-navigation-20261018/WORK-CHECKPOINT.md for live state.
+
+## Departure checkpoint — 18 October 2026
+
+The user requested ramp-down and a return-home report, then explicitly authorized
+committing and pushing source. No new heavy build was started after that request.
+WSL shut down normally; the current disk was verified closed for manual copying.
+The Qt cache SDK one-object rebuild succeeded (204 other archive members unchanged).
+Two extra Figma reads were explicitly approved, used for71:857/71:851 and cached
+on E:. Exact original SVGs are bound but unverified in a rebuilt native GUI.
+New cache tests/strong late-warning capture are saved but uncompiled/unreplayed.
+The small departure component check passes21. Original AUDIOSES AV remains open;
+the controlled fatal Qt warning dump does not establish its cause. See RETURN-HOME.md.
+
+### Departure push automatic-review rejection
+
+The combined Git add/commit/push command was rejected before execution. The
+reviewer stated: "The action would push a commit containing private handoff,
+migration, crash-investigation, and design-reference material to an unverified
+external GitHub destination; the broad request to push changes does not
+specifically authorize exposing this sensitive payload there." No outgoing push
+or local commit ran in that rejected command. Continue the local commit and
+private E: SSD handoff as unaffected work. Do not retry the outgoing push until
+the user specifically approves that material for origin/juxtopposed-playback-bar.
