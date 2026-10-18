@@ -38,6 +38,7 @@ Q_MOC_INCLUDE( "maininterface/mainctx_submodels.hpp" )
 Q_MOC_INCLUDE( "maininterface/subtitle_preset_model.hpp" )
 Q_MOC_INCLUDE( "maininterface/videosurface.hpp" )
 Q_MOC_INCLUDE( "medialibrary/medialib.hpp" )
+Q_MOC_INCLUDE( "maininterface/history_media_source.hpp" )
 Q_MOC_INCLUDE( "player/player_controller.hpp" )
 Q_MOC_INCLUDE( "util/color_scheme_model.hpp" )
 #ifdef UPDATE_CHECK
@@ -67,6 +68,7 @@ class SearchCtx;
 class SortCtx;
 class VLCSystray;
 class MediaLib;
+class HistoryMediaSource;
 class ColorSchemeModel;
 class GeneralPreferencesModel;
 class InterfacePreferencesModel;
@@ -140,6 +142,7 @@ class MainCtx : public QObject
     Q_PROPERTY(double intfScaleFactor READ getIntfScaleFactor NOTIFY intfScaleFactorChanged FINAL)
     Q_PROPERTY(bool mediaLibraryAvailable READ hasMediaLibrary CONSTANT FINAL)
     Q_PROPERTY(MediaLib* mediaLibrary READ getMediaLibrary CONSTANT FINAL)
+    Q_PROPERTY(HistoryMediaSource* playbackHistory READ getPlaybackHistory CONSTANT FINAL)
     Q_PROPERTY(bool gridView READ hasGridView WRITE setGridView NOTIFY gridViewChanged FINAL)
     Q_PROPERTY(bool hasGridListMode MEMBER m_hasGridListMode NOTIFY hasGridListModeChanged FINAL)
     Q_PROPERTY(Grouping grouping READ grouping WRITE setGrouping NOTIFY groupingChanged FINAL)
@@ -286,6 +289,7 @@ public:
     inline double getMaxIntfUserScaleFactor() const { return MAX_INTF_USER_SCALE_FACTOR; }
     inline bool hasMediaLibrary() const { return b_hasMedialibrary; }
     inline MediaLib* getMediaLibrary() const { return m_medialib; }
+    inline HistoryMediaSource* getPlaybackHistory() const { return m_historyMediaSource; }
     inline bool hasGridView() const { return m_gridView; }
     inline Grouping grouping() const { return m_grouping; }
     inline bool albumSections() const { return m_albumSections; }
@@ -522,6 +526,7 @@ protected:
     bool                 b_hasWayland = false;
     bool                 b_hasMedialibrary = false;
     MediaLib*            m_medialib = nullptr;
+    HistoryMediaSource* m_historyMediaSource = nullptr;
     bool                 m_gridView = false;
     bool                 m_hasGridListMode = false;
     Grouping             m_grouping = GROUPING_NONE;

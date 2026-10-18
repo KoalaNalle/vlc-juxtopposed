@@ -234,3 +234,25 @@ the original security-trip cause remains unknown. All owned jobs are terminal. S
 Full beta is incomplete. Next: expose existing history-only data to Recent with Library
 OFF, resolve two original icons within the user's reference budget decision, and
 continue the full redesign/fidelity/platform/clean-package gates.
+
+## Subsequent Recent with Library OFF checkpoint
+
+18 October 2026: Continued on E:, one heavy task at a time. Last work connected
+Recent to the existing lazy history-only backend, registered minimal reader types
+without a browsing frontend, guarded the model's initial source and drained reads
+on shutdown. The first thread runner omitted new discovery metadata (32); explicit
+regeneration passed 34. Initial launcher errors started no playback. Private R1 was
+interrupted 130 after static review; R2's actual Recent click asserted after 14 valid
+startup/no-database checks. R3 passed six processes but exposed deferred database
+initialization being mistaken for empty history under a real owned file lock.
+R4 checks the status-returning read before publishing its frontend and passes the
+actual failure/Retry path. A stale ordinary verifier path was corrected before its
+first playback case; rejected outputs remain private.
+
+Received final native 24/10/298/178/102/106/82 (800), thread 34 and ordinary 5 results:
+all normal exits, no forced cleanup, all Qt warnings zero. Exact source inputs,
+retained 458 Core/eight store, generated media, previous runtime and the five original
+untracked files are preserved. No new Figma call, detector payload or automatic
+approval rejection was received; original security-trip cause remains unknown.
+All owned jobs are terminal. Full beta/fidelity/platform/clean-package gates remain
+open. See [scoped proof](doc/juxtopposed-references/native/guest-recent-history-only-20261018/README.md).

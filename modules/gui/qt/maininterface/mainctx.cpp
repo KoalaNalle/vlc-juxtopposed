@@ -32,6 +32,7 @@
 #include <QJSEngine>
 
 #include "mainctx.hpp"
+#include "history_media_source.hpp"
 #include "util/fullscreen_screen_policy.hpp"
 #include "mainctx_submodels.hpp"
 #include "subtitle_preset_model.hpp"
@@ -298,6 +299,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
         m_medialib = new MediaLib(p_intf, p_intf->p_mainPlaylistController);
     }
 
+    m_historyMediaSource = new HistoryMediaSource(p_intf, p_intf->p_mainPlaylistController, m_medialib, this);
+
     m_sidebarPins = new SidebarPinsModel(m_medialib, settings,
         QVLCUserDir(VLC_USERDATA_DIR) + QStringLiteral("/ml/ml.db"), this);
     connect(m_sidebarPins, &SidebarPinsModel::mediaRequested, this, [this](const QUrl &url, const QString &title) {
@@ -331,7 +334,7 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     connect(m_privacyPreferences,&PrivacyPreferencesModel::fileDialogHistoryCleared,this,[this,homeUrl] {
         m_dialogFilepath=homeUrl;
     });
-    if (m_medialib) connect(m_medialib,&MediaLib::historyClearRequested,this,[this] {
+    connect(m_historyMediaSource,&HistoryMediaSource::historyClearRequested,this,[this] {
         if (m_privacyPreferences->busy()) return;
         const auto reportFailure=[this] {
             if (!m_privacyPreferences->lastError().isEmpty())
@@ -444,6 +447,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_historyMediaSource;
+    m_historyMediaSource = nullptr;
     delete m_sidebarPins;
     m_sidebarPins = nullptr;
     delete m_extensionsPreferences;

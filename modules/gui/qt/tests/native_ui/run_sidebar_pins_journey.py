@@ -30,7 +30,7 @@ def main():
     parser.add_argument('--ordinary-inputs',type=Path,required=True)
     parser.add_argument('--output-dir',type=Path,required=True)
     parser.add_argument('--recent-stream',action='store_true',help='Exercise native Recent using an owned loopback HTTP media source')
-    parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement'],default=['populate','reopen','disabled','replacement'])
+    parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement','history-off','history-off-optout','history-off-shutdown'],default=['populate','reopen','disabled','replacement'])
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[5]
     package,qa,fixtures,output=(path.resolve() for path in (args.package,args.qa_gui,args.fixtures,args.output_dir))
@@ -85,14 +85,15 @@ def main():
         for mode in args.modes:
             case=output/mode;case.mkdir()
             data=userdata
-            if mode=='replacement':data=output/'replacement-userdata';data.mkdir()
+            if mode in ('replacement','history-off-optout','history-off-shutdown'):data=output/(mode+'-userdata');data.mkdir()
             child_env=env|dict(VLC_USERDATA_PATH=str(data),VLC_OWNED_UI_REPORT=str(case/'journey.json'),
                 VLC_OWNED_UI_OUTPUT=str(case),VLC_OWNED_UI_BASE=str(output),VLC_OWNED_UI_MODE=mode,
                 VLC_OWNED_AUDIO_FOLDER=media.as_posix())
-            command=[str(runtime/'vlc.exe'),'--intf=qt','--no-one-instance','--media-library' if mode!='disabled' else '--no-media-library',
+            command=[str(runtime/'vlc.exe'),'--intf=qt','--no-one-instance','--no-media-library' if mode=='disabled' or mode.startswith('history-off') else '--media-library',
                 '--no-crashdump','--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
                 '--no-ml-network-discovery','--config='+str(configuration),'--file-logging','--log-verbose=2','--verbose=2',
                 '--logfile='+str(case/'vlc.log'),'--no-qt-video-autoresize','--no-hw-dec','--no-sub-autodetect-file','--gain=0','--restore-playback-pos=0']
+            if mode=='history-off-optout':command+=['--no-save-recentplay','--no-remember-playback-pos']
             (case/'launch.json').write_text(json.dumps(command,indent=2)+'\n',encoding='utf-8')
             result=dict(normalExit=False,forcedCleanupUsed=False);report['cases'][mode]=result
             kernel=ctypes.WinDLL('kernel32');kernel.SetErrorMode.argtypes=[ctypes.c_uint];kernel.SetErrorMode.restype=ctypes.c_uint
@@ -107,9 +108,11 @@ def main():
                     result.update(exitCode=code,normalExit=code==0 and not result['forcedCleanupUsed'],elapsedSeconds=time.monotonic()-started)
             finally:kernel.SetErrorMode(previous)
             journey=case/'journey.json';result['journey']=json.loads(journey.read_text()) if journey.is_file() else {}
+            progress=case/'progress.json'
+            if not journey.is_file() and progress.is_file():result['partialJourney']=json.loads(progress.read_text())
             logs='\n'.join(path.read_text(encoding='utf-8',errors='replace') for path in (case/'vlc.log',case/'stderr.txt') if path.is_file())
             terms=('ReferenceError','TypeError','Binding loop','Cannot assign','Unable to assign','unregistered datatype','is not a type','failed to load component','Assertion failed','Signal uses unnamed parameter','SyntaxError','QSignalSpy:','SVGColorizer:','QFSFileEngine::open: No file name specified')
-            result['diagnostics']=[line for line in logs.splitlines() if any(term in line for term in terms)]
+            result['diagnostics']=[line for line in logs.splitlines() if any(term in line for term in terms) or 'qt warning:' in line]
             save()
             print(mode,'normalExit',result['normalExit'],'passed',result['journey'].get('passed'),'checks',len(result['journey'].get('checks',[])),'diagnostics',len(result['diagnostics']),flush=True)
             assert result['normalExit'] and result['journey'].get('passed') and not result['diagnostics'],mode

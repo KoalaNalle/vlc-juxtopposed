@@ -195,6 +195,7 @@ libqt_plugin_la_SOURCES = \
 	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
 	maininterface/extensions_preferences_model.cpp maininterface/extensions_preferences_model.hpp \
 	maininterface/sidebar_pins_model.cpp maininterface/sidebar_pins_model.hpp \
+	maininterface/history_media_source.cpp maininterface/history_media_source.hpp \
 	maininterface/sidebar_pins_store.cpp maininterface/sidebar_pins_store.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
@@ -513,6 +514,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/recording_preferences_model.moc.cpp \
 	maininterface/extensions_preferences_model.moc.cpp \
 	maininterface/sidebar_pins_model.moc.cpp \
+	maininterface/history_media_source.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \

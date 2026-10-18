@@ -44,6 +44,8 @@ public:
     void setMaxThreadCount(size_t threadCount);
 
     void destroy();
+    // History-only owners drain reads before releasing the interface/backend.
+    void destroyAndWait();
     void cancelTask(const QObject* object, quint64 taskId);
 
     template<typename Ctx>
@@ -66,6 +68,7 @@ private:
      * constraint (like on QThreadPool)
      */
     void start(QRunnable* task, const char* queue = nullptr);
+    void shutdown(bool waitForRunningTasks);
 
     /**
      * @brief tryTake atempt to the specified task from the queue if the task has not started

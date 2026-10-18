@@ -140,6 +140,16 @@ void ThreadRunner::processQueueLocked(const QString& queueName)
 
 void ThreadRunner::destroy()
 {
+    shutdown(false);
+}
+
+void ThreadRunner::destroyAndWait()
+{
+    shutdown(true);
+}
+
+void ThreadRunner::shutdown(bool waitForRunningTasks)
+{
     QMutexLocker locker{&m_lock};
     m_shuttingDown = true;
     //try to cancel as many tasks as possible
@@ -164,6 +174,9 @@ void ThreadRunner::destroy()
     {
         deleteLater();
     }
+    locker.unlock();
+    if (waitForRunningTasks)
+        m_threadPool.waitForDone();
 }
 
 void ThreadRunner::cancelTask(const QObject* object, quint64 taskId)

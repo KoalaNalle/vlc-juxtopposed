@@ -43,11 +43,14 @@ public:
     Q_PROPERTY(int  parsingProgress READ parsingProgress NOTIFY parsingProgressChanged FINAL)
     Q_PROPERTY(QString discoveryEntryPoint READ discoveryEntryPoint NOTIFY discoveryEntryPointChanged FINAL)
     Q_PROPERTY(bool idle READ idle NOTIFY idleChanged FINAL)
+    Q_PROPERTY(bool historyOnly READ historyOnly CONSTANT FINAL)
     Q_PROPERTY(MLHomeActivity *homeActivity READ homeActivity CONSTANT FINAL)
 
 public:
     MediaLib(qt_intf_t* _intf, vlc::playlist::PlaylistController* playlistController, QObject* _parent = nullptr );
     ~MediaLib();
+    static std::unique_ptr<MediaLib> createHistorySource(qt_intf_t *, vlc::playlist::PlaylistController *, vlc_medialibrary_t *, QObject *parent);
+    bool historyOnly() const { return m_historyOnly; }
 
     Q_INVOKABLE static MLItemId deserializeMlItemIdFromString(const QString& serialized_id);
 
@@ -184,6 +187,7 @@ signals:
     void idleChanged();
 
 private:
+    MediaLib(qt_intf_t *, vlc::playlist::PlaylistController *, vlc_medialibrary_t *, bool historyOnly, QObject *parent);
     static void onMediaLibraryEvent( void* data, const vlc_ml_event_t* event );
 
 private:
@@ -197,6 +201,7 @@ private:
 
     /* Medialibrary */
     vlc_medialibrary_t* m_ml;
+    const bool m_historyOnly;
     std::unique_ptr<vlc_ml_event_callback_t, std::function<void(vlc_ml_event_callback_t*)>> m_event_cb;
     ThreadRunner* m_runner = nullptr;
     std::unique_ptr<MLHomeActivity> m_homeActivity;

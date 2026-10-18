@@ -602,7 +602,7 @@ FocusScope {
                 {key: "playlists", artwork: "sidebar-playlists-c9326.svg", mirror: false, text: qsTr("Playlists"), icon: VLCIcons.playlist,
                  uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable},
                 {key: "recent", artwork: "sidebar-recent-50e8b.svg", mirror: true, text: qsTr("Recent"), icon: VLCIcons.history,
-                 uri: ["recent"], enabled: MainCtx.mediaLibraryAvailable}
+                 uri: ["recent"], enabled: MainCtx.playbackHistory.available}
             ]
 
             Navigation.parentItem: g_mainDisplay

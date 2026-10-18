@@ -229,6 +229,7 @@ void MLMediaModel::onVlcMlEvent(const MLEvent &event)
 void MLMediaModel::generateThumbnail(const MLVideo *video) const
 {
     assert(video != nullptr);
+    if (m_mediaLib->historyOnly()) return;
 
     // on ML thread
     m_mediaLib->runOnMLThread(this, [id = video->getId().id](vlc_medialibrary_t *ml)

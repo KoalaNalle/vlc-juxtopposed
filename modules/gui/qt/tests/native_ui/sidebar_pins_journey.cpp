@@ -5,6 +5,7 @@
 #endif
 #include "qt.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/history_media_source.hpp"
 #include "maininterface/sidebar_pins_model.hpp"
 #include "maininterface/privacy_preferences_model.hpp"
 #include "medialibrary/medialib.hpp"
@@ -377,6 +378,7 @@ void exerciseRecent(bool nativeCollections)
     auto *recent = named(QStringLiteral("juxtopposedNavigationrecent"));
     check(recent != nullptr, "actual Recent route button exists");
     if (!context->hasMediaLibrary()) {
+        check(recent->isEnabled(), "Recent remains available with Library browsing disabled");
         report.insert("recentLibraryOffAccepted", false);
         report.insert("recentButtonEnabledWithoutLibrary", recent->isEnabled());
         return;
@@ -453,6 +455,100 @@ void exerciseRecent(bool nativeCollections)
     }
     home();
 }
+void exerciseHistoryOnly(const QString &mode)
+{
+    check(!context->hasMediaLibrary() && !context->getMediaLibrary(), "Library OFF keeps the normal Qt browsing frontend absent");
+    check(!vlc_ml_instance_get(context->getIntf()) && !var_InheritBool(context->getIntf(), "media-library"), "history access leaves the native Library instance and saved option OFF");
+    auto *service = context->getPlaybackHistory();
+    check(service && service->available() && !service->source() && !service->busy(), "startup capability is available without opening a history frontend");
+    const auto database = QDir(qEnvironmentVariable("VLC_USERDATA_PATH")).filePath(QStringLiteral("ml/ml.db"));
+    check(QFileInfo(database).absoluteFilePath().startsWith(QDir(qEnvironmentVariable("VLC_OWNED_UI_BASE")).absolutePath() + QLatin1Char('/')), "history probes are fenced to their owned E profile");
+    if (mode == QStringLiteral("history-off-shutdown")) {
+        check(!QFileInfo::exists(database), "shutdown probe starts without a database");
+        {
+            HistoryMediaSource opening(context->getIntf(), context->getIntf()->p_mainPlaylistController, nullptr);
+            opening.open();
+            check(opening.busy() && !opening.source(), "actual async opening is pending before immediate owner destruction");
+        }
+        QTest::qWait(100);
+        check(!service->source() && !service->busy(), "discarded opening completion never updates the app history frontend");
+        report.insert("historyOpeningShutdownAccepted", true);
+        return;
+    }
+    const bool optout = mode == QStringLiteral("history-off-optout");
+    HANDLE locked = INVALID_HANDLE_VALUE;
+    if (optout) {
+        check(!QFileInfo::exists(database), "opted-out startup and sidebar availability create no database");
+        check(!var_InheritBool(context->getIntf(), "save-recentplay") && !var_InheritBool(context->getIntf(), "remember-playback-pos"), "both automatic history and position saving are explicitly disabled");
+    } else {
+        check(QFileInfo::exists(database), "locked retry uses a real previously populated owned database");
+        locked = CreateFileW(reinterpret_cast<LPCWSTR>(database.utf16()), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        check(locked != INVALID_HANDLE_VALUE, "sidebar capability leaves the existing history database unopened");
+    }
+    home(); sidebarRoute(QStringLiteral("recent"));
+    const QStringList mediaPath{QStringLiteral("recent"), QStringLiteral("media")};
+    wait([&] { return history()->viewPath() == mediaPath && named(QStringLiteral("juxtopposedRecentPage")); }, "Library-OFF Recent opens its genuine media leaf");
+    if (!optout) {
+        const bool failed = QTest::qWaitFor([&] { return !service->busy() && !service->error().isEmpty(); }, 15000);
+        CloseHandle(locked);
+        check(failed && !service->source(), "real locked database reports history-open failure without enabling browsing");
+        auto *view = named(QStringLiteral("juxtopposedRecentMediaView"));
+        check(view && view->property("errorText").toString() == service->error(), "native open failure is visible in the actual Recent surface");
+        QQuickItem *retry = nullptr;
+        for (auto *object : objects())
+            if (auto *item = qobject_cast<QQuickItem *>(object); item && item->isVisible() && item->property("text").toString() == QStringLiteral("Retry")) retry = item;
+        capture(QStringLiteral("native-recent-history-locked.png"));
+        click(retry);
+    }
+    wait([&] { return service->source() && !service->busy(); }, "explicit Recent open or actual Retry obtains the shared native history backend", 15000);
+    auto *source = service->source();
+    check(service->error().isEmpty() && source->historyOnly() && source->idle() && !source->homeActivity(), "history frontend has no Home activity or background indexing state");
+    check(!context->getMediaLibrary() && !vlc_ml_instance_get(context->getIntf()), "opening Recent never creates a browsing frontend");
+    check(!named(QStringLiteral("juxtopposedRecentPlaylistsTab"))->isEnabled(), "playlist browsing stays disabled while Library is OFF");
+    wait([] { auto *model = recentMediaModel(); if (!model) return false; model->rowCount(); return !model->property("loading").toBool(); }, "history-only model finishes its real initial read", 15000);
+    auto *native = context->getIntf()->p_player;
+    auto stop = [&] {
+        vlc_player_Lock(native); vlc_player_Stop(native); vlc_player_Unlock(native);
+        wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_STOPPED; }, "history-only primary stops normally");
+    };
+    auto decoded = [&] {
+        wait([&] { vlc_player_Lock(native); const auto *stats = vlc_player_GetStatistics(native); const bool ok = stats && stats->i_decoded_audio > 0; vlc_player_Unlock(native); return ok; }, "history-only playback produces genuine decoded audio", 15000);
+    };
+    const auto local = QUrl::fromLocalFile(QDir(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER")).filePath(QStringLiteral("first.flac")));
+    source->addAndPlay(local); decoded(); stop();
+    if (optout) {
+        QTest::qWait(500);
+        check(recentMediaModel()->rowCount() == 0, "explicitly opened Recent remains empty after opted-out decoded playback");
+        report.insert("historyOptoutAccepted", true);
+        return;
+    }
+    wait([&] { return recentRow(local) >= 0; }, "native local playback updates the Library-OFF Recent model", 15000);
+    click(revealRecentMedia(local)); decoded();
+    vlc_player_Lock(native); vlc_player_Pause(native); vlc_player_Unlock(native);
+    wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_PAUSED; }, "history-only reopened local media pauses normally");
+    auto input = player()->getInput(); const auto pausedTime = nativeTime(); const auto position = player()->getPosition();
+    home(); sidebarRoute(QStringLiteral("recent"));
+    wait([&] { return history()->viewPath() == mediaPath && recentMediaModel(); }, "history-only Recent returns through the real sidebar");
+    check(player()->getInput() == input && nativeTime() == pausedTime && player()->getPosition() == position, "history-only navigation preserves the paused primary input and clocks");
+    const QUrl stream(qEnvironmentVariable("VLC_OWNED_RECENT_URL"));
+    check(stream.scheme() == QStringLiteral("http") && stream.host() == QStringLiteral("127.0.0.1"), "history-only stream is confined to the owned loopback server");
+    source->addAndPlay(stream); decoded(); stop();
+    home(); sidebarRoute(QStringLiteral("recent"));
+    click(revealRecentMedia(stream)); decoded();
+    check(player()->getUrl() == stream, "actual Library-OFF Recent card reopens its exact saved HTTP source");
+    home(); sidebarRoute(QStringLiteral("recent"));
+    auto *privacy = context->getPrivacyPreferences();
+    check(privacy->clearHistory(), "coordinated history clear remains available with the history-only frontend");
+    wait([&] { return !privacy->busy(); }, "history-only coordinated clear finishes", 15000);
+    check(privacy->lastError().isEmpty(), "history-only coordinated clear reports success");
+    wait([] { auto *model = recentMediaModel(); return model && model->rowCount() == 0 && !model->property("loading").toBool(); }, "history-only Recent clears live through native events", 15000);
+    stop(); QTest::qWait(500);
+    check(recentMediaModel()->rowCount() == 0, "stopping the cleared current input cannot resurrect Recent entries");
+    check(!context->hasMediaLibrary() && !vlc_ml_instance_get(context->getIntf()), "complete history-only journey leaves Library browsing OFF");
+    capture(QStringLiteral("native-recent-history-cleared.png"));
+    report.insert("recentLibraryOffAccepted", true);
+    report.insert("recentDecodedHttpReopen", true);
+}
 void run()
 {
     try {
@@ -460,7 +556,9 @@ void run()
         window->resize(1280, 900); QTest::qWait(100);
         const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode == QStringLiteral("populate")) {
+        if (mode.startsWith(QStringLiteral("history-off"))) {
+            exerciseHistoryOnly(mode);
+        } else if (mode == QStringLiteral("populate")) {
             check(pins()->count() == 0 && pins()->error().isEmpty(), "fresh native profile starts with no manual pins");
             addMenu(QStringLiteral("Folder…")); filePicker(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER"));
             wait([] { return pins()->count() == 1 && !pins()->busy(); }, "actual Add folder chooser saves first pin");
