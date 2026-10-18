@@ -17,15 +17,36 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
-The latest [network artwork follow-up](doc/juxtopposed-references/native/guest-network-artwork-20261018/README.md) closes the empty SVG
+The latest [sidebar shell/Home/Recent checkpoint](doc/juxtopposed-references/native/guest-sidebar-shell-20261018/README.md) aligns original 217/50
+geometry and six destinations, adds native Recent media/stream/playlist views, and
+passes actual app toggle/paused independence and tab Back/Forward. Native 298/178/101/106
+(683), pin component21, navigation route/focus/scale and strict ordinary5 pass normally
+on Core0cdebe / GUIe5e68bf79d50 / MLe3ec5e, with all Qt warnings zero. All 1,924 production,
+five private and nine component inputs match; prior 458 Core/eight store inputs are
+unchanged. Current ordinary runtime is build-windows/beta-sidebar-shell-20261018/ordinary-runtime-r3.
+All owned jobs are terminal. Full sidebar, Recent and beta remain incomplete.
+
+**Next required integration:** Recent is still disabled when Library browsing is OFF,
+although the existing lazy history-only backend can save/read activity. Expose a Qt
+history-only frontend via vlc_ml_history_available/vlc_ml_history_get without enabling
+indexing, metadata/discovery, or creating a DB on a mere capability probe. Current
+Library-OFF native cases accept pins/toggles, not Recent. Two exact Videos/Music icons
+also remain unresolved: the parent Figma export returns a gear for both. The8+2 budget
+is exhausted; a two-read user question is pending. Cached canonical IDs 71:857/71:851
+are grounded; do not request more context before approval. Six other original SVGs
+are unchanged. Remaining full shell/titlebar/Home fidelity, broader Recent and
+activity-identity states, theme/accessibility/DPI/platform and clean package gates
+remain part of the full beta goal. E: only; one heavy task at a time.
+
+The earlier [network artwork follow-up](doc/juxtopposed-references/native/guest-network-artwork-20261018/README.md) closes the empty SVG
 requests during pinned folder/source browsing. A private diagnostic traced the caller
 and an unchanged-GUI negative passed 203 functional checks while failing the new
 warning gate. The real grid binding now waits for its artwork role. Fresh native
 203/70/68/72 (413) and ordinary5 pass normally, with zero Qt warning lines in all
 nine processes, on Core0cdebe / GUIf891112fc48f / MLe3ec5e. All 1,916 ordinary/seven private
-inputs and prior 458 Core/eight store inputs match. Current ordinary runtime is
+inputs and prior 458 Core/eight store inputs match. That checkpoint used
 build-windows/beta-network-artwork-20261018/ordinary-runtime-r1. All owned jobs are
-terminal. Original sidebar217/50/Home/Recent and the remaining complete redesign,
+terminal. The then-open sidebar217/50/Home/Recent work and remaining complete redesign,
 variants/fidelity/platform/clean package gates remain open. E: only, one heavy task.
 
 The previous [sidebar pins checkpoint](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md)

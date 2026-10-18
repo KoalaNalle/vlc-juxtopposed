@@ -9,6 +9,7 @@
 #include "maininterface/privacy_preferences_model.hpp"
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
+#include "medialibrary/mlrecentmediamodel.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "player/player_controller.hpp"
 #include "util/navigation_history.hpp"
@@ -95,6 +96,7 @@ QVariant expression(QQuickItem *item, const QString &code)
     check(item != nullptr, "owned QML target exists");
     QQmlExpression evaluate(qmlContext(item), item, code);
     const auto value = evaluate.evaluate();
+    if (evaluate.hasError()) report.insert("failedQmlOperation", evaluate.error().toString());
     check(!evaluate.hasError(), "owned QML operation succeeds"); return value;
 }
 QQuickItem *pinRow(int index)
@@ -285,6 +287,172 @@ void exerciseRoutes(bool nativeCollections)
         home();
     }
 }
+QAbstractItemModel *recentMediaModel()
+{
+    for (auto *object : objects())
+        if (object->objectName() == QStringLiteral("juxtopposedRecentMediaModel"))
+            return qobject_cast<QAbstractItemModel *>(object);
+    return nullptr;
+}
+QQuickItem *recentCard(const QString &viewName, int row)
+{
+    auto *view = named(viewName);
+    if (!view) return nullptr;
+    for (auto *object : objects())
+        if (auto *item = qobject_cast<QQuickItem *>(object); item && view->isAncestorOf(item)
+            && item->objectName() == QStringLiteral("homeCollectionItem%1").arg(row)) return item;
+    return nullptr;
+}
+int recentRow(const QUrl &url)
+{
+    auto *model = recentMediaModel();
+    if (!model) return -1;
+    for (int row = 0; row < model->rowCount(); ++row)
+        if (model->data(model->index(row, 0), MLMediaModel::MEDIA_MRL).toUrl() == url) return row;
+    return -1;
+}
+QQuickItem *revealRecentMedia(const QUrl &url)
+{
+    int row = -1;
+    wait([&] { row = recentRow(url); return row >= 0; }, "real requested URL resolves in native Recent model", 15000);
+    auto *view = named(QStringLiteral("juxtopposedRecentMediaView"));
+    check(view != nullptr, "actual native Recent media view exists");
+    QQuickItem *grid = nullptr;
+    for (auto *object : objects())
+        if (auto *item = qobject_cast<QQuickItem *>(object); item && view->isAncestorOf(item) && item->inherits("QQuickGridView")) { grid = item; break; }
+    check(grid != nullptr, "actual Recent GridView resolves without private QML identifiers");
+    expression(grid, QStringLiteral("positionViewAtIndex(%1, 0); forceLayout()").arg(row));
+    wait([&] { return recentCard(QStringLiteral("juxtopposedRecentMediaView"), row) != nullptr; }, "genuine requested Recent card materializes");
+    return recentCard(QStringLiteral("juxtopposedRecentMediaView"), row);
+}
+void sidebarRoute(const QString &key)
+{
+    expression(named(QStringLiteral("juxtopposedSidebarPinList")), QStringLiteral("positionViewAtBeginning(); forceLayout()"));
+    QTest::qWait(100);
+    click(named(QStringLiteral("juxtopposedNavigation") + key));
+}
+void exerciseRecent(bool nativeCollections)
+{
+    home();
+    auto *navigation = named(QStringLiteral("juxtopposedNavigation"));
+    check(navigation != nullptr, "actual redesigned sidebar exists");
+    const auto scale = navigation->property("uiScale").toReal();
+    const auto expectedWidth = (navigation->property("expanded").toBool() ? 217 : 50) * scale;
+    check(qAbs(navigation->width() - expectedWidth) < 0.1, "actual sidebar width uses original217/50 logical geometry");
+    for (const auto &key : {QStringLiteral("home"), QStringLiteral("network"), QStringLiteral("playlists"), QStringLiteral("recent")}) {
+        wait([&] { auto *art = named(QStringLiteral("juxtopposedNavigationArt") + key); return art && art->property("status").toInt() == 1; }, "genuine original route SVG loads through native image provider");
+        auto *art = named(QStringLiteral("juxtopposedNavigationArt") + key);
+        check(art->width() == 24 && art->height() == 24 && qAbs(art->scale() - scale) < 0.01, "original route SVG retains intrinsic24px and scaled wrapper geometry");
+    }
+    QQuickItem *toggle = nullptr;
+    for (auto *object : objects())
+        if (auto *item = qobject_cast<QQuickItem *>(object); item && item->isVisible()
+            && item->property("description").toString() == QStringLiteral("Show navigation menu")) { toggle = item; break; }
+    check(toggle != nullptr, "actual navigation toggle resolves through public control description");
+    auto *toggleInput = player()->getInput(); const auto toggleTime = nativeTime(); const auto togglePosition = player()->getPosition();
+    if (!navigation->property("expanded").toBool()) {
+        click(toggle);
+        wait([&] { return navigation->property("expanded").toBool(); }, "actual toggle expands original sidebar");
+    }
+    expression(named(QStringLiteral("juxtopposedSidebarPinList")), QStringLiteral("positionViewAtBeginning(); forceLayout()"));
+    check(qAbs(navigation->width() - 217 * scale) < 0.1, "actual expanded sidebar is217 logical pixels");
+    QTest::mouseMove(window, QPoint(window->width() - 20, 120)); QTest::qWait(30);
+    capture(QStringLiteral("native-sidebar-expanded.png"));
+    click(toggle);
+    wait([&] { return !navigation->property("expanded").toBool() && qAbs(navigation->width() - 50 * scale) < 0.1; }, "actual toggle produces original50px compact rail");
+    QTest::mouseMove(window, QPoint(window->width() - 20, 120)); QTest::qWait(30);
+    capture(QStringLiteral("native-sidebar-compact.png"));
+    click(toggle);
+    wait([&] { return navigation->property("expanded").toBool() && qAbs(navigation->width() - 217 * scale) < 0.1; }, "actual toggle restores expanded sidebar geometry");
+    check(player()->getInput() == toggleInput && player()->getPlayingState() == PlayerController::PLAYING_STATE_PAUSED
+        && nativeTime() == toggleTime && player()->getPosition() == togglePosition, "actual sidebar toggles preserve exact paused input native time and position");
+    auto *input = player()->getInput();
+    auto pausedTime = nativeTime();
+    auto pausedPosition = player()->getPosition();
+    check(player()->getPlayingState() == PlayerController::PLAYING_STATE_PAUSED, "Recent journey begins with genuine paused primary playback");
+    history()->push({QStringLiteral("network")}, {}, Qt::OtherFocusReason);
+    sidebarRoute(QStringLiteral("home"));
+    wait([] { return history()->viewPath().first() == QStringLiteral("home"); }, "actual Home sidebar button returns from Network");
+    check(player()->getInput() == input && nativeTime() == pausedTime && player()->getPosition() == pausedPosition, "Home sidebar navigation preserves paused primary input and both clocks");
+    auto *recent = named(QStringLiteral("juxtopposedNavigationrecent"));
+    check(recent != nullptr, "actual Recent route button exists");
+    if (!context->hasMediaLibrary()) {
+        report.insert("recentLibraryOffAccepted", false);
+        report.insert("recentButtonEnabledWithoutLibrary", recent->isEnabled());
+        return;
+    }
+    check(recent->isEnabled(), "actual Recent route is available with the native Library frontend");
+    if (!nativeCollections) return;
+    sidebarRoute(QStringLiteral("recent"));
+    const QStringList mediaPath{QStringLiteral("recent"), QStringLiteral("media")};
+    const QStringList playlistPath{QStringLiteral("recent"), QStringLiteral("playlists")};
+    wait([&] { return history()->viewPath() == mediaPath && named(QStringLiteral("juxtopposedRecentPage")); }, "actual Recent sidebar opens native media history leaf");
+    wait([] { return recentMediaModel() != nullptr; }, "actual native Recent model exists");
+    wait([] { auto *model = recentMediaModel(); if (!model) return false; model->rowCount(); return !model->property("loading").toBool(); }, "native Recent count query completes before empty-state expectation", 15000);
+    const auto localAudio = QUrl::fromLocalFile(QDir(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER")).filePath(QStringLiteral("first.flac")));
+    if (recentMediaModel()->rowCount() == 0) {
+        check(qEnvironmentVariable("VLC_OWNED_UI_MODE") == QStringLiteral("reopen"), "only explicitly cleared cold history needs a new playback commit");
+        capture(QStringLiteral("native-recent-cleared-empty.png"));
+        auto *native = context->getIntf()->p_player;
+        vlc_player_Lock(native); vlc_player_Stop(native); vlc_player_Unlock(native);
+        wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_STOPPED; }, "new cold playback ends through normal native stop");
+        wait([] { auto *model = recentMediaModel(); return model && model->rowCount() > 0; }, "actual Recent empty state updates after native playback commit", 15000);
+        context->getMediaLibrary()->addAndPlay(localAudio);
+        wait([&] { return player()->getUrl() == localAudio && player()->getPlayingState() == PlayerController::PLAYING_STATE_PLAYING; }, "cold local audio restarts normally after history commit", 15000);
+        vlc_player_Lock(native); vlc_player_Pause(native); vlc_player_Unlock(native);
+        wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_PAUSED; }, "fresh cold primary pauses before retained-navigation checks");
+        QTest::qWait(250);
+        input = player()->getInput(); pausedTime = nativeTime(); pausedPosition = player()->getPosition();
+        home(); sidebarRoute(QStringLiteral("recent"));
+        wait([&] { return history()->viewPath() == mediaPath && recentMediaModel(); }, "Recent reloads with the genuinely committed cold history");
+    }
+    wait([] { auto *model = recentMediaModel(); return model && model->rowCount() > 0; }, "Recent media is populated from real native history", 15000);
+    capture(QStringLiteral("native-recent-media.png"));
+    click(named(QStringLiteral("juxtopposedRecentPlaylistsTab")));
+    wait([&] { auto *page = named(QStringLiteral("juxtopposedRecentPage")); return history()->viewPath() == playlistPath && page && page->property("showPlaylists").toBool(); }, "actual Recent playlist tab has its own native history leaf");
+    wait([] { auto *view = named(QStringLiteral("juxtopposedRecentPlaylistsView")); return view && view->property("count").toInt() > 0; }, "Recent playlists come from actual successful native visits", 15000);
+    check(player()->getInput() == input && nativeTime() == pausedTime && player()->getPosition() == pausedPosition, "Recent tabs preserve exact paused input and position");
+    capture(QStringLiteral("native-recent-playlists.png"));
+    click(recentCard(QStringLiteral("juxtopposedRecentPlaylistsView"), 0));
+    wait([] { return history()->viewPath() == QStringList{QStringLiteral("playlists"), QStringLiteral("list")}; }, "actual Recent playlist row opens its native collection");
+    const auto descriptor = pins()->get(kindRow(QStringLiteral("playlist")));
+    check(history()->viewProp()->value(QStringLiteral("parentId")).value<MLItemId>() == MLItemId(descriptor.value(QStringLiteral("nativeId")).toString().toLongLong(), VLC_ML_PARENT_PLAYLIST), "Recent playlist activation preserves genuine typed native ID");
+    history()->previous();
+    wait([&] { auto *page = named(QStringLiteral("juxtopposedRecentPage")); return history()->viewPath() == playlistPath && page && page->property("showPlaylists").toBool(); }, "Back restores Recent playlist tab rather than switching to media");
+    history()->next();
+    wait([] { return history()->viewPath() == QStringList{QStringLiteral("playlists"), QStringLiteral("list")}; }, "Forward restores native playlist destination");
+    history()->previous();
+    wait([&] { return history()->viewPath() == playlistPath && named(QStringLiteral("juxtopposedRecentMediaTab")); }, "Back returns to the same Recent leaf again");
+    click(named(QStringLiteral("juxtopposedRecentMediaTab")));
+    wait([&] { return history()->viewPath() == mediaPath && recentCard(QStringLiteral("juxtopposedRecentMediaView"), 0); }, "actual Media tab restores native history cards");
+    click(revealRecentMedia(localAudio));
+    wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_PLAYING && player()->getUrl().fileName() == QStringLiteral("first.flac"); }, "actual Recent media card starts genuine local audio", 15000);
+    const QUrl stream(qEnvironmentVariable("VLC_OWNED_RECENT_URL"));
+    if (!stream.isEmpty()) {
+        check(stream.scheme() == QStringLiteral("http") && stream.host() == QStringLiteral("127.0.0.1"), "Recent stream probe is confined to its owned loopback server");
+        context->getMediaLibrary()->addAndPlay(stream);
+        wait([&] { return player()->getUrl() == stream && player()->getPlayingState() == PlayerController::PLAYING_STATE_PLAYING; }, "genuine owned HTTP media plays through native controller", 15000);
+        auto *native = context->getIntf()->p_player;
+        wait([&] { vlc_player_Lock(native); const auto *stats = vlc_player_GetStatistics(native); const bool decoded = stats && stats->i_decoded_audio > 0; vlc_player_Unlock(native); return decoded; }, "owned HTTP stream produces actual decoded audio", 15000);
+        vlc_player_Lock(native); vlc_player_Stop(native); vlc_player_Unlock(native);
+        wait([] { return player()->getPlayingState() == PlayerController::PLAYING_STATE_STOPPED; }, "owned stream stops normally before history expectations");
+        home(); sidebarRoute(QStringLiteral("recent"));
+        wait([&] {
+            auto *model = recentMediaModel();
+            if (!model) return false;
+            for (int row = 0; row < model->rowCount(); ++row)
+                if (model->data(model->index(row, 0), MLMediaModel::MEDIA_MRL).toUrl() == stream) return true;
+            return false;
+        }, "Recent contains the real decoded HTTP URL from native history", 15000);
+        auto *streamCard = revealRecentMedia(stream);
+        check(streamCard->property("subtitle").toString().contains(QStringLiteral("127.0.0.1")), "Recent stream row displays its password-free source location");
+        click(streamCard);
+        wait([&] { return player()->getUrl() == stream && player()->getPlayingState() == PlayerController::PLAYING_STATE_PLAYING; }, "actual Recent stream card reopens its exact HTTP address", 15000);
+        report.insert("recentDecodedHttpReopen", true);
+        capture(QStringLiteral("native-recent-stream-player.png"));
+    }
+    home();
+}
 void run()
 {
     try {
@@ -324,7 +492,7 @@ void run()
             card->forceActiveFocus(Qt::TabFocusReason); QTest::qWait(80); QTest::keyClick(window, Qt::Key_F10, Qt::ShiftModifier); chooseMenu(QStringLiteral("Pin to sidebar"));
             wait([] { return pins()->count() == 5 && !pins()->busy(); }, "actual Home action re-pins removed media");
             pinMenu(4, QStringLiteral("Move up")); check(kindRow(QStringLiteral("media")) == 3, "native context menu reorders by stable key");
-            exerciseRoutes(true); home();
+            exerciseRoutes(true); exerciseRecent(true); home();
             const auto collectionKey = key(kindRow(QStringLiteral("playlist")));
             pins()->activate(collectionKey, Qt::OtherFocusReason);
             history()->push({QStringLiteral("network")}, {}, Qt::OtherFocusReason);
@@ -382,6 +550,7 @@ void run()
                 pins()->refresh();
             }
             exerciseRoutes(mode == QStringLiteral("reopen"));
+            exerciseRecent(mode == QStringLiteral("reopen"));
         }
         report.insert("finalPins",snapshot());
         report.insert("settingsFile",context->getIntf()->mainSettings->fileName());

@@ -73,12 +73,16 @@ module=tempfile.TemporaryDirectory(prefix='vlc-sidebar-widgets-')
 widgets=Path(module.name)/'VLC/Widgets';widgets.mkdir(parents=True)
 shutil.copyfile(root_dir/'modules/gui/qt/widgets/qml/ImageExt.qml',widgets/'ImageExt.qml')
 (widgets/'qmldir').write_text('module VLC.Widgets\nImageExt 1.0 ImageExt.qml\n',encoding='utf-8')
+util = widgets.parent / 'Util'
+util.mkdir()
+(util / 'qmldir').write_text('module VLC.Util\nsingleton SVGColorImage 1.0 SVGColorImage.qml\n', encoding='utf-8')
+(util / 'SVGColorImage.qml').write_text('pragma Singleton\nimport QtQml\nQtObject { function colorize(path) { return { any: function(colors) { return this }, uri: function() { return path } } } }\n', encoding='utf-8')
 view=QQuickView();view.engine().addImportPath(module.name)
 view.setResizeMode(QQuickView.SizeRootObjectToView)
 view.setInitialProperties(dict(pinModel=model,iconFontFamily=icon_family,addIcon=icon('add'),preferencesIcon=icon('settings'),pinIcons={kind:icon(name) for kind,name in dict(media='play',folder='topbar_discover',source='topbar_network',playlist='playlist',artist='topbar_music').items()},routes=[dict(key='video',text='Videos',icon=icon('topbar_video'),uri=['video','all']),dict(key='network',text='Network',icon=icon('topbar_network'),uri=['network'])],assetBase=QUrl.fromLocalFile(str(root_dir/'modules/gui/qt/pixmaps/juxtopposed')+'/')))
 view.setSource(QUrl.fromLocalFile(str(args.qml_file or root_dir/'modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml')))
 assert not view.errors(),[error.toString() for error in view.errors()]
-root=view.rootObject();view.resize(204,360);root.setProperty('expanded',True);view.show();QTest.qWait(100)
+root=view.rootObject();view.resize(217,360);root.setProperty('expanded',True);view.show();QTest.qWait(100)
 checks=[]
 def check(value,name):
     checks.append(name)
@@ -125,13 +129,16 @@ model.error_text='Owned save failed. Restore preferences and retry.';model.retry
 expr('pinList.positionViewAtEnd(); pinList.forceLayout()');QTest.qWait(40)
 retry=item('juxtopposedSidebarRetry');retry.forceActiveFocus();QTest.keyClick(view,Qt.Key_Space);QTest.qWait(40)
 check(model.retry_count==1 and not model.retry_pending,'visible Retry action invokes exact supplied operation')
-for expanded,width in ((True,204),(False,46)):
+for expanded,width in ((True,217),(False,50)):
     root.setProperty('expanded',expanded);view.resize(width,260)
     for index in (0,30,59):
         row=focus(index);point=row.mapToScene(row.boundingRect().center())
         check(view.size().width()>point.x()>=0 and view.size().height()>point.y()>=0,f'{width}px rail focuses virtual pin {index} inside viewport')
     QTest.keyClick(view,Qt.Key_Down);QTest.qWait(40)
     check(item('juxtopposedSidebarAdd').hasActiveFocus(),f'{width}px rail reaches visible Add item')
+    last=item('juxtopposedSidebarPin59');add_item=item('juxtopposedSidebarAdd')
+    gap=add_item.mapToScene(add_item.boundingRect().topLeft()).y()-last.mapToScene(last.boundingRect().bottomLeft()).y()
+    check(abs(gap-14)<0.1,f'{width}px rail preserves original14px gap before Add item')
     check(view.grabWindow().save(str(args.output_dir/f'sidebar-{width}.png')),f'{width}px rail captured')
 check(not messages,'no Qt/QML diagnostics')
 (args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,checks=checks,suppliedModel=True,nativeAcceptance=False,originalFidelityAccepted=False),indent=2)+'\n',encoding='utf-8')

@@ -114,6 +114,10 @@ FocusScope {
                  "qrc:///qt/qml/VLC/MediaLibrary/HomeDisplay.qml" :
                  "qrc:///qt/qml/VLC/MainInterface/NoMedialibHome.qml"
         }, {
+            name: "recent",
+            nested: true,
+            url: "qrc:///qt/qml/VLC/MediaLibrary/JuxtopposedRecentDisplay.qml"
+        }, {
             name: "video",
             nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/VideoDisplay.qml"
@@ -587,14 +591,18 @@ FocusScope {
             libraryBusy: MainCtx.mediaLibraryAvailable && !MainCtx.mediaLibrary.idle
             libraryAvailable: MainCtx.mediaLibraryAvailable
             routes: [
+                {key: "home", artwork: "sidebar-home-504e1.svg", inactiveArtwork: "sidebar-home-inactive-27471.svg", mirror: true, text: qsTr("Home"), icon: VLCIcons.home,
+                 uri: ["home"], enabled: true},
                 {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
                  uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
                 {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
                  uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
-                {key: "network", text: qsTr("Network"), icon: VLCIcons.topbar_network,
+                {key: "network", artwork: "sidebar-network-6db55.svg", mirror: true, text: qsTr("Network"), icon: VLCIcons.topbar_network,
                  uri: ["network"], enabled: true},
-                {key: "playlists", text: qsTr("Playlists"), icon: VLCIcons.playlist,
-                 uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable}
+                {key: "playlists", artwork: "sidebar-playlists-c9326.svg", mirror: false, text: qsTr("Playlists"), icon: VLCIcons.playlist,
+                 uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable},
+                {key: "recent", artwork: "sidebar-recent-50e8b.svg", mirror: true, text: qsTr("Recent"), icon: VLCIcons.history,
+                 uri: ["recent"], enabled: MainCtx.mediaLibraryAvailable}
             ]
 
             Navigation.parentItem: g_mainDisplay

@@ -207,3 +207,30 @@ The original security-trip cause remains unknown. The temporary diagnostic is ab
 from both accepted modules; the test journey is absent from the ordinary module.
 All owned jobs are terminal. See the [scoped proof](doc/juxtopposed-references/native/guest-network-artwork-20261018/README.md).
 Full beta/fidelity/package gates and original sidebar geometry/Home/Recent remain open.
+
+## Subsequent sidebar shell/Home/Recent checkpoint
+
+18 October 2026: Continued entirely on E:, one heavy task at a time. Last substantive
+work: used the final budgeted Figma correction at 6261:15094, retained its screenshot/
+code and downloaded tool-provided originals. The export incorrectly maps Videos/Music
+to a gear. Existing cached Player data supplied the correct inactive Home outline;
+no extra MCP calls were made. A user question for two extra focused icon reads remains
+pending. Implemented217/50 geometry, Home/Recent routes, native paged media/stream
+history, recent playlist visits, native history leaves and password-free locations.
+
+Received native R1 normal exit/204 checks with a failed private QML-id evaluation;
+R2 corrected that driver, passed 282 fresh-profile checks including decoded HTTP reopen,
+then rejected its cold 96-check expectation after the preceding explicit history clear.
+R3 checks the real empty-to-normal-stop-to-populated transition and fixes screenshot-
+observed footer/tab styling. R4 adds actual app expand/collapse and explicitly records
+Library-OFF Recent as unaccepted. Final native 298/178/101/106 (683), component pin21/
+navigation and ordinary5 pass with normal exits and all Qt warnings zero. Frozen
+inputs, generated media and prior runtime preservation pass. The ordinary GUI contains
+no private journey/HTTP-test/temporary diagnostic marker. Rejected artifacts remain local.
+
+No new security detector payload, automatic approval rejection or crash was received;
+the original security-trip cause remains unknown. All owned jobs are terminal. See
+[scoped proof](doc/juxtopposed-references/native/guest-sidebar-shell-20261018/README.md).
+Full beta is incomplete. Next: expose existing history-only data to Recent with Library
+OFF, resolve two original icons within the user's reference budget decision, and
+continue the full redesign/fidelity/platform/clean-package gates.

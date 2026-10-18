@@ -156,7 +156,7 @@ T.Page {
             breadcrumbs: {
                 const section = root.pagePrefix[0]
                 const labels = {video: qsTr("Videos"), music: qsTr("Music"), playlists: qsTr("Playlists"),
-                                network: qsTr("Network"), home: qsTr("Home")}
+                                network: qsTr("Network"), home: qsTr("Home"), recent: qsTr("Recent")}
                 const first = labels[section] ?? root.title
                 const result = [{text: first, uri: section ? [section] : root.pagePrefix}]
                 if (root.title && root.title !== first)

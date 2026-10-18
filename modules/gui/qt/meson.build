@@ -804,6 +804,8 @@ qml_modules += {
         'medialibrary/qml/JuxtopposedHomeCollectionView.qml',
         'medialibrary/qml/JuxtopposedHomePage.qml',
         'medialibrary/qml/JuxtopposedHomeHistoryPage.qml',
+        'medialibrary/qml/JuxtopposedRecentPage.qml',
+        'medialibrary/qml/JuxtopposedRecentDisplay.qml',
         'medialibrary/qml/JuxtopposedHomeCollectionPage.qml',
         'medialibrary/qml/JuxtopposedHomeFolderPage.qml',
         'medialibrary/qml/JuxtopposedHomeSorting.js',

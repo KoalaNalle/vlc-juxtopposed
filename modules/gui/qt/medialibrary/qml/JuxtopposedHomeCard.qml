@@ -29,6 +29,7 @@ C.AbstractButton {
     property string fallbackIcon: ""
     property url fallbackArtwork: ""
     property string kind: "video"
+    property string detailText: ""
     property var entry: ({})
     property bool gridMode: true
     property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
@@ -39,7 +40,7 @@ C.AbstractButton {
     readonly property string title: video ? (entry?.fileName || entry?.title || qsTr("Unknown title"))
                                           : (entry?.title || entry?.name || qsTr("Unknown title"))
     readonly property string artist: audio ? (entry?.main_artist || "") : ""
-    readonly property string subtitle: artist || (entry?.available === false ? qsTr("Unavailable") : "")
+    readonly property string subtitle: detailText || artist || (entry?.available === false ? qsTr("Unavailable") : "")
     readonly property real coverWidth: (gridMode ? (video ? 320 : 200) : 32) * uiScale
     readonly property real coverHeight: (gridMode ? (video ? 180 : 200) : 32) * uiScale
     readonly property url artwork: entry?.small_cover || entry?.thumbnail || entry?.cover || entry?.artwork || ""

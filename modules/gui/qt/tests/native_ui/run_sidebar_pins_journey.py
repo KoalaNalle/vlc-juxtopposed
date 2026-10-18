@@ -11,6 +11,9 @@ import shutil
 import subprocess
 import sys
 import time
+from functools import partial
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from threading import Thread
 
 
 def digest(path):
@@ -26,6 +29,7 @@ def main():
     parser.add_argument('--inputs',type=Path,required=True)
     parser.add_argument('--ordinary-inputs',type=Path,required=True)
     parser.add_argument('--output-dir',type=Path,required=True)
+    parser.add_argument('--recent-stream',action='store_true',help='Exercise native Recent using an owned loopback HTTP media source')
     parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement'],default=['populate','reopen','disabled','replacement'])
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[5]
@@ -68,7 +72,16 @@ def main():
         report['ownedMediaUnchanged']=all(digest(media/name)==sha and digest(fixtures/name)==sha for name,sha in fixture_hashes.items())
         (output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     child=None
+    server=None
+    server_thread=None
     try:
+        if args.recent_stream:
+            class OwnedHandler(SimpleHTTPRequestHandler):
+                def log_message(self,*args): pass
+            server=ThreadingHTTPServer(('127.0.0.1',0),partial(OwnedHandler,directory=str(media)))
+            server_thread=Thread(target=server.serve_forever,daemon=True)
+            server_thread.start()
+            env['VLC_OWNED_RECENT_URL']=f'http://127.0.0.1:{server.server_port}/first.flac'
         for mode in args.modes:
             case=output/mode;case.mkdir()
             data=userdata
@@ -105,6 +118,10 @@ def main():
         report['passed']=True
     finally:
         if child is not None and child.poll() is None:child.kill();child.wait(timeout=5)
+        if server is not None:
+            server.shutdown();server.server_close()
+            server_thread.join(timeout=3)
+            assert not server_thread.is_alive(),'Owned loopback server did not terminate'
         save()
     return 0
 

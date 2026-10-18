@@ -92,3 +92,16 @@ zdNUYRVOH9lEtIxMYvh8DV. Original hashes and geometry are retained in
 `doc/juxtopposed-references/figma/20261017/recording/manifest.json`.
 Native values, checked persistence, truthful recording help and narrow layouts
 are implementation adaptations. The screenshot remains reference evidence.
+
+Sidebar artwork (`sidebar-*.svg`) is unchanged Juxtopposed artwork, CC BY 4.0,
+from Figma node6261:15094 in file zdNUYRVOH9lEtIxMYvh8DV (18 October 2026).
+The original 24px root dimensions and complete source bytes are preserved.
+Runtime palette coloring and the documented horizontal reflection reproduce the
+interactive icon states using VLC's existing SVG image provider. Reference
+screenshots are evidence only. The export's gear placeholder for Videos/Music
+is deliberately excluded; those two original assets still require correction.
+
+The inactive Home outline (`sidebar-home-inactive-27471.svg`) is also an
+unchanged24px original, from the already-cached Player node247:445, nested
+sidebar layer I856:2587;848:1868;177:88;70:829. The filled active Home and
+outlined inactive Home use their respective original vector exports.

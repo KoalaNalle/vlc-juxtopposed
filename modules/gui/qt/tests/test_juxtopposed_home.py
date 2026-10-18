@@ -133,7 +133,8 @@ sorting_component.setData(('import QtQuick\nimport "' + sorting_url + '" as Home
     'property var rows: [{id:"frequent",title:"Zulu"},{id:"middle",title:"Alpha"},{id:"rare",title:"Beta"}]\n'
     'readonly property int effectiveOrder: HomeSorting.mediaOrder(criteria, order)\n'
     'readonly property string effectiveCriteria: HomeSorting.mediaCriteria(criteria)\n'
-    'readonly property var sorted: HomeSorting.activityEntries(rows, "", criteria, order)\n}').encode(), QUrl())
+    'readonly property var sorted: HomeSorting.activityEntries(rows, "", criteria, order)\n'
+    'readonly property var recent: HomeSorting.recentActivityEntries(rows, "", criteria, order)\n}').encode(), QUrl())
 assert not sorting_component.errors(), [e.toString() for e in sorting_component.errors()]
 sorting = sorting_component.create()
 assert sorting.property('effectiveOrder') == Qt.DescendingOrder.value
@@ -147,6 +148,15 @@ assert expr(sorting, 'sorted.map(e => e.id).join(",")') == 'frequent,middle,rare
 sorting.setProperty('criteria', 'title')
 sorting.setProperty('order', Qt.AscendingOrder.value)
 assert expr(sorting, 'sorted.map(e => e.id).join(",")') == 'middle,rare,frequent'
+# A frequently visited older playlist must follow the latest visit in Recent.
+sorting.setProperty('rows', [dict(id='older',title='Alpha',lastActivity=100,activityCount=99),dict(id='newer',title='Zulu',lastActivity=200,activityCount=1)])
+sorting.setProperty('criteria', '')
+assert expr(sorting, 'recent.map(e => e.id).join(",")') == 'newer,older'
+sorting.setProperty('criteria', 'activity')
+sorting.setProperty('order', Qt.AscendingOrder.value)
+assert expr(sorting, 'recent.map(e => e.id).join(",")') == 'older,newer'
+sorting.setProperty('criteria', 'title')
+assert expr(sorting, 'recent.map(e => e.id).join(",")') == 'older,newer'
 media = QSignalSpy(root.mediaRequested)
 folder = QSignalSpy(root.folderRequested)
 playlist = QSignalSpy(root.playlistRequested)

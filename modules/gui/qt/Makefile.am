@@ -871,6 +871,12 @@ ui_%.h: %.ui
 
 libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/sidebar-home-inactive-27471.svg \
+	pixmaps/juxtopposed/sidebar-home-504e1.svg \
+	pixmaps/juxtopposed/sidebar-network-6db55.svg \
+	pixmaps/juxtopposed/sidebar-playlists-c9326.svg \
+	pixmaps/juxtopposed/sidebar-recent-50e8b.svg \
+	pixmaps/juxtopposed/sidebar-add-bfdda.svg \
 	pixmaps/juxtopposed/recording-settings-1b0f7.svg \
 	pixmaps/juxtopposed/recording-settings-764c9.svg \
 	pixmaps/juxtopposed/recording-settings-97863.svg \
@@ -1373,6 +1379,8 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/JuxtopposedHomeCollectionView.qml \
 	medialibrary/qml/JuxtopposedHomePage.qml \
 	medialibrary/qml/JuxtopposedHomeHistoryPage.qml \
+	medialibrary/qml/JuxtopposedRecentPage.qml \
+	medialibrary/qml/JuxtopposedRecentDisplay.qml \
 	medialibrary/qml/JuxtopposedHomeCollectionPage.qml \
 	medialibrary/qml/JuxtopposedHomeFolderPage.qml \
 	medialibrary/qml/JuxtopposedHomeSorting.js \

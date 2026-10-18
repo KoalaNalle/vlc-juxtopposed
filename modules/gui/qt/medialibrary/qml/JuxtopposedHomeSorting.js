@@ -19,3 +19,16 @@ function activityEntries(entries, pattern, criteria, order) {
         result.reverse()
     return result
 }
+
+// Recent visits use their actual timestamp, independently of frequency ranking.
+function recentActivityEntries(entries, pattern, criteria, order) {
+    const result = activityEntries(entries, pattern, "", order)
+    if (criteria === "title")
+        result.sort((a, b) => a.title.localeCompare(b.title) * (order === Qt.AscendingOrder ? 1 : -1))
+    else {
+        result.sort((a, b) => b.lastActivity - a.lastActivity || a.title.localeCompare(b.title))
+        if (criteria && order === Qt.AscendingOrder)
+            result.reverse()
+    }
+    return result
+}

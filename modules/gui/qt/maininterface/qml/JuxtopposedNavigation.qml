@@ -5,12 +5,14 @@
  *****************************************************************************/
 import QtQuick
 import VLC.Style
+import VLC.Util
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import VLC.Widgets as Widgets
 
 C.Pane {
     id: root
+    objectName: "juxtopposedNavigation"
 
     property real uiScale: 1
     property url assetBase: "qrc:/juxtopposed/"
@@ -28,16 +30,18 @@ C.Pane {
     property bool libraryBusy: false
     property bool libraryAvailable: true
     property string preferencesIcon: ""
-    property color surfaceColor: JuxtopposedPalette.color("#1B1B1B")
-    property color textColor: JuxtopposedPalette.color("#969696")
+    property color surfaceColor: JuxtopposedPalette.color("#191919")
+    property color outerColor: JuxtopposedPalette.color("#0E0E0E")
+    property color activeTextColor: JuxtopposedPalette.color("#C6C6C6")
+    property color textColor: JuxtopposedPalette.color("#8F8F8F")
     property color accentColor: JuxtopposedPalette.color("#D37918")
 
     signal routeRequested(var route, int reason)
     signal preferencesRequested()
     signal contentFocusRequested(int reason)
 
-    implicitWidth: (expanded ? 204 : 46) * uiScale
-    padding: (expanded ? 5 : 0) * uiScale
+    implicitWidth: (expanded ? 217 : 50) * uiScale
+    padding: (expanded ? 8 : 0) * uiScale
     Accessible.name: qsTr("Library navigation")
     Accessible.description: libraryAvailable ? "" : qsTr("The media library is unavailable. You can still open files or use Network.")
 
@@ -69,13 +73,12 @@ C.Pane {
         }
         for (let i = 0; pinModel && i < pinModel.count; ++i) entries.push({pin: i})
         entries.push({button: addButton})
-        entries.push({button: preferencesButton})
         const current = entries.findIndex(entry => entry.button ? entry.button.activeFocus
             : pinList.itemAtIndex(entry.pin)?.activeFocus)
         const target = entries[(current + direction + entries.length) % entries.length]
         const reason = direction > 0 ? Qt.TabFocusReason : Qt.BacktabFocusReason
         if (target.button) {
-            if (target.button === preferencesButton || target.button === addButton) pinList.positionViewAtEnd()
+            if (target.button === addButton) pinList.positionViewAtEnd()
             else pinList.positionViewAtBeginning()
             target.button.forceActiveFocus(reason)
         } else focusPin(target.pin, reason)
@@ -87,11 +90,20 @@ C.Pane {
     }
 
     background: Rectangle {
-        color: root.surfaceColor
-        radius: root.expanded ? 5 * root.uiScale : 0
+        color: root.expanded ? root.outerColor : root.surfaceColor
     }
 
-    contentItem: ColumnLayout {
+    contentItem: C.Pane {
+        padding: 0
+        leftPadding: (root.expanded ? 16 : 8) * root.uiScale
+        rightPadding: leftPadding
+        topPadding: (root.expanded ? 12 : 8) * root.uiScale
+        bottomPadding: topPadding
+        background: Rectangle {
+            color: root.surfaceColor
+            radius: root.expanded ? 6 * root.uiScale : 0
+        }
+        contentItem: ColumnLayout {
         spacing: 0
 
         ListView {
@@ -101,12 +113,18 @@ C.Pane {
             Layout.fillHeight: true
             clip: true
             reuseItems: true
+            spacing: 14 * root.uiScale
             keyNavigationEnabled: false
             C.ScrollBar.vertical: C.ScrollBar {}
             model: root.pinModel
-            header: Column {
+            header: Item {
                 property alias routeRepeater: routeRepeater
                 width: pinList.width
+                height: routeColumn.implicitHeight + 14 * root.uiScale
+                Column {
+                id: routeColumn
+                width: parent.width
+                spacing: 14 * root.uiScale
                 Repeater {
                     id: routeRepeater
                     model: root.routes
@@ -118,7 +136,7 @@ C.Pane {
 
                         objectName: "juxtopposedNavigation" + modelData.key
                         width: pinList.width
-                        height: 46 * root.uiScale
+                        height: 32 * root.uiScale
                         padding: 0
                         enabled: modelData.enabled !== false
                         checked: modelData.key === root.activeRoute
@@ -139,19 +157,32 @@ C.Pane {
                         }
 
                         contentItem: RowLayout {
-                            spacing: 12 * root.uiScale
+                            spacing: 8 * root.uiScale
                             opacity: routeButton.enabled ? 1 : 0.35
 
-                            C.Label {
-                                Layout.preferredWidth: (root.expanded ? 41 : 46) * root.uiScale
+                            Item {
+                                Layout.preferredWidth: (root.expanded ? (routeButton.modelData.key === "video" ? 32 : 30) : 34) * root.uiScale
                                 Layout.fillHeight: true
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                text: routeButton.modelData.icon
-                                font.family: root.iconFontFamily
-                                font.pixelSize: 24 * root.uiScale
-                                color: routeButton.checked ? root.accentColor : root.textColor
-                                Accessible.ignored: true
+                                Image {
+                                    objectName: "juxtopposedNavigationArt" + routeButton.modelData.key
+                                    anchors.centerIn: parent
+                                    width: 24; height: 24; scale: root.uiScale
+                                    mirror: routeButton.modelData.mirror === true
+                                    visible: !!routeButton.modelData.artwork
+                                    source: visible ? SVGColorImage.colorize(root.assetBase + (routeButton.checked ? routeButton.modelData.artwork : (routeButton.modelData.inactiveArtwork || routeButton.modelData.artwork)))
+                                        .any({"#8F8F8F": routeButton.checked ? root.accentColor : root.textColor,
+                                              "#D37918": routeButton.checked ? root.accentColor : root.textColor}).uri() : ""
+                                    Accessible.ignored: true
+                                }
+                                C.Label {
+                                    anchors.centerIn: parent
+                                    visible: !routeButton.modelData.artwork
+                                    text: routeButton.modelData.icon
+                                    font.family: root.iconFontFamily
+                                    font.pixelSize: 24 * root.uiScale
+                                    color: routeButton.checked ? root.accentColor : root.textColor
+                                    Accessible.ignored: true
+                                }
                             }
 
                             C.Label {
@@ -161,13 +192,13 @@ C.Pane {
                                 elide: Text.ElideRight
                                 font.family: inter.name
                                 font.pixelSize: 14 * root.uiScale
-                                color: routeButton.checked ? root.accentColor : root.textColor
+                                color: routeButton.checked ? root.activeTextColor : root.textColor
                                 Accessible.ignored: true
                             }
                         }
                     }
                 }
-
+                }
             }
             delegate: C.ToolButton {
                 id: pinButton
@@ -179,7 +210,7 @@ C.Pane {
                 required property int index
                 objectName: "juxtopposedSidebarPin" + index
                 width: pinList.width
-                height: 46 * root.uiScale
+                height: 32 * root.uiScale
                 padding: 0
                 focusPolicy: Qt.StrongFocus
                 Accessible.name: title
@@ -215,10 +246,10 @@ C.Pane {
                     border.color: root.accentColor
                 }
                 contentItem: RowLayout {
-                    spacing: 12 * root.uiScale
+                    spacing: 8 * root.uiScale
                     opacity: pinButton.available ? 1 : 0.45
                     Item {
-                        Layout.preferredWidth: (root.expanded ? 41 : 46) * root.uiScale
+                        Layout.preferredWidth: (root.expanded ? 30 : 34) * root.uiScale
                         Layout.fillHeight: true
                         Widgets.ImageExt {
                             id: pinArt
@@ -257,10 +288,14 @@ C.Pane {
             footer: Column {
                 property alias addButton: addButton
                 width: pinList.width
+                Item {
+                    width: 1
+                    height: (root.pinModel?.count > 0 ? 14 : 0) * root.uiScale
+                }
                 C.ToolButton {
                     id: addButton
                     objectName: "juxtopposedSidebarAdd"
-                    width: pinList.width; height: 46 * root.uiScale
+                    width: pinList.width; height: 32 * root.uiScale
                     padding: 0
                     enabled: !root.pinModel?.canRetry
                     focusPolicy: Qt.StrongFocus
@@ -276,15 +311,18 @@ C.Pane {
                         border.color: root.accentColor
                     }
                     contentItem: RowLayout {
-                        spacing: 12 * root.uiScale
-                        C.Label {
-                            Layout.preferredWidth: (root.expanded ? 41 : 46) * root.uiScale
-                            horizontalAlignment: Text.AlignHCenter
-                            text: root.addIcon
-                            font.family: root.iconFontFamily
-                            font.pixelSize: 24 * root.uiScale
-                            color: root.textColor
-                            Accessible.ignored: true
+                        spacing: 8 * root.uiScale
+                        Item {
+                            Layout.preferredWidth: (root.expanded ? 30 : 34) * root.uiScale
+                            Layout.fillHeight: true
+                            Image {
+                                objectName: "juxtopposedSidebarAddArt"
+                                anchors.centerIn: parent
+                                width: 24; height: 24; scale: root.uiScale
+                                source: SVGColorImage.colorize(root.assetBase + "sidebar-add-bfdda.svg")
+                                    .any({"#8F8F8F": root.textColor}).uri()
+                                Accessible.ignored: true
+                            }
                         }
                         C.Label {
                             Layout.fillWidth: true
@@ -363,49 +401,6 @@ C.Pane {
             Accessible.name: qsTr("Scanning media library")
         }
 
-        C.ToolButton {
-            id: preferencesButton
-            objectName: "juxtopposedLibraryPreferences"
-            Layout.fillWidth: true
-            Layout.preferredHeight: 46 * root.uiScale
-            padding: 0
-            focusPolicy: Qt.StrongFocus
-            Accessible.name: qsTr("Preferences")
-            C.ToolTip.visible: !root.expanded && (hovered || visualFocus)
-            C.ToolTip.text: qsTr("Preferences")
-            C.ToolTip.delay: 500
-            onClicked: root.preferencesRequested()
-
-            background: Rectangle {
-                color: preferencesButton.down ? JuxtopposedPalette.color("#404040") : preferencesButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
-                radius: 4 * root.uiScale
-                border.width: preferencesButton.visualFocus ? 2 * root.uiScale : 0
-                border.color: root.accentColor
-            }
-            contentItem: RowLayout {
-                spacing: 12 * root.uiScale
-                C.Label {
-                    Layout.preferredWidth: (root.expanded ? 41 : 46) * root.uiScale
-                    Layout.fillHeight: true
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    text: root.preferencesIcon
-                    font.family: root.iconFontFamily
-                    font.pixelSize: 24 * root.uiScale
-                    color: root.textColor
-                    Accessible.ignored: true
-                }
-                C.Label {
-                    Layout.fillWidth: true
-                    visible: root.expanded
-                    text: qsTr("Preferences")
-                    font.family: inter.name
-                    font.pixelSize: 14 * root.uiScale
-                    color: root.textColor
-                    elide: Text.ElideRight
-                    Accessible.ignored: true
-                }
-            }
         }
     }
 }

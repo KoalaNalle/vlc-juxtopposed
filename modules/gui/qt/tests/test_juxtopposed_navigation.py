@@ -22,6 +22,7 @@ from PySide6.QtQuick import QQuickView
 from PySide6.QtTest import QSignalSpy, QTest
 
 parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--qml-file', type=Path)
 parser.add_argument('--output-dir', type=Path, default=Path('ui-previews/navigation'))
 args = parser.parse_args()
 args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -39,24 +40,30 @@ widgets = Path(module.name) / 'VLC/Widgets'
 widgets.mkdir(parents=True)
 shutil.copyfile(repo / 'modules/gui/qt/widgets/qml/ImageExt.qml', widgets / 'ImageExt.qml')
 (widgets / 'qmldir').write_text('module VLC.Widgets\nImageExt 1.0 ImageExt.qml\n', encoding='utf-8')
+util = widgets.parent / 'Util'
+util.mkdir()
+(util / 'qmldir').write_text('module VLC.Util\nsingleton SVGColorImage 1.0 SVGColorImage.qml\n', encoding='utf-8')
+(util / 'SVGColorImage.qml').write_text('pragma Singleton\nimport QtQml\nQtObject { function colorize(path) { return { any: function(colors) { return this }, uri: function() { return path } } } }\n', encoding='utf-8')
 view = QQuickView()
 view.engine().addImportPath(module.name)
 view.setResizeMode(QQuickView.SizeRootObjectToView)
 routes = [
+    {'key': 'home', 'text': 'Home', 'icon': '\ue01f', 'uri': ['home'], 'enabled': True},
     {'key': 'video', 'text': 'Videos', 'icon': '\ue047', 'uri': ['video', 'all'], 'enabled': True},
     {'key': 'music', 'text': 'Music', 'icon': '\ue044', 'uri': ['music', 'tracks'], 'enabled': True},
     {'key': 'network', 'text': 'Network', 'icon': '\ue045', 'uri': ['network'], 'enabled': True},
     {'key': 'playlists', 'text': 'Playlists', 'icon': '\ue02f', 'uri': ['playlists'], 'enabled': True},
+    {'key': 'recent', 'text': 'Recent', 'icon': '\ue01e', 'uri': ['recent'], 'enabled': True},
 ]
 view.setInitialProperties({
     'assetBase': QUrl.fromLocalFile(str(repo / 'modules/gui/qt/pixmaps/juxtopposed') + '/'),
     'routes': routes, 'activeRoute': 'video', 'iconFontFamily': icon_family, 'preferencesIcon': '\ue039',
 })
-view.setSource(QUrl.fromLocalFile(str(repo / 'modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml')))
+view.setSource(QUrl.fromLocalFile(str(args.qml_file or repo / 'modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml')))
 assert not view.errors(), [error.toString() for error in view.errors()]
 root = view.rootObject()
 assert root
-view.resize(46, 600)
+view.resize(50, 600)
 view.show()
 QTest.qWait(50)
 
@@ -82,7 +89,7 @@ def expression(code):
 spy = QSignalSpy(root.routeRequested)
 for route in routes:
     button = item('juxtopposedNavigation' + route['key'])
-    assert button.width() == 46 and button.height() == 46
+    assert button.width() == 34 and button.height() == 32, "Original compact row must be 34 by 32 logical pixels"
     click(button)
     assert spy.count() == routes.index(route) + 1
     received = spy.at(spy.count() - 1)[0]
@@ -100,7 +107,6 @@ assert spy.count() == before
 video = item('juxtopposedNavigationvideo')
 music = item('juxtopposedNavigationmusic')
 network = item('juxtopposedNavigationnetwork')
-preferences = item('juxtopposedLibraryPreferences')
 video.forceActiveFocus()
 QTest.keyClick(view, Qt.Key_Down)
 assert music.hasActiveFocus(), 'Down navigates to Music'
@@ -109,16 +115,13 @@ assert spy.count() == before + 1, 'Keyboard route activation'
 focus_spy = QSignalSpy(root.contentFocusRequested)
 QTest.keyClick(view, Qt.Key_Right)
 assert focus_spy.count() == 1, 'Right returns focus to content'
-preferences_spy = QSignalSpy(root.preferencesRequested)
-click(preferences)
-assert preferences_spy.count() == 1
 
 # Without a media library, dependent routes stay inactive while Network works.
-unavailable = [dict(route, enabled=route['key'] == 'network') for route in routes]
+unavailable = [dict(route, enabled=route['key'] in ('home', 'network')) for route in routes]
 root.setProperty('routes', unavailable)
 root.setProperty('libraryAvailable', False)
 root.setProperty('expanded', True)
-view.resize(204, 600)
+view.resize(217, 600)
 QTest.qWait(20)
 assert item('juxtopposedLibraryUnavailable').isVisible()
 before = spy.count()
@@ -129,7 +132,7 @@ network.forceActiveFocus()
 QTest.keyClick(view, Qt.Key_Down)
 assert item('juxtopposedSidebarAdd').hasActiveFocus(), 'Unavailable routes are skipped before Add item'
 QTest.keyClick(view, Qt.Key_Down)
-assert preferences.hasActiveFocus(), 'Add item leads to preferences'
+assert item('juxtopposedNavigationhome').hasActiveFocus(), 'Add item wraps to Home'
 QTest.keyClick(view, Qt.Key_Down)
 assert network.hasActiveFocus(), 'Navigation wraps to enabled route'
 click(network)
@@ -139,13 +142,13 @@ root.setProperty('routes', routes)
 root.setProperty('libraryAvailable', True)
 for scale in (1, 1.5, 2):
     root.setProperty('uiScale', scale)
-    for expanded, width in ((False, 46), (True, 204)):
+    for expanded, width in ((False, 50), (True, 217)):
         root.setProperty('expanded', expanded)
         view.resize(round(width * scale), round(600 * scale))
         QTest.qWait(30)
         assert root.property('implicitWidth') == width * scale
         button = item('juxtopposedNavigationvideo')
-        assert abs(button.height() - 46 * scale) < 0.1
+        assert abs(button.height() - 32 * scale) < 0.1
         assert button.width() > 0 and button.width() <= root.width()
         assert view.grabWindow().save(str(args.output_dir / f'layout-{width}-{scale}.png'))
 

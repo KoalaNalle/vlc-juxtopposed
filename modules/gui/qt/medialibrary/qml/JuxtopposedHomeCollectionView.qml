@@ -16,6 +16,7 @@ FocusScope {
     property string audioFallbackIcon: ""
     property url fallbackArtwork: ""
     property string kind: "folder"
+    property bool showLocation: false
     property var entries: null
     property bool gridMode: true
     property bool loading: false
@@ -67,6 +68,7 @@ FocusScope {
             readonly property var row: model.modelData ?? model
             objectName: "homeCollectionItem" + index
             entry: row
+            detailText: root.showLocation ? String(row?.url || "") : ""
             kind: root.kind === "media" ? (row?.isVideo ? "video" : "audio") : root.kind
             uiScale: root.uiScale
             fontFamily: inter.name
