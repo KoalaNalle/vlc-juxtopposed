@@ -144,3 +144,25 @@ The maintained PySide6 tests `test_juxtopposed_controls_settings.py`,
 the actual QML host/helper and actual browser script through explicit owned
 service/DOM seams. They supplement the native consumers; they do not claim an
 actual browser, final ordinary GUI, visual score or Windows DPI acceptance.
+
+Sidebar pins have a separate opt-in `sidebar-pins.mk` recipe. With the matching
+configured Qt Makefile and `PROPOSAL_OUT` set to a fresh owned directory, build
+`sidebar-pins-store-native` using one worker. Then run
+`run_sidebar_pins_store.py --package <ordinary-runtime> --program
+<build>/.libs/test_qt_sidebar_pins_store.exe --inputs <frozen-input-json>
+--dependency <matching-libssp-0.dll> --output <fresh-directory>` on Windows.
+The dependency argument is optional when the compiler runtime is already present.
+Use the migration Common.ps1 environment on the travel computer: all arguments,
+portable runtime, preferences, temporary files and retained output belong on E:.
+
+The store suite includes a genuinely fresh child reader, exact 64-bit collection
+IDs, Unicode and heterogeneous ordering, duplicate identities, actual Windows
+exclusive-lock add/move/remove rollback and same-object retry, malformed/future
+saved data, capacity and QSettings group/fallback policy. Pins use versioned JSON
+text to avoid relying on QSettings' shared INI cache or QVariant stream setup.
+It establishes persistence only. Actual sidebar UI/native activation uses the
+private `tests/native_ui/sidebar_pins_journey.mk` and its bounded runner; private
+GUI hooks must never enter an ordinary package. The supplied-model QML test is
+`tests/test_juxtopposed_sidebar_pins.py` and does not establish native behavior or
+original-design fidelity. Collection IDs are guarded by native database file
+identity; a replacement/copied database does not silently retarget saved IDs.

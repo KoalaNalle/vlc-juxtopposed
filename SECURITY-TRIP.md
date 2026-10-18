@@ -178,3 +178,15 @@ restored video, so old identity/history preservation is not accepted. Original
 binaries and rejected fixture assumptions are retained. See the
 [scoped proof](doc/juxtopposed-references/native/guest-home-default-resize-20261018/README.md).
 No security-trip cause or full-beta acceptance is established.
+
+## Subsequent ordered-pin checkpoint
+
+18 October 2026: Continued on E:, one heavy task at a time. Native ordered pins pass
+203/70/68/72, cold storage22, component 19 and strict ordinary playback5 on the recorded
+Core0cdebe/GUIa7af1c/MLe3ec5e tuple. The original unnamed-signal warning was missed by
+an earlier narrow log filter; the actual signal fix and stricter replay are accepted.
+Earlier partial/failed runs remain rejected. All owned jobs ended normally in the
+accepted run; generated files and ordinary binaries were preserved. The original
+security-trip cause remains unknown; no new detector payload or automatic approval
+rejection was received. See the [scoped proof](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md).
+Full beta/fidelity/package gates and source-browser empty SVG warning triage remain open.

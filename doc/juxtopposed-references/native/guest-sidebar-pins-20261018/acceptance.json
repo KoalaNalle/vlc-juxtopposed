@@ -1,0 +1,97 @@
+{
+  "fullBetaAccepted": false,
+  "scope": "Ordered heterogeneous manual pins, native activation and checked persistence on Windows10",
+  "ordinaryRuntime": "E:\\Modding\\vlc-juxtopposed\\build-windows\\beta-sidebar-pins-20261018\\ordinary-runtime-r6",
+  "ordinaryRuntimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "a7af1c45bf98061735baee09562ba04ab1a69d8dbf436a664b00d4391a03c2ad",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "privateRuntimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "6f63eccb2d630f9ff0d14d239f19c48667ab9e135e9cb30f9f4c0950cb8c93ff",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "nativeChecks": {
+    "populate": 203,
+    "reopen": 70,
+    "disabled": 68,
+    "replacement": 72
+  },
+  "nativeTotal": 413,
+  "store": {
+    "tests": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "componentChecks": 19,
+  "existingNavigationPassed": true,
+  "existingHomeComponentPassed": true,
+  "existingAppearanceChecks": 43,
+  "ordinaryCases": 5,
+  "normalNativeExits": true,
+  "forcedCleanupUsed": false,
+  "selectedDiagnostics": [],
+  "remainingQtWarnings": {
+    "populate": {
+      "count": 4,
+      "unique": [
+        "(default) QFSFileEngine::open: No file name specified",
+        "(default) SVGColorizer: can not open file  \"\"  for read."
+      ]
+    },
+    "reopen": {
+      "count": 4,
+      "unique": [
+        "(default) QFSFileEngine::open: No file name specified",
+        "(default) SVGColorizer: can not open file  \"\"  for read."
+      ]
+    },
+    "disabled": {
+      "count": 0,
+      "unique": []
+    },
+    "replacement": {
+      "count": 4,
+      "unique": [
+        "(default) QFSFileEngine::open: No file name specified",
+        "(default) SVGColorizer: can not open file  \"\"  for read."
+      ]
+    }
+  },
+  "sourceInputs": {
+    "ordinary-inputs-r6.json": {
+      "entries": 1916,
+      "changed": []
+    },
+    "private-inputs-r7.json": {
+      "entries": 5,
+      "changed": []
+    },
+    "store-inputs-r3.json": {
+      "entries": 8,
+      "changed": []
+    },
+    "previousCore": {
+      "entries": 458,
+      "changed": [],
+      "manifest": "../guest-home-content-resume-20261018/core-inputs-r1.json"
+    }
+  },
+  "sourceRuntimePreserved": true,
+  "ownedMediaRestored": true,
+  "nativeMesonBuild": false,
+  "mesonSyntaxParsed": true,
+  "originalFidelityAccepted": false,
+  "fullSidebarAccepted": false,
+  "limits": [
+    "Current 204/46px sidebar geometry and Preferences adaptation retained; original217/50px and Home/Recent still require complete reference reconciliation.",
+    "Unshown pin/Add/error menus use existing native style; populated pin fidelity has not been independently accepted.",
+    "Collection IDs are scoped to native DB file identity; copying/replacing DB can leave saved collection pins unavailable. In-place DB edits/reset identity are not validated.",
+    "Actual local source browsing tested; remote protocol/authentication variants and external drag/drop are not runtime accepted here.",
+    "Playlist/artist additions deliberately use genuine native-controller setup; actual row opening, native content, media Home menu and Add pickers are exercised.",
+    "Empty SVG filename warnings remain in ML-enabled pinned source browsing; other selected diagnostics are zero.",
+    "Broader theme, accessibility, DPI/monitor, pointer variants, Windows11, remaining design surfaces and coherent clean licensed packaging remain open."
+  ]
+}

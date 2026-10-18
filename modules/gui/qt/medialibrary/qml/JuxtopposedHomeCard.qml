@@ -10,6 +10,19 @@ import VLC.Widgets as Widgets
 
 C.AbstractButton {
     id: root
+    signal contextMenuRequested(point position)
+    TapHandler {
+        acceptedButtons: Qt.RightButton
+        onTapped: eventPoint => {
+            root.forceActiveFocus(Qt.MouseFocusReason)
+            root.contextMenuRequested(root.mapToGlobal(eventPoint.position.x, eventPoint.position.y))
+        }
+    }
+    Keys.onPressed: event => {
+        if (event.key === Qt.Key_Menu || (event.key === Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
+            contextMenuRequested(mapToGlobal(0, height)); event.accepted = true
+        }
+    }
     property real uiScale: 1
     property string fontFamily: "Inter"
     property string iconFontFamily: ""

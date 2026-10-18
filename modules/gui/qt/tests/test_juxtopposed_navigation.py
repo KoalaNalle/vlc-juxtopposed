@@ -6,6 +6,8 @@ Test code licensed under GPLv2 or later.
 """
 import argparse
 import os
+import tempfile
+import shutil
 from pathlib import Path
 
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
@@ -32,7 +34,13 @@ register_juxtopposed_palette()
 icon_font_id = QFontDatabase.addApplicationFont(str(repo / 'modules/gui/qt/pixmaps/VLCIcons.ttf'))
 assert icon_font_id >= 0
 icon_family = QFontDatabase.applicationFontFamilies(icon_font_id)[0]
+module = tempfile.TemporaryDirectory(prefix='vlc-navigation-widgets-')
+widgets = Path(module.name) / 'VLC/Widgets'
+widgets.mkdir(parents=True)
+shutil.copyfile(repo / 'modules/gui/qt/widgets/qml/ImageExt.qml', widgets / 'ImageExt.qml')
+(widgets / 'qmldir').write_text('module VLC.Widgets\nImageExt 1.0 ImageExt.qml\n', encoding='utf-8')
 view = QQuickView()
+view.engine().addImportPath(module.name)
 view.setResizeMode(QQuickView.SizeRootObjectToView)
 routes = [
     {'key': 'video', 'text': 'Videos', 'icon': '\ue047', 'uri': ['video', 'all'], 'enabled': True},
@@ -119,7 +127,9 @@ assert spy.count() == before
 network = item('juxtopposedNavigationnetwork')
 network.forceActiveFocus()
 QTest.keyClick(view, Qt.Key_Down)
-assert preferences.hasActiveFocus(), 'Unavailable routes are skipped'
+assert item('juxtopposedSidebarAdd').hasActiveFocus(), 'Unavailable routes are skipped before Add item'
+QTest.keyClick(view, Qt.Key_Down)
+assert preferences.hasActiveFocus(), 'Add item leads to preferences'
 QTest.keyClick(view, Qt.Key_Down)
 assert network.hasActiveFocus(), 'Navigation wraps to enabled route'
 click(network)

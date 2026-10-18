@@ -44,6 +44,7 @@ Flickable {
     signal seeAllRequested(string category, int reason)
     signal addFolderRequested()
     signal retryRequested()
+    signal pinMenuRequested(var entry, point position)
 
     clip: true
     contentWidth: width
@@ -185,6 +186,7 @@ Flickable {
                     textColor: root.textColor
                     accentColor: root.accentColor
                     onClicked: root.activate(kind, row, focusReason)
+                    onContextMenuRequested: position => root.pinMenuRequested(row, position)
                     onActiveFocusChanged: if (activeFocus) { root.focusedEntry = this; root.reveal(this) }
                 }
             }

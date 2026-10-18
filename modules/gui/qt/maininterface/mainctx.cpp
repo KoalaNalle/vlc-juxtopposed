@@ -48,6 +48,7 @@
 #include "performance_preferences_model.hpp"
 #include "recording_preferences_model.hpp"
 #include "extensions_preferences_model.hpp"
+#include "sidebar_pins_model.hpp"
 #include "dialogs/extensions/extensions_manager.hpp"
 #include "dialogs/preferences/controls_shortcuts.hpp"
 #include <vlc_dialog.h>
@@ -297,6 +298,14 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
         m_medialib = new MediaLib(p_intf, p_intf->p_mainPlaylistController);
     }
 
+    m_sidebarPins = new SidebarPinsModel(m_medialib, settings,
+        QVLCUserDir(VLC_USERDATA_DIR) + QStringLiteral("/ml/ml.db"), this);
+    connect(m_sidebarPins, &SidebarPinsModel::mediaRequested, this, [this](const QUrl &url, const QString &title) {
+        p_intf->p_mainPlaylistController->append(QVector<vlc::playlist::Media>{
+            vlc::playlist::Media{url.toString(QUrl::FullyEncoded), title, {}}}, true);
+        setPlayerView(true);
+    });
+
     /* Controlbar Profile Model Creation */
     m_controlbarProfileModel = new ControlbarProfileModel(p_intf->mainSettings, this);
 
@@ -435,6 +444,8 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_sidebarPins;
+    m_sidebarPins = nullptr;
     delete m_extensionsPreferences;
     m_extensionsPreferences = nullptr;
     delete m_controlsPreferences;

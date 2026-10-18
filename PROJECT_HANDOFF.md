@@ -17,6 +17,22 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
+The latest [sidebar pins checkpoint](doc/juxtopposed-references/native/guest-sidebar-pins-20261018/README.md)
+adds ordered typed pins, native activation and checked persistence. Native203/70/68/72,
+cold-store 22, component 19 and strict ordinary5 pass normally on Core0cdebe / GUIa7af1c /
+MLe3ec5e. Existing navigation/Home/appearance 43 pass. All 1,916 ordinary/five private/
+eight store and prior 458 Core inputs match. A genuine cold reader caught serialization
+loss; virtual-list key routing and an unnamed C++ signal argument blocking QML were
+fixed. Named-signal/syntax warnings now fail the runners. Manual pins survive history
+clear, ML OFF and cold restart; replacement DB IDs cannot retarget them. Actual local
+source enumeration, paused/playing independence, locked unpin retry and missing-file
+restoration pass. The original sidebar geometry/Home/Recent and complete fidelity are
+still open. Two empty SVG requests in ML-enabled source browsing remain for triage;
+remote/drop/native-dialog/theme/DPI/platform and clean packaging gates remain open.
+Current ordinary runtime is build-windows/beta-sidebar-pins-20261018/ordinary-runtime-r6.
+All owned jobs are terminal; full beta remains incomplete and active, E: only, one
+heavy task at a time. Continue the original complete redesign scope after this checkpoint.
+
 The latest [default-resize Home checkpoint](doc/juxtopposed-references/native/guest-home-default-resize-20261018/README.md)
 reproduces a 16-pixel off-screen floating preview at 320×360 and clamps its width
 to available library space while retaining 16:9. Native populate/reopen/edges

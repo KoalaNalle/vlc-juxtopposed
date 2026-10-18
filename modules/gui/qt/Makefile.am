@@ -194,6 +194,8 @@ libqt_plugin_la_SOURCES = \
 	maininterface/performance_preferences_model.cpp maininterface/performance_preferences_model.hpp \
 	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
 	maininterface/extensions_preferences_model.cpp maininterface/extensions_preferences_model.hpp \
+	maininterface/sidebar_pins_model.cpp maininterface/sidebar_pins_model.hpp \
+	maininterface/sidebar_pins_store.cpp maininterface/sidebar_pins_store.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
 	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
 	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
@@ -510,6 +512,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/performance_preferences_model.moc.cpp \
 	maininterface/recording_preferences_model.moc.cpp \
 	maininterface/extensions_preferences_model.moc.cpp \
+	maininterface/sidebar_pins_model.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
@@ -3019,3 +3022,10 @@ endif
 
 EXTRA_DIST += tests/test_juxtopposed_extensions_settings.py \
     tests/native_ui/extensions_journey.cpp tests/native_ui/extensions_journey.mk tests/native_ui/run_extensions_journey.py
+
+EXTRA_DIST += tests/test_sidebar_pins_store.cpp tests/native_library/sidebar-pins.mk \
+    tests/native_library/run_sidebar_pins_store.py
+
+EXTRA_DIST += tests/test_juxtopposed_sidebar_pins.py \
+    tests/native_ui/sidebar_pins_journey.cpp tests/native_ui/sidebar_pins_journey.mk \
+    tests/native_ui/run_sidebar_pins_journey.py

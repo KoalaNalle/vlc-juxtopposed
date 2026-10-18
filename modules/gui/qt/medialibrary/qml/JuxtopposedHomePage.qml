@@ -10,6 +10,7 @@ import VLC.Dialogs
 import VLC.Widgets as Widgets
 import VLC.Style
 import VLC.Util
+import VLC.Menus
 import "JuxtopposedHomeSorting.js" as HomeSorting
 
 Widgets.PageExt {
@@ -28,6 +29,12 @@ Widgets.PageExt {
     function setCurrentItemFocus(reason) { dashboard.setCurrentItemFocus(reason) }
     function filteredActivity(entries) {
         return HomeSorting.activityEntries(entries, root.search.pattern, root.sort.criteria, root.sort.order)
+    }
+    StringListMenu {
+        id: pinMenu
+        ctx: MainCtx
+        property var itemId
+        onSelected: (index, _) => { if (index === 0) MainCtx.sidebarPins.pinItem(itemId) }
     }
     MLRecentVideoModel {
         id: videos
@@ -81,5 +88,11 @@ Widgets.PageExt {
         onSeeAllRequested: (category, reason) => root.seeAllButtonClicked(category, reason)
         onAddFolderRequested: DialogsProvider.addMediaLibraryFolder()
         onRetryRequested: MediaLib.homeActivity.refresh()
+        onPinMenuRequested: (entry, position) => {
+            if (entry?.id && !MainCtx.sidebarPins.canRetry) {
+                pinMenu.itemId = entry.id
+                pinMenu.popup(position, [qsTr("Pin to sidebar")])
+            }
+        }
     }
 }
