@@ -17,7 +17,31 @@ need real behavior and existing native routes must remain functional. New
 extensions are tentative. No designer contact is authorized. The user resumed
 development under these revised boundaries; the beta goal remains active.
 
-The latest [Recent with Library browsing OFF checkpoint](doc/juxtopposed-references/native/guest-recent-history-only-20261018/README.md)
+The latest [shared Home/player title-strip checkpoint](doc/juxtopposed-references/native/guest-shared-strip-20261018/README.md)
+mounts the original 40px strip and nine original SVG slots with the real native
+menu/window controls and a player drawer reusing existing typed sidebar routes.
+Actual paused Home/source/Recent navigation preserves the primary input. A live
+media-switch regression caught and fixed PlayerController notifying QML before
+storing its new name. Traditional controls keep their original path.
+
+Thirteen native processes pass **2,012 checks**, component geometry **12** and strict
+ordinary playback **5**; all native/ordinary processes exit normally with all Qt
+warnings zero. Actual native hit tests, interface scales 1/1.5/2, keyboard menu,
+maximize/restore/fullscreen/minimize/Close and retained live title changes pass.
+Production 1,935/private six/component thirteen inputs match. Retained Core458,
+pin-store eight, thread-test four and five original untracked files match; the
+prior thread34 suite was not rerun. Cached original references were reused with
+zero new Figma MCP reads. No pending extra-read approval is assumed.
+
+Current ordinary runtime: build-windows/beta-shared-strip-20261018/ordinary-runtime-r1.
+GUI `63aa786f2b6d2281`; unchanged Core0cdebe and MLe3ec5e. The previous runtime and
+media are preserved; private test/diagnostic markers are absent from the ordinary
+GUI. All owned jobs are terminal. This is scoped title-strip acceptance; system
+drag/double-click, Windows11 Snap, OS monitor DPI, broader theme/accessibility/font
+states, short-height drawer, full Home/player/Recent fidelity and clean matched
+licensed packaging remain open. Full beta remains active and incomplete.
+
+The preceding [Recent with Library browsing OFF checkpoint](doc/juxtopposed-references/native/guest-recent-history-only-20261018/README.md)
 exposes the existing lazy history backend to the redesigned Recent page. Availability
 alone creates no database. Explicit open validates real storage; failure shows Retry.
 Decoded local/HTTP reopen, paused navigation, live clear without resurrection,
@@ -27,7 +51,7 @@ all exit normally with all Qt warnings zero. The four existing sidebar/Home/Rece
 workflows remain covered (298/178/102/106). Production 1,926/private five/thread four
 inputs match; retained 458 Core/eight store inputs remain unchanged.
 
-Current ordinary runtime: build-windows/beta-recent-history-only-20261018/ordinary-runtime-r1.
+That preceding checkpoint used build-windows/beta-recent-history-only-20261018/ordinary-runtime-r1.
 GUI `e2ec064b905f916c`; Core0cdebe and MLe3ec5e are unchanged. Ordinary output contains no
 private journey/HTTP-test/temporary diagnostic markers. Prior runtime and test media
 are preserved. All owned jobs are terminal; five unrelated untracked files remain.

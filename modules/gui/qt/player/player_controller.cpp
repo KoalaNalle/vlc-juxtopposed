@@ -124,8 +124,9 @@ void PlayerControllerPrivate::UpdateName(input_item_t* media)
 
     if( m_name != name )
     {
-        emit q->nameChanged( name );
         m_name = std::move(name);
+        // Property bindings read the getter when notified, not the signal argument.
+        emit q->nameChanged( m_name );
     }
 }
 

@@ -256,3 +256,35 @@ untracked files are preserved. No new Figma call, detector payload or automatic
 approval rejection was received; original security-trip cause remains unknown.
 All owned jobs are terminal. Full beta/fidelity/platform/clean-package gates remain
 open. See [scoped proof](doc/juxtopposed-references/native/guest-recent-history-only-20261018/README.md).
+
+## Subsequent shared Home/player strip checkpoint
+
+18 October 2026: Continued on E:, one heavy task at a time. Last substantive work:
+reused cached full Home/Player design contexts, downloaded their tool-provided
+original SVG exports to E: and compared nine runtime slots/six common Home assets.
+No new Figma MCP read was made; the two-icon budget question is still pending.
+Integrated the shared title strip/native menu/window controls and existing typed
+navigation. Private R1 rejected duplicate QML visibility before any native run;
+R2 exposed raw title versus native fallback semantics; R3's traditional readiness
+helper incorrectly required redesigned objects. R4 reproduced a retained stale
+name after actual decoded source switching. R5 stores PlayerController's name
+before notifying QML and verifies actual paused Home/source returns.
+
+Received final native13 processes/2,012 checks, component12 and ordinary5: all
+native/ordinary exits normal, no forced cleanup and all Qt warnings zero. Native
+resource-byte/geometry/keyboard/window actions and live title changes pass.
+Earlier component harness failures included an access violation in a dynamic
+PySide attached metaobject, not a machine crash; an inherited 2px button-padding
+error was corrected. The proof writer initially assumed the wrong cached Home
+asset filename; the exact existing names were verified before it succeeded.
+Production1,935/private6/component13 and retained Core458/store8/thread4/original5
+inputs match; prior thread34 was not rerun. The ordinary GUI is63aa786f2b6d;
+Core0cdebe/MLe3ec5e remain unchanged. Previous runtime/media are preserved; private
+QA/HTTP-test/title-asset and diagnostic markers are absent from ordinary output.
+
+No new security detector payload, automatic approval rejection or Windows crash
+was received. The original security-trip cause remains unknown. All owned jobs
+are terminal. Full beta, native drag/double-click/OS-DPI/Windows11, broader themes/
+accessibility/fonts, short-height drawer, full screen fidelity and clean licensed
+packaging remain open. See [scoped proof](doc/juxtopposed-references/native/guest-shared-strip-20261018/README.md).
+No push, publication or designer outreach occurred.

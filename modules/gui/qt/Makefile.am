@@ -878,6 +878,13 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/sidebar-network-6db55.svg \
 	pixmaps/juxtopposed/sidebar-playlists-c9326.svg \
 	pixmaps/juxtopposed/sidebar-recent-50e8b.svg \
+	pixmaps/juxtopposed/titlebar-logo-29ba5.svg \
+	pixmaps/juxtopposed/titlebar-menu-d7959.svg \
+	pixmaps/juxtopposed/titlebar-navigation-b130a.svg \
+	pixmaps/juxtopposed/titlebar-separator-8e020.svg \
+	pixmaps/juxtopposed/titlebar-minimize-928df.svg \
+	pixmaps/juxtopposed/titlebar-maximize-dccb1.svg \
+	pixmaps/juxtopposed/titlebar-fullscreen-d41b8.svg \
 	pixmaps/juxtopposed/sidebar-add-bfdda.svg \
 	pixmaps/juxtopposed/recording-settings-1b0f7.svg \
 	pixmaps/juxtopposed/recording-settings-764c9.svg \
@@ -1354,6 +1361,8 @@ libqml_module_maininterface_a_QML = \
 	maininterface/qml/MainViewLoader.qml \
 	maininterface/qml/MainDisplay.qml \
 	maininterface/qml/JuxtopposedNavigation.qml \
+	maininterface/qml/JuxtopposedTitlebar.qml \
+	maininterface/qml/JuxtopposedNavigationPane.qml \
 	maininterface/qml/SideNavigationPane.qml \
 	maininterface/qml/SideNavigationDelegate.qml \
 	maininterface/qml/NoMedialibHome.qml

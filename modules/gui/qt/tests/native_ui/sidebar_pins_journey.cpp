@@ -14,6 +14,9 @@
 #include "medialibrary/mlhelper.hpp"
 #include "player/player_controller.hpp"
 #include "util/navigation_history.hpp"
+#include "util/csdbuttonmodel.hpp"
+#include <QCryptographicHash>
+#include <QXmlStreamReader>
 #include <vlc_interface.h>
 #include <vlc_player.h>
 #include <QApplication>
@@ -332,6 +335,26 @@ void sidebarRoute(const QString &key)
     QTest::qWait(100);
     click(named(QStringLiteral("juxtopposedNavigation") + key));
 }
+QString cleanActionText(QAction *action)
+{
+    auto text = action->text(); text.remove(QLatin1Char('&')); return text;
+}
+void toggleNavigation()
+{
+    if (auto *toggle = named(QStringLiteral("juxtopposedStripnavigation"))) { click(toggle); return; }
+    click(named(QStringLiteral("juxtopposedStripmenu")));
+    wait([] { return menu(); }, "actual original-strip global menu opens");
+    auto *popup = menu(); QAction *view = nullptr;
+    for (auto *action : popup->actions()) if (cleanActionText(action) == QStringLiteral("View")) view = action;
+    check(view && view->menu(), "native global View submenu exists");
+    popup->setActiveAction(view); QTest::keyClick(popup, Qt::Key_Right);
+    auto *submenu = view->menu(); wait([&] { return submenu->isVisible(); }, "actual keyboard action opens native View submenu");
+    QAction *navigation = nullptr;
+    for (auto *action : submenu->actions()) if (cleanActionText(action) == QStringLiteral("Navigation Menu")) navigation = action;
+    check(navigation && navigation->isCheckable() && navigation->isEnabled(), "native View menu exposes a genuine checked navigation action");
+    submenu->setActiveAction(navigation); QTest::keyClick(submenu, Qt::Key_Return);
+    wait([] { return !menu(); }, "native navigation selection dismisses its real menu");
+}
 void exerciseRecent(bool nativeCollections)
 {
     home();
@@ -345,25 +368,20 @@ void exerciseRecent(bool nativeCollections)
         auto *art = named(QStringLiteral("juxtopposedNavigationArt") + key);
         check(art->width() == 24 && art->height() == 24 && qAbs(art->scale() - scale) < 0.01, "original route SVG retains intrinsic24px and scaled wrapper geometry");
     }
-    QQuickItem *toggle = nullptr;
-    for (auto *object : objects())
-        if (auto *item = qobject_cast<QQuickItem *>(object); item && item->isVisible()
-            && item->property("description").toString() == QStringLiteral("Show navigation menu")) { toggle = item; break; }
-    check(toggle != nullptr, "actual navigation toggle resolves through public control description");
     auto *toggleInput = player()->getInput(); const auto toggleTime = nativeTime(); const auto togglePosition = player()->getPosition();
     if (!navigation->property("expanded").toBool()) {
-        click(toggle);
+        toggleNavigation();
         wait([&] { return navigation->property("expanded").toBool(); }, "actual toggle expands original sidebar");
     }
     expression(named(QStringLiteral("juxtopposedSidebarPinList")), QStringLiteral("positionViewAtBeginning(); forceLayout()"));
     check(qAbs(navigation->width() - 217 * scale) < 0.1, "actual expanded sidebar is217 logical pixels");
     QTest::mouseMove(window, QPoint(window->width() - 20, 120)); QTest::qWait(30);
     capture(QStringLiteral("native-sidebar-expanded.png"));
-    click(toggle);
+    toggleNavigation();
     wait([&] { return !navigation->property("expanded").toBool() && qAbs(navigation->width() - 50 * scale) < 0.1; }, "actual toggle produces original50px compact rail");
     QTest::mouseMove(window, QPoint(window->width() - 20, 120)); QTest::qWait(30);
     capture(QStringLiteral("native-sidebar-compact.png"));
-    click(toggle);
+    toggleNavigation();
     wait([&] { return navigation->property("expanded").toBool() && qAbs(navigation->width() - 217 * scale) < 0.1; }, "actual toggle restores expanded sidebar geometry");
     check(player()->getInput() == toggleInput && player()->getPlayingState() == PlayerController::PLAYING_STATE_PAUSED
         && nativeTime() == toggleTime && player()->getPosition() == togglePosition, "actual sidebar toggles preserve exact paused input native time and position");
@@ -549,6 +567,166 @@ void exerciseHistoryOnly(const QString &mode)
     report.insert("recentLibraryOffAccepted", true);
     report.insert("recentDecodedHttpReopen", true);
 }
+void verifyTitleStrip(const QString &name)
+{
+    auto *strip = named(QStringLiteral("juxtopposedTitlebar"));
+    check(strip && strip->isVisible(), "actual original shared title strip is visible");
+    const auto scale = strip->property("uiScale").toDouble();
+    check(qAbs(strip->height() - 40 * scale) < 0.1, "native shared strip has original40px scaled height");
+    auto *logo = named(QStringLiteral("juxtopposedStriplogo"));
+    auto *more = named(QStringLiteral("juxtopposedStripmenu"));
+    check(logo && more, "original logo and more affordances exist in the real strip");
+    check(qAbs(logo->mapToItem(strip, QPointF()).x() - 6 * scale) < 0.1
+        && qAbs(more->mapToItem(strip, QPointF()).x() - 51 * scale) < 0.1,
+        "native logo and menu match original6/51px slot positions");
+    const bool playerContext = strip->property("playerContext").toBool();
+    const QStringList baseKeys{QStringLiteral("logo"),QStringLiteral("menu"),QStringLiteral("minimize"),QStringLiteral("maximize"),QStringLiteral("fullscreen"),QStringLiteral("close")};
+    QStringList keys = baseKeys;
+    if (playerContext) keys.append({QStringLiteral("navigation"),QStringLiteral("separator"),QStringLiteral("sourceFolder")});
+    for (const auto &key : keys) {
+        wait([&] { auto *art = named(QStringLiteral("juxtopposedStripArt") + key); return art && art->property("status").toInt() == 1; }, "actual original title-strip SVG loads through native resources/provider");
+        auto *art = named(QStringLiteral("juxtopposedStripArt") + key);
+        const int intrinsic = key == QStringLiteral("menu") ? 18 : 24;
+        check(art->width() == intrinsic && art->height() == intrinsic && qAbs(art->scale() - scale) < 0.01,
+              "native SVG keeps original intrinsic18/24 and scaled wrapper dimensions");
+        QFile embedded(QStringLiteral(":/juxtopposed/titlebar-") + key + QStringLiteral(".svg"));
+        check(embedded.open(QIODevice::ReadOnly), "original title SVG exists in the actual loaded qrc");
+        const auto bytes = embedded.readAll();
+        QFile inventory(qEnvironmentVariable("VLC_OWNED_TITLEBAR_ASSETS")); check(inventory.open(QIODevice::ReadOnly), "owned original title-art inventory opens");
+        const auto expected = QJsonDocument::fromJson(inventory.readAll()).object().value(key).toObject();
+        check(QCryptographicHash::hash(bytes,QCryptographicHash::Sha256).toHex() == expected.value(QStringLiteral("sha256")).toString().toLatin1(), "embedded title artwork bytes match the exact original export");
+        QXmlStreamReader xml(bytes); check(xml.readNextStartElement() && xml.attributes().value(QStringLiteral("width")).toInt() == intrinsic && xml.attributes().value(QStringLiteral("height")).toInt() == intrinsic,
+              "embedded original SVG root dimensions are unchanged");
+    }
+    auto *title = named(QStringLiteral("juxtopposedStripTitle"));
+    check(title && qAbs(title->mapToItem(strip,title->boundingRect().center()).x() - strip->width()/2) <= 0.51,
+          "actual native title stays centered within half a pixel");
+    for (auto *button : context->csdButtonModel()->windowCSDButtons()) {
+        QString key; int expectedHit = HTCLIENT;
+        switch (button->type()) {
+        case CSDButton::Minimize:key=QStringLiteral("minimize");expectedHit=HTMINBUTTON;break;
+        case CSDButton::MaximizeRestore:key=QStringLiteral("maximize");expectedHit=HTMAXBUTTON;break;
+        case CSDButton::Close:key=QStringLiteral("close");expectedHit=HTCLOSE;break;
+        default:continue;
+        }
+        auto *item = named(QStringLiteral("juxtopposedStrip")+key); check(item,"actual native CSD button exists");
+        const auto point=item->mapToScene(item->boundingRect().center());
+        check(button->rect().contains(point.toPoint()), "CSD model rectangle covers the actual redesigned button");
+        POINT screen{static_cast<LONG>(point.x()*window->devicePixelRatio()),static_cast<LONG>(point.y()*window->devicePixelRatio())};
+        const auto hwnd=reinterpret_cast<HWND>(window->winId()); ClientToScreen(hwnd,&screen);
+        check(SendMessageW(hwnd,WM_NCHITTEST,0,MAKELPARAM(screen.x,screen.y))==expectedHit,"owned native window hit-test retains correct minimize/maximize/close semantics");
+    }
+    capture(name);
+}
+void exerciseTitlebar(const QString &mode)
+{
+    if (mode == QStringLiteral("titlebar-traditional")) {
+        history()->push({QStringLiteral("home")},{},Qt::OtherFocusReason);
+        wait([] { for(auto *object:objects()) if(auto *item=qobject_cast<QQuickItem *>(object);item&&item->isVisible()&&item->property("description").toString()==QStringLiteral("Show navigation menu")) return true; return false; },"actual traditional Home and its native navigation control finish loading");
+        check(!named(QStringLiteral("juxtopposedTitlebar")), "traditional-controls opt-out keeps the original native titlebar path");
+        check(!var_InheritBool(context->getIntf(),"qt-juxtopposed-controls"),"traditional startup option remains disabled");
+        report.insert("nativeTraditionalHeaderAccepted",true);
+        capture(QStringLiteral("native-titlebar-traditional.png")); return;
+    }
+    home();
+    const bool media = mode == QStringLiteral("titlebar-media") || mode == QStringLiteral("titlebar-media-title") || mode == QStringLiteral("titlebar-video");
+    const bool video = mode == QStringLiteral("titlebar-media-title") || mode == QStringLiteral("titlebar-video");
+    auto *native = context->getIntf()->p_player;
+    if (media) {
+        const auto url = QUrl::fromLocalFile(QDir(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER")).filePath(video ? QStringLiteral("owned-clip.mp4") : QStringLiteral("first.flac")));
+        if (video) history()->push({QStringLiteral("video"),QStringLiteral("all")},{},Qt::OtherFocusReason);
+        context->getMediaLibrary()->addAndPlay(url);
+        wait([&] { vlc_player_Lock(native); const auto *stats=vlc_player_GetStatistics(native); const bool ok=stats&&(video ? stats->i_decoded_video>0 : stats->i_decoded_audio>0); vlc_player_Unlock(native); return ok; }, "title-strip journey begins with actual decoded owned media",15000);
+        vlc_player_Lock(native); vlc_player_Pause(native); vlc_player_Unlock(native);
+        wait([] {return player()->getPlayingState()==PlayerController::PLAYING_STATE_PAUSED;},"actual primary pauses before window and navigation actions");
+        context->setPlayerView(true);
+        wait([] {auto *strip=named(QStringLiteral("juxtopposedTitlebar"));return strip&&strip->property("playerContext").toBool();},"actual player surface uses the shared redesigned strip");
+        QTest::qWait(250);
+    }
+    auto *input=player()->getInput();const auto time=nativeTime();const auto position=player()->getPosition();
+    auto unchanged=[&] {return player()->getInput()==input&&(!media||(player()->getPlayingState()==PlayerController::PLAYING_STATE_PAUSED&&nativeTime()==time&&player()->getPosition()==position));};
+    for (double scale : {1.0,1.5,2.0}) {
+        context->setIntfUserScaleFactor(scale); QTest::qWait(250);
+        verifyTitleStrip(QStringLiteral("native-titlebar-%1-%2.png").arg(media?QStringLiteral("player"):QStringLiteral("home")).arg(scale));
+        check(unchanged(),"native interface scaling preserves primary input and exact paused clocks");
+    }
+    context->setIntfUserScaleFactor(1);QTest::qWait(200);
+    auto *logo = named(QStringLiteral("juxtopposedStriplogo"));
+    check(logo != nullptr, "real title-strip logo is a keyboard-focusable control");
+    logo->forceActiveFocus(Qt::TabFocusReason); QTest::keyClick(window,Qt::Key_Tab);
+    check(named(QStringLiteral("juxtopposedStripmenu"))->hasActiveFocus(), "native Tab moves from original logo to original menu button");
+    QTest::keyClick(window,Qt::Key_Space);
+    wait([] {return menu()!=nullptr;},"actual focused title-strip menu opens through the keyboard");
+    QTest::keyClick(menu(),Qt::Key_Escape);
+    wait([] {return menu()==nullptr;},"actual Escape dismisses the native global menu");
+    check(unchanged(),"title-strip keyboard activation leaves paused primary input and clocks unchanged");
+    if (media) {
+        const auto displayed=named(QStringLiteral("juxtopposedStripTitle"))->property("text").toString();
+        report.insert("titlePolicy",QJsonObject{{"startupEnabled",context->showMediaNameInTitle()},{"nativeName",player()->getName()},{"metadataTitle",player()->getTitle()},{"visibleStrip",displayed},{"nativeWindowTitle",window->title()}});
+        check(mode==QStringLiteral("titlebar-media-title")?(!player()->getName().isEmpty() && displayed==player()->getName() && window->title()==player()->getName()):displayed==QStringLiteral("VLC Media Player"),"startup media-name preference is honored by the redesigned strip");
+        click(named(QStringLiteral("juxtopposedStripnavigation")));
+        wait([] {return named(QStringLiteral("juxtopposedNavigation"))!=nullptr;},"actual player navigation affordance opens the shared typed sidebar");
+        check(unchanged(),"opening player navigation preserves paused decoded primary playback");
+        capture(QStringLiteral("native-player-navigation-open.png"));
+        sidebarRoute(QStringLiteral("recent"));
+        wait([] {return !context->isPlayerView()&&history()->viewPath()==QStringList{QStringLiteral("recent"),QStringLiteral("media")};},"actual player sidebar route opens native Recent without restarting media");
+        check(unchanged(),"player-to-library navigation preserves input and exact paused clocks");
+        context->setPlayerView(true);
+        wait([] {auto *strip=named(QStringLiteral("juxtopposedTitlebar"));return strip&&strip->property("playerContext").toBool();},"real player re-entry restores shared title strip");
+        click(named(QStringLiteral("juxtopposedStripsourceFolder")));
+        wait([] {return !context->isPlayerView()&&history()->viewPath()==QStringList{QStringLiteral("recent"),QStringLiteral("media")};},"actual original source affordance returns to the native source leaf");
+        check(unchanged(),"original source return preserves paused decoded input and clocks");
+        context->setPlayerView(true);
+        wait([] {auto *strip=named(QStringLiteral("juxtopposedTitlebar"));return strip&&strip->property("playerContext").toBool();},"player returns after actual source-button navigation");
+        click(named(QStringLiteral("juxtopposedStriplogo")));
+        wait([] {return !context->isPlayerView()&&history()->viewPath().first()==QStringLiteral("home");},"actual original VLC logo opens native Home");
+        check(unchanged(),"original Home action preserves paused decoded input and clocks");
+        context->setPlayerView(true);
+        wait([] {auto *strip=named(QStringLiteral("juxtopposedTitlebar"));return strip&&strip->property("playerContext").toBool();},"real player restores after original Home action");
+    }
+    click(named(QStringLiteral("juxtopposedStripmaximize")));
+    wait([] {return window->visibility()==QWindow::Maximized;},"actual original maximize affordance maximizes the owned native window");
+    click(named(QStringLiteral("juxtopposedStripmaximize")));
+    wait([] {return window->visibility()==QWindow::Windowed;},"actual original maximize affordance restores the owned native window");
+    check(unchanged(),"maximize/restore preserves primary input and paused clocks");
+    click(named(QStringLiteral("juxtopposedStripfullscreen")));
+    wait([] {return window->visibility()==QWindow::FullScreen;},"actual original fullscreen affordance enters native fullscreen");
+    QTest::mouseMove(window,QPoint(window->width()-20,15));QTest::qWait(300);
+    click(named(QStringLiteral("juxtopposedStripfullscreen")));
+    wait([] {return window->visibility()!=QWindow::FullScreen;},"actual original fullscreen affordance exits native fullscreen");
+    check(unchanged(),"fullscreen round trip preserves primary input and paused clocks");
+    click(named(QStringLiteral("juxtopposedStripminimize")));
+    wait([] {return window->visibility()==QWindow::Minimized;},"actual original minimize affordance minimizes the owned native window");
+    context->requestInterfaceNormal();window->requestActivate();
+    wait([] {return window->visibility()==QWindow::Windowed;},"owned native window restores normally after minimize");
+    check(unchanged(),"minimize/restore preserves primary input and paused clocks");
+    if (mode == QStringLiteral("titlebar-media-title")) {
+        auto *retainedStrip = named(QStringLiteral("juxtopposedTitlebar"));
+        QJsonArray transitions;
+        for (const auto &file : {QStringLiteral("first.flac"),QStringLiteral("owned-clip.mp4")}) {
+            const auto url=QUrl::fromLocalFile(QDir(qEnvironmentVariable("VLC_OWNED_AUDIO_FOLDER")).filePath(file));
+            const bool videoFile=file.endsWith(QStringLiteral(".mp4"));
+            context->getMediaLibrary()->addAndPlay(url);
+            wait([&] { vlc_player_Lock(native); const auto *stats=vlc_player_GetStatistics(native); const bool decoded=stats&&(videoFile?stats->i_decoded_video>0:stats->i_decoded_audio>0); vlc_player_Unlock(native); return player()->getUrl()==url&&decoded; },"actual new source decodes while the same title strip remains mounted",15000);
+            const bool titleMatched=QTest::qWaitFor([&] { auto *label=named(QStringLiteral("juxtopposedStripTitle"));return label&&!player()->getName().isEmpty()&&label->property("text").toString()==player()->getName(); },5000);
+            report.insert("lastTitleTransition",QJsonObject{{"file",file},{"nativeName",player()->getName()},{"metadataTitle",player()->getTitle()},{"visibleStrip",named(QStringLiteral("juxtopposedStripTitle"))?named(QStringLiteral("juxtopposedStripTitle"))->property("text").toString():QString()},{"nativeWindowTitle",window->title()},{"playerView",context->isPlayerView()},{"sameStrip",named(QStringLiteral("juxtopposedTitlebar"))==retainedStrip}});
+            check(titleMatched,"mounted native title follows the actual source name after media switch");
+            check(named(QStringLiteral("juxtopposedTitlebar"))==retainedStrip,"source changes update the retained title strip without recreating it");
+            transitions.append(QJsonObject{{"file",file},{"nativeName",player()->getName()},{"metadataTitle",player()->getTitle()},{"visibleStrip",named(QStringLiteral("juxtopposedStripTitle"))->property("text").toString()},{"nativeWindowTitle",window->title()}});
+        }
+        report.insert("nativeTitleSourceTransitions",transitions);
+        report.insert("nativeTitleTransitionsAccepted",true);
+    }
+    report.insert("nativeTitlebarAccepted",true);
+    report.insert("interfaceScales",QJsonArray{1.0,1.5,2.0});
+    if (mode==QStringLiteral("titlebar-close")) {
+        for(auto *button:context->csdButtonModel()->windowCSDButtons()) if(button->type()==CSDButton::Close)
+            QObject::connect(button,&CSDButton::clicked,qApp,[] {
+                report.insert("nativeCloseTriggered",true);
+                QFile output(qEnvironmentVariable("VLC_OWNED_UI_REPORT"));if(output.open(QIODevice::WriteOnly))output.write(QJsonDocument(report).toJson());
+            });
+    }
+}
 void run()
 {
     try {
@@ -556,7 +734,9 @@ void run()
         window->resize(1280, 900); QTest::qWait(100);
         const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode.startsWith(QStringLiteral("history-off"))) {
+        if (mode.startsWith(QStringLiteral("titlebar-"))) {
+            exerciseTitlebar(mode);
+        } else if (mode.startsWith(QStringLiteral("history-off"))) {
             exerciseHistoryOnly(mode);
         } else if (mode == QStringLiteral("populate")) {
             check(pins()->count() == 0 && pins()->error().isEmpty(), "fresh native profile starts with no manual pins");
@@ -663,7 +843,14 @@ void run()
     }
     report.insert("checks",checks); report.insert("ownedWindowOnly",true); report.insert("fullBetaAccepted",false);
     QFile output(qEnvironmentVariable("VLC_OWNED_UI_REPORT")); if(output.open(QIODevice::WriteOnly)) output.write(QJsonDocument(report).toJson());
-    QTimer::singleShot(200,qApp,[] { if(context)libvlc_Quit(vlc_object_instance(context->getIntf()));else QCoreApplication::quit(); });
+    if (qEnvironmentVariable("VLC_OWNED_UI_MODE") == QStringLiteral("titlebar-close") && report.value("passed").toBool()) {
+        QTimer::singleShot(200,qApp,[] {
+            auto *button=named(QStringLiteral("juxtopposedStripclose"));
+            if (!button) return;
+            const auto point=button->mapToScene(button->boundingRect().center()).toPoint();
+            QTest::mouseClick(window,Qt::LeftButton,Qt::NoModifier,point);
+        });
+    } else QTimer::singleShot(200,qApp,[] { if(context)libvlc_Quit(vlc_object_instance(context->getIntf()));else QCoreApplication::quit(); });
 }
 void waitForWindow(int remaining)
 {

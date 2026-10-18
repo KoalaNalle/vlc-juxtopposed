@@ -30,7 +30,7 @@ def main():
     parser.add_argument('--ordinary-inputs',type=Path,required=True)
     parser.add_argument('--output-dir',type=Path,required=True)
     parser.add_argument('--recent-stream',action='store_true',help='Exercise native Recent using an owned loopback HTTP media source')
-    parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement','history-off','history-off-optout','history-off-shutdown'],default=['populate','reopen','disabled','replacement'])
+    parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement','history-off','history-off-optout','history-off-shutdown','titlebar-empty','titlebar-media','titlebar-video','titlebar-media-title','titlebar-close','titlebar-traditional'],default=['populate','reopen','disabled','replacement'])
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[5]
     package,qa,fixtures,output=(path.resolve() for path in (args.package,args.qa_gui,args.fixtures,args.output_dir))
@@ -85,7 +85,7 @@ def main():
         for mode in args.modes:
             case=output/mode;case.mkdir()
             data=userdata
-            if mode in ('replacement','history-off-optout','history-off-shutdown'):data=output/(mode+'-userdata');data.mkdir()
+            if mode in ('replacement','history-off-optout','history-off-shutdown') or mode.startswith('titlebar-'):data=output/(mode+'-userdata');data.mkdir()
             child_env=env|dict(VLC_USERDATA_PATH=str(data),VLC_OWNED_UI_REPORT=str(case/'journey.json'),
                 VLC_OWNED_UI_OUTPUT=str(case),VLC_OWNED_UI_BASE=str(output),VLC_OWNED_UI_MODE=mode,
                 VLC_OWNED_AUDIO_FOLDER=media.as_posix())
@@ -93,6 +93,10 @@ def main():
                 '--no-crashdump','--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
                 '--no-ml-network-discovery','--config='+str(configuration),'--file-logging','--log-verbose=2','--verbose=2',
                 '--logfile='+str(case/'vlc.log'),'--no-qt-video-autoresize','--no-hw-dec','--no-sub-autodetect-file','--gain=0','--restore-playback-pos=0']
+            if mode.startswith('titlebar-'):
+                command+=['--qt-name-in-title' if mode=='titlebar-media-title' else '--no-qt-name-in-title']
+                child_env['VLC_OWNED_TITLEBAR_ASSETS']=str(root/'build-windows/beta-shared-strip-20261018/assets-inventory.json')
+            if mode=='titlebar-traditional':command+=['--no-qt-juxtopposed-controls']
             if mode=='history-off-optout':command+=['--no-save-recentplay','--no-remember-playback-pos']
             (case/'launch.json').write_text(json.dumps(command,indent=2)+'\n',encoding='utf-8')
             result=dict(normalExit=False,forcedCleanupUsed=False);report['cases'][mode]=result
@@ -113,6 +117,7 @@ def main():
             logs='\n'.join(path.read_text(encoding='utf-8',errors='replace') for path in (case/'vlc.log',case/'stderr.txt') if path.is_file())
             terms=('ReferenceError','TypeError','Binding loop','Cannot assign','Unable to assign','unregistered datatype','is not a type','failed to load component','Assertion failed','Signal uses unnamed parameter','SyntaxError','QSignalSpy:','SVGColorizer:','QFSFileEngine::open: No file name specified')
             result['diagnostics']=[line for line in logs.splitlines() if any(term in line for term in terms) or 'qt warning:' in line]
+            if mode=='titlebar-close':assert result['journey'].get('nativeCloseTriggered'), 'Native Close affordance never reached the real CSD model'
             save()
             print(mode,'normalExit',result['normalExit'],'passed',result['journey'].get('passed'),'checks',len(result['journey'].get('checks',[])),'diagnostics',len(result['diagnostics']),flush=True)
             assert result['normalExit'] and result['journey'].get('passed') and not result['diagnostics'],mode

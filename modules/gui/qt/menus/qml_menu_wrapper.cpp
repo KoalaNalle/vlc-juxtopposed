@@ -286,6 +286,13 @@ void QmlGlobalMenu::popup(QPoint pos)
     /* View menu, a bit different */
     submenu = m_menu->addMenu(qtr( "V&iew" ));
     ViewMenu( p_intf, submenu );
+    if (m_navigationAvailable) {
+        submenu->addSeparator();
+        auto *navigation = submenu->addAction(qtr("Navigation &Menu"));
+        navigation->setCheckable(true);
+        navigation->setChecked(m_navigationVisible);
+        connect(navigation, &QAction::triggered, this, &QmlGlobalMenu::navigationRequested);
+    }
 
     submenu = m_menu->addMenu(qtr( "&Help" ));
     HelpMenu( p_intf, submenu );

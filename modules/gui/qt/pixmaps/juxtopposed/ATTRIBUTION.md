@@ -105,3 +105,10 @@ The inactive Home outline (`sidebar-home-inactive-27471.svg`) is also an
 unchanged24px original, from the already-cached Player node247:445, nested
 sidebar layer I856:2587;848:1868;177:88;70:829. The filled active Home and
 outlined inactive Home use their respective original vector exports.
+
+Title-strip artwork is unchanged Juxtopposed artwork, CC BY 4.0, from the cached
+Player node 247:445 and Home node 6261:15078 in file zdNUYRVOH9lEtIxMYvh8DV.
+Original 24px roots and the 18px menu root are preserved. Folder and Close reuse
+identical existing exports. Runtime palette coloring/horizontal reflection and
+scaled wrappers follow the original slots. Cached screenshots remain reference
+evidence only; no screenshot is used as a runtime asset.

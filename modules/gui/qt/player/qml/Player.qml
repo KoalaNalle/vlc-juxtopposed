@@ -62,9 +62,9 @@ FocusScope {
 
     // Legacy pinning forces windowed controls visible. Explicit auto-hide
     // modes may hide the docked controls while preserving their layout mode.
-    readonly property bool _controlsForcedVisible: _controlsUnderVideo
+    readonly property bool _controlsForcedVisible: (MainCtx.juxtopposedControls && juxtopposedNavigationVisible) || (_controlsUnderVideo
         && (MainCtx.controlAutoHideMode < 0 || MainCtx.controlAutoHideMode === 0
-            || (MainCtx.controlAutoHideMode === 1 && MainCtx.intfMainWindow.visibility !== Window.FullScreen))
+            || (MainCtx.controlAutoHideMode === 1 && MainCtx.intfMainWindow.visibility !== Window.FullScreen)))
 
     property bool _keyPressed: false
 
@@ -1049,6 +1049,8 @@ FocusScope {
         }
     }
 
+    property bool juxtopposedNavigationVisible: false
+
     TopBar {
         id: topBar
 
@@ -1056,7 +1058,7 @@ FocusScope {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        z: 1
+        z: controlBar.redesigned ? 5 : 1
 
         topMargin: VLCStyle.applicationVerticalMargin
         sideMargin: VLCStyle.applicationHorizontalMargin
@@ -1076,13 +1078,16 @@ FocusScope {
                   resumeVisible)
 
         focus: true
-        title: playerSpecializationLoader.item?.musicPresentationActive || !MainCtx.showMediaNameInTitle ? "" : Player.title
+        title: controlBar.redesigned
+            ? (MainCtx.showMediaNameInTitle ? Player.name : "")
+            : (playerSpecializationLoader.item?.musicPresentationActive || !MainCtx.showMediaNameInTitle ? "" : Player.title)
 
         pinControls: MainCtx.pinVideoControls
 
         showCSD: MainCtx.clientSideDecoration && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
         showToolbar: MainCtx.hasToolbarMenu && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
         playlistVisible: playlistVisibility.isPlaylistVisible
+        navigationVisible: rootPlayer.juxtopposedNavigationVisible
 
         plListView: {
             if (playlistpopup.active)
@@ -1107,7 +1112,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
+            value: ((controlBar.redesigned && MainCtx.clientSideDecoration && MainCtx.intfMainWindow.visibility !== Window.FullScreen) || playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
         }
 
         onTogglePlaylistVisibility: playlistVisibility.togglePlaylistVisibility()
@@ -1116,8 +1121,15 @@ FocusScope {
             rootPlayer.lockUnlockAutoHide(lock)
         }
 
+        onToggleNavigationVisibility: rootPlayer.juxtopposedNavigationVisible = !rootPlayer.juxtopposedNavigationVisible
+        onHomeRequested: {
+            rootPlayer.juxtopposedNavigationVisible = false
+            History.push(["home"], {}, Qt.TabFocusReason)
+            MainCtx.playerView = false
+        }
         onBackRequested: {
-            if (MainCtx.hasEmbededVideo && !MainCtx.canShowVideoPIP) {
+            rootPlayer.juxtopposedNavigationVisible = false
+            if (!controlBar.redesigned && MainCtx.hasEmbededVideo && !MainCtx.canShowVideoPIP) {
                MainPlaylistController.stop()
             }
             MainCtx.playerView = false
@@ -1370,6 +1382,37 @@ FocusScope {
         function onHeightChanged() {
             if (navBox.y > navBox.dragYMax)
                 navBox.y = navBox.dragYMax
+        }
+    }
+
+    Rectangle {
+        z: 2
+        anchors.top: topBar.bottom; anchors.bottom: controlBar.top
+        anchors.left: parent.left; anchors.right: parent.right
+        visible: controlBar.redesigned && rootPlayer.juxtopposedNavigationVisible
+        color: "#66000000"
+        MouseArea { anchors.fill: parent; onClicked: rootPlayer.juxtopposedNavigationVisible = false }
+    }
+    JuxtopposedNavigationPane {
+        id: playerNavigation
+        z: 3
+        anchors.left: parent.left; anchors.top: topBar.bottom
+        anchors.bottom: controlBar.top
+        width: implicitWidth
+        expanded: true
+        visible: controlBar.redesigned && rootPlayer.juxtopposedNavigationVisible
+        activeSurface: MainCtx.playerView
+        Navigation.parentItem: rootPlayer
+        Navigation.upItem: topBar
+        onRouteRequested: (uri, reason) => {
+            if (!History.exactMatch(History.viewPath, uri)) History.push(uri, {}, reason)
+            rootPlayer.juxtopposedNavigationVisible = false
+            MainCtx.playerView = false
+        }
+        onDestinationOpened: reason => rootPlayer.juxtopposedNavigationVisible = false
+        onContentFocusRequested: reason => {
+            rootPlayer.juxtopposedNavigationVisible = false
+            topBar.forceActiveFocus(reason)
         }
     }
 

@@ -787,6 +787,8 @@ qml_modules += {
         'maininterface/qml/MainViewLoader.qml',
         'maininterface/qml/MainDisplay.qml',
         'maininterface/qml/JuxtopposedNavigation.qml',
+        'maininterface/qml/JuxtopposedTitlebar.qml',
+        'maininterface/qml/JuxtopposedNavigationPane.qml',
         'maininterface/qml/NoMedialibHome.qml',
         qml_maininterface_extra_files,
         'maininterface/qml/SideNavigationPane.qml',
