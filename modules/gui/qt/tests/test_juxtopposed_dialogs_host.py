@@ -5,7 +5,7 @@ Controllers are explicit supplied-state contracts extracted from the project's
 existing component tests. This does not compile or replace native VLC methods.
 """
 from pathlib import Path
-import argparse, ast, hashlib, json, os, shutil
+import argparse, ast, hashlib, json, os, shutil, xml.etree.ElementTree as ET
 from enum import IntEnum
 from juxtopposed_backdrop_fixture import software_backdrop_state
 
@@ -44,23 +44,86 @@ Network=adapter('modules/gui/qt/tests/test_juxtopposed_network_dialog.py','Contr
 Playlist=adapter('modules/gui/qt/tests/test_juxtopposed_new_playlist.py','Controller','PlaylistAdapter')
 Conversion=adapter('modules/gui/qt/tests/test_juxtopposed_conversion_dialog.py','Controller','ConversionAdapter')
 
+class SetupGeneral(General):
+    setupStateChanged=Signal()
+    def __init__(self):
+        super().__init__(); self.required=True; self.ready=False; self.finishes=[]
+    setupRequired=Property(bool,lambda s:s.required,notify=setupStateChanged)
+    setupReady=Property(bool,lambda s:s.ready,notify=setupStateChanged)
+    @Slot('QVariant','QVariant',result=bool)
+    def finishSetup(self,theme,accent):
+        self.finishes.append([theme,accent])
+        if not self.setValue('theme',theme):return False
+        if not self.setValue('accentIndex',accent):return False
+        self.required=self.ready=False; self.setupStateChanged.emit(); return True
+
+class ProfileLayout(QObject):
+    changed=Signal()
+    draftChanged=Signal()
+    editing=Property(bool,lambda s:s._editing,notify=changed)
+    lastError=Property(str,lambda s:'',constant=True)
+    palette=Property('QVariantList',lambda s:[],constant=True)
+    current=Property('QVariantMap',lambda s:s.data,constant=True)
+    draft=Property('QVariantMap',lambda s:s.data,notify=draftChanged)
+    def __init__(self,parent):
+        super().__init__(parent);self._editing=False
+        self.data={'video':{'columns':[[0],[],[]],'timelineAbove':False},'audio':{'columns':[[0],[],[]],'timelineAbove':True}}
+    @Slot()
+    def cancelEdit(self):self._editing=False;self.changed.emit()
+    @Slot(int,result='QVariantMap')
+    def tileInfo(self,id):return dict(id=id,name='Owned play',kind='play',glyph='P',fontFamily='Inter')
+
+class Profiles(QObject):
+    changed=Signal()
+    available=Property(bool,lambda s:True,constant=True)
+    busy=Property(bool,lambda s:s._busy,notify=changed)
+    needsRecovery=Property(bool,lambda s:False,constant=True)
+    selectedName=Property(str,lambda s:'Movies',constant=True)
+    lastError=Property(str,lambda s:'',constant=True)
+    layout=Property(QObject,lambda s:s._layout,constant=True)
+    def __init__(self):super().__init__();self._busy=False;self._layout=ProfileLayout(self)
+    @Slot(result=bool)
+    def beginLayoutEdit(self):
+        if self._busy:return False
+        self._layout._editing=True;self._layout.changed.emit();return True
+    @Slot(result=bool)
+    def saveLayoutDraft(self):
+        if self._busy:return False
+        self._layout.cancelEdit();return True
+    @Slot(str,result=bool)
+    def createProfile(self,name):return bool(name.strip())
+    @Slot(result=bool)
+    def retrySave(self):return not self._busy
+    @Slot(result=bool)
+    def retrySwitch(self):return not self._busy
+    @Slot(result=bool)
+    def restorePreviousProfile(self):return not self._busy
+
 class MainContext(QObject):
+    juxtopposedControlsChanged=Signal()
+    juxtopposedControls=Property(bool,lambda s:s.redesigned,notify=juxtopposedControlsChanged)
     generalPreferences=Property(QObject,lambda s:s.general,constant=True)
     useGlobalShortcuts=Property(bool,lambda s:True,constant=True)
+    playerProfiles=Property(QObject,lambda s:s.profiles,constant=True)
     def __init__(self):
-        super().__init__(); self.general=General()
+        super().__init__(); self.general=SetupGeneral(); self.profiles=Profiles(); self.redesigned=False
 
 class Provider(QObject):
     changed=Signal()
+    firstRunDialogVisibleChanged=Signal()
+    firstRunDialogVisible=Property(bool,lambda s:s.wizard,notify=firstRunDialogVisibleChanged)
     showGlobalSettingsDialog=Signal()
     showNetworkStreamDialog=Signal()
     showNewPlaylistDialog=Signal()
     showConversionDialog=Signal()
+    showPlayerProfilesDialog=Signal(bool)
+    showToolbarEditorDialog=Signal()
     newPlaylistSaved=Signal('QVariant')
     def __init__(self):
         super().__init__()
         self.network,self.playlist,self.convert=Network(),Playlist(),Conversion()
         self.visible,self.editing,self.native=False,False,False
+        self.wizard=False
         self.experts=0; self.calls=[]; self.visibility_changes=[]
     networkStream=Property(QObject,lambda s:s.network,constant=True)
     newPlaylist=Property(QObject,lambda s:s.playlist,constant=True)
@@ -100,11 +163,21 @@ qmlRegisterType(QUrl.fromLocalFile(str(REPO/'modules/gui/qt/widgets/qml/TextInpu
                 'VLC.Widgets',1,0,'TextInputFocus')
 qmlRegisterSingletonType(QUrl.fromLocalFile(str(FILES/'modules/gui/qt/style/JuxtopposedPalette.qml')),
                          'VLC.Style',1,0,'JuxtopposedPalette')
+qmlRegisterType(QUrl.fromLocalFile(str(FILES/'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml')),
+               'VLC.Player',1,0,'JuxtopposedPlaybackBar')
 asset_dir=args.output_dir/'assets'; asset_dir.mkdir()
 for path in (REPO/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
     if path.is_file(): shutil.copyfile(path,asset_dir/path.name)
 for path in (FILES/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
     if path.is_file(): shutil.copyfile(path,asset_dir/path.name)
+for entry in ET.parse(FILES/'modules/gui/qt/assets.qrc').findall(".//qresource[@prefix='/juxtopposed']/file"):
+    destination=asset_dir/entry.attrib.get('alias',Path(entry.text).name)
+    destination.parent.mkdir(parents=True,exist_ok=True)
+    shutil.copyfile(FILES/'modules/gui/qt'/entry.text,destination)
+# Supplied SVG dependency; native recoloring remains an actual-app gate.
+util=args.output_dir/'imports/VLC/Util'; util.mkdir(parents=True)
+(util/'qmldir').write_text('module VLC.Util\nsingleton SVGColorImage 1.0 SVGColorImage.qml\n')
+(util/'SVGColorImage.qml').write_text('pragma Singleton\nimport QtQml\nQtObject { function colorize(path) { return { any: function(colors) { return this }, uri: function() { return path } } } }\n')
 qml_dir=QUrl.fromLocalFile(str(FILES/'modules/gui/qt/dialogs/dialogs/qml')).toString()
 menus=QUrl.fromLocalFile(str(REPO/'modules/gui/qt/menus/qml')).toString()
 assets=QUrl.fromLocalFile(str(asset_dir.resolve())+'/').toString()
@@ -140,6 +213,7 @@ C.ApplicationWindow {{
 }}'''
 (args.output_dir/'driver.qml').write_text(driver,encoding='utf-8')
 engine=QQmlApplicationEngine()
+engine.addImportPath(str((args.output_dir/'imports').resolve()))
 engine.loadData(driver.encode(),QUrl.fromLocalFile(str(args.output_dir.resolve()/'driver.qml')))
 assert engine.rootObjects(),messages
 window=engine.rootObjects()[0]
@@ -168,43 +242,46 @@ def click(name):
     QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,control.mapToScene(control.boundingRect().center()).toPoint())
     QTest.qWait(35)
 def focus(name): item(name).forceActiveFocus(); QTest.qWait(20)
-names=['juxtopposedGlobalSettings','juxtopposedNetworkDialog','juxtopposedNewPlaylistDialog','juxtopposedConversionDialog']
-signals=[provider.showGlobalSettingsDialog,provider.showNetworkStreamDialog,provider.showNewPlaylistDialog,provider.showConversionDialog]
+names=['juxtopposedGlobalSettings','juxtopposedNetworkDialog','juxtopposedNewPlaylistDialog','juxtopposedConversionDialog','juxtopposedPlayerProfilesDialog','juxtopposedPlayerCustomizer']
+signals=[provider.showGlobalSettingsDialog.emit,provider.showNetworkStreamDialog.emit,provider.showNewPlaylistDialog.emit,provider.showConversionDialog.emit,lambda:provider.showPlayerProfilesDialog.emit(False),provider.showToolbarEditorDialog.emit]
 dialogs=[item(name) for name in names]
 def visible(): return [bool(d.property('visible')) for d in dialogs]
-def route(index): signals[index].emit();QTest.qWait(35)
+def route(index): signals[index]();QTest.qWait(35)
 def close_all():
     for d in dialogs:
         expr(d,'close()')
     QTest.qWait(30)
 
 check('initial host: no modal, no native text input, one genuine General service',
-      visible()==[False]*4 and not provider.visible and not provider.editing
+      visible()==[False]*len(names) and not provider.visible and not provider.editing
       and dialogs[0].property('preferences') is ctx.general)
 focus('opener');click('opener')
 backdrop_state=software_backdrop_state(window,dialogs[0],item('settingsTestUnderlay'))
 check('real opener activates the shared Global route; Search sets actual TextInputFocus',
-      visible()==[True,False,False,False] and provider.visible and provider.editing
+      visible()==[True,False,False,False,False,False] and provider.visible and provider.editing
       and window.activeFocusItem().objectName()=='globalSettingsSearch')
 before=ctx.general.reloads;route(0)
 check('repeat Settings request focuses existing Search and does not reload/reset the open service',ctx.general.reloads==before)
 check('pending Interface category remains disabled rather than loading General or a fake service',
       not expr(dialogs[0],'chooseCategory("interface")') and dialogs[0].property('selectedCategory')=='general')
 
+close_all();provider.showToolbarEditorDialog.emit();QTest.qWait(20)
+check('traditional toolbar request does not open the redesigned customizer',not dialogs[5].property('visible'))
+ctx.redesigned=True;ctx.juxtopposedControlsChanged.emit()
 transitions=0
-for source in range(4):
+for source in range(len(names)):
     close_all();focus('opener');route(source)
-    for target in range(4):
+    for target in range(len(names)):
         if target==source:continue
         route(target)
-        assert visible()==[i==target for i in range(4)],(source,target,visible())
+        assert visible()==[i==target for i in range(len(names))],(source,target,visible())
         assert provider.visible
         route(source)
         transitions+=1
-check('all 12 directed modal transitions keep exactly one visible dialog and the shared guard',transitions==12)
+check('all 30 directed modal transitions keep exactly one visible dialog and the shared guard',transitions==30)
 
 busy_cases=0
-for current,model in [(1,provider.network),(2,provider.playlist),(3,provider.convert)]:
+for current,model in [(1,provider.network),(2,provider.playlist),(3,provider.convert),(4,ctx.profiles),(5,ctx.profiles)]:
     close_all();route(current)
     if current==3:model.phase(model.State.Encoding,.5)
     else:
@@ -212,10 +289,10 @@ for current,model in [(1,provider.network),(2,provider.playlist),(3,provider.con
         (model.stateChanged if current==1 else model.changed).emit()
     baseline=(provider.network.resets,provider.playlist.resets,provider.convert.resets,provider.convert.cancels)
     focused=window.activeFocusItem()
-    for target in range(4):
+    for target in range(len(names)):
         if target==current:continue
         route(target)
-        assert visible()==[i==current for i in range(4)]
+        assert visible()==[i==current for i in range(len(names))]
         assert baseline==(provider.network.resets,provider.playlist.resets,provider.convert.resets,provider.convert.cancels)
         assert window.activeFocusItem() is focused
         busy_cases+=1
@@ -223,7 +300,7 @@ for current,model in [(1,provider.network),(2,provider.playlist),(3,provider.con
     else:
         model._busy=False
         (model.stateChanged if current==1 else model.changed).emit()
-check('all 9 busy cross-modal requests preserve the current operation without cancel/reset',busy_cases==9)
+check('all 25 busy cross-modal requests preserve the current operation without cancel/reset',busy_cases==25)
 
 close_all();focus('opener');route(0)
 before=window.property('transports');QTest.keyClick(window,Qt.Key_Space);QTest.qWait(20)
@@ -259,11 +336,11 @@ focus('opener');route(0)
 advanced=item('generalAdvanced')
 expr(advanced,'forceActiveFocus()');QTest.qWait(70)
 QTest.keyClick(window,Qt.Key_Space);QTest.qWait(70)
-check('real Advanced button closes Global then invokes the explicit native entry once',provider.experts==1 and provider.native and not provider.visible and visible()==[False]*4)
-for index in range(4):route(index)
-check('all QML entries refuse to overlay the open native Preferences dialog',visible()==[False]*4)
+check('real Advanced button closes Global then invokes the explicit native entry once',provider.experts==1 and provider.native and not provider.visible and visible()==[False]*len(names))
+for index in range(len(names)):route(index)
+check('all QML entries refuse to overlay the open native Preferences dialog',visible()==[False]*len(names))
 provider.native=False;provider.changed.emit();route(0)
-check('normal Settings can reopen after native Preferences closes and reloads current values',visible()==[True,False,False,False])
+check('normal Settings can reopen after native Preferences closes and reloads current values',visible()==[True,False,False,False,False,False])
 
 close_all();route(3)
 click('conversionSourceBrowse');click('conversionDestinationBrowse');click('conversionAllProfiles')
@@ -313,7 +390,7 @@ for scale in (1,1.5,2):
         check(f'{names[index]} header drag moves both axes at scale {scale}',
               abs(after[0]-origin[0]-dx)<1.5 and abs(after[1]-origin[1]-dy)<1.5)
         check(f'{names[index]} drag preserves focus and modal guard at scale {scale}',
-              window.activeFocusItem() is focused and provider.visible and visible()==[i==index for i in range(4)])
+              window.activeFocusItem() is focused and provider.visible and visible()==[i==index for i in range(len(names))])
         # Both far corners must keep the complete dialog inside its owner.
         drag_header(dialog,end=QPoint(1,1));low=position(dialog)
         drag_header(dialog,end=QPoint(window.width()-1,window.height()-1));high=position(dialog)
@@ -337,12 +414,53 @@ for scale in (1,1.5,2):
               and abs(dialog.property('y')-(window.height()-dialog.property('height'))/2)<1.5)
 close_all()
 
+host=item('juxtopposedDialogsHost')
+window.resize(1300,1000)
+check('completed old modal journeys have not instantiated setup',not host.property('setupVisible'))
+ctx.redesigned=False;ctx.juxtopposedControlsChanged.emit();QTest.qWait(20)
+ctx.general.ready=True; ctx.general.setupStateChanged.emit(); QTest.qWait(40)
+check('traditional mode leaves setup inactive',not host.property('setupVisible'))
+provider.wizard=True;provider.firstRunDialogVisibleChanged.emit()
+ctx.redesigned=True;ctx.juxtopposedControlsChanged.emit();QTest.qWait(50)
+check('setup waits for actual native privacy window to close',not host.property('setupVisible') and not provider.visible)
+provider.wizard=False;provider.firstRunDialogVisibleChanged.emit();QTest.qWait(100)
+setup=item('juxtopposedSetupDialog')
+check('native privacy completion opens setup through sole modal owner',host.property('setupVisible') and provider.visible and visible()==[False]*len(names))
+for index in range(len(names)):
+    route(index)
+    check(f'route {index} cannot replace active setup',host.property('setupVisible') and visible()==[False]*len(names) and provider.visible)
+before=window.property('transports')
+focus('setupTheme2');QTest.keyClick(window,Qt.Key_Space);QTest.qWait(30)
+check('setup keeps existing global transport hotkey suppressed',window.property('transports')==before)
+QTest.keyClick(window,Qt.Key_Escape);QTest.qWait(80)
+check('setup Escape neither completes nor immediately reopens',not provider.visible and not host.property('setupVisible') and ctx.general.required and not ctx.general.finishes)
+ctx.general.setupStateChanged.emit();QTest.qWait(80)
+check('postponed setup stays closed on repeated readiness notification',not host.property('setupVisible'))
+focus('opener');host.setProperty('setupPostponed',False);expr(host,'tryOpenSetup()');QTest.qWait(80)
+setup=item('juxtopposedSetupDialog')
+click('setupTheme1');click('setupNext')
+ctx.general.fail_next='Owned host fixture cannot save yet.'
+click('setupFinish')
+check('setup save failure retains exclusive modal ownership',provider.visible and host.property('setupVisible') and ctx.general.required and len(ctx.general.finishes)==1)
+route(1)
+check('save failure cannot be replaced by network dialog',not dialogs[1].property('visible') and host.property('setupVisible'))
+click('setupFinish');QTest.qWait(80)
+check('successful setup releases sole modal guard and restores opener',not provider.visible and not host.property('setupVisible') and not ctx.general.required and window.activeFocusItem().objectName()=='opener')
+ctx.general.setupStateChanged.emit();QTest.qWait(60)
+check('completed setup never reopens on readiness notification',not host.property('setupVisible'))
+route(1)
+check('ordinary modal routing works after setup',visible()==[False,True,False,False,False,False] and provider.visible)
+close_all()
+
 check('never-cleared QML message ledger is empty before teardown',not messages)
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));engine.deleteLater()
 QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(40)
 check('actual engine destruction completes without new binding/provider errors',destroyed==[True] and not messages)
 sources=[FILES/path for path in [
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSetupDialog.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSetupPreview.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlayerProfilesDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedMovableDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
@@ -352,12 +470,16 @@ sources=[FILES/path for path in [
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml',
+    'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml',
+    'modules/gui/qt/player/qml/JuxtopposedVolumeControl.qml',
+    'modules/gui/qt/player/qml/JuxtopposedLayoutRow.qml',
     'modules/gui/qt/style/JuxtopposedPalette.qml', 'modules/gui/qt/style/VLCStyle.qml',
     'modules/gui/qt/widgets/qml/TextInputFocus.qml', 'modules/gui/qt/menus/qml/ShortcutExt.qml',
     'modules/gui/qt/maininterface/mainctx.cpp', 'modules/gui/qt/maininterface/mainctx.hpp',
     'modules/gui/qt/dialogs/dialogs_provider.cpp']]
 for path in sources:identities[str(path.relative_to(REPO))]=hashlib.sha256(path.read_bytes()).hexdigest()
 report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'busyGuards':busy_cases,'popupMovement':movement,'qtMessages':messages,
-        'sourceSha256':identities,'scope':'Actual integrated production QML host, General shell/body/palette and three real dialogs; supplied strict controller contracts. Native C++/OS hotkey/expert/save/reset build execution remains Root gate.'}
+        'sourceSha256':identities,'scope':'Actual integrated production QML host, General shell/body/palette and five other real dialogs; supplied strict controller contracts. Native C++/OS hotkey/expert/save/reset build execution remains Root gate.'}
 (args.output_dir/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'checks':len(checks),'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages}))

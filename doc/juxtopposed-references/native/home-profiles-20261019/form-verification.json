@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "checks": 24,
+  "journeys": [
+    "opens the profile-name form",
+    "empty profile name cannot save",
+    "opening makes no service write",
+    "form content is instantiated",
+    "name editor receives opening focus",
+    "whitespace name cannot save",
+    "failed create preserves entered Unicode name",
+    "failed create remains retryable",
+    "retry succeeds and closes",
+    "closing restores the opener",
+    "reopening starts with a fresh name",
+    "Escape cancels without saving",
+    "pending switch exposes recovery controls",
+    "failed recovery retains the pending switch",
+    "successful finish closes recovery",
+    "Restore previous calls the dedicated restore operation",
+    "busy service disables saving",
+    "busy Escape cannot dismiss an operation",
+    "retry-save uses the catalog operation outside recovery",
+    "unavailable service cannot create",
+    "actual pointer header moves the profile popup",
+    "popup stays inside owner after movement",
+    "compact scaled popup remains bounded",
+    "focused name editor scrolls fully into the compact viewport"
+  ],
+  "diagnostics": [],
+  "scope": "Owned QML form with supplied profile service. New/Cancel/failure/retry/recovery/restore, modal focus and compact scale; not actual native settings, OS DPI or full design fidelity.",
+  "nativeAppAccepted": false,
+  "fullBetaAccepted": false,
+  "sourceInputs": {
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlayerProfilesDialog.qml": "db41466478d2b48a2c0f3ed992268fd308d548b21a7e0df80e30be09ba5307d1",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedMovableDialog.qml": "d06a4c547a9915e951a4e2d8dccf57431c377ac57512aad1400089194f79211e",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml": "816c0debc0f9f0ccacb37ea2fa7052467ae3d78efa7c7c27c8847687a39d7baa",
+    "modules/gui/qt/style/JuxtopposedPalette.qml": "2bc270d19be0491f71af9c23ea2c0b233efb6f0d1befd322a3f3be1085ed23a1",
+    "modules/gui/qt/tests/test_juxtopposed_player_profiles.py": "3478b14e3b3128a9fd4e93aefe3c771c95276c2fd443ae2099be13b094f0c4d8"
+  }
+}

@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-19",
+  "implementation": "Two-page first-run appearance/shortcut flow; scoped focused-pin Windows shortcut repair.",
+  "nativeJourneys": {
+    "native-setup-r4": {
+      "privateGuiSha256": "1ed61e518dd2aae80216af8d36281c1326e723af5fa97a8ad00425f3b55a9bde",
+      "cases": {
+        "setup-cancel": {
+          "checks": 49,
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "qtDiagnostics": []
+        },
+        "setup-finish": {
+          "checks": 60,
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "qtDiagnostics": []
+        },
+        "setup-reopen": {
+          "checks": 18,
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "qtDiagnostics": []
+        }
+      },
+      "sourceInputsUnchanged": true,
+      "protectedRuntimeUnchanged": true,
+      "rawReceiptSha256": "4c5248fcb88ed94399a177fd06033ed94fa83b5d3761b4e75b4c2feabd11f717"
+    },
+    "native-menu-on-r4": {
+      "privateGuiSha256": "1ed61e518dd2aae80216af8d36281c1326e723af5fa97a8ad00425f3b55a9bde",
+      "cases": {
+        "titlebar-home-menu": {
+          "checks": 185,
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "qtDiagnostics": []
+        }
+      },
+      "sourceInputsUnchanged": true,
+      "protectedRuntimeUnchanged": true,
+      "rawReceiptSha256": "29df9062763bf4cac3fb26035da677e0506d3e2302cec4d8769107625e0cfd22"
+    },
+    "native-menu-off-r4": {
+      "privateGuiSha256": "1ed61e518dd2aae80216af8d36281c1326e723af5fa97a8ad00425f3b55a9bde",
+      "cases": {
+        "titlebar-home-menu": {
+          "checks": 185,
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "qtDiagnostics": []
+        }
+      },
+      "sourceInputsUnchanged": true,
+      "protectedRuntimeUnchanged": true,
+      "rawReceiptSha256": "37383ef8c4a9e4792b7c3d803e1c499715cbe1da1fed4ec5dc459ea19c7a48d7"
+    }
+  },
+  "ordinaryRuntimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "3701cfb268e8811fd90499d5d217cab0ca1c803915509e658b446e61ad28fa6b",
+    "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1",
+    "plugins/audio_output/libwasapi_plugin.dll": "54437150fa51e53a5df49958038248775fa438ebfb5b68279f1d63ace283464e",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "sourceManifests": {
+    "private-inputs-r4.json": "900f88d068c5ea6c1dc5d2053b1c703d89752804222abeee10586c92e19aca22",
+    "ordinary-inputs-r3.json": "98f54dcf2c4665b6805535bc74bf5e55bb17168a8932449457c76567bf594830",
+    "backend-inputs-r3.json": "eab368ee7504d3f3016f7d67e23f1a762dffa991ad06958e2ffec04a72238684",
+    "controls-backend-inputs-r1.json": "6daecaa46ca683750eb83a337f96a15bd8abd369d604c8e8c74ef3851796328e"
+  },
+  "otherChecks": {
+    "setupBackend": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "controlsBackendCases": 19,
+    "setupComponent": {
+      "checks": 65,
+      "failures": 0
+    },
+    "sharedHostChecks": 112,
+    "sharedHostTransitions": 12,
+    "sharedHostBusyGuards": 9,
+    "ordinaryPlaybackCases": [
+      "redesigned",
+      "traditional",
+      "redesigned-library",
+      "live",
+      "downloads-sample"
+    ],
+    "normalExits": true,
+    "privateHooksShipped": false
+  },
+  "ordinaryKeyboardReceipt": "ordinary-keyboard.json",
+  "capturesSha256": {
+    "native-setup-page-one.png": "349ebb2a1e5b79c2fa4dfdb9bd594dfc52ef503ee3ade5e632c840d8ffe7df7e",
+    "native-setup-light-purple.png": "2a317b7b0ea8ce43b59f4888cc4be0b48f0e7d4fd2831ef33d9a94cee2ebb993",
+    "native-setup-shortcut-tour.png": "f08a3ab48c13f44e74b5dbcf82a8cd4758764b462134589a9d1cfde7dee28455",
+    "native-setup-save-error.png": "0bc87ce1f82d8bfe11acb9d5d50eb0229716ed2b4228ab8194a6261a64a835ef",
+    "native-setup-finished.png": "2a3e409d5171266214365e95dd1dd6dd826ce837111861220894c9b24aefe0e1"
+  },
+  "visualReview": {
+    "references": "Cached Figma 1902:3670 / 1902:6770 metadata and original local video at 19:50; no new Figma reads.",
+    "corrected": [
+      "System-card right corners render rounded in native Qt SVG.",
+      "Unselected swatches now match the dim reference appearance.",
+      "Modifier/key chords remain complete instead of leaving an isolated arrow or modifier on a third line."
+    ],
+    "retained": [
+      "1090x759 canonical card; 1056x594 reused inert player preview.",
+      "116x157 theme choices; 64px accent targets and 40px circles; fixed Back/Next/Finish footer.",
+      "Actual startup keys, including existing Shift+E previous frame; literal Plus remains visible."
+    ],
+    "adaptations": [
+      "The separate existing native policy page precedes this two-page flow, so first Back is disabled.",
+      "Actual configured chords take more space than the reference examples; complete rows reflow and scroll.",
+      "Light/System use native palette values where reference tokens are unavailable."
+    ],
+    "completeFidelityAccepted": false
+  },
+  "openGates": [
+    "Actual new-user native consent-widget interaction.",
+    "Windows OS DPI/System changes and complete accessibility/visual acceptance.",
+    "Profiles/customizer/remaining shortcuts and all other full beta roadmap gates.",
+    "Final clean package, source/licenses/review receipts.",
+    "Deferred Windows 10 comparison; historical AUDIOSES causality remains open."
+  ],
+  "fullBetaAccepted": false,
+  "publicationAuthorized": false
+}

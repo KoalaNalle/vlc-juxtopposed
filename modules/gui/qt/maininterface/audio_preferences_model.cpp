@@ -151,7 +151,19 @@ void AudioPreferencesModel::setError(const QString &text)
 bool AudioPreferencesModel::fail(const QString &text) { setError(text); return false; }
 void AudioPreferencesModel::updateRestart()
 {
-    const bool needed = nativeSnapshot() != m_startupNative;
+    auto current = nativeSnapshot();
+    auto startup = m_startupNative;
+    // Each new input reads its initial audio delay from the saved policy.
+    // Existing input/category delay stays under the live player's owner.
+    current.remove(QStringLiteral("audio-desync"));
+    startup.remove(QStringLiteral("audio-desync"));
+    // The linked authored slider reads model values and Core's volume actions
+    // inherit this policy on each invocation. It is not an output startup value.
+    if (m_consumers.authoredVolumeStep) {
+        current.remove(QStringLiteral("volume-step"));
+        startup.remove(QStringLiteral("volume-step"));
+    }
+    const bool needed = current != startup;
     if (needed == m_restart) return; m_restart=needed; emit restartRequiredChanged();
 }
 void AudioPreferencesModel::refreshDevices()

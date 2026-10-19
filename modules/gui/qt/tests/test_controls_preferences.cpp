@@ -164,6 +164,8 @@ private slots:
     void shortcutSnapshotValidationAndConflictScope()
     {
         auto keys = model->shortcutValues();
+        const auto active = model->activeShortcuts();
+        QCOMPARE(active, keys);
         auto invalid = keys; invalid.remove(invalid.firstKey());
         QVERIFY(!model->applyShortcuts(invalid));
         invalid = keys; invalid.remove(invalid.firstKey()); invalid.insert("rate", QStringLiteral("1"));
@@ -182,8 +184,10 @@ private slots:
         keys["global-key-play-pause"] = QStringLiteral("Ctrl+Alt+Shift+F11");
         QVERIFY(model->applyShortcuts(keys));
         QVERIFY(model->restartRequired());
+        QCOMPARE(model->activeShortcuts(), active);
         QCOMPARE(model->values().value("shortcutsPreset").toString(), QStringLiteral("Custom"));
         close(); open(); QCOMPARE(model->shortcutValues(), keys);
+        QCOMPARE(model->activeShortcuts(), keys);
         QVERIFY(!model->restartRequired());
     }
     void resetIsScopedAndReversible()

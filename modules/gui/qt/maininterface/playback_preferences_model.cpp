@@ -215,6 +215,7 @@ QVariantMap PlaybackPreferencesModel::supportNotes() const
         {QStringLiteral("timeShiftSize"), tr("Maximum bytes per native temporary-file chunk, not a total buffer limit. -1 uses the native 50 MiB chunk default; explicit sizes range from 1 MiB to INT_MAX bytes.")}};
 }
 void PlaybackPreferencesModel::reload() { setError({}); refresh(); if (!m_intf) setError(tr("The native Playback preferences service is unavailable.")); }
+void PlaybackPreferencesModel::transportDefaultsChanged() { refresh(); }
 bool PlaybackPreferencesModel::saveRate(float value)
 {
     // The immutable shared store deliberately handles only bool/int/text.
@@ -251,6 +252,16 @@ void PlaybackPreferencesModel::applyLive(const QString &key)
         config_GetInt("random") ? VLC_PLAYLIST_PLAYBACK_ORDER_RANDOM : VLC_PLAYLIST_PLAYBACK_ORDER_NORMAL);
     else if (key == QStringLiteral("finishAction") || key == QStringLiteral("stopAfterEachItem")) vlc_playlist_SetMediaStoppedAction(m_intf->p_playlist,
         config_GetInt("play-and-exit") ? VLC_PLAYLIST_MEDIA_STOPPED_EXIT : config_GetInt("play-and-stop") ? VLC_PLAYLIST_MEDIA_STOPPED_STOP : VLC_PLAYLIST_MEDIA_STOPPED_CONTINUE);
+}
+void PlaybackPreferencesModel::profileDefaultsChanged(const QStringList &nativeKeys)
+{
+    if (m_intf) {
+        if (nativeKeys.contains(QStringLiteral("start-paused"))) applyLive(QStringLiteral("startPlayback"));
+        if (nativeKeys.contains(QStringLiteral("repeat")) || nativeKeys.contains(QStringLiteral("loop"))) applyLive(QStringLiteral("repeatMode"));
+        if (nativeKeys.contains(QStringLiteral("random"))) applyLive(QStringLiteral("shuffle"));
+        if (nativeKeys.contains(QStringLiteral("play-and-exit")) || nativeKeys.contains(QStringLiteral("play-and-stop"))) applyLive(QStringLiteral("finishAction"));
+    }
+    setError({}); refresh();
 }
 bool PlaybackPreferencesModel::setValue(const QString &key, const QVariant &input)
 {

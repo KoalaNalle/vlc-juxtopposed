@@ -1,0 +1,8 @@
+{
+  "accepted": false,
+  "reason": "Confirmed physical overwrite: before child 22822 bytes; completed child physical file 16364; after native reopen 16364; parent profile reopen restored 22822-byte pending document. The independent physical-copy parser confirms child completion before the parent sync.",
+  "repair": "New profile INI writes use an independent staged QSettings filename and a locked atomic physical commit; the borrowed filename cache never receives the staged profile update. Existing shared preference helper is unchanged.",
+  "regression": "unfinishedSwitchReopensWithMatchingTargetLayoutAndFinishesInColdProcess",
+  "fixedBy": "coordinator-verification.json",
+  "ordinaryNativeAccepted": false
+}

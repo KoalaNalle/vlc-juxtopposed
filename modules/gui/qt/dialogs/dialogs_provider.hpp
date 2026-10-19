@@ -323,6 +323,7 @@ signals:
     void showGlobalSettingsDialog();
     void showNewPlaylistDialog();
     void showConversionDialog();
+    void showPlayerProfilesDialog(bool create);
     void newPlaylistSaved(MLItemId playlist);
     void qmlDialogVisibleChanged();
     void qmlInputFocusedChanged();

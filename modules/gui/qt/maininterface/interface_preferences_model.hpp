@@ -27,6 +27,7 @@ public:
         bool controlAutoHide = false;
         bool controlHideDelay = false;
         bool popupDuration = false;
+        bool fullscreenControls = false; // Embedded main-window player only.
     };
     explicit InterfacePreferencesModel(qt_intf_t *, QSettings *, QObject *parent = nullptr);
     InterfacePreferencesModel(qt_intf_t *, QSettings *, Consumers, QObject *parent = nullptr);

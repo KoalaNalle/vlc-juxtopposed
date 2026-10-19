@@ -725,3 +725,6 @@ test_addons_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
 endif
 
 EXTRA_DIST += addons-native.mk libvlc/native_addons.py libvlc/native_addons.md
+EXTRA_DIST += mmdevice-native.mk modules/audio_output/mmdevice_stop.c
+EXTRA_DIST += libvlc/native_mmdevice_stop.py libvlc/native_mmdevice_stop.md
+EXTRA_DIST += libvlc/native_mmdevice_lifecycle.py

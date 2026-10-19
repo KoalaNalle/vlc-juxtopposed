@@ -150,6 +150,15 @@ QVariantMap ControlsPreferencesModel::shortcutValues() const
         result.insert(it.key(), text(it.key().toUtf8().constData()));
     return result;
 }
+QVariantMap ControlsPreferencesModel::activeShortcuts() const
+{
+    // Native shortcut edits apply after restart. The tour must describe the
+    // current input mapping, rather than advertise a newly saved inactive key.
+    QVariantMap result;
+    for (auto it = m_defaults.cbegin(); it != m_defaults.cend(); ++it)
+        result.insert(it.key(), m_startup.value(it.key()));
+    return result;
+}
 QVariantMap ControlsPreferencesModel::restartSnapshot() const
 {
     QVariantMap result = shortcutValues();

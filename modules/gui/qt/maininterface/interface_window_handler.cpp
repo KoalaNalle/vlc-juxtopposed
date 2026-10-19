@@ -548,10 +548,17 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
 
     QQuickItem * item = p_intf->p_compositor->activeFocusItem();
 
-    // A popup owns its focused controls even after mouse focus, which does
-    // not set visualFocus. Deliver both press and release to that popup.
+    const bool navigationKey = key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Right
+        || key == Qt::Key_Menu || (key == Qt::Key_F10 && event->modifiers().testFlag(Qt::ShiftModifier))
+        || ((key == Qt::Key_Space || key == Qt::Key_Return || key == Qt::Key_Enter)
+            && !(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier)));
+
+    // Popups and the sidebar's navigation controls retain their own keys after
+    // mouse/popup focus, which does not set visualFocus. Other player shortcuts
+    // keep the existing prefer-hotkeys policy.
     for (auto *owner = item; owner; owner = owner->parentItem())
-        if (owner->isVisible() && owner->inherits("QQuickPopupItem"))
+        if (owner->isVisible() && (owner->inherits("QQuickPopupItem")
+            || (navigationKey && owner->property("navigationKeyScope").toBool())))
             return false;
 
     // NOTE: When the item has visual focus we let it handle the key. When the item does not

@@ -13,6 +13,7 @@ C.ToolButton {
     required property url source
     required property string description
     property real uiScale: 1
+    property var appearance: JuxtopposedPalette
     property bool mirrorIcon: false
     property color fillColor: "transparent"
 
@@ -28,9 +29,9 @@ C.ToolButton {
 
     background: Rectangle {
         radius: 4 * root.uiScale
-        color: root.down ? JuxtopposedPalette.color("#404040") : root.hovered ? JuxtopposedPalette.color("#303030") : root.fillColor
+        color: root.down ? root.appearance.color("#404040") : root.hovered ? root.appearance.color("#303030") : root.fillColor
         border.width: root.visualFocus ? 2 * root.uiScale : 0
-        border.color: JuxtopposedPalette.color("#D37918")
+        border.color: root.appearance.color("#D37918")
     }
 
     contentItem: Item {

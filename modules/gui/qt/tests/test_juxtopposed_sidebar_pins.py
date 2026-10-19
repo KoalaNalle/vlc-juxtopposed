@@ -11,8 +11,8 @@ import tempfile
 
 root_dir = Path(__file__).resolve().parents[4]
 os.environ.update(QT_QPA_PLATFORM='offscreen', QT_QUICK_BACKEND='software', QML_DISABLE_DISK_CACHE='1', QT_QPA_FONTDIR=str(root_dir/'modules/gui/qt/pixmaps/juxtopposed'))
-from PySide6.QtCore import QAbstractListModel, QModelIndex, Property, Signal, Slot, Qt, QUrl, qInstallMessageHandler
-from PySide6.QtGui import QGuiApplication, QFontDatabase
+from PySide6.QtCore import QAbstractListModel, QCoreApplication, QModelIndex, QPoint, QPointF, Property, Signal, Slot, Qt, QUrl, qInstallMessageHandler
+from PySide6.QtGui import QGuiApplication, QFontDatabase, QWheelEvent
 from PySide6.QtQml import QQmlExpression, qmlContext
 from PySide6.QtQuick import QQuickView
 from PySide6.QtTest import QSignalSpy, QTest
@@ -121,14 +121,31 @@ check(context.count()==1 and context.at(0)[0]=='owned-1','keyboard context menu 
 row=focus(59);key=model.rows[59]['pinKey'];QTest.keyClick(view,Qt.Key_Up,Qt.ControlModifier);QTest.qWait(50)
 check(model.rows[58]['pinKey']==key,'actual Control-Up dispatches model reorder')
 check(item('juxtopposedSidebarPin58').hasActiveFocus(),'reorder retains keyboard focus on same identity')
+check(item('juxtopposedSidebarPin58').property('visualFocus'),'keyboard reorder retains the visible focus outline')
 row=focus(59);QTest.keyClick(view,Qt.Key_Down);QTest.qWait(50)
 check(item('juxtopposedSidebarAdd').hasActiveFocus(),'virtualized last row navigates to Add item')
 QTest.keyClick(view,Qt.Key_Space)
 check(add.count()==1,'actual Add item activates by keyboard')
 model.error_text='Owned save failed. Restore preferences and retry.';model.retry_pending=True;model.stateChanged.emit()
-expr('pinList.positionViewAtEnd(); pinList.forceLayout()');QTest.qWait(40)
-retry=item('juxtopposedSidebarRetry');retry.forceActiveFocus();QTest.keyClick(view,Qt.Key_Space);QTest.qWait(40)
+focus(59);QTest.keyClick(view,Qt.Key_Down);QTest.qWait(40)
+retry=item('juxtopposedSidebarRetry')
+check(retry.hasActiveFocus() and not item('juxtopposedSidebarAdd').isEnabled(),'error arrows skip disabled Add and reach Retry')
+QTest.keyClick(view,Qt.Key_Down);QTest.qWait(40)
+check(item('juxtopposedSidebarDismiss').hasActiveFocus(),'error arrows reach Dismiss after Retry')
+QTest.keyClick(view,Qt.Key_Up);QTest.qWait(40)
+check(retry.hasActiveFocus(),'error reverse arrow returns to Retry')
+QTest.keyClick(view,Qt.Key_Space);QTest.qWait(40)
 check(model.retry_count==1 and not model.retry_pending,'visible Retry action invokes exact supplied operation')
+check(item('juxtopposedSidebarAdd').hasActiveFocus(),'successful Retry restores enabled Add focus')
+check(item('juxtopposedSidebarAdd').property('visualFocus'),'keyboard Retry restores a visible Add focus outline')
+model.error_text='Owned save failed again.';model.retry_pending=True;model.stateChanged.emit()
+focus(59);QTest.keyClick(view,Qt.Key_Down);QTest.keyClick(view,Qt.Key_Down);QTest.qWait(40)
+check(item('juxtopposedSidebarDismiss').hasActiveFocus(),'second recoverable failure retains keyboard access to Dismiss')
+QTest.keyClick(view,Qt.Key_Space);QTest.qWait(40)
+check(not model.retry_pending and not model.error_text and item('juxtopposedSidebarAdd').hasActiveFocus(),
+      'Dismiss clears the error and restores enabled Add focus')
+check(item('juxtopposedSidebarAdd').property('visualFocus'),'keyboard Dismiss restores a visible Add focus outline')
+check(len(context.at(0))==3 and context.at(0)[2]==Qt.ShortcutFocusReason.value,'keyboard context request preserves the keyboard focus reason')
 for expanded,width in ((True,217),(False,50)):
     root.setProperty('expanded',expanded);view.resize(width,260)
     for index in (0,30,59):
@@ -140,6 +157,54 @@ for expanded,width in ((True,217),(False,50)):
     gap=add_item.mapToScene(add_item.boundingRect().topLeft()).y()-last.mapToScene(last.boundingRect().bottomLeft()).y()
     check(abs(gap-14)<0.1,f'{width}px rail preserves original14px gap before Add item')
     check(view.grabWindow().save(str(args.output_dir/f'sidebar-{width}.png')),f'{width}px rail captured')
+for expanded,width in ((True,217),(False,50)):
+    root.setProperty('expanded',expanded);view.resize(width,260);QTest.qWait(40)
+    listing=item('juxtopposedSidebarPinList')
+    def wheel(point,angle=QPoint(0,-120),pixels=QPoint()):
+        event=QWheelEvent(point,view.mapToGlobal(point.toPoint()),pixels,angle,
+                          Qt.NoButton,Qt.NoModifier,Qt.NoScrollPhase,False)
+        QCoreApplication.sendEvent(view,event);QTest.qWait(250)
+        return event.isAccepted()
+    for padding in (False,True):
+        expr('pinList.positionViewAtBeginning(); pinList.forceLayout()')
+        before=listing.property('contentY')
+        point=root.mapToScene(QPointF(2,root.height()/2)) if padding else listing.mapToScene(listing.boundingRect().center())
+        accepted=wheel(point)
+        check(accepted and listing.property('contentY')>before+.5,
+              f'{width}px rail scrolls actual rows or padding, padding={padding}')
+    padding_point=root.mapToScene(QPointF(2,root.height()/2))
+    expr('pinList.cancelFlick(); pinList.positionViewAtBeginning(); pinList.forceLayout()')
+    before=listing.property('contentY')
+    accepted=wheel(padding_point,QPoint(),QPoint(0,-23))
+    check(accepted and abs(listing.property('contentY')-before-23)<.51,
+          f'{width}px rail honors pixel wheel distance over padding')
+    before=listing.property('contentY')
+    check(wheel(padding_point,QPoint(120,0)) and abs(listing.property('contentY')-before)<.51,
+          f'{width}px rail consumes horizontal padding wheel without vertical movement')
+    expr('pinList.contentY = Math.max(pinList.originY, pinList.originY + pinList.contentHeight - pinList.height); pinList.forceLayout()')
+    before=listing.property('contentY')
+    check(wheel(padding_point) and abs(listing.property('contentY')-before)<.51,
+          f'{width}px rail consumes padding wheel at the end without overshooting')
+model.beginResetModel();model.rows=[];model.endResetModel();model.countChanged.emit()
+root.setProperty('routes',[dict(key=name,text=name,icon='X',uri=[name],enabled=True)
+    for name in ('home','video','music','network','playlists','recent')])
+for expanded,width in ((True,217),(False,50)):
+    root.setProperty('expanded',expanded);view.resize(width,226);QTest.qWait(100)
+    expr('focusFooter(Qt.PopupFocusReason)');QTest.qWait(100)
+    listing=item('juxtopposedSidebarPinList');add_item=item('juxtopposedSidebarAdd')
+    def footer_visible():
+        bounds=add_item.mapRectToItem(listing,add_item.boundingRect())
+        return add_item.hasActiveFocus() and bounds.top()>=-.51 and bounds.bottom()<=listing.height()+.51
+    check(footer_visible(),f'{width}px empty rail shows its focused Add fallback')
+    model.error_text='Owned empty-store failure.';model.retry_pending=True;model.stateChanged.emit();QTest.qWait(100)
+    expr('focusFooter(Qt.TabFocusReason)');QTest.qWait(60)
+    QTest.keyClick(view,Qt.Key_Down);QTest.qWait(60)
+    check(item('juxtopposedSidebarDismiss').hasActiveFocus(),f'{width}px empty rail reaches Dismiss')
+    QTest.keyClick(view,Qt.Key_Space);QTest.qWait(150)
+    check(footer_visible(),f'{width}px empty rail keeps Add visible after error footer collapses')
+    view.resize(width,200);QTest.qWait(100)
+    check(footer_visible(),f'{width}px empty rail keeps focused Add visible after resize')
+    check(view.grabWindow().save(str(args.output_dir/f'sidebar-empty-{width}.png')),f'{width}px empty rail captured after Dismiss')
 check(not messages,'no Qt/QML diagnostics')
 (args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,checks=checks,suppliedModel=True,nativeAcceptance=False,originalFidelityAccepted=False),indent=2)+'\n',encoding='utf-8')
 print(f'Passed {len(checks)} sidebar component checks; native behavior and original fidelity remain separate.')

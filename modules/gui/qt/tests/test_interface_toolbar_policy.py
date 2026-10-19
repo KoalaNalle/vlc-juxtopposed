@@ -77,7 +77,7 @@ def main():
     report = dict(
         scope='Actual production toolbar FSM, FSMState and Helpers; supplied mutable MainCtx/Player boundary; shared Qt QuickTest software/offscreen.',
         nativeApplicationAccepted=False, nativeConsumerAccepted=False,
-        sourceIdentities=identities, expectedTests=25, timeoutSeconds=45,
+        sourceIdentities=identities, expectedTests=41, timeoutSeconds=45,
         timeout=False, exitCode=None, passed=False)
     try:
         result = subprocess.run(command, env=env, capture_output=True, timeout=45,
@@ -111,7 +111,7 @@ def main():
                                   if line.startswith(('QWARN ', 'QFATAL '))]
         report['passed'] = (
             not report['timeout'] and report['exitCode'] == 0
-            and int(suite.get('tests', -1)) == 25 and len(cases) == 25
+            and int(suite.get('tests', -1)) == 41 and len(cases) == 41
             and int(suite.get('failures', -1)) == 0
             and int(suite.get('errors', -1)) == 0
             and int(suite.get('skipped', -1)) == 0

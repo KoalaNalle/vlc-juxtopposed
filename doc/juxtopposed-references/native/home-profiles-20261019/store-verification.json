@@ -1,0 +1,41 @@
+{
+  "forcedCleanupUsed": false,
+  "pid": 26076,
+  "exitCode": 0,
+  "normalExit": true,
+  "counts": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "caseNames": [
+    "cleanupTestCase",
+    "cloneAndCheckpointPreserveIndependentProfilesAndUnrelatedKeys",
+    "concurrentSaveLockCanRetry",
+    "failedDiskSavePreservesAcceptedStateAndRetries",
+    "incompleteRollbackCannotClearRecoveryRecord",
+    "initTestCase",
+    "initialProfilesDoNotWrite",
+    "invalidNamesDoNotPublishOrWrite",
+    "malformedSavedDataIsPreserved",
+    "mismatchedRecoveryRecordIsPreserved",
+    "nonfiniteAndUnboundedSnapshotsAreRejected",
+    "pendingChangeBlocksCompetingEdits",
+    "pendingSwitchSurvivesColdProcessAndFinishes",
+    "profileCountLimitPreservesAllAcceptedProfiles",
+    "snapshotsExcludeGlobalGroupsAndUnsupportedValues",
+    "staleWindowCannotOverwriteAnotherWindow",
+    "switchJournalKeepsPreviousSelectionUntilComplete",
+    "unknownVersionAndMissingSelectionArePreserved"
+  ],
+  "diagnostics": [],
+  "sourceInputsUnchanged": true,
+  "protectedRuntimeUnchanged": true,
+  "executableSha256": "29587dd86c93fb2718738daae4a8fed03bf8d3c7b01087f984a990aa0192cf0b",
+  "sourceManifestSha256": "13d6a07be9d92d77609ae4084b50e93251d1166181625931966d9a55a4f4ad01",
+  "scope": "Owned native QSettings profile catalog, checked writes, unfinished-switch journal, conflict/retry and a cold OS-process read/write. No media-service application, native layout rendering or profile UI integration yet.",
+  "fullBetaAccepted": false,
+  "ordinaryAppIntegrated": false,
+  "passed": true
+}

@@ -124,6 +124,14 @@ void GeneralPreferencesModel::setError(const QString &message)
 
 void GeneralPreferencesModel::refresh()
 {
+    const bool required = !m_settings || m_settings->value(setupVersionKey(), 0).toInt() < 1;
+    const bool ready = required && m_intf && m_scheme && m_settings
+        && !nativeBool("qt-privacy-ask", true);
+    if (required != m_setupRequired || ready != m_setupReady) {
+        m_setupRequired = required;
+        m_setupReady = ready;
+        emit setupStateChanged();
+    }
     const auto accent = nativeString("qt-accent-color");
     int accentIndex = accents.indexOf(accent.toUpper());
     if (accent.isEmpty() || accent == QStringLiteral("default")) accentIndex = 0;
@@ -309,4 +317,29 @@ bool GeneralPreferencesModel::chooseLogFile()
         m_values.value(QStringLiteral("logFile")).toString(), tr("Text log files (*.log *.txt);;All files (*)"));
     if (path.isEmpty()) return false; // A cancelled genuine native picker is not a saved change.
     return setValue(QStringLiteral("logFile"), path);
+}
+
+bool GeneralPreferencesModel::finishSetup(const QVariant &theme, const QVariant &accentIndex)
+{
+    setError({});
+    int selectedTheme, selectedAccent;
+    if (!integer(theme, 0, 2, selectedTheme) || !integer(accentIndex, 0, 8, selectedAccent))
+        return fail(tr("Choose a theme and one of the nine accent colours."));
+    if (!m_intf || !m_scheme || !m_settings)
+        return fail(tr("The native preferences service is unavailable."));
+    if (!m_setupRequired) return true; // A repeated Finish must not reapply a stale draft.
+    if (!m_setupReady)
+        return fail(tr("Complete the Welcome privacy choices before finishing setup."));
+    if (!setValue(QStringLiteral("theme"), selectedTheme)
+        || !setValue(QStringLiteral("accentIndex"), selectedAccent))
+        return false;
+    // Appearance spans the existing Qt/native stores. Complete only after both
+    // checked writes succeed. A failed final marker leaves setup open for Retry;
+    // the saved appearance remains accurately represented by values().
+    if (!storeSettings(m_settings, setupVersionKey(), 1)) {
+        const auto reason = m_lastError;
+        return fail(tr("Your appearance choices were saved, but setup could not finish. %1").arg(reason));
+    }
+    refresh();
+    return true;
 }

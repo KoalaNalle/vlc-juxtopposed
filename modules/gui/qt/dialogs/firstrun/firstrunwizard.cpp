@@ -21,6 +21,7 @@
 #include "maininterface/mainctx.hpp"
 #include "dialogs/toolbar/controlbar_profile_model.hpp"
 #include "medialibrary/medialib.hpp"
+#include "util/checked_preferences_store.hpp"
 
 #include <QPushButton>
 #include <QButtonGroup>
@@ -35,6 +36,7 @@ FirstRunWizard::FirstRunWizard( qt_intf_t *_p_intf, QWidget *parent)
                : QWizard( parent )
 {
     p_intf = _p_intf;
+    m_juxtopposedSetup = p_intf->p_mi && p_intf->p_mi->juxtopposedControls();
 
     /* Set windown properties */
     setWindowTitle( qtr( "Welcome" ) );
@@ -134,6 +136,12 @@ FirstRunWizard::FirstRunWizard( qt_intf_t *_p_intf, QWidget *parent)
  */
 void FirstRunWizard::finish()
 {
+    if (m_juxtopposedSetup) {
+        // validateCurrentPage() saved the user's explicit policy choices. The
+        // original two-page theme/shortcut flow now owns appearance setup.
+        p_intf->p_mi->reloadPrefs();
+        return;
+    }
     /* Welcome Page settings  */
     config_PutInt( "metadata-network-access", ui.privacyCheckbox->isChecked() );
     config_PutInt( "qt-privacy-ask", 0 );
@@ -262,6 +270,7 @@ void FirstRunWizard::imageLayoutClick( QAbstractButton* btn )
  */
 int FirstRunWizard::nextId() const
 {
+    if (m_juxtopposedSetup) return -1;
     switch ( currentId() )
     {
         case WELCOME_PAGE:
@@ -276,6 +285,19 @@ int FirstRunWizard::nextId() const
         default:
             return -1;
     }
+}
+
+bool FirstRunWizard::validateCurrentPage()
+{
+    if (!m_juxtopposedSetup) return QWizard::validateCurrentPage();
+    QString error;
+    if (!CheckedPreferencesStore(p_intf).saveNative({
+            {QStringLiteral("metadata-network-access"), ui.privacyCheckbox->isChecked()},
+            {QStringLiteral("qt-privacy-ask"), false}}, error)) {
+        page(WELCOME_PAGE)->setSubTitle(error);
+        return false;
+    }
+    return true;
 }
 
 /**
@@ -317,6 +339,12 @@ void FirstRunWizard::initializePage( int id )
 void FirstRunWizard::reject()
 {
     assert(p_intf->p_mi);
+    if (m_juxtopposedSetup) {
+        // Closing the consent page does not approve metadata access or mark
+        // the choices complete. Preserve the existing policy and ask next time.
+        done(QDialog::Rejected);
+        return;
+    }
     /* Welcome Page settings  */
     config_PutInt( "metadata-network-access", 1 );
     config_PutInt( "qt-privacy-ask", 0 );

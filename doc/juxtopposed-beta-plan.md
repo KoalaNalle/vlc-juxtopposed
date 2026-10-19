@@ -1,5 +1,23 @@
 # VLC Juxtopposed: first publishable beta plan
 
+**Current execution roadmap — 18 October 2026:** use the
+[revised beta roadmap](juxtopposed-beta-roadmap.md) and
+[32-surface readiness snapshot](juxtopposed-references/beta-readiness-20261018.md).
+The text below preserves requirements, anchors and historical checkpoint receipts.
+Its earlier pending labels, guest pause/paths and proposed Figma allowance are
+historical where superseded. They must not restart completed work or imply
+new reference-call/publication authorization.
+
+Home update — 18 October 2026: the authoritative checkout is again
+`C:\Modding\vlc-juxtopposed`; the departure pause is historical. The
+[home cache/audio checkpoint](juxtopposed-references/native/home-cache-audio-20261018/README.md)
+passes native cache/icon/window16/3297, actual-module audio concurrency32,
+real WASAPI lifecycle16, ordinary Qt5 and HLS20 on Windows 11. A paired old-Qt
+negative reproduces the timer failure and late warning. The current audio repair
+serializes teardown on the audio thread. Its connection to the original Windows
+10 AUDIOSES crash and exact-platform closure remain unproven; that issue stays
+open. No additional Figma reads or publication occurred; full beta is incomplete.
+
 Departure override — 18 October 2026: development paused for the user's return
 home. [RETURN-HOME.md](../RETURN-HOME.md) is the current status and ordered next
 steps. Native R5 window/navigation16/3150 and component21 are scoped passes;

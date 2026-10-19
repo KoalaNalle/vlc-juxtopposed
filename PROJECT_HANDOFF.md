@@ -1,5 +1,361 @@
 # VLC Juxtopposed redesign — project handoff
 
+Latest checkpoint — **19 October 2026, morning**:
+The user requested a checkpoint commit/push followed by computer shutdown.
+Stop here; the full beta goal is unfinished. Git history/remote provide the
+publication receipt. This request does not authorize a beta release or tag.
+
+- [Fullscreen controls](doc/juxtopposed-references/native/home-fullscreen-controls-20261019/README.md):
+  actual audio/video On/Off138 checks, four normal exits, no Qt diagnostics or
+  native errors. Policy41, Interface storage15 and component10 retain separate
+  scopes. Ordinary GUI `fd7f8af9b480…`, private GUI `8be8eff6e4d8…`, source-r6.
+- [Playlist origins](doc/juxtopposed-references/native/home-playlist-context-20261019/README.md):
+  actual Library On/Off67 checks, two normal exits, no Qt/native errors;
+  actual names, literal labels, shared media, rename/deletion and paused state.
+- [Favorite](doc/juxtopposed-references/native/home-current-media-20261019/README.md):
+  ordinary pointer/Space/Return verified with independent owned database
+  readback, visible paused state and normal Ctrl+Q exit. The earlier private183
+  checks retain exact native-state/source-race/failure-retry proof.
+- [Playback/Audio](doc/juxtopposed-references/native/home-playback-consumers-20261019/README.md):
+  console R18 passes18, normal exit, verified `wdummy`/`vdummy`/`adummy`,
+  no hardware decoder/native errors/unexpected warnings. Time-shift tests prove
+  constructor consumption only; live disk spooling/rollover remain open.
+
+The human dismissed the old firewall prompt with Cancel. Fresh Computer Use
+confirmed its absence; the old window closed normally. New desktop runs used
+monitor2 LF24T450F and individual startup holds before any test input. No new
+permission prompt was encountered. The staged test environment now omits a
+duplicate VLC_PLUGIN_PATH:601 modules load once and the duplicate-hotkey startup
+error disappears on the identical ordinary binary. Earlier failures are retained.
+Native FLAC frame-size/dummy-mux warnings and a tooltip crossing the monitor
+edge remain recorded for targeted review. No raw Computer Use capture is saved.
+
+**Next:** activate the verified fullscreen settings gate and authored Audio
+volume-step gate, build a new ordinary tuple, then test their actual settings
+editors. The brief unbuilt activation was withdrawn before this checkpoint;
+current production/private input manifests again match the verified binaries.
+Windows-device capability currently also gates passthrough; separate unverified
+receiver acceptance before enabling that group. Continue the thirteen-page
+[consumer audit](doc/juxtopposed-settings-consumer-audit.md), remaining workflows,
+original-design/accessibility/Windows-DPI checks and final matched package.
+The Windows10 comparison and original AUDIOSES cause remain explicitly deferred.
+No dependency, firewall, Defender or UAC setting changed in this continuation.
+
+Earlier continuation — **19 October 2026, 06:36 home time**:
+the [settings consumer audit](doc/juxtopposed-settings-consumer-audit.md) now
+separates new native field behavior, existing evidence and concrete remaining
+gaps across all thirteen categories. Console R10 passes twelve cases for eight
+Playback and two Audio fields, normal exit/no Qt diagnostics; source-r10 and
+the [combined receipts](doc/juxtopposed-references/native/home-playback-consumers-20261019/README.md)
+preserve exact scope. Audio language and Audio Off are verified startup policies.
+The contradictory Audio on/off "next media" hint is corrected; Audio component19
+passes. Ordinary Audio R6 `45cee48bab4a…` and private playlist-origin UI R3
+`a199ec289e57…` compile against matching source. Their desktop tests remain **unexecuted**: the
+same human firewall question is still pending. Older ordinary44ab/private0ce
+builds retain earlier source scopes; use the new matching R6/R3 manifests and
+guarded `run-native-ui-r3.py` after actual human dismissal. Native console R11
+is compiling a new Audio-delay timing check, with production objects reused.
+No Core/audio module, security setting, dependency, commit
+or publication changed. Full beta acceptance is still open.
+
+Further Audio-delay audit: R13 now passes the paired repair and all thirteen
+consumption cases, plus existing Audio defaults/PCM32, real Windows Audio4 and
+Audio component20. All exit normally without Qt diagnostics. The actual
+native offset changes from0ms to125ms on the same player's next input and on
+native-instance reopen, preserving the paused current input/clock/offset.
+R12 reproduces exactly one false-restart failure. R13 reuses its exact desired
+test object with the repaired model. The model's restart fingerprint now excludes
+the next-input `audio-desync` policy; help text states next-input timing, and the
+component fixture retains immediate-step/restart-only distinctions.
+Work/source checkpoint: `beta-playback-consumers-20261019/source-r13`.
+The current-source **ordinary Audio R7 build is running**; private origin UI R4
+inputs/scripts are prepared and must build after R7. Older R6/R3 snapshots are
+preserved. Do not execute any GUI until the pending human firewall question is
+answered. No Core/audio module or security/dependency/publication change occurred.
+
+Audio consumer continuation — **19 October 2026**: real Windows native device,
+startup-volume and live volume-step checks pass four cases, including setup and
+cleanup, with two MMDevice/WASAPI sessions and exact paused-input preservation.
+The audit repairs a false restart warning and help text for the linked live step
+policy. The identical desired test object reproduces the warning on the original
+model and passes with the repair. Existing Audio defaults/PCM32 and actual Audio
+component18 pass without Qt diagnostics. Ordinary GUI `44ab133418c4…` compiles;
+its ordinary playback/direct input are **not accepted**. MainCtx Audio consumer
+gates remain false. See the [scoped receipt](doc/juxtopposed-references/native/home-audio-consumers-20261019/README.md).
+Work/source: `build-windows/beta-audio-consumers-20261019`, `source-r5`.
+The newer host's player-preview registration has also been added to ten older
+settings component workers. The twelve other category workers pass with normal
+exits, no forced cleanup and no Qt messages through interpreter exit; Audio18
+passes separately. See the [component replay](doc/juxtopposed-references/native/home-settings-components-20261019/README.md).
+Inputs/logs: `build-windows/beta-settings-audit-20261019/component-r1`. These are
+presentation contracts, not acceptance of every native field consumer.
+The Windows firewall question below is still pending: no visible app tests or
+security actions have resumed. Continue independent full-roadmap work. The
+playlist-origin private GUI has been rebuilt against this Audio repair as
+`0ce883cbd34b…`, matched to the ordinary `44ab133418c4…` production manifest;
+use its guarded `run-native-ui-r2.py` after actual human dismissal, not R1.
+
+Playback consumer continuation: console R9 passes ten cases, including setup/
+cleanup, with no Qt diagnostics and normal exit. Owned media proves genuine
+audio/subtitle track selection, paused independence, cleared ID overrides,
+same-player next-input selection and cold persistence. A local two-rendition HLS
+fixture also proves the preferred-quality cap:240 stays paused/current, then
+720 allows the available360 rendition on the same player's next input and cold
+reopen. The real main-playlist startup path also proves Start playback's future-
+input policy without resuming the paused item, and saved speed1.5's restart-only
+behavior (current/same-player next input remain1.0; new player uses1.5). This is
+local native behavior, not HTTP/service, desktop or rendering acceptance. See
+the [receipt](doc/juxtopposed-references/native/home-playback-consumers-20261019/README.md).
+Repeat current/all, shuffle traversal and stop-after-item now also pass on
+finite owned WAV inputs. Eight Playback fields have scoped native behavioral
+proof. Work/source: `build-windows/beta-playback-consumers-20261019`, `source-r9`.
+The historical expanded R8 repeat/shuffle observer used
+playing-state events, which are deliberately absent across seamless changes.
+It also observed HLS paused time change after a fixed200ms delay. Preference
+causality was unproved. R8
+source/logs are preserved in `source-r8-rejected` and `R8-REJECTED.json`.
+R9 passes with the corrected current-media observer plus a1200ms stable paused
+baseline and200ms no-write control; exact post-write equality remains required.
+Instant pause-time publication is not accepted by this scope. The runner
+also now saves a failure report when XML is incomplete. No Core/GUI source
+change was made for this investigation. All current builders/runners are
+terminal; do not rerun unchanged accepted checks or launch GUI while the
+firewall question is pending. Continue independent full-roadmap work.
+The new `test_playback_track_consumers.cpp`, `native_library/playback-consumers.mk`
+and its runner, plus `tests/playback_main_playlist_probe.c`, still need
+EXTRA_DIST registration before final source packaging;
+that distribution-only edit is held until the current guarded GUI journeys.
+
+Playlist-origin continuation — **19 October 2026, implementation in progress**:
+native per-entry source IDs and their immutable origins pass eight headless
+Core/controller tests. Their regression repairs a cached current item left stale
+when removing the playing/selected entry without changing its row index. Live
+and preview name labels, captured model/context-menu origin, and native
+rename/deletion lookup are wired; full ordinary GUI compiles as `baed8bab0407…`.
+Those integration paths have **not** been run/accepted yet. Component25,
+single-play routing13 and existing queue/proxy checks pass in their own scopes.
+See the [scoped checkpoint](doc/juxtopposed-references/native/home-playlist-context-20261019/README.md).
+Work/source: `build-windows/beta-playlist-context-20261019`, `source-ui-r2`.
+All builders/runners are terminal. The Favorite ordinary runtime below remains
+the accepted playback baseline; no new GUI is launched while its human firewall
+question is pending. Continue independent backend work and the full roadmap.
+
+Current-media continuation — **19 October 2026**: Favorite's MainCtx-owned
+native library service and shared tile pass initial89 / cold reopen30 / Library
+off21 / genuine write failure-retry43 (183), normal exits without Qt diagnostics.
+Changes repair checked/checkable state and Space activation, retain focus while
+busy, refuse retained last URLs and guard an empty queue caption. Independent
+SQLite values stay false after the failed write and become
+true after focused retry. Component24 passes; ordinary GUI `d944735cbabb…` passes
+all five playback smokes with protected core/audio/library/source data unchanged.
+See the [scoped receipts](doc/juxtopposed-references/native/home-current-media-20261019/README.md).
+Work/scripts/rejected runs: `build-windows/beta-current-media-20261019`;
+matched source `source-r6b`, private GUI `c01bfecec0a9…`, ordinary runtime
+`ordinary-runtime-r6a`. All builders/native runners have finished.
+
+**One ordinary VLC app remains open on monitor2 behind a Windows firewall
+prompt.** Computer Use stopped immediately; a human Cancel request is pending.
+Do not automate that security prompt. The target is
+`ordinary-cu-r6a2/runtime/vlc.exe`, last returned window15664852; refresh selection
+after human dismissal. Original copied profile/consent and native library source
+remain preserved. No raw CU screenshot was saved. Ordinary direct Favorite input
+and full package/visual/accessibility/DPI acceptance remain open. Continue code
+and backend work while the user sleeps: authoritative playlist-source metadata,
+HDR capability/consumer, other tile actions and the full roadmap. No publication,
+new Figma reads, dependencies or security changes are authorized.
+
+Customizer continuation — **19 October 2026**: the authored 31-entry palette,
+separate video/music drafts, checked Save/retry, Cancel, rendered layout consumers
+and shared timeline/volume presentation are implemented. The pinned R2 private
+GUI `12c39e7b4297…` passes actual paused111 / restart15 / playing111, normal exits
+and no Qt diagnostics. New regressions cover pointer selection then Delete,
+clipped viewport drop refusal, and hiding the live presentation beneath the
+inert draft while keeping its native seek object and primary media alive. A
+native toolbar Repeat All persistence bug is also repaired: 71 checks across
+four cold-process transport/default/profile runs pass. Native layout now passes
+11 cases; component customizer16 and shared host115 (30 transitions /25 busy
+guards) pass. The initial R2 launcher loaded R1 by mistake; those runs are
+explicitly rejected. Accepted R2a pins the exact DLL path/hash and new check names.
+
+Ordinary GUI `2c8d2d219d1f…` at
+`build-windows/beta-customizer-20261019/ordinary-runtime-ui-r2` passes all five
+playback checks. Direct Windows input on monitor2 opens the actual editor with
+Library off, adds a Spacer, saves via Ctrl+Return, verifies physical INI/reopen,
+cancels via Escape and closes normally. Copied-source profile/pins are preserved.
+UI Automation exposes the named popup and all31 palette buttons after a fresh
+observation, but focus metadata stays on the old title; screen-reader acceptance
+remains open. No raw Computer Use screenshots were saved. See the
+[scoped customizer receipts](doc/juxtopposed-references/native/home-customizer-20261019/README.md).
+Source checkpoint: `build-windows/beta-customizer-20261019/source-ui-r2`.
+No live test/build process or VLC window remains. Next finish actual tile
+consumers (including Favorite/HDR), authoritative playlist-source metadata and
+shortcuts, then continue the other full-roadmap gates. Existing VLC font icons
+are an explicit adaptation where original customizer exports are absent.
+The full goal remains active; no new Figma reads, publication, dependencies or
+security changes are authorized. Continue independent work while the user sleeps.
+
+Night continuation — **19 October 2026**: keyboard-return focus outlines are
+repaired. Home menus with Library on/off pass 188 checks each, actual storage
+recovery passes 321, and compact video/audio pass 741/742. All five processes
+exit normally without Qt diagnostics. Ordinary focus R2 (GUI `39e3d70934ab…`)
+passes five playback smokes plus direct Windows Shift+F10/Menu dismissal with
+visible focus rings. The isolated profile/pin remain preserved; the window
+closed normally. See the
+[focus receipt](doc/juxtopposed-references/native/home-keyboard-focus-20261019/verification.json).
+This supersedes the earlier open keyboard-outline status below, within its scope.
+
+The user confirmed that **playback, audio, video, subtitles and player layout**
+belong to profiles. Appearance, keyboard/mouse controls, privacy, network access,
+library locations and credentials stay global. Profiles now have a tested native
+store (18), exact defaults transaction (13), native layout draft (10), combined
+coordinator (13), component form (24), and shared host (113; 20 transitions and
+16 busy guards). A cold-process recovery regression exposed a stale INI cache
+overwrite; isolated staged profile writes repair it and the exact test passes.
+See the [scoped profile receipts](doc/juxtopposed-references/native/home-profiles-20261019/README.md).
+MainCtx/native-menu/movable-form integration now passes native playing/paused
+journeys (79 each) and a fresh OS-process restart (15), normal exits and no
+diagnostics. Ordinary GUI `ebcccb603c70…`
+passes five playback regressions and direct Windows New/save/Shows selection on
+monitor 2; copied source settings and pins remain preserved. Restart restores
+the selected profile/defaults and verifies the actual native rate plus decoded
+fresh media at 1.25. The earlier failed fixture read the empty-input GUI cache
+too early; the production player controller did not need a change. No build/test
+session or VLC window remains open. A popup accessibility-tree
+observation needs disambiguation before accepting screen-reader behavior.
+The matched Qt source checkpoint is `build-windows/beta-profiles-20261019/source-profile-ui-r1`.
+The rendered customizer and video/music consumers are superseded by the newer
+checkpoint above; complete tile actions and quality gates remain open. The full
+beta roadmap remains active. The pre-integration source is preserved in
+`build-windows/beta-profiles-20261019/source-before-integration`.
+No publication is authorized. The user is asleep; continue independent work if
+an actual prompt later needs their handling.
+
+Setup continuation — **19 October 2026**: the confirmed two-page theme/accent
+preview and shortcut tour are implemented and mounted through the existing
+single modal owner. Native backend R3 passes 11 checks with a normal exit;
+the supplied-service setup component passes 65 checks and the shared host passes
+112 (including the existing 12 transitions and nine busy guards). Appearance
+43 and Light-volume seven groups still pass. These component/backend receipts
+do not establish full visual acceptance. Private R3 setup passes Cancel (49),
+Finish with actual save failure/retry (60), and fresh OS-process reopen (18), all
+with normal exits and no Qt diagnostics. Ordinary R2 completed Next/Finish with
+actual Windows keyboard input and saved setup-version 1. New consent-widget
+interaction remains unverified. Visual polish now fixes the System card's right
+corners, unselected swatch opacity and split shortcut chords. Private R4 now
+passes the same three setup journeys and both Library-on/off Home-menu journeys
+(185 each), with normal exits and no Qt diagnostics. Ordinary R3 (GUI
+`3701cfb268e8…`) passes five playback smokes, restored setup without a popup,
+and actual Windows Shift+F10/Menu reopening. The native Controls startup-binding
+snapshot suite passes all 19 cases. The
+[setup receipt](doc/juxtopposed-references/native/home-setup-20261019/verification.json)
+includes exact identities and five reviewed native captures. No build/test
+process remains live. Complete visual/OS-DPI/accessibility/package gates remain open;
+read `build-windows/beta-setup-20261018/CHECKPOINT.json` for the current checkpoint.
+The ordinary R10 runtime below remains the protected accepted interim baseline.
+No new Figma reads, publication, dependency or security changes are authorized.
+
+Physical keyboard comparison: the user confirmed that **Shift+F10 does not reopen
+the pin menu** in ordinary R10 after right-click/Escape. That historical result
+is preserved in the
+[manual receipt](doc/juxtopposed-references/native/home-compact-dialogs-20261018/physical-keyboard-comparison.json).
+The repair registers the exact Shift+F10 shortcut only on a focused visible pin,
+because Qt's Windows mapper suppresses that KeyPress without a matching shortcut.
+Ordinary R2 passes direct Windows-input Shift+F10 and Menu reopening, Escape,
+plain F10 menubar toggling and the off-pin negative. See the
+[repair receipt](doc/juxtopposed-references/native/home-compact-dialogs-20261018/native-keyboard-repair.json).
+A new user physical-keyboard comparison has not been performed. Computer Use
+resumed by the user's OSK request; the ordinary test window closed normally.
+
+Active beta goal checkpoint — **18 October 2026**: the
+[home interaction receipt](doc/juxtopposed-references/native/home-compact-dialogs-20261018/README.md)
+records twelve native movable-dialog cases / 508 checks and eight native compact
+video/audio cases / 1,483 checks. R5 Tab/padding-wheel fixes pass; newer error-action
+focus changes pass 37 component checks and both R6 native compact matrices.
+Real conversion busy/cancel passes with the primary input paused (258 checks)
+and playing (262 checks). Ordinary R6 playback passes five smoke cases. Native
+storage failure/Retry and menu routing pass in R9 after a scoped key-routing fix.
+Capture review found Add could remain focused outside the viewport after Dismiss.
+R10 fixes that layout transition (47 component checks; exact R9 negative fails).
+Six native R10 cases pass, including Home menus with Library on/off and actual
+post-Dismiss visibility. Five ordinary R10 playback smokes pass without private
+hooks. The dedicated Menu key works through Computer Use; a physical Shift+F10
+comparison remains pending. Keyboard-restored focus outline and complete
+accessibility/DPI/visual/package acceptance remain open. Next: two-page setup.
+Read the ignored `build-windows/beta-compact-interaction-20261018/CHECKPOINT.json`
+for the current build/test handle and next action. The full goal remains active.
+
+Current execution plan — **18 October 2026**: the
+[revised beta roadmap](doc/juxtopposed-beta-roadmap.md) supersedes the ordering and
+stale TODOs in earlier summaries. Its
+[32-surface readiness snapshot](doc/juxtopposed-references/beta-readiness-20261018.md)
+separates existing implementation/native receipts from open visual/package gates.
+The [prepared next goal](doc/juxtopposed-beta-goal.md) starts with compact
+navigation and actual movable-dialog input, then covers the full confirmed
+redesign and a clean Windows 11-tested candidate. Windows 10 remains explicitly
+deferred; no new goal, Git publication or Figma-read budget was activated by
+preparing these documents.
+
+Home resume override — **18 October 2026**: the authoritative checkout is again
+**C:\Modding\vlc-juxtopposed**. The returned checkpoint `5829010294` was fast-forwarded
+into `juxtopposed-playback-bar` and matches origin. The previous home commit
+`89b4bd7c53` is retained on `codex/pre-homecoming-20261018`. The D:\homecoming_temp
+return copy, original home Ubuntu distro, home VLC portable profile and five
+pre-existing untracked files are preserved. The departure pause and guest E:-only
+instructions below are historical; do not activate the archived guest environment.
+
+The restore verified 55,214 destination files (73,732,630,651 bytes), including a
+full readback checksum of the cold Linux disk; Git's full integrity check passed.
+Six absent auxiliary cache/old capture-reference files and saved IPC sockets are
+logged in `build-windows/homecoming-20261018/RESTORE-VERIFICATION.json`; no required
+project or build-disk file is missing. Git history was imported rather than copying
+the guest `.git` over the home repository.
+
+The copied warm build is registered separately as `VLC-Juxtopposed-Home-20261018`.
+It builds against `/mnt/c/Modding/vlc-juxtopposed`; the legacy `/mnt/e/...` project
+path is an internal compatibility symlink, not the external SSD. Compiler startup,
+mounts across restart and patched QtQuick SHA `9967abc133210d25...` are verified.
+Host WSL settings are unchanged; this machine supplies 16 logical CPUs and about
+16 GiB to WSL. Start Qt builds with two workers. Matching portable Python/Qt tools
+are under `build-windows/homecoming-20261018/tools` (use the venv's `Scripts/python.exe`,
+not its old pip launcher). The guest's global profile and host limits were not adopted.
+
+All 30 Windows offscreen CI component checks pass after two local fixes: listing
+17 Extensions SVGs in the build distribution/dependency list, and supplying the
+native SVG-colorizer adapter in the Music component fixture. The separate sidebar
+component check passes 21 checks. These are not native integration acceptance.
+The latest [home cache/audio checkpoint](doc/juxtopposed-references/native/home-cache-audio-20261018/README.md)
+supersedes the departure's cache/icon compilation status. Sixteen native processes
+pass 3,297 checks with zero captured Qt diagnostics. The same test object linked
+against the old QtQuick archive reproduces the timer failure and late shutdown
+warning; the installed patched SDK is preserved. Original Videos/Music SVG bytes
+and native geometry pass. Native acceptance windows stayed on monitor 2; no new Figma read was used.
+
+MMDevice now queues stream teardown to its audio thread and acknowledges completion
+after active work/waits. Current-source checks pass: native concurrency32, actual
+WASAPI lifecycle16 (eight per-player missing-device fallbacks), ordinary Qt5 and
+repeated generated live HLS20. These are Windows 11 results. The original Windows
+10 AUDIOSES access violation is still open: its mapped offset is render-client
+initialization, but the original exception context is unavailable. The identified
+teardown race is repaired; causality and Windows 10 closure remain unproven.
+
+The current ignored candidate is
+`build-windows/beta-native-cache-home-20261018/ordinary-runtime-r3`:
+ordinary GUI `f82534592d350136127eae4c7ecaaf75930d823cee0d3e631fa61d414073bd20`,
+MMDevice `0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1`.
+Core/WASAPI/ML and original untracked inputs are preserved. Intermediate lock-only
+audio candidates are historical. Raw evidence is under that ignored work directory;
+see its `CHECKPOINT.json` and the tracked checkpoint for scope and next steps.
+All current changes are uncommitted; no new push, publication, dependency install
+or security-setting change was performed. The goal and full beta remain incomplete.
+The ignored `windows10-audio-recheck-20261018.zip` in the current work directory is
+a CRC/checksum-verified 28,711,538-byte comparison kit. It reuses a matching guest
+package after verifying 28 base-file hashes and contains no personal media,
+profiles or dump. Both before/after branches pass kit self-checks on Windows 11;
+this is preparation for the pending Windows 10 run, not Windows 10 acceptance.
+The user confirmed on 18 October that the Windows 10 machine is unavailable
+and requested preparing the comparison for later. Defer that platform check;
+keep its crash issue open. This does not pause the remaining home development.
+
 Departure override — **18 October 2026**: read [RETURN-HOME.md](RETURN-HOME.md)
 first. The user requested ramp-down, a return-home report, a Git commit/push and
 an SSD copy list. Development is paused for departure; the full beta is incomplete.

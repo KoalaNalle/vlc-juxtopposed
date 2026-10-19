@@ -18,34 +18,53 @@ QtObject {
     // Exact fills from Global Settings 999:5047, 3046:9875 .. 3046:9891.
     readonly property var accentColors: ["#D37918", "#E15032", "#C49E23",
         "#19A234", "#18AAD3", "#185DD3", "#8E42FF", "#F052B3", "#AFAFAF"]
-    readonly property color accent: accentIndex === 0 && !dark ? "#E8851A"
-        : accentIndex >= 0 && accentIndex < accentColors.length
-        ? accentColors[accentIndex] : nativeView ? nativeView.accent : "#D37918"
+    readonly property color accent: accentFor(accentIndex, dark, nativeView)
     // The Light player's play-button fill remains orange #D37918, while its
     // timeline uses Light/Accent/Main #E8851A (2425:13645).
     readonly property color playButtonAccent: accentIndex === 0 ? "#D37918" : accent
-    readonly property color accentSelected: accentIndex === 0 ? (dark ? "#371F06" : "#D8BA9A")
-        : dark ? Qt.darker(accent, 3.8) : Qt.rgba(accent.r, accent.g, accent.b, 0.16)
-    readonly property color accentDim: dark && accentIndex === 0 ? "#AB6314"
-        : Qt.darker(accent, 1.23)
+    readonly property color accentSelected: selectedAccentFor(accentIndex, dark, accent)
+    readonly property color accentDim: dimAccentFor(accentIndex, dark, accent)
+
+    // The setup preview uses the same authored tokens with its own native
+    // palette and unsaved accent, leaving the running app's palette untouched.
+    function accentFor(index, isDark, view) {
+        return index === 0 && !isDark ? "#E8851A"
+            : index >= 0 && index < accentColors.length ? accentColors[index]
+            : view ? view.accent : "#D37918"
+    }
+    function selectedAccentFor(index, isDark, value) {
+        return index === 0 ? (isDark ? "#371F06" : "#D8BA9A")
+            : isDark ? Qt.darker(value, 3.8) : Qt.rgba(value.r, value.g, value.b, 0.16)
+    }
+    function dimAccentFor(index, isDark, value) {
+        return isDark && index === 0 ? "#AB6314" : Qt.darker(value, 1.23)
+    }
 
     // Placeholder text uses foreground colors; dark border tokens also occur in inputs.
     function placeholderColor(darkValue) {
         return dark ? darkValue : nativeView ? nativeView.fg.secondary : "#4D4D4D"
     }
 
-    function icon(name) {
+    function icon(name, context = null) {
         const variants = {"volume.svg": "volume-light.svg",
             "volume-background.svg": "volume-background-light.svg",
             "volume-fill.svg": "volume-fill-light.svg", "audio.svg": "audio-light.svg",
             "subtitles.svg": "subtitles-light.svg", "queue.svg": "queue-light.svg",
             "fullscreen.svg": "fullscreen-light.svg"}
-        return !dark && name in variants ? variants[name] : name
+        return !(context ? context.dark : root.dark) && name in variants ? variants[name] : name
     }
 
     // Keep each existing dark token byte-for-byte; light adaptations use the
     // existing native VLC palette, not unprovided Figma light-theme tokens.
-    function color(value) {
+    function color(value, context = null) {
+        const palette = context || root
+        const dark = palette.dark
+        const accentIndex = palette.accentIndex
+        const accent = palette.accent
+        const accentSelected = palette.accentSelected
+        const accentDim = palette.accentDim
+        const nativeView = palette.nativeView
+        const nativeWindow = palette.nativeWindow
         const key = String(value).toUpperCase()
         if (key === "#D37918") return accent
         if (key === "#371F06") return accentSelected

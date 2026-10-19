@@ -261,6 +261,15 @@ bool SubtitlesPreferencesModel::commit(const QVariantMap &changes,const QString 
     if(m_presets)m_presets->refreshDefaults();
     refresh();setError({});return true;
 }
+void SubtitlesPreferencesModel::profileDefaultsChanged(const QStringList &nativeKeys)
+{
+    if (m_intf && m_intf->p_player && nativeKeys.contains(QStringLiteral("sub-language"))) {
+        const auto value=text("sub-language").toUtf8();vlc_player_locker lock(m_intf->p_player);
+        vlc_player_SelectSubtitleLanguage(m_intf->p_player,value.constData());
+    }
+    if (m_presets) m_presets->refreshDefaults();
+    refresh();setError({});
+}
 bool SubtitlesPreferencesModel::setValue(const QString &key,const QVariant &value)
 {
     refresh();if(!m_intf||!m_capabilities.value(key).toBool())return fail(tr("This subtitle setting is unavailable in the current native build."));

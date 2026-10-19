@@ -62,6 +62,11 @@ FSM {
     property int lockCount: 0 // Track the number of locks
     readonly property int autoHideMode: MainCtx.controlAutoHideMode
     readonly property bool fullscreen: MainCtx.intfMainWindow.visibility === Window.FullScreen
+    // This setting affects the bottom controls, not the title/exit controls.
+    // Locks, hover and navigation may reveal toolbars without overriding it.
+    readonly property bool controlsAllowed: !fullscreen || MainCtx.showFullscreenControls
+    property bool controlsForcedVisible: false
+    readonly property bool controlsVisible: controlsAllowed && (isVisible || controlsForcedVisible)
     // -1 preserves the established video-only legacy state machine. New
     // modes apply equally to music/video, without changing the docking layout.
     readonly property bool automaticallyHide: autoHideMode < 0 ? MainCtx.hasEmbededVideo

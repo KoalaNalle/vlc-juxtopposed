@@ -95,6 +95,7 @@ public:
     Q_PROPERTY(Playlist playlist READ getPlaylist CONSTANT FINAL)
 
     Q_PROPERTY(PlaylistItem currentItem READ getCurrentItem NOTIFY currentItemChanged FINAL)
+    Q_PROPERTY(qint64 currentSourcePlaylistId READ currentSourcePlaylistId NOTIFY currentSourcePlaylistChanged FINAL)
 
     Q_PROPERTY(bool hasNext READ hasNext NOTIFY hasNextChanged FINAL)
     Q_PROPERTY(bool hasPrev READ hasPrev NOTIFY hasPrevChanged FINAL)
@@ -131,6 +132,8 @@ public:
     void insert(size_t index, const QVector<Media> &, bool startPlaying = false);
     void move(const QVector<PlaylistItem> &, size_t target, ssize_t indexHint);
     void remove(const QVector<PlaylistItem> &, ssize_t indexHint);
+    qint64 currentSourcePlaylistId() const;
+    void forgetSourcePlaylist(qint64 id);
 
     Q_INVOKABLE void shuffle();
     void sort(const QVector<vlc_playlist_sort_criterion> &);
@@ -178,6 +181,7 @@ public slots:
 
 signals:
     void currentItemChanged( );
+    void currentSourcePlaylistChanged();
 
     void hasNextChanged( bool );
     void hasPrevChanged( bool );
@@ -200,6 +204,9 @@ signals:
     void initializedChanged();
 
 private:
+    // rememberSourcePlaylists is called under the existing native queue lock.
+    void rememberSourcePlaylists(size_t first, const QVector<Media> &);
+    void pruneSourcePlaylists();
     Q_DECLARE_PRIVATE(PlaylistController)
     QScopedPointer<PlaylistControllerPrivate> d_ptr;
 };

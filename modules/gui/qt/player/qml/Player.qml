@@ -141,6 +141,13 @@ FocusScope {
     PlayerToolbarVisibilityFSM {
         id: playerToolbarVisibilityFSM
 
+        controlsForcedVisible: rootPlayer._controlsForcedVisible
+
+        onControlsAllowedChanged: {
+            if (!controlsAllowed && topBar && (controlBar?.activeFocus || toggleControlBarButton?.activeFocus))
+                topBar.forceActiveFocus(Qt.OtherFocusReason)
+        }
+
         onForceUnlock:{
             controlBar.forceUnlock()
 
@@ -482,7 +489,12 @@ FocusScope {
                             History.push(route, {}, reason)
                             MainCtx.playerView = false
                         }
-                        onControlsFocusRequested: reason => controlBar.forceActiveFocus(reason)
+                        onControlsFocusRequested: reason => {
+                            if (playerToolbarVisibilityFSM.controlsAllowed)
+                                controlBar.forceActiveFocus(reason)
+                            else
+                                topBar.forceActiveFocus(reason)
+                        }
                     }
                 }
 
@@ -1004,7 +1016,8 @@ FocusScope {
 
                             Navigation.parentItem: rootPlayer
                             Navigation.upItem: audioControls
-                            Navigation.downItem: Player.isInteractive ? toggleControlBarButton : controlBar
+                            Navigation.downItem: !playerToolbarVisibilityFSM.controlsAllowed ? topBar
+                                : (Player.isInteractive ? toggleControlBarButton : controlBar)
                         }
                     }
 
@@ -1103,6 +1116,8 @@ FocusScope {
             if (playlistVisibility.isPlaylistVisible)
                 return playlistpopup
             if (MainCtx.hasEmbededVideo)
+                return playerSpecializationLoader
+            if (!playerToolbarVisibilityFSM.controlsAllowed)
                 return playerSpecializationLoader
             if (Player.isInteractive)
                 return toggleControlBarButton
@@ -1267,7 +1282,8 @@ FocusScope {
 
             Navigation.parentItem: rootPlayer
             Navigation.upItem: topBar
-            Navigation.downItem: Player.isInteractive ? toggleControlBarButton : controlBar
+            Navigation.downItem: !playerToolbarVisibilityFSM.controlsAllowed ? topBar
+                : (Player.isInteractive ? toggleControlBarButton : controlBar)
             Navigation.leftAction: closePlaylist
             Navigation.cancelAction: closePlaylist
 
@@ -1275,8 +1291,10 @@ FocusScope {
                 playlistVisibility.togglePlaylistVisibility()
                 if (audioControls.visible)
                     audioControls.forceActiveFocus()
-                else
+                else if (playerToolbarVisibilityFSM.controlsAllowed)
                     controlBar.forceActiveFocus()
+                else
+                    topBar.forceActiveFocus()
             }
 
 
@@ -1418,7 +1436,7 @@ FocusScope {
 
     Widgets.ButtonExt {
         id: toggleControlBarButton
-        visible: Player.isInteractive
+        visible: playerToolbarVisibilityFSM.controlsAllowed && Player.isInteractive
                  && MainCtx.hasEmbededVideo
                  && !(MainCtx.pinVideoControls && !Player.fullscreen)
                  && (interactiveAutoHideTimer.running === true
@@ -1453,6 +1471,9 @@ FocusScope {
 
     ControlBar {
         id: controlBar
+
+        // Stop input immediately while the existing fade finishes hiding it.
+        enabled: playerToolbarVisibilityFSM.controlsAllowed
 
         anchors {
             bottom: parent.bottom
@@ -1495,7 +1516,7 @@ FocusScope {
         //initial state value is "", using a binding avoid animation on startup
         Binding on state {
             when: playerToolbarVisibilityFSM.started
-            value: (playerToolbarVisibilityFSM.isVisible || rootPlayer._controlsForcedVisible) ? "visible" : "hidden"
+            value: playerToolbarVisibilityFSM.controlsVisible ? "visible" : "hidden"
         }
 
         onRequestLockUnlockAutoHide: (lock) => rootPlayer.lockUnlockAutoHide(lock)

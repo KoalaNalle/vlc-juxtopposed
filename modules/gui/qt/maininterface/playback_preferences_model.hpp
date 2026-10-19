@@ -33,6 +33,8 @@ public:
     QString lastError() const { return m_error; }
     bool restartRequired() const { return m_restartRequired; }
     bool pickerActive() const { return m_pickerActive; }
+    void profileDefaultsChanged(const QStringList &nativeKeys);
+    void transportDefaultsChanged();
     Q_INVOKABLE bool setValue(const QString &, const QVariant &);
     Q_INVOKABLE void reload();
     Q_INVOKABLE bool chooseTimeShiftFolder();

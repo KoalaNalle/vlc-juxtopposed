@@ -399,6 +399,9 @@ PlaylistController::PlaylistController(vlc_playlist_t *playlist, QObject *parent
 
     connect(this, &PlaylistController::itemsMoved, this, &PlaylistController::resetSortKey);
     connect(this, &PlaylistController::itemsAdded, this, &PlaylistController::resetSortKey);
+    connect(this, &PlaylistController::currentItemChanged, this, &PlaylistController::currentSourcePlaylistChanged);
+    connect(this, &PlaylistController::itemsRemoved, this, &PlaylistController::pruneSourcePlaylists);
+    connect(this, &PlaylistController::itemsReset, this, &PlaylistController::pruneSourcePlaylists);
     connect(this, &PlaylistController::isEmptyChanged, [this](bool isEmpty) {if (isEmpty) emit resetSortKey();});
 
     {
@@ -425,6 +428,61 @@ PlaylistItem PlaylistController::getCurrentItem() const
 {
     Q_D(const PlaylistController);
     return d->m_currentItem;
+}
+
+qint64 PlaylistController::currentSourcePlaylistId() const
+{
+    Q_D(const PlaylistController);
+    const auto item = d->m_currentItem.raw();
+    return item ? d->m_sourcePlaylists.value(vlc_playlist_item_GetId(item), 0) : 0;
+}
+
+void PlaylistController::rememberSourcePlaylists(size_t first, const QVector<Media> &media)
+{
+    Q_D(PlaylistController);
+    for (qsizetype n = 0; n < media.size(); ++n) {
+        const auto origin = media[n].sourcePlaylistId();
+        if (origin <= 0 || d->m_deletedSourcePlaylists.contains(origin)) continue;
+        const auto item = vlc_playlist_Get(d->m_playlist, first + size_t(n));
+        d->m_sourcePlaylists.insert(vlc_playlist_item_GetId(item), origin);
+    }
+}
+
+void PlaylistController::pruneSourcePlaylists()
+{
+    Q_D(PlaylistController);
+    const auto previous = currentSourcePlaylistId();
+    const auto previousItem = d->m_currentItem.raw();
+    PlaylistItem current;
+    {
+        vlc_playlist_locker locker(d->m_playlist);
+        // Removing the current item can leave the same current row number.
+        // In that case there is no index-change callback to refresh identity.
+        const auto index = vlc_playlist_GetCurrentIndex(d->m_playlist);
+        if (index >= 0 && size_t(index) < vlc_playlist_Count(d->m_playlist))
+            current = PlaylistItem(vlc_playlist_Get(d->m_playlist, size_t(index)));
+        QSet<quint64> live;
+        for (size_t n = 0; n < vlc_playlist_Count(d->m_playlist); ++n)
+            live.insert(vlc_playlist_item_GetId(vlc_playlist_Get(d->m_playlist, n)));
+        for (auto it = d->m_sourcePlaylists.begin(); it != d->m_sourcePlaylists.end(); )
+            if (!live.contains(it.key())) it = d->m_sourcePlaylists.erase(it);
+            else ++it;
+    }
+    d->m_currentItem = current;
+    if (previousItem != current.raw()) emit currentItemChanged();
+    else if (previous != currentSourcePlaylistId()) emit currentSourcePlaylistChanged();
+}
+
+void PlaylistController::forgetSourcePlaylist(qint64 id)
+{
+    if (id <= 0) return;
+    Q_D(PlaylistController);
+    const auto previous = currentSourcePlaylistId();
+    d->m_deletedSourcePlaylists.insert(id);
+    for (auto it = d->m_sourcePlaylists.begin(); it != d->m_sourcePlaylists.end(); )
+        if (it.value() == id) it = d->m_sourcePlaylists.erase(it);
+        else ++it;
+    if (previous != currentSourcePlaylistId()) emit currentSourcePlaylistChanged();
 }
 
 void PlaylistController::append(const QVariantList& sourceList, bool startPlaying)
@@ -456,10 +514,12 @@ PlaylistController::append(const QVector<Media> &media, bool startPlaying)
     /* We can't append an empty media. */
     assert(rawMedia.size() > 0);
 
+    const auto first = vlc_playlist_Count(d->m_playlist);
     int ret = vlc_playlist_Append(d->m_playlist,
                                   rawMedia.constData(), rawMedia.size());
     if (ret != VLC_SUCCESS)
         throw std::bad_alloc();
+    rememberSourcePlaylists(first, media);
     if (startPlaying)
     {
         ssize_t playIndex = (ssize_t)vlc_playlist_Count( d->m_playlist ) - rawMedia.size();
@@ -484,10 +544,12 @@ PlaylistController::insert(size_t index, const QVector<Media> &media, bool start
     /* We can't insert an empty media. */
     assert(rawMedia.size() > 0);
 
+    const auto first = std::min(index, vlc_playlist_Count(d->m_playlist));
     int ret = vlc_playlist_RequestInsert(d->m_playlist, index,
                                          rawMedia.constData(), rawMedia.size());
     if (ret != VLC_SUCCESS)
         throw std::bad_alloc();
+    rememberSourcePlaylists(first, media);
     if (startPlaying)
     {
         ret = vlc_playlist_GoTo(d->m_playlist, index);
@@ -721,7 +783,10 @@ void PlaylistController::toggleRepeatMode()
         vlc_playlist_locker lock{ d->m_playlist };
         vlc_playlist_SetPlaybackRepeat( d->m_playlist, new_repeat );
     }
-    config_PutInt( "repeat", new_repeat );
+    // The saved options are independent booleans, not the playback enum.
+    // Writing ALL (2) into "repeat" restores Repeat Current after restart.
+    config_PutInt( "repeat", new_repeat == VLC_PLAYLIST_PLAYBACK_REPEAT_CURRENT );
+    config_PutInt( "loop", new_repeat == VLC_PLAYLIST_PLAYBACK_REPEAT_ALL );
 }
 
 void PlaylistController::clear()

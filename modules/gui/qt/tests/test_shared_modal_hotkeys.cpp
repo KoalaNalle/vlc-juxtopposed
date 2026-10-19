@@ -92,8 +92,8 @@ private:
     QVector<int64_t> dispatched;
     static int nativeKey(vlc_object_t *, const char *, vlc_value_t, vlc_value_t value, void *opaque)
     { static_cast<TestSharedModalHotkeys *>(opaque)->dispatched.append(value.i_int); return VLC_SUCCESS; }
-    void key(QObject *receiver, QEvent::Type type, Qt::Key code) {
-        QKeyEvent event(type, code, Qt::NoModifier);
+    void key(QObject *receiver, QEvent::Type type, Qt::Key code, Qt::KeyboardModifiers modifiers = Qt::NoModifier) {
+        QKeyEvent event(type, code, modifiers);
         QCoreApplication::sendEvent(receiver, &event);
         QVERIFY(event.isAccepted()); // Either native route or the Qt receiver handled it.
     }
@@ -170,6 +170,38 @@ private slots:
         QVERIFY(dispatched.isEmpty()); QCOMPARE(receiver.presses.size(), 2); QCOMPARE(receiver.releases.size(), 2);
         context.preferred = false; keys(&receiver);
         QVERIFY(dispatched.isEmpty()); QCOMPARE(receiver.presses.size(), 5); QCOMPARE(receiver.releases.size(), 5);
+        compositor.focus = nullptr;
+    }
+    void mouseFocusedSidebarKeepsNavigationAndContextKeys() {
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); QQuickItem sidebar; sidebar.setProperty("navigationKeyScope",true);
+        KeyReceiver receiver; receiver.setParentItem(&sidebar); compositor.focus = &receiver;
+        MainCtx context(interface); InterfaceWindowHandler handler(interface,&context);
+        receiver.installEventFilter(&handler);
+        const QVector<Qt::Key> navigation {Qt::Key_Up,Qt::Key_Down,Qt::Key_Right,Qt::Key_Space,
+            Qt::Key_Return,Qt::Key_Enter,Qt::Key_Menu};
+        for (auto code : navigation) {
+            key(&receiver,QEvent::KeyPress,code); key(&receiver,QEvent::KeyRelease,code);
+        }
+        key(&receiver,QEvent::KeyPress,Qt::Key_F10,Qt::ShiftModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_F10,Qt::ShiftModifier);
+        key(&receiver,QEvent::KeyPress,Qt::Key_Up,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_Up,Qt::ControlModifier);
+        QCOMPARE(receiver.presses.size(),navigation.size()+2);
+        QCOMPARE(receiver.releases,receiver.presses); QVERIFY(dispatched.isEmpty());
+        compositor.focus = nullptr;
+    }
+    void sidebarScopePreservesUnclaimedPlayerShortcuts() {
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); QQuickItem sidebar; sidebar.setProperty("navigationKeyScope",true);
+        KeyReceiver receiver; receiver.setParentItem(&sidebar); compositor.focus = &receiver;
+        MainCtx context(interface); InterfaceWindowHandler handler(interface,&context);
+        receiver.installEventFilter(&handler);
+        key(&receiver,QEvent::KeyPress,Qt::Key_F); key(&receiver,QEvent::KeyRelease,Qt::Key_F);
+        key(&receiver,QEvent::KeyPress,Qt::Key_Space,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_Space,Qt::ControlModifier);
+        QCOMPARE(dispatched,(QVector<int64_t>{'f',KEY_MODIFIER_CTRL|' '}));
+        QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
         compositor.focus = nullptr;
     }
     void cleanupTestCase() {

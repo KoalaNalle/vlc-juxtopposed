@@ -19,6 +19,7 @@ class ControlsPreferencesModel final : public QObject
     Q_PROPERTY(bool editorActive READ editorActive NOTIFY editorActiveChanged FINAL)
     Q_PROPERTY(bool remoteSetupActive READ remoteSetupActive NOTIFY remoteSetupActiveChanged FINAL)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged FINAL)
+    Q_PROPERTY(QVariantMap activeShortcuts READ activeShortcuts CONSTANT FINAL)
 public:
     struct Consumers {
         bool mousePolicy = false;
@@ -48,6 +49,7 @@ public:
     bool applyRemoteSetup(const QString &password);
     void remoteSetupClosed();
     QVariantMap shortcutValues() const;
+    QVariantMap activeShortcuts() const;
 signals:
     void valuesChanged();
     void lastErrorChanged();

@@ -34,6 +34,7 @@ public:
     QVariantMap supportNotes() const;
     QString lastError() const { return m_error; }
     bool restartRequired() const { return m_restartRequired; }
+    void profileDefaultsChanged(const QStringList &nativeKeys);
     Q_INVOKABLE bool setValue(const QString &, const QVariant &);
     Q_INVOKABLE void reload();
 signals:

@@ -89,6 +89,13 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
             shutil.copyfile(original, target / original.name)
             entries.append(name + ' 1.0 ' + original.name)
         (target / 'qmldir').write_text('\n'.join(entries) + '\n', encoding='utf-8', newline='\n')
+    # SVG colorization is a native C++ singleton. Supply the same component-test
+    # adapter used by the standalone navigation checks; native artwork fidelity
+    # is covered separately by the compiled application journeys.
+    util = path / 'VLC' / 'Util'
+    util.mkdir()
+    (util / 'qmldir').write_text('module VLC.Util\nsingleton SVGColorImage 1.0 SVGColorImage.qml\n', encoding='utf-8')
+    (util / 'SVGColorImage.qml').write_text('pragma Singleton\nimport QtQml\nQtObject { function colorize(path) { return { any: function(colors) { return this }, uri: function() { return path } } } }\n', encoding='utf-8')
     # Generated fixture artwork, intentionally unrelated to the author's cover.
     cover_path = path / 'fixture-cover.png'
     image = QImage(500, 500, QImage.Format_ARGB32)

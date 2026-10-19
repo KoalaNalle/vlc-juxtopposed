@@ -88,7 +88,10 @@ static void convertMLItemToPlaylistMedias(vlc_medialibrary_t* ml, const MLItemId
         auto mediaRange = ml_range_iterate<vlc_ml_media_t>( media_list );
         std::transform(mediaRange.begin(), mediaRange.end(), std::back_inserter(medias), [&](vlc_ml_media_t& m) {
             SharedInputItem item(vlc_ml_get_input_item( ml, m.i_id ), false);
-            return vlc::playlist::Media(item.get(), options);
+            vlc::playlist::Media result(item.get(), options);
+            if (itemId.type == VLC_ML_PARENT_PLAYLIST)
+                result.setSourcePlaylistId(itemId.id);
+            return result;
         });
     }
 }
@@ -127,6 +130,18 @@ static void convertQVariantListToPlaylistMedias(vlc_medialibrary_t* ml, QVariant
         }
         // else ignore
     }
+}
+
+static void applyPlaylistOrigin(vlc_medialibrary_t *ml, MLItemId source,
+                                QVector<vlc::playlist::Media> &media)
+{
+    if (source.type != VLC_ML_PARENT_PLAYLIST || source.id <= 0) return;
+    ml_unique_ptr<vlc_ml_playlist_t> playlist{vlc_ml_get_playlist(ml, source.id)};
+    if (!playlist) return;
+    // The model/menu supplies its captured origin. Do not guess a playlist by
+    // looking up memberships, or lose origin when that playlist is later edited.
+    for (auto &entry : media)
+        if (!entry.sourcePlaylistId()) entry.setSourcePlaylistId(source.id);
 }
 
 void MediaLib::addFolder(const QUrl &folder)
@@ -195,15 +210,21 @@ void MediaLib::addToPlaylist(const MLItemId & itemId, const QStringList &options
 
 void MediaLib::addToPlaylist(const QVariantList& itemIdList, const QStringList &options)
 {
+    addToPlaylist(itemIdList, options, MLItemId{});
+}
+
+void MediaLib::addToPlaylist(const QVariantList& itemIdList, const QStringList &options, MLItemId sourcePlaylist)
+{
     struct Context {
         QVector<vlc::playlist::Media> medias;
     };
     runOnMLThread<Context>(this,
     //ML thread
-    [itemIdList, options]
+    [itemIdList, options, sourcePlaylist]
     (vlc_medialibrary_t* ml, Context& ctx)
     {
         convertQVariantListToPlaylistMedias(ml, itemIdList, options, ctx.medias);
+        applyPlaylistOrigin(ml, sourcePlaylist, ctx.medias);
     },
     //UI thread
     [this](quint64, Context& ctx){
@@ -250,15 +271,21 @@ void MediaLib::addAndPlay(const QUrl& mrl, const QStringList &options)
 
 void MediaLib::addAndPlay(const QVariantList& itemIdList, const QStringList &options)
 {
+    addAndPlay(itemIdList, options, MLItemId{});
+}
+
+void MediaLib::addAndPlay(const QVariantList& itemIdList, const QStringList &options, MLItemId sourcePlaylist)
+{
     struct Context {
         QVector<vlc::playlist::Media> medias;
     };
     runOnMLThread<Context>(this,
     //ML thread
-    [itemIdList, options]
+    [itemIdList, options, sourcePlaylist]
     (vlc_medialibrary_t* ml, Context& ctx)
     {
         convertQVariantListToPlaylistMedias(ml, itemIdList, options, ctx.medias);
+        applyPlaylistOrigin(ml, sourcePlaylist, ctx.medias);
     },
     //UI thread
     [this](quint64, Context& ctx){

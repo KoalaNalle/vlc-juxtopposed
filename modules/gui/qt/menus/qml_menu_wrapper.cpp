@@ -29,6 +29,7 @@
 #include "dialogs/dialogs_provider.hpp"
 #include "util/colorizedsvgicon.hpp"
 #include "maininterface/navigationmodel.hpp"
+#include "maininterface/player_profiles_model.hpp"
 
 // Qt includes
 #include <QPainter>
@@ -279,6 +280,34 @@ void QmlGlobalMenu::popup(QPoint pos)
 
     submenu = m_menu->addMenu(qtr( "Subti&tle" ));
     SubtitleMenu( p_intf, submenu );
+
+    if (m_ctx->juxtopposedControls()) {
+        auto *profiles = m_ctx->getPlayerProfiles();
+        if (profiles) {
+            auto *profileMenu = m_menu->addMenu(qtr("Profile (%1)").arg(profiles->selectedName().replace(QLatin1Char('&'),QStringLiteral("&&"))));
+            auto *selection = new QActionGroup(profileMenu);
+            selection->setExclusive(true);
+            for (const auto &entry : profiles->profiles()) {
+                const auto row = entry.toMap();
+                const auto id = row.value(QStringLiteral("id")).toString();
+                auto *action = profileMenu->addAction(row.value(QStringLiteral("name")).toString().replace(QLatin1Char('&'),QStringLiteral("&&")));
+                action->setCheckable(true); action->setChecked(id == profiles->selectedId());
+                action->setEnabled(profiles->available() && !profiles->busy() && !profiles->needsRecovery());
+                selection->addAction(action);
+                connect(action,&QAction::triggered,profiles,[profiles,id] {
+                    if (!profiles->selectProfile(id)) DialogsProvider::getInstance()->showPlayerProfilesDialog(false);
+                });
+            }
+            profileMenu->addSeparator();
+            auto *create = profileMenu->addAction(qtr("New"));
+            create->setEnabled(profiles->available() && !profiles->busy() && !profiles->needsRecovery());
+            connect(create,&QAction::triggered,this,[] {DialogsProvider::getInstance()->showPlayerProfilesDialog(true);});
+            if (profiles->needsRecovery() || profiles->unsaved() || !profiles->lastError().isEmpty()) {
+                auto *recovery = profileMenu->addAction(qtr("Profile changes…"));
+                connect(recovery,&QAction::triggered,this,[] {DialogsProvider::getInstance()->showPlayerProfilesDialog(false);});
+            }
+        }
+    }
 
     submenu = m_menu->addMenu(qtr( "Tool&s" ));
     ToolsMenu( p_intf, submenu );
@@ -892,17 +921,18 @@ void PlaylistMediaContextMenu::popup(const QModelIndexList & selected, QPoint po
     auto menu =newMenu();
 
     MediaLib * ml = m_model->ml();
+    const auto origin = m_model->parentId();
 
     QAction * action = menu->addAction(qtr("Add and play"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addAndPlay(ids);
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addAndPlay(ids, {}, origin);
     });
 
     action = menu->addAction(qtr("Enqueue"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addToPlaylist(ids);
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addToPlaylist(ids, {}, origin);
     });
 
     action = menu->addAction(qtr("Add to playlist"));
@@ -913,8 +943,8 @@ void PlaylistMediaContextMenu::popup(const QModelIndexList & selected, QPoint po
 
     action = menu->addAction(qtr("Play as audio"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addAndPlay(ids, {":no-video"});
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addAndPlay(ids, {":no-video"}, origin);
     });
 
     if (options.contains("information") && options["information"].typeId() == QMetaType::Int) {

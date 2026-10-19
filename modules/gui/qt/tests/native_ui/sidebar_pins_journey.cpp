@@ -4,22 +4,42 @@
 #include "config.h"
 #endif
 #include "qt.hpp"
+#include "dialogs/dialogs_provider.hpp"
+#include "dialogs/conversion_controller.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/compositor.hpp"
 #include "maininterface/history_media_source.hpp"
 #include "maininterface/sidebar_pins_model.hpp"
 #include "maininterface/privacy_preferences_model.hpp"
+#include "maininterface/general_preferences_model.hpp"
+#include "maininterface/controls_preferences_model.hpp"
+#include "maininterface/player_profiles_model.hpp"
+#include "maininterface/player_profile_layout.hpp"
+#include "maininterface/playback_preferences_model.hpp"
+#include "maininterface/audio_preferences_model.hpp"
+#include "maininterface/video_preferences_model.hpp"
+#include "maininterface/subtitles_preferences_model.hpp"
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
+#include "medialibrary/mlcurrentmedia.hpp"
+#include "medialibrary/mlplaylistmodel.hpp"
 #include "medialibrary/mlrecentmediamodel.hpp"
 #include "medialibrary/mlhelper.hpp"
 #include "player/player_controller.hpp"
+#include "playlist/playlist_controller.hpp"
+#include <QLockFile>
+#include "player/control_list_model.hpp"
+#include "player/player_controlbar_model.hpp"
+#include <QJSValue>
 #include "util/navigation_history.hpp"
+#include "util/qt_dirs.hpp"
 #include "util/csdbuttonmodel.hpp"
 #include <QCryptographicHash>
 #include <QXmlStreamReader>
 #include <vlc_interface.h>
 #include <vlc_player.h>
 #include <QApplication>
+#include <QAccessible>
 #include <QAbstractEventDispatcher>
 #include <QImage>
 #include <QtQuick/private/qquickpixmap_p.h>
@@ -32,6 +52,8 @@
 #include <QQmlPropertyMap>
 #include <vlc_input_item.h>
 #include <QDeadlineTimer>
+#include <QElapsedTimer>
+#include <QDataStream>
 #include <QDialog>
 #include <QDir>
 #include <QFile>
@@ -40,19 +62,24 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QKeyEvent>
 #include <QMenu>
+#include <QMetaMethod>
 #include <QPointer>
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QScreen>
 #include <QSettings>
+#include <QSaveFile>
 #include <QSignalSpy>
 #include <QSet>
 #include <QTest>
 #include <QTimer>
 #include <QWindow>
+#include <QWheelEvent>
 #include <QVector3D>
 #include <windows.h>
 #include <functional>
@@ -155,8 +182,52 @@ void addMenu(const QString &text)
 { revealFooter(); click(named(QStringLiteral("juxtopposedSidebarAdd"))); chooseMenu(text); }
 void pinMenu(int row, const QString &text)
 {
-    auto *item = pinRow(row); item->forceActiveFocus(Qt::TabFocusReason);
-    QTest::keyClick(window, Qt::Key_F10, Qt::ShiftModifier); chooseMenu(text);
+    const bool wasActive=window->isActive();
+    window->requestActivate();
+    wait([]{return window->isActive();},"owned native window is active before its keyboard pin-menu input");
+    QPointer<QQuickItem> item=pinRow(row);
+    item->forceActiveFocus(Qt::TabFocusReason);
+    wait([&]{return item && item->hasActiveFocus();},"real native pin retains stable focus before its context-menu chord");
+    auto *navigation=named(QStringLiteral("juxtopposedNavigation"));
+    check(navigation,"actual pin-menu navigation owner exists");
+    int signal=-1;
+    for(int index=0;index<navigation->metaObject()->methodCount();++index){
+        const auto method=navigation->metaObject()->method(index);
+        if(method.methodType()==QMetaMethod::Signal && method.name()=="pinMenuRequested"){signal=index;break;}
+    }
+    check(signal>=0,"actual native pin-menu request signal is discoverable");
+    QSignalSpy requests(navigation,navigation->metaObject()->method(signal));
+    check(requests.isValid(),"actual pin-menu request signal can be observed");
+    struct KeyObserver : QObject {
+        QJsonArray events;
+        KeyObserver() { qApp->installEventFilter(this); }
+        ~KeyObserver() { qApp->removeEventFilter(this); }
+        bool eventFilter(QObject *receiver,QEvent *event) override {
+            if (event->type()==QEvent::KeyPress || event->type()==QEvent::KeyRelease || event->type()==QEvent::ShortcutOverride) {
+                const auto *key=static_cast<QKeyEvent *>(event);
+                events.append(QJsonObject{{"event",int(event->type())},{"receiver",receiver->objectName()},
+                    {"receiverClass",QString::fromLatin1(receiver->metaObject()->className())},
+                    {"key",key->key()},{"modifiers",int(key->modifiers())}});
+            }
+            return false;
+        }
+    } keyObserver;
+    const auto visualBefore=item->property("visualFocus").toBool();
+    const auto reasonBefore=item->property("focusReason").toInt();
+    QTest::keyClick(window,Qt::Key_F10,Qt::ShiftModifier);QTest::qWait(80);
+    auto attempts=report.value("pinMenuInputAttempts").toArray();
+    attempts.append(QJsonObject{{"row",row},{"windowWasActive",wasActive},{"windowActiveAfterKey",window->isActive()},
+        {"targetAlive",!item.isNull()},{"targetFocusedAfterKey",item && item->hasActiveFocus()},
+        {"focusAfterKey",window->activeFocusItem()?window->activeFocusItem()->objectName():QString()},
+        {"requestSignals",requests.count()},{"menuVisible",menu()!=nullptr},{"canRetry",pins()->canRetry()},{"pinsBusy",pins()->busy()},
+        {"visualFocusBefore",visualBefore},{"focusReasonBefore",reasonBefore},
+        {"visualFocusAfter",item && item->property("visualFocus").toBool()},
+        {"focusWindowIsMain",QGuiApplication::focusWindow()==window},
+        {"activePopupWidget",QApplication::activePopupWidget()!=nullptr},
+        {"keyboardGrabber",QWidget::keyboardGrabber()!=nullptr},{"keyEvents",keyObserver.events}});
+    report.insert("pinMenuInputAttempts",attempts);
+    check(requests.count()==1,"owned keyboard context-menu chord reaches the actual pin request signal once");
+    chooseMenu(text);
 }
 void filePicker(const QString &path, bool cancel = false)
 {
@@ -605,21 +676,34 @@ void exercisePixmapCache()
     check(cache->thread()==QThread::currentThread()&&dispatcher,"actual image cache belongs to the GUI event thread");
     QImage image(8,8,QImage::Format_ARGB32);image.fill(QColor(80,120,160));
     const auto file=QDir(qEnvironmentVariable("VLC_OWNED_UI_OUTPUT")).filePath(QStringLiteral("owned-cache.png"));
-    check(image.save(file),"tiny owned cache fixture is saved on E");
+    check(image.save(file),"tiny owned cache fixture is saved in the private output directory");
     const auto url=QUrl::fromLocalFile(file);
+    const auto samePixels=[&](const QQuickPixmap &pixmap) {
+        return pixmap.image().convertToFormat(QImage::Format_ARGB32)==image;
+    };
     QQuickPixmap::purgeCache();
     for(int cycle=0;cycle<2;++cycle) {
         QQuickPixmap pixmap(engine,url,QQuickPixmap::Cache);
-        check(pixmap.isReady()&&pixmap.image()==image,"real Qt image cache loads the owned pixels");
+        wait([&]{return pixmap.isReady()||pixmap.isError();},"real Qt image request finishes");
+        const auto decoded=pixmap.image();
+        report.insert("cacheDecodedImage",QJsonObject{{"status",static_cast<int>(pixmap.status())},{"error",pixmap.error()},
+            {"format",static_cast<int>(decoded.format())},{"width",decoded.width()},{"height",decoded.height()},
+            {"pixelsMatch",samePixels(pixmap)}});
+        check(pixmap.isReady()&&samePixels(pixmap),"real Qt image cache loads the owned pixels");
         pixmap.clear();
         check(!dispatcher->registeredTimers(cache).isEmpty(),"releasing actual cached pixels starts its real expiry timer");
         QQuickPixmap::purgeCache();
         check(dispatcher->registeredTimers(cache).isEmpty(),"purging unused pixels stops the real cache expiry timer");
     }
     QQuickPixmap held(engine,url,QQuickPixmap::Cache);check(held.isReady(),"real referenced image exists before cache purge");
-    QQuickPixmap::purgeCache();check(held.isReady()&&held.image()==image,"purging unused cache preserves an image still used by the GUI");
+    QQuickPixmap::purgeCache();check(held.isReady()&&samePixels(held),"purging unused cache preserves an image still used by the GUI");
     held.clear();check(!dispatcher->registeredTimers(cache).isEmpty(),"releasing a retained image restarts normal cache expiration");
     QQuickPixmap::purgeCache();check(dispatcher->registeredTimers(cache).isEmpty(),"final native cache purge leaves no expiry timer registered");
+    QQuickPixmap pending(engine,url,QQuickPixmap::Cache);
+    check(pending.isReady(),"real cached image is ready for the application shutdown regression");
+    pending.clear();
+    check(!dispatcher->registeredTimers(cache).isEmpty(),"real unused-image expiry timer remains armed for application cleanup");
+    report.insert("nativePixmapCacheShutdownTimerArmed",true);
     report.insert("nativePixmapCacheLifecycleAccepted",true);
 }
 void verifyTitleStrip(const QString &name)
@@ -691,7 +775,7 @@ public:
 };
 void exerciseNativeTitleDrag(const std::function<bool()> &unchanged)
 {
-    window->setPosition(40,40);window->requestActivate();QTest::qWait(300);
+    window->setPosition(window->screen()->availableGeometry().topLeft()+QPoint(40,40));window->requestActivate();QTest::qWait(300);
     const auto hwnd=reinterpret_cast<HWND>(window->winId());
     DWORD processId=0;GetWindowThreadProcessId(hwnd,&processId);
     check(processId==GetCurrentProcessId(),"native drag target is owned by this exact test process");
@@ -769,12 +853,93 @@ void exerciseCompactNavigation(const std::function<bool()> &unchanged)
             check(visible.top()>=-0.51&&visible.bottom()<=list->height()+0.51,"reverse-focused native route stays fully inside the compact viewport");
             check(unchanged(),"reverse drawer navigation preserves native volume mute input and paused clocks");
         }
+        const QStringList tabOrder{QStringLiteral("home"),QStringLiteral("video"),QStringLiteral("music"),QStringLiteral("network"),QStringLiteral("playlists"),QStringLiteral("recent"),QStringLiteral("add")};
+        const auto routeButton=[&](const QString &key) {
+            return named(key==QStringLiteral("add") ? QStringLiteral("juxtopposedSidebarAdd") : QStringLiteral("juxtopposedNavigation")+key);
+        };
+        for (int direction : {1,-1}) {
+            for (int index=direction>0?1:tabOrder.size()-2;index>=0&&index<tabOrder.size();index+=direction) {
+                QTest::keyClick(window,direction>0?Qt::Key_Tab:Qt::Key_Backtab);QTest::qWait(60);
+                auto *button=routeButton(tabOrder[index]);
+                report.insert("lastCompactTab",QJsonObject{{"route",tabOrder[index]},{"direction",direction},{"width",window->width()},{"height",window->height()},{"scale",entry.z()},
+                    {"actualFocus",window->activeFocusItem()?window->activeFocusItem()->objectName():QString()}});
+                check(button&&button->hasActiveFocus(),"native compact Tab and reverse Tab visit each route and Add in logical order");
+                const auto visible=button->mapRectToItem(list,button->boundingRect());
+                report.insert("lastCompactTabBounds",QJsonObject{{"top",visible.top()},{"bottom",visible.bottom()},{"viewportHeight",list->height()}});
+                if(visible.top()<-0.51||visible.bottom()>list->height()+0.51)capture(QStringLiteral("native-compact-tab-clipped.png"));
+                check(visible.top()>=-0.51&&visible.bottom()<=list->height()+0.51,"native Tab-focused drawer control is completely visible in the short viewport");
+                check(unchanged(),"native compact Tab traversal preserves paused playback volume and mute");
+            }
+        }
+        auto *navigation=named(QStringLiteral("juxtopposedNavigation"));check(navigation,"actual drawer remains open for pointer and wheel checks");
+        const auto press=home->mapToScene(QPointF(1,home->height()/2)).toPoint();
+        const auto cancel=home->mapToScene(QPointF(-2,home->height()/2)).toPoint();
+        QTest::mousePress(window,Qt::LeftButton,Qt::NoModifier,press);
+        check(home->hasActiveFocus(),"native pointer press focuses the real drawer route");
+        QTest::mouseMove(window,cancel);QTest::mouseRelease(window,Qt::LeftButton,Qt::NoModifier,cancel);
+        check(context->isPlayerView()&&named(QStringLiteral("juxtopposedNavigation")),"cancelled route press does not activate a route or close the drawer");
+        check(unchanged(),"native drawer pointer focus preserves primary playback and audio state");
+        if(list->property("contentHeight").toDouble()>list->height()+1) {
+            for(bool padding:{false,true}) {
+                expression(list,QStringLiteral("positionViewAtBeginning(); forceLayout()"));
+                const auto before=list->property("contentY").toDouble();
+                const auto local=padding ? navigation->mapToScene(QPointF(2*entry.z(),navigation->height()/2))
+                    : list->mapToScene(QPointF(list->width()/2,list->height()/2));
+                QTest::mouseMove(window,local.toPoint());
+                QWheelEvent wheel(local,window->mapToGlobal(local.toPoint()),QPoint(),QPoint(0,-120),Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+                QCoreApplication::sendEvent(window,&wheel);QTest::qWait(250);
+                const auto after=list->property("contentY").toDouble();
+                report.insert("lastCompactWheel",QJsonObject{{"padding",padding},{"before",before},{"after",after},{"accepted",wheel.isAccepted()}});
+                check(unchanged(),"native drawer wheel remains isolated from player volume mute and paused clocks");
+                check(after>before+0.5,padding?"native wheel over drawer padding scrolls the list":"native wheel over actual drawer rows scrolls the list");
+            }
+            for (int variant : {0,1,2}) {
+                expression(list,QStringLiteral("positionViewAtBeginning(); forceLayout()"));
+                const auto local=navigation->mapToScene(QPointF(2*entry.z(),navigation->height()/2));
+                if (variant==2) {
+                    // With no model rows, forceLayout() resets the header/footer
+                    // position. Reach the boundary through the actual input path.
+                    for (int step=0;step<8;++step) {
+                        QWheelEvent advance(local,window->mapToGlobal(local.toPoint()),QPoint(),QPoint(0,-120),
+                            Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+                        QCoreApplication::sendEvent(window,&advance);QTest::qWait(50);
+                    }
+                    const auto end=qMax(list->property("originY").toDouble(),
+                        list->property("originY").toDouble()+list->property("contentHeight").toDouble()-list->height());
+                    report.insert("compactWheelBoundary",QJsonObject{{"actual",list->property("contentY").toDouble()},{"expected",end}});
+                    check(qAbs(list->property("contentY").toDouble()-end)<0.51,
+                        "native padding wheel input actually reaches the list boundary before the end check");
+                }
+                const auto before=list->property("contentY").toDouble();
+                QWheelEvent wheel(local,window->mapToGlobal(local.toPoint()),variant==0?QPoint(0,-23):QPoint(),
+                    variant==0?QPoint():variant==1?QPoint(120,0):QPoint(0,-120),Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+                QCoreApplication::sendEvent(window,&wheel);QTest::qWait(150);
+                const auto after=list->property("contentY").toDouble();
+                report.insert("lastCompactWheelVariant",QJsonObject{{"variant",variant},{"before",before},{"after",after},{"accepted",wheel.isAccepted()}});
+                check(unchanged(),"native pixel horizontal and end-of-list wheels preserve primary playback volume and mute");
+                check(wheel.isAccepted(),"native drawer consumes pixel horizontal and end-of-list padding wheels");
+                check(variant==0?qAbs(after-before-23)<0.51:qAbs(after-before)<0.51,
+                    "native padding wheel honors pixel distance and clamps horizontal or end-of-list movement");
+            }
+        }
         capture(QStringLiteral("native-player-drawer-%1x%2-scale%3.png").arg(window->width()).arg(window->height()).arg(entry.z()));
         sizes.append(QJsonObject{{"requestedWidth",entry.x()},{"requestedHeight",entry.y()},{"minimumWidth",window->minimumWidth()},{"minimumHeight",window->minimumHeight()},{"width",window->width()},{"height",window->height()},{"scale",entry.z()}});
     }
     report.insert("compactDrawerCases",sizes);report.insert("nativeCompactDrawerAccepted",true);
+    report.insert("nativeCompactTabPointerWheelAccepted",true);
     context->setIntfUserScaleFactor(1);window->resize(1280,900);QTest::qWait(250);
 }
+#include "movable_dialog_journey.hpp"
+#include "navigation_recovery_journey.hpp"
+#include "dialog_busy_journey.hpp"
+#include "setup_journey.hpp"
+#include "profiles_journey.hpp"
+#include "transport_defaults_journey.hpp"
+#include "customizer_journey.hpp"
+#include "favorite_journey.hpp"
+#include "playlist_origin_journey.hpp"
+#include "fullscreen_controls_journey.hpp"
+
 void exerciseTitlebar(const QString &mode)
 {
     if(mode==QStringLiteral("titlebar-window")){verifySidebarIcons();exercisePixmapCache();}
@@ -787,7 +952,7 @@ void exerciseTitlebar(const QString &mode)
         capture(QStringLiteral("native-titlebar-traditional.png")); return;
     }
     home();
-    const bool media = mode == QStringLiteral("titlebar-media") || mode == QStringLiteral("titlebar-media-title") || mode == QStringLiteral("titlebar-video") || mode == QStringLiteral("titlebar-compact") || mode == QStringLiteral("titlebar-compact-audio");
+    const bool media = mode == QStringLiteral("titlebar-media") || mode == QStringLiteral("titlebar-media-title") || mode == QStringLiteral("titlebar-video") || mode == QStringLiteral("titlebar-compact") || mode == QStringLiteral("titlebar-compact-audio") || mode == QStringLiteral("titlebar-dialogs") || mode == QStringLiteral("titlebar-recovery") || mode.startsWith(QStringLiteral("titlebar-busy"));
     const bool video = mode == QStringLiteral("titlebar-media-title") || mode == QStringLiteral("titlebar-video") || mode == QStringLiteral("titlebar-compact");
     auto *native = context->getIntf()->p_player;
     if (media) {
@@ -816,6 +981,38 @@ void exerciseTitlebar(const QString &mode)
         check(unchanged(),"native interface scaling preserves primary input and exact paused clocks");
     }
     context->setIntfUserScaleFactor(1);QTest::qWait(200);
+    if (mode == QStringLiteral("titlebar-dialogs")) {
+        exerciseMovableDialogs(unchanged);
+        return;
+    }
+    if (mode == QStringLiteral("titlebar-recovery")) {
+        exerciseNavigationRecovery(unchanged);
+        return;
+    }
+    if (mode == QStringLiteral("titlebar-home-menu")) {
+        exerciseHomePinMenu(unchanged);
+        return;
+    }
+    if (mode == QStringLiteral("titlebar-busy")) {
+        exerciseBusyDialog(unchanged);
+        return;
+    }
+    if (mode == QStringLiteral("titlebar-busy-playing")) {
+        vlc_player_Lock(native);vlc_player_Resume(native);vlc_player_Unlock(native);
+        wait([]{return player()->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING;},
+             "real primary resumes before the playing busy-dialog journey");
+        const auto start=nativeTime();
+        wait([&]{return nativeTime()>start+VLC_TICK_FROM_MS(200);},"real primary clock advances before the independent conversion");
+        auto playingUnchanged=[&]{return player()->getInput()==input
+            && player()->getPlayingState()==PlayerController::PLAYING_STATE_PLAYING && nativeTime()>=start
+            && qAbs(vlc_player_aout_GetVolume(native)-volume)<.0001 && vlc_player_aout_IsMuted(native)==mute;};
+        exerciseBusyDialog(playingUnchanged);
+        check(nativeTime()>start+VLC_TICK_FROM_MS(500),"real primary continues advancing through the busy-modal job and cancellation");
+        report.insert("nativeBusyPlayingAccepted",true);
+        vlc_player_Lock(native);vlc_player_Pause(native);vlc_player_Unlock(native);
+        wait([]{return player()->getPlayingState()==PlayerController::PLAYING_STATE_PAUSED;},"owned primary pauses normally after playing independence verification");
+        return;
+    }
     auto *logo = named(QStringLiteral("juxtopposedStriplogo"));
     check(logo != nullptr, "real title-strip logo is a keyboard-focusable control");
     logo->forceActiveFocus(Qt::TabFocusReason); QTest::keyClick(window,Qt::Key_Tab);
@@ -907,10 +1104,34 @@ void run()
 {
     try {
         check(context && window, "owned native window and MainCtx became ready");
+        const auto screenName=qEnvironmentVariable("VLC_OWNED_UI_SCREEN");
+        if(!screenName.isEmpty()) {
+            QScreen *target=nullptr;
+            for(auto *screen:QGuiApplication::screens())if(screen->name()==screenName)target=screen;
+            check(target,"requested native test screen exists");
+            window->setScreen(target);
+            window->setPosition(target->availableGeometry().topLeft()+QPoint(40,40));
+            wait([&]{return window->screen()==target;},"owned native window is on the requested test screen");
+            report.insert("screenName",target->name());
+        }
         window->resize(1280, 900); QTest::qWait(100);
         const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode.startsWith(QStringLiteral("titlebar-"))) {
+        if (mode.startsWith(QStringLiteral("fullscreen-controls-"))) {
+            exerciseFullscreenControls(mode);
+        } else if (mode.startsWith(QStringLiteral("playlist-origin"))) {
+            exercisePlaylistOrigin(mode);
+        } else if (mode.startsWith(QStringLiteral("favorite-"))) {
+            exerciseFavorite(mode);
+        } else if (mode.startsWith(QStringLiteral("customizer-"))) {
+            exerciseCustomizer(mode);
+        } else if (mode.startsWith(QStringLiteral("transport-"))) {
+            exerciseTransportDefaults(mode);
+        } else if (mode.startsWith(QStringLiteral("profiles-"))) {
+            exerciseProfiles(mode);
+        } else if (mode.startsWith(QStringLiteral("setup-"))) {
+            exerciseSetup(mode);
+        } else if (mode.startsWith(QStringLiteral("titlebar-"))) {
             exerciseTitlebar(mode);
         } else if (mode.startsWith(QStringLiteral("history-off"))) {
             exerciseHistoryOnly(mode);
@@ -1028,15 +1249,38 @@ void run()
         });
     } else QTimer::singleShot(200,qApp,[] { if(context)libvlc_Quit(vlc_object_instance(context->getIntf()));else QCoreApplication::quit(); });
 }
+void waitForStartupApproval()
+{
+    const auto gate = qEnvironmentVariable("VLC_OWNED_UI_START_GATE");
+    if (gate.isEmpty() || QFileInfo::exists(gate)) {
+        report.insert("startupGateUsed", !gate.isEmpty());
+        QTimer::singleShot(250, qApp, run);
+        return;
+    }
+    // No QtTest input, window manipulation or automatic timeout while a human
+    // may be handling a separate Windows permission dialog.
+    const auto readyPath = gate + QStringLiteral(".ready.json");
+    if (!QFileInfo::exists(readyPath)) {
+        QFile ready(readyPath);
+        if (ready.open(QIODevice::WriteOnly | QIODevice::NewOnly)) {
+            const QJsonObject state{{"waitingForStartupApproval", true},
+                                    {"testActionsStarted", false},
+                                    {"screenName", window && window->screen() ? window->screen()->name() : QString()},
+                                    {"mode", qEnvironmentVariable("VLC_OWNED_UI_MODE")}};
+            ready.write(QJsonDocument(state).toJson());
+        }
+    }
+    QTimer::singleShot(250, qApp, waitForStartupApproval);
+}
 void waitForWindow(int remaining)
 {
     auto *host=named(QStringLiteral("juxtopposedDialogsHost"));
     if(host&&host->window()) {
         auto *engine=qmlEngine(host);auto *candidate=engine?engine->singletonInstance<MainCtx *>("VLC.MainInterface","MainCtx"):nullptr;
-        if(candidate) { context=candidate;window=host->window();QTimer::singleShot(250,qApp,run);return; }
+        if(candidate) { context=candidate;window=host->window();waitForStartupApproval();return; }
     }
     if(remaining>0) QTimer::singleShot(250,qApp,[remaining]{waitForWindow(remaining-1);});
-    else run();
+    else waitForStartupApproval();
 }
 void startOwnedPinJourney()
 {

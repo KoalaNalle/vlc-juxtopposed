@@ -140,7 +140,81 @@ T.Pane {
 
         JuxtopposedPlaybackBar {
             id: bar
+            objectName: "juxtopposedLivePlaybackBar"
             property Item trackReturnItem: bar.audioButton
+            property Item settingsReturnItem: bar.settingsButton
+            readonly property var profileLayout: MainCtx.playerProfiles.layout
+            // Keep the native seek/control objects alive beneath the modal.
+            // Only the inert draft preview is drawn while the layout is edited.
+            opacity: profileLayout.editing ? 0 : 1
+            controlLayout: root.identifier === PlayerControlbarModel.Audioplayer ? profileLayout.current.audio
+                : profileLayout.defaultVideo ? null : profileLayout.current.video
+            describeTile: id => profileLayout.tileInfo(id)
+            mediaMetadata: ({file: Player.fileName, artist: Player.artist, folder: Player.folderName,
+                              playlist: MainCtx.currentMedia.playlistName, artwork: Player.artwork.toString().length ? VLCAccessImage.uri(Player.artwork) : VLCStyle.noArtAlbumCover})
+            tileState: function(id) {
+                const info = profileLayout.tileInfo(id)
+                const result = {enabled: Player.isStarted, glyph: info.glyph, fontFamily: info.fontFamily}
+                switch (id) {
+                case ControlListModel.PLAY_BUTTON:
+                    result.enabled = !MainPlaylistController.empty
+                    result.name = bar.playing ? qsTr("Pause") : qsTr("Play")
+                    result.playing = bar.playing
+                    result.source = bar.assetBase + (bar.playing ? "pause.svg" : "play.svg")
+                    result.glyph = ""; break
+                case ControlListModel.PREVIOUS_BUTTON:
+                    result.enabled = MainPlaylistController.hasPrev; result.source = bar.assetBase + "previous.svg"; result.glyph = ""; break
+                case ControlListModel.NEXT_BUTTON:
+                    result.enabled = MainPlaylistController.hasNext; result.source = bar.assetBase + "next.svg"; result.glyph = ""; break
+                case ControlListModel.JUXTO_AUDIO_TRACKS:
+                    result.enabled = Player.audioTracks.count > 0; result.source = bar.assetBase + JuxtopposedPalette.icon("audio.svg"); result.glyph = ""; break
+                case ControlListModel.LANG_BUTTON:
+                    result.enabled = Player.isStarted; result.source = bar.assetBase + JuxtopposedPalette.icon("subtitles.svg"); result.glyph = ""; break
+                case ControlListModel.EXTENDED_BUTTON:
+                    result.enabled = true; result.source = bar.assetBase + "settings.svg"; result.glyph = ""; break
+                case ControlListModel.PLAYLIST_BUTTON: case ControlListModel.JUXTO_RIGHT_SIDEBAR:
+                    result.enabled = true; result.checked = MainCtx.playqueuePanel.visible; break
+                case ControlListModel.PLAYBACK_SPEED_BUTTON: result.enabled = Player.isStarted && Player.ratechangable; break
+                case ControlListModel.SKIP_FW_BUTTON: case ControlListModel.SKIP_BACK_BUTTON:
+                case ControlListModel.JUXTO_FORWARD_15: case ControlListModel.JUXTO_BACKWARD_15:
+                case ControlListModel.JUXTO_REPLAY: result.enabled = Player.isStarted && Player.seekable; break
+                case ControlListModel.LOOP_BUTTON:
+                    result.enabled = true; result.checked = MainPlaylistController.repeatMode !== PlaylistController.PLAYBACK_REPEAT_NONE
+                    result.glyph = MainPlaylistController.repeatMode === PlaylistController.PLAYBACK_REPEAT_CURRENT ? VLCIcons.repeat_one : VLCIcons.repeat_all
+                    result.name = MainPlaylistController.repeatMode === PlaylistController.PLAYBACK_REPEAT_CURRENT ? qsTr("Repeat current item")
+                        : MainPlaylistController.repeatMode === PlaylistController.PLAYBACK_REPEAT_ALL ? qsTr("Repeat all") : qsTr("Repeat off"); break
+                case ControlListModel.RANDOM_BUTTON: result.enabled = true; result.checked = MainPlaylistController.random; break
+                case ControlListModel.RECORD_BUTTON: result.checked = Player.recording; break
+                case ControlListModel.SNAPSHOT_BUTTON: case ControlListModel.JUXTO_ZOOM:
+                    result.enabled = Player.hasVideoOutput; break
+                case ControlListModel.JUXTO_PICTURE_IN_PICTURE:
+                    result.enabled = Player.hasVideoOutput && MainCtx.canShowVideoPIP
+                    result.note = result.enabled ? qsTr("Picture in Picture") : qsTr("This video output cannot keep an embedded picture-in-picture view."); break
+                case ControlListModel.JUXTO_HDR:
+                    result.enabled = false; result.note = qsTr("HDR switching is not available in this build."); break
+                case ControlListModel.JUXTO_FAVORITE:
+                    // Keep keyboard focus while the checked native save or a
+                    // background refresh is pending. The action guard owns busy.
+                    result.enabled = MainCtx.currentMedia.available
+                    result.busy = MainCtx.currentMedia.busy
+                    result.checked = MainCtx.currentMedia.favorite
+                    result.name = result.checked ? qsTr("Remove from favorites") : qsTr("Add to favorites")
+                    result.note = MainCtx.currentMedia.error || (MainCtx.currentMedia.busy ? qsTr("Updating favorite…")
+                        : !MainCtx.mediaLibraryAvailable ? qsTr("Favorites require the media library.")
+                        : !MainCtx.currentMedia.available ? qsTr("This media is not in the library.") : result.name); break
+                case ControlListModel.BOOKMARK_BUTTON:
+                    result.enabled = Player.isStarted && Player.seekable && (bookmarkActions.item?.canAdd ?? false)
+                    result.note = MainCtx.mediaLibraryAvailable ? qsTr("Add a bookmark at the current position") : qsTr("Bookmarks require the media library."); break
+                case ControlListModel.JUXTO_BOOKMARKS:
+                    result.enabled = MainCtx.mediaLibraryAvailable; break
+                case ControlListModel.JUXTO_CHAPTERS:
+                    result.enabled = Player.hasChapters; break
+                case ControlListModel.JUXTO_PLAYLISTS: result.enabled = MainCtx.mediaLibraryAvailable; break
+                case ControlListModel.JUXTO_VLC_SETTINGS: case ControlListModel.JUXTO_GO_HOME: case ControlListModel.QUIT_BUTTON:
+                case ControlListModel.FULLSCREEN_BUTTON: result.enabled = true; break
+                }
+                return result
+            }
             uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
             background: Rectangle { color: JuxtopposedPalette.color(root.subtitleTimelineVisible ? "#F2191919" : "#1B1B1B") }
             elapsed: root.subtitleTimelineVisible ? root.formatRangeTime(bar.seekItem?.windowStartTicks ?? 0)
@@ -188,7 +262,38 @@ T.Pane {
                 trackReturnItem = subtitlesButton
                 tracksMenu.showTracks(0)
             }
-            onSettingsRequested: playbackSettings.showSettings()
+            onSettingsRequested: {settingsReturnItem = settingsButton; playbackSettings.showSettings()}
+            onTileRequested: (tile, item) => {
+                const state = tileState(tile)
+                if (state.enabled !== true || state.busy === true) return
+                switch (tile) {
+                case ControlListModel.PLAYBACK_SPEED_BUTTON: settingsReturnItem = item; playbackSettings.showSettings(0,0); break
+                case ControlListModel.SKIP_FW_BUTTON: Player.jumpSeconds(10); break
+                case ControlListModel.SKIP_BACK_BUTTON: Player.jumpSeconds(-10); break
+                case ControlListModel.JUXTO_FORWARD_15: Player.jumpSeconds(15); break
+                case ControlListModel.JUXTO_BACKWARD_15: Player.jumpSeconds(-15); break
+                case ControlListModel.STOP_BUTTON: MainPlaylistController.stop(); break
+                case ControlListModel.LOOP_BUTTON: MainPlaylistController.toggleRepeatMode(); break
+                case ControlListModel.RANDOM_BUTTON: MainPlaylistController.toggleRandom(); break
+                case ControlListModel.RECORD_BUTTON: Player.toggleRecord(); break
+                case ControlListModel.SNAPSHOT_BUTTON: Player.snapshot(); break
+                case ControlListModel.JUXTO_PICTURE_IN_PICTURE: MainCtx.playerView = false; break
+                case ControlListModel.JUXTO_ZOOM: settingsReturnItem = item; playbackSettings.showSettings(1,4); break
+                case ControlListModel.JUXTO_RIGHT_SIDEBAR: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible; break
+                case ControlListModel.QUIT_BUTTON: MainCtx.close(); break
+                case ControlListModel.JUXTO_VLC_SETTINGS: DialogsProvider.prefsDialog(); break
+                case ControlListModel.JUXTO_GO_HOME: History.push(["home"], {}, Qt.TabFocusReason); MainCtx.playerView = false; break
+                case ControlListModel.INFO_BUTTON: DialogsProvider.mediaInfoDialog(); break
+                case ControlListModel.JUXTO_REPLAY: Player.jumpToPos(0); break
+                case ControlListModel.JUXTO_FAVORITE: MainCtx.currentMedia.setFavorite(!MainCtx.currentMedia.favorite); break
+                case ControlListModel.BOOKMARK_BUTTON:
+                    bookmarkActions.item.add(); MainCtx.playqueuePanel.activeTab = 1; MainCtx.playqueuePanel.visible = true; break
+                case ControlListModel.JUXTO_BOOKMARKS: MainCtx.playqueuePanel.activeTab = 1; MainCtx.playqueuePanel.visible = true; break
+                case ControlListModel.JUXTO_CHAPTERS: MainCtx.playqueuePanel.activeTab = 2; MainCtx.playqueuePanel.visible = true; break
+                case ControlListModel.JUXTO_PLAYLISTS: History.push(["playlists"], {}, Qt.TabFocusReason); MainCtx.playerView = false; break
+                case ControlListModel.FULLSCREEN_BUTTON: Player.toggleFullscreen(); break
+                }
+            }
             onQueueRequested: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible
             onDurationRequested: {
                 if (root.subtitleTimelineVisible) bar.seekItem?.followPosition()
@@ -244,6 +349,12 @@ T.Pane {
                 }
             }
 
+            Loader {
+                id: bookmarkActions
+                active: MainCtx.mediaLibraryAvailable
+                source: "qrc:///qt/qml/VLC/Playlist/JuxtopposedBookmarkActions.qml"
+            }
+
             TracksMenu {
                 id: tracksMenu
                 parent: root
@@ -258,7 +369,8 @@ T.Pane {
                     root.requestLockUnlockAutoHide(false)
                     if (root.menu === tracksMenu)
                         root.menu = undefined
-                    bar.trackReturnItem.forceActiveFocus(Qt.PopupFocusReason)
+                    const target = bar.trackReturnItem && bar.trackReturnItem.visible && bar.trackReturnItem.enabled ? bar.trackReturnItem : bar.seekItem
+                    target?.forceActiveFocus(Qt.PopupFocusReason)
                 }
             }
 
@@ -283,7 +395,8 @@ T.Pane {
                     root.requestLockUnlockAutoHide(false)
                     if (root.menu === playbackSettings)
                         root.menu = undefined
-                    bar.settingsButton.forceActiveFocus(Qt.PopupFocusReason)
+                    const target = bar.settingsReturnItem && bar.settingsReturnItem.visible && bar.settingsReturnItem.enabled ? bar.settingsReturnItem : bar.seekItem
+                    target?.forceActiveFocus(Qt.PopupFocusReason)
                 }
             }
 

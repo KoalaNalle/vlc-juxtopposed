@@ -36,9 +36,13 @@ T.Popup {
             }
         }
     }
-    function showSettings() {
+    function showSettings(tabIndex, controlIndex) {
         Player.equalizer.refresh();
         open();
+        if (typeof tabIndex === "number") {
+            panel.selectTab(tabIndex, Qt.PopupFocusReason)
+            if (typeof controlIndex === "number") Qt.callLater(() => panel.loadedPage?.keyboardControls[controlIndex]?.forceActiveFocus(Qt.PopupFocusReason))
+        }
     }
 
     closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutside

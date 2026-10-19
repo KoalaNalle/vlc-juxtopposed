@@ -47,18 +47,22 @@ assets = ROOT / 'modules/gui/qt/pixmaps/juxtopposed'
 qml = results / 'historical-control'
 qml.mkdir()
 player_qml = ROOT / 'modules/gui/qt/player/qml'
-current_source = (player_qml / 'JuxtopposedPlaybackBar.qml').read_text(encoding='utf-8')
+current_source = (player_qml / 'JuxtopposedVolumeControl.qml').read_text(encoding='utf-8')
 historical_source = current_source
 historical_reversions = {}
 for filename in ['volume-background.svg', 'volume-fill.svg']:
-    current_expression = 'source: root.assetBase + JuxtopposedPalette.icon("' + filename + '")'
+    current_expression = 'source: root.assetBase + root.appearance.icon("' + filename + '")'
     historical_expression = 'source: root.assetBase + "' + filename + '"'
     assert historical_source.count(current_expression) == 1, filename
     historical_source = historical_source.replace(current_expression, historical_expression)
     historical_reversions[current_expression] = historical_expression
-historical_path = qml / 'HistoricalDarkVolumeBar.qml'
+historical_path = qml / 'HistoricalDarkVolumeControl.qml'
 historical_path.write_text('import "' + player_qml.as_uri() + '"\n' + historical_source,
                            encoding='utf-8', newline='\n')
+historical_bar = (player_qml / 'JuxtopposedPlaybackBar.qml').read_text(encoding='utf-8')
+assert historical_bar.count('JuxtopposedVolumeControl {') == 2
+(qml/'HistoricalDarkVolumeBar.qml').write_text('import "' + player_qml.as_uri() + '"\n'
+    + historical_bar.replace('JuxtopposedVolumeControl {','HistoricalDarkVolumeControl {'),encoding='utf-8',newline='\n')
 source=(ROOT/'modules/gui/qt/player/qml/ControlBar.qml').read_text(encoding='utf-8')
 handler=source[source.index('            onVolumeRequested: (value) => {'):source.index('            onAudioRequested:',source.index('            onVolumeRequested: (value) => {'))]
 assert 'Player.muted = false' in handler and 'Player.volume = value' in handler
@@ -181,12 +185,12 @@ window.setProperty('dark',True);QTest.qWait(20);assert fill.property('source').f
 done('Mute/engine updates and live theme changes preserve volume without emitting input')
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));window.close();engine.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(30)
 assert destroyed==[True] and not messages,messages
-for source in [player_qml/'JuxtopposedPlaybackBar.qml',ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml']:
+for source in [player_qml/'JuxtopposedPlaybackBar.qml',player_qml/'JuxtopposedVolumeControl.qml',ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml']:
     parsed=subprocess.run([str(Path(PySide6.__file__).parent/('qmlformat.exe' if os.name=='nt' else 'qmlformat')),'--ignore-settings',str(source)],stdout=subprocess.DEVNULL,stderr=subprocess.PIPE,text=True,timeout=20)
     assert parsed.returncode==0 and not parsed.stderr,(source,parsed.stderr)
 record=dict(passed=True,cases=checks,caseCount=len(checks),messages=messages,geometry=geometry,designerCompositeSamples=samples,nativeAcceptance=False,
     sourceSha256={p.relative_to(ROOT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in [
-        player_qml/'JuxtopposedPlaybackBar.qml',player_qml/'ControlBar.qml',player_qml/'JuxtopposedButton.qml',
+        player_qml/'JuxtopposedPlaybackBar.qml',player_qml/'JuxtopposedVolumeControl.qml',player_qml/'JuxtopposedLayoutRow.qml',player_qml/'ControlBar.qml',player_qml/'JuxtopposedButton.qml',
         player_qml/'JuxtopposedSeekBackground.qml',ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml']},
     historicalControlReversions=historical_reversions,artworkFixtureSha256=hashlib.sha256(fixture.read_bytes()).hexdigest(),
     designerCompositeSha256=hashlib.sha256(composite.read_bytes()).hexdigest(),repoRoot=str(ROOT),outputDirectory=str(results),

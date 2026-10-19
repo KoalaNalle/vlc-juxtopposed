@@ -40,7 +40,7 @@ T.Pane {
 
     property bool useAcrylic: true
     readonly property bool juxtopposed: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
-    property int currentTab: 0
+    readonly property int currentTab: MainCtx.playqueuePanel.activeTab
     onCurrentTabChanged: {
         if (currentTab !== 0)
             searchBox?.retract()
@@ -282,7 +282,7 @@ T.Pane {
             repeatActive: MainPlaylistController.repeatMode !== PlaylistController.PLAYBACK_REPEAT_NONE
             repeatDescription: root.formatQueueRepeatMode(MainPlaylistController.repeatMode)
             shuffleActive: MainPlaylistController.random
-            onTabRequested: (index) => root.currentTab = index
+            onTabRequested: index => MainCtx.playqueuePanel.activeTab = index
             onSortRequested: root.showQueueSort()
             onRepeatRequested: MainPlaylistController.toggleRepeatMode()
             onShuffleRequested: MainPlaylistController.toggleRandom()
@@ -529,6 +529,10 @@ T.Pane {
                         return "" // Not visible otherwise
 
                     const duration = root.queueDuration()
+                    // The native model can become empty before ListView.count
+                    // catches up during Clear/reset.
+                    if (!duration)
+                        return ""
                     return qsTr("%1 elements, %2").arg(listView.count).arg(duration.formatLong())
                 }
             }

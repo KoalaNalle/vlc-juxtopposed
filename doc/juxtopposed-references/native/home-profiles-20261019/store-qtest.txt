@@ -1,0 +1,22 @@
+********* Start testing of TestPlayerProfilesStore *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestPlayerProfilesStore::initTestCase()
+PASS   : TestPlayerProfilesStore::initialProfilesDoNotWrite()
+PASS   : TestPlayerProfilesStore::cloneAndCheckpointPreserveIndependentProfilesAndUnrelatedKeys()
+PASS   : TestPlayerProfilesStore::switchJournalKeepsPreviousSelectionUntilComplete()
+PASS   : TestPlayerProfilesStore::incompleteRollbackCannotClearRecoveryRecord()
+PASS   : TestPlayerProfilesStore::pendingChangeBlocksCompetingEdits()
+PASS   : TestPlayerProfilesStore::invalidNamesDoNotPublishOrWrite()
+PASS   : TestPlayerProfilesStore::snapshotsExcludeGlobalGroupsAndUnsupportedValues()
+PASS   : TestPlayerProfilesStore::nonfiniteAndUnboundedSnapshotsAreRejected()
+PASS   : TestPlayerProfilesStore::malformedSavedDataIsPreserved()
+PASS   : TestPlayerProfilesStore::unknownVersionAndMissingSelectionArePreserved()
+PASS   : TestPlayerProfilesStore::staleWindowCannotOverwriteAnotherWindow()
+PASS   : TestPlayerProfilesStore::concurrentSaveLockCanRetry()
+PASS   : TestPlayerProfilesStore::failedDiskSavePreservesAcceptedStateAndRetries()
+PASS   : TestPlayerProfilesStore::mismatchedRecoveryRecordIsPreserved()
+PASS   : TestPlayerProfilesStore::profileCountLimitPreservesAllAcceptedProfiles()
+PASS   : TestPlayerProfilesStore::pendingSwitchSurvivesColdProcessAndFinishes()
+PASS   : TestPlayerProfilesStore::cleanupTestCase()
+Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 846ms
+********* Finished testing of TestPlayerProfilesStore *********

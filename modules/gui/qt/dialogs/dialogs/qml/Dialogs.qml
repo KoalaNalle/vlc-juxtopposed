@@ -616,6 +616,7 @@ Item {
             target: DialogsProvider
 
             function onShowToolbarEditorDialog() {
+                if (MainCtx.juxtopposedControls) return
                 toolbarEditorDialogLoader.active = true
                 toolbarEditorDialogLoader.item.open()
             }

@@ -151,6 +151,8 @@ public:
     Q_PROPERTY(float buffering READ getBuffering  NOTIFY bufferingChanged FINAL)
     Q_PROPERTY(float rate READ getRate WRITE setRate NOTIFY rateChanged FINAL)
     Q_PROPERTY(QUrl url READ getUrl NOTIFY inputChanged FINAL)
+    Q_PROPERTY(QString fileName READ getFileName NOTIFY inputChanged FINAL)
+    Q_PROPERTY(QString folderName READ getFolderName NOTIFY inputChanged FINAL)
 
     Q_PROPERTY(VLCTime time READ getTime WRITE setTime NOTIFY timeChanged FINAL)
     Q_PROPERTY(VLCTime displayTime READ getDisplayTime NOTIFY displayTimeChanged FINAL)
@@ -261,6 +263,7 @@ public slots:
     void jumpFwd();
     void jumpBwd();
     void jumpTime( VLCTime i_time );
+    void jumpSeconds(int seconds);
     void jumpToPos( double );
     void frameNext();
     void framePrev();
@@ -363,6 +366,11 @@ public slots:
     void openVLsub();
     void acknowledgeRestoreCallback();
     QUrl getUrl() const;
+    QString getFileName() const { return getUrl().fileName(); }
+    QString getFolderName() const {
+        const auto url = getUrl();
+        return url.isLocalFile() ? url.adjusted(QUrl::RemoveFilename | QUrl::StripTrailingSlash).fileName() : QString{};
+    }
 
     //tracks
     TrackListModel* getVideoTracks();

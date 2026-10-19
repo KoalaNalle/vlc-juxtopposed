@@ -1495,6 +1495,13 @@ void PlayerController::jumpTime(VLCTime i_time)
     vlc_player_SeekByTime( d->m_player, i_time.toVLCTick(), qtPlaybackSeekSpeed(VLC_OBJECT(d->p_intf)), VLC_PLAYER_WHENCE_RELATIVE );
 }
 
+void PlayerController::jumpSeconds(int seconds)
+{
+    // Fixed-duration palette tiles retain their displayed 10/15 seconds even
+    // when the separate keyboard short-jump preference has been customized.
+    jumpTime(VLCTime(vlc_tick_from_sec(seconds)));
+}
+
 void PlayerController::jumpToPos( double new_pos )
 {
     Q_D(PlayerController);

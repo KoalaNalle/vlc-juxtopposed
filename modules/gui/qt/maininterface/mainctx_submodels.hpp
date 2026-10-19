@@ -115,6 +115,7 @@ class SidePanelCtx: public QObject
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible NOTIFY visibleChanged FINAL)
     Q_PROPERTY(bool docked READ isDocked WRITE setDocked NOTIFY dockedChanged FINAL)
     Q_PROPERTY(double width READ width WRITE setWidth NOTIFY widthChanged FINAL)
+    Q_PROPERTY(int activeTab READ activeTab WRITE setActiveTab NOTIFY activeTabChanged FINAL)
 
 public:
     SidePanelCtx(MainCtx* ctx, QObject* parent = nullptr);
@@ -126,11 +127,17 @@ public:
     void setDocked(bool value);
     void setVisible(bool value);
     void setWidth(double value);
+    int activeTab() const { return m_activeTab; }
+    void setActiveTab(int tab) {
+        if (tab < 0 || tab > 2 || tab == m_activeTab) return;
+        m_activeTab = tab; emit activeTabChanged();
+    }
 
 signals:
     void visibleChanged(bool visible);
     void dockedChanged(bool);
     void widthChanged(double);
+    void activeTabChanged();
 
 private:
     MainCtx* m_ctx = nullptr;
@@ -138,6 +145,8 @@ private:
     bool m_docked = false;
     // size in dp
     double  m_width = 120;
+    // Session-only queue/bookmark/chapter selection follows dock/undock.
+    int m_activeTab = 0;
 
     friend class MainCtx;
 };

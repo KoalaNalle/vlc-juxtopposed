@@ -24,6 +24,8 @@ class GeneralPreferencesModel : public QObject
     Q_PROPERTY(bool updatesAvailable READ updatesAvailable CONSTANT FINAL)
     Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged FINAL)
     Q_PROPERTY(bool restartRequired READ restartRequired NOTIFY restartRequiredChanged FINAL)
+    Q_PROPERTY(bool setupRequired READ setupRequired NOTIFY setupStateChanged FINAL)
+    Q_PROPERTY(bool setupReady READ setupReady NOTIFY setupStateChanged FINAL)
 public:
     explicit GeneralPreferencesModel(qt_intf_t *, ColorSchemeModel *, QSettings *,
                                      QObject *parent = nullptr);
@@ -41,15 +43,20 @@ public:
     bool updatesAvailable() const;
     QString lastError() const { return m_lastError; }
     bool restartRequired() const { return m_restartRequired; }
+    bool setupRequired() const { return m_setupRequired; }
+    bool setupReady() const { return m_setupReady; }
+    static QString setupVersionKey() { return QStringLiteral("Juxtopposed/setup-version"); }
 
     Q_INVOKABLE bool setValue(const QString &key, const QVariant &value);
     Q_INVOKABLE void reload();
     Q_INVOKABLE bool chooseLogFile();
+    Q_INVOKABLE bool finishSetup(const QVariant &theme, const QVariant &accentIndex);
 
 signals:
     void valuesChanged();
     void lastErrorChanged();
     void restartRequiredChanged();
+    void setupStateChanged();
 
 private:
     bool fail(const QString &);
@@ -70,5 +77,7 @@ private:
     QVariantMap m_startupValues;
     QString m_lastError;
     bool m_restartRequired = false;
+    bool m_setupRequired = true;
+    bool m_setupReady = false;
 };
 #endif

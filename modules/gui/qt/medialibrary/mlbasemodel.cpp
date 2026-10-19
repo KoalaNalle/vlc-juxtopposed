@@ -342,7 +342,8 @@ void MLBaseModel::addAndPlay(const QModelIndexList &list, const QStringList &opt
     QVector<int> indx;
     std::transform(list.begin(), list.end(), std::back_inserter(indx), std::mem_fn(&QModelIndex::row));
 
-    ItemCallback play = [this, options](quint64, std::vector<std::unique_ptr<MLItem>> &items)
+    const auto origin = parentId();
+    ItemCallback play = [this, options, origin](quint64, std::vector<std::unique_ptr<MLItem>> &items)
     {
         if (!m_mediaLib)
             return;
@@ -352,7 +353,7 @@ void MLBaseModel::addAndPlay(const QModelIndexList &list, const QStringList &opt
                        , std::back_inserter(ids)
                        , [](const std::unique_ptr<MLItem> &item) { return item ? QVariant::fromValue(item->getId()) : QVariant {}; });
 
-        m_mediaLib->addAndPlay(ids, options);
+        m_mediaLib->addAndPlay(ids, options, origin);
     };
 
     loadItems(indx, play);

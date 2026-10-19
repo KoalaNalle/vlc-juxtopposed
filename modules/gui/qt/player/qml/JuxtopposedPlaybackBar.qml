@@ -13,6 +13,8 @@ C.Pane {
     id: root
 
     property real uiScale: 1
+    property var appearance: JuxtopposedPalette
+    property bool previewOnly: false
     property url assetBase: "qrc:/juxtopposed/"
     property string elapsed: "00:00:00"
     property string duration: "00:00:00"
@@ -28,18 +30,25 @@ C.Pane {
     property bool queueVisible: false
     property bool canGoPrevious: true
     property bool canGoNext: true
+    property var controlLayout: null
+    property var describeTile: function(id) { return ({name: String(id), kind: "button"}) }
+    property var tileState: function(id) { return ({enabled: false}) }
+    property var mediaMetadata: ({})
+    property bool editing: false
+    readonly property bool customized: !!controlLayout && controlLayout.columns !== undefined
+    readonly property Item layoutRow: customRow
 
     // VLC supplies its SliderBar here so seeking, chapters and shortcuts retain
     // their existing behavior. The default slider also makes this component
     // independently previewable without a running VLC engine.
     property Component seekComponent: defaultSeekComponent
     readonly property Item seekItem: seekLoader.item
-    property alias audioButton: audioButton
-    property alias subtitlesButton: subtitlesButton
-    property alias settingsButton: settingsButton
+    readonly property Item audioButton: customized ? customRow.itemForKind("audio") : staticAudioButton
+    readonly property Item subtitlesButton: customized ? customRow.itemForKind("subtitles") : staticSubtitlesButton
+    readonly property Item settingsButton: customized ? customRow.itemForKind("settings") : staticSettingsButton
     readonly property real sliderY: timeline.y + seekLoader.y
-                                   + (stacked ? 0 : row.y + timelineHost.y)
-    readonly property bool stacked: width < 860 * uiScale
+                                   + (stacked ? 0 : customized ? customScroll.y + customRow.timelineHost.mapToItem(customRow, 0, 0).y : row.y + timelineHost.y)
+    readonly property bool stacked: width < 860 * uiScale || (customized && controlLayout.timelineAbove === true)
     readonly property bool compactVolume: width < 600 * uiScale
 
     signal previousRequested()
@@ -54,6 +63,12 @@ C.Pane {
     signal queueRequested()
     signal durationRequested()
     signal requestLockUnlockAutoHide(bool lock)
+    signal tileRequested(int tile, var item)
+    signal layoutTilePressed(int column, int index, int tile, var item, point position)
+    signal layoutTileMoved(var item, point position)
+    signal layoutTileReleased(var item, point position)
+    signal layoutSelectionRequested(int column, int index)
+    signal layoutRemovalRequested(int column, int index)
 
     padding: 0
     implicitWidth: 640 * uiScale
@@ -69,8 +84,9 @@ C.Pane {
     Keys.onRightPressed: moveFocus(1)
 
     function moveFocus(direction) {
-        const controls = [previousButton, playButton, nextButton, seekLoader.item,
-                          duration, muteButton, volume, audioButton,
+        const controls = customized ? customRow.controls().concat(editing ? [] : [seekLoader.item, duration])
+                        : [previousButton, playButton, nextButton, seekLoader.item,
+                          duration, volumeControl.muteButton, volumeControl.slider, audioButton,
                           subtitlesButton, settingsButton, queueButton]
         const current = controls.findIndex((item) => item && item.activeFocus)
         for (let offset = 1; offset <= controls.length; ++offset) {
@@ -78,8 +94,28 @@ C.Pane {
             const item = controls[index]
             if (item && item.enabled && item.visible) {
                 item.forceActiveFocus(direction > 0 ? Qt.TabFocusReason : Qt.BacktabFocusReason)
+                if (customized) revealControl(item)
                 return
             }
+        }
+    }
+    function revealControl(item) {
+        const point = item.mapToItem(customRow, 0, 0)
+        if (point.x < customScroll.contentX) customScroll.contentX = Math.max(0, point.x)
+        else if (point.x + item.width > customScroll.contentX + customScroll.width)
+            customScroll.contentX = Math.max(0, Math.min(customScroll.contentWidth - customScroll.width, point.x + item.width - customScroll.width))
+    }
+    function activateTile(id, item) {
+        if (editing || previewOnly) return
+        switch (describeTile(id).kind) {
+        case "play": playPauseRequested(); break
+        case "previous": previousRequested(); break
+        case "next": nextRequested(); break
+        case "audio": audioRequested(); break
+        case "subtitles": subtitlesRequested(); break
+        case "settings": settingsRequested(); break
+        case "queue": queueRequested(); break
+        default: tileRequested(id, item); break
         }
     }
 
@@ -88,10 +124,11 @@ C.Pane {
         source: root.assetBase + "InterVariable.ttf"
     }
 
-    background: Rectangle { color: JuxtopposedPalette.color("#1B1B1B") }
+    background: Rectangle { color: root.appearance.color("#1B1B1B") }
 
     RowLayout {
         id: row
+        visible: !root.customized
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.leftMargin: 20 * root.uiScale
@@ -105,6 +142,9 @@ C.Pane {
 
             JuxtopposedButton {
                 id: previousButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedPrevious"
                 uiScale: root.uiScale
                 implicitHeight: 28 * uiScale
@@ -116,24 +156,30 @@ C.Pane {
 
             JuxtopposedButton {
                 id: playButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedPlay"
                 uiScale: root.uiScale
                 implicitWidth: 54 * uiScale
                 implicitHeight: 28 * uiScale
                 source: root.assetBase + (root.playing ? "pause.svg" : "play.svg")
                 description: root.playing ? qsTr("Pause") : qsTr("Play")
-                fillColor: root.playing ? JuxtopposedPalette.color("#6B6B6B") : JuxtopposedPalette.playButtonAccent
+                fillColor: root.playing ? root.appearance.color("#6B6B6B") : root.appearance.playButtonAccent
                 background: Rectangle {
                     radius: 6 * root.uiScale
-                    color: parent.down ? JuxtopposedPalette.color("#B16614") : parent.fillColor
+                    color: parent.down ? root.appearance.color("#B16614") : parent.fillColor
                     border.width: parent.visualFocus ? 2 * root.uiScale : 0
-                    border.color: JuxtopposedPalette.color("#FFFFFF")
+                    border.color: root.appearance.color("#FFFFFF")
                 }
                 onClicked: root.playPauseRequested()
             }
 
             JuxtopposedButton {
                 id: nextButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedNext"
                 uiScale: root.uiScale
                 implicitHeight: 28 * uiScale
@@ -155,7 +201,7 @@ C.Pane {
         Item {
             id: timeline
             objectName: "juxtopposedTimeline"
-            parent: root.stacked ? root.contentItem : timelineHost
+            parent: root.stacked ? root.contentItem : root.customized ? customRow.timelineHost : timelineHost
 
             anchors.left: parent.left
             anchors.right: parent.right
@@ -172,12 +218,13 @@ C.Pane {
                 anchors.verticalCenter: parent.verticalCenter
                 width: Math.max(76 * root.uiScale, implicitWidth + 16 * root.uiScale)
                 text: root.elapsed
-                color: JuxtopposedPalette.color("#8F8F8F")
+                color: root.appearance.color("#8F8F8F")
                 font.family: inter.name
                 font.pixelSize: 15 * root.uiScale
                 horizontalAlignment: Text.AlignHCenter
                 Accessible.name: root.live ? qsTr("Position in live window: %1").arg(text)
                                           : qsTr("Elapsed time: %1").arg(text)
+                Accessible.ignored: root.previewOnly
             }
 
             Loader {
@@ -204,20 +251,21 @@ C.Pane {
                 padding: 8 * root.uiScale
                 text: root.duration
                 enabled: root.durationInteractive
-                activeFocusOnTab: true
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 Accessible.name: root.live && !root.durationInteractive ? qsTr("Live stream")
                     : qsTr("Duration or remaining time: %1").arg(text)
                 background: Rectangle {
                     radius: 6 * root.uiScale
-                    color: parent.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
+                    color: parent.hovered ? root.appearance.color("#303030") : "transparent"
                     border.width: parent.visualFocus ? root.uiScale : 0
-                    border.color: JuxtopposedPalette.color("#D37918")
+                    border.color: root.appearance.color("#D37918")
                 }
                 contentItem: Text {
                     text: duration.text
                     font.family: inter.name
                     font.pixelSize: 15 * root.uiScale
-                    color: JuxtopposedPalette.color("#8F8F8F")
+                    color: root.appearance.color("#8F8F8F")
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
@@ -230,118 +278,52 @@ C.Pane {
             Layout.fillWidth: true
         }
 
-        RowLayout {
-            spacing: 8 * root.uiScale
-
-            JuxtopposedButton {
-                id: muteButton
-                objectName: "juxtopposedMute"
-                uiScale: root.uiScale
-                implicitWidth: 24 * uiScale
-                source: root.assetBase + (root.muted ? "volume-muted.svg" : JuxtopposedPalette.icon("volume.svg"))
-                mirrorIcon: true
-                description: root.muted ? qsTr("Unmute") : qsTr("Mute")
-                onClicked: root.muteRequested()
-            }
-
-            C.Slider {
-                id: volume
-                objectName: "juxtopposedVolume"
-                visible: !root.compactVolume
-                implicitWidth: 88 * root.uiScale
-                implicitHeight: 28 * root.uiScale
-                padding: 0
-                from: 0
-                to: Math.max(0.01, root.maximumVolume)
-                value: root.volume
-                stepSize: root.volumeStep
-                activeFocusOnTab: true
-                Accessible.name: qsTr("Volume")
-                opacity: root.muted ? 0.5 : 1
-                onMoved: root.volumeRequested(value)
-                onPressedChanged: root.requestLockUnlockAutoHide(pressed)
-                C.ToolTip.visible: hovered || visualFocus || pressed
-                C.ToolTip.text: Math.round(value * 100) + "%"
-                C.ToolTip.delay: 500
-
-                handle: Item {
-                    implicitWidth: 0
-                    implicitHeight: 0
-                }
-
-                background: Item {
-                    implicitWidth: 88 * root.uiScale
-                    implicitHeight: 28 * root.uiScale
-                    width: volume.width
-                    height: volume.height
-
-                    Image {
-                        x: 0
-                        y: 0.32 * root.uiScale
-                        width: 89 * root.uiScale
-                        height: 27.36 * root.uiScale
-                        objectName: "juxtopposedVolumeOriginalBackground"
-                        source: root.assetBase + JuxtopposedPalette.icon("volume-background.svg")
-                        sourceSize: Qt.size(width, height)
-                    }
-
-                    Item {
-                        objectName: "juxtopposedVolumeFillClip"
-                        x: 1.5 * root.uiScale
-                        y: 1.72 * root.uiScale
-                        width: Math.max(0, Math.min(1, volume.position)) * 86 * root.uiScale
-                        height: 24.56 * root.uiScale
-                        clip: true
-                        Image {
-                            width: 86 * root.uiScale
-                            height: 24.56 * root.uiScale
-                            objectName: "juxtopposedVolumeOriginalFill"
-                            source: root.assetBase + JuxtopposedPalette.icon("volume-fill.svg")
-                            sourceSize: Qt.size(width, height)
-                        }
-                    }
-
-                    Rectangle {
-                        anchors.fill: parent
-                        color: "transparent"
-                        radius: 4 * root.uiScale
-                        border.width: volume.visualFocus ? 2 * root.uiScale : 0
-                        border.color: JuxtopposedPalette.color("#D37918")
-                    }
-                }
-
-                WheelHandler {
-                    acceptedDevices: PointerDevice.AllDevices
-                    onWheel: (event) => {
-                        const delta = event.angleDelta.y || event.angleDelta.x
-                        root.volumeRequested(Math.max(volume.from, Math.min(volume.to, volume.value + delta / 120 * root.volumeStep)))
-                        event.accepted = true
-                    }
-                }
-            }
+        JuxtopposedVolumeControl {
+            id: volumeControl
+            uiScale: root.uiScale
+            appearance: root.appearance
+            assetBase: root.assetBase
+            previewOnly: root.previewOnly
+            compactVolume: root.compactVolume
+            maximumVolume: root.maximumVolume
+            volumeStep: root.volumeStep
+            volume: root.volume
+            muted: root.muted
+            onVolumeRequested: value => root.volumeRequested(value)
+            onMuteRequested: root.muteRequested()
+            onRequestLockUnlockAutoHide: lock => root.requestLockUnlockAutoHide(lock)
         }
 
         RowLayout {
             spacing: 12 * root.uiScale
 
             JuxtopposedButton {
-                id: audioButton
+                id: staticAudioButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedAudio"
                 uiScale: root.uiScale
-                source: root.assetBase + JuxtopposedPalette.icon("audio.svg")
+                source: root.assetBase + root.appearance.icon("audio.svg")
                 description: qsTr("Audio tracks")
                 onClicked: root.audioRequested()
             }
             JuxtopposedButton {
-                id: subtitlesButton
+                id: staticSubtitlesButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedSubtitles"
                 uiScale: root.uiScale
-                source: root.assetBase + JuxtopposedPalette.icon("subtitles.svg")
+                source: root.assetBase + root.appearance.icon("subtitles.svg")
                 description: qsTr("Subtitle tracks")
                 onClicked: root.subtitlesRequested()
             }
             JuxtopposedButton {
-                id: settingsButton
+                id: staticSettingsButton
+                appearance: root.appearance
+                activeFocusOnTab: !root.previewOnly
+                Accessible.ignored: root.previewOnly
                 objectName: "juxtopposedSettings"
                 uiScale: root.uiScale
                 source: root.assetBase + "settings.svg"
@@ -352,14 +334,63 @@ C.Pane {
 
         JuxtopposedButton {
             id: queueButton
+            appearance: root.appearance
+            activeFocusOnTab: !root.previewOnly
+            Accessible.ignored: root.previewOnly
             objectName: "juxtopposedQueue"
             uiScale: root.uiScale
-            source: root.assetBase + JuxtopposedPalette.icon("queue.svg")
+            source: root.assetBase + root.appearance.icon("queue.svg")
             description: qsTr("Play queue")
-            fillColor: root.queueVisible ? JuxtopposedPalette.color("#371F06") : "transparent"
+            fillColor: root.queueVisible ? root.appearance.color("#371F06") : "transparent"
             Accessible.checkable: true
             Accessible.checked: root.queueVisible
             onClicked: root.queueRequested()
+        }
+    }
+
+    Flickable {
+        id: customScroll
+        objectName: "juxtopposedCustomControls"
+        visible: root.customized
+        anchors.left: parent.left; anchors.right: parent.right
+        anchors.leftMargin: 20 * root.uiScale; anchors.rightMargin: 20 * root.uiScale
+        y: (root.stacked ? 51 : 11) * root.uiScale
+        height: 32 * root.uiScale
+        clip: true
+        contentWidth: Math.max(width, customRow.implicitWidth)
+        contentHeight: height
+        interactive: contentWidth > width && !root.editing
+        boundsBehavior: Flickable.StopAtBounds
+        C.ScrollBar.horizontal: C.ScrollBar {policy: customScroll.contentWidth > customScroll.width ? C.ScrollBar.AsNeeded : C.ScrollBar.AlwaysOff}
+        JuxtopposedLayoutRow {
+            id: customRow
+            dropViewport: customScroll
+            width: customScroll.contentWidth; height: customScroll.height
+            uiScale: root.uiScale; appearance: root.appearance; assetBase: root.assetBase
+            columns: root.customized ? root.controlLayout.columns : [[], [], []]
+            timelineInline: !root.stacked
+            editing: root.editing
+            describe: root.describeTile
+            state: root.tileState
+            metadata: root.mediaMetadata
+            volumeComponent: Component {
+                JuxtopposedVolumeControl {
+                    uiScale: root.uiScale; appearance: root.appearance; assetBase: root.assetBase
+                    previewOnly: root.previewOnly || root.editing
+                    compactVolume: root.compactVolume; maximumVolume: root.maximumVolume
+                    volumeStep: root.volumeStep; volume: root.volume; muted: root.muted
+                    onVolumeRequested: value => {if (!root.editing && !root.previewOnly) root.volumeRequested(value)}
+                    onMuteRequested: if (!root.editing && !root.previewOnly) root.muteRequested()
+                    onRequestLockUnlockAutoHide: lock => root.requestLockUnlockAutoHide(lock)
+                }
+            }
+            onActivated: (tile, item) => root.activateTile(tile, item)
+            onTilePressed: (column, index, tile, item, position) => root.layoutTilePressed(column, index, tile, item, position)
+            onTileMoved: (item, position) => root.layoutTileMoved(item, position)
+            onTileReleased: (item, position) => root.layoutTileReleased(item, position)
+            onSelectionRequested: (column, index) => root.layoutSelectionRequested(column, index)
+            onRemovalRequested: (column, index) => root.layoutRemovalRequested(column, index)
+            onRevealRequested: item => root.revealControl(item)
         }
     }
 
@@ -371,12 +402,14 @@ C.Pane {
             from: 0
             to: 1
             value: root.position
-            activeFocusOnTab: true
+            activeFocusOnTab: !root.previewOnly
+            Accessible.ignored: root.previewOnly
             Accessible.name: qsTr("Progress")
             onMoved: root.seekRequested(value)
             onPressedChanged: root.requestLockUnlockAutoHide(pressed)
             handle: Item { implicitWidth: 0; implicitHeight: 0 }
             background: JuxtopposedSeekBackground {
+                appearance: root.appearance
                 width: parent.width
                 height: parent.height
                 position: parent.position

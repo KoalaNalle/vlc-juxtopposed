@@ -23,8 +23,8 @@ seed=dict(customSkin=False,skinFile='',embeddedVideo=True,resizeVideo=False,reme
     controlAutoHide=-1,controlHideDelay=777,fullscreenControls=True,systemTray=True,startMinimized=False,
     trackPopup=1,popupDuration=3000,playlistTree=False)
 booleans={key for key,value in seed.items() if type(value)is bool}
-new_gates={'rememberGeometry','titleFileName','fullscreenScreen','controlAutoHide','controlHideDelay','popupDuration'}
-unsupported={'fullscreenControls','playlistTree'}
+new_gates={'rememberGeometry','titleFileName','fullscreenScreen','controlAutoHide','controlHideDelay','popupDuration','fullscreenControls'}
+unsupported={'playlistTree'}
 class InterfacePreferences(QObject):
     valuesChanged=Signal();capabilitiesChanged=Signal();screensChanged=Signal()
     lastErrorChanged=Signal();restartRequiredChanged=Signal();pickerActiveChanged=Signal()
@@ -44,6 +44,7 @@ class InterfacePreferences(QObject):
         assert all(key in seed for key in values);self.state={**self.state,**values};self.valuesChanged.emit()
         if 'embeddedVideo'in values:
             self.caps['fullscreenScreen']='fullscreenScreen'in self.consumer_flags and values['embeddedVideo']
+            self.caps['fullscreenControls']='fullscreenControls'in self.consumer_flags and values['embeddedVideo']
             self.capabilitiesChanged.emit()
         restart=self.state!=seed
         if restart!=self.restart:self.restart=restart;self.restartRequiredChanged.emit()
@@ -52,6 +53,7 @@ class InterfacePreferences(QObject):
         # flags false until the associated consumers have actually passed gates.
         self.consumer_flags=set(new_gates);self.caps={key:key not in unsupported for key in seed}
         self.caps['fullscreenScreen']=self.state['embeddedVideo'];self.capabilitiesChanged.emit()
+        self.caps['fullscreenControls']=self.state['embeddedVideo'];self.capabilitiesChanged.emit()
     @Slot()
     def reload(self):
         assert not self.picking
@@ -102,6 +104,7 @@ app=QGuiApplication([]);ctx=MainContext();model=ctx.interface;provider=Provider(
 qmlRegisterUncreatableType(Conversion,'VLC.Dialogs',1,0,'ConversionController','Supplied state enum')
 qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/widgets/qml/TextInputFocus.qml')),'VLC.Widgets',1,0,'TextInputFocus')
 qmlRegisterSingletonType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml')),'VLC.Style',1,0,'JuxtopposedPalette')
+qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml')),'VLC.Player',1,0,'JuxtopposedPlaybackBar')
 assets=results/'assets';assets.mkdir();qml=results/'qml';qml.mkdir()
 for p in (ROOT/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
     if p.is_file():shutil.copyfile(p,assets/p.name)
@@ -168,7 +171,7 @@ else:
 assert item('interfacecontrolHideDelay').property('value')==.777
 assert item('globalSettingsTitle').property('text')=='Interface Settings'
 assert window.grabWindow().save(str(results/'01-interface-native-default-gates.png'))
-done('Actual host mounts separate18-key service; new-consumer gates and2unsupported rows disabled;777ms/native legacy mode preserved without writes')
+done('Actual host mounts separate18-key service; new-consumer gates and unsupported tree row disabled;777ms/native legacy mode preserved without writes')
 
 images={};queue=[window.contentItem()]
 while queue:
@@ -221,7 +224,7 @@ done('Native-compatible pickerActive guards actual category/Advanced/Escape/repe
 
 model.enable_consumers();QTest.qWait(25)
 for key in unsupported:assert not item('interface'+key).isEnabled()
-for key in ['rememberGeometry','alwaysOnTop','windowDecorations','titleFileName','compactMode','embeddedVideo','resizeVideo','systemTray','startMinimized']:
+for key in ['rememberGeometry','alwaysOnTop','windowDecorations','titleFileName','compactMode','fullscreenControls','embeddedVideo','resizeVideo','systemTray','startMinimized']:
     if key=='resizeVideo':select('interfaceresizeVideo',1);assert model.requests[-1]==['resizeVideo',True];continue
     old=model.state[key];click('interface'+key);assert model.requests[-1]==[key,not old];click('interface'+key)
 select('interfacecontrolAutoHide',2);assert model.requests[-1]==['controlAutoHide',2]
@@ -247,7 +250,7 @@ before=len(model.requests);model.screen_rows.append(dict(index=2,name='Generated
 assert item('interfacefullscreenScreen').property('currentIndex')==3
 model.screen_rows.pop();model.screensChanged.emit();QTest.qWait(20);assert item('interfacefullscreenScreen').property('currentIndex')==-1 and len(model.requests)==before
 model.patch(embeddedVideo=False,systemTray=False);QTest.qWait(20)
-for key in ['resizeVideo','fullscreenScreen','startMinimized','trackPopup','popupDuration']:assert not item('interface'+key).isEnabled(),key
+for key in ['resizeVideo','fullscreenScreen','fullscreenControls','startMinimized','trackPopup','popupDuration']:assert not item('interface'+key).isEnabled(),key
 model.patch(**seed);model.enable_consumers();model.caps['skinFile']=False;model.caps['customSkin']=False;model.capabilitiesChanged.emit();QTest.qWait(20)
 assert not item('interfaceskinFile').isEnabled()and not item('interfaceskinBrowse').isEnabled()and not item('interfacecustomSkin').isEnabled()
 model.caps={key:key not in unsupported for key in seed};model.capabilitiesChanged.emit()

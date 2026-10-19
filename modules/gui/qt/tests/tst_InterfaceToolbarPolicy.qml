@@ -19,6 +19,7 @@ TestCase {
         MainCtx.controlAutoHideMode = 0
         MainCtx.controlsHideTimeout = 100000
         MainCtx.hasEmbededVideo = false
+        MainCtx.showFullscreenControls = true
         MainCtx.intfMainWindow.visibility = Window.Windowed
         Player.isInteractive = false
     }
@@ -96,6 +97,43 @@ TestCase {
     }
     function test_realTimer_data() {
         return [{tag:"zero", delay:0}, {tag:"nonPreset777", delay:777}, {tag:"maximum10000", delay:10000}]
+    }
+    function test_fullscreenControls_data() {
+        const rows = []
+        for (let mode = -1; mode <= 2; ++mode)
+            for (const allowed of [false, true])
+                for (const forced of [false, true])
+                    rows.push({tag: `${mode}-${allowed}-${forced}`, mode, allowed, forced})
+        return rows
+    }
+    function test_fullscreenControls(row) {
+        MainCtx.controlAutoHideMode = row.mode
+        MainCtx.hasEmbededVideo = true
+        MainCtx.showFullscreenControls = row.allowed
+        const fsm = make()
+        fsm.controlsForcedVisible = row.forced
+        compare(fsm.controlsAllowed, true)
+        compare(fsm.controlsVisible, true)
+        MainCtx.intfMainWindow.visibility = Window.FullScreen
+        compare(fsm.controlsAllowed, row.allowed)
+        compare(fsm.controlsVisible, row.allowed)
+        // Neither focus/hover locks nor explicit reveal may undo the option.
+        fsm.lock()
+        fsm.mouseMove()
+        fsm.keyboardMove()
+        fsm.askShow()
+        compare(fsm.isVisible, true)
+        compare(fsm.controlsVisible, row.allowed)
+        fsm.unlock()
+        fsm.timeout()
+        const shouldHide = row.mode < 0 || row.mode === 1 || row.mode === 2
+        compare(fsm.controlsVisible, row.allowed && (!shouldHide || row.forced))
+        fsm.mouseMove()
+        compare(fsm.controlsVisible, row.allowed)
+        MainCtx.intfMainWindow.visibility = Window.Windowed
+        fsm.mouseMove()
+        compare(fsm.controlsAllowed, true)
+        compare(fsm.controlsVisible, true)
     }
     function test_realTimer(row) {
         MainCtx.controlAutoHideMode = 2

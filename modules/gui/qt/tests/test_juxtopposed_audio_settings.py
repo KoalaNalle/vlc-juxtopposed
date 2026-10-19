@@ -60,7 +60,7 @@ class AudioPreferences(QObject):
         assert all(k in seed for k in values);self.state={**self.state,**copy.deepcopy(values)};self.valuesChanged.emit()
         # The native fingerprint compares effective bands/preamp and excludes
         # the redundant preset name once effective bands are valid.
-        restart=any(self.state[k]!=seed[k]for k in seed if k!='equalizerPreset')
+        restart=any(self.state[k]!=seed[k]for k in seed if k not in ('equalizerPreset','volumeStep','audioDelayMs'))
         if restart!=self.restart:self.restart=restart;self.restartRequiredChanged.emit()
     def enable_consumers(self):
         for k in gated:self.caps[k]=True
@@ -107,6 +107,7 @@ app=QGuiApplication([]);ctx=MainContext();model=ctx.audio;provider=Provider()
 qmlRegisterUncreatableType(Conversion,'VLC.Dialogs',1,0,'ConversionController','Supplied state enum')
 qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/widgets/qml/TextInputFocus.qml')),'VLC.Widgets',1,0,'TextInputFocus')
 qmlRegisterSingletonType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml')),'VLC.Style',1,0,'JuxtopposedPalette')
+qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml')),'VLC.Player',1,0,'JuxtopposedPlaybackBar')
 assets=results/'assets';assets.mkdir();qml=results/'qml';qml.mkdir()
 for p in(ROOT/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
     if p.is_file():shutil.copyfile(p,assets/p.name)
@@ -364,6 +365,23 @@ model.patch(volumeStep='1.23456789');QTest.qWait(20);assert step.property('text'
 edit('audiovolumeStep','6.1250001');assert model.requests[-1]==['volumeStep',6.1250001]and model.state['volumeStep']==6.1250001 and item('audiovolumeStep').property('text')=='6.125'
 model.patch(volumeStep=native_step);QTest.qWait(20);count=len(model.requests);focus('audiovolumeStep');QTest.keyClick(window,Qt.Key_Tab);assert len(model.requests)==count and model.state['volumeStep']==native_step
 done('Derived native floats display six significant digits without changing exact model values; disabled native5.000000074505806 shows5, integers/text stay exact and unedited focus never resaves rounded values')
+
+assert 'Applies to volume steps immediately.' in evaluate(page,'helpFor("volumeStep")')
+assert 'Restart VLC' not in evaluate(page,'helpFor("volumeStep")')
+assert 'Restart VLC' in evaluate(page,'helpFor("startupVolume")')
+model.caps['volumeStep']=False;model.capabilitiesChanged.emit();QTest.qWait(25)
+assert 'unavailable' in evaluate(page,'helpFor("volumeStep")')
+assert 'immediately' not in evaluate(page,'helpFor("volumeStep")')
+model.caps['volumeStep']=True;model.capabilitiesChanged.emit();QTest.qWait(25)
+done('Volume-step help distinguishes a linked live policy from startup defaults and an unavailable consumer')
+
+assert 'next media' not in evaluate(page,'helpFor("audioEnabled")')
+assert 'Restart VLC' in evaluate(page,'helpFor("audioEnabled")')
+done('Audio on/off help follows the verified startup policy without promising a same-player next-input change')
+
+assert 'next media item' in evaluate(page,'helpFor("audioDelayMs")')
+assert 'Restart VLC' not in evaluate(page,'helpFor("audioDelayMs")')
+done('Audio-delay help states the verified next-input timing separately from live volume steps and restart-only defaults')
 
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));window.close();engine.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(25);assert destroyed==[True]and not messages,messages
 (results/'verification.json').write_text(json.dumps(dict(passed=True,caseCount=len(checks),cases=checks,messages=messages,geometry=geometry,renderedImageInstances=images,adapters=identities,workerSha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),nativeAccepted=False,scope=__doc__),indent=2)+'\n',encoding='utf-8')

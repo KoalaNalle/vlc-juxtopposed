@@ -1,0 +1,8 @@
+{
+  "status": "field_assertions_passed_but_headless_software_fixture_constraints_not_accepted",
+  "qtestCasesPassed": 18,
+  "reason": "avcodec-hw is obsolete in VLC4; logs show D3D11 hardware selection and vout window module window instead of an explicitly selected dummy window. The vdummy display alone is insufficient to establish headless output.",
+  "repair": "Use actual no-hw-dec and explicit dummy window selection, own empty initial config, replay the same desired cases and validate selected native modules.",
+  "ordinaryAppAccepted": false,
+  "fullBetaAccepted": false
+}

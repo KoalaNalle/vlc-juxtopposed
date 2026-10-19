@@ -174,6 +174,34 @@ private slots:
         QVERIFY(!m_model->setValue(QStringLiteral("controlAutoHide"), -1));
         QVERIFY(!m_model->setValue(QStringLiteral("controlAutoHide"), 3));
     }
+    void fullscreenControlsGatePersistenceAndDetachedBoundary() {
+        QVERIFY(m_model->setValue(QStringLiteral("embeddedVideo"), true));
+        InterfacePreferencesModel::Consumers linked;
+        linked.fullscreenControls = true;
+        makeModel(linked);
+        QVERIFY(m_model->capabilities().value(QStringLiteral("fullscreenControls")).toBool());
+        const bool initial = m_model->values().value(QStringLiteral("fullscreenControls")).toBool();
+        const auto before = m_model->values(); const auto disk = bytes(m_config);
+        for (const QVariant &bad : {QVariant(0), QVariant(1.0), QVariant(QStringLiteral("false"))}) {
+            QVERIFY(!m_model->setValue(QStringLiteral("fullscreenControls"), bad));
+            QCOMPARE(m_model->values(), before); QCOMPARE(bytes(m_config), disk);
+        }
+        QVERIFY(m_model->setValue(QStringLiteral("fullscreenControls"), !initial));
+        QCOMPARE(bool(config_GetInt("qt-fs-controller")), !initial);
+        const QByteArray expected = QByteArray("qt-fs-controller=") + (!initial ? '1' : '0');
+        QVERIFY(bytes(m_config).contains(expected));
+        QVERIFY(m_model->restartRequired());
+        m_model->reload();
+        QVERIFY(m_model->restartRequired());
+        closeNative(); QVERIFY(openNative()); makeModel(linked);
+        QCOMPARE(m_model->values().value(QStringLiteral("fullscreenControls")).toBool(), !initial);
+        QVERIFY(!m_model->restartRequired());
+        QVERIFY(m_model->setValue(QStringLiteral("embeddedVideo"), false));
+        QVERIFY(!m_model->capabilities().value(QStringLiteral("fullscreenControls")).toBool());
+        const auto detachedValues = m_model->values(); const auto detachedDisk = bytes(m_config);
+        QVERIFY(!m_model->setValue(QStringLiteral("fullscreenControls"), initial));
+        QCOMPARE(m_model->values(), detachedValues); QCOMPARE(bytes(m_config), detachedDisk);
+    }
     void failedNativeDestinationIsNotAccepted() {
         QVERIFY(QDir().mkpath(m_config)); // Real existing directory at destination.
         const auto before = m_model->values();

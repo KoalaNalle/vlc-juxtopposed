@@ -10,6 +10,7 @@ Rectangle {
     id: root
     property real position: 0
     property real uiScale: 1
+    property var appearance: JuxtopposedPalette
     property var waveformPeaks: []
     readonly property bool hasWaveform: waveformPeaks.length > 0
     readonly property real maximumPeak: hasWaveform ? Math.max(0.001, ...waveformPeaks) : 1
@@ -17,7 +18,7 @@ Rectangle {
     readonly property real innerWidth: Math.max(0, width - 4 * uiScale)
 
     implicitHeight: 28 * uiScale
-    color: JuxtopposedPalette.color("#090909")
+    color: root.appearance.color("#090909")
     radius: 6 * uiScale
 
     Rectangle {
@@ -28,7 +29,7 @@ Rectangle {
         width: root.innerWidth * root.boundedPosition
         height: Math.max(0, parent.height - 4 * root.uiScale)
         radius: 4 * root.uiScale
-        color: JuxtopposedPalette.color("#371F06")
+        color: root.appearance.color("#371F06")
     }
 
     Repeater {
@@ -45,7 +46,7 @@ Rectangle {
                              * Math.max(0, root.height - 8 * root.uiScale))
             radius: width / 2
             color: (index + 0.5) / root.waveformPeaks.length <= root.boundedPosition
-                   ? JuxtopposedPalette.color("#D37918") : JuxtopposedPalette.color("#4F4F4F")
+                   ? root.appearance.color("#D37918") : root.appearance.color("#4F4F4F")
         }
     }
 
@@ -56,6 +57,6 @@ Rectangle {
         x: 2 * root.uiScale + Math.max(0, played.width - width)
         y: played.y
         radius: 4 * root.uiScale
-        color: JuxtopposedPalette.color("#D37918")
+        color: root.appearance.color("#D37918")
     }
 }

@@ -48,6 +48,12 @@ widgets = folder / 'VLC/Widgets'
 widgets.mkdir(parents=True)
 shutil.copyfile(qt / 'widgets/qml/ImageExt.qml', widgets / 'ImageExt.qml')
 (widgets / 'qmldir').write_text('module VLC.Widgets\nImageExt 1.0 ImageExt.qml\n')
+util = folder / 'VLC/Util'
+util.mkdir()
+(util / 'qmldir').write_text('module VLC.Util\nsingleton SVGColorImage 1.0 SVGColorImage.qml\n')
+# Supplied component dependency only. Native SVG recoloring/resource acceptance
+# remains in the actual app journeys rather than this provider-contract suite.
+(util / 'SVGColorImage.qml').write_text('pragma Singleton\nimport QtQml\nQtObject { function colorize(path) { return { any: function(colors) { return this }, uri: function() { return path } } } }\n')
 scene = '''import QtQuick
 import VLC.Style
 import "@PLAYER@" as NativePlayer

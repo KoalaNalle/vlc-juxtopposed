@@ -91,8 +91,14 @@ public:
         return ptr.get();
     }
 
+    // A library playlist is an explicit queue-entry origin, not a property of
+    // the media URL (which may occur in several playlists).
+    qint64 sourcePlaylistId() const { return m_sourcePlaylistId; }
+    void setSourcePlaylistId(qint64 id) { m_sourcePlaylistId = id > 0 ? id : 0; }
+
 private:
     SharedInputItem ptr;
+    qint64 m_sourcePlaylistId = 0;
 };
 
   } // namespace playlist

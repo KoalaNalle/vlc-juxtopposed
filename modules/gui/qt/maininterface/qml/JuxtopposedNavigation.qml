@@ -22,13 +22,17 @@ C.Pane {
     property var pinIcons: ({})
     property string addIcon: "+"
     property int focusedPinIndex: -1
+    property Item focusedControl: null
     signal pinRequested(string key, int reason)
-    signal pinMenuRequested(string key, point position)
+    signal pinMenuRequested(string key, point position, int reason)
     signal addRequested(point position)
     property string activeRoute: ""
     property bool expanded: false
     property bool libraryBusy: false
     property bool libraryAvailable: true
+    // Pointer/popup focus still owns these controls' navigation keys even
+    // when Qt does not paint a keyboard-focus outline.
+    readonly property bool navigationKeyScope: true
     property string preferencesIcon: ""
     property color surfaceColor: JuxtopposedPalette.color("#191919")
     property color outerColor: JuxtopposedPalette.color("#0E0E0E")
@@ -50,17 +54,63 @@ C.Pane {
     Keys.onDownPressed: moveFocus(1)
     Keys.onRightPressed: contentFocusRequested(Qt.TabFocusReason)
 
+    MouseArea {
+        parent: root
+        anchors.fill: parent
+        z: 1
+        acceptedButtons: Qt.NoButton
+        onWheel: event => {
+            // Include the pane padding, and keep wheel input inside the drawer
+            // even at either end instead of passing it to the player beneath.
+            const distance = event.pixelDelta.y || event.angleDelta.y / 120 * 3 * 32 * root.uiScale
+            const first = pinList.originY - pinList.topMargin
+            const last = Math.max(first, pinList.originY + pinList.contentHeight - pinList.height + pinList.bottomMargin)
+            pinList.cancelFlick()
+            pinList.contentY = Math.max(first, Math.min(last, pinList.contentY - distance))
+            event.accepted = true
+        }
+    }
+
+    function keepFocusVisible(button) {
+        if (!button || !button.activeFocus) return
+        focusedControl = button
+        pinList.cancelFlick()
+        pinList.forceLayout()
+        const top = button.mapToItem(pinList, 0, 0).y
+        if (top < 0) pinList.contentY += top
+        else if (top + button.height > pinList.height)
+            pinList.contentY += top + button.height - pinList.height
+    }
+    function refreshFocusedControl() { keepFocusVisible(focusedControl) }
+
     function focusPin(index, reason) {
-        if (!pinModel || index < 0 || index >= pinModel.count) { pinList.footerItem?.addButton.forceActiveFocus(reason); return }
+        if (!pinModel || index < 0 || index >= pinModel.count) { focusFooter(reason); return }
         pinList.positionViewAtIndex(index, ListView.Contain)
         pinList.forceLayout()
         const item = pinList.itemAtIndex(index)
-        if (item) item.forceActiveFocus(reason)
+        if (item) {
+            item.forceActiveFocus(reason)
+            // Qt returns early for an already focused item. A native menu can
+            // leave it focused for the mouse, so update the control reason too.
+            item.focusReason = reason
+        }
     }
     function focusPinKey(key, reason) {
         for (let i = 0; pinModel && i < pinModel.count; ++i)
             if (pinModel.get(i).key === key) { focusPin(i, reason); return }
-        pinList.footerItem?.addButton.forceActiveFocus(reason)
+        focusFooter(reason)
+    }
+    function availableFooterButtons() {
+        const footer = pinList.footerItem
+        return [footer?.addButton, footer?.retryButton, footer?.dismissButton]
+            .filter(button => button && button.enabled && button.visible)
+    }
+    function focusFooter(reason) {
+        const button = availableFooterButtons()[0]
+        if (!button) return
+        button.forceActiveFocus(reason)
+        button.focusReason = reason
+        keepFocusVisible(button)
     }
     function moveFocus(direction) {
         const entries = []
@@ -72,7 +122,8 @@ C.Pane {
             if (button.enabled && button.visible) entries.push({button: button})
         }
         for (let i = 0; pinModel && i < pinModel.count; ++i) entries.push({pin: i})
-        entries.push({button: addButton})
+        for (const button of availableFooterButtons()) entries.push({button: button})
+        if (!entries.length) return
         const current = entries.findIndex(entry => entry.button ? entry.button.activeFocus
             : pinList.itemAtIndex(entry.pin)?.activeFocus)
         const target = entries[(current + direction + entries.length) % entries.length]
@@ -86,12 +137,43 @@ C.Pane {
             else if (top + target.button.height > pinList.height)
                 pinList.contentY += top + target.button.height - pinList.height
             target.button.forceActiveFocus(reason)
+            target.button.focusReason = reason
         } else focusPin(target.pin, reason)
     }
 
     FontLoader {
         id: inter
         source: root.assetBase + "InterVariable.ttf"
+    }
+
+    component RecoveryButton: C.ToolButton {
+        id: recovery
+        width: parent.width
+        height: 32 * root.uiScale
+        padding: 4 * root.uiScale
+        focusPolicy: Qt.StrongFocus
+        font.family: inter.name
+        font.pixelSize: 11 * root.uiScale
+        C.ToolTip.visible: hovered || visualFocus
+        C.ToolTip.text: text
+        C.ToolTip.delay: 500
+        onActiveFocusChanged: if (activeFocus) root.keepFocusVisible(recovery)
+        contentItem: C.Label {
+            text: recovery.text
+            font: recovery.font
+            color: root.textColor
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            Accessible.ignored: true
+        }
+        background: Rectangle {
+            radius: 4 * root.uiScale
+            color: recovery.down ? JuxtopposedPalette.color("#404040")
+                : recovery.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
+            border.width: recovery.visualFocus ? 2 * root.uiScale : 0
+            border.color: root.accentColor
+        }
     }
 
     background: Rectangle {
@@ -122,6 +204,10 @@ C.Pane {
             keyNavigationEnabled: false
             C.ScrollBar.vertical: C.ScrollBar {}
             model: root.pinModel
+            // Error actions can disappear after focus is restored. Recheck once
+            // the list has incorporated the new footer geometry.
+            onContentHeightChanged: Qt.callLater(root.refreshFocusedControl)
+            onHeightChanged: Qt.callLater(root.refreshFocusedControl)
             header: Item {
                 property alias routeRepeater: routeRepeater
                 width: pinList.width
@@ -153,6 +239,7 @@ C.Pane {
                         C.ToolTip.delay: 500
 
                         onClicked: root.routeRequested(modelData.uri, focusReason)
+                        onActiveFocusChanged: if (activeFocus) root.keepFocusVisible(routeButton)
 
                         background: Rectangle {
                             color: routeButton.down ? JuxtopposedPalette.color("#404040") : routeButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
@@ -224,8 +311,22 @@ C.Pane {
                 C.ToolTip.text: available ? title : qsTr("%1 — unavailable").arg(title)
                 C.ToolTip.delay: 500
                 onClicked: root.pinRequested(pinKey, focusReason)
-                onActiveFocusChanged: if (activeFocus) root.focusedPinIndex = index
-                function menu() { root.pinMenuRequested(pinKey, mapToGlobal(0, height)) }
+                onActiveFocusChanged: if (activeFocus) {
+                    root.focusedPinIndex = index
+                    root.keepFocusVisible(pinButton)
+                }
+                function menu() { root.pinMenuRequested(pinKey, mapToGlobal(0, height), Qt.ShortcutFocusReason) }
+                // Qt's Windows key mapper withholds Shift+F10 key presses when
+                // no shortcut is registered for it. Keys.onPressed alone only
+                // covers synthetic delivery there. Only the focused pin owns
+                // this shortcut; ordinary F10 and other controls keep theirs.
+                Shortcut {
+                    sequence: "Shift+F10"
+                    context: Qt.WindowShortcut
+                    enabled: pinButton.activeFocus && pinButton.visible
+                    autoRepeat: false
+                    onActivated: pinButton.menu()
+                }
                 Keys.onPressed: event => {
                     if (event.key === Qt.Key_Menu || (event.key === Qt.Key_F10 && (event.modifiers & Qt.ShiftModifier))) {
                         menu(); event.accepted = true
@@ -233,7 +334,7 @@ C.Pane {
                         const destination = index + (event.key === Qt.Key_Up ? -1 : 1)
                         const key = pinKey
                         if (destination >= 0 && destination < root.pinModel.count && root.pinModel.move(key, destination))
-                            Qt.callLater(() => root.focusPinKey(key, Qt.OtherFocusReason))
+                            Qt.callLater(() => root.focusPinKey(key, Qt.ShortcutFocusReason))
                         event.accepted = true
                     }
                 }
@@ -241,7 +342,7 @@ C.Pane {
                     acceptedButtons: Qt.RightButton
                     onTapped: eventPoint => {
                         pinButton.forceActiveFocus(Qt.MouseFocusReason)
-                        root.pinMenuRequested(pinButton.pinKey, pinButton.mapToGlobal(eventPoint.position.x, eventPoint.position.y))
+                        root.pinMenuRequested(pinButton.pinKey, pinButton.mapToGlobal(eventPoint.position.x, eventPoint.position.y), Qt.MouseFocusReason)
                     }
                 }
                 background: Rectangle {
@@ -292,6 +393,8 @@ C.Pane {
             }
             footer: Column {
                 property alias addButton: addButton
+                property alias retryButton: retryButton
+                property alias dismissButton: dismissButton
                 width: pinList.width
                 Item {
                     width: 1
@@ -309,6 +412,7 @@ C.Pane {
                     C.ToolTip.text: qsTr("Add item")
                     C.ToolTip.delay: 500
                     onClicked: root.addRequested(mapToGlobal(0, height))
+                    onActiveFocusChanged: if (activeFocus) root.keepFocusVisible(addButton)
                     background: Rectangle {
                         color: addButton.hovered ? JuxtopposedPalette.color("#303030") : "transparent"
                         radius: 4 * root.uiScale
@@ -357,20 +461,26 @@ C.Pane {
                         C.ToolTip.text: root.pinModel?.error || ""
                         HoverHandler { id: errorHover }
                     }
-                    C.ToolButton {
+                    RecoveryButton {
+                        id: retryButton
                         objectName: "juxtopposedSidebarRetry"
-                        width: parent.width
                         text: qsTr("Retry")
                         visible: !!root.pinModel?.canRetry
-                        font.pixelSize: 11 * root.uiScale
-                        onClicked: root.pinModel.retry()
+                        onClicked: {
+                            const reason = visualFocus ? Qt.ShortcutFocusReason : Qt.PopupFocusReason
+                            root.pinModel.retry()
+                            Qt.callLater(() => root.focusFooter(reason))
+                        }
                     }
-                    C.ToolButton {
+                    RecoveryButton {
+                        id: dismissButton
                         objectName: "juxtopposedSidebarDismiss"
-                        width: parent.width
                         text: qsTr("Dismiss")
-                        font.pixelSize: 11 * root.uiScale
-                        onClicked: root.pinModel.dismissError()
+                        onClicked: {
+                            const reason = visualFocus ? Qt.ShortcutFocusReason : Qt.PopupFocusReason
+                            root.pinModel.dismissError()
+                            Qt.callLater(() => root.focusFooter(reason))
+                        }
                     }
                 }
             }

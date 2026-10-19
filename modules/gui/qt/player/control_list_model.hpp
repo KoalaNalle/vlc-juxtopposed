@@ -107,6 +107,28 @@ public:
         WIDGET_SPACER = 0x40,
         WIDGET_SPACER_EXTEND,
         WIDGET_MAX,
+
+        // Juxtopposed-only layout identifiers. Existing persisted IDs above
+        // keep their values; the traditional toolbar factory is unchanged.
+        JUXTO_FORWARD_15 = 0x50,
+        JUXTO_BACKWARD_15,
+        JUXTO_PICTURE_IN_PICTURE,
+        JUXTO_HDR,
+        JUXTO_ZOOM,
+        JUXTO_RIGHT_SIDEBAR,
+        JUXTO_GO_HOME,
+        JUXTO_THUMBNAIL,
+        JUXTO_FILE_NAME,
+        JUXTO_ARTIST_NAME,
+        JUXTO_FOLDER_NAME,
+        JUXTO_PLAYLIST_NAME,
+        JUXTO_REPLAY,
+        JUXTO_CHAPTERS,
+        JUXTO_FAVORITE,
+        JUXTO_BOOKMARKS,
+        JUXTO_PLAYLISTS,
+        JUXTO_AUDIO_TRACKS,
+        JUXTO_VLC_SETTINGS,
     };
     Q_ENUM(ControlType)
 

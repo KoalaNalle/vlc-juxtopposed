@@ -6,8 +6,8 @@
 #include <QVariantList>
 struct qt_intf_t;
 
-// Global startup defaults; existing Player.equalizer remains the separate live
-// playback controller. No opaque QML preference key or unchecked generic editor.
+// Startup defaults plus the linked live volume-step policy; Player.equalizer
+// remains the separate live playback controller. No unchecked generic editor.
 class AudioPreferencesModel final : public QObject
 {
     Q_OBJECT

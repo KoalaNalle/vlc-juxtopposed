@@ -18,7 +18,7 @@ JuxtopposedNavigation {
     pinIcons: ({media: VLCIcons.play, folder: VLCIcons.topbar_discover,
                 source: VLCIcons.topbar_network, playlist: VLCIcons.playlist, artist: VLCIcons.topbar_music})
     onPinRequested: (key, reason) => MainCtx.sidebarPins.activate(key, reason)
-    onPinMenuRequested: (key, position) => sidebarPinMenu.showPin(key, position)
+    onPinMenuRequested: (key, position, reason) => sidebarPinMenu.showPin(key, position, reason)
     onAddRequested: position => sidebarAddMenu.popup(position, [qsTr("Files…"), qsTr("Folder…"), qsTr("Source address…")])
     activeRoute: History.viewPath[0] ?? "home"
     libraryBusy: MainCtx.mediaLibraryAvailable && !MainCtx.mediaLibrary.idle
@@ -52,15 +52,21 @@ JuxtopposedNavigation {
         ctx: MainCtx
         property string pinKey: ""
         property var menuActions: []
+        property int openingFocusReason: Qt.MouseFocusReason
+        property bool actionSelected: false
+        property int generation: 0
         function indexOfKey(key) {
             for (let i = 0; i < MainCtx.sidebarPins.count; ++i)
                 if (MainCtx.sidebarPins.get(i).key === key) return i
             return -1
         }
-        function showPin(key, point) {
-            pinKey = key
+        function showPin(key, point, reason) {
             const row = indexOfKey(key)
             if (row < 0 || MainCtx.sidebarPins.canRetry) return
+            pinKey = key
+            openingFocusReason = reason
+            actionSelected = false
+            generation++
             const actions = [{text: qsTr("Open"), action: "open"}]
             if (!MainCtx.sidebarPins.busy && row > 0) actions.push({text: qsTr("Move up"), action: "up"})
             if (!MainCtx.sidebarPins.busy && row + 1 < MainCtx.sidebarPins.count) actions.push({text: qsTr("Move down"), action: "down"})
@@ -68,17 +74,32 @@ JuxtopposedNavigation {
             menuActions = actions
             popup(point, actions.map(entry => entry.text))
         }
+        onVisibleChanged: {
+            if (visible || openingFocusReason !== Qt.ShortcutFocusReason) return
+            const key = pinKey
+            const closedGeneration = generation
+            // Wait until the native popup has returned focus to the QML window.
+            // A selected action owns its own destination/fallback focus instead.
+            Qt.callLater(() => {
+                if (!sidebarPinMenu.visible && !sidebarPinMenu.actionSelected
+                        && sidebarPinMenu.generation === closedGeneration
+                        && navigation.activeSurface && navigation.visible)
+                    navigation.focusPinKey(key, Qt.ShortcutFocusReason)
+            })
+        }
         onSelected: (index, _) => {
+            actionSelected = true
             const action = menuActions[index]?.action
             const key = pinKey
             const row = indexOfKey(key)
+            const reason = openingFocusReason === Qt.ShortcutFocusReason ? Qt.ShortcutFocusReason : Qt.PopupFocusReason
             if (row < 0) return
-            if (action === "open") MainCtx.sidebarPins.activate(key, Qt.PopupFocusReason)
+            if (action === "open") MainCtx.sidebarPins.activate(key, reason)
             else if (action === "remove") {
-                if (MainCtx.sidebarPins.remove(key)) Qt.callLater(() => navigation.focusPin(Math.min(row, MainCtx.sidebarPins.count - 1), Qt.PopupFocusReason))
+                if (MainCtx.sidebarPins.remove(key)) Qt.callLater(() => navigation.focusPin(Math.min(row, MainCtx.sidebarPins.count - 1), reason))
             } else {
                 const destination = row + (action === "up" ? -1 : 1)
-                if (MainCtx.sidebarPins.move(key, destination)) Qt.callLater(() => navigation.focusPinKey(key, Qt.PopupFocusReason))
+                if (MainCtx.sidebarPins.move(key, destination)) Qt.callLater(() => navigation.focusPinKey(key, reason))
             }
         }
     }

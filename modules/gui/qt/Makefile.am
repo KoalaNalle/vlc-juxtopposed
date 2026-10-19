@@ -195,6 +195,10 @@ libqt_plugin_la_SOURCES = \
 	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
 	maininterface/extensions_preferences_model.cpp maininterface/extensions_preferences_model.hpp \
 	maininterface/sidebar_pins_model.cpp maininterface/sidebar_pins_model.hpp \
+	maininterface/player_profiles_store.cpp maininterface/player_profiles_store.hpp \
+	maininterface/player_profile_preferences.cpp maininterface/player_profile_preferences.hpp \
+	maininterface/player_profile_layout.cpp maininterface/player_profile_layout.hpp \
+	maininterface/player_profiles_model.cpp maininterface/player_profiles_model.hpp \
 	maininterface/history_media_source.cpp maininterface/history_media_source.hpp \
 	maininterface/sidebar_pins_store.cpp maininterface/sidebar_pins_store.hpp \
 	util/modal_input_guard.cpp util/modal_input_guard.hpp \
@@ -220,6 +224,8 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/medialib.hpp \
 	medialibrary/mlmediastore.cpp \
 	medialibrary/mlmediastore.hpp \
+	medialibrary/mlcurrentmedia.cpp \
+	medialibrary/mlcurrentmedia.hpp \
 	medialibrary/mlalbum.cpp \
 	medialibrary/mlalbum.hpp \
 	medialibrary/mlalbummodel.cpp \
@@ -514,6 +520,8 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/recording_preferences_model.moc.cpp \
 	maininterface/extensions_preferences_model.moc.cpp \
 	maininterface/sidebar_pins_model.moc.cpp \
+	maininterface/player_profile_layout.moc.cpp \
+	maininterface/player_profiles_model.moc.cpp \
 	maininterface/history_media_source.moc.cpp \
 	util/plugin_cache_rescan.moc.cpp \
 	maininterface/video_preferences_model.moc.cpp \
@@ -524,6 +532,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/video_window_handler.moc.cpp \
 	medialibrary/medialib.moc.cpp \
 	medialibrary/mlmediastore.moc.cpp \
+	medialibrary/mlcurrentmedia.moc.cpp \
 	medialibrary/mlalbummodel.moc.cpp \
 	medialibrary/mlaudiomodel.moc.cpp \
 	medialibrary/mlartistmodel.moc.cpp \
@@ -881,6 +890,7 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/sidebar-playlists-c9326.svg \
 	pixmaps/juxtopposed/sidebar-recent-50e8b.svg \
 	pixmaps/juxtopposed/titlebar-logo-29ba5.svg \
+	pixmaps/juxtopposed/setup-system-theme.svg \
 	pixmaps/juxtopposed/titlebar-menu-d7959.svg \
 	pixmaps/juxtopposed/titlebar-navigation-b130a.svg \
 	pixmaps/juxtopposed/titlebar-separator-8e020.svg \
@@ -888,6 +898,23 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/titlebar-maximize-dccb1.svg \
 	pixmaps/juxtopposed/titlebar-fullscreen-d41b8.svg \
 	pixmaps/juxtopposed/sidebar-add-bfdda.svg \
+	pixmaps/juxtopposed/extensions-settings-1b0f7.svg \
+	pixmaps/juxtopposed/extensions-settings-97863.svg \
+	pixmaps/juxtopposed/extensions-settings-1bf8a.svg \
+	pixmaps/juxtopposed/extensions-settings-f1a4a.svg \
+	pixmaps/juxtopposed/extensions-settings-80d5a.svg \
+	pixmaps/juxtopposed/extensions-settings-9c2da.svg \
+	pixmaps/juxtopposed/extensions-settings-66cd9.svg \
+	pixmaps/juxtopposed/extensions-settings-7d179.svg \
+	pixmaps/juxtopposed/extensions-settings-36bfa.svg \
+	pixmaps/juxtopposed/extensions-settings-ad68b.svg \
+	pixmaps/juxtopposed/extensions-settings-ec3f6.svg \
+	pixmaps/juxtopposed/extensions-settings-432a4.svg \
+	pixmaps/juxtopposed/extensions-settings-3ffd5.svg \
+	pixmaps/juxtopposed/extensions-settings-cf6e1.svg \
+	pixmaps/juxtopposed/extensions-settings-6db55.svg \
+	pixmaps/juxtopposed/extensions-settings-08f95.svg \
+	pixmaps/juxtopposed/extensions-settings-f7e21.svg \
 	pixmaps/juxtopposed/recording-settings-1b0f7.svg \
 	pixmaps/juxtopposed/recording-settings-764c9.svg \
 	pixmaps/juxtopposed/recording-settings-97863.svg \
@@ -1316,6 +1343,10 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml \
 	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
+	dialogs/dialogs/qml/JuxtopposedSetupDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedSetupPreview.qml \
+	dialogs/dialogs/qml/JuxtopposedPlayerProfilesDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml \
 	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml \
@@ -1486,6 +1517,8 @@ libqml_module_player_a_QML = \
 	player/qml/JuxtopposedButton.qml \
 	player/qml/JuxtopposedSeekBackground.qml \
 	player/qml/JuxtopposedPlaybackBar.qml \
+	player/qml/JuxtopposedVolumeControl.qml \
+	player/qml/JuxtopposedLayoutRow.qml \
 	player/qml/JuxtopposedSubtitleCueTimeline.qml \
 	player/qml/JuxtopposedSubtitleTimelineAdapter.qml \
 	player/qml/JuxtopposedSubtitleTimelineToggle.qml \
@@ -1584,6 +1617,7 @@ libqml_module_playlist_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_playlist_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_playlist_a_QML = \
 	playlist/qml/JuxtopposedBookmarkList.qml \
+	playlist/qml/JuxtopposedBookmarkActions.qml \
 	playlist/qml/JuxtopposedQueuePanel.qml \
 	playlist/qml/JuxtopposedQueueRow.qml \
 	playlist/qml/PlaylistDelegate.qml \
@@ -3049,4 +3083,47 @@ EXTRA_DIST += tests/test_sidebar_pins_store.cpp tests/native_library/sidebar-pin
 
 EXTRA_DIST += tests/test_juxtopposed_sidebar_pins.py \
     tests/native_ui/sidebar_pins_journey.cpp tests/native_ui/sidebar_pins_journey.mk \
-    tests/native_ui/run_sidebar_pins_journey.py
+    tests/native_ui/run_sidebar_pins_journey.py tests/native_ui/movable_dialog_journey.hpp \
+    tests/native_ui/navigation_recovery_journey.hpp tests/native_ui/dialog_busy_journey.hpp \
+    tests/native_ui/setup_journey.hpp tests/test_juxtopposed_setup.py
+
+EXTRA_DIST += tests/test_player_profiles_store.cpp tests/test_player_profile_preferences.cpp \
+    tests/test_player_profile_layout.cpp tests/test_player_profiles_model.cpp \
+    tests/test_juxtopposed_player_profiles.py tests/test_juxtopposed_player_customizer.py tests/native_ui/profiles_journey.hpp \
+    tests/native_ui/customizer_journey.hpp tests/native_ui/transport_defaults_journey.hpp \
+    tests/native_ui/favorite_journey.hpp \
+    tests/native_ui/playlist_origin_journey.hpp \
+    tests/native_ui/fullscreen_controls_journey.hpp \
+    tests/test_playlist_source.cpp tests/native_library/playlist-source.mk \
+    tests/test_audio_startup_consumer.cpp tests/native_library/audio-startup.mk \
+    tests/native_library/run_audio_startup.py \
+    tests/test_playback_track_consumers.cpp tests/playback_main_playlist_probe.c \
+    tests/native_library/playback-consumers.mk tests/native_library/run_playback_consumers.py \
+    tests/native_library/player-profiles.mk tests/native_library/profile-preferences.mk \
+    tests/native_library/profile-layout.mk tests/native_library/profile-model.mk
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_setup_preferences.moc: $(srcdir)/tests/test_setup_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+tests/test_qt_setup_preferences-test_setup_preferences.$(OBJEXT): tests/test_setup_preferences.moc
+test_qt_setup_preferences_SOURCES = tests/vlc_stub_modules.cpp tests/test_setup_preferences.cpp \
+    tests/general_preferences_probe.c maininterface/general_preferences_model.cpp \
+    maininterface/general_preferences_model.hpp util/color_scheme_model.cpp util/color_scheme_model.hpp
+nodist_test_qt_setup_preferences_SOURCES = tests/test_setup_preferences.moc \
+    maininterface/general_preferences_model.moc.cpp util/color_scheme_model.moc.cpp
+BUILT_SOURCES += tests/test_setup_preferences.moc
+CLEANFILES += tests/test_setup_preferences.moc
+test_qt_setup_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_setup_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_setup_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_setup_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--strip-debug
+if HAVE_WIN32
+test_qt_setup_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_setup_preferences_LDADD += -lntdll
+test_qt_setup_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+endif
+check_PROGRAMS += test_qt_setup_preferences
+TESTS += test_qt_setup_preferences
+endif
+endif

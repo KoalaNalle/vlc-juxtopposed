@@ -125,10 +125,12 @@ void InterfacePreferencesModel::refresh()
     gate("controlAutoHide", m_consumers.controlAutoHide);
     gate("controlHideDelay", m_consumers.controlHideDelay);
     gate("popupDuration", m_consumers.popupDuration);
-    // No actual Qt tree model or complete external-video controller closure
-    // exists. Do not turn either orphan flag into an accepted feature.
+    // The fullscreen bar consumer belongs to the embedded main-window player.
+    // Detached video has no paired controller; keep that mode unavailable.
+    gate("fullscreenControls", m_consumers.fullscreenControls
+        && values.value(QStringLiteral("embeddedVideo")).toBool());
+    // No actual Qt tree model exists.
     capabilities[QStringLiteral("playlistTree")] = false;
-    capabilities[QStringLiteral("fullscreenControls")] = false;
     const bool tray = guiApplication() && QSystemTrayIcon::isSystemTrayAvailable();
     gate("systemTray", tray); gate("startMinimized", tray); gate("trackPopup", tray); gate("popupDuration", tray);
     QVariantList screens;

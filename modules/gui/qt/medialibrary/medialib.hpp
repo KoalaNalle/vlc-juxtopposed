@@ -58,11 +58,14 @@ public:
     Q_INVOKABLE void addToPlaylist(const QString& mrl, const QStringList &options = {});
     Q_INVOKABLE void addToPlaylist(const QUrl& mrl, const QStringList &options = {});
     Q_INVOKABLE void addToPlaylist(const QVariantList& itemIdList, const QStringList &options = {});
+    // Native source-model context, captured when the command was issued.
+    void addToPlaylist(const QVariantList &, const QStringList &, MLItemId sourcePlaylist);
 
     Q_INVOKABLE void addAndPlay(const MLItemId &itemId, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QString& mrl, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QUrl& mrl, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QVariantList&itemIdList, const QStringList &options = {});
+    void addAndPlay(const QVariantList &, const QStringList &, MLItemId sourcePlaylist);
     Q_INVOKABLE void insertIntoPlaylist(size_t index, const QVariantList &itemIds /*QList<MLParentId>*/, const QStringList &options = {});
 
     Q_INVOKABLE void reload();

@@ -1,5 +1,12 @@
 # Juxtopposed design coverage ledger
 
+**18 October home revision:** the historical table below predates several
+implemented/native-verified features. Use the
+[current readiness snapshot](beta-readiness-20261018.md) and
+[revised execution roadmap](../juxtopposed-beta-roadmap.md) before treating an old
+"port pending" cell as current. Original reference provenance remains useful;
+whole-app visual and final-package acceptance remain open.
+
 Updated 15 October 2026. Milestone 0 is **in progress**. This is an initial inventory, not a complete screen audit or an acceptance claim. Original design and artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed).
 
 17 October release-scope clarification: apply the current

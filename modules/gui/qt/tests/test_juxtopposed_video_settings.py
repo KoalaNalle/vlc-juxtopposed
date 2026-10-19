@@ -101,6 +101,7 @@ app=QGuiApplication([]);ctx=MainContext();model=ctx.video;provider=Provider()
 qmlRegisterUncreatableType(Conversion,'VLC.Dialogs',1,0,'ConversionController','Supplied state enum')
 qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/widgets/qml/TextInputFocus.qml')),'VLC.Widgets',1,0,'TextInputFocus')
 qmlRegisterSingletonType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/style/JuxtopposedPalette.qml')),'VLC.Style',1,0,'JuxtopposedPalette')
+qmlRegisterType(QUrl.fromLocalFile(str(ROOT/'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml')),'VLC.Player',1,0,'JuxtopposedPlaybackBar')
 assets=results/'assets';assets.mkdir();qml=results/'qml';qml.mkdir()
 for p in(ROOT/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
  if p.is_file():shutil.copyfile(p,assets/p.name)

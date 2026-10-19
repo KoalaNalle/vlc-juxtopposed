@@ -50,11 +50,13 @@
 #include "recording_preferences_model.hpp"
 #include "extensions_preferences_model.hpp"
 #include "sidebar_pins_model.hpp"
+#include "player_profiles_model.hpp"
 #include "dialogs/extensions/extensions_manager.hpp"
 #include "dialogs/preferences/controls_shortcuts.hpp"
 #include <vlc_dialog.h>
 #include "medialibrary/mlhelper.hpp"
 #include "medialibrary/mlhomeactivity.hpp"
+#include "medialibrary/mlcurrentmedia.hpp"
 
 #include "compositor.hpp"
 #include "util/renderer_manager.hpp"
@@ -164,6 +166,7 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     if (config_GetType("qt-controls-hide-timeout") == VLC_VAR_INTEGER)
         m_startupControlsHideTimeout = var_InheritInteger(p_intf, "qt-controls-hide-timeout");
     m_startupShowMediaNameInTitle = var_InheritBool(p_intf, "qt-name-in-title");
+    m_startupFullscreenControls = var_InheritBool(p_intf, "qt-fs-controller");
     if (config_GetType("qt-remember-window-geometry") == VLC_VAR_BOOL)
         m_startupRememberGeometry = var_InheritBool(p_intf, "qt-remember-window-geometry");
     if (config_GetType("qt-notification-duration") == VLC_VAR_INTEGER)
@@ -300,6 +303,7 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     }
 
     m_historyMediaSource = new HistoryMediaSource(p_intf, p_intf->p_mainPlaylistController, m_medialib, this);
+    m_currentMedia = new MLCurrentMedia(m_medialib, THEMIM, p_intf->p_mainPlaylistController, this);
 
     m_sidebarPins = new SidebarPinsModel(m_medialib, settings,
         QVLCUserDir(VLC_USERDATA_DIR) + QStringLiteral("/ml/ml.db"), this);
@@ -311,6 +315,30 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
 
     /* Controlbar Profile Model Creation */
     m_controlbarProfileModel = new ControlbarProfileModel(p_intf->mainSettings, this);
+
+    m_playerProfiles = new PlayerProfilesModel(p_intf,settings,this);
+    connect(m_playerProfiles,&PlayerProfilesModel::defaultsApplied,this,[this](const QStringList &keys) {
+        m_playbackPreferences->profileDefaultsChanged(keys);
+        m_audioPreferences->reload();
+        m_videoPreferences->reload();
+        m_subtitlesPreferences->profileDefaultsChanged(keys);
+    });
+    connect(m_playbackPreferences,&PlaybackPreferencesModel::valuesChanged,m_playerProfiles,&PlayerProfilesModel::preferencesChanged);
+    connect(m_audioPreferences,&AudioPreferencesModel::valuesChanged,m_playerProfiles,&PlayerProfilesModel::preferencesChanged);
+    connect(m_videoPreferences,&VideoPreferencesModel::valuesChanged,m_playerProfiles,&PlayerProfilesModel::preferencesChanged);
+    connect(m_subtitlesPreferences,&SubtitlesPreferencesModel::valuesChanged,m_playerProfiles,&PlayerProfilesModel::preferencesChanged);
+    // Native toolbar policies also change saved defaults. Observe the queued
+    // playlist callbacks after the controller has written its native options;
+    // do not turn runtime-only setters into new preference writes.
+    connect(p_intf->p_mainPlaylistController,&vlc::playlist::PlaylistController::repeatModeChanged,
+            m_playbackPreferences,&PlaybackPreferencesModel::transportDefaultsChanged);
+    connect(p_intf->p_mainPlaylistController,&vlc::playlist::PlaylistController::randomChanged,
+            m_playbackPreferences,&PlaybackPreferencesModel::transportDefaultsChanged);
+    const auto profilePickerState = [this] {
+        m_playerProfiles->setExternalBusy(m_playbackPreferences->pickerActive() || m_videoPreferences->pickerActive());
+    };
+    connect(m_playbackPreferences,&PlaybackPreferencesModel::pickerActiveChanged,this,profilePickerState);
+    connect(m_videoPreferences,&VideoPreferencesModel::pickerActiveChanged,this,profilePickerState);
 
     const QUrl homeUrl = QUrl::fromLocalFile(QVLCUserDir( VLC_HOME_DIR ));
     m_dialogFilepath = getSettings()->value( "filedialog-path", homeUrl ).toUrl();
@@ -447,6 +475,10 @@ MainCtx::~MainCtx()
     /* Save states */
 
     m_threadRunner->destroy();
+    delete m_currentMedia;
+    m_currentMedia = nullptr;
+    delete m_playerProfiles;
+    m_playerProfiles = nullptr;
     delete m_historyMediaSource;
     m_historyMediaSource = nullptr;
     delete m_sidebarPins;
@@ -686,6 +718,7 @@ void MainCtx::reloadPrefs()
     if (p_intf->preferencesResetPending && m_medialib && m_medialib->homeActivity())
         m_medialib->homeActivity()->clearVisits();
     loadPrefs(true);
+    if (m_generalPreferences) m_generalPreferences->reload();
     if (p_intf->preferencesResetPending) m_subtitlePresets->reload();
     else m_subtitlePresets->refreshDefaults();
 }

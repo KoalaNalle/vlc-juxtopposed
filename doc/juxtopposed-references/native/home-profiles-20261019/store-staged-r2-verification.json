@@ -1,0 +1,52 @@
+{
+  "forcedCleanupUsed": false,
+  "pid": 31280,
+  "exitCode": 0,
+  "normalExit": true,
+  "counts": {
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "caseNames": [
+    "cleanupTestCase",
+    "cloneAndCheckpointPreserveIndependentProfilesAndUnrelatedKeys",
+    "concurrentSaveLockCanRetry",
+    "failedDiskSavePreservesAcceptedStateAndRetries",
+    "incompleteRollbackCannotClearRecoveryRecord",
+    "initTestCase",
+    "initialProfilesDoNotWrite",
+    "invalidNamesDoNotPublishOrWrite",
+    "malformedSavedDataIsPreserved",
+    "mismatchedRecoveryRecordIsPreserved",
+    "nonfiniteAndUnboundedSnapshotsAreRejected",
+    "pendingChangeBlocksCompetingEdits",
+    "pendingSwitchSurvivesColdProcessAndFinishes",
+    "profileCountLimitPreservesAllAcceptedProfiles",
+    "snapshotsExcludeGlobalGroupsAndUnsupportedValues",
+    "staleWindowCannotOverwriteAnotherWindow",
+    "switchJournalKeepsPreviousSelectionUntilComplete",
+    "unknownVersionAndMissingSelectionArePreserved"
+  ],
+  "diagnostics": [],
+  "sourceInputsUnchanged": true,
+  "protectedRuntimeUnchanged": true,
+  "executableSha256": "5583f48a913ac6eea595824231b9000cca876a9b6ece6d1af9feecc9f92a556b",
+  "sourceManifestSha256": "75c4e77f0cda638202990a1e0d6a2f0cb44bb213467955d600770766b3af8483",
+  "scope": "Owned native QSettings profile catalog, checked writes, unfinished-switch journal, conflict/retry and a cold OS-process read/write. No media-service application, native layout rendering or profile UI integration yet.",
+  "fullBetaAccepted": false,
+  "ordinaryAppIntegrated": false,
+  "passed": true,
+  "sourceInputs": {
+    "modules/gui/qt/maininterface/player_profiles_store.hpp": "a6255c8f124eaca5c01f8260b2e2ad288e28903570c7e4cf8f5fe0bff95af295",
+    "modules/gui/qt/maininterface/player_profiles_store.cpp": "85dba43cddc61487b087c3d323b20232ca6c3c97786408b0a4f08e531473f01d",
+    "modules/gui/qt/tests/test_player_profiles_store.cpp": "f771f7db4dbaf03441441cb473db8f7e11382911acc84bb88579bc5261aa9f13",
+    "modules/gui/qt/tests/native_library/player-profiles.mk": "be907d4ea4647cda00a919a006a23c1acd7ceb00659c80342280638c90f06096",
+    "modules/gui/qt/util/checked_preferences_store.hpp": "db31dcd53c3313bbc9a7a30d9bfcef0225ebcc581e48e3865480b1b8f9519531",
+    "modules/gui/qt/util/checked_preferences_store.cpp": "fa8d8531bb634da8d24526478244652a61b2bf8c3d8e62dae694a17fe0d965c4",
+    "modules/gui/qt/util/winpthreads_shutdown.cpp": "570996951913fd69211c406199d79be774ba90f948c0b7d53a85a2a2d2e990a5",
+    "build-windows/beta-profiles-20261019/build-store-r1.sh": "6e2ea9ea58ffe75dbc10ae18c9932959c131a24171bfb4aa1dbd30be44767704",
+    "build-windows/beta-profiles-20261019/run-store-r1.py": "bb32c08209b59ff101d76acad46c21cb38b0b2507f2af2324705f0ec9969a02f"
+  }
+}

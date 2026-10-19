@@ -3,6 +3,7 @@
 import QtQuick
 import QtQuick.Window
 import VLC.Widgets as Widgets
+import VLC.Player as Player
 
 // One owner for the existing Juxtopposed modals and their native hotkey guards.
 // Services are supplied by MainInterface; this component creates no settings.
@@ -16,8 +17,17 @@ Item {
     property url assetBase: "qrc:/juxtopposed/"
     property Item backdropSource: null
     property Item fallbackFocusItem: null
+    property var setupNativePalette: null
+    property var setupViewColors: null
+    property var setupWindowColors: null
+    property var setupInterfaceShortcuts: ({})
+    property var playerPreviewState: ({})
+    property bool setupPostponed: false
+    readonly property var setupPreferences: root.mainCtx.generalPreferences
+    readonly property int setupDraftTheme: setupLoader.item ? setupLoader.item.draftTheme : 2
+    readonly property bool setupVisible: !!setupLoader.item && setupLoader.item.visible
     readonly property bool qmlModalVisible: globalSettingsDialog.visible || networkStreamDialog.visible
-                                             || newPlaylistDialog.visible || conversionDialog.visible
+                                             || newPlaylistDialog.visible || conversionDialog.visible || playerProfilesDialog.visible || customizer.visible || setupVisible
     signal playlistRequested(var playlist)
     signal playlistSaved()
 
@@ -25,9 +35,9 @@ Item {
         if (fallbackFocusItem && fallbackFocusItem.visible && fallbackFocusItem.enabled)
             fallbackFocusItem.forceActiveFocus(Qt.PopupFocusReason)
     }
-    function routeTo(dialog) {
-        if (dialogsProvider.prefsDialogVisible) return false
-        const dialogs = [globalSettingsDialog, networkStreamDialog, newPlaylistDialog, conversionDialog]
+    function routeTo(dialog, options) {
+        if (dialogsProvider.prefsDialogVisible || setupVisible) return false
+        const dialogs = [globalSettingsDialog, networkStreamDialog, newPlaylistDialog, conversionDialog, playerProfilesDialog, customizer]
         // Check every operation before closing any modal. A request must never
         // cancel a running job or partly mutate the dialog state before failing.
         for (const other of dialogs) {
@@ -41,8 +51,61 @@ Item {
             else if (other === conversionDialog) other.requestClose()
             else other.reject()
         }
-        dialog.showDialog(root.Window.window?.activeFocusItem ?? null)
+        dialog.showDialog(root.Window.window?.activeFocusItem ?? null, options)
         return true
+    }
+
+    function tryOpenSetup() {
+        if (setupPostponed || setupLoader.active || qmlModalVisible || dialogsProvider.prefsDialogVisible
+                || !("juxtopposedControls" in mainCtx) || !mainCtx.juxtopposedControls
+                || !setupPreferences || !("setupReady" in setupPreferences) || !setupPreferences.setupReady
+                || ("firstRunDialogVisible" in dialogsProvider && dialogsProvider.firstRunDialogVisible)) return
+        // Supply bindings before construction: preview resources and services
+        // must never briefly initialize against an unrelated default provider.
+        setupLoader.setSource(Qt.resolvedUrl("JuxtopposedSetupDialog.qml"), {
+            parent: root,
+            preferences: Qt.binding(() => root.setupPreferences),
+            uiScale: Qt.binding(() => root.uiScale),
+            assetBase: Qt.binding(() => root.assetBase),
+            previewNativePalette: Qt.binding(() => root.setupNativePalette),
+            previewViewColors: Qt.binding(() => root.setupViewColors),
+            previewWindowColors: Qt.binding(() => root.setupWindowColors),
+            interfaceShortcuts: Qt.binding(() => root.setupInterfaceShortcuts),
+            activeShortcuts: Qt.binding(() => "controlsPreferences" in root.mainCtx
+                && root.mainCtx.controlsPreferences ? root.mainCtx.controlsPreferences.activeShortcuts : ({}))
+        })
+        setupLoader.active = true
+    }
+    Component.onCompleted: Qt.callLater(tryOpenSetup)
+    onQmlModalVisibleChanged: if (!qmlModalVisible) Qt.callLater(tryOpenSetup)
+    Loader {
+        id: setupLoader
+        active: false
+        onLoaded: item.showDialog(root.Window.window?.activeFocusItem ?? null)
+    }
+    Connections {
+        target: setupLoader.item
+        function onClosed() {
+            root.setupPostponed = !!root.setupPreferences?.setupRequired
+            Qt.callLater(() => { setupLoader.active = false })
+        }
+        function onFallbackFocusRequested() { root.restoreViewFocus() }
+    }
+    Connections {
+        target: root.setupPreferences
+        ignoreUnknownSignals: true // Older supplied services have no setup contract.
+        function onSetupStateChanged() { Qt.callLater(root.tryOpenSetup) }
+    }
+    Connections {
+        target: root.mainCtx
+        ignoreUnknownSignals: true
+        function onJuxtopposedControlsChanged() { Qt.callLater(root.tryOpenSetup) }
+    }
+    Connections {
+        target: root.dialogsProvider
+        ignoreUnknownSignals: true
+        function onFirstRunDialogVisibleChanged() { Qt.callLater(root.tryOpenSetup) }
+        function onPrefsDialogVisibleChanged() { Qt.callLater(root.tryOpenSetup) }
     }
 
     JuxtopposedGlobalSettings {
@@ -214,6 +277,51 @@ Item {
         id: textInputFocus
         focusItem: root.Window.window?.activeFocusItem ?? null
     }
+    JuxtopposedPlayerProfilesDialog {
+        id: playerProfilesDialog
+        parent: root
+        controller: "playerProfiles" in root.mainCtx ? root.mainCtx.playerProfiles : null
+        uiScale: root.uiScale
+        assetBase: root.assetBase
+        onFallbackFocusRequested: root.restoreViewFocus()
+    }
+    JuxtopposedPlayerCustomizer {
+        id: customizer
+        parent: root
+        controller: "playerProfiles" in root.mainCtx ? root.mainCtx.playerProfiles : null
+        uiScale: root.uiScale
+        assetBase: root.assetBase
+        onFallbackFocusRequested: root.restoreViewFocus()
+        previewComponent: Component {
+            Player.JuxtopposedPlaybackBar {
+                id: draftPlayer
+                uiScale: root.uiScale
+                assetBase: root.assetBase
+                previewOnly: true
+                editing: true
+                controlLayout: customizer.draftData
+                elapsed: root.playerPreviewState.elapsed ?? "00:00:00"
+                duration: root.playerPreviewState.duration ?? "00:00:00"
+                live: root.playerPreviewState.live === true
+                position: root.playerPreviewState.position ?? 0
+                volume: root.playerPreviewState.volume ?? 0
+                muted: root.playerPreviewState.muted === true
+                playing: root.playerPreviewState.playing === true
+                mediaMetadata: root.playerPreviewState.metadata ?? ({})
+                describeTile: id => customizer.layout.tileInfo(id)
+                tileState: function(id) {
+                    const info = customizer.layout.tileInfo(id)
+                    return info.kind === "play" ? {enabled: false, playing: draftPlayer.playing, glyph: "", source: root.assetBase + (draftPlayer.playing ? "pause.svg" : "play.svg")}
+                        : {enabled: false, glyph: info.glyph, fontFamily: info.fontFamily}
+                }
+                onLayoutTilePressed: (column, index, tile, item, point) => customizer.beginDrag(column, index, tile, item, point)
+                onLayoutTileMoved: (item, point) => customizer.moveDrag(item, point)
+                onLayoutTileReleased: (item, point) => customizer.endDrag(item, point)
+                onLayoutSelectionRequested: (column, index) => customizer.selection = {column: column, index: index}
+                onLayoutRemovalRequested: (column, index) => {customizer.selection = {column: column, index: index}; customizer.removeSelection()}
+            }
+        }
+    }
     Binding {
         target: root.dialogsProvider
         property: "qmlDialogVisible"
@@ -233,5 +341,7 @@ Item {
         function onShowNetworkStreamDialog() { root.routeTo(networkStreamDialog) }
         function onShowNewPlaylistDialog() { root.routeTo(newPlaylistDialog) }
         function onShowConversionDialog() { root.routeTo(conversionDialog) }
+        function onShowPlayerProfilesDialog(create) { root.routeTo(playerProfilesDialog, create) }
+        function onShowToolbarEditorDialog() { if (root.mainCtx.juxtopposedControls) root.routeTo(customizer) }
     }
 }
