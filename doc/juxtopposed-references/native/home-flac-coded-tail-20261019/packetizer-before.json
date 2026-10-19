@@ -1,0 +1,48 @@
+{
+  "startedUtc": "2026-10-19T14:41:55.941625+00:00",
+  "passed": false,
+  "package": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-settings-activation-20261019\\ordinary-runtime-r1",
+  "testExe": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-flac-coded-tail-20261019\\native-before-r2\\test_modules_packetizer_flac_eos.exe",
+  "fixtures": "C:\\Modding\\vlc-juxtopposed\\build-windows\\flac-native-complete-after-20261014",
+  "expectedCases": [
+    "flac_short_final_frame_and_repeated_drain",
+    "flac_split_native_frames_and_complete_drain",
+    "flac_coded_short_final_frame_and_exact_bytes",
+    "flac_every_truncated_short_frame_rejected",
+    "flac_bad_crc_flush_then_valid_frame",
+    "flac_flush_discards_partial_lookahead",
+    "flac_truncated_blocksize_guarded_shared_header",
+    "flac_packetizer_native_extra_cleanup"
+  ],
+  "timeoutSeconds": 45,
+  "scope": "Actual loaded FLAC packetizer module using real native-encoded 1/B+1 frame fixtures, 1/2/3/7/17-byte feed boundaries, complete/repeated drain, original packet bytes/PTS, truncated/footer-CRC rejection and flush recovery. Explicit malformed two-byte blocksize header is tested against current shared native source with an inaccessible following page. Separate from full decoder/playback/GUI acceptance and actual system OOM.",
+  "codedTailFixture": "Independent constant16/44100 fixture:576 + coded192 samples, exact packet bytes and PCM MD5",
+  "inputHashes": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-flac-coded-tail-20261019\\native-before-r2\\test_modules_packetizer_flac_eos.exe": "ce08c334c1d0b3cbda905c6c91e9bf3d9f2f86870879353b7aa6dff2a9522aaa",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-settings-activation-20261019\\ordinary-runtime-r1\\libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-settings-activation-20261019\\ordinary-runtime-r1\\libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-settings-activation-20261019\\ordinary-runtime-r1\\plugins\\packetizer\\libpacketizer_flac_plugin.dll": "c097dbb096b4144a0b12836b7acdc409ab47e6b12d81339dd439c58bad2b025e",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\flac-native-complete-after-20261014\\boundary-one.flac": "4577f714d6f788b6c9bf2b0bf7a32eeb7266f007c16c746161d5bdc62fef8120",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\flac-native-complete-after-20261014\\boundary-B-plus-one.flac": "cfd8c102be1f0a15837fa61e7486584d361c841d7a66d8572184f1dc063fd5ed",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\flac-native-complete-after-20261014\\verification.json": "f1b447c2cfbfd92c8201fc92d2bd78d0f4745b5f51be2f1392394739e4702da3",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-flac-coded-tail-20261019\\before-r3\\owned-fixtures\\boundary-coded-192.flac": "12c377b621c36f97852c79c7021c4ba1044cfa8dd8f7ccb09852617ab4e40559"
+  },
+  "sourceHashesAtRun": {
+    "test\\modules\\packetizer\\flac_eos.c": "df195abcf3d894ac721b8acc97e1d4fac9c6d5d47a13ab2ab7da49c36a3feacd",
+    "modules\\packetizer\\flac.h": "f35b8777db0a47af806922d7ea744f8e74045086c61af919656dd48cb35ed2d1"
+  },
+  "sourceBuildProof": "Root must retain compilation log/manifest for this executable; current source identities alone do not prove that build.",
+  "ownedPid": 9420,
+  "exitCode": 1,
+  "actualCases": [
+    "flac_short_final_frame_and_repeated_drain",
+    "flac_split_native_frames_and_complete_drain"
+  ],
+  "loadedFlacPacketizer": true,
+  "evidenceHashes": {
+    "stdout.txt": "dce4af8af19075d5bc96d0c732840af6be966cfefb79ede03d79ddbd44aa6b9d",
+    "stderr.txt": "ea7fb74f4229e44dc8f37d64e3714fd71b4c9e27404c2091be88b2728b770407",
+    "packetizer-flac-extra.log": "f3de78485f55b00c46cae0b797ec24c4e8434fec0b70dbed5e1eb4d5468b7471"
+  },
+  "finishedUtc": "2026-10-19T14:41:56.104234+00:00"
+}

@@ -19,6 +19,7 @@ FocusScope {
     property bool navigationVisible: false
     property string sourceTitle: qsTr("Home")
     property string mediaTitle: ""
+    property Item _hoveredHelpButton: null
     readonly property string displayedTitle: mediaTitle || qsTr("VLC Media Player")
     readonly property alias menuButton: more
     readonly property alias navigationButton: navigation
@@ -83,11 +84,26 @@ FocusScope {
         hoverEnabled: true
         activeFocusOnTab: true
         Accessible.name: description
-        C.ToolTip.visible: hovered || visualFocus
-        C.ToolTip.text: description
-        C.ToolTip.delay: 500
+        // Keep title-strip help inside this window even at a monitor edge.
+        // A native shared popup can otherwise open above/on the next monitor.
+        C.ToolTip {
+            objectName: "juxtopposedStripTooltip" + button.key
+            parent: button
+            popupType: C.Popup.Item
+            x: (button.width - implicitWidth) / 2
+            y: button.height + 4 * root.uiScale
+            margins: 6 * root.uiScale
+            visible: root.visible && (button.hovered
+                || (button.visualFocus && !root._hoveredHelpButton?.hovered))
+            text: button.description
+            delay: 500
+        }
         Navigation.parentItem: root
-        onHoveredChanged: root.lockAutoHide(hovered)
+        onHoveredChanged: {
+            if (hovered) root._hoveredHelpButton = button
+            else if (root._hoveredHelpButton === button) root._hoveredHelpButton = null
+            root.lockAutoHide(hovered)
+        }
         onWidthChanged: Qt.callLater(updateNativeRect)
         onHeightChanged: Qt.callLater(updateNativeRect)
         onVisibleChanged: Qt.callLater(updateNativeRect)

@@ -17,6 +17,7 @@
 #include "maininterface/player_profile_layout.hpp"
 #include "maininterface/playback_preferences_model.hpp"
 #include "maininterface/audio_preferences_model.hpp"
+#include "maininterface/interface_preferences_model.hpp"
 #include "maininterface/video_preferences_model.hpp"
 #include "maininterface/subtitles_preferences_model.hpp"
 #include "medialibrary/medialib.hpp"
@@ -38,6 +39,7 @@
 #include <QXmlStreamReader>
 #include <vlc_interface.h>
 #include <vlc_player.h>
+#include <vlc_playlist.h>
 #include <QApplication>
 #include <QAccessible>
 #include <QAbstractEventDispatcher>
@@ -51,6 +53,9 @@
 #include <QFileInfo>
 #include <QQmlPropertyMap>
 #include <vlc_input_item.h>
+#include <vlc_configuration.h>
+#include <vlc_aout.h>
+#include <cmath>
 #include <QDeadlineTimer>
 #include <QElapsedTimer>
 #include <QDataStream>
@@ -939,6 +944,12 @@ void exerciseCompactNavigation(const std::function<bool()> &unchanged)
 #include "favorite_journey.hpp"
 #include "playlist_origin_journey.hpp"
 #include "fullscreen_controls_journey.hpp"
+#include "settings_activation_journey.hpp"
+#include "tooltip_edge_journey.hpp"
+#include "audio_device_settings_journey.hpp"
+#include "interface_title_journey.hpp"
+#include "auto_hide_journey.hpp"
+#include "fullscreen_screen_journey.hpp"
 
 void exerciseTitlebar(const QString &mode)
 {
@@ -1117,7 +1128,19 @@ void run()
         window->resize(1280, 900); QTest::qWait(100);
         const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode.startsWith(QStringLiteral("fullscreen-controls-"))) {
+        if (mode.startsWith(QStringLiteral("fullscreen-screen-"))) {
+            exerciseFullscreenScreen(mode);
+        } else if (mode.startsWith(QStringLiteral("auto-hide-"))) {
+            exerciseAutoHide(mode);
+        } else if (mode.startsWith(QStringLiteral("interface-title-"))) {
+            exerciseInterfaceTitle(mode);
+        } else if (mode.startsWith(QStringLiteral("audio-device-"))) {
+            exerciseAudioDeviceSettings(mode);
+        } else if (mode == QStringLiteral("tooltip-edge")) {
+            exerciseTooltipEdge();
+        } else if (mode.startsWith(QStringLiteral("settings-activation-"))) {
+            exerciseSettingsActivation(mode);
+        } else if (mode.startsWith(QStringLiteral("fullscreen-controls-"))) {
             exerciseFullscreenControls(mode);
         } else if (mode.startsWith(QStringLiteral("playlist-origin"))) {
             exercisePlaylistOrigin(mode);

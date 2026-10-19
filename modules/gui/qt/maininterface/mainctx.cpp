@@ -269,14 +269,25 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     m_extensionsPreferences = new ExtensionsPreferencesModel(this, this);
     connect(m_recordingPreferences, &RecordingPreferencesModel::discoveryDisabled,
         THEMIM->getRendererManager(), &RendererManager::applyDiscoveryPolicy);
-    // Default Consumers gates remain false until each native behavior is verified.
-    m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, this);
+    // The embedded fullscreen bar has passed actual audio/video On/Off journeys.
+    // Keep the other Interface capabilities gated independently.
+    InterfacePreferencesModel::Consumers interfaceConsumers;
+    interfaceConsumers.fullscreenControls = true;
+    interfaceConsumers.titleFileName = true;
+    interfaceConsumers.controlAutoHide = true;
+    interfaceConsumers.controlHideDelay = true;
+    interfaceConsumers.fullscreenScreen = true;
+    m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, interfaceConsumers, this);
     // Precise-seek capability stays gated until actual native app acceptance.
     m_playbackPreferences = new PlaybackPreferencesModel(p_intf, this);
     // Video native consumer acceptance gates remain false.
     m_videoPreferences = new VideoPreferencesModel(p_intf, this);
-    // Audio native consumer acceptance gates remain false.
-    m_audioPreferences = new AudioPreferencesModel(p_intf, this);
+    // The authored slider and native actions consume this policy live. Device
+    // selection and receiver passthrough retain their separate acceptance gates.
+    AudioPreferencesModel::Consumers audioConsumers;
+    audioConsumers.windowsDevices = true;
+    audioConsumers.authoredVolumeStep = true;
+    m_audioPreferences = new AudioPreferencesModel(p_intf, audioConsumers, this);
     // Native placement/shortcut consumers passed the full subtitle renderer suite.
     SubtitlesPreferencesModel::Consumers subtitleConsumers;
     subtitleConsumers.primaryAlignment = true;

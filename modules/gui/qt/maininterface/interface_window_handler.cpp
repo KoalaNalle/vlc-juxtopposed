@@ -548,6 +548,16 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
 
     QQuickItem * item = p_intf->p_compositor->activeFocusItem();
 
+    // A clicked volume slider has active mouse focus without visualFocus.
+    // Keep its plain arrows in Qt instead of dispatching a player seek/volume
+    // hotkey first. Modified shortcuts retain the existing player policy.
+    const bool volumeArrow = event->modifiers() == Qt::NoModifier
+        && (key == Qt::Key_Left || key == Qt::Key_Right
+            || key == Qt::Key_Up || key == Qt::Key_Down);
+    if (volumeArrow && item && item->isVisible()
+        && item->property("volumeArrowKeyScope").toBool())
+        return false;
+
     const bool navigationKey = key == Qt::Key_Up || key == Qt::Key_Down || key == Qt::Key_Right
         || key == Qt::Key_Menu || (key == Qt::Key_F10 && event->modifiers().testFlag(Qt::ShiftModifier))
         || ((key == Qt::Key_Space || key == Qt::Key_Return || key == Qt::Key_Enter)

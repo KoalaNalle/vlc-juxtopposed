@@ -41,6 +41,8 @@ RowLayout {
             C.Slider {
                 id: volume
                 objectName: "juxtopposedVolume"
+                // Mouse focus owns plain arrows just as keyboard focus does.
+                readonly property bool volumeArrowKeyScope: !root.previewOnly
                 visible: !root.compactVolume
                 implicitWidth: 88 * root.uiScale
                 implicitHeight: 28 * root.uiScale

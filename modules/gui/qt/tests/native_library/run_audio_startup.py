@@ -70,6 +70,9 @@ def main():
                               for frame in range(44100))
             stream.writeframes(second * 30)
     env = environment(runtime, results)
+    # Windows locates this staged plugins directory through the runtime itself.
+    # Repeating it in VLC_PLUGIN_PATH loads autorun modules twice.
+    env.pop('VLC_PLUGIN_PATH', None)
     env.update(VLC_AUDIO_STARTUP_OUTPUT=str(results / 'owned'),
                VLC_AUDIO_STARTUP_WAV=str(fixture),
                VLC_AUDIO_DEFAULTS_OUTPUT=str(results / 'owned'),

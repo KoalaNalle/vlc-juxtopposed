@@ -244,6 +244,21 @@ assert model.state['alwaysOnTop']is before and item('interfacealwaysOnTop').prop
 model.feedback('');model.patch(**seed);QTest.qWait(25);assert not model.restart and not item('interfaceSettingsRestart').isVisible()
 done('Choice/range/toggle failures roll back; returning effective saved values to initial state clears actual-service restart feedback')
 
+window.resize(1280,900);dialog.setProperty('uiScale',1);QTest.qWait(40)
+viewport=item('globalSettingsPageScroll');viewport.setProperty('contentY',0);QTest.qWait(25)
+toggle=focus('interfacefullscreenControls')
+assert not model.restart
+click('interfacefullscreenControls');QTest.qWait(80)
+assert model.restart and item('interfaceSettingsRestart').isVisible()
+viewport=item('globalSettingsPageScroll')
+point=toggle.mapToScene(QPointF(0,0));top=viewport.mapToScene(QPointF(0,0)).y()
+assert point.y()>=top-.5 and point.y()+toggle.height()<=top+viewport.height()+.5,(
+    'Focused fullscreen control clipped after restart notice inserted',point.y(),toggle.height(),top,viewport.height())
+assert window.grabWindow().save(str(results/'03-focused-control-after-restart-feedback.png'))
+click('interfacefullscreenControls');assert not model.restart
+window.resize(1080,897);QTest.qWait(25)
+done('Focused control stays fully revealed when restart feedback changes the actual host layout')
+
 model.patch(fullscreenScreen=2,controlAutoHide=-1);QTest.qWait(20)
 assert item('interfacefullscreenScreen').property('currentIndex')==-1 and item('interfacecontrolAutoHide').property('currentIndex')==-1
 before=len(model.requests);model.screen_rows.append(dict(index=2,name='Generated reconnected screen'));model.screensChanged.emit();QTest.qWait(20)

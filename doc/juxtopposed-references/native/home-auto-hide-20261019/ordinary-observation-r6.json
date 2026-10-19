@@ -1,0 +1,18 @@
+{
+  "scope": "Direct Computer Use input in ordinary Windows GUI; paused generated 120-second audio, monitor 2 only",
+  "ordinaryGuiSha256": "598173d1ba527fb72ad4feaf49f8b0bd54481c3416e48fd16aae60776e438439",
+  "copiedSavedMode": "Always",
+  "copiedSavedDelayMilliseconds": 2000,
+  "observations": [
+    "Cold startup with the unchanged copied saved policy reached paused music with the bottom controls hidden.",
+    "A blank-canvas click revealed the bottom controls at clock 00:00:00 and duration 00:02:00; a later screenshot showed them hidden again.",
+    "Modifier-only Shift input revealed the bottom controls; this screenshot check does not measure the exact keyboard timeout.",
+    "A click in the observed blank bottom-bar gap left the pointer over the bar; it stayed visible beyond the saved two-second delay.",
+    "A blank-canvas click left the bottom-bar hover area; later observation showed the controls hidden again.",
+    "The paused music input and displayed zero clock were preserved throughout.",
+    "Ctrl+Q ended the process normally with exit code zero; no forced cleanup was used."
+  ],
+  "repairedPriorColdIdleFailure": true,
+  "exactKeyboardTimingAccepted": false,
+  "fullBetaAccepted": false
+}

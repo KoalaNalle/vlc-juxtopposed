@@ -189,6 +189,14 @@ FSM {
         }
 
         transitions: ({
+            // A fading control can become hovered before pointer-reveal is
+            // delivered. Preserve that real lock rather than losing it in the
+            // hidden state, while retaining legacy interactive-video policy.
+            lock: {
+                guard: () => fsm.interactionMayReveal,
+                action: () => { fsm.lockCount++; },
+                target: fsmLocked
+            },
             updateVideoEmbed: {
                 guard: () => !fsm.automaticallyHide,
                 target: fsmAudioMode

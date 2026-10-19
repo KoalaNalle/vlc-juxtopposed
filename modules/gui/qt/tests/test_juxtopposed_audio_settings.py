@@ -158,6 +158,8 @@ def done(name):checks.append(name);print('PASS',name,flush=True)
 QTest.qWait(70);click('opener');dialog=item('juxtopposedGlobalSettings');assert evaluate(dialog,'chooseCategory("audio")');page=item('juxtopposedAudioSettings')
 assert page.property('service')is model and dialog.property('preferences')is ctx.general and dialog.property('title')=='Audio Defaults'and model.reloads==1 and not model.requests
 for key in unavailable|gated:assert not item('audio'+key).isEnabled(),key
+assert not item('audioFixedVolume').isEnabled(), 'Fixed startup policy needs its paired startup-volume consumer'
+assert item('audiorememberVolume').isEnabled(), 'Remember last volume retains its independent native policy'
 assert len(evaluate(page,'settingKeys'))==32 and item('audioequalizerPreset').property('currentIndex')==-1
 assert page.property('busy')is False and not hasattr(model,'pickerActive')
 assert window.grabWindow().save(str(results/'01-audio-dark-authored.png'))

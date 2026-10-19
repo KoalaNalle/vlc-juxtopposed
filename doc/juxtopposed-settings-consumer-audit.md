@@ -7,6 +7,67 @@ Keep implementation, native behavior, actual app interaction/visual review and
 final-package acceptance separate. A stored option, enabled mock control or
 passing component count does not establish that its consumer works.
 
+## Current activation continuation
+
+The [activation receipt](juxtopposed-references/native/home-settings-activation-20261019/README.md)
+records independent fullscreen/volume-step MainCtx linking, Audio defaults32,
+real Windows4 and actual R4 settings paused96/reopen77/playing92. An Interface
+focus-reveal repair keeps the focused switch visible after restart feedback
+changes layout; component11 and actual captures pass. These are scoped results.
+
+Ordinary R4 typing saves2.5 as native `volume-step=6.400000`; direct pointer
+selection followed by Right changes72.5% to75%, Left restores72.5%, and the
+paused clock stays00:00:00. The app closes normally without diagnostics/errors.
+The earlier ordinary failure and desired R3 native failure identify the repaired
+mouse-focus hotkey boundary. Exact production routing12 passes separately.
+The receiver gate is separate from Windows-device support. The later
+[Windows Audio activation](juxtopposed-references/native/home-audio-device-activation-20261019/README.md)
+links device/fixed-startup support while receiver remains unavailable.
+Component20 and actual stale31/paused83/reopen59/playing95/unmanaged22 pass
+normally, without Qt diagnostics or unexpected native errors. Three intentional
+negative-control errors remain recorded. Cold real MMDevice/WASAPI consumes the
+saved endpoint65%; edits preserve exact current output/input/clock/volume.
+Ordinary Windows typing55%, device popup/keyboard, policy changes and reopen pass
+with independent config readback. Audio-scope ordinary GUI `3857fa66519c…`, private
+`de7506005fca…`; prior R4/R7 scopes remain distinct. Hardware labels stay private.
+
+The later [Interface title activation](juxtopposed-references/native/home-interface-title-20261019/README.md)
+links the existing startup title consumer. Actual initial52/Off45/restored46 =143
+and two ordinary Windows sessions pass, with editor failure/retry, truthful
+restart feedback, cold audio/video captions and current/same-instance-next title
+preservation. Normal exits, no Qt/unexpected native errors; one deliberate locked
+save error retained. Current ordinary GUI `d40f11aeefdf…`, private `4e09011ce1ee…`.
+Full UI/package/DPI scopes stay open; later auto-hide proof below supersedes two
+of the five gates that remained at the title checkpoint.
+
+The [auto-hide continuation](juxtopposed-references/native/home-auto-hide-20261019/README.md)
+links mode/delay and repairs stationary audio pointer notifications and lost
+hidden-state hover locks. The corrected R9 twelve-process/666-check matrix passes
+normally with no Qt/unexpected native errors and one deliberate locked-save
+error. All modes, audio/video, docked/floating, paused/playing, exact startup
+milliseconds, real0/10000ms boundaries, keyboard doubling, hover/navigation and
+primary/queue/track/clock preservation pass. Component9/43/47, fullscreen-controls
+Off audio34/video36 and ordinary cold Always/2000ms hide/reveal/hover retain their
+separate scopes. R8a diagnosed the early failed keyboard assertion as an incorrect
+test deadline; R9 fixes the test without another production change. Ordinary
+R6 `598173d1ba52…`, private R9 `dc2456a80a6c…`; protected modules unchanged.
+
+The later [fullscreen-screen activation](juxtopposed-references/native/home-fullscreen-screen-20261019/README.md)
+passes actual five-process/399 and two ordinary Windows sessions, normal exits,
+no Qt/unexpected native errors and one deliberate locked-save error. The actual
+category-open route refreshes compositor availability; real editor/retry/reopen,
+cold/stale values and embedded dependency pass. MainCtx/window-handler targeting,
+hidden genuine cross-screen selection and exact original screen/geometry restore
+preserve primary input/queue/tracks/clocks. All visible presentation is monitor2.
+Ordinary `56a4a7620f15…`, private `69af3dfee412…`, source-r3; protected modules
+unchanged. The earlier private show mistake and hidden-resize warning remain
+recorded separately. Arbitrary hidden resize, physical unplug and full DPI/
+visual/package acceptance remain open; the field is now linked and usable.
+
+The [FLAC exact-tail repair](juxtopposed-references/native/home-flac-coded-tail-20261019/README.md)
+also changes two runtime modules. Keep those identities when qualifying the
+selected GUI/package. No final-package or full thirteen-page audit is accepted.
+
 ## Newly verified native behavior
 
 The [Playback/Audio console receipt](juxtopposed-references/native/home-playback-consumers-20261019/README.md)
@@ -37,7 +98,8 @@ runner checks using that executable. Counts overlap earlier revisions.
 
 The [Windows Audio receipt](juxtopposed-references/native/home-audio-consumers-20261019/README.md)
 separately verifies real MMDevice/WASAPI endpoint selection, fixed startup volume
-and native live volume-step actions. Its UI acceptance gates remain disabled.
+and native live volume-step actions. Those earlier desktop gates are superseded
+by the later activation receipts above; receiver acceptance stays separate.
 The live-step restart warning, Audio on/off wording and next-input-delay restart
 warning/help are distinct repairs. The current component replay passes20 groups.
 The repaired delay model also passes the unchanged Audio defaults/PCM32 and real
@@ -55,9 +117,9 @@ R8 replay and its incorrect seamless-transition observer are preserved.
 | Category | Current audit boundary / important remaining work |
 | --- | --- |
 | General | Reconcile each live appearance/error policy and startup language/update/log policy with its existing native receipt and current app behavior. First-run settings have separate scoped evidence. |
-| Interface | Six earlier wired consumers remain acceptance-gated in MainCtx: geometry, media-name title, fullscreen screen, auto-hide, hide delay and popup duration. The [new embedded fullscreen-bar consumer](juxtopposed-references/native/home-fullscreen-controls-20261019/README.md) passes policy41/native storage15/component10 and actual audio/video On/Off138. Its settings gate activation and ordinary editor check are deferred to the next session. Detached video has no paired controller. `playlistTree` remains unavailable with no tree consumer. Actual tray, skin/picker and display journeys remain separate. |
+| Interface | Geometry and popup duration remain gated. Fullscreen-screen is linked with actual5/399 and two ordinary Windows sessions above. Title is linked with actual143/ordinary cold-start/editor proof; auto-hide and delay have actual12/666 plus ordinary cold/hover proof. The [embedded fullscreen-bar consumer](juxtopposed-references/native/home-fullscreen-controls-20261019/README.md) retains policy41/native storage15 and audio/video On/Off138; its actual editor/restart/focus repair has a separate activation receipt. Detached video has no paired controller. `playlistTree` remains unavailable with no tree consumer. Actual tray, skin/picker and display journeys remain separate. |
 | Playback | The fields above have scoped native behavior proof. Remaining work includes continue/resume/privacy interaction, communication ducking, disc/menu language, precise seek, thumbnails, optical drive, AVI/MKV, time-shift disk behavior/picker and actual app interactions. Precise seek is gated; timeline thumbnails have no provider. |
-| Audio | Native Windows fields and two startup fields are covered in the scopes above. Finish actual UI, other effects/codec/receiver/visualization behavior and remaining field traces. Nine controls remain unavailable in the ordinary app: device, fixed startup volume, step, passthrough, Night mode, Spatial audio/mode, media role and adaptive visualization size. Distinguish pending acceptance gates from absent/platform-specific consumers. |
+| Audio | Native Windows fields and startup fields are covered in the scopes above. Authored step is enabled with R4 editor/ordinary pointer-to-key proof; device/fixed startup now have the separate actual290/ordinary activation receipt. Finish other UI/effects/codec/receiver/visualization behavior and field traces. Six controls remain unavailable: passthrough, Night mode, Spatial audio/mode, media role and adaptive visualization size. Device and receiver gates are independent. Physical unplug and receiver claims require separate evidence. Distinguish pending acceptance gates from absent/platform-specific consumers. |
 | Video | Preserve the existing actual pixel/snapshot/defaults checks. Complete the current app picker/reset and remaining field journeys. Wallpaper remains gated; native options do not establish desktop-window behavior. |
 | Subtitles | Preserve the renderer/style/shortcut receipts. Complete current embedded/external cue, scope/timing and field interaction checks. `ignoreAssStyling` and `visualizationSize` are explicitly unavailable; do not infer an ASS override from another text-style setting. |
 | Controls | Existing native key/mouse/remote policy evidence is bounded. Reconcile editable fields versus status indicators, then replay actual editor/reset/remote interactions with current app ownership. |
@@ -82,7 +144,7 @@ indicators and omit actions; it is not a completed schema or behavioral audit.
 
 The human dismissed the previous firewall prompt with Cancel. Fresh Computer
 Use confirmed responsive Home on monitor2 and no permission dialog; the old
-isolated app then closed normally. The private runner is gaining an optional
-startup hold so each new window can be inspected before test input starts.
+isolated app then closed normally. The private runner now uses a startup hold
+so each new window is inspected before test input starts.
 Future permission dialogs require human handling. The revised beta roadmap and
 its full goal remain authoritative; this ledger neither shrinks nor completes them.

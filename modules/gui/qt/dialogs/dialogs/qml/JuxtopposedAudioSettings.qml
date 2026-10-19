@@ -488,7 +488,7 @@ FocusScope {
                         contentItem:SettingLabel{text:rememberVolume.text;color:root.values.rememberVolume===true?root.accent:root.tone("#6B6B6B");leftPadding:12*root.uiScale;verticalAlignment:Text.AlignVCenter}
                     }
                     RowLayout{x:2*root.uiScale;y:40*root.uiScale;width:parent.width-4*root.uiScale;height:36*root.uiScale;spacing:2*root.uiScale
-                        SettingButton{id:fixedVolume;objectName:"audioFixedVolume";Layout.preferredWidth:128*root.uiScale;Layout.fillHeight:true;text:qsTr("Always starts at:");enabled:root.editable("rememberVolume");onClicked:root.write("rememberVolume",false)
+                        SettingButton{id:fixedVolume;objectName:"audioFixedVolume";Layout.preferredWidth:128*root.uiScale;Layout.fillHeight:true;text:qsTr("Always starts at:");enabled:root.editable("rememberVolume")&&root.supported("startupVolume");onClicked:root.write("rememberVolume",false)
                             Accessible.role:Accessible.RadioButton;Accessible.checkable:true;Accessible.checked:root.values.rememberVolume===false
                             background:Rectangle{color:root.values.rememberVolume===false?root.accentSelected:root.tone("#191919");radius:4*root.uiScale}
                         }

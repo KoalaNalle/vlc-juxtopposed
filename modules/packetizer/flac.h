@@ -182,7 +182,10 @@ static inline int FLAC_ParseSyncInfo(const uint8_t *p_buf, unsigned i_buf,
     }
 
     if (stream_info && !blocksize_hint)
-        if (blocksize < stream_info->min_blocksize ||
+        /* The fixed block size excludes a possibly shorter final block.
+         * Match FLAC_CheckFrameInfo also for standard coded block sizes. */
+        if ((stream_info->min_blocksize != stream_info->max_blocksize &&
+             blocksize < stream_info->min_blocksize) ||
             blocksize > stream_info->max_blocksize)
             return 0;
 

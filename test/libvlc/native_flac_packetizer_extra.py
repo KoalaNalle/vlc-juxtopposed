@@ -6,9 +6,11 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import shutil
 
 CASES = ['flac_short_final_frame_and_repeated_drain',
          'flac_split_native_frames_and_complete_drain',
+         'flac_coded_short_final_frame_and_exact_bytes',
          'flac_every_truncated_short_frame_rejected',
          'flac_bad_crc_flush_then_valid_frame',
          'flac_flush_discards_partial_lookahead',
@@ -18,6 +20,32 @@ CASES = ['flac_short_final_frame_and_repeated_drain',
 def digest(path):
     with path.open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').hexdigest()
+
+
+def coded_tail_fixture():
+    """Two constant16 frames:576 samples then the standard coded192 tail.
+
+    Existing native-encoder fixtures remain independent. This small format
+    fixture makes the formerly rejected coded block size explicit and includes
+    independent header/footer checksums and the original PCM digest.
+    """
+    def crc(data, width, polynomial):
+        value = 0
+        for byte in data:
+            value ^= byte << (width - 8)
+            for _ in range(8):
+                value = ((value << 1) ^ (polynomial if value & (1 << (width - 1)) else 0)) & ((1 << width) - 1)
+        return value.to_bytes(width // 8, 'big')
+    def frame(block_code, number):
+        header = bytes([0xff, 0xf8, (block_code << 4) | 9, 8, number])
+        data = header + crc(header, 8, 7) + b'\0\0\0'
+        return data + crc(data, 16, 0x8005)
+    frames = frame(2, 0) + frame(1, 1)
+    info = (576).to_bytes(2, 'big') * 2 + (11).to_bytes(3, 'big') * 2
+    info += ((44100 << 44) | (15 << 36) | 768).to_bytes(8, 'big')
+    info += hashlib.md5(b'\0' * (768 * 2)).digest()
+    assert len(info) == 34 and len(frames) == 22
+    return b'fLaC\x80\0\0\x22' + info + frames
 
 
 def main():
@@ -49,6 +77,14 @@ def main():
         gate = json.loads((fixtures / 'verification.json').read_text(encoding='utf-8-sig'))
         if gate.get('passed') is not True or len(gate.get('cases', [])) != 9 or not all(row.get('passed') is True for row in gate['cases']):
             raise RuntimeError('Reuse the preserved fully passing frozen native FLAC nine-case result')
+        owned_fixtures = output / 'owned-fixtures'
+        owned_fixtures.mkdir()
+        for name in ['boundary-one.flac', 'boundary-B-plus-one.flac']:
+            shutil.copyfile(fixtures / name, owned_fixtures / name)
+        coded = owned_fixtures / 'boundary-coded-192.flac'
+        coded.write_bytes(coded_tail_fixture())
+        required.append(coded)
+        report['codedTailFixture'] = 'Independent constant16/44100 fixture:576 + coded192 samples, exact packet bytes and PCM MD5'
         for name in ['libvlc.dll', 'libvlccore.dll']:
             adjacent = executable.parent / name
             if adjacent.exists():
@@ -66,7 +102,7 @@ def main():
         environment.pop('VLC_PLUGIN_PATH', None)
         environment.update(PATH=str(package) + os.pathsep + environment.get('PATH', ''),
             VLC_LIB_PATH=str(package / 'plugins'), VLC_USERDATA_PATH=str(userdata),
-            VLC_FLAC_BOUNDARY_DIR=str(fixtures))
+            VLC_FLAC_BOUNDARY_DIR=str(owned_fixtures))
         with (output / 'stdout.txt').open('wb') as stdout, (output / 'stderr.txt').open('wb') as stderr:
             process = subprocess.Popen([str(executable)], cwd=output, env=environment,
                 stdout=stdout, stderr=stderr, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))

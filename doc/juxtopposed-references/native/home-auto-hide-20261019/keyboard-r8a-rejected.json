@@ -1,0 +1,471 @@
+{
+  "passed": false,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "598173d1ba527fb72ad4feaf49f8b0bd54481c3416e48fd16aae60776e438439",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "ef3aac12deee8f57518151f28654137349993351a4511d868a0701ff4138c516",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "auto-hide-audio-fullscreen-pinned": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 32204,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 18.343000000000757,
+      "exitCode": 0,
+      "elapsedSeconds": 27.125,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual Interface auto-hide and delay consumers are linked independently",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested mode and exact millisecond delay",
+            "passed": true
+          },
+          {
+            "name": "cold actual preference values agree without stale restart feedback",
+            "passed": true
+          },
+          {
+            "name": "owned long input decodes through the actual primary player",
+            "passed": true
+          },
+          {
+            "name": "auto-hide journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused native clock settles before controls testing",
+            "passed": true
+          },
+          {
+            "name": "actual production Player root materializes independently of visibility",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual bottom controls and visibility owner exist",
+            "passed": true
+          },
+          {
+            "name": "actual visibility diagnostic signal exists",
+            "passed": true
+          },
+          {
+            "name": "actual visibility diagnostic signal exists",
+            "passed": true
+          },
+          {
+            "name": "actual visibility diagnostic signal exists",
+            "passed": true
+          },
+          {
+            "name": "requested docking layout is applied without changing the auto-hide policy",
+            "passed": true
+          },
+          {
+            "name": "no-write primary state control passes before actual controls activity",
+            "passed": true
+          },
+          {
+            "name": "actual native window reaches requested fullscreen state",
+            "passed": true
+          },
+          {
+            "name": "auto-hide transition remains on the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "real idle timeout does not hide controls outside the selected mode",
+            "passed": true
+          },
+          {
+            "name": "idle controls policy preserves primary playback state and clocks",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual native window reaches requested fullscreen state",
+            "passed": true
+          },
+          {
+            "name": "auto-hide transition remains on the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "real pointer movement releases hover and navigation locks",
+            "passed": true
+          },
+          {
+            "name": "actual audio or video pointer movement reveals controls",
+            "passed": true
+          },
+          {
+            "name": "real timer does not hide controls before its saved delay",
+            "passed": true
+          },
+          {
+            "name": "actual production timer expires without synthetic timeout injection",
+            "passed": true
+          },
+          {
+            "name": "elapsed auto-hide delay is bounded around the saved milliseconds",
+            "passed": true
+          },
+          {
+            "name": "actual playback bar completes its hide transition",
+            "passed": true
+          },
+          {
+            "name": "idle controls policy preserves primary playback state and clocks",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual keyboard input reveals hidden controls",
+            "passed": true
+          },
+          {
+            "name": "keyboard reveal retains the existing doubled timeout",
+            "passed": false
+          }
+        ],
+        "error": "keyboard reveal retains the existing doubled timeout",
+        "failedPins": [],
+        "failedRoute": [
+          "home",
+          "base"
+        ],
+        "fullBetaAccepted": false,
+        "keyboardRetentionMilliseconds": 2119,
+        "keyboardRevealMilliseconds": 1012,
+        "mode": "auto-hide-audio-fullscreen-pinned",
+        "ownedWindowOnly": true,
+        "passed": false,
+        "pinServiceError": "",
+        "screenName": "LF24T450F",
+        "startupGateUsed": true,
+        "timerObservations": [
+          {
+            "elapsedMilliseconds": 1031,
+            "fullscreen": true,
+            "savedMilliseconds": 1000
+          }
+        ],
+        "visibilitySamples": [
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": false,
+            "barHovered": false,
+            "barVisible": true,
+            "controlsForcedVisible": true,
+            "diagnosticMilliseconds": 240,
+            "interactionMayReveal": true,
+            "isVisible": true,
+            "keyboardSignals": 0,
+            "lockCount": 0,
+            "mouseSignals": 3,
+            "phase": "idle-pointer-delivered",
+            "started": true,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ]
+          },
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": true,
+            "barHovered": false,
+            "barVisible": true,
+            "controlsForcedVisible": false,
+            "diagnosticMilliseconds": 1744,
+            "interactionMayReveal": true,
+            "isVisible": true,
+            "keyboardSignals": 0,
+            "lockCount": 0,
+            "mouseSignals": 5,
+            "phase": "idle-pointer-delivered",
+            "started": true,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": true
+              }
+            ]
+          },
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": true,
+            "barHovered": false,
+            "barVisible": true,
+            "controlsForcedVisible": false,
+            "diagnosticMilliseconds": 2774,
+            "interactionMayReveal": true,
+            "isVisible": false,
+            "keyboardSignals": 0,
+            "lockCount": 0,
+            "mouseSignals": 5,
+            "phase": "idle-expiry-observed",
+            "started": true,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 1,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ]
+          },
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": true,
+            "barHovered": false,
+            "barVisible": false,
+            "controlsForcedVisible": false,
+            "diagnosticMilliseconds": 3120,
+            "interactionMayReveal": true,
+            "isVisible": false,
+            "keyboardSignals": 0,
+            "lockCount": 0,
+            "mouseSignals": 5,
+            "phase": "keyboard-before",
+            "started": true,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 1,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ]
+          },
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": true,
+            "barHovered": false,
+            "barVisible": true,
+            "controlsForcedVisible": false,
+            "diagnosticMilliseconds": 4133,
+            "interactionMayReveal": true,
+            "isVisible": true,
+            "keyboardSignals": 1,
+            "lockCount": 0,
+            "mouseSignals": 5,
+            "phase": "keyboard-after-reveal",
+            "started": true,
+            "timeoutDuration": 2000,
+            "timeoutSignals": 1,
+            "timers": [
+              {
+                "interval": 2000,
+                "running": true
+              }
+            ]
+          },
+          {
+            "autoHideMode": 1,
+            "automaticallyHide": true,
+            "barHovered": false,
+            "barVisible": true,
+            "controlsForcedVisible": false,
+            "diagnosticMilliseconds": 5240,
+            "interactionMayReveal": true,
+            "isVisible": false,
+            "keyboardSignals": 1,
+            "lockCount": 0,
+            "mouseSignals": 5,
+            "phase": "keyboard-retention-observed",
+            "started": true,
+            "timeoutDuration": 2000,
+            "timeoutSignals": 2,
+            "timers": [
+              {
+                "interval": 2000,
+                "running": false
+              }
+            ]
+          }
+        ],
+        "visibilityTimeline": [
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 20,
+            "mouseSignals": 0,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 210,
+            "mouseSignals": 1,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 240,
+            "mouseSignals": 3,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 1744,
+            "mouseSignals": 4,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": true
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 1775,
+            "mouseSignals": 5,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 0,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": true
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 0,
+            "milliseconds": 2775,
+            "mouseSignals": 5,
+            "timeoutDuration": 1000,
+            "timeoutSignals": 1,
+            "timers": [
+              {
+                "interval": 1000,
+                "running": false
+              }
+            ],
+            "visible": false
+          },
+          {
+            "keyboardSignals": 1,
+            "milliseconds": 3121,
+            "mouseSignals": 5,
+            "timeoutDuration": 2000,
+            "timeoutSignals": 1,
+            "timers": [
+              {
+                "interval": 2000,
+                "running": true
+              }
+            ],
+            "visible": true
+          },
+          {
+            "keyboardSignals": 1,
+            "milliseconds": 5146,
+            "mouseSignals": 5,
+            "timeoutDuration": 2000,
+            "timeoutSignals": 2,
+            "timers": [
+              {
+                "interval": 2000,
+                "running": false
+              }
+            ],
+            "visible": false
+          }
+        ]
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "e04ef6f0dfa6ebcefe0e2907806a5c06fc18bc7b2c7b723c0a5425efe6cb6254",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true,
+  "ownedGeneratedVideoSourceUnchanged": true
+}

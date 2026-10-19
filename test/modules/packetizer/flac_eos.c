@@ -26,6 +26,7 @@ struct fixture
     const uint8_t *frames;
     size_t frame_bytes;
     struct flac_stream_info info;
+    bool coded_tail;
 };
 struct owner { decoder_t decoder; es_format_t input; };
 struct collected { uint8_t *bytes; size_t count; unsigned packets, samples; vlc_tick_t first_pts; };
@@ -91,7 +92,17 @@ static void collect(struct collected *result, block_t *output, const struct fixt
         block_t *next = output->p_next;
         assert(result->packets < 64 && result->count + output->i_buffer <= 512 * 1024);
         struct flac_header_info frame;
-        assert(FLAC_ParseSyncInfo(output->p_buffer, output->i_buffer, &fixture->info, NULL, &frame) != 0);
+        if (fixture->coded_tail)
+        {
+            // Independent of the production parser under test: these two
+            // exact constant-frame encodings declare576 and192 samples.
+            assert(output->i_buffer == 11 && output->p_buffer[0] == 0xff
+                && output->p_buffer[1] == 0xf8 && output->p_buffer[3] == 8);
+            assert(output->p_buffer[2] == 0x29 || output->p_buffer[2] == 0x19);
+            frame.i_frame_length = output->p_buffer[2] == 0x29 ? 576 : 192;
+        }
+        else
+            assert(FLAC_ParseSyncInfo(output->p_buffer, output->i_buffer, &fixture->info, NULL, &frame) != 0);
         uint8_t *bytes = realloc(result->bytes, result->count + output->i_buffer);
         assert(bytes);
         result->bytes = bytes;
@@ -183,6 +194,32 @@ static void every_truncated_short_frame(libvlc_instance_t *instance, const struc
     }
     puts("PASS flac_every_truncated_short_frame_rejected");
 }
+static bool coded_short_final_frame(libvlc_instance_t *instance, const struct fixture *fixture)
+{
+    assert(fixture->info.min_blocksize == 576 && fixture->info.max_blocksize == 576);
+    const size_t chunks[] = {1, 7, 17, fixture->frame_bytes};
+    for (size_t i = 0; i < ARRAY_SIZE(chunks); ++i)
+    {
+        decoder_t *decoder = new_packetizer(instance, fixture);
+        struct collected result = {0};
+        push(decoder, fixture, fixture->frames, fixture->frame_bytes, chunks[i], VLC_TICK_0, &result);
+        drain(decoder, fixture, &result);
+        const bool complete = result.packets == 2 && result.samples == 768
+            && result.count == fixture->frame_bytes
+            && !memcmp(result.bytes, fixture->frames, result.count)
+            && result.first_pts == VLC_TICK_0;
+        free(result.bytes);
+        delete_packetizer(decoder);
+        if (!complete)
+        {
+            fprintf(stderr, "FAIL coded short final frame: chunk=%zu packets=%u samples=%u bytes=%zu\n",
+                    chunks[i], result.packets, result.samples, result.count);
+            return false;
+        }
+    }
+    puts("PASS flac_coded_short_final_frame_and_exact_bytes");
+    return true;
+}
 static void bad_crc_then_flush_and_valid_signal(libvlc_instance_t *instance, const struct fixture *one)
 {
     decoder_t *decoder = new_packetizer(instance, one);
@@ -259,13 +296,21 @@ int main(void)
     assert(instance);
     const struct fixture one = read_fixture(directory, "boundary-one.flac");
     const struct fixture mixed = read_fixture(directory, "boundary-B-plus-one.flac");
+    struct fixture coded = read_fixture(directory, "boundary-coded-192.flac");
+    coded.coded_tail = true;
     one_short_final_frame(instance, &one);
     split_frame_drain(instance, &mixed);
+    if (!coded_short_final_frame(instance, &coded))
+    {
+        free(one.file); free(mixed.file); free(coded.file);
+        libvlc_release(instance);
+        return 1;
+    }
     every_truncated_short_frame(instance, &one);
     bad_crc_then_flush_and_valid_signal(instance, &one);
     flush_discards_partial_lookahead(instance, &one);
     guarded_truncated_two_byte_blocksize(&one);
-    free(one.file); free(mixed.file);
+    free(one.file); free(mixed.file); free(coded.file);
     libvlc_release(instance);
     puts("PASS flac_packetizer_native_extra_cleanup");
     return 0;

@@ -1,7 +1,8 @@
 # Revised beta roadmap
 
-18 October 2026. **Status: implementation and scoped validation are substantial;
-the complete beta is not accepted.** This is the current execution order. The
+Updated 19 October 2026 for the end-of-day checkpoint following `2498938cb1`.
+**Status: implementation and scoped validation are substantial; the complete
+beta is not accepted.** This is the current execution order. The
 [older beta plan](juxtopposed-beta-plan.md) retains historical receipts and
 reference requirements; its old pending labels do not override newer evidence.
 
@@ -20,21 +21,124 @@ current functional adaptation must remain clearly identified where no original
 form exists. Unconfirmed subtitle text editing/export is a reference question,
 not an assumed beta feature. No designer outreach is part of this roadmap.
 
+## Current goal continuation — 19 October
+
+This checkpoint preserves the scoped work below. The user requested commit and
+push, then continuation tomorrow. Work is paused; the full objective and all
+final-package/visual/platform gates below remain in force.
+
+- [Auto-hide activation](juxtopposed-references/native/home-auto-hide-20261019/README.md):
+  actual mode/delay editors and paired pointer/hover repairs pass the source-
+  matched R9 twelve-process/666-check matrix, with normal exits, no Qt diagnostics
+  or unexpected native errors. One deliberate locked-save error is retained.
+  Never/Fullscreen only/Always, audio/video, docked/floating, paused/playing,
+  real0/1000/2000/10000ms timers, doubled keyboard reveal and independent state
+  preservation pass. Component9/43/47 and ordinary cold hide/reveal/hover have
+  distinct scopes. R8a identified the old keyboard assertion as a test deadline
+  error. Current ordinary `598173d1ba52…`, private `dc2456a80a6c…`, source-r9;
+  `build-windows/beta-auto-hide-20261019/ordinary-runtime-r6`.
+  The subsequent screen-selector scope below closes another Interface gate.
+- [Fullscreen screen activation](juxtopposed-references/native/home-fullscreen-screen-20261019/README.md):
+  actual five-process/399 and two ordinary Windows sessions pass, with normal
+  exits, no Qt/unexpected native errors and one deliberate locked-save error.
+  Actual category-open availability, editor/retry/reopen, cold/stale handling,
+  real window-handler target acquisition and hidden genuine cross-screen restore
+  preserve input/queue/tracks/clocks. All visible presentation stays on monitor2.
+  Current ordinary `56a4a7620f15…`, private `69af3dfee412…`, source-r3;
+  `build-windows/beta-fullscreen-screen-20261019/ordinary-runtime-r1`.
+  Geometry and popup duration remain gated; whole-app/DPI/package acceptance is open.
+
+- [Settings activation](juxtopposed-references/native/home-settings-activation-20261019/README.md):
+  fullscreen and authored volume-step gates are linked independently; receiver
+  support has its own gate. Native Audio32/Windows4 and actual settings
+  paused96/reopen77/playing92 pass on R4. The restart-notice
+  focus/clipping repair passes component11 and the native captures.
+- Ordinary R4 Windows typing saves the step correctly; mouse-focused Right/Left
+  change volume by2.5 points without seeking the paused primary. The reproduced
+  R3 app failure is repaired by explicit plain-arrow ownership. Key routing12
+  retains modified-shortcut/modal/sidebar policies; component evidence is separate.
+- [FLAC tail repair](juxtopposed-references/native/home-flac-coded-tail-20261019/README.md):
+  exact decode improves from479,232 to480,000 samples with the source PCM digest;
+  paired/current packetizer8 and existing encoder/drain9 pass. Preserve the new
+  packetizer/demuxer with the current GUI when consolidating the candidate.
+- R4 settings/fullscreen GUI pair is ordinary `758df308cca3…`, private `f7e7d95db75e…`.
+  The combined local runtime is
+  `build-windows/beta-settings-activation-20261019/ordinary-runtime-r4`.
+  This is not final-package acceptance. Later tooltip/video warning receipts
+  follow below; full consumer/workflow, fidelity/accessibility/DPI and release
+  gates stay open.
+- Affected fullscreen replay on R4 passes audio/video On/Off138 with four normal
+  exits, no Qt/native errors and exact paused state preserved. Video-pixel and
+  initial window-size-warning review remain separate from control/focus proof.
+- [Tooltip follow-up](juxtopposed-references/native/home-titlebar-tooltip-20261019/README.md)
+  reproduces the Close popup outside monitor2. R6's local popup fixes bounds34,
+  but capture review identifies duplicate hover/focus help. R7's hover-priority
+  component regression passes after a paired R6 failure. Native39 and direct
+  ordinary maximized Close→Home→Close help pass normally without Qt/native
+  errors. Tooltip-scope ordinary GUI `9892032f4456…`, private `a14c5d7c7cb4…`,
+  source-r7 and `build-windows/beta-settings-activation-20261019/ordinary-runtime-r7`.
+  Geometry readback finds the old normal-window fixture extended19 pixels off
+  screen; a fresh in-bounds R7b replay accepts coordinate Restore/Maximize with
+  normal exit/no Qt/native errors. Full geometry/Windows-DPI acceptance stays open.
+  Keep R4's earlier settings/fullscreen evidence in its original scope.
+- [Video-window warning scope](juxtopposed-references/native/home-video-warning-20261019/README.md):
+  ordinary R7 H264 four-color frames render through paused startup, playing,
+  paused fullscreen and windowed return. The one initial zero-size warning is
+  followed by nonzero Direct3D11 reports and normal exit without Qt/native errors.
+  This is scoped fallback/rendering proof, not all-format/GPU/DPI/package acceptance.
+
+- [Windows Audio activation](juxtopposed-references/native/home-audio-device-activation-20261019/README.md):
+  Output device/fixed startup volume now linked independently from receiver
+  passthrough. Component20 and actual stale31/paused83/reopen59/playing95/
+  unmanaged22 pass, five normal exits and no unexpected native/Qt errors.
+  Three intentional negative-control errors remain recorded. Cold real Windows
+  output consumes saved explicit endpoint65%; defaults editing preserves current
+  playback/output identity. Ordinary Windows typing55%, device keyboard choice,
+  policy changes and dialog reopen pass with checked persistence and normal exit.
+  Audio-scope ordinary GUI `3857fa66519c…`, private `de7506005fca…`, local
+  `build-windows/beta-audio-device-activation-20261019/ordinary-runtime-r1`,
+  source-r1/run-source-r2. Protected Core/audio/FLAC/library identities unchanged.
+  Earlier R4/R7 scopes do not automatically become results on this new GUI.
+
+- [Interface title activation](juxtopposed-references/native/home-interface-title-20261019/README.md):
+  actual initial52/Off45/restored46 =143, three normal exits, no Qt/unexpected
+  native errors; one intentional locked-save error retained. Actual pointer/
+  keyboard editor, rollback/retry, restart feedback, dialog reopen, cold audio/
+  video captions and same-instance next-video policy pass. Two ordinary Windows
+  sessions confirm editing and cold Off with cleared restart feedback, unchanged
+  config/media/runtime and normal exits. Current ordinary GUI `d40f11aeefdf…`,
+  private `4e09011ce1ee…`, source-r1 and
+  `build-windows/beta-interface-title-20261019/ordinary-runtime-r1`.
+  This earlier title scope preceded the auto-hide activation above;
+  whole-app/package/visual/DPI are open.
+
 ## Baseline to preserve
 
 - Authoritative checkout: `C:\Modding\vlc-juxtopposed`, branch
-  `juxtopposed-playback-bar`, committed checkpoint `5829010294` plus the current
-  uncommitted work. Do not overwrite or discard those edits.
+  `juxtopposed-playback-bar`, published checkpoint
+  `2498938cb147990637ec5cb5a81bdc416eb36d5c`. Preserve unrelated local work,
+  including the four untracked SoXR reference/trace experiments. They are not
+  prerequisites for this roadmap.
+- Published-checkpoint matched GUI pair: ordinary
+  `fd7f8af9b480f4e3b1dd8b4df22ae3fe7e58b655d13914b55658f405e6d6346b`,
+  private test GUI
+  `8be8eff6e4d877f4369a44f0df4424855349b90ec25de8d77a9ce9a0e1ec4115`.
+  The ignored ordinary runtime is
+  `build-windows/beta-fullscreen-controls-20261019/ordinary-runtime-r2`;
+  its source checkpoint is `source-r6` in the same work folder. The
+  [provenance receipt](juxtopposed-references/native/home-fullscreen-controls-20261019/actual-app-provenance.json)
+  records matching production inputs and the absence of private hooks in the
+  ordinary GUI. This is a scoped development candidate, not the final package.
 - [Home cache/audio receipt](juxtopposed-references/native/home-cache-audio-20261018/README.md):
   native cache/icon/window 16 processes / 3,297 checks; paired old-Qt negative;
-  current audio concurrency32, actual WASAPI lifecycle16, ordinary Qt5 and HLS20.
+  audio concurrency32, actual WASAPI lifecycle16, five ordinary Qt checks and HLS20.
   These are scoped results, not a cumulative feature-completion percentage.
-- Protected ordinary baseline:
+- Historical protected ordinary baseline:
   `build-windows/beta-native-cache-home-20261018/ordinary-runtime-r3`;
   GUI `f82534592d35…`, MMDevice `0d29a257b562…`, Core `0cdebe2f6950…`.
   [Full hashes](juxtopposed-references/native/home-cache-audio-20261018/verification.json)
   bind results to the actual binaries and source.
-- Interim interaction candidate: `build-windows/beta-compact-interaction-20261018/ordinary-runtime-r10`,
+- Historical interaction candidate: `build-windows/beta-compact-interaction-20261018/ordinary-runtime-r10`,
   GUI `19ec1a17ac1f…`, with the preserved core/audio/library modules. Six private
   native journeys and five ordinary playback smokes pass in their explicit
   scopes; see the [interaction receipt](juxtopposed-references/native/home-compact-dialogs-20261018/README.md).
@@ -48,27 +152,76 @@ not an assumed beta feature. No designer outreach is part of this roadmap.
   acceptance remains open. This is not the final beta package.
 - All 13 Global Settings bodies exist with native services and scoped journeys.
   Ordered pins, Library-OFF Recent, the original shared title strip and original
-  Videos/Music icons are implemented. Revalidate their remaining states;
-  do not restart these features from obsolete TODOs.
+  Videos/Music icons are implemented. Setup, profiles and the rendered customizer
+  also have actual native and ordinary interaction receipts, summarized below.
+  Revalidate their remaining states; do not restart them from obsolete TODOs.
 - Movable modal headers already exist for Network, New Playlist, Conversion and
-  Global Settings. Their component proof is not actual Windows pointer/DPI
-  acceptance. New Playlist's source already uses the original 713 × 589 geometry.
+  Global Settings, with scoped native interaction evidence in the compact-dialog
+  receipt. Remaining short-window, busy-operation, visual and Windows-DPI
+  combinations need their own evidence. New Playlist's source already uses the
+  original 713 × 589 geometry.
 - The cleanup preserved source/Git/current candidates, migration backups and the
   Windows 10 kit. Historical identical build outputs now share NTFS storage;
   unlink/copy an old binary before changing it. Active tools and builds were excluded.
 
-The [32-surface readiness snapshot](juxtopposed-references/beta-readiness-20261018.md)
+The updated [32-surface readiness snapshot](juxtopposed-references/beta-readiness-20261018.md)
 separates known implementation, native evidence and remaining work. Earlier
 native results retain their original GUI/platform scope until replayed against
 the final candidate. Nothing here accepts the whole application's visuals.
+
+## Progress since the previous roadmap
+
+These are bounded receipts, not cumulative completion percentages. Counts from
+overlapping revisions must not be added together.
+
+| Area | Evidence to preserve | Still open |
+| --- | --- | --- |
+| Compact navigation and focus | [Native interaction](juxtopposed-references/native/home-compact-dialogs-20261018/README.md), later [focus repair](juxtopposed-references/native/home-keyboard-focus-20261019/verification.json), direct ordinary Windows keyboard checks | Remaining interaction combinations, screen-reader behavior, actual OS DPI and final package |
+| First-run setup | [Cancel/Finish/retry/reopen and ordinary keyboard receipt](juxtopposed-references/native/home-setup-20261019/verification.json); native 49/60/18 and direct ordinary Next/Finish/reopen | Complete visual/DPI/package states; privacy choices remain human-owned |
+| Profiles and customizer | [Profiles](juxtopposed-references/native/home-profiles-20261019/README.md) native playing/paused79 each and reopen15; [customizer](juxtopposed-references/native/home-customizer-20261019/README.md) paused111/reopen15/playing111, plus ordinary New/save/switch and layout-edit input | Remaining confirmed tile/shortcut actions, full visual/accessibility/DPI and package coverage |
+| Current-media Favorite | [Native183 and ordinary pointer/Space/Return](juxtopposed-references/native/home-current-media-20261019/README.md), independent database readback, failure/retry and source guards | Whole-layout visual and screen-reader acceptance; targeted monitor-edge tooltip repair |
+| Playlist-origin label | [Actual Library On/Off67](juxtopposed-references/native/home-playlist-context-20261019/README.md): explicit origin, real names, shared media, rename/deletion and paused-state preservation | Remaining workflow/visual/DPI/package states |
+| Embedded fullscreen controls | [Actual audio/video On/Off138](juxtopposed-references/native/home-fullscreen-controls-20261019/README.md), hidden-input rejection and focus/state preservation | Enable its ordinary settings gate and test the real editor/restart contract; detached controller remains unavailable |
+| Settings consumers | [Playback/Audio console R18](juxtopposed-references/native/home-playback-consumers-20261019/README.md), 18 cases with verified dummy sinks; [Windows Audio](juxtopposed-references/native/home-audio-consumers-20261019/README.md), actual MMDevice/WASAPI endpoint/startup-volume/live-step behavior | Per-field desktop audit, gated controls, hardware-specific paths and final package; time-shift disk spooling/rollover/cleanup remain unverified |
+
+## Concrete gaps to resolve
+
+The [thirteen-page consumer audit](juxtopposed-settings-consumer-audit.md) is the
+field-level backlog. A stored value or enabled component is insufficient. For
+each confirmed setting, establish its real consumer, availability, timing,
+save/reset/cancel/retry behavior and actual desktop result.
+
+- The fullscreen option and authored Audio volume step are now linked locally;
+  their settings journeys and ordinary pointer/Left/Right volume input pass in
+  the scope above. The older disabled-gate notes describe the published checkpoint.
+- Audio Windows-device and receiver capabilities are separate. Device/fixed
+  startup consumers are now linked and pass the actual/ordinary activation
+  receipt above. Passthrough remains unavailable; it does not inherit endpoint
+  selection proof. Physical unplug and receiver coverage remain separate.
+- Other gates or missing consumers include Interface geometry and popup-duration
+  policies, precise seek, timeline thumbnails, wallpaper, selected Audio
+  effects and visualization behavior, subtitle ASS override and playlist-tree
+  mode. Use the audit to distinguish verified-but-gated, absent, platform-limited
+  and unconfirmed behavior. Do not silently drop a confirmed design action.
+- Finish remaining customizer actions such as HDR where confirmed, shortcut
+  consumers/conflicts, library/category/detail and queue/bookmark/chapter/track
+  journeys, subtitle scope/timing, and conversion lifecycle/output acceptance.
+  Favorite and authoritative playlist labels are no longer missing consumers.
+- The FLAC frame-size warning's tail loss is repaired; exact PCM and packetizer
+  evidence is linked above. The dummy-mux warning is normal last-input removal
+  in the tested runs. The initial video-size fallback has scoped ordinary R7
+  rendered-image/resize evidence above.
+  Title-strip tooltip placement/single-help checks pass on R7. The old off-screen
+  geometry fixture and corrected R7b comparison are recorded; full geometry/DPI
+  policy acceptance remains part of the Interface audit.
 
 ## Ordered work
 
 | Order | Work package | Concrete completion evidence |
 | --- | --- | --- |
-| 1 | Finish compact navigation and real dialog interaction | Actual native Tab/Shift+Tab, arrows, wheel over rows and padding, pointer focus, error/Retry and pin fallback at short/narrow sizes. The four modal headers move by real pointer input, remain reachable and preserve focus, playback and busy guards. Keep title drag/double-click, close and volume/mute regressions green. |
-| 2 | Complete remaining confirmed workflows | Resolve each open row in the readiness snapshot using existing code first. Prioritize first-run setup and profiles/customizer/shortcuts; remaining library/category/detail and queue/bookmark/chapter/track journeys; subtitle scope/timing and conversion lifecycle. Audit every confirmed Global Settings field for a real consumer, correct live-versus-next-media behavior, persistence, reset and visible failure/retry. Implement gaps that this audit actually establishes. |
-| 3 | Complete design fidelity and accessibility | Compare actual VLC captures with cached original frames/assets. Finish Home/library/player/Recent, music, queue, modals, setup and settings states. Check typography, spacing, original icons, colors, blur/alpha, control sizes and focus/accessibility. Resolve reference gaps explicitly. |
+| 1 | Activate verified settings and close the immediate regressions | Enable embedded fullscreen controls and authored volume-step capabilities independently, build matching ordinary/private inputs and verify actual settings editors, persistence and application timing. Keep unverified receiver paths gated. Triage native warnings and the monitor-edge tooltip. |
+| 2 | Complete confirmed consumers and workflows | Close each field in the thirteen-page audit and each remaining action in the readiness snapshot using existing code first. Finish the remaining tile/shortcut, library/detail, queue/bookmark/chapter/track, subtitle and conversion paths. Establish current-versus-next-media/restart behavior, reset, failure/retry and persistence. Preserve completed setup/profile/customizer work. |
+| 3 | Complete interaction, design fidelity and accessibility | Compare actual VLC captures with cached original frames/assets. Review all 32 surfaces and their required states, typography, spacing, icons, colors, blur/alpha, sizes, focus and screen-reader behavior. Finish remaining compact/wheel/drop/modal movement and busy-state combinations. Verify Windows DPI, System-theme notifications and monitor placement. Resolve reference gaps explicitly. |
 | 4 | Consolidate real-media and state regression | Run the designed journeys on one identified current tuple with representative real/generated media, playing and paused states, restart, rapid source changes, missing/moved media, failure/retry and worker shutdown. Retain exact output/PCM tests. Triage every new crash or normal-flow failure. |
 | 5 | Produce and validate a clean beta candidate | Build from the selected fixed source using registered dependencies/resources. Stage an ordinary package with no private hooks/data. Replay the required native/component/visual/media checks on those exact packaged binaries. Verify default first run, relocation, installed-VLC coexistence, licenses, attribution, source/build notes and checksums. Prepare reviewable Git changes and the local distributable. |
 | Separate lane | Windows 10 comparison | Run the prepared before/after kit when the original guest machine is available. Record OS/AUDIOSES versions and capture the exception context if the crash recurs. Never substitute a Windows 11 pass for this result. |
@@ -81,18 +234,59 @@ the next relevant check.
 
 ### First batch for the next goal
 
-1. Check the preserved source/binary baseline and use the readiness snapshot as
-   the backlog. Replace obsolete status labels only where a receipt supports it.
-2. Extend the maintained owned-window journey for compact Tab/reverse Tab,
-   wheel/list-padding behavior and pointer focus. Fix defects demonstrated by
-   these checks without changing the authored layout unnecessarily.
-3. Exercise actual header dragging and focus restoration in the four existing
-   dialogs, including short-window clamping and an operation in progress.
-4. Compile only changed targets, run affected native journeys and ordinary
-   playback, inspect the native captures, and save a matched source/binary receipt.
+1. Preserve the published baseline and the newer frozen local inputs, source
+   snapshots and receipts. Keep unrelated SoXR work and protected Core/audio/
+   library modules untouched.
+2. Preserve R4's repaired mouse-focus key ownership, matching ordinary/private
+   source inputs and repaired FLAC modules. Settings265, routing12 and ordinary
+   Windows editor/Left/Right input pass. Keep component/native/ordinary evidence
+   distinct; do not replay unchanged accepted checks without a new reason.
+3. Preserve affected fullscreen qualification on R4 and ordinary R7 video-warning
+   scope. Retain actual settings failure/retry, cold reopen and paused/playing
+   evidence; these are not complete package or visual acceptance.
+4. Preserve R7's tooltip bounds/single-help and ordinary maximized input proof,
+   plus the R7b in-bounds geometry comparison. Use that owned fixture for future
+   ordinary replay; do not infer full geometry/DPI acceptance from it. Preserve
+   authored title-strip assets and geometry.
+5. Preserve the current Audio activation tuple and its290 actual-app checks,
+   component20 and ordinary Windows input/readback. Keep receiver gated and
+   hardware labels private. Preserve title activation143 and its two ordinary
+   sessions. Auto-hide/delay now have actual666 and ordinary cold/hover proof;
+   screen selection now has actual399 and ordinary cold/editor proof;
+   continue geometry, popup duration and remaining
+   confirmed consumers/workflows in work package2; the complete scope remains open.
 
-This batch should finish with concrete interaction coverage and a reviewed next
-gap. It must not consume the entire goal merely writing another plan.
+Use the maintained startup hold for fresh monitor-2 inspection before each
+desktop journey. Avoid duplicating the Windows runtime's default plugin path:
+the accepted ordinary environment loads601 modules once; an extra
+`VLC_PLUGIN_PATH` previously caused duplicate autorun/hotkey startup failures.
+Audit other launchers before reusing them rather than assuming all were repaired.
+
+This batch ends with enabled, usable settings and a matched receipt. It is not
+the whole beta, and it should not be spent merely writing another plan.
+
+## Model and reasoning recommendation
+
+Planning recommendation as of 19 October 2026: **GPT-6.1 Sol with High reasoning**
+for the main beta implementation and verification work. This is project-specific
+judgment, not a benchmark result or a guarantee of acceptance.
+
+| Work | Suggested setting |
+| --- | --- |
+| Cross-file Qt/QML/C++ changes, settings consumers, native test design and regression review | GPT-6.1 Sol, High |
+| Bounded documentation, receipt reconciliation and straightforward presentation edits | GPT-6.1 Sol, Medium; lower only while the quality checks still pass |
+| Difficult native crashes, asynchronous ownership/teardown or unexplained state races | Try GPT-6.1 Sol, Extra High for that investigation; compare with High against a concrete reproduction |
+| A hard issue remains unresolved or a particularly consequential review needs another approach | Consider GPT-6 Astra, High/Extra High; preserve the same reproduction and acceptance criteria |
+
+Do not use Max/Ultra for every turn by default. Keep the lightest setting that
+meets the demonstrated quality bar. Higher reasoning cannot replace an actual
+Windows test, missing hardware or an original-design reference. This document
+does not change the user's selected model or effort.
+
+Current [OpenAI model guidance](https://developers.openai.com/api/docs/guides/model-selection)
+and [effort guidance](https://developers.openai.com/api/docs/guides/deployment-checklist)
+support choosing by workload and measured quality, latency and usage. Recheck
+availability and guidance when selecting a different model later.
 
 ## Acceptance rules shared by every work package
 

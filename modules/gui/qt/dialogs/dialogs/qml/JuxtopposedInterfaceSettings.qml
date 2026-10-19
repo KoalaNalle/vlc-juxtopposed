@@ -47,7 +47,17 @@ FocusScope {
     function matches(text) { return !searchText.trim().length || text.toLocaleLowerCase().includes(searchText.trim().toLocaleLowerCase()) }
     function sectionMatches(names) { return names.some(name => matches(name)) }
     function navigate(item, backwards) { if (focusNavigator) focusNavigator(item, backwards) }
-    function reveal(item) { if (item.activeFocus) focusRevealed(item) }
+    property Item _focusRevealTarget: null
+    function reveal(item) {
+        if (item.activeFocus) {
+            _focusRevealTarget = item
+            focusRevealed(item)
+        }
+    }
+    function revealActiveControl() {
+        const item = _focusRevealTarget
+        if (item && item.visible && item.activeFocus) focusRevealed(item)
+    }
     function supported(key) { return available && capabilities[key] === true && values[key] !== undefined }
     function editable(key) { return supported(key) && !busy }
     function closeChoices() {
@@ -369,6 +379,9 @@ FocusScope {
         id: form
         width: root.width
         spacing: 20 * root.uiScale
+        // Error/restart feedback can move a control after its focus event.
+        // Reveal again after the updated form geometry has settled.
+        onImplicitHeightChanged: Qt.callLater(root.revealActiveControl)
         SettingLabel {
             objectName: "interfaceSettingsError"
             width: parent.width

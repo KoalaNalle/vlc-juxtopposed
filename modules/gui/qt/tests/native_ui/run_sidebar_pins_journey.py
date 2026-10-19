@@ -13,6 +13,7 @@ import sqlite3
 import subprocess
 import sys
 import time
+import wave
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread, Event
@@ -71,12 +72,25 @@ def main():
     parser.add_argument('--screen-name',help='Keep native test windows on this exact Qt screen name')
     parser.add_argument('--startup-gate',action='store_true',help='Wait before each journey for its startup-approved marker after human/desktop inspection; no timeout while waiting')
     parser.add_argument('--window-geometry-source',type=Path,help='Copy only saved window geometry from an owned INI fixture before startup')
+    parser.add_argument('--controls-video-fixture',type=Path,help='Owned generated long video for auto-hide playback tests')
+    parser.add_argument('--fullscreen-screen-index',type=int,help='Actual connected index of the approved monitor, checked again by the native driver')
     parser.add_argument('--modes',nargs='+',choices=['populate','reopen','disabled','replacement','history-off','history-off-optout','history-off-shutdown','titlebar-empty','titlebar-media','titlebar-video','titlebar-media-title','titlebar-close','titlebar-traditional','titlebar-window','titlebar-compact','titlebar-compact-audio','titlebar-dialogs','titlebar-recovery','titlebar-home-menu','titlebar-busy','titlebar-busy-playing','setup-cancel','setup-finish','setup-reopen','profiles-paused','profiles-playing','profiles-reopen'],default=['populate','reopen','disabled','replacement'])
     parser._option_string_actions['--modes'].choices += ['transport-initial','transport-all','transport-current','transport-none']
     parser._option_string_actions['--modes'].choices += ['customizer-paused','customizer-reopen','customizer-playing']
     parser._option_string_actions['--modes'].choices += ['favorite-initial','favorite-reopen','favorite-disabled','favorite-failure']
     parser._option_string_actions['--modes'].choices += ['playlist-origin','playlist-origin-disabled']
     parser._option_string_actions['--modes'].choices += ['fullscreen-controls-audio-on','fullscreen-controls-audio-off','fullscreen-controls-video-on','fullscreen-controls-video-off']
+    parser._option_string_actions['--modes'].choices += ['settings-activation-paused','settings-activation-reopen','settings-activation-playing']
+    parser._option_string_actions['--modes'].choices += ['tooltip-edge']
+    parser._option_string_actions['--modes'].choices += ['audio-device-stale','audio-device-paused','audio-device-reopen','audio-device-playing','audio-device-unmanaged']
+    parser._option_string_actions['--modes'].choices += ['interface-title-initial','interface-title-off','interface-title-restored']
+    parser._option_string_actions['--modes'].choices += ['fullscreen-screen-initial','fullscreen-screen-explicit-playing',
+        'fullscreen-screen-auto-video','fullscreen-screen-explicit-video','fullscreen-screen-stale']
+    parser._option_string_actions['--modes'].choices += ['auto-hide-editor-initial','auto-hide-editor-reopen',
+        'auto-hide-audio-never-pinned','auto-hide-audio-fullscreen-pinned','auto-hide-audio-always-pinned',
+        'auto-hide-video-never-floating','auto-hide-video-fullscreen-floating','auto-hide-video-always-pinned',
+        'auto-hide-audio-always-floating-playing','auto-hide-video-always-floating-playing',
+        'auto-hide-audio-always-floating-zero','auto-hide-audio-always-floating-long']
     args=parser.parse_args()
     root=Path(__file__).resolve().parents[5]
     package,qa,fixtures,output=(path.resolve() for path in (args.package,args.qa_gui,args.fixtures,args.output_dir))
@@ -116,8 +130,40 @@ def main():
     fixture_names=['first.flac','second.flac','owned-clip.mp4']
     fixture_hashes={name:digest(fixtures/name) for name in fixture_names}
     for name in fixture_names:shutil.copyfile(fixtures/name,media/name)
+    settings_modes=any(mode.startswith('settings-activation-') for mode in args.modes)
+    device_modes=any(mode.startswith('audio-device-') for mode in args.modes)
+    title_modes=any(mode.startswith('interface-title-') for mode in args.modes)
+    auto_hide_modes=any(mode.startswith('auto-hide-') for mode in args.modes)
+    screen_modes=any(mode.startswith('fullscreen-screen-') for mode in args.modes)
+    if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes:
+        prefix='settings-activation-' if settings_modes else 'audio-device-' if device_modes else 'interface-title-' if title_modes else 'fullscreen-screen-' if screen_modes else 'auto-hide-'
+        assert all(mode.startswith(prefix) for mode in args.modes), 'Keep settings persistence isolated'
+        with wave.open(str(media/'owned-settings.wav'),'wb') as stream:
+            stream.setnchannels(2);stream.setsampwidth(2);stream.setframerate(48000)
+            stream.writeframes(b'\0'*4*48000*120)
+    generated_hashes={'owned-settings.wav':digest(media/'owned-settings.wav')} if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes else {}
+    generated_video_source=None
+    if auto_hide_modes or screen_modes:
+        assert args.controls_video_fixture is not None,'Auto-hide journeys require their owned generated long video'
+        generated_video_source=args.controls_video_fixture.resolve()
+        assert generated_video_source.is_relative_to(build_root) and generated_video_source.is_file()
+        shutil.copyfile(generated_video_source,media/'owned-controls.mp4')
+        generated_hashes['owned-controls.mp4']=digest(generated_video_source)
     configuration=output/'vlcrc'
     configuration.write_text('metadata-network-access=0\nml-network-discovery=0\none-instance=0\nqt-updates-notif=0\n',encoding='utf-8')
+    if settings_modes:
+        with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-fs-controller=1\nvolume-step=6.4\n')
+    if device_modes:
+        initial_device='owned-disconnected-endpoint' if 'audio-device-stale' in args.modes else ''
+        with configuration.open('a',encoding='utf-8') as stream:
+            stream.write('aout=mmdevice\nmmdevice-backend=wasapi,none\nvolume-save=1\nmmdevice-volume=1\nmmdevice-audio-device='+initial_device+'\n')
+    if title_modes:
+        with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-name-in-title=1\n')
+    if auto_hide_modes:
+        with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-controls-auto-hide=0\nqt-controls-hide-timeout=1000\nqt-fs-controller=1\n')
+    if screen_modes:
+        assert args.fullscreen_screen_index is not None and args.fullscreen_screen_index>=0
+        with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-fullscreen-screennumber=-1\nqt-controls-auto-hide=0\nqt-fs-controller=1\nembedded-video=1\n')
     if any(mode.startswith('setup-') for mode in args.modes):
         assert all(mode.startswith('setup-') for mode in args.modes), 'Keep setup persistence isolated from unrelated pin cases'
         # Owned, already-decided fixture policy, not a human consent UI action.
@@ -140,6 +186,8 @@ def main():
         report['sourceInputsUnchanged']=inputs_match()
         report['ordinaryGuiUnchanged']=digest(package/'plugins/gui/libqt_plugin.dll')==ordinary_sha
         report['ownedMediaUnchanged']=all(digest(media/name)==sha and digest(fixtures/name)==sha for name,sha in fixture_hashes.items())
+        report['ownedGeneratedMediaUnchanged']=all(digest(media/name)==sha for name,sha in generated_hashes.items())
+        if generated_video_source:report['ownedGeneratedVideoSourceUnchanged']=digest(generated_video_source)==generated_hashes['owned-controls.mp4']
         (output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     child=None
     server=None
@@ -154,6 +202,21 @@ def main():
             env['VLC_OWNED_RECENT_URL']=f'http://127.0.0.1:{server.server_port}/first.flac'
         for mode in args.modes:
             case=output/mode;case.mkdir()
+            case_configuration=configuration
+            if mode=='audio-device-unmanaged':
+                case_configuration=case/'vlcrc'
+                case_configuration.write_text('metadata-network-access=0\nml-network-discovery=0\naout=adummy\nvolume-save=1\n',encoding='utf-8')
+            if mode.startswith('auto-hide-') and not mode.startswith('auto-hide-editor-'):
+                case_configuration=case/'vlcrc'
+                policy=0 if '-never-' in mode else 1 if '-fullscreen-' in mode else 2
+                delay=0 if mode.endswith('-zero') else 10000 if mode.endswith('-long') else 1000
+                case_configuration.write_text('metadata-network-access=0\nml-network-discovery=0\none-instance=0\nqt-updates-notif=0\nqt-fs-controller=1\n'
+                    +f'qt-controls-auto-hide={policy}\nqt-controls-hide-timeout={delay}\n',encoding='utf-8')
+            if mode in ('fullscreen-screen-explicit-video','fullscreen-screen-stale'):
+                case_configuration=case/'vlcrc'
+                index=999 if mode.endswith('-stale') else args.fullscreen_screen_index
+                case_configuration.write_text('metadata-network-access=0\nml-network-discovery=0\none-instance=0\nqt-updates-notif=0\nqt-controls-auto-hide=0\nqt-fs-controller=1\nembedded-video=1\n'
+                    +f'qt-fullscreen-screennumber={index}\n',encoding='utf-8')
             data=userdata
             if mode in ('replacement','history-off-optout','history-off-shutdown','favorite-disabled','favorite-failure','playlist-origin-disabled') or mode.startswith('titlebar-'):data=output/(mode+'-userdata');data.mkdir()
             child_env=env|dict(VLC_USERDATA_PATH=str(data),VLC_OWNED_UI_REPORT=str(case/'journey.json'),
@@ -162,9 +225,10 @@ def main():
             startup_gate=case/'startup-approved'
             if args.startup_gate:child_env['VLC_OWNED_UI_START_GATE']=str(startup_gate)
             if mode.startswith('setup-'):child_env['VLC_OWNED_SETUP_CONFIG']=str(configuration)
+            if mode.startswith(('settings-activation-','audio-device-','interface-title-','auto-hide-','fullscreen-screen-')):child_env['VLC_OWNED_SETTINGS_CONFIG']=str(case_configuration)
             command=[str(runtime/'vlc.exe'),'--intf=qt','--no-one-instance','--no-media-library' if mode in ('disabled','favorite-disabled','playlist-origin-disabled') or mode.startswith('history-off') else '--media-library',
                 '--no-crashdump','--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
-                '--no-ml-network-discovery','--config='+str(configuration),'--file-logging','--log-verbose=2','--verbose=2',
+                '--no-ml-network-discovery','--config='+str(case_configuration),'--file-logging','--log-verbose=2','--verbose=2',
                 '--logfile='+str(case/'vlc.log'),'--no-qt-video-autoresize','--no-hw-dec','--no-sub-autodetect-file','--gain=0','--restore-playback-pos=0']
             if mode.startswith('titlebar-'):
                 command+=['--qt-name-in-title' if mode=='titlebar-media-title' else '--no-qt-name-in-title']
@@ -213,6 +277,30 @@ def main():
             terms=('ReferenceError','TypeError','Binding loop','Cannot assign','Unable to assign','unregistered datatype','is not a type','failed to load component','Assertion failed','Signal uses unnamed parameter','SyntaxError','QSignalSpy:','SVGColorizer:','QFSFileEngine::open: No file name specified')
             result['diagnostics']=[line for line in logs.splitlines() if any(term in line for term in terms) or 'qt warning:' in line or any('OWNED_QT_DIAG|'+level+'|' in line for level in ('warning','critical','fatal'))]
             result['nativeErrors']=[line for line in logs.splitlines() if re.search(r'\berror:',line)]
+            result['expectedNativeErrors']=[]
+            result['unexpectedNativeErrors']=result['nativeErrors']
+            if mode in ('settings-activation-paused','settings-activation-playing','audio-device-paused','audio-device-playing','interface-title-initial','auto-hide-editor-initial','fullscreen-screen-initial'):
+                # Exactly one deliberate locked-config write is part of this
+                # journey. Retain its log; never excuse an unrelated failure.
+                expected=[line for line in result['nativeErrors'] if re.search(
+                    r'\bmain error: cannot replace configuration file \(Windows error (?:5|32)\)$',line)]
+                result['expectedNativeErrors']=expected
+                result['unexpectedNativeErrors']=[line for line in result['nativeErrors'] if line not in expected]
+                failure_check='real locked-save failure rolls back policy and exposes retry feedback'
+                assert len(expected)==1 and any(row.get('name')==failure_check and row.get('passed')
+                    for row in result['journey'].get('checks',[])), 'Missing bounded config-sharing negative control'
+            elif mode=='audio-device-stale':
+                # This owned synthetic ID is deliberately rejected during
+                # MMDevice startup. Require its exact diagnostic and actual
+                # unselected/explicit-repair UI proof; retain every other error.
+                expected=[line for line in result['nativeErrors'] if line==
+                    'mmdevice error: cannot get selected device owned-disconnected-endpoint (error 0x80070057)']
+                required={'actual device combo leaves a missing saved endpoint unselected',
+                          'actual System default selection repairs the saved endpoint with restart feedback'}
+                actual={row.get('name') for row in result['journey'].get('checks',[]) if row.get('passed')}
+                assert len(expected)==1 and required.issubset(actual),'Missing bounded stale-endpoint negative control'
+                result['expectedNativeErrors']=expected
+                result['unexpectedNativeErrors']=[line for line in result['nativeErrors'] if line not in expected]
             result['nativeWarnings']=[line for line in logs.splitlines() if re.search(r'\bwarning:',line)]
             result['pluginModuleCounts']=re.findall(r'plug-ins loaded: (\d+) modules',logs)
             if mode=='titlebar-close':assert result['journey'].get('nativeCloseTriggered'), 'Native Close affordance never reached the real CSD model'
@@ -226,11 +314,24 @@ def main():
                 assert result['journey'].get('nativeFavoriteFailureAccepted') and lock_state.get('releasedNormally') and 'error' not in lock_state
                 assert lock_state['before'] is False and lock_state['afterFailedWrite'] is False and lock_state.get('afterRetry') is True
             assert result.get('nativeLeftButtonReleased',True), 'Owned native drag left a pressed OS mouse button'
-            if mode.startswith(('fullscreen-controls-','playlist-origin')):
-                assert not result['nativeErrors'],(mode,result['nativeErrors'])
+            if mode.startswith(('fullscreen-controls-','playlist-origin','settings-activation-','tooltip-edge','audio-device-','interface-title-','auto-hide-','fullscreen-screen-')):
+                assert not result['unexpectedNativeErrors'],(mode,result['unexpectedNativeErrors'])
+            if mode.startswith('settings-activation-'):
+                assert result['journey'].get('nativeSettingsActivationAccepted'),mode
+            if mode=='tooltip-edge':
+                assert result['journey'].get('nativeTooltipEdgeAccepted'),mode
+            if mode.startswith('audio-device-'):
+                assert result['journey'].get('nativeAudioDeviceSettingsAccepted'),mode
+            if mode.startswith('interface-title-'):
+                assert result['journey'].get('nativeInterfaceTitleAccepted'),mode
+            if mode.startswith('auto-hide-'):
+                assert result['journey'].get('nativeAutoHideAccepted'),mode
+            if mode.startswith('fullscreen-screen-'):
+                assert result['journey'].get('nativeFullscreenScreenAccepted'),mode
             assert result['normalExit'] and result['journey'].get('passed') and not result['diagnostics'],mode
         save()
-        assert report['sourceInputsUnchanged'] and report['ordinaryGuiUnchanged'] and report['ownedMediaUnchanged']
+        assert report['sourceInputsUnchanged'] and report['ordinaryGuiUnchanged'] and report['ownedMediaUnchanged'] and report['ownedGeneratedMediaUnchanged']
+        assert report.get('ownedGeneratedVideoSourceUnchanged',True)
         report['passed']=True
     finally:
         if child is not None and child.poll() is None:child.kill();child.wait(timeout=5)

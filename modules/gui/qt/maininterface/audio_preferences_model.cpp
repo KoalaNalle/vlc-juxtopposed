@@ -267,7 +267,8 @@ void AudioPreferencesModel::refresh()
             && has("audio-filter",VLC_VAR_STRING) && chainValid && !hasOptions(chain,QStringLiteral("scaletempo_pitch"))},
         {QStringLiteral("preferredLanguage"),has("audio-language",VLC_VAR_STRING)}, {QStringLiteral("audioDelayMs"),has("audio-desync",VLC_VAR_INTEGER)},
         {QStringLiteral("visualizer"),has("audio-visual",VLC_VAR_STRING)},
-        {QStringLiteral("passthrough"),windows && has("mmdevice-passthrough",VLC_VAR_INTEGER)},
+        {QStringLiteral("passthrough"),windows && m_consumers.windowsPassthrough
+            && has("mmdevice-passthrough",VLC_VAR_INTEGER)},
         {QStringLiteral("detectDolby"),has("force-dolby-surround",VLC_VAR_INTEGER)},
         {QStringLiteral("resamplingQuality"),managedResampler && has("soxr-resampler-quality",VLC_VAR_INTEGER)
             && has("audio-resampler",VLC_VAR_STRING) && module_exists("soxr")},

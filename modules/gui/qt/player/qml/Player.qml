@@ -1574,8 +1574,27 @@ FocusScope {
         enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0
         blocking: false
         target: null
-        onPointChanged: playerToolbarVisibilityFSM.mouseMove()
-        onHoveredChanged: if (hovered) playerToolbarVisibilityFSM.mouseMove()
+        property bool haveScenePosition: false
+        property point previousScenePosition: Qt.point(0, 0)
+        function revealForMovement() {
+            if (!hovered)
+                return
+            const current = point.scenePosition
+            // Scene updates can refresh the point without physical movement.
+            // Match the video surface's unchanged-position filter so progress
+            // updates cannot keep restarting the audio controls' idle timer.
+            if (haveScenePosition && current.x === previousScenePosition.x
+                    && current.y === previousScenePosition.y)
+                return
+            previousScenePosition = Qt.point(current.x, current.y)
+            haveScenePosition = true
+            playerToolbarVisibilityFSM.mouseMove()
+        }
+        onPointChanged: revealForMovement()
+        onHoveredChanged: {
+            haveScenePosition = false
+            if (hovered) revealForMovement()
+        }
     }
     PointHandler {
         enabled: !MainCtx.hasEmbededVideo && MainCtx.controlAutoHideMode >= 0

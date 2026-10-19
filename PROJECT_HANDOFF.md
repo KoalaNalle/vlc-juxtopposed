@@ -1,5 +1,124 @@
 # VLC Juxtopposed redesign — project handoff
 
+Goal continuation — **19 October 2026, settings, volume, tooltips and native media**:
+End-of-day checkpoint: the user requested commit and push, then continuation
+tomorrow. Work is paused after this checkpoint; the full beta remains unfinished.
+Next: window-position memory and popup duration, followed by the remaining
+consumer, visual/accessibility, Windows scaling and final-package gates.
+No release, dependency installation or security-setting change is included.
+
+- [Settings activation](doc/juxtopposed-references/native/home-settings-activation-20261019/README.md):
+  embedded fullscreen and authored volume-step gates linked independently;
+  device/receiver gates separated; both were disabled in this earlier R4 scope.
+  Audio defaults32/Windows4
+  and actual settings paused96/reopen77/playing92 pass normally on R4. The Interface
+  switch clipping after restart feedback is repaired and component11 passes.
+  GUI ordinary `758df308cca3…`, private R4 `f7e7d95db75e…`, source-r4 in
+  `build-windows/beta-settings-activation-20261019`.
+- Ordinary Windows typing saves the step correctly. **Repaired:** mouse-focused
+  Right/Left change volume by the saved2.5 points without seeking the paused
+  input. R3's desired native regression failed normally before the production
+  handler repair; R4's matching actual-window regression passes. Exact routing12
+  retains modified-shortcut/modal/sidebar policy. Component8 has its own scope.
+- Affected fullscreen replay on R4 passes audio/video On/Off138, four normal
+  exits and no Qt/native errors. Actual controls/focus and exact paused state
+  pass; Qt grabs do not prove D3D video pixels. The later ordinary R7 color-video
+  warning review below has separate rendered-image evidence.
+- [Close-tooltip edge regression](doc/juxtopposed-references/native/home-titlebar-tooltip-20261019/README.md)
+  reproduced normally on unchanged R4 production: popup `[0,329,44,32]` lies
+  beyond monitor2 available `[-1920,357,1920,1032]`. R6's local popups pass
+  actual bounds34, but capture review finds simultaneous focused Home/hovered
+  Close help. R7 adds hover priority; the same desired component test fails on
+  exact recovered R6 source and passes on R7, preserving12 geometry cases.
+  R7 now passes native39 with five edge placements/single-help checks, and direct
+  ordinary Windows Close→Home→Close help after accessible Maximize. Both exit
+  normally without Qt/native errors. Tooltip-scope ordinary GUI `9892032f4456…`, private
+  `a14c5d7c7cb4…`, source-r7 and `ordinary-runtime-r7` in the settings work folder.
+  Copied startup geometry shows a cropped right edge; one coordinate Restore
+  attempt enters fullscreen. Readback identifies a normal1920-wide client
+  starting19 pixels inside its1920-wide screen. Fresh in-bounds R7b starts
+  complete and direct coordinate Restore/Maximize work without fullscreen;
+  normal exit/no Qt/native errors. Preserve both records, use the corrected
+  fixture and retain full geometry/Windows-DPI acceptance separately.
+- [FLAC coded-tail repair](doc/juxtopposed-references/native/home-flac-coded-tail-20261019/README.md):
+  old decode479,232/480,000; repaired decode480,000 with matching source PCM MD5.
+  Paired same-executable and current-header packetizer8 plus prior strict
+  encoder/drain9 pass. Packetizer `5c9309434d44…`, demuxer `0e736e133723…`;
+  Core/audio/library unchanged. Combined ordinary runtime:
+  `build-windows/beta-settings-activation-20261019/ordinary-runtime-r7`.
+- Ordinary test app closed normally through Ctrl+Q; no firewall prompt was seen.
+  Monitor2 LF24T450F only. No raw Computer Use screenshot was saved. Four
+  unrelated untracked SoXR experiments remain untouched. No full beta, visual,
+  OS-DPI, Windows10 or final-package acceptance is claimed.
+- [Video-window warning scope](doc/juxtopposed-references/native/home-video-warning-20261019/README.md):
+  ordinary R7 generated H264 four-color frames render correctly at paused startup,
+  playing, paused fullscreen and windowed return. One initial zero-size fallback
+  warning is followed by nonzero Direct3D11 size reports; no native/Qt errors,
+  normal Ctrl+Q exit and unchanged fixtures/runtime. Initial black-clip probe is
+  not image proof. Failed corner drag adds no small-window resize acceptance.
+
+- [Windows Audio activation](doc/juxtopposed-references/native/home-audio-device-activation-20261019/README.md):
+  device/fixed-startup gates now linked; receiver remains unavailable. Fixed
+  policy respects unsupported startup consumer; Remember stays independent.
+  Component20 and actual stale31/paused83/reopen59/playing95/unmanaged22 pass
+  normally on monitor2. Three deliberate native errors remain classified
+  narrowly; no unexpected native errors or Qt diagnostics. Cold real MMDevice/
+  WASAPI consumes explicit endpoint65%; editing preserves current output/input/
+  clock/volume. Ordinary Windows typing55%, device popup/keyboard, policies,
+  dialog reopen and Ctrl+Q pass with independent config readback. Hardware labels
+  stay private. Audio-scope ordinary GUI `3857fa66519c…`, private `de7506005fca…`,
+  `source-r1`, `ordinary-runtime-r1` in
+  `build-windows/beta-audio-device-activation-20261019`. Protected modules unchanged.
+  Earlier R4/R7 receipts retain their exact scope. No physical unplug/receiver/
+  audible-signal/Windows10/final-package acceptance follows from these checks.
+
+- [Interface title activation](doc/juxtopposed-references/native/home-interface-title-20261019/README.md):
+  the existing startup consumer is linked. Actual initial52/Off45/restored46 =143
+  pass, three normal exits/no unexpected native or Qt errors, with one deliberate
+  locked-save error. Actual editor pointer/keyboard, rollback/retry, feedback,
+  dialog reopen, cold audio/video captions and same-instance next-video policy
+  pass while preserving current primary state. Ordinary Windows Off/Space On/
+  feedback clear/Off and cold restart pass in two normal sessions. Cold Off hides
+  the media name without stale restart feedback; config/media/runtime preserved.
+  Current ordinary GUI `d40f11aeefdf…`, private `4e09011ce1ee…`, source-r1 and
+  `ordinary-runtime-r1` in `build-windows/beta-interface-title-20261019`.
+  Protected modules unchanged; earlier Audio/R4/R7 results retain exact scopes.
+
+- [Interface auto-hide activation](doc/juxtopposed-references/native/home-auto-hide-20261019/README.md):
+  mode/delay linking and paired stationary-pointer/hidden-hover repairs now pass
+  R9 twelve-process/666 checks, normal exits, no Qt/unexpected native errors and
+  one intentional locked-save error. Modes, actual editors/retry/reopen, paused/
+  playing audio/video, docking, real0/10000ms timer boundaries, doubled keyboard
+  reveal, hover/navigation and exact primary/queue/track preservation pass.
+  Component9/43/47, fullscreen-controls Off audio34/video36 and ordinary cold
+  Always/2000ms hide/reveal/hover have separate scopes. The early keyboard failure
+  was a test deadline error diagnosed in R8a and corrected in R9 without another
+  app change. Ordinary `598173d1ba52…`, private `dc2456a80a6c…`, source-r9;
+  `build-windows/beta-auto-hide-20261019/ordinary-runtime-r6`. Protected modules
+  unchanged. All processes are terminal; current checkpoint is in that work folder.
+  Whole-app visual/accessibility/OS-DPI/package acceptance remains open.
+
+- [Fullscreen screen activation](doc/juxtopposed-references/native/home-fullscreen-screen-20261019/README.md):
+  actual five-process/399 checks pass normally, with zero Qt/unexpected native
+  errors and one deliberate locked-save error. The actual category-open refresh,
+  pointer/keyboard choice, failure/retry, cold persistence, stale999 repair and
+  embedded dependency pass. Production MainCtx/window-handler entry/return
+  preserves primary input, queue/tracks and exact paused clocks. Hidden genuine
+  cross-screen selection/restoration passes for playing audio and paused video,
+  with both Qt/Windows visibility measured; visible presentation stays on monitor2.
+  Two ordinary Windows sessions pass selection, cold reopen, Home/End/Return,
+  restart-notice restoration, F11 and normal exit. Current ordinary `56a4a7620f15…`,
+  private `69af3dfee412…`, source-r3 and `ordinary-runtime-r1` in
+  `build-windows/beta-fullscreen-screen-20261019`. Protected modules unchanged.
+  Earlier private fixtures and a rejected hidden-resize warning are retained;
+  arbitrary hidden resize, physical unplug, full DPI/visual/package stay open.
+  All processes are terminal; the scope checkpoint is in that work folder.
+
+Next: finish the two remaining Interface policy gates (geometry and popup
+duration) and confirmed workflows,
+then continue the full consumer/workflow/design/accessibility/package roadmap.
+Do not rerun any historical shutdown helper.
+
 Latest checkpoint — **19 October 2026, morning**:
 The user requested a checkpoint commit/push followed by computer shutdown.
 Stop here; the full beta goal is unfinished. Git history/remote provide the

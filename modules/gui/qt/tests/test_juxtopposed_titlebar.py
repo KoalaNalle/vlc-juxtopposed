@@ -4,7 +4,7 @@ import argparse,json,os,shutil,tempfile
 from pathlib import Path
 from xml.etree import ElementTree
 os.environ.update(QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QML_DISABLE_DISK_CACHE='1',QT_QPA_FONTDIR=str(Path(__file__).resolve().parents[4]/'modules/gui/qt/pixmaps/juxtopposed'))
-from PySide6.QtCore import QObject,Property,Signal,Slot,QUrl,Qt,qInstallMessageHandler
+from PySide6.QtCore import QObject,Property,Signal,Slot,QUrl,Qt,QPoint,qInstallMessageHandler
 from PySide6.QtQml import QmlAttached,qmlRegisterType,QQmlExpression,qmlContext
 from PySide6.QtQuick import QQuickView
 from PySide6.QtGui import QGuiApplication
@@ -141,6 +141,15 @@ click(item('juxtopposedStripmaximize'));assert expr('MainCtx.maximizeCalls')==2
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert not item('juxtopposedStripclose').isVisible()
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert item('juxtopposedStripclose').isVisible() and expr('MainCtx.fullscreenCalls')==2
 root.setProperty('playerContext',True);spy=QSignalSpy(root.navigationRequested);click(item('juxtopposedStripnavigation'));assert spy.count()==1
+close=item('juxtopposedStripclose');home=item('juxtopposedStriplogo')
+QTest.mouseMove(view,QPoint(view.width()//2,view.height()//2));close.forceActiveFocus(Qt.TabFocusReason);QTest.qWait(650)
+def visible_help():return [obj.objectName() for obj in root.findChildren(QObject) if obj.objectName().startswith('juxtopposedStripTooltip') and obj.property('visible')]
+assert visible_help()==['juxtopposedStripTooltipclose'],visible_help()
+QTest.mouseMove(view,home.mapToScene(home.boundingRect().center()).toPoint());QTest.qWait(650)
+assert close.hasActiveFocus(), 'Hover must not steal keyboard focus'
+assert visible_help()==['juxtopposedStripTooltiplogo'],visible_help()
+QTest.mouseMove(view,QPoint(view.width()//2,view.height()//2));QTest.qWait(650)
+assert visible_help()==['juxtopposedStripTooltipclose'],visible_help()
 view.close();app.processEvents();bad=[message for message in messages if any(term in message for term in ['Error','Cannot','Unable','Binding loop','is not a type','Invalid'])];assert not bad,bad
-(args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,geometryCases=checks,controllerSeamsOnly=True,nativeWindowAcceptance=False,messages=messages),indent=2)+'\n')
+(args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,geometryCases=checks,tooltipHoverPriority=True,keyboardTooltipResumes=True,controllerSeamsOnly=True,nativeWindowAcceptance=False,messages=messages),indent=2)+'\n')
 print('Original title-strip12 geometry cases plus focus/controller-seam checks pass; native window actions remain separate.')

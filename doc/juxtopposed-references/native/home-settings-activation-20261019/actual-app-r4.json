@@ -1,0 +1,1206 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "758df308cca3974c767652d66d2ce4273c2ec585a393db2d40b31aa2022df71b",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "f7e7d95db75e1dbff83a15d40ff4707c07010e8a7cb35562eccda6bf24c38e48",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "settings-activation-paused": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 31480,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 28.061999999999898,
+      "exitCode": 0,
+      "elapsedSeconds": 42.0619999999999,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns both preference services",
+            "passed": true
+          },
+          {
+            "name": "only the verified fullscreen and authored volume-step gates are enabled",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "owned long media starts through the actual playlist",
+            "passed": true
+          },
+          {
+            "name": "primary reaches the requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused native clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "no-write state control passes before actual settings input",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen switch is enabled in the ordinary host",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer toggle commits the fullscreen preference",
+            "passed": true
+          },
+          {
+            "name": "fullscreen editor changes the startup policy without changing this running player's policy",
+            "passed": true
+          },
+          {
+            "name": "fullscreen editor presents its real restart feedback",
+            "passed": true
+          },
+          {
+            "name": "focused fullscreen switch remains fully inside clipped viewports after restart feedback reflows",
+            "passed": true
+          },
+          {
+            "name": "keyboard activation restores the starting fullscreen value",
+            "passed": true
+          },
+          {
+            "name": "restoring the starting fullscreen value clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual editor leaves the owned fullscreen policy Off",
+            "passed": true
+          },
+          {
+            "name": "fullscreen preference editing preserves the primary state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual authored volume-step input is enabled",
+            "passed": true
+          },
+          {
+            "name": "unrelated fullscreen restart feedback does not leak into Audio",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual editor refuses an out-of-range step without changing native policy",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual numeric keyboard edit saves immediately without a false restart warning",
+            "passed": true
+          },
+          {
+            "name": "editing the live step does not itself change volume or primary playback",
+            "passed": true
+          },
+          {
+            "name": "real player accepts a known volume baseline",
+            "passed": true
+          },
+          {
+            "name": "next native volume action immediately consumes the editor's two-and-a-half-point step",
+            "passed": true
+          },
+          {
+            "name": "native down action reverses the exact step",
+            "passed": true
+          },
+          {
+            "name": "owned fixture restores the exact primary volume",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists before genuine write failure",
+            "passed": true
+          },
+          {
+            "name": "owned config can be locked for actual save failure",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "same actual editor retries and saves the five-point policy",
+            "passed": true
+          },
+          {
+            "name": "second volume action has a settled baseline",
+            "passed": true
+          },
+          {
+            "name": "native action uses the changed five-point policy without restarting",
+            "passed": true
+          },
+          {
+            "name": "second live-action check restores primary volume",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation save retry and live actions preserve input rate mute and playback state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual settings Close dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "reopening the real Audio page displays the saved step",
+            "passed": true
+          },
+          {
+            "name": "Escape closes immediate-write settings normally",
+            "passed": true
+          },
+          {
+            "name": "settings reopen and Escape preserve primary playback",
+            "passed": true
+          },
+          {
+            "name": "actual live volume slider exists after the settings dialog closes",
+            "passed": true
+          },
+          {
+            "name": "direct pointer selection gives the actual volume slider active focus",
+            "passed": true
+          },
+          {
+            "name": "pointer-focused volume owns Right without seeking primary playback",
+            "passed": true
+          },
+          {
+            "name": "pointer-key fixture restores the primary volume",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "settings-activation-paused",
+        "nativeSettingsActivationAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-settings-activation-20261019/ui-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "settingsImmediateWriteNoDraft": true,
+        "startupGateUsed": true,
+        "volumePointerKey": {
+          "activeFocus": true,
+          "afterClock": 1,
+          "afterVolume": 0.6500000357627869,
+          "beforeClock": 1,
+          "beforeVolume": 0.6000000238418579,
+          "step": 0.05000000074505806,
+          "visualFocus": false
+        }
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "settings-activation-reopen": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 4996,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 69.07799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 80.09399999999914,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns both preference services",
+            "passed": true
+          },
+          {
+            "name": "only the verified fullscreen and authored volume-step gates are enabled",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "cold process consumes the saved fullscreen Off without a stale restart warning",
+            "passed": true
+          },
+          {
+            "name": "cold process restores the saved five-point volume step without a restart warning",
+            "passed": true
+          },
+          {
+            "name": "fullscreen journey is confined to the explicitly selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested fullscreen-controls startup option",
+            "passed": true
+          },
+          {
+            "name": "owned media starts through the actual playlist before fullscreen checks",
+            "passed": true
+          },
+          {
+            "name": "primary input pauses before independent window changes",
+            "passed": true
+          },
+          {
+            "name": "native paused clock settles before fullscreen mutation",
+            "passed": true
+          },
+          {
+            "name": "no-write paused clock control is exact",
+            "passed": true
+          },
+          {
+            "name": "actual redesigned playback bar materializes in the windowed player",
+            "passed": true
+          },
+          {
+            "name": "live bar belongs to the actual production Player root",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual Player exposes its existing bottom/title/visibility owners to the private driver",
+            "passed": true
+          },
+          {
+            "name": "actual visibility owner accepts an interaction lock",
+            "passed": true
+          },
+          {
+            "name": "real visibility lock keeps the revealed windowed controls available",
+            "passed": true
+          },
+          {
+            "name": "windowed bottom controls own keyboard focus before fullscreen transition",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen bottom-control visibility follows the saved option",
+            "passed": true
+          },
+          {
+            "name": "hidden fullscreen controls reject input during and after fading",
+            "passed": true
+          },
+          {
+            "name": "title and exit controls remain available under the independent visibility lock",
+            "passed": true
+          },
+          {
+            "name": "fullscreen hiding returns focused bottom controls to the visible title controls",
+            "passed": true
+          },
+          {
+            "name": "actual pointer/keyboard activity cannot override the fullscreen option",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual interaction lock releases normally",
+            "passed": true
+          },
+          {
+            "name": "windowed playback controls return regardless of the fullscreen setting",
+            "passed": true
+          },
+          {
+            "name": "fullscreen policy preserves exact paused input clock rate volume and mute",
+            "passed": true
+          },
+          {
+            "name": "fullscreen exit leaves the owned test window on the selected monitor",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "no-write state control passes before actual settings input",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen switch is enabled in the ordinary host",
+            "passed": true
+          },
+          {
+            "name": "fullscreen preference editing preserves the primary state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual authored volume-step input is enabled",
+            "passed": true
+          },
+          {
+            "name": "unrelated fullscreen restart feedback does not leak into Audio",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation save retry and live actions preserve input rate mute and playback state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual settings Close dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "reopening the real Audio page displays the saved step",
+            "passed": true
+          },
+          {
+            "name": "Escape closes immediate-write settings normally",
+            "passed": true
+          },
+          {
+            "name": "settings reopen and Escape preserve primary playback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "settings-activation-reopen",
+        "nativeFullscreenControlsAccepted": true,
+        "nativeSettingsActivationAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-settings-activation-20261019/ui-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "settingsImmediateWriteNoDraft": true,
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "settings-activation-playing": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 24360,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 187.73400000000038,
+      "exitCode": 0,
+      "elapsedSeconds": 199.96800000000076,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns both preference services",
+            "passed": true
+          },
+          {
+            "name": "only the verified fullscreen and authored volume-step gates are enabled",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "unaccepted device and receiver controls remain unavailable",
+            "passed": true
+          },
+          {
+            "name": "owned long media starts through the actual playlist",
+            "passed": true
+          },
+          {
+            "name": "primary reaches the requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "no-write state control passes before actual settings input",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen switch is enabled in the ordinary host",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer toggle commits the fullscreen preference",
+            "passed": true
+          },
+          {
+            "name": "fullscreen editor changes the startup policy without changing this running player's policy",
+            "passed": true
+          },
+          {
+            "name": "fullscreen editor presents its real restart feedback",
+            "passed": true
+          },
+          {
+            "name": "focused fullscreen switch remains fully inside clipped viewports after restart feedback reflows",
+            "passed": true
+          },
+          {
+            "name": "keyboard activation restores the starting fullscreen value",
+            "passed": true
+          },
+          {
+            "name": "restoring the starting fullscreen value clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual editor leaves the owned fullscreen policy Off",
+            "passed": true
+          },
+          {
+            "name": "fullscreen preference editing preserves the primary state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual authored volume-step input is enabled",
+            "passed": true
+          },
+          {
+            "name": "unrelated fullscreen restart feedback does not leak into Audio",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual editor refuses an out-of-range step without changing native policy",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual numeric keyboard edit saves immediately without a false restart warning",
+            "passed": true
+          },
+          {
+            "name": "editing the live step does not itself change volume or primary playback",
+            "passed": true
+          },
+          {
+            "name": "real player accepts a known volume baseline",
+            "passed": true
+          },
+          {
+            "name": "next native volume action immediately consumes the editor's two-and-a-half-point step",
+            "passed": true
+          },
+          {
+            "name": "native down action reverses the exact step",
+            "passed": true
+          },
+          {
+            "name": "owned fixture restores the exact primary volume",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists before genuine write failure",
+            "passed": true
+          },
+          {
+            "name": "owned config can be locked for actual save failure",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "same actual editor retries and saves the five-point policy",
+            "passed": true
+          },
+          {
+            "name": "second volume action has a settled baseline",
+            "passed": true
+          },
+          {
+            "name": "native action uses the changed five-point policy without restarting",
+            "passed": true
+          },
+          {
+            "name": "second live-action check restores primary volume",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation save retry and live actions preserve input rate mute and playback state",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual settings Close dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the real settings host",
+            "passed": true
+          },
+          {
+            "name": "actual category buttons materialize",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual requested category loads with its production service",
+            "passed": true
+          },
+          {
+            "name": "actual settings editor exists",
+            "passed": true
+          },
+          {
+            "name": "reopening the real Audio page displays the saved step",
+            "passed": true
+          },
+          {
+            "name": "Escape closes immediate-write settings normally",
+            "passed": true
+          },
+          {
+            "name": "settings reopen and Escape preserve primary playback",
+            "passed": true
+          },
+          {
+            "name": "actual live volume slider exists after the settings dialog closes",
+            "passed": true
+          },
+          {
+            "name": "direct pointer selection gives the actual volume slider active focus",
+            "passed": true
+          },
+          {
+            "name": "pointer-focused volume owns Right without seeking primary playback",
+            "passed": true
+          },
+          {
+            "name": "pointer-key fixture restores the primary volume",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "settings-activation-playing",
+        "nativeSettingsActivationAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-settings-activation-20261019/ui-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "settingsImmediateWriteNoDraft": true,
+        "startupGateUsed": true,
+        "volumePointerKey": {
+          "activeFocus": true,
+          "afterClock": 10005873,
+          "afterVolume": 0.6500000357627869,
+          "beforeClock": 9994562,
+          "beforeVolume": 0.6000000238418579,
+          "step": 0.05000000074505806,
+          "visualFocus": false
+        }
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "f0d023452ce0e3cd51b31b59ca062176b9554f177cf22be35fc1ced81820df9d",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true
+}

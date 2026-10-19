@@ -142,6 +142,34 @@ private slots:
         QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
         compositor.focus = nullptr;
     }
+    void mouseFocusedVolumeOwnsPlainArrows_data() {
+        QTest::addColumn<int>("code");
+        QTest::newRow("left") << int(Qt::Key_Left);
+        QTest::newRow("right") << int(Qt::Key_Right);
+        QTest::newRow("up") << int(Qt::Key_Up);
+        QTest::newRow("down") << int(Qt::Key_Down);
+    }
+    void mouseFocusedVolumeOwnsPlainArrows() {
+        QFETCH(int, code);
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); KeyReceiver receiver; compositor.focus = &receiver;
+        receiver.setProperty("volumeArrowKeyScope", true);
+        MainCtx context(interface); InterfaceWindowHandler handler(interface, &context);
+        receiver.installEventFilter(&handler);
+        key(&receiver, QEvent::KeyPress, Qt::Key(code));
+        key(&receiver, QEvent::KeyRelease, Qt::Key(code));
+        QVERIFY(dispatched.isEmpty());
+        QCOMPARE(receiver.presses, (QVector<int>{code}));
+        QCOMPARE(receiver.releases, (QVector<int>{code}));
+        // The same focused control must retain the preexisting modified-hotkey
+        // policy rather than swallowing every arrow combination.
+        receiver.presses.clear(); receiver.releases.clear();
+        key(&receiver, QEvent::KeyPress, Qt::Key_Right, Qt::ControlModifier);
+        key(&receiver, QEvent::KeyRelease, Qt::Key_Right, Qt::ControlModifier);
+        QCOMPARE(dispatched, (QVector<int64_t>{KEY_MODIFIER_CTRL | KEY_RIGHT}));
+        QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
+        compositor.focus = nullptr;
+    }
     void modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch() {
         auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = true;
         dispatched.clear(); KeyReceiver receiver; compositor.focus = &receiver;

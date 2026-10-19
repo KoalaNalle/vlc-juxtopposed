@@ -80,6 +80,26 @@ TestCase {
         fsm.mouseMove(); compare(fsm.isVisible, true)
         fsm.timeout(); compare(fsm.isVisible, false)
     }
+    function test_hiddenHoverLock_data() {
+        return [{tag:"controlsAllowed", allowed:true}, {tag:"controlsDisabled", allowed:false}]
+    }
+    function test_hiddenHoverLock(row) {
+        MainCtx.controlAutoHideMode = 2
+        MainCtx.showFullscreenControls = row.allowed
+        MainCtx.intfMainWindow.visibility = Window.FullScreen
+        const fsm = make()
+        fsm.timeout(); compare(fsm.isVisible, false)
+        // The fading bar can report hover before the parent observes movement.
+        fsm.lock()
+        compare(fsm.isVisible, true)
+        compare(fsm.controlsVisible, row.allowed)
+        compare(fsm.lockCount, 1)
+        fsm.lock(); compare(fsm.lockCount, 2)
+        fsm.timeout(); compare(fsm.isVisible, true)
+        fsm.unlock(); compare(fsm.lockCount, 1)
+        fsm.unlock(); compare(fsm.lockCount, 0)
+        fsm.timeout(); compare(fsm.isVisible, false)
+    }
     function test_legacyInteractiveAndExplicitNever() {
         MainCtx.controlAutoHideMode = -1
         MainCtx.hasEmbededVideo = true
@@ -87,6 +107,7 @@ TestCase {
         const fsm = make()
         compare(fsm.isVisible, false)
         fsm.mouseMove(); compare(fsm.isVisible, false)
+        fsm.lock(); compare(fsm.isVisible, false); compare(fsm.lockCount, 0)
         fsm.askShow(); compare(fsm.isVisible, true)
         fsm.askShow(); compare(fsm.isVisible, false)
         // The service applies settings at restart; this mutable stub change
@@ -97,6 +118,28 @@ TestCase {
     }
     function test_realTimer_data() {
         return [{tag:"zero", delay:0}, {tag:"nonPreset777", delay:777}, {tag:"maximum10000", delay:10000}]
+    }
+    function test_keyboardTimer_data() {
+        const rows = []
+        for (const mode of [1, 2])
+            for (const delay of [1000, 2000])
+                rows.push({tag: `${mode}-${delay}`, mode, delay})
+        return rows
+    }
+    function test_keyboardTimer(row) {
+        MainCtx.controlAutoHideMode = row.mode
+        MainCtx.controlsHideTimeout = row.delay
+        MainCtx.intfMainWindow.visibility = Window.FullScreen
+        const fsm = make()
+        tryCompare(fsm, "isVisible", false, row.delay + 1500)
+        const start = Date.now()
+        fsm.keyboardMove()
+        compare(fsm.timeoutDuration, row.delay * 2)
+        compare(fsm.isVisible, true)
+        wait(row.delay + 100)
+        compare(fsm.isVisible, true)
+        tryCompare(fsm, "isVisible", false, row.delay + 1500)
+        verify(Date.now() - start >= row.delay * 2 - 100)
     }
     function test_fullscreenControls_data() {
         const rows = []

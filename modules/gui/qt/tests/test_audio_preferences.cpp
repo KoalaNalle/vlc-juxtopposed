@@ -187,6 +187,18 @@ private slots:
         QCOMPARE(text("aout"),QStringLiteral("mmdevice"));QCOMPARE(config_GetFloat("mmdevice-volume"),.75f);
         QVERIFY(!m_model->setValue(QStringLiteral("startupVolume"),200.));QCOMPARE(config_GetFloat("mmdevice-volume"),.75f);
         QVERIFY(m_model->setValue(QStringLiteral("startupVolume"),125.));QCOMPARE(config_GetFloat("mmdevice-volume"),1.25f);
+        // Device/default-volume acceptance must not enable an unverified receiver.
+        QVERIFY(!m_model->capabilities().value(QStringLiteral("passthrough")).toBool());
+        const auto beforeReceiver=text("aout");const auto beforePassthrough=config_GetInt("mmdevice-passthrough");
+        const auto beforeReceiverDisk=bytes(m_config);
+        QVERIFY(!m_model->setValue(QStringLiteral("passthrough"),!bool(beforePassthrough)));
+        QCOMPARE(config_GetInt("mmdevice-passthrough"),beforePassthrough);
+        QCOMPARE(text("aout"),beforeReceiver);QCOMPARE(bytes(m_config),beforeReceiverDisk);
+        // Explicitly link the receiver only for the existing storage/mapping
+        // tests below. These do not establish physical receiver playback.
+        linked.windowsPassthrough=true;
+        m_model=std::make_unique<AudioPreferencesModel>(m_intf,linked);
+        QVERIFY(m_model->capabilities().value(QStringLiteral("passthrough")).toBool());
         const auto unrelatedSpdif=config_GetInt("spdif");config_PutInt("mmdevice-passthrough",1);m_model->reload();
         const auto disk=bytes(m_config);QVERIFY(m_model->setValue(QStringLiteral("passthrough"),true));
         QCOMPARE(config_GetInt("mmdevice-passthrough"),int64_t(1));QCOMPARE(bytes(m_config),disk);

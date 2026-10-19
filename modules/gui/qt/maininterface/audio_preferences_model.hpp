@@ -23,6 +23,7 @@ public:
     struct Consumers {
         bool windowsDevices = false; // Real Core Audio enumeration + matched MMDevice output, Root acceptance gate.
         bool authoredVolumeStep = false; // Real slider/wheel + native action closure, Root acceptance gate.
+        bool windowsPassthrough = false; // Receiver acceptance is independent of endpoint/startup-volume support.
     };
     explicit AudioPreferencesModel(qt_intf_t *, QObject *parent = nullptr);
     AudioPreferencesModel(qt_intf_t *, Consumers, QObject *parent = nullptr);

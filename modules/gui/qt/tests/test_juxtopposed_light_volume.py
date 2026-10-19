@@ -164,6 +164,15 @@ for width,scale in [(1920,1),(1280,2),(960,1.5)]:
 done('Actual0–200% clip geometry and fixed full artwork scale correctly in both themes at100/150/200%; native max binding preserved')
 
 window.setProperty('testScale',1);window.resize(1920,108);window.setProperty('dark',False);player.seed(.5,True);QTest.qWait(25)
+pending.forceActiveFocus(Qt.OtherFocusReason);QTest.qWait(20)
+point=volume.mapToScene(QPointF(volume.width()/2,volume.height()/2)).toPoint()
+QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,point);QTest.qWait(25)
+assert volume.hasActiveFocus(), 'Pointer selection must focus the real slider before a volume arrow key'
+before=player.level
+QTest.keyClick(window,Qt.Key_Right);QTest.qWait(25)
+assert abs(player.level-before-.05)<.0001, 'Pointer then Right must adjust the selected volume slider'
+done('Pointer-selected volume owns subsequent arrow keys without requiring synthetic focus')
+player.seed(.5,True);QTest.qWait(25)
 assert volume.property('opacity')==.5
 volume.forceActiveFocus(Qt.TabFocusReason);moved=QSignalSpy(pending.volumeRequested)
 QTest.keyClick(window,Qt.Key_Right);QTest.qWait(25)
