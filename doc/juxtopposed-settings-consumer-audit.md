@@ -1,4 +1,4 @@
-# Settings consumer audit — 19 October 2026
+# Settings consumer audit — 20 October 2026
 
 **In progress. All thirteen category components load and pass their scoped
 presentation checks. The complete per-field native/app/package audit is open.**
@@ -8,6 +8,18 @@ final-package acceptance separate. A stored option, enabled mock control or
 passing component count does not establish that its consumer works.
 
 ## Current activation continuation
+
+The [normal-bounds repair](juxtopposed-references/native/home-geometry-memory-20261020/README.md)
+passes six native89 and three ordinary cold max/fullscreen sessions after paired
+failures and two rejected candidates. Its R3 snapshot remains gated. The new
+local geometry activation candidate links the toggle for actual editor/Off-save/
+cold testing; acceptance and remaining recovery/media/DPI scope stay open. The
+ordinary/private activation builds completed successfully; actual editor tests
+are pending at the user's end-of-day pause. The
+[popup baseline](juxtopposed-references/native/home-popup-duration-20261020/README.md)
+proves saved777ms delivery to the real Qt Windows tray handler; the editor,
+dependencies, cold changes and zero/default wording remain pending and gated.
+Neither receipt qualifies the complete Interface page or final package.
 
 The [activation receipt](juxtopposed-references/native/home-settings-activation-20261019/README.md)
 records independent fullscreen/volume-step MainCtx linking, Audio defaults32,

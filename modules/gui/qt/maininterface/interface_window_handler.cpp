@@ -100,6 +100,9 @@ InterfaceWindowHandler::InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* main
     }
 
     connect( m_window, &QWindow::screenChanged, m_mainCtx, &MainCtx::updateIntfScaleFactor );
+    connect(m_window, &QWindow::screenChanged, this, [this] {
+        QVLCTools::updateWindowNormalGeometry(m_window);
+    }, Qt::QueuedConnection);
 
     const auto updateMinimumSize = [this]()
     {
@@ -197,6 +200,7 @@ void InterfaceWindowHandler::restoreWindowGeometry()
             m_window->setPosition(available.center() - QPoint(m_window->width()/2, m_window->height()/2));
         }
     }
+    QVLCTools::updateWindowNormalGeometry(m_window);
 }
 
 InterfaceWindowHandler::~InterfaceWindowHandler()
@@ -223,6 +227,15 @@ bool InterfaceWindowHandler::eventFilter(QObject*, QEvent* event)
 {
     switch ( event->type() )
     {
+    case QEvent::Move:
+    case QEvent::Resize:
+        // Native Windows maximize reports the enlarged rectangle before Qt
+        // reports its new state. Observe the settled state rather than caching
+        // that intermediate rectangle as the user's normal window bounds.
+        QMetaObject::invokeMethod(this, [this] {
+            QVLCTools::updateWindowNormalGeometry(m_window);
+        }, Qt::QueuedConnection);
+        break;
     case QEvent::WindowStateChange:
     {
         QWindowStateChangeEvent *windowStateChangeEvent = static_cast<QWindowStateChangeEvent*>(event);

@@ -1,0 +1,116 @@
+{
+  "passed": false,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "56a4a7620f15ac9e9c6c3fc6553884d9c41ac31d95c2dd2de45c4941d7b0d0f8",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "3dba16f410d00003bcc11fdf6550f73405b927df5bc09f1e2dd5684e446ccfc6",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "geometry-snapshot-fullscreen": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 2196,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 17.79699999999957,
+      "exitCode": 0,
+      "elapsedSeconds": 19.39099999999962,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "geometry snapshot starts in normal state",
+            "passed": true
+          },
+          {
+            "name": "normal geometry fixture and its frame fit the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "actual Windows main window reaches the requested save state",
+            "passed": true
+          },
+          {
+            "name": "real geometry serializer keeps its compatible versioned format",
+            "passed": true
+          },
+          {
+            "name": "saved normal client bounds survive maximized or fullscreen shutdown",
+            "passed": false
+          }
+        ],
+        "error": "saved normal client bounds survive maximized or fullscreen shutdown",
+        "failedPins": [],
+        "failedRoute": [
+          "home",
+          "base"
+        ],
+        "fullBetaAccepted": false,
+        "geometrySerialization": {
+          "currentClient": [
+            -1920,
+            365,
+            1920,
+            1072
+          ],
+          "normalClient": [
+            -1920,
+            357,
+            1920,
+            1032
+          ],
+          "savedClient": [
+            -1920,
+            365,
+            1920,
+            1072
+          ],
+          "savedFullscreen": true,
+          "savedMaximized": false,
+          "savedPosition": [
+            -1920,
+            365
+          ],
+          "savedScreen": "LF24T450F"
+        },
+        "mode": "geometry-snapshot-fullscreen",
+        "ownedWindowOnly": true,
+        "passed": false,
+        "pinServiceError": "",
+        "screenName": "LF24T450F",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "47f95845623855d159d7c0e7415c1143a368bc5ed87b4de4672ff5042169db7c",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true
+}

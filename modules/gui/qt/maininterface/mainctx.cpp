@@ -272,6 +272,7 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     // The embedded fullscreen bar has passed actual audio/video On/Off journeys.
     // Keep the other Interface capabilities gated independently.
     InterfacePreferencesModel::Consumers interfaceConsumers;
+    interfaceConsumers.rememberGeometry = true;
     interfaceConsumers.fullscreenControls = true;
     interfaceConsumers.titleFileName = true;
     interfaceConsumers.controlAutoHide = true;

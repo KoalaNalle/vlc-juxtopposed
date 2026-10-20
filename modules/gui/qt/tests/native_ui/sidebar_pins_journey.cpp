@@ -948,6 +948,8 @@ void exerciseCompactNavigation(const std::function<bool()> &unchanged)
 #include "tooltip_edge_journey.hpp"
 #include "audio_device_settings_journey.hpp"
 #include "interface_title_journey.hpp"
+#include "geometry_memory_journey.hpp"
+#include "geometry_settings_journey.hpp"
 #include "auto_hide_journey.hpp"
 #include "fullscreen_screen_journey.hpp"
 
@@ -1115,6 +1117,12 @@ void run()
 {
     try {
         check(context && window, "owned native window and MainCtx became ready");
+        const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
+        if(mode.startsWith(QStringLiteral("geometry-editor-"))) {
+            const auto r=window->geometry();
+            report.insert("startupGeometry",QJsonObject{{"client",QJsonArray{r.x(),r.y(),r.width(),r.height()}},
+                {"screen",window->screen()?window->screen()->name():QString{}},{"states",int(window->windowStates())}});
+        }
         const auto screenName=qEnvironmentVariable("VLC_OWNED_UI_SCREEN");
         if(!screenName.isEmpty()) {
             QScreen *target=nullptr;
@@ -1126,9 +1134,12 @@ void run()
             report.insert("screenName",target->name());
         }
         window->resize(1280, 900); QTest::qWait(100);
-        const auto mode = qEnvironmentVariable("VLC_OWNED_UI_MODE");
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode.startsWith(QStringLiteral("fullscreen-screen-"))) {
+        if (mode.startsWith(QStringLiteral("geometry-editor-"))) {
+            exerciseGeometrySettings(mode);
+        } else if (mode.startsWith(QStringLiteral("geometry-snapshot-"))) {
+            exerciseGeometrySnapshot(mode);
+        } else if (mode.startsWith(QStringLiteral("fullscreen-screen-"))) {
             exerciseFullscreenScreen(mode);
         } else if (mode.startsWith(QStringLiteral("auto-hide-"))) {
             exerciseAutoHide(mode);

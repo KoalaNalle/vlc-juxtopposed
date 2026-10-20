@@ -17,3 +17,5 @@ $(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/audio_device_settings_j
 $(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/interface_title_journey.hpp
 $(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/auto_hide_journey.hpp
 $(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/fullscreen_screen_journey.hpp
+$(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/geometry_memory_journey.hpp
+$(QA_OUT)/native-ui-journey.o: $(srcdir)/tests/native_ui/geometry_settings_journey.hpp

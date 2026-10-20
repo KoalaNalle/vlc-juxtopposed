@@ -1,5 +1,46 @@
 # VLC Juxtopposed redesign — project handoff
 
+End-of-day checkpoint — **20 October 2026**:
+The user requested commit and push, then continuation tomorrow. Work is paused;
+the complete beta remains unfinished. The geometry activation ordinary and
+private builds finished successfully (build exit0); no activation editor journey
+has run yet. Resume from `build-windows/beta-geometry-activation-20261020`:
+run `stage-r1.py`, then `run-r1.py` for initial/playing tests on monitor2.
+Do not use `--full` until the user permits the Off cold start on monitor1.
+The new source enables the geometry toggle as a development candidate only;
+the earlier R3 receipts below retain their separately verified scope. Popup
+duration remains gated. No build or visible test is left running.
+
+Goal resumed — **20 October 2026, Interface geometry and notifications**:
+Current continuation: the geometry activation candidate now links the editor
+locally and has compiled in `build-windows/beta-geometry-activation-20261020`.
+Actual editor/Off acceptance is pending; R3 below remains its frozen earlier
+normal-bounds scope. Keep visible checks on monitor2 while awaiting the user's
+answer about a brief primary-monitor Off cold start. Popup duration stays gated.
+The user resumed beta work from published checkpoint `1a174fc719`, prioritizing
+confirmed design actions before lower-priority review and visual refinements.
+The initial read-only review is recorded in
+[Interface review](doc/juxtopposed-references/native/home-interface-review-20261020/README.md).
+The [geometry progress receipt](doc/juxtopposed-references/native/home-geometry-memory-20261020/README.md)
+reproduces loss of normal bounds on maximized/fullscreen save. The first QPA
+repair is rejected for an8-pixel CSD shift, also reproduced by ordinary cold
+reopen. R2 is rejected by genuine Windows system-menu Maximise, which reports
+geometry before state. R3 defers observed updates and now passes six native
+processes/89 checks plus three ordinary cold max/fullscreen sessions, exact
+1280x900 bounds/position, normal exits and no Qt/native errors. Hidden cross-
+monitor and minimize cases pass. Ordinary GUI `6de416fa3cae…`, private
+`7f7c229901fa…`, source-after-r3 in `build-windows/beta-geometry-memory-20261020`.
+Real editor/Off-save/cold policy, active media and recovery/DPI remain open;
+the earlier R3 geometry gate stays false. A narrow lower-edge band on cold fullscreen is an open
+startup-frame observation, not whole-screen visual acceptance.
+The [popup baseline](doc/juxtopposed-references/native/home-popup-duration-20261020/README.md)
+proves genuine Windows tray delivery of the saved777ms hint on the frozen
+ordinary GUI, no errors and normal exit. Editor/cold/dependency acceptance and
+zero-duration wording remain open; the popup-duration gate is still false.
+Figma MCP access succeeded for original Interface node `3062:11379` under the
+new authorization. The end-of-day commit/push is explicitly authorized; no
+release, dependency or security change is included.
+
 Goal continuation — **19 October 2026, settings, volume, tooltips and native media**:
 End-of-day checkpoint: the user requested commit and push, then continuation
 tomorrow. Work is paused after this checkpoint; the full beta remains unfinished.

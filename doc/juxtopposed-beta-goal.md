@@ -1,8 +1,14 @@
 # Prepared next goal
 
-Updated 19 October 2026 for the end-of-day checkpoint following `2498938cb1`.
-Work is paused at the user's request until continuation tomorrow; the full beta
-objective below remains unfinished.
+Updated 20 October 2026 after published checkpoint `1a174fc719`.
+The user resumed work on window-position memory and popup duration, with an
+initial source/design review and review findings recorded in the roadmap.
+The user requested an end-of-day commit/push and continuation tomorrow. Work is
+paused; the full beta objective below remains unfinished. The geometry editor
+activation candidate compiles, but its actual editor journeys have not run.
+Resume using the current handoff before claiming additional acceptance.
+Use Computer Use
+for permitted desktop actions; security/privacy prompts remain human-owned.
 
 Finish the confirmed Juxtopposed redesign and produce a coherent, reviewed,
 Windows 11-tested beta candidate following `doc/juxtopposed-beta-roadmap.md` and

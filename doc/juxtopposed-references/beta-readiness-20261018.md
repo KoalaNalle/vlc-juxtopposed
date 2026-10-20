@@ -1,9 +1,15 @@
-# Beta readiness snapshot — updated 19 October 2026
+# Beta readiness snapshot — updated 20 October 2026
 
 Use with the [revised roadmap](../juxtopposed-beta-roadmap.md). This reconciles
-the 32 surfaces in the earlier plan with published checkpoint `2498938cb1` and
+the 32 surfaces in the earlier plan with published checkpoint `1a174fc719` and
 its scoped receipts. The original filename is retained for existing links.
 It is a planning snapshot, not a new runtime acceptance receipt.
+
+The 20 October [Interface review](native/home-interface-review-20261020/README.md),
+[normal-bounds repair](native/home-geometry-memory-20261020/README.md) and
+[popup delivery baseline](native/home-popup-duration-20261020/README.md) add scoped
+evidence. The geometry/popup settings editors remain gated and incomplete; all
+32 surfaces retain their separate visual, accessibility, DPI and package gates.
 
 **Implementation** below means code/foundation is present, not that every
 designed action is complete. **Native evidence** distinguishes backend fixtures

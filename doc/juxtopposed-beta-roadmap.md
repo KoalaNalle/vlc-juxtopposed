@@ -1,6 +1,6 @@
 # Revised beta roadmap
 
-Updated 19 October 2026 for the end-of-day checkpoint following `2498938cb1`.
+Updated 20 October 2026 after published checkpoint `1a174fc719`.
 **Status: implementation and scoped validation are substantial; the complete
 beta is not accepted.** This is the current execution order. The
 [older beta plan](juxtopposed-beta-plan.md) retains historical receipts and
@@ -21,11 +21,45 @@ current functional adaptation must remain clearly identified where no original
 form exists. Unconfirmed subtitle text editing/export is a reference question,
 not an assumed beta feature. No designer outreach is part of this roadmap.
 
-## Current goal continuation — 19 October
+## Current goal continuation — 20 October
 
-This checkpoint preserves the scoped work below. The user requested commit and
-push, then continuation tomorrow. Work is paused; the full objective and all
-final-package/visual/platform gates below remain in force.
+End-of-day: the user requested commit and push, then continuation tomorrow.
+Work is paused. The ordinary/private geometry activation builds completed with
+exit0; their editor journeys have not run. Resume with `stage-r1.py`, then the
+initial/playing `run-r1.py` in `build-windows/beta-geometry-activation-20261020`.
+The full four-case run needs permission for the primary-monitor Off cold start.
+
+The user resumed work on window-position memory and popup duration. The full
+objective and all final-package/visual/platform gates below remain in force.
+The current local geometry activation candidate links the toggle for actual
+editor/Off testing; acceptance is pending in `beta-geometry-activation-20261020`.
+The earlier R3 proof retains its own disabled-gate snapshot. Visible tests stay on
+monitor2 pending the user's answer about primary-monitor cold-start testing.
+The [initial review](juxtopposed-references/native/home-interface-review-20261020/README.md)
+identified cold fullscreen/maximized normal-bounds loss, a popup zero-duration
+wording gap, and saved-offscreen recovery coverage. The normal-bounds repair now
+has the scoped proof below. Findings do not supersede confirmed-action work.
+Code Review also confirms all four PR1 checks pass on exact published head
+`1a174fc719`; this does not qualify current local edits. Its Node20 action-runtime
+warning and Ubuntu26 runner migration are lower-priority CI maintenance items
+in `.github/workflows/qml-ui-checks.yml`, recorded in the review receipt above.
+
+- [Geometry progress](juxtopposed-references/native/home-geometry-memory-20261020/README.md):
+  native normal control passes13; maximized/fullscreen saves lose normal bounds.
+  First QPA repair is rejected for an8-pixel CSD shift, confirmed by ordinary
+  cold reopen. R2's actual Windows system-menu maximize overwrites normal bounds;
+  R3 defers updates until state settles. Six native processes/89 checks and
+  three ordinary cold max/fullscreen sessions pass with exact bounds/position,
+  normal exits and no Qt/native errors. Hidden cross-monitor and minimized saves
+  pass. GUI ordinary `6de416fa3cae…`, private `7f7c229901fa…`, source-after-r3.
+  Real editor/Off-save/cold policy, active media and recovery/DPI stay open. A thin
+  lower-edge band on cold fullscreen needs actual startup client/frame diagnosis.
+- [Popup baseline](juxtopposed-references/native/home-popup-duration-20261020/README.md):
+  genuine Windows platform notification receives saved777ms on the identified
+  ordinary baseline. No Qt/native errors and normal Ctrl+Q exit. Real editor,
+  persistence/cold restart, dependencies and zero/default wording remain open.
+  OS expiration timing is not accepted. Popup duration remains gated; geometry
+  is linked only in the newer local activation candidate pending editor acceptance.
 
 - [Auto-hide activation](juxtopposed-references/native/home-auto-hide-20261019/README.md):
   actual mode/delay editors and paired pointer/hover repairs pass the source-
@@ -116,7 +150,7 @@ final-package/visual/platform gates below remain in force.
 
 - Authoritative checkout: `C:\Modding\vlc-juxtopposed`, branch
   `juxtopposed-playback-bar`, published checkpoint
-  `2498938cb147990637ec5cb5a81bdc416eb36d5c`. Preserve unrelated local work,
+  `1a174fc7195d681df4e0d2e658e03f7cbddc9b95`. Preserve unrelated local work,
   including the four untracked SoXR reference/trace experiments. They are not
   prerequisites for this roadmap.
 - Published-checkpoint matched GUI pair: ordinary
@@ -327,12 +361,12 @@ journey. A new GUI does not inherit every older GUI's pass automatically.
 ## References and practical constraints
 
 Use preserved Figma context/screenshots/assets, the original walkthrough and
-exact-time extracts. The additional Figma read allowance is currently **zero**;
-the last two approved reads were spent on the original sidebar icons. Do not
-infer a renewed allowance from the subscription or historical 8+2 proposal.
-Continue local comparison and list the exact unresolved reference questions.
-If a further budget is approved, reserve calls for those questions and final
-validation, recording node, purpose and outcome. Follow the Figma skill when used.
+exact-time extracts. The user's 20 October goal renews permission to use Figma
+MCP when needed. One targeted design-context read of original Interface node
+`3062:11379` succeeded, including its screenshot; it confirms the existing row
+and host layout. Reuse cached references and reserve further calls for concrete
+questions and validation, recording node, purpose and outcome. Follow the Figma
+skill when used.
 
 Use monitor 2 for visible app checks. Follow the Computer Use skill when direct
 desktop control is needed. Prefer maintained native harnesses for repeatable
