@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 """Owned profile form component journeys; not native profile/settings acceptance."""
-import argparse, json, os, shutil, tempfile
+import argparse, hashlib, json, os, shutil, tempfile
 from pathlib import Path
 os.environ['QT_QPA_PLATFORM']='offscreen'
 os.environ['QT_QUICK_BACKEND']='software'
@@ -12,12 +12,20 @@ from PySide6.QtQuick import QQuickView
 from PySide6.QtTest import QTest
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--repo-root',type=Path,required=True);parser.add_argument('--output-dir',type=Path,required=True)
+parser.add_argument('--dialog-file',type=Path,help='Optional preserved dialog preimage for a negative control')
 args=parser.parse_args();repo=args.repo_root.resolve();qt=repo/'modules/gui/qt';out=args.output_dir.resolve();out.mkdir(parents=True,exist_ok=False)
 os.environ['QT_QPA_FONTDIR']=str(qt/'pixmaps/juxtopposed')
 messages=[];qInstallMessageHandler(lambda kind,context,message:messages.append(message));app=QGuiApplication([])
 assert QFontDatabase.addApplicationFont(str(qt/'pixmaps/juxtopposed/InterVariable.ttf'))>=0
 qmlRegisterSingletonType(QUrl.fromLocalFile(str(qt/'style/JuxtopposedPalette.qml')),'VLC.Style',1,0,'JuxtopposedPalette')
 temporary=tempfile.TemporaryDirectory(prefix='vlc-profile-form-');folder=Path(temporary.name)
+authored=qt/'dialogs/dialogs/qml'
+dialog_source=args.dialog_file.resolve() if args.dialog_file else authored/'JuxtopposedPlayerProfilesDialog.qml'
+if args.dialog_file:
+ copy=folder/'Authored';copy.mkdir()
+ for filename in ['JuxtopposedPlayerProfilesDialog.qml','JuxtopposedMovableDialog.qml','JuxtopposedDialogDragArea.qml']:
+  shutil.copyfile(dialog_source if filename=='JuxtopposedPlayerProfilesDialog.qml' else authored/filename,copy/filename)
+ authored=copy
 scene='''import QtQuick
 import QtQuick.Controls.Basic
 import VLC.Style
@@ -28,8 +36,10 @@ Item {
  property alias service: service
  property alias opener: opener
  property alias testScale: form.uiScale
+ property alias testDark: themePalette.isDark
  QtObject { id: appearance; property var values: ({theme: 2, accentIndex: 0}) }
- Component.onCompleted: JuxtopposedPalette.preferences = appearance
+ QtObject { id: themePalette; property bool isDark: true }
+ Component.onCompleted: { JuxtopposedPalette.preferences = appearance; JuxtopposedPalette.nativePalette = themePalette }
  QtObject {
   id: service
   property bool available: true
@@ -53,7 +63,7 @@ Item {
  Rectangle { anchors.fill: parent; color: "#383838" }
  Button { id: opener; objectName: "profileFormOpener"; text: "Open" }
  Authored.JuxtopposedPlayerProfilesDialog { id: form; parent: root; controller: service; assetBase: "@ASSETS@" }
-}'''.replace('@DIALOGS@',(qt/'dialogs/dialogs/qml').as_uri()).replace('@ASSETS@',(qt/'pixmaps/juxtopposed').as_uri()+'/')
+}'''.replace('@DIALOGS@',authored.as_uri()).replace('@ASSETS@',(qt/'pixmaps/juxtopposed').as_uri()+'/')
 (folder/'Scene.qml').write_text(scene,encoding='utf-8')
 view=QQuickView();view.setResizeMode(QQuickView.SizeRootObjectToView);view.setSource(QUrl.fromLocalFile(str(folder/'Scene.qml')))
 assert not view.errors(),[error.toString() for error in view.errors()]
@@ -83,6 +93,17 @@ name.setProperty('text','Travel Ää 日本語');act('service.fail = true; dialo
 check('dialog.visible && service.creates === 1 && service.submitted === "Travel Ää 日本語"','failed create preserves entered Unicode name')
 check('service.lastError.length > 0 && !dialog.busy','failed create remains retryable')
 capture('new-profile-save-failure.png')
+conflict='Player profiles changed in another window. Restart to reload them before editing.'
+act('service.lastError = '+json.dumps(conflict))
+error=root.findChild(type(root),'playerProfileError');assert error is not None
+scroll=root.findChild(type(root),'playerProfileScroll');assert scroll is not None
+def error_in_view(label):
+ QTest.qWait(70)
+ flick=scroll.property('contentItem');point=error.mapToItem(flick,QPointF(0,0))
+ capture('profile-conflict-'+label+'.png')
+ assert error.property('visible') and point.y()>=-0.5 and point.y()+error.height()<=flick.height()+0.5,(label,point.y(),error.height(),flick.height())
+ checks.append('complete conflict recovery message is visible-'+label)
+error_in_view('standard-dark')
 act('service.fail = false; dialog.save()')
 check('!dialog.visible && service.creates === 2','retry succeeds and closes')
 check('opener.activeFocus','closing restores the opener')
@@ -126,11 +147,20 @@ flick=scroll.property('contentItem');point=name.mapToItem(flick,QPointF(0,0))
 assert point.y()>=-0.5 and point.y()+name.height()<=flick.height()+0.5,(point.y(),name.height(),flick.height())
 checks.append('focused name editor scrolls fully into the compact viewport')
 capture('profile-form-compact-125.png')
+act('service.lastError = '+json.dumps(conflict))
+error_in_view('compact-125-dark')
+act('testDark = false; appearance.values = ({theme: 1, accentIndex: 0})')
+check('!JuxtopposedPalette.dark','Light geometry checks use the supplied native Light palette')
+error_in_view('compact-125-light')
+view.resize(900,650);act('testScale = 1')
+error_in_view('standard-light')
+check('service.lastError.length > 0 && dialog.visible && !service.busy','visibility repair keeps the existing error and editable form')
 act('dialog.reject()');view.close();QTest.qWait(50)
 diagnostics=[m for m in messages if not m.startswith('qt.qpa.')]
 result={'passed':not diagnostics,'checks':len(checks),'journeys':checks,'diagnostics':diagnostics,
+ 'sourceSha256':{str(p.relative_to(repo)).replace('\\','/') if p.is_relative_to(repo) else str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in [dialog_source,qt/'style/JuxtopposedPalette.qml',Path(__file__).resolve()]},
  'scope':'Owned QML form with supplied profile service. New/Cancel/failure/retry/recovery/restore, modal focus and compact scale; not actual native settings, OS DPI or full design fidelity.',
  'nativeAppAccepted':False,'fullBetaAccepted':False}
-(out/'verification.json').write_text(json.dumps(result,indent=2)+'\n')
+(out/'verification.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8',newline='\n')
 print('Profile form component',len(checks),'checks; diagnostics',len(diagnostics))
 assert result['passed'],diagnostics

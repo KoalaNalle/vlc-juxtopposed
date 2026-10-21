@@ -48,15 +48,17 @@ FocusScope {
     function sectionMatches(names) { return names.some(name => matches(name)) }
     function navigate(item, backwards) { if (focusNavigator) focusNavigator(item, backwards) }
     property Item _focusRevealTarget: null
-    function reveal(item) {
+    property Item _focusRevealBounds: null
+    function reveal(item, boundsItem) {
         if (item.activeFocus) {
             _focusRevealTarget = item
-            focusRevealed(item)
+            _focusRevealBounds = boundsItem || item
+            focusRevealed(_focusRevealBounds)
         }
     }
     function revealActiveControl() {
         const item = _focusRevealTarget
-        if (item && item.visible && item.activeFocus) focusRevealed(item)
+        if (item && item.visible && item.activeFocus) focusRevealed(_focusRevealBounds || item)
     }
     function supported(key) { return available && capabilities[key] === true && values[key] !== undefined }
     function editable(key) { return supported(key) && !busy }
@@ -88,7 +90,7 @@ FocusScope {
             systemTray: qsTr("Show a VLC icon in the system tray after restarting. Turn off minimized startup before hiding the icon."),
             startMinimized: qsTr("Start with VLC in the system tray after restarting. The tray icon must be enabled."),
             trackPopup: qsTr("Show a notification when the current track changes. The tray icon must be enabled."),
-            popupDuration: qsTr("Choose how long notifications should stay visible. Your system may use its own timing."),
+            popupDuration: qsTr("Choose a notification duration after restarting VLC. 0 uses the system default; your system controls notification timing."),
             playlistTree: qsTr("Show the playlist as a tree of folders and items.")
         }
         return (hints[key] || "") + (supported(key) ? "" : " " + qsTr("This setting is unavailable in this build."))
@@ -310,7 +312,11 @@ FocusScope {
         required property string valueKey
         required property string accessibleTitle
         property alias control: slider
+        property Item focusBounds: null
+        property string timingNote: ""
         readonly property bool known: Number.isFinite(root.values[valueKey]) && root.values[valueKey] >= 0 && root.values[valueKey] <= 10000
+        readonly property real contentHeight: (known ? 46 : 66) * root.uiScale
+            + (timingNote.length ? 8 * root.uiScale + timingLabel.implicitHeight : 0)
         anchors.fill: parent
         C.Slider {
             id: slider
@@ -329,7 +335,7 @@ FocusScope {
             Connections { target: root.service; function onValuesChanged() { slider.sync() } }
             Keys.onTabPressed: event => { if (root.focusNavigator) { root.navigate(slider, false); event.accepted = true } }
             Keys.onBacktabPressed: event => { if (root.focusNavigator) { root.navigate(slider, true); event.accepted = true } }
-            onActiveFocusChanged: root.reveal(slider)
+            onActiveFocusChanged: root.reveal(slider, range.focusBounds)
             background: Rectangle {
                 y: 4 * root.uiScale
                 width: slider.width; height: 16 * root.uiScale
@@ -373,6 +379,17 @@ FocusScope {
             visible: !range.known
             text: root.values[range.valueKey] === undefined ? qsTr("Unavailable") : qsTr("Current value: %1 ms").arg(root.values[range.valueKey])
             font.pixelSize: 12 * root.uiScale
+        }
+        SettingLabel {
+            id: timingLabel
+            objectName: "interface" + range.valueKey + "TimingNote"
+            y: (range.known ? 46 : 66) * root.uiScale + 8 * root.uiScale
+            width: parent.width
+            visible: range.timingNote.length > 0
+            text: range.timingNote
+            font.pixelSize: 12 * root.uiScale
+            Accessible.role: Accessible.StaticText
+            Accessible.name: text
         }
     }
     Column {
@@ -577,11 +594,18 @@ FocusScope {
                 Choice { id: trackPopup; objectName: "interfacetrackPopup"; valueKey: "trackPopup"; accessibleTitle: qsTr("Show a popup when the track changes"); options: [{name: qsTr("Never"), value: 0}, {name: qsTr("When minimized"), value: 1}, {name: qsTr("Always"), value: 2}]; enabled: root.editable("trackPopup") && root.values.systemTray === true }
             }
             SettingRow {
+                id: popupDurationRow
+                objectName: "interfacepopupDurationRow"
                 title: qsTr("Popup duration")
                 visible: root.matches(title) || root.matches(qsTr("Notifications and System Tray"))
                 opacity: root.supported("popupDuration") ? 1 : .5
-                controlHeight: (Number.isFinite(root.values.popupDuration) && root.values.popupDuration >= 0 && root.values.popupDuration <= 10000 ? 46 : 66) * root.uiScale
-                DurationRange { id: popupDuration; valueKey: "popupDuration"; accessibleTitle: qsTr("Popup duration"); control.enabled: root.editable("popupDuration") && root.values.systemTray === true }
+                controlHeight: popupDuration.contentHeight
+                DurationRange {
+                    id: popupDuration; valueKey: "popupDuration"; accessibleTitle: qsTr("Popup duration")
+                    focusBounds: popupDurationRow
+                    timingNote: qsTr("0 uses the system default. Your system controls notification timing.")
+                    control.enabled: root.editable("popupDuration") && root.values.systemTray === true
+                }
             }
         }
         Column {

@@ -41,6 +41,7 @@ pluginsinclude_HEADERS.h = \
 	../include/vlc_config.h \
 	../include/vlc_config_cat.h \
 	../include/vlc_configuration.h \
+	../include/vlc_config_transaction.h \
 	../include/vlc_cpu.h \
 	../include/vlc_clock.h \
 	../include/vlc_chroma_probe.h \

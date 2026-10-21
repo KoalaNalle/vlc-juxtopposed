@@ -29,6 +29,7 @@
 #include <vlc_interface.h>
 #include <vlc_intf_strings.h>
 #include <vlc_preparser.h>
+#include <vlc_player.h>
 
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
@@ -117,6 +118,13 @@ DialogsProvider::DialogsProvider( qt_intf_t *_p_intf )
 
 DialogsProvider::~DialogsProvider()
 {
+    if (m_quitStopListener)
+    {
+        vlc_player_Lock(p_intf->p_player);
+        vlc_player_RemoveListener(p_intf->p_player, m_quitStopListener);
+        m_quitStopListener = nullptr;
+        vlc_player_Unlock(p_intf->p_player);
+    }
     /* free parentless menus  */
     VLCMenuBar::freeRendererMenu();
 }
@@ -168,7 +176,76 @@ void DialogsProvider::quit()
     b_isDying = true;
     assert(qApp);
     qApp->setProperty("isDying", true);
+
+    // Whole-application Quit must stop playback before Core unloads Qt. Audio
+    // otherwise keeps running through compositor/QML teardown and can rebuffer
+    // while the interface is being destroyed. Interface unloading on its own
+    // does not pass through this whole-application quit boundary.
+    auto *player = p_intf->p_player;
+    if (player)
+    {
+        static const vlc_player_cbs callbacks = [] {
+            vlc_player_cbs cbs{};
+            cbs.on_state_changed = [](vlc_player_t *, vlc_player_state state, void *data) {
+                if (state != VLC_PLAYER_STATE_STOPPED)
+                    return;
+                auto *provider = static_cast<DialogsProvider *>(data);
+                QMetaObject::invokeMethod(provider,
+                    [provider] { provider->finishQuitAfterPlaybackStop(); },
+                    Qt::QueuedConnection);
+            };
+            return cbs;
+        }();
+
+        vlc_player_Lock(player);
+        m_quitStopListener = vlc_player_AddListener(player, &callbacks, this);
+        if (!m_quitStopListener)
+        {
+            vlc_player_Unlock(player);
+            b_isDying = false;
+            qApp->setProperty("isDying", false);
+            msg_Err(p_intf, "cannot observe playback stop; please retry quitting");
+            return;
+        }
+        // Stop can succeed before the asynchronous state changes from STOPPED.
+        // Register and request under one lock so that completion cannot be missed.
+        const bool waiting = vlc_player_Stop(player) == VLC_SUCCESS
+            || vlc_player_GetState(player) != VLC_PLAYER_STATE_STOPPED;
+        if (!waiting)
+        {
+            vlc_player_RemoveListener(player, m_quitStopListener);
+            m_quitStopListener = nullptr;
+        }
+        vlc_player_Unlock(player);
+        if (waiting)
+        {
+            msg_Dbg(p_intf, "application quit waiting for primary playback to stop");
+            return;
+        }
+    }
     libvlc_Quit( vlc_object_instance(p_intf) );
+}
+
+void DialogsProvider::finishQuitAfterPlaybackStop()
+{
+    if (!m_quitStopListener)
+        return;
+
+    auto *player = p_intf->p_player;
+    vlc_player_Lock(player);
+    // A new Start may have happened before this queued completion ran, including
+    // one whose asynchronous state still says STOPPED. Stop it and wait again.
+    if (vlc_player_Stop(player) == VLC_SUCCESS
+        || vlc_player_GetState(player) != VLC_PLAYER_STATE_STOPPED)
+    {
+        vlc_player_Unlock(player);
+        return;
+    }
+    vlc_player_RemoveListener(player, m_quitStopListener);
+    m_quitStopListener = nullptr;
+    vlc_player_Unlock(player);
+    msg_Dbg(p_intf, "primary playback stopped; quitting application");
+    libvlc_Quit(vlc_object_instance(p_intf));
 }
 
 void DialogsProvider::customEvent( QEvent *event )

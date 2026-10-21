@@ -248,6 +248,10 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     loadFromSettingsImpl(false);
     // Snapshot startup preferences after the native theme/settings restore.
     m_generalPreferences = new GeneralPreferencesModel(p_intf, m_colorScheme, settings, this);
+    const QPointer<GeneralPreferencesModel> generalPreferences = m_generalPreferences;
+    m_colorScheme->setChangeHandler([generalPreferences](int index) {
+        return generalPreferences && generalPreferences->setValue(QStringLiteral("theme"), index);
+    });
     ControlsPreferencesModel::Consumers controlsConsumers;
     controlsConsumers.mousePolicy = true;
     controlsConsumers.remotePolicy = true;
@@ -273,14 +277,17 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     // Keep the other Interface capabilities gated independently.
     InterfacePreferencesModel::Consumers interfaceConsumers;
     interfaceConsumers.rememberGeometry = true;
+    interfaceConsumers.popupDuration = true;
     interfaceConsumers.fullscreenControls = true;
     interfaceConsumers.titleFileName = true;
     interfaceConsumers.controlAutoHide = true;
     interfaceConsumers.controlHideDelay = true;
     interfaceConsumers.fullscreenScreen = true;
     m_interfacePreferences = new InterfacePreferencesModel(p_intf, settings, interfaceConsumers, this);
-    // Precise-seek capability stays gated until actual native app acceptance.
-    m_playbackPreferences = new PlaybackPreferencesModel(p_intf, this);
+    // The paired seek routes consume this preference on their next request.
+    PlaybackPreferencesModel::Consumers playbackConsumers;
+    playbackConsumers.preciseSeeking = true;
+    m_playbackPreferences = new PlaybackPreferencesModel(p_intf, playbackConsumers, this);
     // Video native consumer acceptance gates remain false.
     m_videoPreferences = new VideoPreferencesModel(p_intf, this);
     // The authored slider and native actions consume this policy live. Device
@@ -547,7 +554,8 @@ MainCtx::~MainCtx()
         settings->setValue( "grid-view", m_gridView );
         settings->setValue( "grouping", m_grouping );
 
-        settings->setValue( "color-scheme-index", m_colorScheme->currentIndex() );
+        // Appearance is committed when explicitly chosen (including legacy
+        // menus). Closing a stale instance must not replace a newer choice.
 
         settings->setValue( "album-sections", m_albumSections );
 
@@ -711,7 +719,7 @@ void MainCtx::loadFromSettingsImpl(const bool callSignals)
     loadFromSettings(m_lyricsMode, "MainWindow/lyrics-mode", true, this, &MainCtx::lyricsModeChanged);
 
     const auto colorSchemeIndex = getSettings()->value( "MainWindow/color-scheme-index", 0 ).toInt();
-    m_colorScheme->setCurrentIndex(colorSchemeIndex);
+    m_colorScheme->restoreCurrentIndex(colorSchemeIndex);
 
     /* user interface scale factor */
     auto userIntfScaleFactor = var_InheritFloat(p_intf, "qt-interface-scale");

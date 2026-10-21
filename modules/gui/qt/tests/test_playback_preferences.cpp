@@ -269,6 +269,7 @@ void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState_data()
     QTest::addColumn<QString>("key");QTest::addColumn<QVariant>("requested");
     QTest::newRow("int-tracks")<<QStringLiteral("defaultAudioTrack")<<QVariant(3);
     QTest::newRow("bool-live")<<QStringLiteral("shuffle")<<QVariant(true);
+    QTest::newRow("bool-seek")<<QStringLiteral("preciseSeeking")<<QVariant(false);
     QTest::newRow("float-restart")<<QStringLiteral("defaultPlaybackSpeed")<<QVariant(1.5);
 }
 void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState()
@@ -277,6 +278,10 @@ void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState()
     QSKIP("Real Win32 read/write/no-delete lock is the native save-failure stimulus");
 #else
     QFETCH(QString,key);QFETCH(QVariant,requested);
+    if (key == QStringLiteral("preciseSeeking")) {
+        PlaybackPreferencesModel::Consumers consumers; consumers.preciseSeeking = true;
+        m_model = std::make_unique<PlaybackPreferencesModel>(m_intf, consumers);
+    }
     QVERIFY(m_model->setValue(QStringLiteral("preferredMenuLanguage"),QStringLiteral("fi")));
     const auto disk=bytes(m_config);
     const auto before=m_model->values();

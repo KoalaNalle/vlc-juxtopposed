@@ -537,12 +537,14 @@ static int Open(vlc_object_t *obj)
     /* Do the prebuffering */
     AStreamPrebufferStream(s);
 
-    if (sys->tk[sys->i_tk].i_end <= 0)
+    const bool cancelled = vlc_killed();
+    if (cancelled || sys->tk[sys->i_tk].i_end <= 0)
     {
-        msg_Err(s, "cannot pre fill buffer");
+        if (!cancelled)
+            msg_Err(s, "cannot pre fill buffer");
         free(sys->p_buffer);
         free(sys);
-        return VLC_EGENERIC;
+        return cancelled ? VLC_ETIMEOUT : VLC_EGENERIC;
     }
 
     s->pf_read = AStreamReadStream;

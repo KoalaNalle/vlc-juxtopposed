@@ -6,6 +6,7 @@
 #include "qt.hpp"
 #include "dialogs/dialogs_provider.hpp"
 #include "dialogs/conversion_controller.hpp"
+#include "dialogs/systray/systray.hpp"
 #include "maininterface/mainctx.hpp"
 #include "maininterface/compositor.hpp"
 #include "maininterface/history_media_source.hpp"
@@ -88,6 +89,7 @@
 #include <QVector3D>
 #include <windows.h>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <stdexcept>
 #include <stdlib.h>
@@ -1113,6 +1115,7 @@ void exerciseTitlebar(const QString &mode)
             });
     }
 }
+#include "popup_duration_journey.hpp"
 void run()
 {
     try {
@@ -1135,7 +1138,9 @@ void run()
         }
         window->resize(1280, 900); QTest::qWait(100);
         report.insert("mode",mode); check(pins() != nullptr, "real MainCtx owns pin service");
-        if (mode.startsWith(QStringLiteral("geometry-editor-"))) {
+        if (mode.startsWith(QStringLiteral("popup-"))) {
+            exercisePopupDuration(mode);
+        } else if (mode.startsWith(QStringLiteral("geometry-editor-"))) {
             exerciseGeometrySettings(mode);
         } else if (mode.startsWith(QStringLiteral("geometry-snapshot-"))) {
             exerciseGeometrySnapshot(mode);

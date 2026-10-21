@@ -256,7 +256,7 @@ bool GeneralPreferencesModel::setValue(const QString &key, const QVariant &value
         int index;
         if (!integer(value, 0, 2, index)) return fail(tr("Choose System, Light or Dark."));
         if (!storeSettings(m_settings, QStringLiteral("MainWindow/color-scheme-index"), index)) return false;
-        m_scheme->setCurrentIndex(index); // Existing MainCtx applies Qt's native colour scheme.
+        m_scheme->restoreCurrentIndex(index); // Publish only the already committed choice.
         success = true;
     } else if (key == QStringLiteral("accentIndex")) {
         int index;

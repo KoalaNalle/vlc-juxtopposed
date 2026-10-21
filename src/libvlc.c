@@ -186,7 +186,10 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     if( !var_InheritBool( p_libvlc, "ignore-config" ) )
     {
         if( var_InheritBool( p_libvlc, "reset-config" ) )
+        {
+            config_ResetAll(); /* Mark every default for the merging saver. */
             config_SaveConfigFile( p_libvlc ); /* Save default config */
+        }
         else
             config_LoadConfigFile( p_libvlc );
     }

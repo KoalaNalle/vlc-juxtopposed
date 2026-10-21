@@ -1,0 +1,106 @@
+{
+  "status": "appearance_saved_choice_loss_reproduced",
+  "passed": false,
+  "fullBetaAccepted": false,
+  "privateHooks": false,
+  "sharedQtStore": true,
+  "sharedNativeConfig": true,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "d148035d54bee58e841fb4e727fd788af7adcf2a90f41c68f06ec76f2a54a8ba",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd"
+  },
+  "cases": {
+    "A": {
+      "pid": 30588,
+      "startupRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "exitCode": 0,
+      "normalExit": true,
+      "diagnostics": [],
+      "logOrder": {
+        "wait": 377,
+        "stopped": 411,
+        "teardown": 415
+      },
+      "logSha256": "09f35c00fd4265534e748cf7d4c698ffb192deb5b51c08388b6a76b52be6d02a",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "realWasapiOpened": true,
+      "pluginCacheLoads": 1
+    },
+    "B": {
+      "pid": 24764,
+      "startupRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "exitCode": 0,
+      "normalExit": true,
+      "diagnostics": [],
+      "logOrder": {
+        "wait": 379,
+        "stopped": 413,
+        "teardown": 417
+      },
+      "logSha256": "343835806306fa46491933f5647f439fbd6723efc830c39276ee58346ba1ede7",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "realWasapiOpened": true,
+      "pluginCacheLoads": 1
+    }
+  },
+  "finalTheme": "2",
+  "identitiesUnchanged": true,
+  "snapshots": {
+    "after-b-theme.ini": {
+      "theme": 1,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "e1db888e60b02180d69d50e3e94b591b4f8f9113ecc46f4945741592fb2d8930"
+    },
+    "after-b-exit.ini": {
+      "theme": 1,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "70745f6b1f948e8a89419ec30bff13c035358a365dc6b605eb5c404d671de3b8"
+    },
+    "final": {
+      "theme": 2,
+      "normalRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "fileSha256": "4b8760439e8c24bba6be2854b81cd9e17b4ac4f7af9113d61ed9168ebeaa15c8"
+    }
+  },
+  "rawReceiptSha256": "78d3e1ae535c26923dfc5acca82ceed643c2320453922d2d7c0a759e12e6641a",
+  "reproductionVerified": true,
+  "priority": "P1",
+  "normalGeometryObserved": true,
+  "observations": [
+    "Both ordinary processes restore Dark2 and play different owned WAV files on separate monitors using one portableQt INI/nativeconfig.",
+    "B Ctrl+P General Light click visibly applies Light and saves1; closing B preserves1.",
+    "A remains Dark and playing54s; F11 fullscreen60s then directCtrl+Q; final savedtheme becomes2."
+  ],
+  "expected": "Unchanged older A must not replace B explicitly committed Light choice on exit.",
+  "geometryPolicy": "One shared geometry slot: each closing window writes its own normal rectangle; last closing window wins. Fullscreen bounds did not replace normal bounds in this run.",
+  "visualScope": "Light screen includes incompletely recolored player surfaces; this is appearance persistence reproduction, not visual acceptance."
+}

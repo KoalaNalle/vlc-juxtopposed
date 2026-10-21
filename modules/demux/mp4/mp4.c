@@ -3535,8 +3535,9 @@ static int STTSToSampleChunk(const mp4_track_t *p_track, uint64_t i_dts,
     uint32_t i_sample = ck->i_sample_first;
     uint64_t i_entrydts = ck->i_first_dts;
 
+    /* i_sample is a track index; i_sample_count is local to this chunk. */
     for( uint_fast32_t i = 0;
-         i < ck->i_entries_dts && i_sample < ck->i_sample_count;
+         i < ck->i_entries_dts && i_sample - ck->i_sample_first < ck->i_sample_count;
          i++ )
     {
         uint64_t i_entry_duration = ck->p_sample_count_dts[i] * (uint64_t)

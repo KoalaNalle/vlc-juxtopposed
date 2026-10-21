@@ -1,0 +1,92 @@
+{
+  "status": "terminal",
+  "mode": "paused-fullscreen",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "coreSha256": "3a7b0a360e3caf4b3404627f6fb3c87546a027ec8593b65ecd92c99b8cdd75c6",
+  "privateGuiSha256": "6e8bcf21f4c35e38c24b8c3716819198f3b728c0dc5b09d09c7fed71e1296b20",
+  "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+  "sourceInputsSha256": "82ddddd20c96845372808d8c00be5b4f9358a64d57eca84ae2c25e9a4360c7a1",
+  "runnerSha256": "f0e32f465486c16a5dc803db01f2843c9a2344bce6d2c736c2db7cfba9525124",
+  "pid": 21252,
+  "exitCode": 0,
+  "normalExit": true,
+  "journey": {
+    "cachedStateBeforeQuit": 3,
+    "checks": [
+      {
+        "name": "real MainCtx and owned native window ready",
+        "passed": true
+      },
+      {
+        "name": "actual primary native player available",
+        "passed": true
+      },
+      {
+        "name": "owned window entered fullscreen",
+        "passed": true
+      },
+      {
+        "name": "native observer installed before Quit observer",
+        "passed": true
+      },
+      {
+        "name": "owned generated media created",
+        "passed": true
+      },
+      {
+        "name": "owned media selected on actual primary player",
+        "passed": true
+      },
+      {
+        "name": "primary Start succeeds",
+        "passed": true
+      },
+      {
+        "name": "actual primary player reaches Playing",
+        "passed": true
+      },
+      {
+        "name": "primary remains Playing immediately before quit preparation",
+        "passed": true
+      },
+      {
+        "name": "actual primary player reaches Paused",
+        "passed": true
+      }
+    ],
+    "fullBetaAccepted": false,
+    "guiExitObserved": true,
+    "mode": "paused",
+    "nativeEvents": [
+      1,
+      2,
+      3,
+      4,
+      0
+    ],
+    "nativeStateBeforeQuit": 3,
+    "passed": true,
+    "privateFixture": true,
+    "quitRequested": true,
+    "restartBeforeFinalizer": false,
+    "stateAtGuiExit": 0,
+    "status": "awaiting-owned-window-inspection"
+  },
+  "runtimeIdentitiesUnchanged": true,
+  "sourceInputsUnchanged": true,
+  "mediaUnchanged": true,
+  "qtDiagnostics": [],
+  "nativeErrors": [],
+  "triggerPreconditionQualified": true,
+  "realWindowsAudioOpened": true,
+  "logOrder": {
+    "waitLine": 212,
+    "stopAcknowledgedLine": 245,
+    "qtTeardownLine": 249
+  },
+  "passed": true,
+  "rawReceiptSha256": "4daae8b621c1f843fc8ae1ac10bb4000233f1d37ba4f9eb9c0e9773b60fc6dc6",
+  "fullscreenScope": "Fixture window entered fullscreen before media; immediate-before-Quit fullscreen was not independently reasserted. R5 will qualify actual player fullscreen."
+}

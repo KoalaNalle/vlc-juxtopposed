@@ -140,6 +140,15 @@ def evaluate(obj,text):
     expr=QQmlExpression(qmlContext(obj),obj,text);value,_=expr.evaluate();assert not expr.hasError(),expr.error().toString();QTest.qWait(20);return value.toVariant()if hasattr(value,'toVariant')else value
 def focus(name):
     obj=item(name);obj.forceActiveFocus(Qt.TabFocusReason);QTest.qWait(25);return obj
+
+def popup_group_visible():
+    # Checking only Slider.isVisible() misses clipping by the host's viewport.
+    note=item('interfacepopupDurationTimingNote')
+    group=note.parentItem().parentItem().parentItem()
+    viewport=item('globalSettingsPageScroll')
+    point=group.mapToScene(QPointF(0,0));top=viewport.mapToScene(QPointF(0,0)).y()
+    assert point.y()>=top-.5 and point.y()+group.height()<=top+viewport.height()+.5,(
+        'Popup title, scale and timing note must scroll with keyboard focus',point.y(),group.height(),top,viewport.height())
 def click(name):
     obj=focus(name);assert obj.isEnabled()and obj.isVisible(),name;QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,obj.mapToScene(QPointF(obj.width()/2,obj.height()/2)).toPoint());QTest.qWait(25)
 def text(value):
@@ -271,6 +280,15 @@ assert not item('interfaceskinFile').isEnabled()and not item('interfaceskinBrows
 model.caps={key:key not in unsupported for key in seed};model.capabilitiesChanged.emit()
 done('Disconnected screens/legacy modes stay untouched; actual module/embed/tray capability dependencies disable only their affected controls')
 
+note=item('interfacepopupDurationTimingNote')
+assert note.isVisible() and 'system default' in note.property('text')
+assert 'system default' in evaluate(item('interfacepopupDuration'),'Accessible.description')
+assert not item('interfacecontrolHideDelayTimingNote').isVisible()
+before=len(model.requests);model.patch(popupDuration=777);QTest.qWait(25)
+focus('interfacepopupDuration');assert item('interfacepopupDuration').property('value')==.777 and len(model.requests)==before
+popup_group_visible()
+done('Popup-only visible and accessible zero/default explanation preserves arbitrary777ms on editor open without changing auto-hide wording')
+
 before=len(model.requests);ctx.general.patch(theme=1,accentIndex=4);QTest.qWait(25)
 assert page.property('accent').name()=='#18aad3' and item('interfaceskinFile').property('color').name()!='#8f8f8f'
 assert len(model.requests)==before and not ctx.general.requests
@@ -285,9 +303,16 @@ for width,height,scale in [(1080,897,1),(640,420,1),(960,600,1.5),(1280,720,2)]:
         obj=focus('interface'+key);assert obj.hasActiveFocus(),key
         point=obj.mapToScene(QPointF(0,0));viewport=item('globalSettingsPageScroll');top=viewport.mapToScene(QPointF(0,0)).y()
         assert point.x()>=-.5 and point.x()+obj.width()<=width+.5 and point.y()>=top-.5 and point.y()+obj.height()<=top+viewport.height()+.5,(key,point)
+    popup_group_visible()
     for key in ['controlHideDelay','popupDuration']:
         for index in range(21):
             obj=item('interface'+key+'OriginalTick'+str(index));assert [obj.width(),obj.height()]==([32,32]if index in[0,20]else[2,8])and obj.scale()==scale
+    note=item('interfacepopupDurationTimingNote');owner=note.parentItem()
+    assert note.isVisible() and note.width()>0 and note.implicitHeight()>0
+    assert note.y()+note.height()<=owner.height()+.5,(width,scale,note.y(),note.height(),owner.height())
+    assert note.width()<=owner.width()+.5
+    if scale==1:
+        assert window.grabWindow().save(str(results/f'popup-helper-{width}.png'))
     geometry.append(dict(width=width,height=height,scale=scale))
 done('Real enabled controls reveal within actual host at natural/narrow/150/200%; all original range root dimensions and clipping retained')
 

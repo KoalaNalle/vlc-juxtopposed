@@ -1,0 +1,788 @@
+{
+  "status": "terminal",
+  "passed": false,
+  "case": "edit",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "e9b0ed485f40d9fe81d06bd67b983d1d525fb9b4c573782d708fb80569c416a0",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "06adf6024d69b28256ea4b82560fd3fcc246ed402e4864c88afedcf7a1ab7ad1",
+  "runnerSha256": "ab304807d78ca4d415de06dd8247313cbde41fe2759e2c9ebb1450ebb5801d3a",
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "keyframeSeconds": [
+    0.0,
+    10.0,
+    20.0,
+    30.0,
+    40.0,
+    50.0
+  ],
+  "ffprobeSha256": "cb1c395203d8badd5f65aad68d06016fb68d12e128c16f9a9f4c52d3b899a27f",
+  "pid": 29072,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "journey": {
+    "activeSeek": "fast-same-keyframe-time",
+    "checks": [
+      {
+        "name": "private copied-data timer observer attaches",
+        "passed": true
+      },
+      {
+        "name": "seek fixture settings are fenced to owned paths",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables its paired native precise seek consumer",
+        "passed": true
+      },
+      {
+        "name": "native startup restores the saved precise seek default",
+        "passed": true
+      },
+      {
+        "name": "owned generated MP4 opens",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts the owned MP4",
+        "passed": true
+      },
+      {
+        "name": "actual primary decodes and displays generated video",
+        "passed": true
+      },
+      {
+        "name": "native primary pauses before seek checks",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": false
+      }
+    ],
+    "controlGeometry": [
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      }
+    ],
+    "error": "settled native paused clock still matches the displayed seek landing",
+    "fullBetaAccepted": false,
+    "passed": false,
+    "privateFixture": true,
+    "seeks": [
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 45,
+        "displayedPictures": 19,
+        "expectedSeconds": 24.2,
+        "label": "precise-time",
+        "precise": true,
+        "qtDisplaySeconds": 24.160000999999998,
+        "qtPosition": 0.4026666666666667,
+        "qtSeconds": 24.160000999999998
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 46,
+        "displayedPictures": 24,
+        "expectedSeconds": 30,
+        "label": "fast-time",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      }
+    ],
+    "status": "awaiting-owned-window-inspection",
+    "timerEvents": [
+      {
+        "callbackTick": 28869512401,
+        "coreTime": 0,
+        "deliveryTick": 28869572740,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 1,
+        "systemDate": 9223372036854776000,
+        "ts": 1
+      },
+      {
+        "callbackTick": 28869513298,
+        "coreTime": 0,
+        "deliveryTick": 28869580275,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 2,
+        "systemDate": 28869587402,
+        "ts": 1
+      },
+      {
+        "callbackTick": 28869626698,
+        "coreTime": 49219,
+        "deliveryTick": 28869636614,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.0006666666666666666,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 3,
+        "systemDate": 28869627402,
+        "ts": 40001
+      },
+      {
+        "callbackTick": 28869666849,
+        "coreTime": 82442,
+        "deliveryTick": 28869669837,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.0013333333333333333,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 4,
+        "systemDate": 28869667402,
+        "ts": 80001
+      },
+      {
+        "callbackTick": 28869707491,
+        "coreTime": 125108,
+        "deliveryTick": 28869712503,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.002,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 5,
+        "systemDate": 28869707402,
+        "ts": 120001
+      },
+      {
+        "callbackTick": 28869746983,
+        "coreTime": 176524,
+        "deliveryTick": 28869763919,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.0026666666666666666,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 6,
+        "systemDate": 28869747402,
+        "ts": 160001
+      },
+      {
+        "callbackTick": 28869788684,
+        "coreTime": 201389,
+        "deliveryTick": 28869788784,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.0033333333333333335,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 7,
+        "systemDate": 28869787402,
+        "ts": 200001
+      },
+      {
+        "callbackTick": 28869836119,
+        "coreTime": 248825,
+        "deliveryTick": 28869836219,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.004,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 8,
+        "systemDate": 28869827402,
+        "ts": 240001
+      },
+      {
+        "callbackTick": 28869866927,
+        "coreTime": 279642,
+        "deliveryTick": 28869867036,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.004666666666666667,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 9,
+        "systemDate": 28869867402,
+        "ts": 280001
+      },
+      {
+        "callbackTick": 28869917321,
+        "coreTime": 330032,
+        "deliveryTick": 28869917422,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.005333333333333333,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 10,
+        "systemDate": 28869907402,
+        "ts": 320001
+      },
+      {
+        "callbackTick": 28869948734,
+        "coreTime": 361512,
+        "deliveryTick": 28869948907,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.006,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 11,
+        "systemDate": 28869947402,
+        "ts": 360001
+      },
+      {
+        "callbackTick": 28869996081,
+        "coreTime": 408789,
+        "deliveryTick": 28869996182,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.006666666666666667,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 12,
+        "systemDate": 28869987402,
+        "ts": 400001
+      },
+      {
+        "callbackTick": 28870052017,
+        "coreTime": 465214,
+        "deliveryTick": 28870052609,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.007333333333333333,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 13,
+        "systemDate": 28870027402,
+        "ts": 440001
+      },
+      {
+        "callbackTick": 28870067382,
+        "coreTime": 480256,
+        "deliveryTick": 28870067649,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.008,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 14,
+        "systemDate": 28870067402,
+        "ts": 480001
+      },
+      {
+        "callbackTick": 28870110261,
+        "coreTime": 523749,
+        "deliveryTick": 28870111144,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.008666666666666666,
+        "qtDisplayTime": 523003,
+        "qtPosition": 0.008716699999999999,
+        "qtTime": 523003,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 15,
+        "systemDate": 28870107402,
+        "ts": 520001
+      },
+      {
+        "callbackTick": 28870156432,
+        "coreTime": 577481,
+        "deliveryTick": 28870164875,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.009333333333333334,
+        "qtDisplayTime": 523003,
+        "qtPosition": 0.008716699999999999,
+        "qtTime": 523003,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 16,
+        "systemDate": 28870147402,
+        "ts": 560001
+      },
+      {
+        "callbackTick": 28870187052,
+        "coreTime": 609171,
+        "deliveryTick": 28870196566,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.01,
+        "qtDisplayTime": 577833,
+        "qtPosition": 0.009630533333333333,
+        "qtTime": 577833,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 17,
+        "systemDate": 28870187402,
+        "ts": 600001
+      },
+      {
+        "callbackTick": 28870227853,
+        "coreTime": 640001,
+        "deliveryTick": 28870230520,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.010666666666666666,
+        "qtDisplayTime": 640001,
+        "qtPosition": 0.010666666666666666,
+        "qtTime": 640001,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 18,
+        "systemDate": 9223372036854776000,
+        "ts": 640001
+      },
+      {
+        "callbackTick": 28870309126,
+        "coreTime": 680001,
+        "deliveryTick": 28870326534,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.011333333333333334,
+        "qtDisplayTime": 680001,
+        "qtPosition": 0.011333333333333334,
+        "qtTime": 680001,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 19,
+        "systemDate": 9223372036854776000,
+        "ts": 680001
+      },
+      {
+        "callbackTick": 28870309164,
+        "coreTime": 680001,
+        "deliveryTick": 28870326724,
+        "kind": "paused",
+        "media": "1c56dc2abe0",
+        "qtDisplayTime": 680001,
+        "qtPosition": 0.011333333333333334,
+        "qtTime": 680001,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 20,
+        "systemDate": 28870196551
+      },
+      {
+        "callbackTick": 28870633638,
+        "coreTime": 624555,
+        "deliveryTick": 28870634352,
+        "kind": "seek-begin",
+        "label": "precise-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "rate": 1,
+        "seekEpoch": 1,
+        "seeking": true,
+        "sequence": 21,
+        "systemDate": 9223372036854776000,
+        "ts": 24200000
+      },
+      {
+        "callbackTick": 28870633724,
+        "coreTime": 624555,
+        "deliveryTick": 28870634500,
+        "kind": "seek-end",
+        "label": "precise-time",
+        "media": "1c56dc2abe0",
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "seekEpoch": 1,
+        "seeking": false,
+        "sequence": 22,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28870638915,
+        "coreTime": 24160001,
+        "deliveryTick": 28870646305,
+        "kind": "update",
+        "label": "precise-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24160001,
+        "qtPosition": 0.4026666666666667,
+        "qtTime": 24160001,
+        "rate": 1,
+        "seekEpoch": 1,
+        "seeking": false,
+        "sequence": 23,
+        "systemDate": 9223372036854776000,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28871534547,
+        "coreTime": 624555,
+        "deliveryTick": 28871535157,
+        "kind": "seek-begin",
+        "label": "fast-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.57,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 2,
+        "seeking": true,
+        "sequence": 24,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28871534632,
+        "coreTime": 624555,
+        "deliveryTick": 28871535359,
+        "kind": "seek-end",
+        "label": "fast-time",
+        "media": "1c56dc2abe0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "seekEpoch": 2,
+        "seeking": false,
+        "sequence": 25,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28871535461,
+        "coreTime": 30000001,
+        "deliveryTick": 28871536617,
+        "kind": "update",
+        "label": "fast-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 2,
+        "seeking": false,
+        "sequence": 26,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28871834634,
+        "coreTime": 624555,
+        "deliveryTick": 28871836909,
+        "kind": "seek-begin",
+        "label": "fast-same-keyframe-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1c56dc2abe0",
+        "position": 0.6366666666666667,
+        "qtDisplayTime": 38200001,
+        "qtPosition": 0.6366666666666667,
+        "qtTime": 38200001,
+        "rate": 1,
+        "seekEpoch": 3,
+        "seeking": true,
+        "sequence": 27,
+        "systemDate": 9223372036854776000,
+        "ts": 38200000
+      },
+      {
+        "callbackTick": 28871834714,
+        "coreTime": 624555,
+        "deliveryTick": 28871836972,
+        "kind": "seek-end",
+        "label": "fast-same-keyframe-time",
+        "media": "1c56dc2abe0",
+        "qtDisplayTime": 38200001,
+        "qtPosition": 0.6366666666666667,
+        "qtTime": 38200001,
+        "seekEpoch": 3,
+        "seeking": false,
+        "sequence": 28,
+        "systemDate": 0
+      }
+    ]
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [],
+  "expectedDiagnostics": [],
+  "nativeSeekLogChecks": [
+    {
+      "label": "precise-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 346,
+      "end": 591
+    },
+    {
+      "label": "fast-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 594,
+      "end": 658
+    }
+  ],
+  "quitLogOrder": {
+    "wait": 730,
+    "stopped": 762,
+    "teardown": 766
+  },
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "scope": "Native Qt explicit seek policy reaches actual MP4 accurate/fast branch, fresh displayed/decoded pictures and paused clock, settings rejection/retry and decoded resume. Does not establish frame-exact output, every format or physical scaling.",
+  "stderr.txtSha256": "fa7c257e9a9b8d20a27db3d1cd6f669689c10208fdf9389bc024372e361be37e",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vlc.logSha256": "845b25f0f7a0f0e618587ff540dd596e5055bcae5cf7317d02561dc344dcbc4d",
+  "journey.jsonSha256": "6c47062996d77743d53e905d49ba192b38185e129b40bbec581b10f086021622",
+  "beforeCoreControl": true,
+  "settledClockAgreement": true,
+  "expectedNegativeObserved": true
+}

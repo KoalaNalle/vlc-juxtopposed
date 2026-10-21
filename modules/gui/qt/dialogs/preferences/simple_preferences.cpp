@@ -770,6 +770,11 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
             m_resetters.push_back(std::make_unique<PropertyResetter>( ui.colorSchemeComboBox, "currentIndex" ));
             QObject::connect( ui.colorSchemeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged)
                               , p_intf->p_mi->getColorScheme(), &ColorSchemeModel::setCurrentIndex );
+            QObject::connect( p_intf->p_mi->getColorScheme(), &ColorSchemeModel::currentChanged,
+                              ui.colorSchemeComboBox, [combo = ui.colorSchemeComboBox, scheme = p_intf->p_mi->getColorScheme()] {
+                const QSignalBlocker blocker(combo);
+                combo->setCurrentIndex(scheme->currentIndex());
+            });
 
             const double intfScaleFloatFactor = 100;
             const auto updateIntfUserScaleFactorFromControls =

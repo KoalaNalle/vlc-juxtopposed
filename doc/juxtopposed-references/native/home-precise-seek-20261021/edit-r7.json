@@ -1,0 +1,2982 @@
+{
+  "status": "terminal",
+  "passed": true,
+  "case": "edit",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "9f9702bec96dd8b56807831d987c4cdb1ec018fbdeafb042df750c2809c53dcf",
+    "plugins/gui/libqt_plugin.dll": "e9b0ed485f40d9fe81d06bd67b983d1d525fb9b4c573782d708fb80569c416a0",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "06adf6024d69b28256ea4b82560fd3fcc246ed402e4864c88afedcf7a1ab7ad1",
+  "runnerSha256": "ab304807d78ca4d415de06dd8247313cbde41fe2759e2c9ebb1450ebb5801d3a",
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "keyframeSeconds": [
+    0.0,
+    10.0,
+    20.0,
+    30.0,
+    40.0,
+    50.0
+  ],
+  "ffprobeSha256": "cb1c395203d8badd5f65aad68d06016fb68d12e128c16f9a9f4c52d3b899a27f",
+  "pid": 444,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "journey": {
+    "activeSeek": "precise-after-retry",
+    "checks": [
+      {
+        "name": "private copied-data timer observer attaches",
+        "passed": true
+      },
+      {
+        "name": "seek fixture settings are fenced to owned paths",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables its paired native precise seek consumer",
+        "passed": true
+      },
+      {
+        "name": "native startup restores the saved precise seek default",
+        "passed": true
+      },
+      {
+        "name": "owned generated MP4 opens",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts the owned MP4",
+        "passed": true
+      },
+      {
+        "name": "actual primary decodes and displays generated video",
+        "passed": true
+      },
+      {
+        "name": "native primary pauses before seek checks",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "owned native config replacement is blocked",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual bounded pointer state capture saved",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "failed actual precision save preserves config and accepted policy with error feedback",
+        "passed": true
+      },
+      {
+        "name": "native rejected Toggle retains focus and readable nonfocusable local error",
+        "passed": true
+      },
+      {
+        "name": "native rejected Toggle and full error both fit actual viewport without fixture reveal",
+        "passed": true
+      },
+      {
+        "name": "native rejected Toggle and full error both fit actual viewport without fixture reveal",
+        "passed": true
+      },
+      {
+        "name": "failed save preserves paused media and clock",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual bounded pointer state capture saved",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "same actual toggle retries successfully after storage recovers",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "settled native paused clock still matches the displayed seek landing",
+        "passed": true
+      },
+      {
+        "name": "settled Qt elapsed display and slider match the native seek landing",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native decoded playback resumes after seeks and settings edits",
+        "passed": true
+      },
+      {
+        "name": "Qt elapsed clock advances with resumed playback",
+        "passed": true
+      },
+      {
+        "name": "playing Fast seek displays the keyframe and continues its clock",
+        "passed": true
+      },
+      {
+        "name": "playing seek pauses normally for clock reconciliation",
+        "passed": true
+      },
+      {
+        "name": "playing seek and subsequent pause retain aligned native and Qt clocks",
+        "passed": true
+      }
+    ],
+    "controlGeometry": [
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      }
+    ],
+    "fullBetaAccepted": false,
+    "passed": true,
+    "privateFixture": true,
+    "retry": {
+      "errorSignals": 1,
+      "lastError": "",
+      "nativeFast": 0,
+      "precise": true,
+      "valueSignals": 1
+    },
+    "seeks": [
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 39,
+        "displayedPictures": 13,
+        "expectedSeconds": 24.2,
+        "label": "precise-time",
+        "precise": true,
+        "qtDisplaySeconds": 24.160000999999998,
+        "qtPosition": 0.4026666666666667,
+        "qtSeconds": 24.160000999999998
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 40,
+        "displayedPictures": 17,
+        "expectedSeconds": 30,
+        "label": "fast-time",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 41,
+        "displayedPictures": 28,
+        "expectedSeconds": 30,
+        "label": "fast-same-keyframe-time",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 42,
+        "displayedPictures": 32,
+        "expectedSeconds": 24.2,
+        "label": "precise-position",
+        "precise": true,
+        "qtDisplaySeconds": 24.160000999999998,
+        "qtPosition": 0.4026666666666667,
+        "qtSeconds": 24.160000999999998
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 43,
+        "displayedPictures": 43,
+        "expectedSeconds": 30,
+        "label": "fast-position",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 34.160001,
+        "decodedPictures": 44,
+        "displayedPictures": 53,
+        "expectedSeconds": 34.2,
+        "label": "precise-relative-time",
+        "precise": true,
+        "qtDisplaySeconds": 34.160001,
+        "qtPosition": 0.5693333333333334,
+        "qtSeconds": 34.160001
+      },
+      {
+        "actualSeconds": 40.000001,
+        "decodedPictures": 45,
+        "displayedPictures": 64,
+        "expectedSeconds": 40,
+        "label": "fast-relative-time",
+        "precise": false,
+        "qtDisplaySeconds": 40.000001,
+        "qtPosition": 0.6666666666666666,
+        "qtSeconds": 40.000001
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 46,
+        "displayedPictures": 74,
+        "expectedSeconds": 24.2,
+        "label": "precise-timeline",
+        "precise": true,
+        "qtDisplaySeconds": 24.160000999999998,
+        "qtPosition": 0.4026666666666667,
+        "qtSeconds": 24.160000999999998
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 47,
+        "displayedPictures": 84,
+        "expectedSeconds": 30,
+        "label": "fast-timeline",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 32.960001,
+        "decodedPictures": 48,
+        "displayedPictures": 95,
+        "expectedSeconds": 33,
+        "label": "precise-forward",
+        "precise": true,
+        "qtDisplaySeconds": 32.960001,
+        "qtPosition": 0.5493333333333333,
+        "qtSeconds": 32.960001
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 49,
+        "displayedPictures": 106,
+        "expectedSeconds": 30,
+        "label": "fast-forward",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 26.960001,
+        "decodedPictures": 50,
+        "displayedPictures": 116,
+        "expectedSeconds": 27,
+        "label": "precise-backward",
+        "precise": true,
+        "qtDisplaySeconds": 26.960001,
+        "qtPosition": 0.4493333333333333,
+        "qtSeconds": 26.960001
+      },
+      {
+        "actualSeconds": 20.000000999999997,
+        "decodedPictures": 51,
+        "displayedPictures": 127,
+        "expectedSeconds": 20,
+        "label": "fast-backward",
+        "precise": false,
+        "qtDisplaySeconds": 20.000000999999997,
+        "qtPosition": 0.3333333333333333,
+        "qtSeconds": 20.000000999999997
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 52,
+        "displayedPictures": 138,
+        "expectedSeconds": 30,
+        "label": "fast-after-rejected-save",
+        "precise": false,
+        "qtDisplaySeconds": 30.000000999999997,
+        "qtPosition": 0.5,
+        "qtSeconds": 30.000000999999997
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 53,
+        "displayedPictures": 152,
+        "expectedSeconds": 24.2,
+        "label": "precise-after-retry",
+        "precise": true,
+        "qtDisplaySeconds": 24.160000999999998,
+        "qtPosition": 0.4026666666666667,
+        "qtSeconds": 24.160000999999998
+      }
+    ],
+    "status": "checks_complete",
+    "timerEvents": [
+      {
+        "callbackTick": 28917934937,
+        "coreTime": 0,
+        "deliveryTick": 28917996220,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 1,
+        "systemDate": 9223372036854776000,
+        "ts": 1
+      },
+      {
+        "callbackTick": 28917935693,
+        "coreTime": 0,
+        "deliveryTick": 28917996292,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 2,
+        "systemDate": 28918010187,
+        "ts": 1
+      },
+      {
+        "callbackTick": 28918050227,
+        "coreTime": 48029,
+        "deliveryTick": 28918058207,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.0006666666666666666,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 3,
+        "systemDate": 28918050187,
+        "ts": 40001
+      },
+      {
+        "callbackTick": 28918089390,
+        "coreTime": 80130,
+        "deliveryTick": 28918090309,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.0013333333333333333,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 4,
+        "systemDate": 28918090187,
+        "ts": 80001
+      },
+      {
+        "callbackTick": 28918129906,
+        "coreTime": 125783,
+        "deliveryTick": 28918135963,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.002,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 5,
+        "systemDate": 28918130187,
+        "ts": 120001
+      },
+      {
+        "callbackTick": 28918184700,
+        "coreTime": 175666,
+        "deliveryTick": 28918185845,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.0026666666666666666,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 6,
+        "systemDate": 28918170187,
+        "ts": 160001
+      },
+      {
+        "callbackTick": 28918211019,
+        "coreTime": 209003,
+        "deliveryTick": 28918219181,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.0033333333333333335,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 7,
+        "systemDate": 28918210187,
+        "ts": 200001
+      },
+      {
+        "callbackTick": 28918252526,
+        "coreTime": 265550,
+        "deliveryTick": 28918275727,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.004,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 8,
+        "systemDate": 28918250187,
+        "ts": 240001
+      },
+      {
+        "callbackTick": 28918290922,
+        "coreTime": 280869,
+        "deliveryTick": 28918291046,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.004666666666666667,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 9,
+        "systemDate": 28918290187,
+        "ts": 280001
+      },
+      {
+        "callbackTick": 28918329756,
+        "coreTime": 335389,
+        "deliveryTick": 28918345563,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.005333333333333333,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 10,
+        "systemDate": 28918330187,
+        "ts": 320001
+      },
+      {
+        "callbackTick": 28918377392,
+        "coreTime": 367620,
+        "deliveryTick": 28918377798,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.006,
+        "qtDisplayTime": 1,
+        "qtPosition": 0,
+        "qtTime": 1,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 11,
+        "systemDate": 28918370187,
+        "ts": 360001
+      },
+      {
+        "callbackTick": 28918412337,
+        "coreTime": 400001,
+        "deliveryTick": 28918420930,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.006666666666666667,
+        "qtDisplayTime": 400001,
+        "qtPosition": 0.006666666666666667,
+        "qtTime": 400001,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 12,
+        "systemDate": 9223372036854776000,
+        "ts": 400001
+      },
+      {
+        "callbackTick": 28918492799,
+        "coreTime": 440001,
+        "deliveryTick": 28918507397,
+        "kind": "update",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.007333333333333333,
+        "qtDisplayTime": 440001,
+        "qtPosition": 0.007333333333333333,
+        "qtTime": 440001,
+        "rate": 1,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 13,
+        "systemDate": 9223372036854776000,
+        "ts": 440001
+      },
+      {
+        "callbackTick": 28918492846,
+        "coreTime": 440001,
+        "deliveryTick": 28918507480,
+        "kind": "paused",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 440001,
+        "qtPosition": 0.007333333333333333,
+        "qtTime": 440001,
+        "seekEpoch": 0,
+        "seeking": false,
+        "sequence": 14,
+        "systemDate": 28918396899
+      },
+      {
+        "callbackTick": 28918830852,
+        "coreTime": 421177,
+        "deliveryTick": 28918831818,
+        "kind": "seek-begin",
+        "label": "precise-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "rate": 1,
+        "seekEpoch": 1,
+        "seeking": true,
+        "sequence": 15,
+        "systemDate": 9223372036854776000,
+        "ts": 24200000
+      },
+      {
+        "callbackTick": 28918830949,
+        "coreTime": 421177,
+        "deliveryTick": 28918831988,
+        "kind": "seek-end",
+        "label": "precise-time",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "seekEpoch": 1,
+        "seeking": false,
+        "sequence": 16,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28918835835,
+        "coreTime": 24160001,
+        "deliveryTick": 28918854560,
+        "kind": "update",
+        "label": "precise-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24160001,
+        "qtPosition": 0.4026666666666667,
+        "qtTime": 24160001,
+        "rate": 1,
+        "seekEpoch": 1,
+        "seeking": false,
+        "sequence": 17,
+        "systemDate": 9223372036854776000,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28919749095,
+        "coreTime": 421177,
+        "deliveryTick": 28919749684,
+        "kind": "seek-begin",
+        "label": "fast-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.57,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 2,
+        "seeking": true,
+        "sequence": 18,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28919749179,
+        "coreTime": 30000001,
+        "deliveryTick": 28919751038,
+        "kind": "seek-end",
+        "label": "fast-time",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "seekEpoch": 2,
+        "seeking": false,
+        "sequence": 19,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28919750120,
+        "coreTime": 30000001,
+        "deliveryTick": 28919752236,
+        "kind": "update",
+        "label": "fast-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 2,
+        "seeking": false,
+        "sequence": 20,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28920054041,
+        "coreTime": 30000001,
+        "deliveryTick": 28920056043,
+        "kind": "seek-begin",
+        "label": "fast-same-keyframe-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.6366666666666667,
+        "qtDisplayTime": 38200001,
+        "qtPosition": 0.6366666666666667,
+        "qtTime": 38200001,
+        "rate": 1,
+        "seekEpoch": 3,
+        "seeking": true,
+        "sequence": 21,
+        "systemDate": 9223372036854776000,
+        "ts": 38200000
+      },
+      {
+        "callbackTick": 28920054121,
+        "coreTime": 30000001,
+        "deliveryTick": 28920056111,
+        "kind": "seek-end",
+        "label": "fast-same-keyframe-time",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 38200001,
+        "qtPosition": 0.6366666666666667,
+        "qtTime": 38200001,
+        "seekEpoch": 3,
+        "seeking": false,
+        "sequence": 22,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28920054949,
+        "coreTime": 30000001,
+        "deliveryTick": 28920056531,
+        "kind": "update",
+        "label": "fast-same-keyframe-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 3,
+        "seeking": false,
+        "sequence": 23,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28920901922,
+        "coreTime": 421177,
+        "deliveryTick": 28920902559,
+        "kind": "seek-begin",
+        "label": "precise-position",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "rate": 1,
+        "seekEpoch": 4,
+        "seeking": true,
+        "sequence": 24,
+        "systemDate": 9223372036854776000,
+        "ts": 24200000
+      },
+      {
+        "callbackTick": 28920902003,
+        "coreTime": 421177,
+        "deliveryTick": 28920902724,
+        "kind": "seek-end",
+        "label": "precise-position",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "seekEpoch": 4,
+        "seeking": false,
+        "sequence": 25,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28920905655,
+        "coreTime": 24160001,
+        "deliveryTick": 28920913404,
+        "kind": "update",
+        "label": "precise-position",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24160001,
+        "qtPosition": 0.4026666666666667,
+        "qtTime": 24160001,
+        "rate": 1,
+        "seekEpoch": 4,
+        "seeking": false,
+        "sequence": 26,
+        "systemDate": 9223372036854776000,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28921783368,
+        "coreTime": 421177,
+        "deliveryTick": 28921783880,
+        "kind": "seek-begin",
+        "label": "fast-position",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5700000000000001,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 5,
+        "seeking": true,
+        "sequence": 27,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28921783445,
+        "coreTime": 421177,
+        "deliveryTick": 28921784141,
+        "kind": "seek-end",
+        "label": "fast-position",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "seekEpoch": 5,
+        "seeking": false,
+        "sequence": 28,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28921784271,
+        "coreTime": 30000001,
+        "deliveryTick": 28921784772,
+        "kind": "update",
+        "label": "fast-position",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 5,
+        "seeking": false,
+        "sequence": 29,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28922677241,
+        "coreTime": 421177,
+        "deliveryTick": 28922677864,
+        "kind": "seek-begin",
+        "label": "precise-relative-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5700000166666667,
+        "qtDisplayTime": 34200002,
+        "qtPosition": 0.5700000166666667,
+        "qtTime": 34200002,
+        "rate": 1,
+        "seekEpoch": 6,
+        "seeking": true,
+        "sequence": 30,
+        "systemDate": 9223372036854776000,
+        "ts": 34200001
+      },
+      {
+        "callbackTick": 28922677330,
+        "coreTime": 421177,
+        "deliveryTick": 28922678069,
+        "kind": "seek-end",
+        "label": "precise-relative-time",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200002,
+        "qtPosition": 0.5700000166666667,
+        "qtTime": 34200002,
+        "seekEpoch": 6,
+        "seeking": false,
+        "sequence": 31,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28922681360,
+        "coreTime": 34160001,
+        "deliveryTick": 28922699828,
+        "kind": "update",
+        "label": "precise-relative-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5693333333333334,
+        "qtDisplayTime": 34160001,
+        "qtPosition": 0.5693333333333334,
+        "qtTime": 34160001,
+        "rate": 1,
+        "seekEpoch": 6,
+        "seeking": false,
+        "sequence": 32,
+        "systemDate": 9223372036854776000,
+        "ts": 34160001
+      },
+      {
+        "callbackTick": 28923565277,
+        "coreTime": 421177,
+        "deliveryTick": 28923565846,
+        "kind": "seek-begin",
+        "label": "fast-relative-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.8060000166666667,
+        "qtDisplayTime": 48360002,
+        "qtPosition": 0.8060000166666667,
+        "qtTime": 48360002,
+        "rate": 1,
+        "seekEpoch": 7,
+        "seeking": true,
+        "sequence": 33,
+        "systemDate": 9223372036854776000,
+        "ts": 48360001
+      },
+      {
+        "callbackTick": 28923565357,
+        "coreTime": 421177,
+        "deliveryTick": 28923565987,
+        "kind": "seek-end",
+        "label": "fast-relative-time",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 48360002,
+        "qtPosition": 0.8060000166666667,
+        "qtTime": 48360002,
+        "seekEpoch": 7,
+        "seeking": false,
+        "sequence": 34,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28923566805,
+        "coreTime": 40000001,
+        "deliveryTick": 28923575949,
+        "kind": "update",
+        "label": "fast-relative-time",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.6666666666666666,
+        "qtDisplayTime": 40000001,
+        "qtPosition": 0.6666666666666666,
+        "qtTime": 40000001,
+        "rate": 1,
+        "seekEpoch": 7,
+        "seeking": false,
+        "sequence": 35,
+        "systemDate": 9223372036854776000,
+        "ts": 40000001
+      },
+      {
+        "callbackTick": 28924447641,
+        "coreTime": 421177,
+        "deliveryTick": 28924448136,
+        "kind": "seek-begin",
+        "label": "precise-timeline",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "rate": 1,
+        "seekEpoch": 8,
+        "seeking": true,
+        "sequence": 36,
+        "systemDate": 9223372036854776000,
+        "ts": 24200000
+      },
+      {
+        "callbackTick": 28924447734,
+        "coreTime": 421177,
+        "deliveryTick": 28924448269,
+        "kind": "seek-end",
+        "label": "precise-timeline",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "seekEpoch": 8,
+        "seeking": false,
+        "sequence": 37,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28924452088,
+        "coreTime": 24160001,
+        "deliveryTick": 28924459697,
+        "kind": "update",
+        "label": "precise-timeline",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24160001,
+        "qtPosition": 0.4026666666666667,
+        "qtTime": 24160001,
+        "rate": 1,
+        "seekEpoch": 8,
+        "seeking": false,
+        "sequence": 38,
+        "systemDate": 9223372036854776000,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28925333392,
+        "coreTime": 421177,
+        "deliveryTick": 28925334175,
+        "kind": "seek-begin",
+        "label": "fast-timeline",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5700000000000001,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 9,
+        "seeking": true,
+        "sequence": 39,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28925333539,
+        "coreTime": 30000001,
+        "deliveryTick": 28925335662,
+        "kind": "seek-end",
+        "label": "fast-timeline",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "seekEpoch": 9,
+        "seeking": false,
+        "sequence": 40,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28925335356,
+        "coreTime": 30000001,
+        "deliveryTick": 28925337152,
+        "kind": "update",
+        "label": "fast-timeline",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 9,
+        "seeking": false,
+        "sequence": 41,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28926232153,
+        "coreTime": 421177,
+        "deliveryTick": 28926232699,
+        "kind": "seek-begin",
+        "label": "precise-forward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5500000166666666,
+        "qtDisplayTime": 33000002,
+        "qtPosition": 0.5500000166666666,
+        "qtTime": 33000002,
+        "rate": 1,
+        "seekEpoch": 10,
+        "seeking": true,
+        "sequence": 42,
+        "systemDate": 9223372036854776000,
+        "ts": 33000001
+      },
+      {
+        "callbackTick": 28926232263,
+        "coreTime": 421177,
+        "deliveryTick": 28926232988,
+        "kind": "seek-end",
+        "label": "precise-forward",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 33000002,
+        "qtPosition": 0.5500000166666666,
+        "qtTime": 33000002,
+        "seekEpoch": 10,
+        "seeking": false,
+        "sequence": 43,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28926236676,
+        "coreTime": 32960001,
+        "deliveryTick": 28926245060,
+        "kind": "update",
+        "label": "precise-forward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5493333333333333,
+        "qtDisplayTime": 32960001,
+        "qtPosition": 0.5493333333333333,
+        "qtTime": 32960001,
+        "rate": 1,
+        "seekEpoch": 10,
+        "seeking": false,
+        "sequence": 44,
+        "systemDate": 9223372036854776000,
+        "ts": 32960001
+      },
+      {
+        "callbackTick": 28927146731,
+        "coreTime": 421177,
+        "deliveryTick": 28927147271,
+        "kind": "seek-begin",
+        "label": "fast-forward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.59933335,
+        "qtDisplayTime": 35960002,
+        "qtPosition": 0.59933335,
+        "qtTime": 35960002,
+        "rate": 1,
+        "seekEpoch": 11,
+        "seeking": true,
+        "sequence": 45,
+        "systemDate": 9223372036854776000,
+        "ts": 35960001
+      },
+      {
+        "callbackTick": 28927146841,
+        "coreTime": 421177,
+        "deliveryTick": 28927147640,
+        "kind": "seek-end",
+        "label": "fast-forward",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 35960002,
+        "qtPosition": 0.59933335,
+        "qtTime": 35960002,
+        "seekEpoch": 11,
+        "seeking": false,
+        "sequence": 46,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28927148556,
+        "coreTime": 30000001,
+        "deliveryTick": 28927169882,
+        "kind": "update",
+        "label": "fast-forward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 11,
+        "seeking": false,
+        "sequence": 47,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28928050065,
+        "coreTime": 421177,
+        "deliveryTick": 28928050839,
+        "kind": "seek-begin",
+        "label": "precise-backward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.45000001666666667,
+        "qtDisplayTime": 27000002,
+        "qtPosition": 0.45000001666666667,
+        "qtTime": 27000002,
+        "rate": 1,
+        "seekEpoch": 12,
+        "seeking": true,
+        "sequence": 48,
+        "systemDate": 9223372036854776000,
+        "ts": 27000001
+      },
+      {
+        "callbackTick": 28928050193,
+        "coreTime": 421177,
+        "deliveryTick": 28928051343,
+        "kind": "seek-end",
+        "label": "precise-backward",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 27000002,
+        "qtPosition": 0.45000001666666667,
+        "qtTime": 27000002,
+        "seekEpoch": 12,
+        "seeking": false,
+        "sequence": 49,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28928058882,
+        "coreTime": 26960001,
+        "deliveryTick": 28928079319,
+        "kind": "update",
+        "label": "precise-backward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4493333333333333,
+        "qtDisplayTime": 26960001,
+        "qtPosition": 0.4493333333333333,
+        "qtTime": 26960001,
+        "rate": 1,
+        "seekEpoch": 12,
+        "seeking": false,
+        "sequence": 50,
+        "systemDate": 9223372036854776000,
+        "ts": 26960001
+      },
+      {
+        "callbackTick": 28928958179,
+        "coreTime": 421177,
+        "deliveryTick": 28928958822,
+        "kind": "seek-begin",
+        "label": "fast-backward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.39933335,
+        "qtDisplayTime": 23960002,
+        "qtPosition": 0.39933335,
+        "qtTime": 23960002,
+        "rate": 1,
+        "seekEpoch": 13,
+        "seeking": true,
+        "sequence": 51,
+        "systemDate": 9223372036854776000,
+        "ts": 23960001
+      },
+      {
+        "callbackTick": 28928958292,
+        "coreTime": 421177,
+        "deliveryTick": 28928959184,
+        "kind": "seek-end",
+        "label": "fast-backward",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 23960002,
+        "qtPosition": 0.39933335,
+        "qtTime": 23960002,
+        "seekEpoch": 13,
+        "seeking": false,
+        "sequence": 52,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28928961227,
+        "coreTime": 20000001,
+        "deliveryTick": 28928979962,
+        "kind": "update",
+        "label": "fast-backward",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.3333333333333333,
+        "qtDisplayTime": 20000001,
+        "qtPosition": 0.3333333333333333,
+        "qtTime": 20000001,
+        "rate": 1,
+        "seekEpoch": 13,
+        "seeking": false,
+        "sequence": 53,
+        "systemDate": 9223372036854776000,
+        "ts": 20000001
+      },
+      {
+        "callbackTick": 28930199540,
+        "coreTime": 421177,
+        "deliveryTick": 28930200449,
+        "kind": "seek-begin",
+        "label": "fast-after-rejected-save",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.57,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 14,
+        "seeking": true,
+        "sequence": 54,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28930199629,
+        "coreTime": 421177,
+        "deliveryTick": 28930200622,
+        "kind": "seek-end",
+        "label": "fast-after-rejected-save",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.57,
+        "qtTime": 34200001,
+        "seekEpoch": 14,
+        "seeking": false,
+        "sequence": 55,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28930201277,
+        "coreTime": 30000001,
+        "deliveryTick": 28931208796,
+        "kind": "update",
+        "label": "fast-after-rejected-save",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 14,
+        "seeking": false,
+        "sequence": 56,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28932897330,
+        "coreTime": 421177,
+        "deliveryTick": 28932898519,
+        "kind": "seek-begin",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": true,
+        "sequence": 57,
+        "systemDate": 9223372036854776000,
+        "ts": 24200000
+      },
+      {
+        "callbackTick": 28932897412,
+        "coreTime": 421177,
+        "deliveryTick": 28932898712,
+        "kind": "seek-end",
+        "label": "precise-after-retry",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 24200001,
+        "qtPosition": 0.4033333333333333,
+        "qtTime": 24200001,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 58,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28932901943,
+        "coreTime": 24160001,
+        "deliveryTick": 28932921377,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24160001,
+        "qtPosition": 0.4026666666666667,
+        "qtTime": 24160001,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 59,
+        "systemDate": 9223372036854776000,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28933772832,
+        "coreTime": 24222271,
+        "deliveryTick": 28933793899,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4026666666666667,
+        "qtDisplayTime": 24221903,
+        "qtPosition": 0.4036983666666667,
+        "qtTime": 24221903,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 60,
+        "systemDate": 28933731636,
+        "ts": 24160001
+      },
+      {
+        "callbackTick": 28933773471,
+        "coreTime": 24222277,
+        "deliveryTick": 28933793909,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4033333333333333,
+        "qtDisplayTime": 24221903,
+        "qtPosition": 0.4036983666666667,
+        "qtTime": 24221903,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 61,
+        "systemDate": 28933771636,
+        "ts": 24200001
+      },
+      {
+        "callbackTick": 28933810811,
+        "coreTime": 24251139,
+        "deliveryTick": 28933822747,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.404,
+        "qtDisplayTime": 24221903,
+        "qtPosition": 0.4036983666666667,
+        "qtTime": 24221903,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 62,
+        "systemDate": 28933811636,
+        "ts": 24240001
+      },
+      {
+        "callbackTick": 28933850680,
+        "coreTime": 24282009,
+        "deliveryTick": 28933853636,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4046666666666667,
+        "qtDisplayTime": 24221903,
+        "qtPosition": 0.4036983666666667,
+        "qtTime": 24221903,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 63,
+        "systemDate": 28933851636,
+        "ts": 24280001
+      },
+      {
+        "callbackTick": 28933890693,
+        "coreTime": 24326027,
+        "deliveryTick": 28933897653,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4053333333333333,
+        "qtDisplayTime": 24282115,
+        "qtPosition": 0.4047019,
+        "qtTime": 24282115,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 64,
+        "systemDate": 28933891636,
+        "ts": 24320001
+      },
+      {
+        "callbackTick": 28933930722,
+        "coreTime": 24377898,
+        "deliveryTick": 28933949524,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.406,
+        "qtDisplayTime": 24357078,
+        "qtPosition": 0.40595128333333336,
+        "qtTime": 24357078,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 65,
+        "systemDate": 28933931636,
+        "ts": 24360001
+      },
+      {
+        "callbackTick": 28933971041,
+        "coreTime": 24406819,
+        "deliveryTick": 28933978446,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4066666666666667,
+        "qtDisplayTime": 24357078,
+        "qtPosition": 0.40595128333333336,
+        "qtTime": 24357078,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 66,
+        "systemDate": 28933971636,
+        "ts": 24400001
+      },
+      {
+        "callbackTick": 28934011595,
+        "coreTime": 24451003,
+        "deliveryTick": 28934022629,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4073333333333333,
+        "qtDisplayTime": 24417993,
+        "qtPosition": 0.4069665333333333,
+        "qtTime": 24417993,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 67,
+        "systemDate": 28934011636,
+        "ts": 24440001
+      },
+      {
+        "callbackTick": 28934050695,
+        "coreTime": 24484602,
+        "deliveryTick": 28934056233,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.408,
+        "qtDisplayTime": 24417993,
+        "qtPosition": 0.4069665333333333,
+        "qtTime": 24417993,
+        "rate": 1,
+        "seekEpoch": 15,
+        "seeking": false,
+        "sequence": 68,
+        "systemDate": 28934051636,
+        "ts": 24480001
+      },
+      {
+        "callbackTick": 28934056207,
+        "coreTime": 24485066,
+        "deliveryTick": 28934056695,
+        "kind": "seek-begin",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5700000000000001,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 16,
+        "seeking": true,
+        "sequence": 69,
+        "systemDate": 9223372036854776000,
+        "ts": 34200000
+      },
+      {
+        "callbackTick": 28934090520,
+        "coreTime": 29936834,
+        "deliveryTick": 28934108145,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.4086666666666667,
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "rate": 1,
+        "seekEpoch": 16,
+        "seeking": true,
+        "sequence": 70,
+        "systemDate": 28934091636,
+        "ts": 24520001
+      },
+      {
+        "callbackTick": 28934090565,
+        "coreTime": 29936845,
+        "deliveryTick": 28934108162,
+        "kind": "seek-end",
+        "label": "precise-after-retry",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 34200001,
+        "qtPosition": 0.5700000000000001,
+        "qtTime": 34200001,
+        "seekEpoch": 16,
+        "seeking": false,
+        "sequence": 71,
+        "systemDate": 0
+      },
+      {
+        "callbackTick": 28934092633,
+        "coreTime": 29937611,
+        "deliveryTick": 28934108927,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 30000001,
+        "qtPosition": 0.5,
+        "qtTime": 30000001,
+        "rate": 1,
+        "seekEpoch": 16,
+        "seeking": false,
+        "sequence": 72,
+        "systemDate": 9223372036854776000,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28934093399,
+        "coreTime": 29938096,
+        "deliveryTick": 28934109413,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5,
+        "qtDisplayTime": 29937614,
+        "qtPosition": 0.4989602166666667,
+        "qtTime": 29937614,
+        "rate": 1,
+        "seekEpoch": 16,
+        "seeking": false,
+        "sequence": 73,
+        "systemDate": 28934171324,
+        "ts": 30000001
+      },
+      {
+        "callbackTick": 28934211126,
+        "coreTime": 30040001,
+        "deliveryTick": 28934211622,
+        "kind": "update",
+        "label": "precise-after-retry",
+        "length": 60000000,
+        "live": false,
+        "media": "1f52bd7ffa0",
+        "position": 0.5006666666666667,
+        "qtDisplayTime": 30040001,
+        "qtPosition": 0.5006666666666667,
+        "qtTime": 30040001,
+        "rate": 1,
+        "seekEpoch": 16,
+        "seeking": false,
+        "sequence": 74,
+        "systemDate": 9223372036854776000,
+        "ts": 30040001
+      },
+      {
+        "callbackTick": 28934211164,
+        "coreTime": 30040001,
+        "deliveryTick": 28934211778,
+        "kind": "paused",
+        "label": "precise-after-retry",
+        "media": "1f52bd7ffa0",
+        "qtDisplayTime": 30040001,
+        "qtPosition": 0.5006666666666667,
+        "qtTime": 30040001,
+        "seekEpoch": 16,
+        "seeking": false,
+        "sequence": 75,
+        "systemDate": 28934177627
+      }
+    ]
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "expectedDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "nativeSeekLogChecks": [
+    {
+      "label": "precise-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 346,
+      "end": 591
+    },
+    {
+      "label": "fast-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 594,
+      "end": 658
+    },
+    {
+      "label": "fast-same-keyframe-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 8200ms alignment to 38200000"
+      ],
+      "requestedSeconds": 38.2,
+      "nativeDateMicroseconds": 38200000,
+      "prerollOrAlignmentMs": 8200,
+      "passed": true,
+      "begin": 659,
+      "end": 729
+    },
+    {
+      "label": "precise-position",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 732,
+      "end": 977
+    },
+    {
+      "label": "fast-position",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 980,
+      "end": 1044
+    },
+    {
+      "label": "precise-relative-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 34200001"
+      ],
+      "requestedSeconds": 34.200001,
+      "nativeDateMicroseconds": 34200001,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 1047,
+      "end": 1293
+    },
+    {
+      "label": "fast-relative-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 8360ms alignment to 48360001"
+      ],
+      "requestedSeconds": 48.360001,
+      "nativeDateMicroseconds": 48360001,
+      "prerollOrAlignmentMs": 8360,
+      "passed": true,
+      "begin": 1296,
+      "end": 1362
+    },
+    {
+      "label": "precise-timeline",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 1365,
+      "end": 1610
+    },
+    {
+      "label": "fast-timeline",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 1613,
+      "end": 1677
+    },
+    {
+      "label": "precise-forward",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 3000ms preroll (use input-fast-seek to avoid) to 33000001"
+      ],
+      "requestedSeconds": 33.000001,
+      "nativeDateMicroseconds": 33000001,
+      "prerollOrAlignmentMs": 3000,
+      "passed": true,
+      "begin": 1680,
+      "end": 1894
+    },
+    {
+      "label": "fast-forward",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 5960ms alignment to 35960001"
+      ],
+      "requestedSeconds": 35.960001,
+      "nativeDateMicroseconds": 35960001,
+      "prerollOrAlignmentMs": 5960,
+      "passed": true,
+      "begin": 1897,
+      "end": 1962
+    },
+    {
+      "label": "precise-backward",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 7000ms preroll (use input-fast-seek to avoid) to 27000001"
+      ],
+      "requestedSeconds": 27.000000999999997,
+      "nativeDateMicroseconds": 27000001,
+      "prerollOrAlignmentMs": 7000,
+      "passed": true,
+      "begin": 1965,
+      "end": 2281
+    },
+    {
+      "label": "fast-backward",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 3960ms alignment to 23960001"
+      ],
+      "requestedSeconds": 23.960001,
+      "nativeDateMicroseconds": 23960001,
+      "prerollOrAlignmentMs": 3960,
+      "passed": true,
+      "begin": 2284,
+      "end": 2349
+    },
+    {
+      "label": "fast-after-rejected-save",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 2355,
+      "end": 2419
+    },
+    {
+      "label": "precise-after-retry",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 2422,
+      "end": 2667
+    }
+  ],
+  "quitLogOrder": {
+    "wait": 2744,
+    "stopped": 2777,
+    "teardown": 2781
+  },
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "scope": "Native Qt explicit seek policy reaches actual MP4 accurate/fast branch, fresh displayed/decoded pictures and paused clock, settings rejection/retry and decoded resume. Does not establish frame-exact output, every format or physical scaling.",
+  "stderr.txtSha256": "17fb3a41ccf76ebcb3b912ef081678fe5e56837125b1ab59a3865d891f63c3df",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vlc.logSha256": "3c9e819d8e8df2343922d265fadef8a6ef609217461e307240f15f59a8c7522e",
+  "journey.jsonSha256": "9b4f540947f83a754c2b2b11e10d6e229777a40567b923c609054a0940e65b52",
+  "beforeCoreControl": false,
+  "settledClockAgreement": true,
+  "expectedNegativeObserved": false
+}

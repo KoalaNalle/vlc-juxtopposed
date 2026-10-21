@@ -1,0 +1,11 @@
+{
+  "accepted": false,
+  "scope": "R3 video private fixture",
+  "exitCode": 3,
+  "endedBy": "Computer Use Abort on owned runtime assertion",
+  "assertion": "src/player/player.c:2090 vlc_list_is_empty(&player->listeners)",
+  "diagnosis": "Fixture listener was detached only at QApplication aboutToQuit; video can retain QApplication past interface/MainCtx teardown and main-player deletion.",
+  "productionChangedForR4": false,
+  "remaining": "Qt video teardown warnings retained; not attributed solely to fixture yet",
+  "rawProcessSha256": "6824c56a858044d1f5bb50b7675adbd849155e08b114d87641db3910efd92f5d"
+}

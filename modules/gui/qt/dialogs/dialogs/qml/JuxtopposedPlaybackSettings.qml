@@ -13,6 +13,7 @@ FocusScope {
     readonly property var service: playbackPreferences
     property var appearance: null
     property real uiScale: 1
+    property real viewportHeight: 0
     property url assetBase: "qrc:/juxtopposed/"
     property string searchText: ""
     property var focusNavigator: null
@@ -43,7 +44,21 @@ FocusScope {
     function matches(text) { return !searchText.trim().length || text.toLocaleLowerCase().includes(searchText.trim().toLocaleLowerCase()) }
     function sectionMatches(names) { return names.some(name => matches(name)) }
     function navigate(item, backwards) { if (focusNavigator) focusNavigator(item, backwards) }
-    function reveal(item) { if (item.activeFocus) focusRevealed(item) }
+    property Item _focusRevealTarget: null
+    property Item _focusRevealBounds: null
+    function reveal(item, boundsItem) {
+        if (item.activeFocus) {
+            _focusRevealTarget = item
+            _focusRevealBounds = boundsItem || item
+            focusRevealed(_focusRevealBounds)
+        }
+    }
+    function revealActiveControl() {
+        if (_focusRevealTarget && _focusRevealTarget.visible && _focusRevealTarget.activeFocus)
+            focusRevealed(_focusRevealBounds || _focusRevealTarget)
+    }
+    onViewportHeightChanged: Qt.callLater(revealActiveControl)
+    onWidthChanged: Qt.callLater(revealActiveControl)
     // An invalid QVariant is intentional for mixed optical-drive defaults:
     // the key remains present and editable so the user can replace that state.
     function supported(key) { return available && capabilities[key] === true && key in values }
@@ -248,6 +263,7 @@ FocusScope {
         required property string valueKey
         required property string accessibleTitle
         readonly property bool selected: root.values[valueKey] === true
+        property string validationError: ""
         anchors.right: parent.right
         anchors.verticalCenter: parent.verticalCenter
         width: 68 * root.uiScale; height: 32 * root.uiScale
@@ -256,8 +272,51 @@ FocusScope {
         Accessible.role: Accessible.CheckBox
         Accessible.checkable: true
         Accessible.checked: selected
-        Accessible.description: root.helpFor(valueKey)
-        onClicked: root.write(valueKey, !selected)
+        Accessible.description: root.helpFor(valueKey) + (validationError.length ? " " + validationError : "")
+        onClicked: {
+            const accepted = root.write(valueKey, !selected)
+            validationError = accepted || !root.service ? "" : root.service.lastError
+        }
+        function revealValidationError() {
+            if (activeFocus && visible) root.reveal(toggle, errorTip.visible ? errorBounds : toggle)
+        }
+        onValidationErrorChanged: Qt.callLater(revealValidationError)
+        onActiveFocusChanged: Qt.callLater(revealValidationError)
+        Connections {
+            target: root.service
+            function onLastErrorChanged() { if (!root.service.lastError.length) toggle.validationError = "" }
+        }
+        // Scroll the control and its local feedback as one rectangle. The
+        // category banner can be outside this viewport after a failed save.
+        Item {
+            id: errorBounds
+            y: errorTip.y
+            width: toggle.width
+            height: toggle.height - y
+            onHeightChanged: Qt.callLater(toggle.revealValidationError)
+        }
+        C.ToolTip {
+            id: errorTip
+            objectName: toggle.objectName + "ValidationError"
+            parent: toggle
+            readonly property real pageX: toggle.mapToItem(root, 0, 0).x
+            x: Math.max(-pageX, Math.min(0, root.width - pageX - width))
+            y: -height - 4 * root.uiScale
+            width: Math.min(320 * root.uiScale, root.width)
+            visible: toggle.validationError.length > 0 && toggle.activeFocus && toggle.visible && root.visible
+            text: toggle.validationError
+            focus: false; closePolicy: C.Popup.NoAutoClose; timeout: 0
+            padding: 8 * root.uiScale
+            onVisibleChanged: Qt.callLater(toggle.revealValidationError)
+            contentItem: SettingLabel {
+                text: errorTip.text; color: "#D98779"
+                Accessible.role: Accessible.StaticText; Accessible.name: text
+            }
+            background: Rectangle {
+                color: root.tone("#191919"); radius: 4 * root.uiScale
+                border.width: root.uiScale; border.color: "#D98779"
+            }
+        }
         background: Rectangle {
             color: root.tone("#090909"); radius: 6 * root.uiScale
             border.width: toggle.visualFocus ? root.uiScale : 0; border.color: root.accent
@@ -415,6 +474,7 @@ FocusScope {
     }
     Column {
         id: form; width: root.width; spacing: 20 * root.uiScale
+        onImplicitHeightChanged: Qt.callLater(root.revealActiveControl)
         SettingLabel { objectName: "playbackSettingsError"; width: parent.width
             text: root.service ? root.service.lastError : ""; visible: text.length > 0; color: "#D98779"; Accessible.role: Accessible.StaticText; Accessible.name: text }
         SettingLabel { objectName: "playbackSettingsRestart"; width: parent.width

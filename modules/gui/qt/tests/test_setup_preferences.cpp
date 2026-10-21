@@ -54,6 +54,10 @@ class TestSetupPreferences final : public QObject
         scheme->setCurrentIndex(settings->value("MainWindow/color-scheme-index",0).toInt());
         model=std::make_unique<GeneralPreferencesModel>(intf,scheme.get(),settings.get(),
             GeneralPreferencesModel::Storage{language.get()});
+        const QPointer<GeneralPreferencesModel> preferences=model.get();
+        scheme->setChangeHandler([preferences](int index) {
+            return preferences && preferences->setValue(QStringLiteral("theme"),index);
+        });
         return true;
     }
     void close()
@@ -136,6 +140,32 @@ private slots:
         QVERIFY(model->finishSetup(0,0));QCOMPARE(model->values().value("theme").toInt(),2);
         QCOMPARE(model->values().value("accentIndex").toInt(),6);
         QCOMPARE(bytes(ini),saved);QCOMPARE(bytes(config),native);
+    }
+    void legacyThemeChoiceUsesCheckedSaveAndRestoreDoesNotWrite()
+    {
+        settings->setValue("unrelated","Keep");settings->sync();const auto before=bytes(ini);
+        scheme->restoreCurrentIndex(2);QCOMPARE(bytes(ini),before);
+        QVERIFY(scheme->setData(scheme->index(1),true,Qt::CheckStateRole));
+        QCOMPARE(scheme->currentIndex(),1);QCOMPARE(model->values().value("theme").toInt(),1);
+        QSettings fresh(ini,QSettings::IniFormat);fresh.sync();
+        QCOMPARE(fresh.value("MainWindow/color-scheme-index").toInt(),1);
+        QCOMPARE(fresh.value("unrelated").toString(),QStringLiteral("Keep"));
+        const auto committed=bytes(ini);
+        scheme->restoreCurrentIndex(2);QCOMPARE(bytes(ini),committed);
+    }
+    void blockedLegacyThemeChoiceRetainsActiveChoiceAndRetries()
+    {
+#ifdef _WIN32
+        QVERIFY(model->setValue("theme",2));const auto before=bytes(ini);
+        OwnedReadLock lock(ini);QVERIFY(lock.handle!=INVALID_HANDLE_VALUE);
+        QVERIFY(!scheme->setData(scheme->index(1),true,Qt::CheckStateRole));
+        QCOMPARE(scheme->currentIndex(),2);QCOMPARE(bytes(ini),before);
+        QVERIFY(!model->lastError().isEmpty());
+        lock.release();QVERIFY(scheme->setData(scheme->index(1),true,Qt::CheckStateRole));
+        QCOMPARE(scheme->currentIndex(),1);QVERIFY(model->lastError().isEmpty());
+#else
+        QSKIP("Windows file-sharing check");
+#endif
     }
     void blockedQtSaveCanRetryWithoutCompletion()
     {

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "maininterface/player_profiles_store.hpp"
 #include <QCoreApplication>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -9,6 +10,7 @@
 #include <QSettings>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QThread>
 #include <QUrl>
 #include <limits>
 #ifdef _WIN32
@@ -27,6 +29,48 @@ QVariantMap snapshot(int repeat = 0)
 QByteArray bytes(const QString &path) { QFile file(path); return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray{}; }
 void saveText(QSettings &settings, const QString &text)
 { settings.setValue(PlayerProfilesStore::settingsKey(), text); settings.sync(); }
+bool marker(const QString &path, const QByteArray &value = "ready")
+{ QFile file(path); return file.open(QIODevice::WriteOnly) && file.write(value) == value.size() && file.flush(); }
+bool waitForMarker(const QString &path)
+{
+    QElapsedTimer elapsed; elapsed.start();
+    while (!QFile::exists(path) && elapsed.elapsed() < 15000) QThread::msleep(5);
+    return QFile::exists(path);
+}
+int sharedProfilePeer(const QString &path)
+{
+    QSettings settings(path,QSettings::IniFormat); PlayerProfilesStore store(&settings); QString error,id;
+    if (!store.reload(snapshot(),error)) return 10;
+    const int beforeCount = store.profiles().size(); const auto beforeSelected = store.selectedId();
+    if (!marker(path + QStringLiteral(".ready")) || !waitForMarker(path + QStringLiteral(".go"))) return 11;
+    const auto accepted = bytes(path);
+    const bool createRejected = !store.create(QStringLiteral("Second"),snapshot(2),id,error)
+            && id.isEmpty() && !error.isEmpty() && bytes(path) == accepted;
+    const bool checkpointRejected = !store.checkpoint(snapshot(2),error)
+            && !error.isEmpty() && bytes(path) == accepted;
+    const bool activeUnchanged = store.profiles().size() == beforeCount && store.selectedId() == beforeSelected
+            && !store.pendingSwitch();
+    // A stale process later saves an unrelated window preference and exits.
+    // Neither that sync nor a failed catalog write may queue the old catalog.
+    settings.setValue(QStringLiteral("owned-peer/window"),QStringLiteral("second-window"));settings.sync();
+    const bool syncSucceeded = settings.status() == QSettings::NoError;
+    QSettings physical(path,QSettings::IniFormat); physical.sync();
+    PlayerProfilesStore afterSync(&physical);
+    const bool firstRetained = afterSync.reload(snapshot(),error)
+            && afterSync.profiles().size() == beforeCount + 1
+            && afterSync.profiles().last().name == QStringLiteral("First")
+            && afterSync.indexOf(beforeSelected) >= 0
+            && afterSync.profiles()[afterSync.indexOf(beforeSelected)].snapshot == snapshot(1);
+    const bool retrySucceeded = store.reload(snapshot(),error)
+            && store.create(QStringLiteral("Second"),snapshot(2),id,error)
+            && store.profiles().size() == beforeCount + 2;
+    const QJsonObject report{{QStringLiteral("createRejected"),createRejected},
+        {QStringLiteral("checkpointRejected"),checkpointRejected},{QStringLiteral("activeUnchanged"),activeUnchanged},
+        {QStringLiteral("unrelatedSyncSucceeded"),syncSucceeded},{QStringLiteral("firstRetainedAfterSync"),firstRetained},
+        {QStringLiteral("reloadAndRetrySucceeded"),retrySucceeded}};
+    if (!marker(path + QStringLiteral(".result"),QJsonDocument(report).toJson())) return 12;
+    return createRejected && checkpointRejected && activeUnchanged && syncSucceeded && firstRetained && retrySucceeded ? 0 : 13;
+}
 }
 
 class TestPlayerProfilesStore final : public QObject
@@ -157,6 +201,46 @@ private slots:
         QCOMPARE(second.profiles().size(), 6);
         QVERIFY(!first.checkpoint(snapshot(1), error));
     }
+    void separateProcessesRejectStaleCatalogAndRetry_data()
+    {
+        QTest::addColumn<bool>("seeded");
+        QTest::newRow("initially-absent") << false;
+        QTest::newRow("existing-catalog") << true;
+    }
+    void separateProcessesRejectStaleCatalogAndRetry()
+    {
+        QFETCH(bool,seeded);
+        // init() uses the function name; each data row needs its own path.
+        path = temp.filePath(QString::fromLatin1(QTest::currentDataTag()) + QStringLiteral("-peer.ini"));
+        QSettings settings(path,QSettings::IniFormat); PlayerProfilesStore store(&settings); QString error,id;
+        QVERIFY(store.reload(snapshot(),error));
+        if (seeded) QVERIFY2(store.create(QStringLiteral("Seed"),snapshot(),id,error),qPrintable(error));
+        const int initialCount = store.profiles().size();
+        const int initialSelectedRow = store.indexOf(store.selectedId());
+        QProcess child;child.setProcessChannelMode(QProcess::SeparateChannels);
+#ifdef _WIN32
+        child.setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *arguments) { arguments->flags |= CREATE_NO_WINDOW; });
+#endif
+        child.start(QCoreApplication::applicationFilePath(),{QStringLiteral("--owned-profile-peer"),path});
+        QVERIFY(child.waitForStarted(10000));
+        QTRY_VERIFY_WITH_TIMEOUT(QFile::exists(path + QStringLiteral(".ready")),10000);
+        QVERIFY2(store.create(QStringLiteral("First"),snapshot(1),id,error),qPrintable(error));
+        QVERIFY(marker(path + QStringLiteral(".go")));
+        QVERIFY(child.waitForFinished(20000));
+        QCOMPARE(child.exitStatus(),QProcess::NormalExit);QCOMPARE(child.exitCode(),0);
+        QVERIFY(child.readAllStandardError().isEmpty());
+        const auto report=QJsonDocument::fromJson(bytes(path + QStringLiteral(".result"))).object();
+        QCOMPARE(report.size(),6);
+        for (auto it=report.begin();it!=report.end();++it) QVERIFY2(it.value().toBool(),qPrintable(it.key()));
+        QVERIFY(store.reload(snapshot(),error));QCOMPARE(store.profiles().size(),initialCount + 2);
+        QCOMPARE(store.profiles().last().name,QStringLiteral("Second"));
+        QCOMPARE(store.profiles()[initialCount].name,QStringLiteral("First"));
+        QCOMPARE(store.profiles()[initialCount].snapshot,snapshot(2));
+        QCOMPARE(store.profiles()[initialSelectedRow].snapshot,snapshot(1));
+        settings.sync();QCOMPARE(settings.value(QStringLiteral("owned-peer/window")).toString(),QStringLiteral("second-window"));
+        const auto output=qEnvironmentVariable("VLC_PROFILE_PEER_OUTPUT");
+        if (!output.isEmpty()) QVERIFY(marker(output + QLatin1Char('/') + QString::fromLatin1(QTest::currentDataTag()) + QStringLiteral(".json"),QJsonDocument(report).toJson()));
+    }
     void concurrentSaveLockCanRetry()
     {
         QSettings settings(path, QSettings::IniFormat); PlayerProfilesStore store(&settings); QString error, id;
@@ -218,6 +302,8 @@ private slots:
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
+    if (app.arguments().size() == 3 && app.arguments()[1] == QStringLiteral("--owned-profile-peer"))
+        return sharedProfilePeer(app.arguments()[2]);
     if (app.arguments().size() == 3 && app.arguments()[1] == QStringLiteral("--owned-profile-restart")) {
         QSettings settings(app.arguments()[2], QSettings::IniFormat); PlayerProfilesStore store(&settings); QString error;
         if (!store.reload(snapshot(), error) || !store.pendingSwitch() || store.selectedId() != QStringLiteral("movies")

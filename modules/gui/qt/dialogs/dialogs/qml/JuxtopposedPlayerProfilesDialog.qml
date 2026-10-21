@@ -34,7 +34,10 @@ JuxtopposedMovableDialog {
     function showDialog(returnItem, create) {
         createMode = create === true
         if (!visible) { focusReturnItem = returnItem; profileName.text = ""; open() }
-        Qt.callLater(() => (createMode ? profileName : primaryButton).forceActiveFocus(Qt.PopupFocusReason))
+        Qt.callLater(() => {
+            (createMode ? profileName : primaryButton).forceActiveFocus(Qt.PopupFocusReason)
+            root.revealError()
+        })
     }
     function save() {
         if (!canSave) return
@@ -50,8 +53,19 @@ JuxtopposedMovableDialog {
         else if (point.y + item.height > flick.contentY + flick.height)
             flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height), point.y + item.height - flick.height)
     }
-    onHeightChanged: if (visible && profileName.activeFocus) Qt.callLater(() => root.reveal(profileName))
-    onWidthChanged: if (visible && profileName.activeFocus) Qt.callLater(() => root.reveal(profileName))
+    function revealError() {
+        Qt.callLater(() => {
+            if (root.visible && profileError.visible) root.reveal(profileError)
+        })
+    }
+    onHeightChanged: if (visible) {
+        if (profileError.visible) root.revealError()
+        else if (profileName.activeFocus) Qt.callLater(() => root.reveal(profileName))
+    }
+    onWidthChanged: if (visible) {
+        if (profileError.visible) root.revealError()
+        else if (profileName.activeFocus) Qt.callLater(() => root.reveal(profileName))
+    }
     onClosed: {
         if (focusReturnItem && focusReturnItem.visible && focusReturnItem.enabled)
             focusReturnItem.forceActiveFocus(Qt.PopupFocusReason)
@@ -130,6 +144,7 @@ JuxtopposedMovableDialog {
                 Label {Layout.fillWidth: true; text: qsTr("Appearance, keyboard shortcuts, privacy, network access and library locations stay shared.")}
                 Label {Layout.fillWidth: true; text: qsTr("Some defaults apply after restarting VLC. Your current media keeps its selected tracks and position.")}
                 Label {
+                    id: profileError
                     objectName: "playerProfileError"
                     Layout.fillWidth: true
                     visible: text.length > 0
@@ -137,6 +152,8 @@ JuxtopposedMovableDialog {
                     color: JuxtopposedPalette.color("#ED9B45")
                     Accessible.role: Accessible.AlertMessage
                     Accessible.name: text
+                    onTextChanged: root.revealError()
+                    onHeightChanged: if (visible) root.revealError()
                 }
             }
         }

@@ -40,6 +40,7 @@ install_headers(
     'vlc_config.h',
     'vlc_config_cat.h',
     'vlc_configuration.h',
+    'vlc_config_transaction.h',
     'vlc_cpu.h',
     'vlc_cxx_helpers.hpp',
     'vlc_decoder.h',

@@ -167,6 +167,9 @@ T.ProgressBar {
                     }
                 },
                 "releaseControl": {
+                    // A paused seek can finish while held, when player updates
+                    // are ignored. Reconcile that completed landing on release.
+                    action: () => fsm._setPositionFromValue(Player.position),
                     target: fsmReleased
                 },
                 "inputChanged": {

@@ -40,6 +40,7 @@ struct vlc_param {
     unsigned unsaved:1; /**< Not stored in persistent configuration */
     unsigned safe:1; /**< Safe for untrusted provisioning (playlists) */
     unsigned obsolete:1; /**< Ignored for backward compatibility */
+    unsigned pending:1; /**< Intentional edit awaiting persistence; config lock */
     struct module_config_t item;
 };
 
@@ -63,6 +64,9 @@ int config_LoadConfigFile( libvlc_int_t * );
 bool config_PrintHelp (libvlc_int_t *);
 void config_Lock(void);
 void config_Unlock(void);
+/* Caller holds config_Lock(); all mutation/save paths use the same lock order. */
+int config_SaveConfigFileLocked(libvlc_int_t *);
+void config_AcknowledgeSave(void);
 
 int config_SortConfig (void);
 void config_UnsortConfig (void);

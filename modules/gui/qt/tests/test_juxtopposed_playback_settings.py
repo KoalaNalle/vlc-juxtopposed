@@ -9,6 +9,7 @@ HERE=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--repo-root',type=Path,default=HERE.parents[3])
 parser.add_argument('--output-dir',type=Path,required=True)
+parser.add_argument('--playback-qml',type=Path,help='Immutable alternative Playback source for a negative control')
 args=parser.parse_args();ROOT=args.repo_root.resolve();results=args.output_dir.resolve();results.mkdir(parents=True,exist_ok=False)
 os.environ.update(QT_QPA_PLATFORM='offscreen',QT_QUICK_BACKEND='software',QML_DISABLE_DISK_CACHE='1',QT_QPA_FONTDIR=str(ROOT/'modules/gui/qt/pixmaps/juxtopposed'))
 from PySide6.QtCore import QObject,Property,Signal,Slot,QEnum,Qt,QUrl,QPointF,QEvent,QCoreApplication,qInstallMessageHandler
@@ -110,6 +111,8 @@ assets=results/'assets';assets.mkdir();qml=results/'qml';qml.mkdir()
 for p in(ROOT/'modules/gui/qt/pixmaps/juxtopposed').iterdir():
     if p.is_file():shutil.copyfile(p,assets/p.name)
 for p in(ROOT/'modules/gui/qt/dialogs/dialogs/qml').glob('*.qml'):shutil.copyfile(p,qml/p.name)
+playback_source=args.playback_qml or ROOT/'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml'
+if args.playback_qml:shutil.copyfile(playback_source,qml/'JuxtopposedPlaybackSettings.qml')
 engine=QQmlApplicationEngine();engine.rootContext().setContextProperty('suppliedContext',ctx);engine.rootContext().setContextProperty('suppliedProvider',provider)
 driver='''import QtQuick
 import QtQuick.Controls.Basic as C
@@ -312,6 +315,51 @@ for width,height,scale in [(1080,897,1),(640,420,1),(960,600,1.5),(1280,720,2)]:
     assert not tip.property('visible')
 (results/'inline-error-geometry.json').write_text(json.dumps(dict(layouts=error_geometry,nativeAccepted=False),indent=2)+'\n',encoding='utf-8')
 done('Rejected lower Advanced folder retains rollback/focus and genuine native error inside actual viewport at natural/narrow150/200 percent')
+# Position the real Toggle near the lower edge before input. After rejection,
+# only production QML may reveal it and its error before the actual retry.
+toggle_geometry=[]
+def inside_viewport(obj):
+    viewport=item('globalSettingsPageScroll');rect=obj.mapRectToItem(viewport,obj.boundingRect())
+    assert rect.left()>=-.5 and rect.top()>=-.5 and rect.right()<=viewport.width()+.5 and rect.bottom()<=viewport.height()+.5,(obj.objectName(),rect,viewport.width(),viewport.height())
+    return [rect.x(),rect.y(),rect.width(),rect.height()]
+for theme in [2,1]:
+    ctx.general.patch(theme=theme)
+    for width,height,scale in [(1080,897,1),(640,420,1),(960,600,1.5),(1280,720,2)]:
+        window.resize(width,height);dialog.setProperty('uiScale',scale);model.feedback('');QTest.qWait(40)
+        for route in ['pointer','keyboard']:
+            toggle=focus('playbackpreciseSeeking');viewport=item('globalSettingsPageScroll')
+            rect=toggle.mapRectToItem(viewport,toggle.boundingRect())
+            viewport.setProperty('contentY',max(0,min(viewport.property('contentHeight')-viewport.height(),viewport.property('contentY')+rect.bottom()-viewport.height()+5)))
+            QTest.qWait(40);inside_viewport(toggle)
+            accepted=model.state['preciseSeeking'];before=len(model.requests)
+            model.fail_next='The owned settings file is locked. Check access, then retry your change.'
+            if route=='pointer':QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,toggle.mapToScene(QPointF(toggle.width()/2,toggle.height()/2)).toPoint())
+            else:QTest.keyClick(window,Qt.Key_Space)
+            QTest.qWait(100)
+            assert len(model.requests)==before+1 and model.requests[-1]==['preciseSeeking',not accepted]
+            assert model.state['preciseSeeking']==accepted and toggle.property('selected')==accepted and toggle.hasActiveFocus()
+            bounds=inside_viewport(toggle)
+            assert toggle.property('validationError')==model.error and model.error in evaluate(toggle,'Accessible.description')
+            tip=window.findChild(QObject,'playbackpreciseSeekingValidationError')
+            assert tip and tip.property('visible')and not tip.property('focus')and tip.property('text')==model.error
+            feedback=inside_viewport(tip.property('background'))
+            # Height-only changes do not change form.implicitHeight.
+            window.resize(width,height-35);QTest.qWait(80);inside_viewport(toggle);inside_viewport(tip.property('background'))
+            window.resize(width,height);QTest.qWait(80)
+            QTest.keyClick(window,Qt.Key_Tab);QTest.qWait(30);assert not tip.property('visible')
+            QTest.keyClick(window,Qt.Key_Backtab);QTest.qWait(60)
+            assert toggle.hasActiveFocus()and tip.property('visible');inside_viewport(toggle);inside_viewport(tip.property('background'))
+            toggle_geometry.append(dict(theme=theme,width=width,height=height,scale=scale,route=route,control=bounds,error=feedback))
+            assert window.grabWindow().save(str(results/f'06-toggle-error-{theme}-{width}-{scale}-{route}.png'))
+            # Retry the same still-focused control without forceFocus/reveal.
+            if route=='pointer':QTest.mouseClick(window,Qt.LeftButton,Qt.NoModifier,toggle.mapToScene(QPointF(toggle.width()/2,toggle.height()/2)).toPoint())
+            else:QTest.keyClick(window,Qt.Key_Space)
+            QTest.qWait(80)
+            assert len(model.requests)==before+2 and model.state['preciseSeeking']is not accepted and not model.error
+            assert toggle.hasActiveFocus()and not toggle.property('validationError')and not tip.property('visible')
+done('Actual pointer and Space Toggle rejection retain state, accessible inline error and joint viewport bounds; resize/Tab-return and retry pass in Dark/Light at four layouts without test reveal')
+(results/'toggle-error-geometry.json').write_text(json.dumps(dict(layouts=toggle_geometry,nativeAccepted=False,playbackSourceSha256=hashlib.sha256(playback_source.read_bytes()).hexdigest()),indent=2)+'\n',encoding='utf-8',newline='\n')
+
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));window.close();engine.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(25)
 assert destroyed==[True]and not messages,messages
 (results/'verification.json').write_text(json.dumps(dict(passed=True,caseCount=len(checks),cases=checks,messages=messages,geometry=geometry,renderedImageInstances=images,adapters=identities,nativeAcceptance=False,scope=__doc__,workerSha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest()),indent=2)+'\n',encoding='utf-8',newline='\n')

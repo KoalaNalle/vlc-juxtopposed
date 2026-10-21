@@ -71,6 +71,8 @@ def main():
     parser.add_argument('--recent-stream',action='store_true',help='Exercise native Recent using an owned loopback HTTP media source')
     parser.add_argument('--screen-name',help='Keep native test windows on this exact Qt screen name')
     parser.add_argument('--startup-gate',action='store_true',help='Wait before each journey for its startup-approved marker after human/desktop inspection; no timeout while waiting')
+    parser.add_argument('--locked-config-error',choices=['replacement','read-denial'],default='replacement',
+        help='Exact intentional failure stage of the selected Core; later merging Core reads before replacement')
     parser.add_argument('--window-geometry-source',type=Path,help='Copy only saved window geometry from an owned INI fixture before startup')
     parser.add_argument('--controls-video-fixture',type=Path,help='Owned generated long video for auto-hide playback tests')
     parser.add_argument('--fullscreen-screen-index',type=int,help='Actual connected index of the approved monitor, checked again by the native driver')
@@ -85,6 +87,8 @@ def main():
     parser._option_string_actions['--modes'].choices += ['audio-device-stale','audio-device-paused','audio-device-reopen','audio-device-playing','audio-device-unmanaged']
     parser._option_string_actions['--modes'].choices += ['interface-title-initial','interface-title-off','interface-title-restored']
     parser._option_string_actions['--modes'].choices += ['geometry-editor-initial','geometry-editor-off','geometry-editor-reopen','geometry-editor-playing']
+    parser._option_string_actions['--modes'].choices += ['popup-editor-initial','popup-editor-reopen','popup-editor-playing',
+        'popup-cold-max','popup-never','popup-minimized','popup-tray-off']
     parser._option_string_actions['--modes'].choices += ['geometry-snapshot-normal','geometry-snapshot-maximized',
         'geometry-snapshot-system-maximized','geometry-snapshot-minimized','geometry-snapshot-fullscreen','geometry-snapshot-cross-fullscreen']
     parser._option_string_actions['--modes'].choices += ['fullscreen-screen-initial','fullscreen-screen-explicit-playing',
@@ -139,13 +143,18 @@ def main():
     auto_hide_modes=any(mode.startswith('auto-hide-') for mode in args.modes)
     screen_modes=any(mode.startswith('fullscreen-screen-') for mode in args.modes)
     geometry_modes=any(mode.startswith('geometry-editor-') for mode in args.modes)
-    if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes or geometry_modes:
-        prefix='geometry-editor-' if geometry_modes else 'settings-activation-' if settings_modes else 'audio-device-' if device_modes else 'interface-title-' if title_modes else 'fullscreen-screen-' if screen_modes else 'auto-hide-'
+    popup_modes=any(mode.startswith('popup-') for mode in args.modes)
+    if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes or geometry_modes or popup_modes:
+        prefix='popup-' if popup_modes else 'geometry-editor-' if geometry_modes else 'settings-activation-' if settings_modes else 'audio-device-' if device_modes else 'interface-title-' if title_modes else 'fullscreen-screen-' if screen_modes else 'auto-hide-'
         assert all(mode.startswith(prefix) for mode in args.modes), 'Keep settings persistence isolated'
         with wave.open(str(media/'owned-settings.wav'),'wb') as stream:
             stream.setnchannels(2);stream.setsampwidth(2);stream.setframerate(48000)
             stream.writeframes(b'\0'*4*48000*120)
-    generated_hashes={'owned-settings.wav':digest(media/'owned-settings.wav')} if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes or geometry_modes else {}
+    generated_hashes={'owned-settings.wav':digest(media/'owned-settings.wav')} if settings_modes or device_modes or title_modes or auto_hide_modes or screen_modes or geometry_modes or popup_modes else {}
+    if popup_modes:
+        for name in ('owned-popup-next.wav','owned-popup-restored.wav'):
+            shutil.copyfile(media/'owned-settings.wav',media/name)
+            generated_hashes[name]=digest(media/name)
     generated_video_source=None
     if auto_hide_modes or screen_modes:
         assert args.controls_video_fixture is not None,'Auto-hide journeys require their owned generated long video'
@@ -165,6 +174,8 @@ def main():
         with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-name-in-title=1\n')
     if geometry_modes:
         with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-remember-window-geometry=1\nqt-controls-auto-hide=0\n')
+    if popup_modes:
+        with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-system-tray=1\nqt-start-minimized=0\nqt-notification=2\nqt-notification-duration=777\nqt-auto-raise=0\nqt-controls-auto-hide=0\n')
     if auto_hide_modes:
         with configuration.open('a',encoding='utf-8') as stream:stream.write('qt-controls-auto-hide=0\nqt-controls-hide-timeout=1000\nqt-fs-controller=1\n')
     if screen_modes:
@@ -183,6 +194,7 @@ def main():
     env.update(QML_DISK_CACHE='aot',QT_DISABLE_SHADER_DISK_CACHE='1',QT_QPA_PLATFORM='windows',QT_FORCE_STDERR_LOGGING='1',QT_MESSAGE_PATTERN='OWNED_QT_DIAG|%{type}|%{message}',
                HOME=str(userdata),USERPROFILE=str(userdata),VLC_USERDATA_PATH=str(userdata))
     if args.screen_name:env['VLC_OWNED_UI_SCREEN']=args.screen_name
+    if popup_modes:env.update(QT_LOGGING_RULES='qt.qpa.trayicon.debug=true',QT_MESSAGE_PATTERN='OWNED_QT_DIAG|%{type}|%{category}|%{message}')
     cache=run_owned([runtime/'vlc-cache-gen.exe',runtime/'plugins'],runtime,output/'cache')
     assert cache['normalExit'],cache
     names=['libvlccore.dll','plugins/gui/libqt_plugin.dll','plugins/misc/libmedialibrary_plugin.dll']
@@ -209,6 +221,12 @@ def main():
         for mode in args.modes:
             case=output/mode;case.mkdir()
             case_configuration=configuration
+            if mode in ('popup-editor-playing','popup-never','popup-minimized','popup-tray-off'):
+                case_configuration=case/'vlcrc'
+                policy=0 if mode=='popup-never' else 1 if mode=='popup-minimized' else 2
+                tray=0 if mode=='popup-tray-off' else 1
+                case_configuration.write_text('metadata-network-access=0\nml-network-discovery=0\none-instance=0\nqt-updates-notif=0\nqt-start-minimized=0\nqt-auto-raise=0\nqt-controls-auto-hide=0\n'
+                    +f'qt-system-tray={tray}\nqt-notification={policy}\nqt-notification-duration=777\n',encoding='utf-8')
             if mode=='geometry-editor-playing':
                 case_configuration=case/'vlcrc'
                 case_configuration.write_text('metadata-network-access=0\nml-network-discovery=0\none-instance=0\nqt-updates-notif=0\nqt-remember-window-geometry=1\nqt-controls-auto-hide=0\n',encoding='utf-8')
@@ -239,7 +257,7 @@ def main():
             startup_gate=case/'startup-approved'
             if args.startup_gate:child_env['VLC_OWNED_UI_START_GATE']=str(startup_gate)
             if mode.startswith('setup-'):child_env['VLC_OWNED_SETUP_CONFIG']=str(configuration)
-            if mode.startswith(('settings-activation-','audio-device-','interface-title-','auto-hide-','fullscreen-screen-','geometry-editor-')):child_env['VLC_OWNED_SETTINGS_CONFIG']=str(case_configuration)
+            if mode.startswith(('settings-activation-','audio-device-','interface-title-','auto-hide-','fullscreen-screen-','geometry-editor-','popup-')):child_env['VLC_OWNED_SETTINGS_CONFIG']=str(case_configuration)
             command=[str(runtime/'vlc.exe'),'--intf=qt','--no-one-instance','--no-media-library' if mode in ('disabled','favorite-disabled','playlist-origin-disabled') or mode.startswith('history-off') else '--media-library',
                 '--no-crashdump','--no-qt-privacy-ask','--no-qt-updates-notif','--no-metadata-network-access','--http-proxy=direct://',
                 '--no-ml-network-discovery','--config='+str(case_configuration),'--file-logging','--log-verbose=2','--verbose=2',
@@ -293,11 +311,14 @@ def main():
             result['nativeErrors']=[line for line in logs.splitlines() if re.search(r'\berror:',line)]
             result['expectedNativeErrors']=[]
             result['unexpectedNativeErrors']=result['nativeErrors']
-            if mode in ('settings-activation-paused','settings-activation-playing','audio-device-paused','audio-device-playing','interface-title-initial','auto-hide-editor-initial','fullscreen-screen-initial','geometry-editor-initial'):
+            if mode in ('settings-activation-paused','settings-activation-playing','audio-device-paused','audio-device-playing','interface-title-initial','auto-hide-editor-initial','fullscreen-screen-initial','geometry-editor-initial','popup-editor-initial'):
                 # Exactly one deliberate locked-config write is part of this
                 # journey. Retain its log; never excuse an unrelated failure.
-                expected=[line for line in result['nativeErrors'] if re.search(
-                    r'\bmain error: cannot replace configuration file \(Windows error (?:5|32)\)$',line)]
+                pattern=(r'\bmain error: cannot read configuration file: Permission denied$'
+                    if args.locked_config_error=='read-denial' else
+                    r'\bmain error: cannot replace configuration file \(Windows error (?:5|32)\)$')
+                result['lockedConfigFailureStage']=args.locked_config_error
+                expected=[line for line in result['nativeErrors'] if re.search(pattern,line)]
                 result['expectedNativeErrors']=expected
                 result['unexpectedNativeErrors']=[line for line in result['nativeErrors'] if line not in expected]
                 failure_check='real locked-save failure rolls back policy and exposes retry feedback'
@@ -328,7 +349,7 @@ def main():
                 assert result['journey'].get('nativeFavoriteFailureAccepted') and lock_state.get('releasedNormally') and 'error' not in lock_state
                 assert lock_state['before'] is False and lock_state['afterFailedWrite'] is False and lock_state.get('afterRetry') is True
             assert result.get('nativeLeftButtonReleased',True), 'Owned native drag left a pressed OS mouse button'
-            if mode.startswith(('fullscreen-controls-','playlist-origin','settings-activation-','tooltip-edge','audio-device-','interface-title-','auto-hide-','fullscreen-screen-','geometry-snapshot-','geometry-editor-')):
+            if mode.startswith(('fullscreen-controls-','playlist-origin','settings-activation-','tooltip-edge','audio-device-','interface-title-','auto-hide-','fullscreen-screen-','geometry-snapshot-','geometry-editor-','popup-')):
                 assert not result['unexpectedNativeErrors'],(mode,result['unexpectedNativeErrors'])
             if mode.startswith('settings-activation-'):
                 assert result['journey'].get('nativeSettingsActivationAccepted'),mode
@@ -344,6 +365,18 @@ def main():
                 assert result['journey'].get('nativeFullscreenScreenAccepted'),mode
             if mode.startswith('geometry-snapshot-'):
                 assert result['journey'].get('nativeGeometrySnapshotAccepted'),mode
+            if mode.startswith('popup-'):
+                assert result['journey'].get('nativePopupDurationAccepted'),mode
+                deliveries=re.findall(r'showMessage \( "VLC media player" "([^"]+)" .*? QPlatformSystemTrayIcon::NoIcon (\d+) \)',logs)
+                expected=result['journey']['expectedNotificationNames']
+                duration=result['journey']['startupNotificationDuration']
+                result['platformDeliveries']=[dict(name=name,durationHintMs=int(ms)) for name,ms in deliveries]
+                result['platformNotificationNamesMatch']=[name for name,ms in deliveries]==expected
+                result['platformDurationHintsMatch']=all(int(ms)==duration for name,ms in deliveries)
+                values=re.findall(r'^#?qt-notification-duration=(.*)$',case_configuration.read_text(encoding='utf-8'),re.M)
+                result['independentSavedDuration']=int(values[0]) if len(values)==1 else None
+                assert result['platformNotificationNamesMatch'] and result['platformDurationHintsMatch'],(mode,deliveries,expected,duration)
+                assert result['independentSavedDuration']==result['journey'].get('savedNextStartupDuration',duration),(mode,values)
             if mode.startswith('geometry-editor-'):
                 assert result['journey'].get('nativeGeometryEditorAccepted'),mode
                 from PySide6.QtCore import QSettings,QDataStream,QRect,QPoint

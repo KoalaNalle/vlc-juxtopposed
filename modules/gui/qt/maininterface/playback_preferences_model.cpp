@@ -208,7 +208,7 @@ QVariantMap PlaybackPreferencesModel::supportNotes() const
         {QStringLiteral("preferredVideoQuality"), tr("Preferred maximum height when a source offers multiple renditions; this does not upscale or change every local video.")},
         {QStringLiteral("finishAction"), tr("Quit VLC uses native play-and-exit, which also quits after a manual Stop. It overrides Stop after each item while selected; no sleep or shutdown action is implemented.")},
         {QStringLiteral("stopAfterEachItem"), tr("Stops before advancing to the next queued item. Native Quit VLC takes precedence; choose Stop as the finish action to edit this option.")},
-        {QStringLiteral("preciseSeeking"), tr("Requires the paired native Qt timeline/time-seek consumer. Without that linked consumer this control is unavailable.")},
+        {QStringLiteral("preciseSeeking"), tr("Applies to this window's timeline and time-jump controls on their next seek. Precise seeking decodes up to the requested position; faster seeking may start at a nearby keyframe. Results depend on the media format.")},
         {QStringLiteral("showThumbnails"), tr("The timeline has no implemented thumbnail preview provider; this control is unavailable.")},
         {QStringLiteral("defaultOpticalDrive"), tr("Sets the shared DVD/VCD/audio-CD default. A mixed existing set remains unselected until you explicitly choose a path; empty uses native defaults.")},
         {QStringLiteral("timeShiftFolder"), tr("Existing writable local directory for future time-shift temporary files; empty uses the system temporary directory.")},

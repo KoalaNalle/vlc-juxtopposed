@@ -1,6 +1,140 @@
 # VLC Juxtopposed redesign — project handoff
 
-End-of-day checkpoint — **20 October 2026**:
+21 October checkpoint: both observed seeking UI P2s pass selected repair checks.
+Core `9f9702bec96d…`, ordinary GUI `c382ebb2f89a…` and matching
+private GUI `054a3f54b009…`. R8 native passes325 checks in three
+normal processes:17 serialized paused seeks, two actual held-pointer timeline
+cases and one playing seek. Both cold policies and actual save denial/retry pass.
+The held preview differs from the landed position, then release restores0.5;
+pointer-specific MP4 branch/request logs are independently checked. Component16
+groups include16 pointer/Space error/retry combinations in Dark/Light and four
+layouts. Ordinary repeated Fast34.128/38.154 now shows frame750/time30/slider0.5
+without Resume; repeated Precise near24.1 reconciles too, then decoded playback
+and normal Quit remain clean. All1300 current/frozen inputs and runtime/media
+match. The stricter old-Core failure and ordinary old-slider negative remain
+bound. Existing player mock tests remain rejected Windows setup evidence.
+This closes the two reproduced P2s in these scopes, not full setting/beta,
+frame-exact/all-format, physical DPI, visual or final-package acceptance. Continue
+the remaining settings consumers and thirteen-category/32-surface roadmap.
+
+21 October work in progress: [precise seeking and MP4 sample lookup](doc/juxtopposed-references/native/home-precise-seek-20261021/README.md).
+The paired seek control is enabled in the candidate, with Playback model cases (24)
+passing. Testing exposed and repaired an MP4 absolute-index/local-count mistake:
+the actual helper changes from 1,121 failures to zero across 1,624 checks. With
+the same ordinary GUI `393619cf5176…` and corrected MP4 `917af1d1a006…`, the
+previous Fast 34-second request now displays the 30-second keyframe instead of 10.
+Core `d04e9134a43f…` and cache `1190b018b5e8…` are unchanged. Native R4 passes
+all six explicit seek routes in both modes and the old policy after save denial.
+Final R5 passes 231/32/19 checks in three normal processes, 14 edit seeks plus both
+cold policies, actual bounded pointer retry and resumed decoded playback. One
+intentional replacement denial is bound; all other diagnostics are clean.
+Two P2s remain: paused elapsed/slider retains requested 34 while video lands at 30;
+and adding save-error feedback moves the focused Toggle completely below the
+viewport. Explicit reveal restores it and retry succeeds. Trace timer/media
+generations, then repair both UI behaviors; do not claim full precise-setting,
+visual/package or beta acceptance. All 1,295 frozen inputs and runtime/media match.
+
+Prior selected checkpoint: [profile conflict error visibility](doc/juxtopposed-references/native/home-profile-error-20261021/README.md)
+passes component30 and native30 checks, plus two ordinary shared-store playing
+processes on GUI `b27d70c7f249…`, Core `d04e9134a43f…`, cache `1190b018b5e8…`.
+The complete recovery instruction is revealed automatically after a rejected
+profile edit and when reopening with a retained error. The entered failed draft
+is preserved until Cancel; saved profiles remain unchanged through rejection
+and both normal exits. Native standard/compact125% Dark/Light bounds pass;
+ordinary selected recovery is standard Dark. A continues after B exits and
+quits directly from fullscreen. All logs are clean; native Stop precedes Qt
+teardown, and all1266 frozen inputs/runtime/media identities match. The prior
+three-process profile restart/retry passes its earlier GUI scope but retains
+its historical clipped-error result. Distinct physical audio outputs, other
+shared Qt ownership, physical DPI, broader settings/design and full beta gates
+remain open. No release or publication is claimed.
+
+Earlier 21 October: [shared Qt appearance and profile checks](doc/juxtopposed-references/native/home-shared-qt-20261021/README.md)
+qualify ordinary GUI `aa6fc26df153…` with unchanged Core `d04e9134a43f…` and
+cache `1190b018b5e8…`. The reproduced stale-window theme overwrite is repaired:
+both shared-store closing orders and a cold Light restart pass (five ordinary
+normal processes). Latest explicit theme commit survives older fullscreen exits;
+other instances retain their active appearance. Actual legacy menu/combo blocked
+save, accepted-selection recovery and retry pass15 checks; rebuilt General/setup
+passes13 model cases. The unchanged profile store passes20 cases including two
+separate stale OS peers, rejection without mutation, unrelated Qt sync and
+reload/retry. These are separate scopes; shared-profile menu recovery is qualified by the
+separate journey and repair above. Other Qt keys/exit writers, two physical
+audio outputs and full beta validation remain open. Window restoration uses one shared last-closed record, including
+fullscreen state, while preserving the stored normal rectangle in these runs.
+
+Earlier 21 October cancellation checkpoint: the [input cancellation continuation](doc/juxtopposed-references/native/home-input-cancellation-20261021/README.md)
+passes the rapid-Start and restart-before-Quit-finalizer cases that failed on
+Core R8. Current Core `d04e9134a43f…`, cache `1190b018b5e8…`, unchanged ordinary
+GUI `d148035d54be…`. Four console processes cover18 cancellations, playback/seek
+recovery, clean WAV-under-MP3 fallback and genuine empty/invalid failures.
+Settings regression passes38 checks/27 normal processes/600 concurrent commits/
+1,200 nonoverlapping lock events; six selected model processes pass97 cases.
+A current ordinary movie/music pair passes independent pause/seek/mute/resume,
+fullscreen and direct Quit, clean logs, normal exits and preserved normal bounds.
+These two windows share native config but have separate Qt stores and one actual
+audio endpoint. Shared Qt profile/geometry ownership and two physical outputs
+remain open. Older popup313/geometry194 desktop proofs remain scoped to Core R8;
+current full-package/visual/accessibility/OS-DPI acceptance is still pending.
+The complete beta goal remains active.
+
+Earlier 21 October R8 checkpoint: the [shared native settings repair](doc/juxtopposed-references/native/home-settings-concurrency-20261021/README.md)
+passes real-Core38/27 processes,600 concurrent commits/1,200 nonoverlapping lock
+events, Qt backend/model24, matching popup7/313 and geometry4/194. Both ordinary
+two-window closing orders preserve unrelated saved edits and independent paused
+media, with one fullscreen window. Core `3a7b0a360e3c…`, ordinary GUI
+`371bc858e3bb…`; matching private GUI and source identities are in the receipt.
+No unexpected native/Qt errors or forced cleanup. Shared Qt profile/geometry
+ownership, simultaneous playback/two-output routing, remaining consumers,
+visual/accessibility/OS-DPI and final-package acceptance stay open. Other settings
+consumer regression adds General11, Audio32, Network17 and profile-defaults13
+(73 additional cases;97 selected model cases total). An ordinary simultaneous
+playing run showed independent pause/seek/queue/volume but was rejected for
+shutdown-time PCR errors and clipboard warnings. Two90s no-GUI real-output
+comparisons and one undisturbed ordinary Stop-before-Quit comparison are clean.
+The [application Quit repair](doc/juxtopposed-references/native/home-quit-stop-20261021/README.md)
+passes ordinary audio/audio and movie-plus-music pairs (four processes): direct
+fullscreen Quit leaves the other playing, then its direct Quit is clean too.
+All preserve normal window bounds. Four earlier private audio cases and three
+corrected private video/combined-media cases pass. Rapid-start cancellation
+diagnostics remained open on that tuple; GUI `d148035d54be…`, Core R8 unchanged. Only one explicit audio endpoint is available; Default aliases it.
+The complete beta goal remains active.
+
+The earlier [whole-row popup focus repair](doc/juxtopposed-references/native/home-popup-duration-activation-20261020/focus-repair-r4/README.md)
+passes its distinct native7/313, ordinary1 and component12 scopes after the old-
+source negative control. Title, slider, scale and full note remain visible.
+Its old Core/GUI identities are historical; the new matching replay is above.
+Native narrow/Light, title alignment and actual OS-DPI remain open.
+
+Goal resumed — **20 October 2026, after checkpoint `ed2f5d0155`**:
+The user requested following the complete beta roadmap until further notice or
+completion. Both monitors are now authorized for visible tests until further
+notice. [Geometry activation](doc/juxtopposed-references/native/home-geometry-activation-20261020/README.md)
+now passes four accepted native cases/194 checks and three ordinary sessions.
+The strict full-run playing timing error is retained separately; its isolated
+repeat passes. Settings, Off-save/cold policy and active media have scoped proof.
+[Popup duration activation](doc/juxtopposed-references/native/home-popup-duration-activation-20261020/README.md)
+now passes seven native cases/283, three ordinary sessions and component12.
+Ordinary GUI `72ba439a30f0…`, private R3 `1f83aa0cbefc…`, source-r3 and
+ordinary-runtime-r1 in `build-windows/beta-popup-duration-20261020`. Real Windows
+arguments777/0/10000, Never/minimized/Off, actual editor/retry/reopen and active
+state preservation pass. The accepted negative control has exactly one bounded
+save error; no unexpected native errors or Qt diagnostics. R1 link/R2 negative
+control failures are preserved separately; the ordinary GUI was unchanged by
+private fixture repairs. Builds and all owned tests are terminal; no VLC window
+is left running. Windows still controls notification visibility/expiry. Native
+narrow/Light, P3 helper-title alignment, OS DPI and package scope remain open.
+Also add multi-instance regression: separate media/screens/audio outputs, one
+fullscreen instance, and explicit per-session versus shared saved-setting policy.
+Audit shared-config writes/profile selection before claiming instance isolation.
+The [two-instance reproduction](doc/juxtopposed-references/native/home-multi-instance-20261020/README.md)
+records the original native-default loss on explicit save and normal exit.
+The newer Core repair above closes that reproduction in both closing orders;
+the original receipt retains its failed baseline. A remains fullscreen on its
+own paused media while B is used/closed. Shared Qt storage, separate actual audio
+endpoints and simultaneous playing-state tests remain open.
+
+Historical end-of-day checkpoint — **20 October 2026, superseded above**:
 The user requested commit and push, then continuation tomorrow. Work is paused;
 the complete beta remains unfinished. The geometry activation ordinary and
 private builds finished successfully (build exit0); no activation editor journey

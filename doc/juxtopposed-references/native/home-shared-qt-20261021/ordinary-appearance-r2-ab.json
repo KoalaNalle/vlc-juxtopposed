@@ -1,0 +1,126 @@
+{
+  "status": "selected_shared_theme_and_geometry_passed",
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateHooks": false,
+  "sharedQtStore": true,
+  "sharedNativeConfig": true,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "aa6fc26df153efa687a79de06d58d37e5e1720e0fbacec66636d97cf83d65f7e",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd"
+  },
+  "cases": {
+    "A": {
+      "pid": 15428,
+      "startupRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "exitCode": 0,
+      "normalExit": true,
+      "diagnostics": [],
+      "logOrder": {
+        "wait": 379,
+        "stopped": 413,
+        "teardown": 417
+      },
+      "logSha256": "92a270b21c9876dc795675c14d9f2961408dae8a86f82e79e6f40b86a8540fd3",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "realWasapiOpened": true,
+      "pluginCacheLoads": 1
+    },
+    "B": {
+      "pid": 29304,
+      "startupRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "exitCode": 0,
+      "normalExit": true,
+      "diagnostics": [],
+      "logOrder": {
+        "wait": 373,
+        "stopped": 407,
+        "teardown": 411
+      },
+      "logSha256": "fab0a1c6c91df5f0c675fbfe355202b0e4bb77bc9315f7972c49a2c83145bb0d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "realWasapiOpened": true,
+      "pluginCacheLoads": 1
+    }
+  },
+  "sourceInputsUnchanged": true,
+  "closeOrder": "ab",
+  "finalTheme": "2",
+  "identitiesUnchanged": true,
+  "snapshots": {
+    "after-b-theme.ini": {
+      "theme": 1,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "e93554741b1088fa06223bdd66523a78ab04a30b5030e2a5aa616ba9ed752d37"
+    },
+    "after-a-system.ini": {
+      "theme": 0,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "4c07beb5aa76fbb46158953e4c434453dcf47ce7f5813ecd607679036b72bc28"
+    },
+    "after-b-dark.ini": {
+      "theme": 2,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "8a4f7085970ffc8a954ed3ec146eff37dbe24ce66172c43f84b23bc4afcd5219"
+    },
+    "after-a-exit.ini": {
+      "theme": 2,
+      "normalRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "fileSha256": "4b8760439e8c24bba6be2854b81cd9e17b4ac4f7af9113d61ed9168ebeaa15c8"
+    },
+    "final": {
+      "theme": 2,
+      "normalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "fileSha256": "b089376fedd0b48da7a7e7cf125c4c84a5b791a9c5fd9926cc4a11852083607d"
+    }
+  },
+  "rawReceiptSha256": "1ee560abd9b4bddeecee9f9081bc4cb55802073a09decdc0666f759c621a3e74",
+  "normalGeometryObserved": true,
+  "protectedModulesUnchanged": true,
+  "observations": {
+    "A": "Own System choice after B Light, retains System after B later Dark; fullscreen1:34 then directQuit.",
+    "B": "Light then later Dark explicit commits; remains playing1:36 after A exit; directQuit."
+  },
+  "policy": "Last successful explicit theme commit is shared saved default; external writes do not replace another process active theme; exiting does not recommit old theme.",
+  "geometryPolicy": "One shared slot; last closing window normal rectangle wins, fullscreen state may restore on cold start.",
+  "visualAcceptance": false
+}

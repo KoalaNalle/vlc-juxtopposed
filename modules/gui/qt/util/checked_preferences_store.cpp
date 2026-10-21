@@ -6,6 +6,8 @@
 #include "checked_preferences_store.hpp"
 #include "qt.hpp"
 #include <vlc_configuration.h>
+#include <vlc_config_transaction.h>
+#include <QVector>
 #include <QCoreApplication>
 #include <QSettings>
 #include <QFile>
@@ -16,14 +18,6 @@
 namespace {
 QString tr(const char *text) { return QCoreApplication::translate("GeneralPreferencesModel", text); }
 bool reject(QString &error, const QString &message) { error = message; return false; }
-QString nativeString(const char *key)
-{
-    if (config_GetType(key) != VLC_VAR_STRING) return {};
-    char *raw = config_GetPsz(key);
-    const auto result = QString::fromUtf8(raw ? raw : "");
-    free(raw);
-    return result;
-}
 std::unique_ptr<QSettings> settingsSession(const QSettings *source)
 {
     if (!source) return {};
@@ -72,7 +66,6 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
     error.clear();
     if (!m_intf) return reject(error, tr("The native preferences service is unavailable."));
     QVariantMap requested = changes;
-    QVariantMap before;
     for (auto it = requested.begin(); it != requested.end(); ++it) {
         const auto key = it.key().toUtf8();
         const int type = config_GetType(key.constData());
@@ -96,69 +89,33 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
         // internal caller supplied a numeric QVariant with a float metatype.
         if (type != VLC_VAR_FLOAT && type != VLC_VAR_STRING)
             it.value() = QVariant::fromValue(qlonglong(it.value().toLongLong()));
-        before.insert(it.key(), type == VLC_VAR_STRING ? QVariant(nativeString(key.constData()))
-            : type == VLC_VAR_FLOAT ? QVariant::fromValue(config_GetFloat(key.constData()))
-            : QVariant(qlonglong(config_GetInt(key.constData()))));
     }
-    auto assign = [](const QVariantMap &values) {
-        // Do not expose an old proxy secret with a new authority while the
-        // per-key native setters run. Do the same before a failed write rolls
-        // back to its previous endpoint. Core snapshots this pair together.
-        if (values.contains(QStringLiteral("http-proxy"))
-            && values.contains(QStringLiteral("http-proxy-pwd"))
-            && nativeString("http-proxy") != values.value(QStringLiteral("http-proxy")).toString())
-            config_PutPsz("http-proxy-pwd", "");
-        for (auto it = values.cbegin(); it != values.cend(); ++it) {
-            const auto key = it.key().toUtf8();
-            if (it.value().typeId() == QMetaType::QString) {
-                const auto text = it.value().toString().toUtf8();
-                config_PutPsz(key.constData(), text.constData());
-            } else if (it.value().typeId() == QMetaType::Float)
-                config_PutFloat(key.constData(), it.value().toFloat());
-            else config_PutInt(key.constData(), it.value().toLongLong());
-        }
-    };
-    assign(requested);
-    bool matches = true;
+    QVector<QByteArray> names, strings;
+    QVector<vlc_config_change> native;
+    names.reserve(requested.size()); strings.reserve(requested.size());
+    native.reserve(requested.size());
     for (auto it = requested.cbegin(); it != requested.cend(); ++it) {
-        const auto key = it.key().toUtf8();
-        matches &= it.value().typeId() == QMetaType::QString
-            ? nativeString(key.constData()) == it.value().toString()
-            : it.value().typeId() == QMetaType::Float
-            ? config_GetFloat(key.constData()) == it.value().toFloat()
-            : config_GetInt(key.constData()) == it.value().toLongLong();
+        names.push_back(it.key().toUtf8());
+        vlc_config_change change{};
+        change.name = names.back().constData();
+        change.type = config_GetType(change.name);
+        if (change.type == VLC_VAR_STRING) {
+            const auto text = it.value().toString();
+            if (text.contains(QChar::Null) || text.contains('\n') || text.contains('\r'))
+                return reject(error, tr("This text cannot be stored in the VLC configuration."));
+            strings.push_back(text.toUtf8());
+            change.value.str = strings.back().constData();
+        } else if (change.type == VLC_VAR_FLOAT)
+            change.value.f = it.value().toFloat();
+        else
+            change.value.i = it.value().toLongLong();
+        native.push_back(change);
     }
-    if (!matches) {
-        assign(before);
-        return reject(error, tr("The native preference could not be updated. The previous value was restored."));
-    }
-    const auto fileName = configFile();
-    QFile file(fileName);
-    bool saved = config_SaveConfigFile(m_intf) == 0 && file.open(QIODevice::ReadOnly);
-    QByteArray bytes;
-    if (saved) { bytes = file.readAll(); saved = file.error() == QFile::NoError; file.close(); }
-    // Verify the real saved representation too: older cores incorrectly
-    // returned success on a failed final rename. Defaults are commented by
-    // VLC's serializer, so remove just that one leading comment marker.
-    if (saved) {
-        for (auto it = requested.cbegin(); it != requested.cend(); ++it) {
-            const QByteArray expected = it.key().toUtf8() + '=' + (it.value().typeId() == QMetaType::QString
-                ? it.value().toString().toUtf8() : it.value().typeId() == QMetaType::Float
-                ? QByteArray::number(double(it.value().toFloat()), 'f', 6)
-                : QByteArray::number(it.value().toLongLong()));
-            bool found = false;
-            for (auto line : bytes.split('\n')) {
-                if (line.endsWith('\r')) line.chop(1);
-                if (line.startsWith('#')) line.remove(0, 1);
-                if (line == expected) { found = true; break; }
-            }
-            saved &= found;
-        }
-    }
-    if (!saved) {
-        assign(before);
+    // Core owns mutation, unrelated-key merge, durable replacement and rollback
+    // within one transaction. A later writer's valid commit must not be judged
+    // against our values by a racy post-transaction file readback.
+    if (config_SaveChanges(m_intf, native.constData(), size_t(native.size())) != 0)
         return reject(error, tr("The VLC configuration could not be saved. The previous in-memory values were restored."));
-    }
     return true;
 }
 bool CheckedPreferencesStore::saveSettings(QSettings *settings, const QString &key,

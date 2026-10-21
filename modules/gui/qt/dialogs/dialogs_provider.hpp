@@ -91,6 +91,7 @@ class UpdateDialog;
 class PrefsDialog;
 class NetworkStreamModel;
 class ConversionController;
+struct vlc_player_listener_id;
 Q_MOC_INCLUDE("dialogs/conversion_controller.hpp")
 class NewPlaylistModel;
 Q_MOC_INCLUDE("dialogs/new_playlist_model.hpp")
@@ -215,6 +216,8 @@ private:
                     decltype(&input_item_parser_id_Release)> m_parser;
 
     bool b_isDying;
+    vlc_player_listener_id *m_quitStopListener = nullptr;
+    void finishQuitAfterPlaybackStop();
 
     void openDialog( OpenDialog::OpenTab );
     void openNativePrefsDialog(bool advanced);

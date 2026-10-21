@@ -57,3 +57,19 @@ setup-python@v5, upload-artifact@v4), and migration of ubuntu-latest to Ubuntu26
 Both match current `.github/workflows/qml-ui-checks.yml`. Reconcile supported
 action versions and runner reproducibility after confirmed-action work; no CI
 configuration was changed in this initial review.
+
+## Popup candidate review after geometry activation
+
+The existing review agent found no concrete blocker in the popup gate, native
+player-name route or platform-log assertions. Actual decoded input/name signals
+drive the existing tray; exact notification names and startup-duration arguments
+are checked separately from OS expiration. Cold zero/max, Never, minimized-only
+and tray-Off cases remain pending native execution.
+
+Component12 passes. Generated1080 capture shows readable helper text and intact
+authored ticks without overlap; narrow640 shows the helper readable, with the
+slider/title above the captured viewport. A focused native/narrow capture is
+still needed for the complete row. P3 visual refinement: the enlarged holder
+centers the "Popup duration" title below the original slider alignment; align
+against the original46px group after the confirmed behavior work if appropriate.
+These observations do not accept the whole Interface surface or actual OS DPI.
