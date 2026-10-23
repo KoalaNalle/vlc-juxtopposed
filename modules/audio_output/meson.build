@@ -148,7 +148,7 @@ vlc_modules += {
 
 vlc_modules += {
     'name' : 'wasapi',
-    'sources' : files('wasapi.c'),
+    'sources' : files('wasapi.c', 'wasapi_role.h'),
     'dependencies' : [ksuser_lib],
     'plugin_dir' : 'audio_output',
     'enabled' : get_option('wasapi')

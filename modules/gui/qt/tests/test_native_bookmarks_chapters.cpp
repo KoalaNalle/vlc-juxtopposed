@@ -264,7 +264,12 @@ private slots:
             // Native MKV metadata includes its authored hierarchy prefix.
             QCOMPARE(nativeName.trimmed(), QString::fromUtf8(names[i]));
             QCOMPARE(model->data(index, Qt::DisplayRole).toString(), nativeName);
-            QCOMPARE(model->data(index, ChapterListModel::TimeRole).value<VLCTime>().toVLCTick(), VLC_TICK_FROM_SEC(i * 6));
+            const auto chapterTime = model->data(index, ChapterListModel::TimeRole).value<VLCTime>();
+            // Chapter offsets start at zero; VLCTime stores its own nonzero
+            // origin. The exposed time must remain valid and format exactly.
+            QVERIFY(chapterTime.valid());
+            QCOMPARE(chapterTime.toSeconds(), i * 6);
+            QCOMPARE(chapterTime.toVLCTick(), VLC_TICK_0 + VLC_TICK_FROM_SEC(i * 6));
             QVERIFY(std::abs(model->data(index, ChapterListModel::StartPositionRole).toDouble() - double(i) / 3) < .001);
             QVERIFY(std::abs(model->data(index, ChapterListModel::EndPositionRole).toDouble() - double(i + 1) / 3) < .001);
         }

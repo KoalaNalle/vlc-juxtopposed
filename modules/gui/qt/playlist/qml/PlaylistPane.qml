@@ -41,6 +41,9 @@ T.Pane {
     property bool useAcrylic: true
     readonly property bool juxtopposed: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
     readonly property int currentTab: MainCtx.playqueuePanel.activeTab
+    readonly property bool queueFindKeyScope: root.juxtopposed && root.currentTab === 0
+    // Mouse-focused bookmark/chapter lists keep activation keys in Qt.
+    readonly property bool navigationKeyScope: root.juxtopposed && root.currentTab !== 0
     onCurrentTabChanged: {
         if (currentTab !== 0)
             searchBox?.retract()
@@ -226,7 +229,7 @@ T.Pane {
         target: searchBox.popup
         property: "y"
         when: root.juxtopposed
-        value: 50 * VLCStyle.scale
+        value: queuePanel.bodyTop
     }
     Connections {
         target: searchBox.popup
@@ -271,6 +274,8 @@ T.Pane {
             showRemove: root.currentTab !== 2
             showAdd: root.currentTab !== 2
             toolbarContentHeight: root.currentTab === 0 ? 28 : 24
+            // Keep the filter below the actions and above the first queue row.
+            bodyTopInset: searchBox.expanded ? searchBox.popup.height + 12 * VLCStyle.scale : 0
             sortEnabled: MainPlaylistController.count > 1
             repeatEnabled: !MainPlaylistController.empty
             shuffleEnabled: MainPlaylistController.count > 1
@@ -385,23 +390,29 @@ T.Pane {
                     durationText: root.formatChapterTime(chapterRow.time)
                     titleColor: chapterRow.checked || chapterRow.selected ? chapterTheme.fg.primary : "#969696"
                 }
-                TapHandler {
-                    acceptedDevices: PointerDevice.AllDevices & ~PointerDevice.TouchScreen
-                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-                    gesturePolicy: TapHandler.ReleaseWithinBounds
-                    onSingleTapped: {
-                        chapterRow.forceActiveFocus(Qt.MouseFocusReason)
-                        chaptersView.selectionModel.updateSelection(point.modifiers, chaptersView.currentIndex, chapterRow.index)
-                        chaptersView.currentIndex = chapterRow.index
+                // A Control consumes pointer events before its own handlers.
+                // Match PlaylistDelegate's child-item input ownership.
+                Item {
+                    id: chapterPointerArea
+                    anchors.fill: parent
+                    TapHandler {
+                        acceptedDevices: PointerDevice.AllDevices & ~PointerDevice.TouchScreen
+                        acceptedButtons: Qt.LeftButton | Qt.RightButton
+                        gesturePolicy: TapHandler.ReleaseWithinBounds
+                        onSingleTapped: {
+                            chapterRow.forceActiveFocus(Qt.MouseFocusReason)
+                            chaptersView.selectionModel.updateSelection(point.modifiers, chaptersView.currentIndex, chapterRow.index)
+                            chaptersView.currentIndex = chapterRow.index
+                        }
+                        onDoubleTapped: (eventPoint, button) => {
+                            if (button === Qt.LeftButton)
+                                chaptersView.activate(chapterRow.index)
+                        }
                     }
-                    onDoubleTapped: (eventPoint, button) => {
-                        if (button === Qt.LeftButton)
-                            chaptersView.activate(chapterRow.index)
+                    DelegateTouchTapHandler {
+                        delegate: chapterRow
+                        onSingleTapped: chaptersView.activate(chapterRow.index)
                     }
-                }
-                DelegateTouchTapHandler {
-                    delegate: chapterRow
-                    onSingleTapped: chaptersView.activate(chapterRow.index)
                 }
             }
 
@@ -956,6 +967,11 @@ T.Pane {
     Keys.forwardTo: !root.juxtopposed || root.currentTab === 0 ? [listView]
                   : root.currentTab === 1 && bookmarksLoader.item ? [bookmarksLoader.item]
                   : root.currentTab === 2 ? [chaptersView] : []
+    Keys.onShortcutOverride: (event) => {
+        // A focused queue owns Find before the window's Open Folder action.
+        if (root.juxtopposed && root.currentTab === 0 && event.matches(StandardKey.Find))
+            event.accepted = true
+    }
     Keys.onPressed: (event) => {
         if (root.juxtopposed && root.currentTab === 0 && event.matches(StandardKey.Find)) {
             searchBox.expandAndFocus()

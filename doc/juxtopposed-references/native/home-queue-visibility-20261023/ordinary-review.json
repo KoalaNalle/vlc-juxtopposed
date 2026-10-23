@@ -1,0 +1,29 @@
+{
+  "audio": {
+    "accepted": true,
+    "method": "Computer Use in the ordinary Windows11 app, isolated portable configuration and synthetic local media.",
+    "observations": "build-windows/beta-queue-workflow-20261022/ordinary-ui-r14/ui-observations.json",
+    "passedChecks": [
+      "Show docked queue, undock while visible, then redock: all five original rows remain visible without another Play queue activation.",
+      "Cedar stays current and paused at00:00:00 throughout; normal Quit exits0 with no error/Qt exception diagnostics.",
+      "Hide the queue, then undock: it stays hidden."
+    ],
+    "limits": [
+      "No all-monitor, physical DPI, display hotplug, Windows10, screen-reader, full design or package acceptance."
+    ]
+  },
+  "video": {
+    "accepted": true,
+    "method": "Computer Use in the ordinary Windows11 app, isolated portable configuration and synthetic local media.",
+    "observations": "build-windows/beta-queue-workflow-20261022/ordinary-ui-r14-video/ui-observations.json",
+    "passedChecks": [
+      "Show docked queue, undock while visible, then redock: all five original rows remain visible without another Play queue activation.",
+      "Cedar stays current and paused at00:00:00 throughout; normal Quit exits0 with no error/Qt exception diagnostics."
+    ],
+    "limits": [
+      "No all-monitor, physical DPI, display hotplug, Windows10, screen-reader, full design or package acceptance."
+    ],
+    "observationNote": "The first650ms redock capture was transitional (no docked panel yet and a stale floating accessibility subtree). A later fresh observation, without another action, shows the docked queue with all five rows. This does not claim an animation timing bound.",
+    "logWarnings": "The log retains MP4 elst/STTS parser warnings and one initial window-size-missing warning. No error, assertion, binding loop, TypeError or ReferenceError was captured."
+  }
+}

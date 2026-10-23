@@ -1,0 +1,18 @@
+********* Start testing of TestItemKeyEventFilter *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestItemKeyEventFilter::initTestCase()
+FAIL!  : TestItemKeyEventFilter::reservedShortcut(observe) Compared values are not the same
+   Actual   (scene.count("folderCount")): 1
+   Expected (0)                         : 0
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_item_key_event_filter.cpp(116) : failure location
+PASS   : TestItemKeyEventFilter::reservedShortcut(consume)
+PASS   : TestItemKeyEventFilter::unclaimedShortcutRemainsGlobal()
+PASS   : TestItemKeyEventFilter::ordinaryKeyIsDeliveredOnce()
+PASS   : TestItemKeyEventFilter::disabledFilterLeavesOwnerUntouched()
+FAIL!  : TestItemKeyEventFilter::repeatedKeysDoNotAccumulate() Compared values are not the same
+   Actual   (scene.count("folderCount")): 5
+   Expected (0)                         : 0
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_item_key_event_filter.cpp(150) : failure location
+PASS   : TestItemKeyEventFilter::cleanupTestCase()
+Totals: 6 passed, 2 failed, 0 skipped, 0 blacklisted, 1111ms
+********* Finished testing of TestItemKeyEventFilter *********

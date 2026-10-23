@@ -8,6 +8,7 @@
 #include "player/audio_equalizer.hpp"
 #include "util/audio_defaults_policy.hpp"
 #include "util/audio_windows_devices.hpp"
+#include "util/checked_preferences_store.hpp"
 #include <vlc/vlc.h>
 #include <vlc_configuration.h>
 #include <vlc_modules.h>
@@ -23,6 +24,10 @@
 #include <QSet>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <limits>
@@ -43,6 +48,11 @@ class TestAudioPreferences final : public QObject
     std::unique_ptr<AudioPreferencesModel> m_model;
     std::unique_ptr<AudioEqualizer> m_liveEqualizer;
     std::atomic<float> m_rms{0}; std::atomic<unsigned> m_buffers{0};
+    std::atomic<quint64> m_pcmFrames{0};
+    std::atomic<bool> m_captureLevels{false}, m_nonfinitePcm{false};
+    std::atomic<double> m_levelEnergy[4]{};
+    std::atomic<quint64> m_levelSamples[4]{};
+    std::atomic<float> m_peak{0};
     static QByteArray bytes(const QString &path) { QFile file(path);return file.open(QIODevice::ReadOnly)?file.readAll():QByteArray{}; }
     static bool write(const QString &path,const QByteArray &data) { QFile file(path);return file.open(QIODevice::WriteOnly)&&file.write(data)==data.size(); }
     static QString text(const char *key) { char *raw=config_GetPsz(key);const auto result=QString::fromUtf8(raw?raw:"");free(raw);return result; }
@@ -50,6 +60,29 @@ class TestAudioPreferences final : public QObject
         auto *self=static_cast<TestAudioPreferences *>(opaque);const auto *pcm=static_cast<const float *>(data);
         double sum=0;for(unsigned i=0;i<frames;++i)sum+=double(pcm[i])*pcm[i];
         self->m_rms.store(frames?float(std::sqrt(sum/frames)):0);self->m_buffers.fetch_add(1);
+        const quint64 first=self->m_pcmFrames.fetch_add(frames);
+        if (self->m_captureLevels.load()) {
+            // The owned 12s fixture alternates three seconds quiet/loud/quiet/loud.
+            // Inspect settled one-second windows, away from the filter's lookahead
+            // and attack/release transitions. The fourth window follows a saved
+            // default change, so it also detects an unintended live filter edit.
+            constexpr quint64 starts[]={44100,4*44100,7*44100,10*44100};
+            constexpr quint64 ends[]={2*44100,5*44100,8*44100,11*44100};
+            double energy[4]{};quint64 counts[4]{};float peak=self->m_peak.load();
+            for(unsigned i=0;i<frames;++i) {
+                if(!std::isfinite(pcm[i]))self->m_nonfinitePcm.store(true);
+                peak=std::max(peak,std::abs(pcm[i]));
+                for(int window=0;window<4;++window)if(first+i>=starts[window]&&first+i<ends[window]) {
+                    energy[window]+=double(pcm[i])*pcm[i];++counts[window];
+                }
+            }
+            // AMEM calls one serial play callback for this single owned output.
+            for(int window=0;window<4;++window) {
+                self->m_levelEnergy[window].store(self->m_levelEnergy[window].load()+energy[window]);
+                self->m_levelSamples[window].fetch_add(counts[window]);
+            }
+            self->m_peak.store(peak);
+        }
     }
     bool openNative() {
         const QByteArray option=QByteArray("--config=")+m_config.toUtf8();
@@ -70,11 +103,26 @@ class TestAudioPreferences final : public QObject
         QVERIFY2(stopped,"Native PCM owner did not stop within ten seconds; all owners were nevertheless joined/released");
     }
     void enableStepConsumer() {AudioPreferencesModel::Consumers linked;linked.authoredVolumeStep=true;m_model=std::make_unique<AudioPreferencesModel>(m_intf,linked);}
+    void enableNightModeConsumer() {AudioPreferencesModel::Consumers linked;linked.nightMode=true;m_model=std::make_unique<AudioPreferencesModel>(m_intf,linked);}
     vlc_player_state ownedPcmState() const {
         AudioPcmPlayerLocker lock(m_intf->p_player);return vlc_player_GetState(m_intf->p_player);
     }
     void stopOwnedPcm() {
         vlc_playlist_Lock(m_intf->p_playlist);vlc_playlist_Stop(m_intf->p_playlist);vlc_playlist_Unlock(m_intf->p_playlist);
+    }
+    void pauseOwnedPcm(bool paused) {
+        vlc_playlist_Lock(m_intf->p_playlist);
+        if(paused)vlc_playlist_Pause(m_intf->p_playlist);else vlc_playlist_Resume(m_intf->p_playlist);
+        vlc_playlist_Unlock(m_intf->p_playlist);
+    }
+    QJsonObject levelReport() const {
+        QJsonArray rms,counts;
+        for(int i=0;i<4;++i) {
+            const auto count=m_levelSamples[i].load();counts.append(qint64(count));
+            rms.append(count?std::sqrt(m_levelEnergy[i].load()/count):0.);
+        }
+        return {{"frames",qint64(m_pcmFrames.load())},{"windowSamples",counts},
+            {"windowRms",rms},{"peak",m_peak.load()},{"nonfinite",m_nonfinitePcm.load()}};
     }
     void releaseOwnedPcm() {
         // Delete joins the actual native player/input before callback data can die.
@@ -83,7 +131,8 @@ class TestAudioPreferences final : public QObject
     }
     bool startOwnedPcm(const QString &path) {
         if(m_intf->p_playlist)return false;
-        m_rms=0;m_buffers=0;
+        m_rms=0;m_buffers=0;m_pcmFrames=0;m_peak=0;m_nonfinitePcm=false;
+        for(int i=0;i<4;++i){m_levelEnergy[i]=0;m_levelSamples[i]=0;}
         auto *root=vlc_test_general_instance_object(m_instance);
         // Fixture-only transport, installed before the native owner creates aout.
         // Never mask or manually copy the saved audio-filter/EQ defaults.
@@ -106,6 +155,7 @@ private slots:
         const auto userdata=QDir(m_output).filePath(QStringLiteral("userdata"));QVERIFY(QDir().mkpath(userdata));qputenv("VLC_USERDATA_PATH",userdata.toUtf8());
     }
     void init() {
+        m_captureLevels=false;
         const auto name=QString::fromLatin1(QTest::currentTestFunction());
         auto folder=QDir(m_output).filePath(name);if(const auto tag=QTest::currentDataTag();tag&&*tag)folder+='/'+QString::fromLatin1(tag);
         QVERIFY(QDir().mkpath(folder));m_config=QDir(folder).filePath(QStringLiteral("vlcrc"));QVERIFY(openNative());
@@ -145,13 +195,15 @@ private slots:
         QTest::newRow("eq")<<QStringLiteral("equalizerEnabled")<<QStringLiteral("equalizer");
         QTest::newRow("wide")<<QStringLiteral("stereoWidening")<<QStringLiteral("stereo_widen");
         QTest::newRow("compressor")<<QStringLiteral("compressor")<<QStringLiteral("compressor");
+        QTest::newRow("night-mode")<<QStringLiteral("nightMode")<<QStringLiteral("nightmode");
         QTest::newRow("chorus")<<QStringLiteral("chorusFlanger")<<QStringLiteral("chorus_flanger");
         QTest::newRow("karaoke")<<QStringLiteral("karaoke")<<QStringLiteral("karaoke");
     }
     void filterTogglesPreserveUnknownOptionsAndOrder() {
         QFETCH(QString,key);QFETCH(QString,module);QVERIFY(module_exists(qtu(module)));
         const QString opaque=QStringLiteral("unrelated{url='https://example/a:b',nested={value=2}}:other");
-        config_PutPsz("audio-filter",qtu(opaque));m_model=std::make_unique<AudioPreferencesModel>(m_intf);
+        config_PutPsz("audio-filter",qtu(opaque));
+        if(key==QLatin1String("nightMode"))enableNightModeConsumer();else m_model=std::make_unique<AudioPreferencesModel>(m_intf);
         QVERIFY2(m_model->setValue(key,true),qPrintable(m_model->lastError()));QCOMPARE(text("audio-filter"),opaque+':'+module);
         QVERIFY(m_model->setValue(key,false));QCOMPARE(text("audio-filter"),opaque);QVERIFY(!m_model->restartRequired());
         // Refuse malformed opaque options rather than destroying user text.
@@ -325,8 +377,8 @@ private slots:
     }
     void actualLanguageVisualizationRoleAndFrequencyNotifications() {
         QVERIFY(m_model->setValue(QStringLiteral("preferredLanguage"),QStringLiteral("en,fi,any")));QCOMPARE(text("audio-language"),QStringLiteral("en,fi,any"));
-        // Real MMDevice requests eConsole and does not read the global role.
-        // A stored flag alone must not claim a working Windows policy control.
+        // The generic model keeps Windows stream-role writes gated. Only its
+        // qualified owner may opt in to the separate WASAPI category consumer.
         const auto role=text("role");const auto disk=bytes(m_config);
         QVERIFY(!m_model->capabilities().value(QStringLiteral("mediaRole")).toBool());
         QVERIFY(!m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("music")));
@@ -336,6 +388,87 @@ private slots:
         QSignalSpy frequencies(m_model.get(),&AudioPreferencesModel::equalizerFrequenciesChanged);
         const bool old=config_GetInt("equalizer-vlcfreqs");config_PutInt("equalizer-vlcfreqs",!old);m_model->reload();
         QCOMPARE(frequencies.size(),1);QCOMPARE(m_model->equalizerFrequencies()[0].toDouble(),old?31.25:60.);
+    }
+    void independentNightModeDefaultsPreserveCompressorAndRecover() {
+        QVERIFY(module_exists("nightmode"));QVERIFY(module_exists("compressor"));
+        const QVariantMap compressor{{"compressor-rms-peak",.4},{"compressor-attack",40.},
+            {"compressor-release",250.},{"compressor-threshold",-9.},{"compressor-ratio",2.5},
+            {"compressor-knee",3.},{"compressor-makeup-gain",2.}};
+        QString error;QVERIFY2(CheckedPreferencesStore(m_intf).saveNative(compressor,error),qPrintable(error));
+        auto compressorValues=[&] {
+            QVariantMap result;for(auto it=compressor.cbegin();it!=compressor.cend();++it)
+                result.insert(it.key(),double(config_GetFloat(qtu(it.key()))));
+            return result;
+        };
+        const auto original=compressorValues();enableNightModeConsumer();
+        QVERIFY(m_model->capabilities().value(QStringLiteral("nightMode")).toBool());
+        QVERIFY(!m_model->values().value(QStringLiteral("nightMode")).toBool());
+        QVERIFY(m_model->setValue(QStringLiteral("nightMode"),true));
+        QCOMPARE(text("audio-filter"),QStringLiteral("nightmode"));
+        QVERIFY(!m_model->values().value(QStringLiteral("compressor")).toBool());
+        QCOMPARE(compressorValues(),original);QVERIFY(m_model->restartRequired());
+        QVERIFY(m_model->setValue(QStringLiteral("compressor"),true));
+        QCOMPARE(text("audio-filter"),QStringLiteral("nightmode:compressor"));
+        QVERIFY(m_model->setValue(QStringLiteral("nightMode"),false));
+        QCOMPARE(text("audio-filter"),QStringLiteral("compressor"));QCOMPARE(compressorValues(),original);
+        const auto before=m_model->values();const auto disk=bytes(m_config);
+        QVERIFY(QFile::remove(m_config));QVERIFY(QDir().mkdir(m_config));
+        QVERIFY(!m_model->setValue(QStringLiteral("nightMode"),true));
+        QCOMPARE(text("audio-filter"),QStringLiteral("compressor"));QCOMPARE(m_model->values(),before);
+        QCOMPARE(compressorValues(),original);QVERIFY(!m_model->lastError().isEmpty());
+        QVERIFY(QDir().rmdir(m_config));QVERIFY(write(m_config,disk));
+        QVERIFY(m_model->setValue(QStringLiteral("nightMode"),true));QVERIFY(m_model->lastError().isEmpty());
+        QCOMPARE(text("audio-filter"),QStringLiteral("compressor:nightmode"));
+        closeNative();QVERIFY(openNative());enableNightModeConsumer();
+        QVERIFY(m_model->values().value(QStringLiteral("nightMode")).toBool());
+        QVERIFY(m_model->values().value(QStringLiteral("compressor")).toBool());
+        QCOMPARE(compressorValues(),original);QVERIFY(!m_model->restartRequired());
+        QVERIFY(m_model->setValue(QStringLiteral("nightMode"),false));
+        QCOMPARE(text("audio-filter"),QStringLiteral("compressor"));QCOMPARE(compressorValues(),original);
+    }
+    void genuineNightModePcmAndPausedDefaultChanges() {
+        const auto fixture=qEnvironmentVariable("VLC_NIGHT_MODE_FIXTURE");
+        QVERIFY2(!fixture.isEmpty()&&QFileInfo(fixture).isFile(),"Set the owned12s quiet/loud/quiet/loud WAV fixture");
+        QVERIFY(module_exists("nightmode"));enableNightModeConsumer();m_captureLevels=true;
+        QJsonArray reports;
+        const bool newDefaults[]={true,false,false};
+        for(int pass=0;pass<3;++pass) {
+            if(pass){closeNative();QVERIFY(openNative());enableNightModeConsumer();}
+            QCOMPARE(m_model->values().value(QStringLiteral("nightMode")).toBool(),pass==1);
+            QVERIFY(!m_model->values().value(QStringLiteral("compressor")).toBool());
+            QVERIFY(startOwnedPcm(fixture));
+            QTRY_VERIFY_WITH_TIMEOUT(m_pcmFrames.load()>=6*44100,12000);
+            pauseOwnedPcm(true);QTRY_COMPARE_WITH_TIMEOUT(ownedPcmState(),VLC_PLAYER_STATE_PAUSED,5000);
+            QVERIFY(m_model->setValue(QStringLiteral("nightMode"),newDefaults[pass]));
+            QCOMPARE(ownedPcmState(),VLC_PLAYER_STATE_PAUSED);
+            QCOMPARE(m_model->values().value(QStringLiteral("nightMode")).toBool(),newDefaults[pass]);
+            QCOMPARE(m_model->restartRequired(),pass<2);
+            pauseOwnedPcm(false);
+            QTRY_VERIFY_WITH_TIMEOUT(m_pcmFrames.load()>=12*44100&&ownedPcmState()==VLC_PLAYER_STATE_STOPPED,15000);
+            releaseOwnedPcm(); // Join all native callbacks before inspecting the report.
+            auto report=levelReport();report.insert("pass",pass);
+            report.insert("currentOutputNightMode",pass==1);
+            report.insert("savedDefaultAfterPausedEdit",newDefaults[pass]);reports.append(report);
+            QFile file(QDir(m_output).filePath(QStringLiteral("night-mode-pcm.json")));
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            QVERIFY(file.write(QJsonDocument(QJsonObject{{"cases",reports},{"sourceFrames",12*44100}}).toJson())>0);
+            QVERIFY(!report.value("nonfinite").toBool());
+            QCOMPARE(report.value("frames").toInteger(),qint64(12*44100));
+            for(const auto &count:report.value("windowSamples").toArray())QCOMPARE(count.toInteger(),qint64(44100));
+        }
+        const auto off=reports[0].toObject().value("windowRms").toArray();
+        const auto on=reports[1].toObject().value("windowRms").toArray();
+        const auto restored=reports[2].toObject().value("windowRms").toArray();
+        QVERIFY(off[0].toDouble()>.001);QVERIFY(off[1].toDouble()>off[0].toDouble()*10.);
+        // Saved defaults must not alter the existing paused player's filter.
+        QVERIFY(std::abs(off[3].toDouble()/off[1].toDouble()-1.)<.02);
+        QVERIFY(std::abs(on[3].toDouble()/on[1].toDouble()-1.)<.02);
+        // Test actual samples, not merely the stored filter name or an RMS mock.
+        QVERIFY(on[1].toDouble()<off[1].toDouble()*.4);
+        QVERIFY(on[0].toDouble()>off[0].toDouble()*.9&&on[0].toDouble()<off[0].toDouble()*1.05);
+        QVERIFY(on[2].toDouble()>off[2].toDouble()*.9&&on[2].toDouble()<off[2].toDouble()*1.05);
+        QVERIFY(reports[1].toObject().value("peak").toDouble()<=reports[0].toObject().value("peak").toDouble()+.001);
+        for(int i=0;i<4;++i)QVERIFY(std::abs(restored[i].toDouble()/off[i].toDouble()-1.)<.02);
     }
     void genuineOutputVisualizationCallbackSurvivesFilterRestart() {
         const auto fixture=qEnvironmentVariable("VLC_AUDIO_DEFAULTS_FIXTURE");

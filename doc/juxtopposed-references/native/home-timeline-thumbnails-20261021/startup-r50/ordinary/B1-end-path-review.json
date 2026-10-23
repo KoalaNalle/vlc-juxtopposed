@@ -1,0 +1,15 @@
+{
+  "scope": "Separate already-stopped EOF/Quit path; original runner passed=false preserved",
+  "originalRunnerPassed": false,
+  "normalExit": true,
+  "exitCode": 0,
+  "quitOrder": {
+    "eof": 838,
+    "stopped": 892,
+    "teardown": 900,
+    "qtFinished": 913,
+    "loggerStopped": 918
+  },
+  "acceptedAlreadyStoppedQuit": true,
+  "reason": "The ordinary runner requires asynchronous playing-primary stop messages. B1 had already reached EOF/STOPPED before observed Home-screen Ctrl+Q, so DialogsProvider::quit takes its direct libvlc_Quit branch. Actual native EOF/STOPPED precedes Qt teardown/exec completion/logger stop, normal exit0 and no diagnostics. This does not relabel the original runner as passed."
+}

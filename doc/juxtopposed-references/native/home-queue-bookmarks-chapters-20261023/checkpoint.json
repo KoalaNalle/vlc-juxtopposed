@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "selectedWorkflowAccepted": true,
+  "fullQueueWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "date": "2026-10-23",
+  "scope": "Correct chapter offset display, actual chapter/bookmark pointer and keyboard seeking, media-specific empty/restore states and cold bookmark persistence on the home Windows11 desktop.",
+  "nativeCases": 9,
+  "pointerCases": 6,
+  "sourceInputs": 2103,
+  "sourceFreeze": "build-windows/beta-queue-workflow-20261022/source-r17",
+  "nativeSourceRecord": "native-source-record.json",
+  "identities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/gui/libqt_plugin.dll": "f528dd1c5c8cfea210d8f06bd305bb9c75478bc764f407bcc96b69764a256b55",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "artifacts": {
+    "native-before-process.json": "dd1a8ac8f64cbc4db023dc80733d62a9266b20448f411f803144cc16da9ac655",
+    "native-before-results.txt": "aeda28fb1733f6a77e2f03d52b91bc38e1df9ac8493b20b9af8d8c254d92e7e8",
+    "native-before-results.xml": "998823d3ed886308226a63396e23bc47ef250064b9e3c9a3fda2b06d8362c2d5",
+    "native-after-process.json": "239f435fa86e021fe9ac79058e22beb7f3c59161d3e35d4cc4b9b7f4c15d5ac9",
+    "native-after-results.txt": "1495be42c435f3ebc5403a7d52b321d8c93d8fde447062b891f57091ef4b4ca4",
+    "native-after-results.xml": "77e9788a6a460ff60848463a2f63449547630a0afce13654ed2cb59b5985563b",
+    "pointer-before.json": "ad73069f986b725b3e6c62a14de32b416178abe8898716e859d154ba72f4b8a4",
+    "pointer-after.json": "a4796684cdf236615a49b83a5bc4888eb3372de71c2d6b0633d064e68355f74d",
+    "ordinary-r15-process.json": "c418a84f6321b7b5e7463a96365226bcfb8628e331f5ceb833286a5325b6cbd4",
+    "ordinary-r16-process.json": "7e850f314b363ed6b06995a3cd987edd693b6543b64ec1369cf82686415af94b",
+    "ordinary-first-process.json": "605902903fc031b3e2bfba6afe9c442295ec5dffedd7b1dd297d5bd6ba84283f",
+    "ordinary-cold-process.json": "b5faa129e9d8622bd551c873afdfafe6194d432df54a014dc3032b7becd32387",
+    "scope-delta.json": "1222e2fff633a215f6cdd1debef81e587581892c9b686148ae5a973821136c20",
+    "source-inputs.json": "96f401db5e8ad497403ee7afef586d7ea60b6da372aa352a17006ba1ffa2a604",
+    "native-source-record.json": "37b2588c4654b111f1a480c1e8c5075617895e24357496515d548c83195d7bb4",
+    "native-review.json": "d87d6bf593af42bf509e1ca7b1df8cb921a91de80ec3b7dd1244f6fecadd8e30",
+    "persistence-readback.json": "1c956167f7bddb6b1d61f3eb695a5bc5533bfd56ae22014756ba905070b8967a",
+    "ordinary-review.json": "0c97f2204c3c1418a6175cb61351f96a9164a0f6e730d5fd8f0119c257db2019",
+    "investigation-review.json": "d1845c4d2a9e42e7930167ee87055515fe2d7f667548dc0d4f3016af2dbaf758"
+  },
+  "knownLimits": [
+    "No ordinary UI bookmark removal/rename, physical touch/screen-reader/DPI, all file formats, Windows10 or full design/package acceptance.",
+    "Next/Previous start playback. The short18s fixture reaches EOF during one return/refresh and advances to the plain file; that raw state is retained. A later return is paused and the original bookmarks are verified. No seek/quit/animation latency bound is claimed.",
+    "Process receipts retain passed=false/observationsRequired=true. This review accepts only the observed checks."
+  ]
+}

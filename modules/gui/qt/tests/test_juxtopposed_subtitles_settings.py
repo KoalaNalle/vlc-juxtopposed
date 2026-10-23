@@ -201,7 +201,16 @@ before=len(model.requests);focus('subtitlesfeedbackDuration');QTest.keyClick(win
 focus('subtitlesfeedbackDuration');QTest.keyClick(window,Qt.Key_End);QTest.qWait(25);assert model.requests[-1]==['feedbackDuration',5000]
 focus('subtitlesfilenameDuration');QTest.keyClick(window,Qt.Key_End);QTest.qWait(25);assert model.requests[-1]==['filenameDuration',10000]
 assert 'milliseconds' in evaluate(page,'helpFor("subtitleDelay")').lower()and 'next shortcut' in evaluate(page,'helpFor("feedbackDuration")')
-done('Delay is integral100ms and duration fields are milliseconds; native default sentinel stays unchanged and has no fabricated thumb until an explicit choice')
+before=len(model.requests)
+assert item('subtitlessubtitleDelayInfo').isVisible()
+click('subtitlessubtitleDelayInfo')
+assert evaluate(item('subtitlessubtitleDelayInfo'),'C.ToolTip.visible')
+delay_help=evaluate(item('subtitlessubtitleDelayInfo'),'C.ToolTip.text')
+assert 'milliseconds' in delay_help.lower() and 'Applies when the next media opens.' in delay_help
+assert len(model.requests)==before
+click('subtitlessubtitleDelayInfo')
+
+done('Delay is integral100ms and duration fields are milliseconds; actual info control explains next-media application without writing a value; native duration sentinel remains untouched')
 before=copy.deepcopy(model.state);units=copy.deepcopy(model.units);refreshes=ctx.presets.refreshes;model.fail_next='The owned settings file is locked.';edit('subtitlesfontSizeInput','12.5')
 assert model.state==before and model.units==units and ctx.presets.refreshes==refreshes and item('subtitlesSettingsError').isVisible()and item('subtitlesfontSizeInput').property('text')==str(before['fontSize'])
 edit('subtitlesfontSizeInput','12.5');assert model.state['fontSize']==12.5 and not model.error and model.restart and item('subtitlesSettingsRestart').isVisible()

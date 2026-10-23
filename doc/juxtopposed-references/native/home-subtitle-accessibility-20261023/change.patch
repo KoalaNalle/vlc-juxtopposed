@@ -1,0 +1,73 @@
+--- a/modules/gui/qt/widgets/qml/SpinBoxExt.qml
++++ b/modules/gui/qt/widgets/qml/SpinBoxExt.qml
+@@ -26,6 +26,10 @@
+ 
+ T.SpinBox {
+     id: control
++
++    // Qt Quick's accessible value interface reads these names rather than from/to.
++    readonly property int minimumValue: Math.min(from, to)
++    readonly property int maximumValue: Math.max(from, to)
+ 
+     property color textColor: theme.fg.primary
+     property color bgColor: theme.bg.primary
+--- a/modules/gui/qt/player/qml/TracksPageSubtitle.qml
++++ b/modules/gui/qt/player/qml/TracksPageSubtitle.qml
+@@ -99,6 +99,8 @@
+                 Widgets.SpinBoxExt {
+                     id: spinBoxA
+ 
++                    Accessible.name: qsTr("Primary subtitle delay")
++
+                     property bool update: false
+ 
+                     Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
+@@ -227,6 +229,8 @@
+ 
+                 Widgets.SpinBoxExt {
+                     id: spinBoxB
++
++                    Accessible.name: qsTr("Secondary subtitle delay")
+ 
+                     property bool update: false
+ 
+@@ -342,6 +346,8 @@
+             Widgets.SpinBoxExt {
+                 id: spinBoxC
+ 
++                Accessible.name: qsTr("Subtitle Speed")
++
+                 property bool update: false
+ 
+                 Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
+--- a/modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml
++++ b/modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml
+@@ -528,7 +528,7 @@
+             visible:root.sectionMatches(["Timing", "Subtitle delay"])
+             SectionHeading{text:qsTr("Timing")}
+             SettingRow{objectName:"subtitlessubtitleDelayRow";title:qsTr("Subtitle delay");visible:root.matches(title)||root.matches(qsTr("Timing"));opacity:root.supported("subtitleDelay")?1:.5
+-                help:"";infoName:"subtitlessubtitleDelayInfo";controlHeight:(subtitleDelay.known?57:76)*root.uiScale
++                help:root.helpFor("subtitleDelay");infoName:"subtitlessubtitleDelayInfo";controlHeight:(subtitleDelay.known?57:76)*root.uiScale
+                 ValueRange{id:subtitleDelay;valueKey:"subtitleDelay";accessibleTitle:qsTr("Subtitle delay")}
+             }
+         }
+--- a/modules/gui/qt/tests/test_juxtopposed_subtitles_settings.py
++++ b/modules/gui/qt/tests/test_juxtopposed_subtitles_settings.py
+@@ -201,7 +201,16 @@
+ focus('subtitlesfeedbackDuration');QTest.keyClick(window,Qt.Key_End);QTest.qWait(25);assert model.requests[-1]==['feedbackDuration',5000]
+ focus('subtitlesfilenameDuration');QTest.keyClick(window,Qt.Key_End);QTest.qWait(25);assert model.requests[-1]==['filenameDuration',10000]
+ assert 'milliseconds' in evaluate(page,'helpFor("subtitleDelay")').lower()and 'next shortcut' in evaluate(page,'helpFor("feedbackDuration")')
+-done('Delay is integral100ms and duration fields are milliseconds; native default sentinel stays unchanged and has no fabricated thumb until an explicit choice')
++before=len(model.requests)
++assert item('subtitlessubtitleDelayInfo').isVisible()
++click('subtitlessubtitleDelayInfo')
++assert evaluate(item('subtitlessubtitleDelayInfo'),'C.ToolTip.visible')
++delay_help=evaluate(item('subtitlessubtitleDelayInfo'),'C.ToolTip.text')
++assert 'milliseconds' in delay_help.lower() and 'Applies when the next media opens.' in delay_help
++assert len(model.requests)==before
++click('subtitlessubtitleDelayInfo')
++
++done('Delay is integral100ms and duration fields are milliseconds; actual info control explains next-media application without writing a value; native duration sentinel remains untouched')
+ before=copy.deepcopy(model.state);units=copy.deepcopy(model.units);refreshes=ctx.presets.refreshes;model.fail_next='The owned settings file is locked.';edit('subtitlesfontSizeInput','12.5')
+ assert model.state==before and model.units==units and ctx.presets.refreshes==refreshes and item('subtitlesSettingsError').isVisible()and item('subtitlesfontSizeInput').property('text')==str(before['fontSize'])
+ edit('subtitlesfontSizeInput','12.5');assert model.state['fontSize']==12.5 and not model.error and model.restart and item('subtitlesSettingsRestart').isVisible()

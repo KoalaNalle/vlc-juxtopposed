@@ -110,7 +110,13 @@ enum es_out_query_private_e
     ES_OUT_PRIV_SET_VBI_PAGE,                       /* arg1=unsigned res=can fail */
 
     /* Set VBI/Teletext menu transparent */
-    ES_OUT_PRIV_SET_VBI_TRANSPARENCY                /* arg1=bool res=can fail */
+    ES_OUT_PRIV_SET_VBI_TRANSPARENCY,               /* arg1=bool res=can fail */
+
+    /* Select the preferred track from an explicitly added source. */
+    ES_OUT_PRIV_SELECT_SOURCE, /* arg1=input_source_t *, arg2=es_format_category_e */
+
+    /* Earlier media needed to retain delayed selected subtitle cues on seek. */
+    ES_OUT_PRIV_GET_SUBTITLE_PREROLL /* arg1=vlc_tick_t *, res=cannot fail */
 };
 
 struct vlc_input_es_out;

@@ -37,6 +37,7 @@ constexpr Option options[] = {
     {"stopAfterEachItem", "play-and-stop", VLC_VAR_BOOL},
     {"finishAction", "play-and-exit", VLC_VAR_BOOL},
     {"preciseSeeking", "input-fast-seek", VLC_VAR_BOOL},
+    {"showThumbnails", "qt-timeline-thumbnails", VLC_VAR_BOOL},
     {"defaultOpticalDrive", "dvd", VLC_VAR_STRING},
     {"aviRepair", "avi-index", VLC_VAR_INTEGER},
     {"mkvPreload", "mkv-preload-local-dir", VLC_VAR_BOOL},
@@ -157,8 +158,7 @@ void PlaybackPreferencesModel::refresh()
     values[QStringLiteral("preciseSeeking")] = !values.value(QStringLiteral("preciseSeeking")).toBool();
     values[QStringLiteral("repeatMode")] = config_GetInt("repeat") ? 1 : config_GetInt("loop") ? 2 : 0;
     values[QStringLiteral("finishAction")] = config_GetInt("play-and-exit") ? 1 : 0;
-    values[QStringLiteral("showThumbnails")] = false;
-    caps[QStringLiteral("showThumbnails")] = false; // No real timeline thumbnail renderer/provider.
+    caps[QStringLiteral("showThumbnails")] = caps.value(QStringLiteral("showThumbnails")).toBool() && m_consumers.showThumbnails;
     caps[QStringLiteral("preciseSeeking")] = caps.value(QStringLiteral("preciseSeeking")).toBool() && m_consumers.preciseSeeking;
     caps[QStringLiteral("repeatMode")] = caps.value(QStringLiteral("repeatMode")).toBool()
         && config_GetType("loop") == VLC_VAR_BOOL && m_intf && m_intf->p_playlist;
@@ -193,7 +193,7 @@ QVariantMap PlaybackPreferencesModel::applyModes() const
         modes[QString::fromLatin1(key)] = QStringLiteral("live");
     modes[QStringLiteral("defaultPlaybackSpeed")] = QStringLiteral("restart");
     modes[QStringLiteral("pauseOtherAudio")] = QStringLiteral("restart");
-    modes[QStringLiteral("showThumbnails")] = QStringLiteral("unavailable");
+    modes[QStringLiteral("showThumbnails")] = QStringLiteral("live");
     return modes;
 }
 QVariantMap PlaybackPreferencesModel::supportNotes() const
@@ -209,7 +209,7 @@ QVariantMap PlaybackPreferencesModel::supportNotes() const
         {QStringLiteral("finishAction"), tr("Quit VLC uses native play-and-exit, which also quits after a manual Stop. It overrides Stop after each item while selected; no sleep or shutdown action is implemented.")},
         {QStringLiteral("stopAfterEachItem"), tr("Stops before advancing to the next queued item. Native Quit VLC takes precedence; choose Stop as the finish action to edit this option.")},
         {QStringLiteral("preciseSeeking"), tr("Applies to this window's timeline and time-jump controls on their next seek. Precise seeking decodes up to the requested position; faster seeking may start at a nearby keyframe. Results depend on the media format.")},
-        {QStringLiteral("showThumbnails"), tr("The timeline has no implemented thumbnail preview provider; this control is unavailable.")},
+        {QStringLiteral("showThumbnails"), tr("Shows independently decoded previews while pointing at a seekable video's timeline. Applies immediately in this window. Live media and positions without an available picture retain the time label.")},
         {QStringLiteral("defaultOpticalDrive"), tr("Sets the shared DVD/VCD/audio-CD default. A mixed existing set remains unselected until you explicitly choose a path; empty uses native defaults.")},
         {QStringLiteral("timeShiftFolder"), tr("Existing writable local directory for future time-shift temporary files; empty uses the system temporary directory.")},
         {QStringLiteral("timeShiftSize"), tr("Maximum bytes per native temporary-file chunk, not a total buffer limit. -1 uses the native 50 MiB chunk default; explicit sizes range from 1 MiB to INT_MAX bytes.")}};
@@ -269,7 +269,7 @@ bool PlaybackPreferencesModel::setValue(const QString &key, const QVariant &inpu
     if (m_pickerActive) return fail(tr("Finish choosing the time-shift folder before changing Playback preferences."));
     const Option *option = nullptr;
     for (const auto &candidate : options) if (key == QString::fromLatin1(candidate.key)) { option = &candidate; break; }
-    if (!option) return fail(key == QStringLiteral("showThumbnails") ? tr("Timeline thumbnail previews are not implemented.") : tr("Unknown Playback preference."));
+    if (!option) return fail(tr("Unknown Playback preference."));
     if (!m_intf) return fail(tr("The native Playback preferences service is unavailable."));
     refresh();
     if (!m_capabilities.value(key).toBool()) return fail(tr("This Playback preference is unavailable in this build or session."));

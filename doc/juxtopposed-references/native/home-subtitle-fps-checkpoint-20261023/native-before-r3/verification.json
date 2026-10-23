@@ -1,0 +1,53 @@
+{
+  "status": "terminal",
+  "phase": "before",
+  "sourceManifestSha256": "35ea8a3ded0e3f4ce47779bc26925866d799740c631efb10c1149496d46cd283",
+  "producerSha256": "1867c1adae3eaa39e51d456797cb87f92213beea17e3274aa24b1ec2edbf530b",
+  "testExecutableSha256": "8221722859d8127ae7a1ece3c73f3c722ea1d146c8d473e8921c977e97effd20",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+    "plugins/gui/libqt_plugin.dll": "9dd58c643ac0265dc892dd84ddd51e7f692ef48257c907ce972e8475ad947e81",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "privateNativeFixture": true,
+  "ordinaryGuiAccepted": false,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "pid": 35188,
+  "exitCode": 1,
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true,
+  "functions": [
+    {
+      "name": "initTestCase",
+      "incidents": [
+        {
+          "type": "pass",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "name": "initialAssociatedFpsMatchesNative",
+      "incidents": [
+        {
+          "type": "fail",
+          "description": "Compared floats are not the same (fuzzy compare)\n   Actual   (m_controller->getSubtitleFPS()): 1\n   Expected (fps)                           : 0"
+        }
+      ]
+    },
+    {
+      "name": "cleanupTestCase",
+      "incidents": [
+        {
+          "type": "pass",
+          "description": ""
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "previous": "build-windows/beta-tracks-subtitles-20261023/inputs-r3.json",
+  "changedPriorInputs": [
+    "modules/gui/qt/player/qml/ControlBar.qml"
+  ],
+  "addedInputs": [
+    "build-windows/beta-tracks-subtitles-20261023/build-r4.sh",
+    "build-windows/beta-tracks-subtitles-20261023/ordinary-r4.mk",
+    "build-windows/beta-tracks-subtitles-20261023/prepare-r4.py",
+    "build-windows/beta-tracks-subtitles-20261023/run-ordinary-r4.py"
+  ],
+  "productionScope": "Track popup returns keyboard-visible focus to its audio/subtitle button (or seek fallback), so the existing native hotkey policy yields to that control. No hotkey/controller/model/Core changes; R3 cancellation and R2 modal policy retained."
+}

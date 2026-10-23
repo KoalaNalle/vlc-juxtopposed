@@ -21,6 +21,7 @@
 #include <player/player_controller.hpp>
 #include <playlist/playlist_controller.hpp>
 #include "util/keyhelper.hpp"
+#include "util/queue_find_key_scope.hpp"
 #include "dialogs/systray/systray.hpp"
 #include "widgets/native/qvlcframe.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
@@ -561,6 +562,9 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
 
     QQuickItem * item = p_intf->p_compositor->activeFocusItem();
 
+    if (QueueFindKeyScope::ownsFind(item, static_cast<Qt::Key>(key), event->modifiers()))
+        return false;
+
     // A clicked volume slider has active mouse focus without visualFocus.
     // Keep its plain arrows in Qt instead of dispatching a player seek/volume
     // hotkey first. Modified shortcuts retain the existing player policy.
@@ -576,9 +580,9 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
         || ((key == Qt::Key_Space || key == Qt::Key_Return || key == Qt::Key_Enter)
             && !(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier)));
 
-    // Popups and the sidebar's navigation controls retain their own keys after
-    // mouse/popup focus, which does not set visualFocus. Other player shortcuts
-    // keep the existing prefer-hotkeys policy.
+    // Popups and sidebar navigation retain their own keys after mouse focus,
+    // which does not set visualFocus. Other player shortcuts keep the existing
+    // prefer-hotkeys policy.
     for (auto *owner = item; owner; owner = owner->parentItem())
         if (owner->isVisible() && (owner->inherits("QQuickPopupItem")
             || (navigationKey && owner->property("navigationKeyScope").toBool())))

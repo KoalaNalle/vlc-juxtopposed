@@ -1,0 +1,500 @@
+{
+  "case": "07-frame-marker.mp4-wasapi-0-time",
+  "status": "terminal",
+  "passed": true,
+  "privateCore": false,
+  "privateGui": false,
+  "forcedCleanupUsed": false,
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+    "plugins/gui/libqt_plugin.dll": "d0ff14c66da4287a36a769754deead89c4ba616fb31fb8e1262c62a9a35e2678",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "fixtureSha256": {
+    "external-finnish.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+    "external.ass": "ac754982b3c249426aa2e4a8bd7f46c7f0c972293ac67b12c09223aae36f6160",
+    "external.srt": "bac11b23c4424c1a29915acbaaf0576f4d8f21d78575549dd3c1e5f45b95774b",
+    "frame-0.png": "fb5e3e4c5d7624663a589f93b0813116fa9f933a89d7878a909ca59d578f8eba",
+    "frame-125.png": "e5f109364d31ad689491c2ea5ec407b5f2f53dd739cee8f676087d6a2e3c40d4",
+    "frame-126.png": "b9d84e5099dffbe626868ac2fca3912fd2794786cb70fb901b56e523e7bd4e70",
+    "frame-625.png": "f3956aec8e366ec78628d9cac6fad7b3af83df23f692d39ee7fcd8ca53389f7b",
+    "frame-marker-ass.mkv": "5e4c6f0705ecc45b8f1811b167114e74326f9c827252bb965e7b7934c3e68757",
+    "frame-marker-ass.mkv-probe.json": "64b841521342b9948b9d0dc7d971bcc943b6cfd44bcc09972b2683b2c91e366c",
+    "frame-marker.mkv": "62a66ba0a7348fe4b2d6a541d01409efcddb82aff39f32d8d9dc532948d46115",
+    "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+    "frame-marker.mp4-probe.json": "7e75d5a9da2684b91776187e3ea7944262468fcac3ab351ddf92b51c3ccf4d37",
+    "frames.json": "3c34d82138a717f19fa0a4ec83fe623b026cfcc5ab73a0921035941e6363f6ba",
+    "multi-language.mks": "781d1583eccd2c5d3dda1f6e10c8999ee109c2dd8fead09fc4212757fa31b80a",
+    "multi-language.mks-probe.json": "9c7cf0321a8d0b543f27ef5252ef870a81f38f3d11e770f993ffa418d5f33d50",
+    "probe.json": "f1828075e3f52efd6fa45740bc3295a613b4a8ff26a984d584051e70fadf523c"
+  },
+  "reference": "build-windows\\beta-subtitle-preferences-20261023\\native-delay-candidate-formats-r4\\frame-marker.mp4-wasapi-0\\probe\\result.json",
+  "referenceSha256": "93f500796e99e9995e4b6a3d7aa7db5145fb13cab195b33d4c8f038bb7889e8b",
+  "sourceManifestSha256": "29035d3dfd95d7fb9e1e9b2dda8cf10cbc138827cfb6ac64b270a988a67d8a49",
+  "producerSha256": "731e06a80599a27e6dd5b7b0954d14102c99a78588086c422ded6cde5e918350",
+  "parentProducerSha256": "ca648a8c8cb883b493a4ccbb470c8a0efc9382f3efdb3bf644e64d4b4d61b6cf",
+  "pid": 18548,
+  "exitCode": 0,
+  "normalExit": true,
+  "result": {
+    "status": "terminal",
+    "passed": true,
+    "fullBetaAccepted": false,
+    "scope": "Generated English cue masks, delayed paused seek and live delay/reset frame conservation, plus a matched playing boundary. No desktop, audibility, full synchronization or full beta acceptance.",
+    "coreSha256": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+    "mediaSha256": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+    "producerSha256": "731e06a80599a27e6dd5b7b0954d14102c99a78588086c422ded6cde5e918350",
+    "media": "frame-marker.mp4",
+    "audio": "wasapi",
+    "defaultDelayMs": 0,
+    "seekMode": "time",
+    "boundarySeconds": 20.5,
+    "options": [
+      "--ignore-config",
+      "--no-media-library",
+      "--no-metadata-network-access",
+      "--no-ml-network-discovery",
+      "--no-osd",
+      "--no-video-title-show",
+      "--no-sub-autodetect-file",
+      "--vout=vdummy",
+      "--no-hw-dec",
+      "--sub-language=eng",
+      "--sub-track=-1",
+      "--sub-track-id=",
+      "--sub-delay=0",
+      "--verbose=2",
+      "--file-logging",
+      "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\native-ordinary-r2\\07-frame-marker.mp4-wasapi-0-time\\probe\\native.log",
+      "--aout=mmdevice",
+      "--mmdevice-backend=wasapi"
+    ],
+    "observations": [
+      {
+        "step": "cold-paused",
+        "state": 3,
+        "timeUs": 80001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "cold-paused.png",
+        "snapshotSha256": "9ab2b22a641eede33f158816ff009770a8016e3d8bcb2d9458d0d9de4967a16f",
+        "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+        "brightPixels": 1483,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 0,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 80001
+          },
+          {
+            "state": 3,
+            "timeUs": 80001
+          },
+          {
+            "state": 3,
+            "timeUs": 80001
+          }
+        ]
+      },
+      {
+        "step": "reference-first",
+        "state": 3,
+        "timeUs": 5000001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "reference-first.png",
+        "snapshotSha256": "b61f307ec9eab142dfc59c97e990f9c0c5955ead60888c15b43b3d4e2d9aa1ab",
+        "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+        "brightPixels": 1483,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 123,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 5000001
+          },
+          {
+            "state": 3,
+            "timeUs": 5000001
+          },
+          {
+            "state": 3,
+            "timeUs": 5000001
+          }
+        ]
+      },
+      {
+        "step": "reference-middle",
+        "state": 3,
+        "timeUs": 25000001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "reference-middle.png",
+        "snapshotSha256": "ab7c42b0f1e72bf6b4f125bb1165bdb6ebf71e10a27b6f431adffd685eb872da",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 625,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 25000001
+          },
+          {
+            "state": 3,
+            "timeUs": 25000001
+          },
+          {
+            "state": 3,
+            "timeUs": 25000001
+          }
+        ]
+      },
+      {
+        "step": "boundary-seek",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "boundary-seek.png",
+        "snapshotSha256": "d71d7080a7f38a75575ea582e4db507be5cbdcd31fd4981046e27613f2e92bcc",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "boundary-settled",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "boundary-settled.png",
+        "snapshotSha256": "1bca50ba95f6681b2ebd6da254d3a1f454d7b467ac9da32977eaf0015cf55ca5",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "live-reset",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "live-reset.png",
+        "snapshotSha256": "a0f1275a98618e8f869a2c1cf1c876b8a4ee6fa12d4595398028c6c0079a95dc",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "live-positive",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": 1200000,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "live-positive.png",
+        "snapshotSha256": "b29758ea309bac9b4143d4975912c3cd856ad0a0ad2438f594e5a31c7f89dc98",
+        "captionMaskSha256": "63320890645d12ff00f0088c0b5209fa31790ea90ebb3966e3eea955db6ea581",
+        "brightPixels": 1486,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "live-negative",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": -1200000,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "live-negative.png",
+        "snapshotSha256": "1fc1a5563cb798910cce4cde96f68f3a6437f31473ffd84b599da48fe5851718",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "live-zero",
+        "state": 3,
+        "timeUs": 20520001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "live-zero.png",
+        "snapshotSha256": "e61b0bfe160934c5a6fcf5d6c1b01211b5df1abcba648d8050a0866387a3c1dd",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 513,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          },
+          {
+            "state": 3,
+            "timeUs": 20520001
+          }
+        ]
+      },
+      {
+        "step": "before-playing-boundary",
+        "state": 3,
+        "timeUs": 18000001,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "before-playing-boundary.png",
+        "snapshotSha256": "d9a886340ad4991e1c181a0309ed74ae03086ba28f1fcf7a99a181f2a327d02e",
+        "captionMaskSha256": "c0f971730a6af757a30627b429dcb65fdef0f7a61acc1c234f1a452f290b70f3",
+        "brightPixels": 1460,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 450,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 18000001
+          },
+          {
+            "state": 3,
+            "timeUs": 18000001
+          },
+          {
+            "state": 3,
+            "timeUs": 18000001
+          }
+        ]
+      },
+      {
+        "step": "after-playing-boundary",
+        "state": 3,
+        "timeUs": 20204860,
+        "delayUs": 0,
+        "vouts": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailable": true,
+        "snapshot": "after-playing-boundary.png",
+        "snapshotSha256": "6cf0eacba66671ac5893a7675e0835130d62bc84a3989f40ae230dc0eaeb0761",
+        "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+        "brightPixels": 1650,
+        "width": 960,
+        "height": 540,
+        "frameMarker": 506,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 20204860
+          },
+          {
+            "state": 3,
+            "timeUs": 20204860
+          },
+          {
+            "state": 3,
+            "timeUs": 20204860
+          }
+        ]
+      }
+    ],
+    "teardownComplete": true,
+    "initialPauseReached": true,
+    "playingBoundaryReached": true,
+    "playingPauseReached": true,
+    "stopReturn": 0,
+    "stopReached": true,
+    "diagnostics": [
+      "main error: window closed"
+    ],
+    "actualWasapiSelected": true,
+    "captionComparisons": {
+      "boundary-seek:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      },
+      "boundary-settled:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      },
+      "after-playing-boundary:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      },
+      "live-reset:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      },
+      "live-positive:reference-first": {
+        "differingPixels": 3,
+        "unionPixels": 1486,
+        "maximumDifferenceFraction": 0.005
+      },
+      "live-negative:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      },
+      "live-zero:reference-middle": {
+        "differingPixels": 0,
+        "unionPixels": 1650,
+        "maximumDifferenceFraction": 0.005
+      }
+    },
+    "checks": {
+      "executionComplete": true,
+      "initialPause": true,
+      "teardown": true,
+      "audioBackend": true,
+      "distinctReferenceCaptions": true,
+      "defaultDelayReadback": true,
+      "boundarySeekCaption": true,
+      "boundarySettledCaption": true,
+      "boundaryPictureSettled": true,
+      "pausedPictures": true,
+      "sampledPause": true,
+      "liveFramesConserved": true,
+      "liveDelayReadback": true,
+      "playingControlReached": true,
+      "playingControlFrame": true,
+      "playingControlCaption": true,
+      "live-resetCaption": true,
+      "live-positiveCaption": true,
+      "live-negativeCaption": true,
+      "live-zeroCaption": true
+    }
+  },
+  "pairedFrames": {
+    "reference-first": {
+      "candidate": 123,
+      "ordinary": 123
+    },
+    "reference-middle": {
+      "candidate": 625,
+      "ordinary": 625
+    },
+    "boundary-seek": {
+      "candidate": 513,
+      "ordinary": 513
+    },
+    "boundary-settled": {
+      "candidate": 513,
+      "ordinary": 513
+    }
+  },
+  "pairedFramesMatch": true,
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true
+}

@@ -1,0 +1,2607 @@
+{
+  "inlineFallback": false,
+  "case": "extended",
+  "status": "terminal",
+  "passed": true,
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "db78919ef2e351550eba5b7f8657ee6b794297be64594e89eb636cd9c9101f36",
+    "plugins/gui/libqt_plugin.dll": "ed638e060b9c3935509cf76156127a35585893289329cd1982e527a3707bde45",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "10e37ba2c46cb0514051cb64b52b7a989813a8190ba3c54786dfb657e1a5fde3",
+  "runnerSha256": "63a9b519a92338dc80c6bc49075562a83ec50f7c041bd7a49b0aa74af1cba9be",
+  "mediaSha256": {
+    "preview-motion-1080p.mp4": "3ebde0e2c041981c0f3ddb85b01d7fb69f0e18e16dd4161038de7550aac82bbe",
+    "preview-silent.wav": "512a25be1b2dc6ef4a3f3abec8ca3b109f8a7803a8907f7a20c8b8547330c945"
+  },
+  "geometryMediaSha256": {
+    "landscape-reference.png": "c4430ad300f45575057ca329debad2b63d2893db7cc949fd2dcd19b546a383be",
+    "landscape.mp4": "fdfa84d0f5b56811d01c3ba35e29411d4d2c53a85c232aecf0816a66ce3112c7",
+    "portrait-reference.png": "e520c3e1725e54e8b6462331cdc7fead683f97f08d7afac9ea86dd7f95440652",
+    "portrait.mp4": "e2ffdc643da9f1bd33686677cd27bc394aabeaa87cfcfa72069dc654d14eb271",
+    "rotate-180-reference.png": "459b4bdf93cbf5cf6de47b0e2c1a641146d20ae5d37aa3e572e90a237b8e7bbc",
+    "rotate-180.mp4": "2a04a9154f38f0be07aa7e3bc807702363b7d20c8573ed39360a99c8a92c34fa",
+    "rotate-270-reference.png": "ef8bea0067c84f23ff919e81a6f6acecc6712d7d8bc3ea0bed08be3764fcf1e2",
+    "rotate-270.mp4": "4766f6b65d089d8459aa5ee8a5be95c834ea2716072a5de67b2467271dfb861f",
+    "rotate-90-reference.png": "bcffb72a219626b0321911fc68811868919493ee0b6f5f7f7712dfc2ef5c502a",
+    "rotate-90.mp4": "5a9668ac179b972705d045dd737859704c93b72507322d5e23cb3948550c1fb8",
+    "sar-2-to-1-reference.png": "f8f680bd28ac5fc912dd3eeb3a3bcc8a5b7b0529e21f354e7dadd9f1ad18f404",
+    "sar-2-to-1.mp4": "a8e8f9d079abe8c8cbf38932ca749cd716321864ff9ea343ff5546a4862d65e4"
+  },
+  "pid": 30936,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "extended journey starts from an explicit Dark policy",
+        "passed": true
+      },
+      {
+        "name": "native and Qt settings are fenced to the owned runtime",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables the implemented preview consumer",
+        "passed": true
+      },
+      {
+        "name": "fresh or cold startup restores the expected thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual attached time-tooltip instance exists for diagnostic comparison",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "disabled previews preserve the existing time tooltip path",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual toggle commits thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "native saved preference and live provider agree",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "held drag selects the real precise or fast native policy",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "native paused seek lands while the pointer is held",
+        "passed": true
+      },
+      {
+        "name": "preview remains available during an actual held drag",
+        "passed": true
+      },
+      {
+        "name": "held slider retains the pointer target while preview remains visible",
+        "passed": true
+      },
+      {
+        "name": "held preview preserves the actual paused input",
+        "passed": true
+      },
+      {
+        "name": "released drag reconciles native landing and displayed clock without Resume",
+        "passed": true
+      },
+      {
+        "name": "held drag selects the real precise or fast native policy",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "native paused seek lands while the pointer is held",
+        "passed": true
+      },
+      {
+        "name": "preview remains available during an actual held drag",
+        "passed": true
+      },
+      {
+        "name": "held slider retains the pointer target while preview remains visible",
+        "passed": true
+      },
+      {
+        "name": "held preview preserves the actual paused input",
+        "passed": true
+      },
+      {
+        "name": "released drag reconciles native landing and displayed clock without Resume",
+        "passed": true
+      },
+      {
+        "name": "precise policy restores after the held fast regression",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "leaving timeline closes preview before opening at opposite edge",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "Dark appearance restores after Light variants",
+        "passed": true
+      },
+      {
+        "name": "actual player enters video fullscreen",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one Escape leaves video fullscreen while a preview is visible",
+        "passed": true
+      },
+      {
+        "name": "owned VLC is active before timeline pointer input",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview stays centered on the actual pointer with edge clamping",
+        "passed": true
+      },
+      {
+        "name": "preview stays above the timeline with its scaled gap",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "decoded playback resumes after held dragging and geometry changes",
+        "passed": true
+      }
+    ],
+    "fullBetaAccepted": false,
+    "heldDrags": [
+      {
+        "heldValue": 0.511744966442953,
+        "landed": 9.2,
+        "name": "held-precise",
+        "precise": true,
+        "releasedValue": 0.5111110555555556,
+        "requested": 9.25
+      },
+      {
+        "heldValue": 0.8473154362416108,
+        "landed": 12,
+        "name": "held-fast",
+        "precise": false,
+        "releasedValue": 0.6666666111111111,
+        "requested": 15.25
+      }
+    ],
+    "hoverState": {
+      "enabled": true,
+      "loading": false,
+      "requested": 8.25,
+      "sampled": 8,
+      "second": 8,
+      "source": "image://timelinepreview/19",
+      "visiblePopup": true,
+      "wanted": true,
+      "windowActive": true
+    },
+    "passed": true,
+    "previewPlacement": {
+      "actualX": 392,
+      "actualY": 662,
+      "expectedX": 392,
+      "expectedY": 662,
+      "name": "after-fullscreen",
+      "pointerX": 528
+    },
+    "previews": [
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 400,
+        "hoverToReadyMs": 239,
+        "label": "00:00:02",
+        "name": "preview-red",
+        "placement": {
+          "actualX": 193,
+          "actualY": 662,
+          "expectedX": 193,
+          "expectedY": 662,
+          "name": "preview-red",
+          "pointerX": 329
+        },
+        "presentationWaitMs": 6,
+        "renderedCorners": [],
+        "requested": 2.25,
+        "sampled": 2,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 389,
+          "firstGrabBeginMs": 393,
+          "firstGrabEndMs": 398,
+          "pixelsObservedMs": 400,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 329,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 8,
+          "providerEvents": [
+            {
+              "loading": true,
+              "ms": 8,
+              "second": 2,
+              "source": ""
+            },
+            {
+              "loading": false,
+              "ms": 226,
+              "second": 2,
+              "source": "image://timelinepreview/1"
+            }
+          ],
+          "readyObservedMs": 239,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 10,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#00d600",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 405,
+        "hoverToReadyMs": 244,
+        "label": "00:00:08",
+        "name": "preview-green",
+        "placement": {
+          "actualX": 392,
+          "actualY": 662,
+          "expectedX": 392,
+          "expectedY": 662,
+          "name": "preview-green",
+          "pointerX": 528
+        },
+        "presentationWaitMs": 6,
+        "renderedCorners": [],
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 396,
+          "firstGrabBeginMs": 400,
+          "firstGrabEndMs": 403,
+          "pixelsObservedMs": 405,
+          "pointerEvents": [
+            {
+              "ms": 2,
+              "x": 528,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 2,
+          "pointerSendEndMs": 20,
+          "providerEvents": [
+            {
+              "loading": true,
+              "ms": 20,
+              "second": 8,
+              "source": ""
+            },
+            {
+              "loading": false,
+              "ms": 209,
+              "second": 8,
+              "source": "image://timelinepreview/2"
+            }
+          ],
+          "readyObservedMs": 244,
+          "secondBeforeInput": 2,
+          "secondSliderLookupEndMs": 23,
+          "sliderLookupAndReportEndMs": 2,
+          "sourceBeforeInput": "image://timelinepreview/1"
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 1290,
+        "hoverToReadyMs": 1116,
+        "label": "00:00:14",
+        "name": "preview-blue",
+        "placement": {
+          "actualX": 591,
+          "actualY": 662,
+          "expectedX": 591,
+          "expectedY": 662,
+          "name": "preview-blue",
+          "pointerX": 727
+        },
+        "presentationWaitMs": 6,
+        "renderedCorners": [],
+        "requested": 14.25,
+        "sampled": 14,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 1280,
+          "firstGrabBeginMs": 1284,
+          "firstGrabEndMs": 1288,
+          "pixelsObservedMs": 1290,
+          "pointerEvents": [
+            {
+              "ms": 2,
+              "x": 727,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 2,
+          "pointerSendEndMs": 14,
+          "providerEvents": [
+            {
+              "loading": true,
+              "ms": 14,
+              "second": 14,
+              "source": ""
+            },
+            {
+              "loading": false,
+              "ms": 1108,
+              "second": 14,
+              "source": "image://timelinepreview/3"
+            }
+          ],
+          "readyObservedMs": 1116,
+          "secondBeforeInput": 8,
+          "secondSliderLookupEndMs": 16,
+          "sliderLookupAndReportEndMs": 2,
+          "sourceBeforeInput": "image://timelinepreview/2"
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 373,
+        "hoverToReadyMs": 197,
+        "label": "00:00:00",
+        "name": "dark-standard-left",
+        "placement": {
+          "actualX": 126,
+          "actualY": 662,
+          "expectedX": 126,
+          "expectedY": 662,
+          "name": "dark-standard-left",
+          "pointerX": 262
+        },
+        "presentationWaitMs": 6,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 360,
+          "firstGrabBeginMs": 364,
+          "firstGrabEndMs": 370,
+          "pixelsObservedMs": 373,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 262,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 13,
+          "providerEvents": [
+            {
+              "loading": true,
+              "ms": 11,
+              "second": 0,
+              "source": ""
+            },
+            {
+              "loading": false,
+              "ms": 183,
+              "second": 0,
+              "source": "image://timelinepreview/6"
+            }
+          ],
+          "readyObservedMs": 197,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 15,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 404,
+        "hoverToReadyMs": 235,
+        "label": "00:00:17",
+        "name": "dark-standard-right",
+        "placement": {
+          "actualX": 691,
+          "actualY": 662,
+          "expectedX": 691,
+          "expectedY": 662,
+          "name": "dark-standard-right",
+          "pointerX": 827
+        },
+        "presentationWaitMs": 7,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 393,
+          "firstGrabBeginMs": 398,
+          "firstGrabEndMs": 402,
+          "pixelsObservedMs": 404,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 827,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 13,
+          "providerEvents": [
+            {
+              "loading": true,
+              "ms": 11,
+              "second": 17,
+              "source": ""
+            },
+            {
+              "loading": false,
+              "ms": 227,
+              "second": 17,
+              "source": "image://timelinepreview/7"
+            }
+          ],
+          "readyObservedMs": 235,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 15,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 181,
+        "hoverToReadyMs": 18,
+        "label": "00:00:00",
+        "name": "dark-compact-left",
+        "placement": {
+          "actualX": 0,
+          "actualY": 140,
+          "expectedX": 0,
+          "expectedY": 140,
+          "name": "dark-compact-left",
+          "pointerX": 109
+        },
+        "presentationWaitMs": 7,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 171,
+          "firstGrabBeginMs": 176,
+          "firstGrabEndMs": 178,
+          "pixelsObservedMs": 181,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 109,
+              "y": 351
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 0,
+              "source": "image://timelinepreview/8"
+            }
+          ],
+          "readyObservedMs": 18,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 14,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 420,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 1193,
+        "hoverToReadyMs": 1025,
+        "label": "00:00:17",
+        "name": "dark-compact-right",
+        "placement": {
+          "actualX": 328,
+          "actualY": 140,
+          "expectedX": 328,
+          "expectedY": 140,
+          "name": "dark-compact-right",
+          "pointerX": 480
+        },
+        "presentationWaitMs": 7,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 1177,
+          "firstGrabBeginMs": 1182,
+          "firstGrabEndMs": 1190,
+          "pixelsObservedMs": 1193,
+          "pointerEvents": [
+            {
+              "ms": 2,
+              "x": 480,
+              "y": 351
+            }
+          ],
+          "pointerSendBeginMs": 2,
+          "pointerSendEndMs": 1017,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 1017,
+              "second": 17,
+              "source": "image://timelinepreview/9"
+            }
+          ],
+          "readyObservedMs": 1025,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 1020,
+          "sliderLookupAndReportEndMs": 2,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 420,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 200,
+        "hoverToReadyMs": 27,
+        "label": "00:00:00",
+        "name": "light-compact-125-left",
+        "placement": {
+          "actualX": 0,
+          "actualY": 170,
+          "expectedX": 0,
+          "expectedY": 170,
+          "name": "light-compact-125-left",
+          "pointerX": 135
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 188,
+          "firstGrabBeginMs": 194,
+          "firstGrabEndMs": 197,
+          "pixelsObservedMs": 200,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 135,
+              "y": 434
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 20,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 20,
+              "second": 0,
+              "source": "image://timelinepreview/10"
+            }
+          ],
+          "readyObservedMs": 27,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 22,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 520,
+        "windowWidth": 640
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 193,
+        "hoverToReadyMs": 18,
+        "label": "00:00:17",
+        "name": "light-compact-125-right",
+        "placement": {
+          "actualX": 300,
+          "actualY": 170,
+          "expectedX": 300,
+          "expectedY": 170,
+          "name": "light-compact-125-right",
+          "pointerX": 494
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 182,
+          "firstGrabBeginMs": 187,
+          "firstGrabEndMs": 190,
+          "pixelsObservedMs": 193,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 494,
+              "y": 434
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 17,
+              "source": "image://timelinepreview/11"
+            }
+          ],
+          "readyObservedMs": 18,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 14,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 520,
+        "windowWidth": 640
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 186,
+        "hoverToReadyMs": 19,
+        "label": "00:00:00",
+        "name": "light-standard-125-left",
+        "placement": {
+          "actualX": 155,
+          "actualY": 603,
+          "expectedX": 155,
+          "expectedY": 603,
+          "name": "light-standard-125-left",
+          "pointerX": 325
+        },
+        "presentationWaitMs": 8,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 175,
+          "firstGrabBeginMs": 179,
+          "firstGrabEndMs": 184,
+          "pixelsObservedMs": 186,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 325,
+              "y": 867
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 13,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 0,
+              "source": "image://timelinepreview/12"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 15,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 199,
+        "hoverToReadyMs": 21,
+        "label": "00:00:17",
+        "name": "light-standard-125-right",
+        "placement": {
+          "actualX": 555,
+          "actualY": 603,
+          "expectedX": 555,
+          "expectedY": 603,
+          "name": "light-standard-125-right",
+          "pointerX": 725
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 182,
+          "firstGrabBeginMs": 188,
+          "firstGrabEndMs": 196,
+          "pixelsObservedMs": 199,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 725,
+              "y": 867
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 14,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 14,
+              "second": 17,
+              "source": "image://timelinepreview/13"
+            }
+          ],
+          "readyObservedMs": 21,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 16,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 192,
+        "hoverToReadyMs": 19,
+        "label": "00:00:00",
+        "name": "light-minimum-125-left",
+        "placement": {
+          "actualX": 0,
+          "actualY": 100,
+          "expectedX": 0,
+          "expectedY": 100,
+          "name": "light-minimum-125-left",
+          "pointerX": 135
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 176,
+          "firstGrabBeginMs": 181,
+          "firstGrabEndMs": 189,
+          "pixelsObservedMs": 192,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 135,
+              "y": 364
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 0,
+              "source": "image://timelinepreview/14"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 15,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 450,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 190,
+        "hoverToReadyMs": 19,
+        "label": "00:00:17",
+        "name": "light-minimum-125-right",
+        "placement": {
+          "actualX": 260,
+          "actualY": 100,
+          "expectedX": 260,
+          "expectedY": 100,
+          "name": "light-minimum-125-right",
+          "pointerX": 456
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 179,
+          "firstGrabBeginMs": 184,
+          "firstGrabEndMs": 187,
+          "pixelsObservedMs": 190,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 456,
+              "y": 364
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 17,
+              "source": "image://timelinepreview/15"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 14,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 450,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 182,
+        "hoverToReadyMs": 19,
+        "label": "00:00:00",
+        "name": "dark-minimum-125-left",
+        "placement": {
+          "actualX": 0,
+          "actualY": 100,
+          "expectedX": 0,
+          "expectedY": 100,
+          "name": "dark-minimum-125-left",
+          "pointerX": 135
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 171,
+          "firstGrabBeginMs": 177,
+          "firstGrabEndMs": 179,
+          "pixelsObservedMs": 182,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 135,
+              "y": 364
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 0,
+              "source": "image://timelinepreview/16"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 14,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 450,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 236.25,
+        "hoverToPixelsMs": 188,
+        "hoverToReadyMs": 19,
+        "label": "00:00:17",
+        "name": "dark-minimum-125-right",
+        "placement": {
+          "actualX": 260,
+          "actualY": 100,
+          "expectedX": 260,
+          "expectedY": 100,
+          "name": "dark-minimum-125-right",
+          "pointerX": 456
+        },
+        "presentationWaitMs": 9,
+        "renderedCorners": [],
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1.25,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 177,
+          "firstGrabBeginMs": 182,
+          "firstGrabEndMs": 185,
+          "pixelsObservedMs": 188,
+          "pointerEvents": [
+            {
+              "ms": 3,
+              "x": 456,
+              "y": 364
+            }
+          ],
+          "pointerSendBeginMs": 3,
+          "pointerSendEndMs": 12,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 12,
+              "second": 17,
+              "source": "image://timelinepreview/17"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 14,
+          "sliderLookupAndReportEndMs": 3,
+          "sourceBeforeInput": ""
+        },
+        "width": 340,
+        "windowHeight": 450,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#00d600",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 197,
+        "hoverToReadyMs": 19,
+        "label": "00:00:08",
+        "name": "fullscreen-preview",
+        "placement": {
+          "actualX": 979,
+          "actualY": 1202,
+          "expectedX": 979,
+          "expectedY": 1202,
+          "name": "fullscreen-preview",
+          "pointerX": 1115
+        },
+        "presentationWaitMs": 8,
+        "renderedCorners": [],
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 1,
+          "deliberateSettleEndMs": 178,
+          "firstGrabBeginMs": 184,
+          "firstGrabEndMs": 194,
+          "pixelsObservedMs": 197,
+          "pointerEvents": [
+            {
+              "ms": 4,
+              "x": 1115,
+              "y": 1413
+            }
+          ],
+          "pointerSendBeginMs": 4,
+          "pointerSendEndMs": 13,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 13,
+              "second": 8,
+              "source": "image://timelinepreview/18"
+            }
+          ],
+          "readyObservedMs": 19,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 15,
+          "sliderLookupAndReportEndMs": 4,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 1440,
+        "windowWidth": 2560
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#00d600",
+        "dpr": 1,
+        "geometryReference": false,
+        "height": 189,
+        "hoverToPixelsMs": 200,
+        "hoverToReadyMs": 27,
+        "label": "00:00:08",
+        "name": "after-fullscreen",
+        "placement": {
+          "actualX": 392,
+          "actualY": 662,
+          "expectedX": 392,
+          "expectedY": 662,
+          "name": "after-fullscreen",
+          "pointerX": 528
+        },
+        "presentationWaitMs": 8,
+        "renderedCorners": [],
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "timingTrace": {
+          "activateBeginMs": 0,
+          "activateEndMs": 0,
+          "activeWaitAndReportEndMs": 0,
+          "deliberateSettleEndMs": 186,
+          "firstGrabBeginMs": 192,
+          "firstGrabEndMs": 196,
+          "pixelsObservedMs": 200,
+          "pointerEvents": [
+            {
+              "ms": 4,
+              "x": 528,
+              "y": 873
+            }
+          ],
+          "pointerSendBeginMs": 4,
+          "pointerSendEndMs": 20,
+          "providerEvents": [
+            {
+              "loading": false,
+              "ms": 20,
+              "second": 8,
+              "source": "image://timelinepreview/19"
+            }
+          ],
+          "readyObservedMs": 27,
+          "secondBeforeInput": -1,
+          "secondSliderLookupEndMs": 23,
+          "sliderLookupAndReportEndMs": 4,
+          "sourceBeforeInput": ""
+        },
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      }
+    ],
+    "privateFixture": true,
+    "singleEscapeLeftFullscreen": true,
+    "status": "checks_complete",
+    "timeTooltipDiagnostic": {
+      "actualPopupType": 1,
+      "inlineOverride": false,
+      "originalPopupType": 1
+    }
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [],
+  "expectedDiagnostics": [],
+  "realD3D11Opened": true,
+  "quitLogOrder": {
+    "wait": 1469,
+    "stopped": 1501,
+    "teardown": 1505
+  },
+  "scope": "Private actual app on repaired Core: selected geometry rendered against independent references, or extended held/edge/theme/interface-scale/fullscreen regression. Cases retain separate scopes; latency/blur/physical-DPI/ordinary/full-beta gates remain open."
+}

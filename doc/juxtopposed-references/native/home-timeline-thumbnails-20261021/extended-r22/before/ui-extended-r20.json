@@ -1,0 +1,923 @@
+{
+  "case": "extended",
+  "status": "terminal",
+  "passed": false,
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "9f9702bec96dd8b56807831d987c4cdb1ec018fbdeafb042df750c2809c53dcf",
+    "plugins/gui/libqt_plugin.dll": "3b71114abd70b12b49278f941e4c90393a759896a52f0ac4cb8dbb6cb7b27357",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "81981fe7e928b4ab19a6bf1fbeaf69d69b327723aa94c577f0103b6264984d95",
+  "runnerSha256": "1e814b8daf83418a255b6e8bfa45ee0949175ba493108034ffa9ce074cbc278f",
+  "mediaSha256": {
+    "preview-motion-1080p.mp4": "3ebde0e2c041981c0f3ddb85b01d7fb69f0e18e16dd4161038de7550aac82bbe",
+    "preview-silent.wav": "512a25be1b2dc6ef4a3f3abec8ca3b109f8a7803a8907f7a20c8b8547330c945"
+  },
+  "pid": 32436,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "extended journey starts from an explicit Dark policy",
+        "passed": true
+      },
+      {
+        "name": "native and Qt settings are fenced to the owned runtime",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables the implemented preview consumer",
+        "passed": true
+      },
+      {
+        "name": "fresh or cold startup restores the expected thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "disabled previews preserve the existing time tooltip path",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual toggle commits thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "native saved preference and live provider agree",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "held drag selects the real precise or fast native policy",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "native paused seek lands while the pointer is held",
+        "passed": true
+      },
+      {
+        "name": "preview remains available during an actual held drag",
+        "passed": true
+      },
+      {
+        "name": "held slider retains the pointer target while preview remains visible",
+        "passed": true
+      },
+      {
+        "name": "held preview preserves the actual paused input",
+        "passed": true
+      },
+      {
+        "name": "released drag reconciles native landing and displayed clock without Resume",
+        "passed": true
+      },
+      {
+        "name": "held drag selects the real precise or fast native policy",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "native paused seek lands while the pointer is held",
+        "passed": true
+      },
+      {
+        "name": "preview remains available during an actual held drag",
+        "passed": true
+      },
+      {
+        "name": "held slider retains the pointer target while preview remains visible",
+        "passed": true
+      },
+      {
+        "name": "held preview preserves the actual paused input",
+        "passed": true
+      },
+      {
+        "name": "released drag reconciles native landing and displayed clock without Resume",
+        "passed": true
+      },
+      {
+        "name": "precise policy restores after the held fast regression",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual General service commits the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "actual interface scale policy reaches the requested variant",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "actual preview background and caption follow the selected appearance",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": false
+      }
+    ],
+    "error": "rendered preview pixels match the requested synthetic scene",
+    "fullBetaAccepted": false,
+    "heldDrags": [
+      {
+        "heldValue": 0.5134228187919463,
+        "landed": 9.233334,
+        "name": "held-precise",
+        "precise": true,
+        "releasedValue": 0.5129629444444445,
+        "requested": 9.25
+      },
+      {
+        "heldValue": 0.8473154362416108,
+        "landed": 12,
+        "name": "held-fast",
+        "precise": false,
+        "releasedValue": 0.6666666111111111,
+        "requested": 15.25
+      }
+    ],
+    "hoverState": {
+      "enabled": true,
+      "loading": false,
+      "requested": 17.25,
+      "sampled": 17,
+      "second": 17,
+      "source": "image://timelinepreview/11",
+      "visiblePopup": true,
+      "wanted": true,
+      "windowActive": true
+    },
+    "passed": false,
+    "previews": [
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:02",
+        "name": "preview-red",
+        "requested": 2.25,
+        "sampled": 2,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#00d600",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:08",
+        "name": "preview-green",
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:14",
+        "name": "preview-blue",
+        "requested": 14.25,
+        "sampled": 14,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:00",
+        "name": "dark-standard-left",
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:17",
+        "name": "dark-standard-right",
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 900,
+        "windowWidth": 1280
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:00",
+        "name": "dark-compact-left",
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 420,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2191919",
+        "caption": "#8f8f8f",
+        "color": "#000dff",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:17",
+        "name": "dark-compact-right",
+        "requested": 17.25,
+        "sampled": 17,
+        "scale": 1,
+        "width": 272,
+        "windowHeight": 420,
+        "windowWidth": 600
+      },
+      {
+        "background": "#f2ededed",
+        "caption": "#000000",
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 236.25,
+        "label": "00:00:00",
+        "name": "light-compact-125-left",
+        "requested": 0.25,
+        "sampled": 0,
+        "scale": 1.25,
+        "width": 340,
+        "windowHeight": 520,
+        "windowWidth": 640
+      }
+    ],
+    "privateFixture": true,
+    "renderProbe": {
+      "effects": [
+        {
+          "class": "QQuickShaderEffect_QML_310",
+          "height": 177.5,
+          "visible": true,
+          "width": 315
+        }
+      ],
+      "imageHeight": 177.5,
+      "imageOpacity": 1,
+      "imageVisible": true,
+      "imageWidth": 315,
+      "lateColor": "#000dff",
+      "name": "light-compact-125-right",
+      "rawColor": "#000dff",
+      "renderedColor": "#ededed",
+      "shaderStatus": 0,
+      "source": "image://timelinepreview/11",
+      "status": 1
+    },
+    "status": "awaiting-render-inspection"
+  },
+  "diagnostics": [
+    "qt warning: (default) qrc:/qt/qml/VLC/Style/AcrylicController.qml:28: TypeError: Cannot read property 'active' of undefined"
+  ],
+  "rawDiagnostics": [
+    "qt warning: (default) qrc:/qt/qml/VLC/Style/AcrylicController.qml:28: TypeError: Cannot read property 'active' of undefined"
+  ],
+  "expectedDiagnostics": [],
+  "realD3D11Opened": true,
+  "quitLogOrder": {
+    "wait": 1434,
+    "stopped": 1466,
+    "teardown": 1470
+  },
+  "scope": "Actual Qt settings, live timeline consumer, native rendered preview pixels, disabled/audio fallback, config denial/retry and decoded resume. Visual/Figma/OS scaling/full beta gates remain separate."
+}

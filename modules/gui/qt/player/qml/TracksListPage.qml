@@ -50,6 +50,8 @@ RowLayout {
 
     focus: true
 
+    Navigation.cancelAction: () => trackMenuController.requestBack()
+
     onActiveFocusChanged: if (activeFocus) playbackBtn.forceActiveFocus()
 
     Widgets.ButtonExt {
@@ -74,6 +76,8 @@ RowLayout {
 
     Widgets.NavigableRow {
         id: row
+
+        Navigation.parentItem: root
 
         Layout.fillHeight: true
         Layout.fillWidth: true

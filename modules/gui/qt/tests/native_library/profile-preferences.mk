@@ -2,7 +2,7 @@
 ifndef PROPOSAL_OUT
 $(error Set PROPOSAL_OUT to a fresh owned output directory)
 endif
-PROFILE_DEFAULTS_CPPFLAGS = $(DEFS) $(DEFAULT_INCLUDES) $(CPPFLAGS) $(AM_CPPFLAGS) $(QT_QTEST_COMMON_cppflags) -I$(srcdir) -I$(top_srcdir) -I$(top_srcdir)/src -I$(PROPOSAL_OUT)
+PROFILE_DEFAULTS_CPPFLAGS = -iquote $(PROPOSAL_OUT) $(DEFS) $(DEFAULT_INCLUDES) $(CPPFLAGS) $(AM_CPPFLAGS) $(QT_QTEST_COMMON_cppflags) -I$(srcdir) -I$(top_srcdir) -I$(top_srcdir)/src -I$(PROPOSAL_OUT)
 PROFILE_DEFAULTS_CFLAGS = $(DEFS) $(DEFAULT_INCLUDES) $(CPPFLAGS) $(AM_CPPFLAGS) -I$(top_srcdir)/include -I$(top_builddir)/include -I$(top_builddir) -I$(top_srcdir) -I$(top_srcdir)/src
 PROFILE_DEFAULTS_OBJECTS = $(PROPOSAL_OUT)/test_player_profile_preferences.o $(PROPOSAL_OUT)/player_profile_preferences.o $(PROPOSAL_OUT)/checked_preferences_store.o $(PROPOSAL_OUT)/general_preferences_probe.o $(PROPOSAL_OUT)/winpthreads_shutdown.o
 .PHONY: player-profile-preferences-native

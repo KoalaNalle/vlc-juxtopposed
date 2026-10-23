@@ -81,11 +81,19 @@ bool listed(const QVariantList &rows, const QVariant &value)
 { for (const auto &row : rows) if (row.toMap().value(QStringLiteral("value")) == value) return true; return false; }
 bool managedOutput()
 { const auto aout = nativeText("aout"); return aout.isEmpty() || aout == QLatin1String("any") || aout == QLatin1String("mmdevice"); }
-bool roleConsumerAvailable()
+bool roleConsumerAvailable(bool windowsMediaRole)
 {
-    // MMDevice always requests eConsole; changing the core role flag does not
-    // select another Windows endpoint role. Only expose a write for an actual
-    // explicitly selected output whose native implementation consumes it.
+    // Stream classification does not change MMDevice's endpoint-selection role.
+#ifdef _WIN32
+    const auto backend = nativeText("mmdevice-backend");
+    const bool wasapiBackend = backend.isEmpty() || backend == QLatin1String("any")
+        || backend == QLatin1String("wasapi") || backend == QLatin1String("wasapi,none");
+    if (windowsMediaRole && managedOutput() && module_exists("mmdevice")
+        && wasapiBackend && module_exists("wasapi"))
+        return true;
+#else
+    (void)windowsMediaRole;
+#endif
     const auto output = nativeText("aout");
     return (output == QLatin1String("pulse") && module_exists("pulse"))
         || (output == QLatin1String("pipewire") && module_exists("pipewire"));
@@ -124,7 +132,7 @@ bool encodeBands(const QVariant &value, QString &text)
     text = pieces.join(QLatin1Char(' ')); return true;
 }
 struct Filter { const char *key; const char *module; };
-constexpr Filter filters[] = {{"normalizeLoudness","normvol"},{"equalizerEnabled","equalizer"},
+constexpr Filter filters[] = {{"normalizeLoudness","normvol"},{"nightMode","nightmode"},{"equalizerEnabled","equalizer"},
     {"stereoWidening","stereo_widen"},{"compressor","compressor"},{"chorusFlanger","chorus_flanger"},{"karaoke","karaoke"}};
 bool validLanguage(const QString &input)
 {
@@ -272,12 +280,13 @@ void AudioPreferencesModel::refresh()
         {QStringLiteral("detectDolby"),has("force-dolby-surround",VLC_VAR_INTEGER)},
         {QStringLiteral("resamplingQuality"),managedResampler && has("soxr-resampler-quality",VLC_VAR_INTEGER)
             && has("audio-resampler",VLC_VAR_STRING) && module_exists("soxr")},
-        {QStringLiteral("mediaRole"),has("role",VLC_VAR_STRING) && roleConsumerAvailable()}, {QStringLiteral("visualizationSize"),false}
+        {QStringLiteral("mediaRole"),has("role",VLC_VAR_STRING) && roleConsumerAvailable(m_consumers.windowsMediaRole)}, {QStringLiteral("visualizationSize"),false}
     };
     for (const auto &filter : filters) {
         const auto name = QString::fromLatin1(filter.module), key=QString::fromLatin1(filter.key);
         values.insert(key,chainValid ? QVariant(contains(chain,name)) : QVariant{});
         bool capable = service && chainValid && module_exists(filter.module) && has("audio-filter",VLC_VAR_STRING);
+        if (key == QLatin1String("nightMode")) capable &= m_consumers.nightMode;
         if (key == QLatin1String("equalizerEnabled") && (effectiveBands().size()!=EQZ_BANDS_MAX
             || !has("equalizer-bands",VLC_VAR_STRING))) capable=false;
         caps.insert(key,capable);

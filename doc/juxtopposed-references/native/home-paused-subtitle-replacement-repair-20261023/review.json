@@ -1,0 +1,30 @@
+{
+  "productionApplied": true,
+  "selectedRepairAccepted": true,
+  "ordinaryBuildAccepted": true,
+  "fullBetaAccepted": false,
+  "runtime": "build-windows/beta-subtitle-replacement-repair-20261023/ui-frame-marker.mkv-r3/runtime",
+  "coreSha256": "ef3e47fd08fa342954494584bbecbb03fb6a6e6631481c05700b0c76876ff41f",
+  "sourceFiles": {
+    "src/player/input.c": "1617f05b2ff9b0827cab188b685aa967ae8a82e7b52ea41e1d96eede8b4e87c0",
+    "src/input/decoder.c": "ce774a56e630a0603aa82387975a184b88c3b2fa3696f8125d3738ffdc2b04bc",
+    "src/input/decoder.h": "d2aa9f0835a0b558bbab60a552cb096ae852f70ad912863bb938a929a206e401",
+    "src/input/es_out.c": "f61cdc63e3a5735bf08909b28f3e698cd192c7bb76fc3739f36c69d12139e87b"
+  },
+  "sourceInputCount": 2290,
+  "nativeReplacementPasses": 6,
+  "nativeRegressionPasses": 17,
+  "guiSessions": 3,
+  "change": "Refill a newly selected subtitle at the frozen displayed-video timestamp with the proper media-time origin. Retain an exact paused decoded-picture boundary after packet preroll, so MP4 B-frame reordering cannot expose an earlier picture. Audio remains paused; ordinary sources and internal header are rebuilt together.",
+  "rejectedCandidate": "Player-only candidate23d restored captions on Matroska but moved MP4 frames backwards. The maintained test caught this without changing thresholds. Its five normal results are preserved, including the failure. Combined candidate578d then passed all six cases before ordinary Coreef3e was built.",
+  "limits": [
+    "Selected-subtitle replacement is the accepted scope, not the whole subtitle workflow or beta.",
+    "Cold initial captions remain a separate acceptance task; automatic external selection fails in native and actual desktop checks. Explicit selection succeeds.",
+    "Frame conservation compares the actual held picture with the picture after selection. It does not establish exact absolute seek PTS, including MP4 timestamp offsets.",
+    "WASAPI public get_time can be stale or change after seek reconstruction; actual marker pixels qualify video conservation. No-audio reported paused time is also conserved.",
+    "No recording/nonseekable/pending-seek stress, unknown frame rate, previous-frame stress, complete caption layout, Windows 10, DPI, physical audibility or full-beta acceptance.",
+    "Existing native dummy-window teardown/buffering diagnostics and ordinary compiler warnings are retained; no error-free-native-log claim.",
+    "Desktop keyboard/first Play activation was not qualified; see UI observation limits."
+  ],
+  "next": "Resolve automatic external selection, cold initial cue delivery and language/default/synchronization workflows; broaden policy and seek/step stress coverage, then continue all13 categories and32 surfaces through design/accessibility/DPI/platform/review/package gates."
+}

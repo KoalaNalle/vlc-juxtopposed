@@ -56,6 +56,7 @@ class TestAudioStartupConsumer final : public QObject
         AudioPreferencesModel::Consumers consumers;
         consumers.windowsDevices = true;
         consumers.authoredVolumeStep = true;
+        consumers.windowsMediaRole = true;
         m_model = std::make_unique<AudioPreferencesModel>(m_intf, consumers);
         return true;
     }
@@ -140,7 +141,8 @@ private slots:
     }
     void init()
     {
-        const auto folder = QDir(m_output).filePath(QString::fromLatin1(QTest::currentTestFunction()));
+        auto folder = QDir(m_output).filePath(QString::fromLatin1(QTest::currentTestFunction()));
+        if (const auto tag=QTest::currentDataTag();tag&&*tag) folder += '/' + QString::fromLatin1(tag);
         QVERIFY(QDir().mkpath(folder));
         m_config = QDir(folder).filePath(QStringLiteral("vlcrc"));
         m_log = QDir(folder).filePath(QStringLiteral("vlc.log"));
@@ -148,6 +150,98 @@ private slots:
     }
     void cleanup() { QVERIFY2(closeNative(), "The native audio owner did not acknowledge normal stop"); }
 
+    void mediaRoleClassifiesNewWasapiStreamAndPreservesPausedOwner_data()
+    {
+        QTest::addColumn<QString>("role"); QTest::addColumn<int>("category");
+        // Independent Windows SDK category values, not the production mapper.
+        QTest::newRow("video") << QStringLiteral("video") << 10;
+        QTest::newRow("music") << QStringLiteral("music") << 11;
+        QTest::newRow("communication") << QStringLiteral("communication") << 3;
+        QTest::newRow("game") << QStringLiteral("game") << 7;
+        QTest::newRow("notification") << QStringLiteral("notification") << 4;
+        QTest::newRow("animation") << QStringLiteral("animation") << 5;
+        QTest::newRow("production") << QStringLiteral("production") << 0;
+        QTest::newRow("accessibility") << QStringLiteral("accessibility") << 9;
+        QTest::newRow("test") << QStringLiteral("test") << 0;
+    }
+    void mediaRoleClassifiesNewWasapiStreamAndPreservesPausedOwner()
+    {
+        QFETCH(QString,role); QFETCH(int,category);
+        QVERIFY(m_model->capabilities().value(QStringLiteral("mediaRole")).toBool());
+        const auto baseline=role==QLatin1String("music")?QStringLiteral("video"):QStringLiteral("music");
+        const int baselineCategory=baseline==QLatin1String("video")?10:11;
+        auto accepted=[](const QString &name,int value) -> QByteArray {
+            return QByteArray("media role \"")+name.toUtf8()+"\" category "+QByteArray::number(value)+" accepted";
+        };
+        QVERIFY(m_model->setValue(QStringLiteral("mediaRole"),baseline));
+        QVERIFY(closeNative()); QVERIFY(openNative()); QVERIFY(startOwned());
+        QTRY_VERIFY_WITH_TIMEOUT(audioPlayed(),10000);
+        const auto firstLog=m_log;
+        const auto originalDevice=device(); const auto originalPreference=m_model->values().value(QStringLiteral("outputDevice"));
+        {
+            StartupPlayerLocker lock(m_intf->p_player); vlc_player_Pause(m_intf->p_player);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(state(),VLC_PLAYER_STATE_PAUSED,10000);
+        QTest::qWait(200);
+        vlc_tick_t clock; input_item_t *input;
+        {
+            StartupPlayerLocker lock(m_intf->p_player);
+            clock=vlc_player_GetTime(m_intf->p_player); input=vlc_player_GetCurrentMedia(m_intf->p_player);
+        }
+        QVERIFY(m_model->setValue(QStringLiteral("mediaRole"),role));
+        QVERIFY(m_model->restartRequired());
+        QCOMPARE(m_model->values().value(QStringLiteral("mediaRole")).toString(),role);
+        QCOMPARE(m_model->values().value(QStringLiteral("outputDevice")),originalPreference);
+        QCOMPARE(device(),originalDevice);
+        {
+            StartupPlayerLocker lock(m_intf->p_player);
+            QCOMPARE(vlc_player_GetState(m_intf->p_player),VLC_PLAYER_STATE_PAUSED);
+            QCOMPARE(vlc_player_GetCurrentMedia(m_intf->p_player),input);
+            QCOMPARE(vlc_player_GetTime(m_intf->p_player),clock);
+        }
+        const auto saved=bytes(m_config);
+        QVERIFY(closeNative());
+        // The Windows file logger is buffered. Read its complete trace only
+        // after normal teardown, rather than timing out on an unflushed file.
+        QVERIFY(bytes(firstLog).contains(accepted(baseline,baselineCategory)));
+        QVERIFY(!bytes(firstLog).contains("cannot set media role"));
+        QCOMPARE(bytes(firstLog).count("media role \""),1);
+        QVERIFY(!bytes(firstLog).contains(accepted(role,category)));
+        QVERIFY(openNative());
+        QCOMPARE(m_model->values().value(QStringLiteral("mediaRole")).toString(),role);
+        QVERIFY(!m_model->restartRequired()); QVERIFY(startOwned());
+        QTRY_VERIFY_WITH_TIMEOUT(audioPlayed(),10000);
+        QCOMPARE(device(),originalDevice); QCOMPARE(bytes(m_config),saved);
+        const auto secondLog=m_log; QVERIFY(closeNative());
+        QVERIFY(bytes(secondLog).contains(accepted(role,category)));
+        QVERIFY(!bytes(secondLog).contains("cannot set media role"));
+        QCOMPARE(bytes(secondLog).count("media role \""),1);
+    }
+    void mediaRoleRejectsUnmanagedOutputRollsBackAndRetries()
+    {
+        config_PutPsz("aout","directsound"); m_model->reload();
+        QVERIFY(!m_model->capabilities().value(QStringLiteral("mediaRole")).toBool());
+        const auto before=bytes(m_config);
+        QVERIFY(!m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("music")));
+        QCOMPARE(bytes(m_config),before);
+        config_PutPsz("aout","any"); m_model->reload();
+        config_PutPsz("mmdevice-backend","directsound"); m_model->reload();
+        QVERIFY(!m_model->capabilities().value(QStringLiteral("mediaRole")).toBool());
+        QVERIFY(!m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("music")));
+        QCOMPARE(bytes(m_config),before);
+        config_PutPsz("mmdevice-backend","any"); m_model->reload();
+        QVERIFY(m_model->capabilities().value(QStringLiteral("mediaRole")).toBool());
+        QVERIFY(m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("music")));
+        const auto original=m_model->values(); const auto disk=bytes(m_config);
+        QVERIFY(QFile::remove(m_config)); QVERIFY(QDir().mkdir(m_config));
+        QVERIFY(!m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("communication")));
+        QCOMPARE(m_model->values(),original); QVERIFY(!m_model->lastError().isEmpty());
+        QVERIFY(QDir().rmdir(m_config));
+        { QFile file(m_config); QVERIFY(file.open(QIODevice::WriteOnly)); QCOMPARE(file.write(disk),qint64(disk.size())); }
+        QVERIFY(m_model->setValue(QStringLiteral("mediaRole"),QStringLiteral("communication")));
+        QVERIFY(m_model->lastError().isEmpty()); QVERIFY(closeNative()); QVERIFY(openNative());
+        QCOMPARE(m_model->values().value(QStringLiteral("mediaRole")).toString(),QStringLiteral("communication"));
+    }
     void liveStepDoesNotCreateAFalseRestartRequirement()
     {
         // Establish the managed MMDevice startup policy before taking the

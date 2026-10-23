@@ -39,6 +39,7 @@
 #include "general_preferences_model.hpp"
 #include "interface_preferences_model.hpp"
 #include "playback_preferences_model.hpp"
+#include "player/timeline_thumbnails.hpp"
 #include "video_preferences_model.hpp"
 #include "audio_preferences_model.hpp"
 #include "subtitles_preferences_model.hpp"
@@ -63,6 +64,8 @@
 #include "util/csdbuttonmodel.hpp"
 
 #include "util/vlchotkeyconverter.hpp"
+#include "util/queue_find_key_scope.hpp"
+#include "util/detached_window_placement.hpp"
 #include "util/qt_dirs.hpp"                     // toNativeSeparators
 
 #include "util/color_scheme_model.hpp"
@@ -287,7 +290,20 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     // The paired seek routes consume this preference on their next request.
     PlaybackPreferencesModel::Consumers playbackConsumers;
     playbackConsumers.preciseSeeking = true;
+    playbackConsumers.showThumbnails = true;
     m_playbackPreferences = new PlaybackPreferencesModel(p_intf, playbackConsumers, this);
+    m_timelineThumbnails = new TimelineThumbnails(VLC_OBJECT(p_intf), this);
+    const auto previewPolicy = [this] {
+        m_timelineThumbnails->setEnabled(m_playbackPreferences->capabilities().value(QStringLiteral("showThumbnails")).toBool()
+            && m_playbackPreferences->values().value(QStringLiteral("showThumbnails")).toBool());
+    };
+    connect(m_playbackPreferences, &PlaybackPreferencesModel::valuesChanged, m_timelineThumbnails, previewPolicy);
+    connect(m_playbackPreferences, &PlaybackPreferencesModel::capabilitiesChanged, m_timelineThumbnails, previewPolicy);
+    connect(THEMIM, &PlayerController::inputChanged, m_timelineThumbnails, [this] {
+        m_timelineThumbnails->setInput(THEMIM->getInput());
+    });
+    m_timelineThumbnails->setInput(THEMIM->getInput());
+    previewPolicy();
     // Video native consumer acceptance gates remain false.
     m_videoPreferences = new VideoPreferencesModel(p_intf, this);
     // The authored slider and native actions consume this policy live. Device
@@ -295,6 +311,8 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     AudioPreferencesModel::Consumers audioConsumers;
     audioConsumers.windowsDevices = true;
     audioConsumers.authoredVolumeStep = true;
+    audioConsumers.nightMode = true;
+    audioConsumers.windowsMediaRole = true;
     m_audioPreferences = new AudioPreferencesModel(p_intf, audioConsumers, this);
     // Native placement/shortcut consumers passed the full subtitle renderer suite.
     SubtitlesPreferencesModel::Consumers subtitleConsumers;
@@ -523,6 +541,8 @@ MainCtx::~MainCtx()
     delete m_videoPreferences;
     m_videoPreferences = nullptr;
     // Playback borrows native player/playlist state; destroy it before Qt/native teardown.
+    delete m_timelineThumbnails;
+    m_timelineThumbnails = nullptr;
     delete m_playbackPreferences;
     m_playbackPreferences = nullptr;
     // Both services borrow settings; destroy them before those dependencies.
@@ -776,6 +796,10 @@ void MainCtx::sendHotkey(Qt::Key key , Qt::KeyboardModifiers modifiers)
     // as the native window event filter. Do not create a provider during setup.
     const auto *dialogs = Singleton<DialogsProvider>::getInstance<false>();
     if (dialogs && dialogs->qmlDialogVisible()) return;
+
+    if (p_intf->p_compositor && QueueFindKeyScope::ownsFind(
+            p_intf->p_compositor->activeFocusItem(), key, modifiers))
+        return;
 
     QKeyEvent event(QEvent::KeyPress, key, modifiers );
     int vlckey = qtEventToVLCKey(&event);
@@ -1376,6 +1400,26 @@ bool MainCtx::useXmasCone() const
 {
     return (QDate::currentDate().dayOfYear() >= QT_XMAS_JOKE_DAY)
             && var_InheritBool( p_intf, "qt-icon-change" );
+}
+
+void MainCtx::placeDetachedQueue(QWindow *window, const QWindow *owner)
+{
+    if (!window || !owner)
+        return;
+    const auto screens = QGuiApplication::screens();
+    QVector<QRect> areas;
+    for (const auto screen : screens)
+        areas.append(screen->availableGeometry());
+    const auto placement = vlc::qt::detachedWindowPlacement(
+        owner->frameGeometry(), window->size(), window->frameMargins(), areas,
+        screens.indexOf(owner->screen()));
+    if (placement.screen < 0)
+        return;
+    window->setScreen(screens[placement.screen]);
+    // The owner's minimum height can exceed a smaller display's work area.
+    // Do not let that inherited constraint force the queue off the display.
+    window->setMinimumSize(window->minimumSize().boundedTo(placement.client.size()));
+    window->setGeometry(placement.client);
 }
 
 bool WindowStateHolder::holdFullscreen(QWindow *window, Source source, bool hold, int screenIndex)

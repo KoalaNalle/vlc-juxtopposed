@@ -1,0 +1,10 @@
+********* Start testing of TestTimelineThumbnails *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestTimelineThumbnails::initTestCase()
+FAIL!  : TestTimelineThumbnails::previewIgnoresPlaybackStartupPause(startup-paused) Compared values are not the same
+   Actual   (libvlc_media_player_get_state(player.get())): 2
+   Expected (startupPaused?libvlc_Paused:libvlc_Playing) : 3
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_timeline_thumbnails.cpp(391) : failure location
+PASS   : TestTimelineThumbnails::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 22922ms
+********* Finished testing of TestTimelineThumbnails *********

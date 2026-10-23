@@ -4,7 +4,10 @@
 #include <QScopedValueRollback>
 
 namespace {
-QVariantMap defaultsPart(QVariantMap snapshot) { snapshot.remove(QStringLiteral("layout")); return snapshot; }
+QVariantMap defaultsPart(QVariantMap snapshot) {
+    snapshot.remove(QStringLiteral("layout"));
+    return PlayerProfilePreferences::compatibleDefaults(snapshot);
+}
 }
 PlayerProfilesModel::PlayerProfilesModel(qt_intf_t *intf, QSettings *settings, QObject *parent)
     : QObject(parent), m_store(settings), m_preferences(intf), m_layout(new PlayerProfileLayout(this))
@@ -109,6 +112,15 @@ bool PlayerProfilesModel::applyPending(bool forward)
         emit defaultsApplied(changes.keys());
         QVariantMap actual;
         if (!capture(actual,error)) return false;
+        // The journal retains its original on-disk shape, including profiles
+        // created before previews existed. Only omit the newly introduced key
+        // after its compatible off value has really been read back.
+        const auto group = QStringLiteral("playback"), key = QStringLiteral("qt-timeline-thumbnails");
+        auto fields = actual.value(group).toMap();
+        if (!target.value(group).toMap().contains(key)
+            && fields.value(key).typeId() == QMetaType::Bool && !fields.value(key).toBool()) {
+            fields.remove(key); actual.insert(group, fields);
+        }
         return forward ? m_store.finishSwitch(actual,error) : m_store.cancelSwitch(actual,error);
     }();
     if (!finished) return fail(error + QLatin1Char(' ') + tr("The recovery record is retained; retry or restore the previous profile."));

@@ -1,0 +1,22 @@
+********* Start testing of TestSharedModalHotkeys *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+QINFO  : TestSharedModalHotkeys::initTestCase() ROUTING_PRODUCTION_SHA256 {"modules/gui/qt/maininterface/interface_window_handler.cpp": "558eca221e8ffbd4f045879bfc066f422a8ec1c31666c7c6a8051fef725df7b7", "modules/gui/qt/maininterface/mainctx.cpp": "b7cc58a3e5111437f34502dc265f310795ae2cf3261f0287e8c74106a3d67b14"}
+PASS   : TestSharedModalHotkeys::initTestCase()
+PASS   : TestSharedModalHotkeys::absentProviderPreservesDirectDispatch()
+PASS   : TestSharedModalHotkeys::mouseFocusOutsideModalDispatchesNativeKeys()
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(left)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(right)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(up)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(down)
+PASS   : TestSharedModalHotkeys::modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch()
+PASS   : TestSharedModalHotkeys::outsideModalQtNavigationPolicyRemains()
+PASS   : TestSharedModalHotkeys::mouseFocusedSidebarKeepsNavigationAndContextKeys()
+PASS   : TestSharedModalHotkeys::sidebarScopePreservesUnclaimedPlayerShortcuts()
+PASS   : TestSharedModalHotkeys::mouseFocusedQueueOwnsFindButPreservesOtherHotkeys()
+PASS   : TestSharedModalHotkeys::directPlayerDispatchRespectsFocusedQueueFind()
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(other-tab-or-legacy)
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(hidden-queue)
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(outside-queue)
+PASS   : TestSharedModalHotkeys::cleanupTestCase()
+Totals: 17 passed, 0 failed, 0 skipped, 0 blacklisted, 123ms
+********* Finished testing of TestSharedModalHotkeys *********

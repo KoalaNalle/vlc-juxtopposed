@@ -619,6 +619,8 @@ bool matroska_segment_c::Preload( )
             {
                 cluster = cluster_;
 
+                _seeker._subtitle_first_cluster = cluster->GetElementPosition();
+
                 // add first cluster as trusted seekpoint for all tracks
                 for( tracks_map_t::const_iterator it = tracks.begin();
                      it != tracks.end(); ++it )
@@ -854,6 +856,41 @@ bool matroska_segment_c::Seek( demux_t &demuxer, vlc_tick_t i_absolute_mk_date, 
 
     if ( i_seek_position == std::numeric_limits<SegmentSeeker::fptr_t>::max() )
         return false;
+
+    if( b_accurate )
+    {
+        const bool subtitles = std::any_of( selected_tracks.begin(), selected_tracks.end(),
+            [this](SegmentSeeker::track_id_t id) {
+                const auto track = tracks.find(id);
+                return track != tracks.end() && track->second->fmt.i_cat == SPU_ES;
+            } );
+        if( subtitles )
+        {
+            const auto av_seek_position = i_seek_position;
+            try {
+                if( !_seeker.index_subtitles( *this, av_seek_position ) )
+                    return false;
+                for( const auto id : selected_tracks )
+                {
+                    auto track = tracks.find(id);
+                    if( track == tracks.end() || track->second->fmt.i_cat != SPU_ES )
+                        continue;
+                    const long double date = static_cast<long double>(i_mk_date)
+                                           + track->second->i_codec_delay;
+                    const auto pos = _seeker.get_subtitle_seekpoint( id, date, av_seek_position );
+                    if( pos != std::numeric_limits<SegmentSeeker::fptr_t>::max() )
+                    {
+                        track->second->i_skip_until_fpos = pos;
+                        i_seek_position = std::min( i_seek_position, pos );
+                    }
+                }
+            }
+            catch( const std::exception &e ) {
+                msg_Err( &sys.demuxer, "error indexing subtitles during seek: %s", e.what() );
+                return false;
+            }
+        }
+    }
 
     // propagate seek information //
 
@@ -1158,7 +1195,7 @@ void matroska_segment_c::ESDestroy( )
 int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_simpleblock,
                                   KaxBlockAdditions * & pp_additions,
                                   bool *pb_key_picture, bool *pb_discardable_picture,
-                                  uint64_t *pi_duration )
+                                  uint64_t *pi_duration, bool b_payload )
 {
     pp_simpleblock = NULL;
     pp_block = NULL;
@@ -1184,10 +1221,11 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         bool               & b_key_picture;
         bool               & b_discardable_picture;
         bool                 b_cluster_timecode;
+        bool                 b_payload;
 
     } payload = {
         this, &ep, &sys.demuxer, pp_block, pp_simpleblock, pp_additions,
-        duration, duration_padding, *pb_key_picture, *pb_discardable_picture, true
+        duration, duration_padding, *pb_key_picture, *pb_discardable_picture, true, b_payload
     };
 
     MKV_SWITCH_CREATE( EbmlTypeDispatcher, BlockGetHandler_l1, BlockPayload )
@@ -1249,7 +1287,8 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
 
             filepos_t read = 0;
             try {
-                read = ksblock.ReadData( vars.obj->es.I_O() );
+                read = ksblock.ReadData( vars.obj->es.I_O(),
+                    vars.b_payload ? SCOPE_ALL_DATA : SCOPE_PARTIAL_DATA );
             } catch(...) {
             }
             if (read == 0 && ksblock.GetSize() != 0) {
@@ -1278,7 +1317,8 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         {
             filepos_t read = 0;
             try {
-                read = kblock.ReadData( vars.obj->es.I_O() );
+                read = kblock.ReadData( vars.obj->es.I_O(),
+                    vars.b_payload ? SCOPE_ALL_DATA : SCOPE_PARTIAL_DATA );
             } catch(...) {
             }
             if (unlikely(read == 0) && kblock.GetSize() != 0) {
@@ -1300,7 +1340,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
         }
         E_CASE( KaxBlockAdditions, kadditions )
         {
-            if ( vars.obj->ReadMaster( kadditions ) )
+            if ( vars.b_payload && vars.obj->ReadMaster( kadditions ) )
             {
                 vars.additions = &kadditions;
                 vars.ep->Keep ();
@@ -1371,7 +1411,7 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
             /* We have block group let's check if the picture is a keyframe */
             else if( *pb_key_picture )
             {
-                if( p_track->fmt.i_codec == VLC_CODEC_THEORA )
+                if( b_payload && p_track->fmt.i_codec == VLC_CODEC_THEORA )
                 {
                     DataBuffer *    p_data = &pp_block->GetBuffer(0);
                     const uint8_t * p_buff = p_data->Buffer();
@@ -1400,6 +1440,27 @@ int matroska_segment_c::BlockGet( KaxBlock * & pp_block, KaxSimpleBlock * & pp_s
                 *pi_duration = 0;
             else
                 *pi_duration = duration - duration_padding;
+
+            if( p_track->fmt.i_cat == SPU_ES )
+            {
+                const KaxInternalBlock &data = pp_simpleblock
+                    ? static_cast<const KaxInternalBlock&>( *pp_simpleblock )
+                    : static_cast<const KaxInternalBlock&>( *pp_block );
+                const vlc_tick_t pts = VLC_TICK_FROM_NS(data.GlobalTimestamp());
+                vlc_tick_t end_pts = VLC_TICK_INVALID;
+                /* Match send_Block's duration units. Unknown or unrepresentable
+                 * spans stay conservative rather than overflowing a date. */
+                const long double span = static_cast<long double>(*pi_duration)
+                                       * p_track->f_timecodescale * i_timescale
+                                       * CLOCK_FREQ / 1000000000.L;
+                const long double stop = static_cast<long double>(pts) + span;
+                if( !p_track->b_no_duration && span >= 1
+                 && stop >= static_cast<long double>(VLC_TICK_MIN)
+                 && stop < static_cast<long double>(VLC_TICK_MAX) )
+                    end_pts = static_cast<vlc_tick_t>(stop);
+                _seeker.add_subtitle_block( p_track->i_number, data.GetElementPosition(),
+                                            pts, end_pts );
+            }
 
             return VLC_SUCCESS;
         }

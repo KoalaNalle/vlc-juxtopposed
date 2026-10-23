@@ -1,0 +1,20 @@
+Subject: [PATCH] ScrollBar: keep accessibility action connections unique
+
+Windows can notify accessibility activation repeatedly while it is already
+active. Reconnecting the same actions on each notification accumulates
+connections and makes a single accessibility action scroll multiple times.
+Keep one connection per action, including after deactivation/reactivation.
+
+--- a/src/quicktemplates/qquickscrollbar.cpp
++++ b/src/quicktemplates/qquickscrollbar.cpp
+@@ -902,8 +902,8 @@ void QQuickScrollBar::accessibilityActiveChanged(bool active)
+         setAccessibleProperty("pressed", d->pressed);
+ 
+         if (QQuickAccessibleAttached *accessibleAttached = QQuickControlPrivate::accessibleAttached(this)) {
+-            connect(accessibleAttached, &QQuickAccessibleAttached::increaseAction, this, &QQuickScrollBar::increase);
+-            connect(accessibleAttached, &QQuickAccessibleAttached::decreaseAction, this, &QQuickScrollBar::decrease);
++            connect(accessibleAttached, &QQuickAccessibleAttached::increaseAction, this, &QQuickScrollBar::increase, Qt::UniqueConnection);
++            connect(accessibleAttached, &QQuickAccessibleAttached::decreaseAction, this, &QQuickScrollBar::decrease, Qt::UniqueConnection);
+         }
+     } else {
+         if (QQuickAccessibleAttached *accessibleAttached = QQuickControlPrivate::accessibleAttached(this)) {

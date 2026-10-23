@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "status": "terminal-observer-failure",
+  "wrapperExitCode": 1,
+  "childExitCode": null,
+  "forcedCleanupUsed": true,
+  "forcedCleanupEvidence": "The frozen runner kills its child at90s and then parses XML. Its observed traceback is the subsequent parse of an empty XML file; authoritative process inventory confirms its owned executable is gone. No child exit code was saved.",
+  "reason": "QTest tried to read the buffered Windows file logger while playback was still open. Two normally closed logs show accepted Movie/Media API calls despite their live-read assertion failures. Further cases were cut short by the old runner timeout. This run does not qualify the feature.",
+  "repair": "Read classification traces after normal owner teardown. Updated canonical runner records PID/status early, retains a live process on observation timeout, and saves terminal metadata even for invalid XML.",
+  "fullBetaAccepted": false,
+  "timeoutCorrection": "Corrected from180 to90 seconds by checking the frozen startup-suite runner; defaults suite uses180. No test outcome changed."
+}

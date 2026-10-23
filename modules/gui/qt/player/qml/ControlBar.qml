@@ -370,7 +370,9 @@ T.Pane {
                     if (root.menu === tracksMenu)
                         root.menu = undefined
                     const target = bar.trackReturnItem && bar.trackReturnItem.visible && bar.trackReturnItem.enabled ? bar.trackReturnItem : bar.seekItem
-                    target?.forceActiveFocus(Qt.PopupFocusReason)
+                    // Retain keyboard ownership after closing the popup: the
+                    // native hotkey policy yields to controls with visual focus.
+                    target?.forceActiveFocus(Qt.TabFocusReason)
                 }
             }
 

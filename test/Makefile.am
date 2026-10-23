@@ -726,5 +726,16 @@ endif
 
 EXTRA_DIST += addons-native.mk libvlc/native_addons.py libvlc/native_addons.md
 EXTRA_DIST += mmdevice-native.mk modules/audio_output/mmdevice_stop.c
+EXTRA_DIST += wasapi-role-native.mk modules/audio_output/wasapi_role.c
 EXTRA_DIST += libvlc/native_mmdevice_stop.py libvlc/native_mmdevice_stop.md
 EXTRA_DIST += libvlc/native_mmdevice_lifecycle.py
+EXTRA_DIST += libvlc/native_paused_video_startup.py \
+    libvlc/generate_paused_video_startup.sh libvlc/native_paused_video_startup.md
+
+EXTRA_DIST += libvlc/native_paused_subtitle_seek.py \
+    libvlc/generate_paused_subtitle_seek.sh libvlc/native_paused_subtitle_seek.md
+
+EXTRA_DIST += libvlc/native_paused_subtitle_tracks.py \
+    libvlc/generate_paused_subtitle_tracks.sh libvlc/native_paused_subtitle_tracks.md \
+    libvlc/native_paused_subtitle_delay.py libvlc/native_paused_subtitle_delay.md \
+    libvlc/native_player_callback_layout.c

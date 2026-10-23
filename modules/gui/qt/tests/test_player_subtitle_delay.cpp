@@ -19,6 +19,7 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QThread>
+#include <limits>
 
 using HeldEs = vlc::vlc_shared_data_ptr<vlc_es_id_t, &vlc_es_id_Hold, &vlc_es_id_Release>;
 
@@ -34,6 +35,7 @@ class TestPlayerSubtitleDelay : public QObject
     HeldEs m_first, m_second;
     QString m_fixture;
     int m_observations = 0;
+    int m_fpsObservations = 0;
 
     QPair<vlc_es_id_t *, vlc_es_id_t *> roles() const
     {
@@ -188,6 +190,60 @@ private slots:
             vlc_player_Pause(m_player);
         }
         QTRY_COMPARE_WITH_TIMEOUT(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED, 5000);
+    }
+    void initialAssociatedFpsMatchesNative()
+    {
+        vlc_player_locker lock{m_player};
+        const auto fps = vlc_player_GetAssociatedSubsFPS(m_player);
+        QCOMPARE(fps, 0.f); // the generated fixture inherits the native default
+        QCOMPARE(m_controller->getSubtitleFPS(), fps);
+    }
+    void associatedFpsNotificationsAndValidation()
+    {
+        QSignalSpy changes(m_controller.get(), &PlayerController::subtitleFPSChanged);
+        const int observationsBefore = m_fpsObservations;
+        const auto connection = connect(m_controller.get(), &PlayerController::subtitleFPSChanged,
+            this, [this](float) {
+                QCOMPARE(QThread::currentThread(), m_controller->thread());
+                // A direct observer must be able to re-lock the NORMAL player.
+                (void)m_controller->getInput();
+                ++m_fpsObservations;
+            }, Qt::DirectConnection);
+        {
+            vlc_player_locker lock{m_player};
+            vlc_player_SetAssociatedSubsFPS(m_player, 23.976f);
+        }
+        QCOMPARE(m_fpsObservations, observationsBefore);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 23.976f);
+        QVERIFY(!changes.isEmpty());
+        QCOMPARE(changes.last().front().toFloat(), 23.976f);
+
+        const auto *input = m_controller->getInput();
+        const auto selected = roles();
+        const auto categoryBefore = category();
+        m_controller->setSubtitleFPS(29.97f);
+        {
+            vlc_player_locker lock{m_player};
+            QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 29.97f);
+        }
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 29.97f);
+        const int before = changes.size();
+        for (const auto invalid : {-1.f, std::numeric_limits<float>::infinity(),
+                                  std::numeric_limits<float>::quiet_NaN()})
+            m_controller->setSubtitleFPS(invalid);
+        QTest::qWait(30);
+        QCOMPARE(changes.size(), before);
+        {
+            vlc_player_locker lock{m_player};
+            QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 29.97f);
+        }
+        m_controller->setSubtitleFPS(0.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 0.f);
+        QCOMPARE(m_controller->getInput(), input);
+        QCOMPARE(roles(), selected);
+        QCOMPARE(category(), categoryBefore);
+        QVERIFY(m_fpsObservations >= observationsBefore + 3);
+        disconnect(connection);
     }
     void sentinelCategoryAndEffectivePayload()
     {

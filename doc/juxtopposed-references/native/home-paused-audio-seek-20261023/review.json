@@ -1,0 +1,20 @@
+{
+  "investigationCompleted": true,
+  "pausedTimeConsistencyAccepted": false,
+  "fullBetaAccepted": false,
+  "evidence": "Generated30s WAV, actual packaged LibVLC/Core and dummy or MMDevice/WASAPI output. Both initial paused and played-then-paused states; position.3 and time9s requests. Samples through4s, resume, normal stop/release.",
+  "finding": "All eight cases retain the old output time while paused. All four actual WASAPI cases resume near9s, so the requested target is honored there. Dummy resume samples differ and are retained; they do not qualify actual Windows output.",
+  "interpretation": "Native output time remains stale while paused; the ordinary GUI mismatch is not explained solely by its elapsed label. This does not yet identify the exact timer/controller callback ordering or justify a Core/UI fix.",
+  "history": [
+    "The initial R20 worker used only a global --start-paused option and remained Playing. Its startup gate failed before a seek was attempted.",
+    "R20b applies a per-media :start-paused option and reproduces stale paused time. Its dummy-resume target assertion fails; raw result/traceback retained.",
+    "R20c records each observation without treating stale time or differing dummy resume samples as a pass. All8 workers stop/release normally and exit0; the investigation itself is not a passing seek regression."
+  ],
+  "nextStep": "Trace actual PlayerController timer seek/update/pause callbacks and their output-time points; preserve stream/subtitle clocks, pending-seek state, finite/live boundaries and normal pause/resume semantics. Add a regression before changing production behavior.",
+  "productionChanged": false,
+  "limits": [
+    "No audio content/physical audibility proof; generated input is silent.",
+    "No UI fix, decoder correctness claim, other formats, failure/retry coverage, Windows10 or whole-beta acceptance.",
+    "The ordinary R19 GUI source freeze is separate from this interpreted investigation producer."
+  ]
+}

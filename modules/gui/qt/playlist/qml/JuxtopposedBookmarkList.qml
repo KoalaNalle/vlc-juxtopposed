@@ -136,23 +136,29 @@ Widgets.ListViewExt {
             titleColor: row.selected ? theme.fg.primary : JuxtopposedPalette.color("#969696")
         }
 
-        TapHandler {
-            acceptedDevices: PointerDevice.AllDevices & ~PointerDevice.TouchScreen
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            gesturePolicy: TapHandler.ReleaseWithinBounds
-            onSingleTapped: {
-                row.forceActiveFocus(Qt.MouseFocusReason)
-                root.selectionModel.updateSelection(point.modifiers, root.currentIndex, row.index)
-                root.currentIndex = row.index
+        // A Control consumes pointer events before its own handlers.
+        // Match PlaylistDelegate's child-item input ownership.
+        Item {
+            id: bookmarkPointerArea
+            anchors.fill: parent
+            TapHandler {
+                acceptedDevices: PointerDevice.AllDevices & ~PointerDevice.TouchScreen
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                gesturePolicy: TapHandler.ReleaseWithinBounds
+                onSingleTapped: {
+                    row.forceActiveFocus(Qt.MouseFocusReason)
+                    root.selectionModel.updateSelection(point.modifiers, root.currentIndex, row.index)
+                    root.currentIndex = row.index
+                }
+                onDoubleTapped: (eventPoint, button) => {
+                    if (button === Qt.LeftButton)
+                        root.activate(row.index)
+                }
             }
-            onDoubleTapped: (eventPoint, button) => {
-                if (button === Qt.LeftButton)
-                    root.activate(row.index)
+            DelegateTouchTapHandler {
+                delegate: row
+                onSingleTapped: root.selectAndActivate(row.index)
             }
-        }
-        DelegateTouchTapHandler {
-            delegate: row
-            onSingleTapped: root.selectAndActivate(row.index)
         }
     }
 

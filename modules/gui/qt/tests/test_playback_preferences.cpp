@@ -264,12 +264,37 @@ void TestPlaybackPreferences::preciseSeekingRequiresActualConsumerGate()
     // This executes the real native flag/helper; actual patched PlayerController
     // callsites must also be compiled and exercised by Root before enabling it.
 }
+void TestPlaybackPreferences::thumbnailPolicyPersistenceAndGate()
+{
+    QCOMPARE(config_GetType("qt-timeline-thumbnails"), VLC_VAR_BOOL);
+    QVERIFY(!m_model->values().value(QStringLiteral("showThumbnails")).toBool());
+    QVERIFY(!m_model->setValue(QStringLiteral("showThumbnails"),true));
+    PlaybackPreferencesModel::Consumers consumers; consumers.showThumbnails = true;
+    m_model = std::make_unique<PlaybackPreferencesModel>(m_intf, consumers);
+    QVERIFY(m_model->capabilities().value(QStringLiteral("showThumbnails")).toBool());
+    QCOMPARE(m_model->applyModes().value(QStringLiteral("showThumbnails")).toString(), QStringLiteral("live"));
+    const auto before = bytes(m_config);
+    for (const QVariant &bad : {QVariant(1), QVariant(QStringLiteral("true")), QVariant(.5)})
+        QVERIFY(!m_model->setValue(QStringLiteral("showThumbnails"),bad));
+    QCOMPARE(bytes(m_config), before);
+    QVERIFY(m_model->setValue(QStringLiteral("showThumbnails"),true));
+    QCOMPARE(config_GetInt("qt-timeline-thumbnails"), qlonglong(1));
+    QVERIFY(!m_model->restartRequired());
+    closeNative(); QVERIFY(openNative());
+    QVERIFY(m_model->values().value(QStringLiteral("showThumbnails")).toBool());
+    QVERIFY(!m_model->capabilities().value(QStringLiteral("showThumbnails")).toBool());
+    m_model = std::make_unique<PlaybackPreferencesModel>(m_intf, consumers);
+    QVERIFY(m_model->setValue(QStringLiteral("showThumbnails"),false));
+    QCOMPARE(config_GetInt("qt-timeline-thumbnails"), qlonglong(0));
+    QVERIFY(!m_model->restartRequired());
+}
 void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState_data()
 {
     QTest::addColumn<QString>("key");QTest::addColumn<QVariant>("requested");
     QTest::newRow("int-tracks")<<QStringLiteral("defaultAudioTrack")<<QVariant(3);
     QTest::newRow("bool-live")<<QStringLiteral("shuffle")<<QVariant(true);
     QTest::newRow("bool-seek")<<QStringLiteral("preciseSeeking")<<QVariant(false);
+    QTest::newRow("bool-thumbnails")<<QStringLiteral("showThumbnails")<<QVariant(true);
     QTest::newRow("float-restart")<<QStringLiteral("defaultPlaybackSpeed")<<QVariant(1.5);
 }
 void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState()
@@ -278,8 +303,8 @@ void TestPlaybackPreferences::saveFailurePreservesDiskConfigAndLiveState()
     QSKIP("Real Win32 read/write/no-delete lock is the native save-failure stimulus");
 #else
     QFETCH(QString,key);QFETCH(QVariant,requested);
-    if (key == QStringLiteral("preciseSeeking")) {
-        PlaybackPreferencesModel::Consumers consumers; consumers.preciseSeeking = true;
+    if (key == QStringLiteral("preciseSeeking") || key == QStringLiteral("showThumbnails")) {
+        PlaybackPreferencesModel::Consumers consumers; consumers.preciseSeeking = true; consumers.showThumbnails = true;
         m_model = std::make_unique<PlaybackPreferencesModel>(m_intf, consumers);
     }
     QVERIFY(m_model->setValue(QStringLiteral("preferredMenuLanguage"),QStringLiteral("fi")));

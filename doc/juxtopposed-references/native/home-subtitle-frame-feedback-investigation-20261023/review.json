@@ -1,0 +1,22 @@
+{
+  "productionApplied": false,
+  "selectedRepairAccepted": false,
+  "ordinaryBuildAccepted": false,
+  "fullBetaAccepted": false,
+  "runtime": "build-windows/beta-external-subtitle-acceptance-20261023/ui-external.srt-r3/runtime",
+  "ordinaryCoreSha256": "ea14300c8c8366a99d17eab124216f543287822c18a85ed305eea0cc557b23d4",
+  "candidateCoreSha256": "77670ec8df7ff796269f68e5b8acace167cdd5f6956a813190b5df94e5a13f62",
+  "rootCause": "A paused decoder flush inserts one frames_countdown picture for internal refresh. The video completion paths report that synthetic request as frame_next_status, which reaches player feedback and the Next frame OSD.",
+  "proposedChange": "Keep the existing refresh request and picture path. Mark only the flush-owned first countdown picture, suppress its completion event, and clear that marker on completion/pause/reset/previous-frame transitions. Explicit user steps retain their existing success/error paths.",
+  "evidence": "Seven unchanged controls each emit ten unsolicited next-frame successes, then two correct requested successes and actual held-marker-plus1/plus2 steps. MP4 has its own held marker; no absolute seek-PTS equality is assumed. The one private decoder candidate emits zero unsolicited events and the same two requested successes/marker advances. Every case still loses the external caption after resume, so no full case passes and no production source is applied.",
+  "newFailure": "The external caption is visible before and during the two steps, but absent in the subsequent resumed/paused snapshot. This reproduces across SubRip/ASS/MP4 with/without WASAPI and a two-track MKS source. The unchanged and private candidate both fail externalDistinct. Causation by stepping versus added paused wall time is not established.",
+  "setup": "The first parent started before source copying finished and exited before staging or launching a child. It was retried only after original copy session79757 completed0 and absence of output was confirmed. The first actual control parent and private parent each stop on the retained externalDistinct failure; all8 native children exit0 normally.",
+  "limits": [
+    "Private one-case feedback evidence only; no ordinary/desktop acceptance for this candidate.",
+    "The maintained optional callback mode preserves the post-step caption assertion; thresholds and original failures are not removed.",
+    "Frame callback layout232/next176/previous184 comes from the compiled matching C header companion, with executable/source/header/compiler evidence. Callbacks only copy scalar data.",
+    "Prior ordinary paused-selection acceptance retains its earlier no-step scope and binaries. The new extended route is not accepted.",
+    "Burst/EOF/cancellation/previous-frame policies, exact absolute PTS, complete subtitle/layout/DPI/physical-output/Windows10 and full beta remain open."
+  ],
+  "next": "Compare equal-duration paused hold without frame steps, then trace subtitle channel clock conversions/stop dates and queue lifetime across step/resume. Keep all assertions. Resolve caption loss and qualify the private feedback proposal before any ordinary application, then continue the full13-category/32-surface roadmap."
+}

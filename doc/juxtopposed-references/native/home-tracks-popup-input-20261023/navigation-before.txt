@@ -1,0 +1,22 @@
+********* Start testing of TestTracksCancelNavigation *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestTracksCancelNavigation::initTestCase()
+FAIL!  : TestTracksCancelNavigation::cancellation(subtitle-column) Compared values are not the same
+   Actual   (root->property("cancels").toInt()): 0
+   Expected (1)                                : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_tracks_cancel_navigation.cpp(84) : failure location
+FAIL!  : TestTracksCancelNavigation::cancellation(audio-column) Compared values are not the same
+   Actual   (root->property("cancels").toInt()): 0
+   Expected (1)                                : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_tracks_cancel_navigation.cpp(84) : failure location
+FAIL!  : TestTracksCancelNavigation::cancellation(playback-speed-button) Compared values are not the same
+   Actual   (root->property("cancels").toInt()): 0
+   Expected (1)                                : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_tracks_cancel_navigation.cpp(84) : failure location
+FAIL!  : TestTracksCancelNavigation::cancellation(synchronization-page) Compared values are not the same
+   Actual   (root->property("cancels").toInt()): 0
+   Expected (1)                                : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_tracks_cancel_navigation.cpp(84) : failure location
+PASS   : TestTracksCancelNavigation::cleanupTestCase()
+Totals: 2 passed, 4 failed, 0 skipped, 0 blacklisted, 19ms
+********* Finished testing of TestTracksCancelNavigation *********

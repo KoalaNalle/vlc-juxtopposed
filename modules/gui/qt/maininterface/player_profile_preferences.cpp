@@ -93,7 +93,7 @@ QStringList PlayerProfilePreferences::nativeKeys(const QString &group)
         QStringLiteral("playlist-cork"), QStringLiteral("preferred-resolution"), QStringLiteral("menu-language"),
         QStringLiteral("audio-track"), QStringLiteral("audio-track-id"), QStringLiteral("sub-track"), QStringLiteral("sub-track-id"),
         QStringLiteral("repeat"), QStringLiteral("loop"), QStringLiteral("random"), QStringLiteral("play-and-stop"),
-        QStringLiteral("play-and-exit"), QStringLiteral("input-fast-seek"), QStringLiteral("dvd"), QStringLiteral("vcd"),
+        QStringLiteral("play-and-exit"), QStringLiteral("input-fast-seek"), QStringLiteral("qt-timeline-thumbnails"), QStringLiteral("dvd"), QStringLiteral("vcd"),
         QStringLiteral("cd-audio"), QStringLiteral("avi-index"), QStringLiteral("mkv-preload-local-dir"),
         QStringLiteral("input-timeshift-path"), QStringLiteral("input-timeshift-granularity")};
     if (group == QLatin1String("audio")) return {
@@ -148,8 +148,24 @@ bool PlayerProfilePreferences::snapshot(QVariantMap &result, QString &error) con
     result = captured; return true;
 }
 
-bool PlayerProfilePreferences::prepare(const QVariantMap &target, QVariantMap &changes, QString &error) const
+QVariantMap PlayerProfilePreferences::compatibleDefaults(QVariantMap target)
 {
+    const auto group = QStringLiteral("playback");
+    const auto key = QStringLiteral("qt-timeline-thumbnails");
+    if (config_GetType("qt-timeline-thumbnails") == VLC_VAR_BOOL
+        && target.value(group).typeId() == QMetaType::QVariantMap) {
+        auto fields = target.value(group).toMap();
+        if (!fields.contains(key)) {
+            fields.insert(key, false);
+            target.insert(group, fields);
+        }
+    }
+    return target;
+}
+
+bool PlayerProfilePreferences::prepare(const QVariantMap &saved, QVariantMap &changes, QString &error) const
+{
+    const auto target = compatibleDefaults(saved);
     error.clear(); changes.clear(); QVariantMap current;
     if (!snapshot(current, error)) return false;
     if (target.keys() != current.keys()) return reject(error, tr("This profile has an unsupported player settings group."));

@@ -287,6 +287,7 @@ T.Popup {
                     decimals: 3
                     enabled: Player.isStarted && Player.subtitleTracks.count > 0
                     from: 0
+                    helpText: qsTr("Frame rate of external subtitle files. Set to 0 to restore normal timing.")
                     sliderVisible: false
                     title: qsTr("Subtitle frame rate")
                     to: 100

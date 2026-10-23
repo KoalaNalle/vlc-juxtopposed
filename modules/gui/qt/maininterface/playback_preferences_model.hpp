@@ -21,6 +21,7 @@ public:
         // Root enables only after the real PlayerController seek patch is linked
         // and native timeline/time/relative-seek behavior has been verified.
         bool preciseSeeking = false;
+        bool showThumbnails = false;
     };
     explicit PlaybackPreferencesModel(qt_intf_t *, QObject *parent = nullptr);
     PlaybackPreferencesModel(qt_intf_t *, Consumers, QObject *parent = nullptr);

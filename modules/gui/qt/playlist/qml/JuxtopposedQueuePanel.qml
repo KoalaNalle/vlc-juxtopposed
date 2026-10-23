@@ -32,6 +32,8 @@ C.Control {
     property bool showAdd: true
     property bool showToolbar: true
     property real toolbarContentHeight: 28
+    property real bodyTopInset: 0
+    readonly property real bodyTop: (showToolbar ? 92 + toolbarContentHeight : 71) * uiScale
     property bool repeatActive: false
     property bool shuffleActive: false
     property string repeatDescription: repeatActive ? qsTr("Repeat all") : qsTr("Repeat off")
@@ -273,7 +275,7 @@ C.Control {
             anchors.bottom: parent.bottom
             anchors.leftMargin: 20 * root.uiScale
             anchors.rightMargin: 20 * root.uiScale
-            anchors.topMargin: (root.showToolbar ? 92 + root.toolbarContentHeight : 71) * root.uiScale
+            anchors.topMargin: root.bodyTop + root.bodyTopInset
 
             Loader {
                 id: bodyLoader

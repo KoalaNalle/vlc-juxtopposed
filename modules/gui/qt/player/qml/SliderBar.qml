@@ -18,6 +18,7 @@
 import QtQuick
 import QtQuick.Templates as T
 import QtQuick.Layouts
+import QtQuick.Window
 
 import VLC.Player
 import VLC.Widgets as Widgets
@@ -28,10 +29,57 @@ import VLC.MainInterface
 T.ProgressBar {
     id: control
 
+    // Qt's accessibility value interface writes this control's value property.
+    // Keep engine/drag display updates separate from that user seek request.
+    property bool _updatingDisplayValue: false
+    property bool _componentReady: false
+    readonly property real minimumValue: from
+    readonly property real maximumValue: to
+
+    function _setDisplayValue(position) {
+        const updating = _updatingDisplayValue
+        _updatingDisplayValue = true
+        try {
+            value = position
+        } finally {
+            _updatingDisplayValue = updating
+        }
+    }
+
+    onValueChanged: {
+        if (_updatingDisplayValue || !_componentReady)
+            return
+        if (!Number.isFinite(value) || !enabled || !Player.seekable
+                || !fsm.started || fsm._state !== fsmReleased) {
+            _setDisplayValue(Player.position)
+            return
+        }
+        fsm.accessibilitySeek(value)
+    }
+
     readonly property real _hoveredScalingFactor: 1.8
     property int barHeight: VLCStyle.dp(5, VLCStyle.scale)
     property bool showHandle: true
     property string waveformStatus: ""
+    readonly property var thumbnailProvider: MainCtx.timelineThumbnails
+    readonly property string thumbnailClient: thumbnailProvider ? thumbnailProvider.registerClient() : ""
+    readonly property bool thumbnailWanted: !!thumbnailProvider && thumbnailProvider.enabled
+        && MainCtx.juxtopposedControls && control.visible && control.enabled && control.Window.active
+        && (hoverHandler.hovered || dragHandler.active) && Player.seekable && !Player.live
+        && Player.length.valid() && Player.videoTracks.count > 0
+    readonly property real thumbnailPosition: hoverHandler.hovered
+        ? Helpers.clamp(hoverHandler.point.position.x / Math.max(1,control.availableWidth),0,1)
+        : control.visualPosition
+    readonly property int thumbnailSecond: Player.length.valid()
+        ? Math.floor(Math.max(0,Math.min(Player.length.scale(thumbnailPosition).toSeconds(),Player.length.toSeconds()-1))) : 0
+    readonly property bool thumbnailVisible: thumbnailWanted && thumbnailProvider.imageSource.length > 0
+    function updateThumbnail() {
+        if (thumbnailWanted) thumbnailProvider.requestFor(thumbnailClient,thumbnailSecond)
+        else if (thumbnailProvider) thumbnailProvider.cancelFor(thumbnailClient)
+    }
+    onThumbnailWantedChanged: Qt.callLater(updateThumbnail)
+    onThumbnailSecondChanged: Qt.callLater(updateThumbnail)
+    Component.onDestruction: if (thumbnailProvider) thumbnailProvider.cancelFor(thumbnailClient)
     readonly property real _scaledBarHeight: control.barHeight * _hoveredScalingFactor
     readonly property real _scaledY: (-control.barHeight / 2) * (control._hoveredScalingFactor - 1)
 
@@ -73,7 +121,15 @@ T.ProgressBar {
         onTriggered: control._isSeekPointsShown = false
     }
 
-    Widgets.PointingToolTipAttached.visible: (hoverHandler.hovered || control.visualFocus || dragHandler.active)
+    Widgets.PointingToolTipAttached.visible: !thumbnailVisible && (hoverHandler.hovered || control.visualFocus || dragHandler.active)
+
+    TimelineThumbnail {
+        parent: control
+        visible: control.thumbnailVisible
+        imageSource: control.thumbnailProvider ? control.thumbnailProvider.imageSource : ""
+        anchorX: control.thumbnailPosition * control.availableWidth
+        seconds: control.thumbnailProvider ? Math.max(0, control.thumbnailProvider.requestedSeconds) : 0
+    }
 
     Widgets.PointingToolTipAttached.text: {
         if (!Widgets.PointingToolTipAttached.instance?.visible)
@@ -104,6 +160,7 @@ T.ProgressBar {
     FSM {
         id: fsm
         signal playerUpdatePosition(real position)
+        signal accessibilitySeek(real position)
         signal pressControl(real position, bool forcePrecise)
         signal releaseControl(real position, bool forcePrecise)
         signal moveControl(real position, bool forcePrecise)
@@ -113,6 +170,7 @@ T.ProgressBar {
         //transitions of active state for the given key are evaluated
         signalMap: ({
             "playerUpdatePosition": fsm.playerUpdatePosition,
+            "accessibilitySeek": fsm.accessibilitySeek,
             "pressControl": fsm.pressControl,
             "releaseControl": fsm.releaseControl,
             "moveControl": fsm.moveControl,
@@ -122,12 +180,12 @@ T.ProgressBar {
         initialState: fsmReleased
 
         function _setPositionFromValue(position) {
-            control.value = position
+            control._setDisplayValue(position)
         }
 
         function _seekToPosition(position, threshold, forcePrecise) {
             position = Helpers.clamp(position, 0., 1.)
-            control.value = position
+            control._setDisplayValue(position)
             if (!forcePrecise) {
                 const chapter = Player.chapters.getClosestChapterFromPos(position, threshold)
                 if (chapter !== -1) {
@@ -144,8 +202,11 @@ T.ProgressBar {
             transitions: ({
                 "playerUpdatePosition": {
                     action: (position) => {
-                        control.value = position
+                        control._setDisplayValue(position)
                     }
+                },
+                "accessibilitySeek": {
+                    action: (position) => fsm._seekToPosition(position, 0, true)
                 },
                 "pressControl": {
                     action: (position, forcePrecise) => {
@@ -199,10 +260,13 @@ T.ProgressBar {
     Connections {
         target: Player
         function onPositionChanged() {  fsm.playerUpdatePosition(Player.position) }
-        function onInputChanged() {  fsm.inputChanged() }
+        function onInputChanged() { fsm.inputChanged(); Qt.callLater(control.updateThumbnail) }
     }
 
-    Component.onCompleted: value = Player.position
+    Component.onCompleted: {
+        _setDisplayValue(Player.position)
+        _componentReady = true
+    }
 
     implicitHeight: control.barHeight
     height: implicitHeight
@@ -214,6 +278,7 @@ T.ProgressBar {
 
     HoverHandler {
         id: hoverHandler
+        objectName: "timelineHoverHandler"
 
         onHoveredChanged: () => {
             if (hovered) {

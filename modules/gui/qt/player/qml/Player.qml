@@ -354,7 +354,8 @@ FocusScope {
                         GradientStop { position: 1; color: "black" }
                     }
 
-                    visible: rootPlayer.displayFadeRectangles && !(controlBar.background && controlBar.background.visible)
+                    visible: !controlBar.redesigned && rootPlayer.displayFadeRectangles
+                             && !(controlBar.background && controlBar.background.visible)
                 }
             }
         }
@@ -1106,7 +1107,7 @@ FocusScope {
             if (playlistpopup.active)
                 return playlistpopup.item
             else if (playlistWindowLoader?.status === Loader.Ready)
-                return playlistWindowLoader.item.playlistView
+                return playlistWindowLoader.item?.playlistView ?? null
             else
                 return null
         }

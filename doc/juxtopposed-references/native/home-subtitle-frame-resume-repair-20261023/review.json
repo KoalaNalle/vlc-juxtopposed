@@ -1,0 +1,29 @@
+{
+  "productionApplied": true,
+  "selectedRepairAccepted": true,
+  "ordinaryBuildAccepted": true,
+  "fullBetaAccepted": false,
+  "sourceFiles": {
+    "src/input/decoder.c": "2d9429992e23abc653a974c9a1eb559535320fd015df8654c60a948f4bd64940",
+    "src/input/es_out.c": "ee3aada2d77684fea7343ee0f0d8bb645bb8d6638b68a24bdca29c648ca79623"
+  },
+  "coreSha256": "0ef9dde2f0a221135cab0a548ac292dd89d7cc9b7b79427eaaba121995b7773f",
+  "runtime": "build-windows/beta-subtitle-frame-resume-20261023/ui-external.srt-r4/runtime",
+  "cause": "Matched paused holds keep the caption, whereas two genuine next-frame requests lose it on the old Core. Frame stepping discarded subtitle packets, then resume flushed already-demuxed subtitle cues while retaining video. Separately, internal paused flush pictures incorrectly completed user-step status.",
+  "change": "Keep subtitle packets during stepping and preserve their decoder on retained-video frame-step resume only. Actual seeks still flush subtitle decoders. Track synthetic paused-refresh completion separately from genuine requested-frame feedback.",
+  "publicAbiChanged": false,
+  "callbacks": "The maintained optional callback regression uses the matching compiled C layout and copies scalar data only.",
+  "ordinaryNativePasses": 24,
+  "nativeNormalExits": 35,
+  "guiNormalExits": 2,
+  "sourceInputCount": 2372,
+  "limits": [
+    "The accepted scope is paused subtitle replacement/addition, two genuine next-frame requests and caption-preserving resume in the paired generated fixtures; this is not whole-subtitle or full-beta acceptance.",
+    "Long stepping across cue boundaries, previous-frame transitions, pending/nonseekable/recording, repeated source removal/restart and broader multi-selection policies need separate coverage.",
+    "Absolute seek PTS, stale WASAPI public paused time, exact GUI normalized-value conservation, cold initial cues and complete caption layout remain separate.",
+    "Native missing-file/dummy-window diagnostics and compiler warnings remain preserved. No error-free-native-log claim.",
+    "Actual desktop screenshots were reviewed through Computer Use, without saving or decoding their pixels. Native snapshot pixels provide quantitative frame checks.",
+    "Windows10, physical audibility/outputs, actual OS DPI, independent review and a clean distributable remain separate beta gates."
+  ],
+  "next": "Recheck preview hover on the current tuple; broaden subtitle boundaries and continue the complete thirteen-category/32-surface consumer, design/accessibility/DPI, real-media, review and clean-package roadmap."
+}

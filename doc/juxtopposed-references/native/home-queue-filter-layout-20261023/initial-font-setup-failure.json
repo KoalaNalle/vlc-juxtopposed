@@ -1,0 +1,91 @@
+{
+  "passed": false,
+  "cases": [
+    {
+      "scale": 1,
+      "width": 320,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    },
+    {
+      "scale": 1,
+      "width": 400,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    },
+    {
+      "scale": 1.5,
+      "width": 320,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    },
+    {
+      "scale": 1.5,
+      "width": 400,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    },
+    {
+      "scale": 2,
+      "width": 320,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    },
+    {
+      "scale": 2,
+      "width": 400,
+      "checks": {
+        "closedReferenceUnchanged": true,
+        "filterBelowToolbar": true,
+        "rowBelowFilter": true,
+        "addCenterClickable": true,
+        "firstRowClickable": true,
+        "closedGeometryRestored": true
+      },
+      "passed": true
+    }
+  ],
+  "diagnostics": [
+    "QFontDatabase: Cannot find font directory C:/Modding/vlc-juxtopposed/build-windows/homecoming-20261018/tools/VlcUiTests/Lib/site-packages/PySide6/lib/fonts.\nNote that Qt no longer ships fonts. Deploy some (from https://dejavu-fonts.github.io/ for example) or switch to fontconfig."
+  ],
+  "sourceSha256": {
+    "PlaylistPane.qml": "ce52b4c0ad26f818a88d7ff704cbdc338a111288d8d135146f6f3217082b369e",
+    "JuxtopposedQueuePanel.qml": "60bafe6e4a4fbd7ebc2375a7eee6a64fb97eda218ce1192d9af457880713a2e9"
+  },
+  "scope": "Exercise production Queue/filter layout and action hit targets in real Qt.\n\nThe complete panel and exact PlaylistPane popup/inset bindings are used. The\nnative playlist and SearchBox content are supplied; ordinary VLC must separately\nverify the real filter, file picker, playback and keyboard behavior.\n"
+}

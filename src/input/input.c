@@ -666,7 +666,11 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
         VLC_TICK_FROM_MS(var_InheritInteger( p_input, "stats-min-report-interval" ));
     vlc_tick_t i_last_seek_mdate = 0;
 
-    if( b_interactive && var_InheritBool( p_input, "start-paused" ) )
+    /* A thumbnail input must reach its picture independently of the playback
+     * startup policy. Pausing it can fill the paced decoder FIFO and prevent
+     * even its timeout/cancellation from completing input_Close(). */
+    if( b_interactive && input_priv(p_input)->type != INPUT_TYPE_THUMBNAILING
+     && var_InheritBool( p_input, "start-paused" ) )
         ControlPause(p_input, vlc_tick_now(), true);
 
     bool eof_signaled = false;
@@ -1978,7 +1982,15 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
     input_thread_private_t *priv = input_priv(p_input);
     int i_ret;
 
-    i_ret = demux_SetTime( priv->master->p_demux, priv->i_start + val,
+    const vlc_tick_t requested = priv->i_start + val;
+    vlc_tick_t subtitle_preroll = 0;
+    if (!fast_seek && !priv->prev_frame.enabled)
+        es_out_PrivControl(priv->p_es_out_display,
+                           ES_OUT_PRIV_GET_SUBTITLE_PREROLL, &subtitle_preroll);
+    const vlc_tick_t demux_target = subtitle_preroll > 0 && requested > 0
+                                 ? __MAX(requested - subtitle_preroll, 0)
+                                 : requested;
+    i_ret = demux_SetTime( priv->master->p_demux, demux_target,
                            !fast_seek );
     if( i_ret )
     {
@@ -1986,7 +1998,7 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
         /* Emulate it with a SET_POS */
         if( i_length > 0 )
         {
-            double f_pos = (double)(priv->i_start + val) / (double)i_length;
+            double f_pos = (double)demux_target / (double)i_length;
             i_ret = demux_SetPosition( priv->master->p_demux, f_pos,
                                        !fast_seek );
         }
@@ -1994,6 +2006,11 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
 
     if( i_ret == VLC_SUCCESS )
     {
+        /* Decode earlier delayed subtitle cues, but retain the requested
+         * video/audio display boundary and the source's timestamp origin. */
+        if (demux_target != requested)
+            es_out_Control(&priv->p_es_out->out, ES_OUT_SET_NEXT_DISPLAY_TIME,
+                           priv->master->i_normal_time + requested);
         if( priv->i_slave > 0 )
             SlaveSeek( p_input );
         priv->master->b_eof = false;
@@ -2027,6 +2044,15 @@ static int ControlSetPosition( input_thread_t *p_input, double val,
             val = (priv->i_start + val * (i_length - priv->i_start)) / i_length;
     }
 
+    if (!fast_seek && i_length > 0)
+    {
+        vlc_tick_t subtitle_preroll = 0;
+        es_out_PrivControl(priv->p_es_out_display,
+                           ES_OUT_PRIV_GET_SUBTITLE_PREROLL, &subtitle_preroll);
+        if (subtitle_preroll > 0)
+            return ControlSetTime(p_input, llround(val * i_length) - priv->i_start,
+                                  false);
+    }
     int i_ret = demux_SetPosition( priv->master->p_demux, val, !fast_seek );
 
     if( i_ret == VLC_SUCCESS )
@@ -3616,6 +3642,9 @@ static int input_SlaveSourceAdd( input_thread_t *p_input,
     if( !p_source )
         return VLC_EGENERIC;
 
+    /* Demux opening may already publish timing controls. */
+    p_source->b_slave_sub = i_type == SLAVE_TYPE_SPU;
+
     if( b_forced )
         p_source->autoselected = true;
 
@@ -3656,10 +3685,14 @@ static int input_SlaveSourceAdd( input_thread_t *p_input,
         /* Get meta (access and demux) */
         InputUpdateMeta( p_input, p_source->p_demux );
     }
-    else
-        p_source->b_slave_sub = true;
 
     TAB_APPEND( priv->i_slave, priv->slave, p_source );
+
+    /* A runtime load-and-select request is an explicit choice, rather than
+     * another candidate for language/ID-based automatic selection. */
+    if( i_type == SLAVE_TYPE_SPU && b_forced && b_set_time )
+        es_out_PrivControl( priv->p_es_out_display, ES_OUT_PRIV_SELECT_SOURCE,
+                            p_source, SPU_ES );
 
     return VLC_SUCCESS;
 

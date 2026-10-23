@@ -1073,7 +1073,7 @@ static es_out_id_t *EsOutStopNextFrame(es_out_sys_t *p_sys)
 static void EsOutResumeFromNextFrame(es_out_sys_t *p_sys)
 {
     assert( p_sys->p_next_frame_es != NULL );
-    /* Flush every ES except the video one */
+    /* Retain the held video and queued subtitles when frame stepping ends. */
     EsOutChangePosition(p_sys, EsOutStopNextFrame(p_sys));
 }
 
@@ -1169,7 +1169,11 @@ static void EsOutChangePosition(es_out_sys_t *p_sys,
     {
         if( p_es->p_dec != NULL )
         {
-            if( p_es != p_next_frame_es )
+            /* Only frame-step resume supplies a retained video. Its subtitle
+             * cues were already demuxed; an actual seek supplies NULL and must
+             * still flush them. Audio keeps the existing resynchronization. */
+            if( p_es != p_next_frame_es
+             && !(p_next_frame_es && p_es->fmt.i_cat == SPU_ES) )
                 vlc_input_decoder_Flush( p_es->p_dec );
             if( !p_sys->b_buffering )
             {
@@ -3254,8 +3258,10 @@ static int EsOutSend(es_out_t *out, es_out_id_t *es, block_t *p_block )
         }
     }
 
-    /* Drop all ESes except the video one in case of next-frame */
-    if( p_sys->p_next_frame_es != NULL && p_sys->p_next_frame_es != es )
+    /* Keep subtitle packets alongside the stepped video, so current and
+     * upcoming cues remain available. Other outputs keep the existing policy. */
+    if( p_sys->p_next_frame_es != NULL && p_sys->p_next_frame_es != es
+     && es->fmt.i_cat != SPU_ES )
     {
         block_Release( p_block );
         vlc_mutex_unlock( &p_sys->lock );
@@ -3283,9 +3289,19 @@ static int EsOutSend(es_out_t *out, es_out_id_t *es, block_t *p_block )
         if( i_date != VLC_TICK_INVALID )
             es->i_pts_level = i_date + p_block->i_length;
 
+        vlc_tick_t preroll_end = p_sys->i_preroll_end;
+        if (es->fmt.i_cat == SPU_ES)
+        {
+            const vlc_tick_t delay = es->delay != VLC_TICK_MAX
+                                   ? es->delay : p_sys->i_spu_delay;
+            /* A delayed cue can remain visible after its media stop date.
+             * Compare subtitle packets with their own media-time boundary. */
+            if (delay > 0)
+                preroll_end = delay >= preroll_end ? 0 : preroll_end - delay;
+        }
         /* If i_date is still invalid (first/all non dated), expect to be in preroll */
         if( i_date == VLC_TICK_INVALID ||
-            es->i_pts_level < p_sys->i_preroll_end )
+            es->i_pts_level < preroll_end )
             p_block->i_flags |= BLOCK_FLAG_PREROLL;
     }
 
@@ -3905,6 +3921,13 @@ static int EsOutVaControlLocked(es_out_sys_t *p_sys, input_source_t *source,
             return VLC_EGENERIC;
 
         p_sys->i_preroll_end = i_date;
+        /* Retain the exact target after packet-level buffering/preroll ends. */
+        es_out_id_t *es;
+        foreach_es_then_es_slaves(es)
+        {
+            if (es->p_dec && es->fmt.i_cat == VIDEO_ES)
+                vlc_input_decoder_SetPausedPrerollTarget(es->p_dec, i_date);
+        }
 
         return VLC_SUCCESS;
     }
@@ -4099,6 +4122,45 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
         }
         return EsOutControlLocked(p_sys, p_sys->main_source, new_query, es);
     }
+    case ES_OUT_PRIV_SELECT_SOURCE:
+    {
+        input_source_t *requested = va_arg( args, input_source_t * );
+        enum es_format_category_e cat = va_arg( args, enum es_format_category_e );
+        es_out_es_props_t *props = GetPropsByCat( p_sys, cat );
+        if( !requested || !props || !p_sys->b_active
+         || p_sys->i_mode != ES_OUT_MODE_AUTO )
+            return VLC_EGENERIC;
+
+        /* Keep language/priority ordering inside a multi-track external file,
+         * but do not let the previously selected source veto this request. */
+        es_out_id_t *best = NULL, *es;
+        int best_language = -1;
+        foreach_es_then_es_slaves( es )
+        {
+            if( es->id.source != requested || es->fmt.i_cat != cat
+             || es->p_pgrm != p_sys->p_pgrm || es->b_terminated )
+                continue;
+            int language = props->ppsz_language
+                ? LanguageArrayIndex( props->ppsz_language,
+                                      es->psz_language_code ) : -1;
+            if( !best || (language >= 0
+                && (best_language < 0 || language < best_language))
+             || (language == best_language
+                && es->fmt.i_priority > best->fmt.i_priority) )
+            {
+                best = es;
+                best_language = language;
+            }
+        }
+        if( !best )
+            return VLC_EGENERIC;
+
+        /* Use the same exclusive path as a direct user track selection.
+         * The main-ES hint can lag behind explicit string-ID selections. */
+        int ret = EsOutControlLocked( p_sys, requested, ES_OUT_SET_ES, best );
+        return ret == VLC_SUCCESS && EsIsSelected( best )
+             ? VLC_SUCCESS : VLC_EGENERIC;
+    }
     case ES_OUT_PRIV_SET_ES_CAT_IDS:
     {
         enum es_format_category_e cat = va_arg( args, enum es_format_category_e );
@@ -4191,6 +4253,21 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
         es_out_id_t *es = vlc_es_id_get_out( es_id );
         const vlc_tick_t delay = va_arg(args, vlc_tick_t);
         EsOutSetEsDelay(p_sys, es, delay);
+        return VLC_SUCCESS;
+    }
+    case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
+    {
+        vlc_tick_t *delay = va_arg(args, vlc_tick_t *);
+        *delay = 0;
+        es_out_id_t *es;
+        foreach_es_then_es_slaves(es)
+        {
+            if (es->fmt.i_cat != SPU_ES || !es->p_dec)
+                continue;
+            const vlc_tick_t selected_delay = es->delay != VLC_TICK_MAX
+                                           ? es->delay : p_sys->i_spu_delay;
+            *delay = __MAX(*delay, selected_delay);
+        }
         return VLC_SUCCESS;
     }
     case ES_OUT_PRIV_SET_DELAY:

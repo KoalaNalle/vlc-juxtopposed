@@ -612,6 +612,40 @@ vlc_player_input_HandleTeletextMenu(struct vlc_player_input *input,
     }
 }
 
+void
+vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
+{
+    vlc_player_t *player = input->player;
+    if (input->state != VLC_PLAYER_STATE_PAUSED
+     || !(input->capabilities & VLC_PLAYER_CAP_SEEK)
+     || input->recording || input != player->input)
+        return;
+
+    bool have_target = false;
+    vlc_tick_t target = 0, clock_time = VLC_TICK_INVALID;
+    vlc_mutex_lock(&player->timer.lock);
+    const struct vlc_player_timer_source *video = &player->timer.smpte_source;
+    if (video->es && !video->seeking
+     && video->point.system_date != VLC_TICK_INVALID
+     && video->point.ts >= VLC_TICK_0)
+    {
+        clock_time = video->point.ts;
+        target = clock_time - VLC_TICK_0;
+        have_target = true;
+    }
+    else if (player->timer.seek_ts != VLC_TICK_INVALID)
+    {
+        target = clock_time = player->timer.seek_ts;
+        have_target = true;
+    }
+    vlc_mutex_unlock(&player->timer.lock);
+    if (have_target)
+    {
+        vlc_player_UpdateTimerSeekState(player, clock_time, -1);
+        input_SetTime(input->thread, target, false);
+    }
+}
+
 static void
 vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
                                const struct vlc_input_event_es *ev)
@@ -673,12 +707,15 @@ vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
             trackpriv = vlc_player_track_vector_FindById(vec, ev->id, NULL);
             if (trackpriv)
             {
+                const bool newly_selected = !trackpriv->t.selected;
                 trackpriv->t.selected = true;
                 trackpriv->selected_by_user = ev->forced;
                 trackpriv->vout_order = ev->vout_order;
                 vlc_player_SendEvent(player, on_track_selection_changed,
                                      NULL, trackpriv->t.es_id);
                 vlc_player_input_HandleTeletextMenu(input, ev, trackpriv);
+                if (newly_selected && ev->fmt->i_cat == SPU_ES)
+                    vlc_player_input_RefreshPausedSubtitle(input);
             }
             break;
         case VLC_INPUT_ES_UNSELECTED:

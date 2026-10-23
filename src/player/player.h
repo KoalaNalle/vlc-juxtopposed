@@ -605,6 +605,9 @@ vlc_player_osd_Program(vlc_player_t *player, const char *name);
  */
 
 void
+vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input);
+
+void
 vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos);
 
 void

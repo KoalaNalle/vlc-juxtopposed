@@ -1,8 +1,801 @@
-# VLC Juxtopposed redesign — project handoff
+# VLC Juxtopposed redesign â€” project handoff
 
-21 October checkpoint: both observed seeking UI P2s pass selected repair checks.
-Core `9f9702bec96d…`, ordinary GUI `c382ebb2f89a…` and matching
-private GUI `054a3f54b009…`. R8 native passes325 checks in three
+<!-- paused-fps-checkpoint:start -->
+## Paused checkpoint - 23 October 2026
+
+Desktop testing is stopped at the owner's request. The previous subtitle-control
+accessibility and paused-delay repairs retain their recorded acceptance. The
+[subtitle frame-rate candidate](doc/juxtopposed-references/native/home-subtitle-fps-checkpoint-20261023/README.md) is now compiled, with native controller
+contracts passing, but ordinary desktop/external-caption acceptance is pending.
+Its GUI is faf4d30b; the last accepted desktop GUI remains 9dd58c64 on Core7ab80750.
+Native tests retain dummy-renderer DX11/blend errors; the ineffective obsolete
+hardware argument was removed after those runs. Do not count them as caption
+rendering passes or assume the restored fixture has been rerun.
+
+Resume with a refreshed source freeze, fresh ordinary runtime and a genuinely
+selected external SRT: verify FPS 23.976/29.97/50/0, accessibility in real units,
+keyboard focus/Reset, engine feedback and immediate paused cue retiming. The
+prepared run-ui-r5.py has NOT run and its old freeze needs updating. Continue
+secondary timing and the complete thirteen-category/32-surface beta roadmap
+afterward. Windows 10 stays separately deferred. Older status blocks below are
+historical; the beta goal is paused and all owned test/build jobs have finished.
+<!-- paused-fps-checkpoint:end -->
+
+<!-- subtitle-accessibility-status:start -->
+Latest selected repair (23 October): [Subtitle control accessibility](doc/juxtopposed-references/native/home-subtitle-accessibility-20261023/README.md)
+is applied and accepted in its stated control/help scope. The shared spinner
+exposes Qt's numeric bounds, and all three synchronization controls have names.
+Ordinary Windows accessibility writes now update primary timing and the paused
+caption: ASS0/+1200/-1200ms, MP4 0/+1200ms. Reset, focused50ms Up and ignored
+excessive+10050ms input retain their recorded ASS scope. Saved-delay help now
+explains next-media application through the existing authored info affordance.
+Its actual editor stays1200 while current timing is50; native sub-delay stays12.
+
+Fifteen component cases pass with no captured messages. Two ordinary desktop
+processes exit0 on GUI9dd58c64 / Core7ab80750 / MKVf46d8d15 / WASAPI4e4e. The ASS
+run retains endpoint-removal/default-output disappearance and audio errors; it
+is NOT a clean playback/audio pass. The subsequent MP4 run resumes with captions
+and quits while playing with no checked runtime errors. No device-loss recovery
+or audibility claim follows. Previous35 native Core passes retain their earlier
+scope and were not repeated for this GUI-only change.
+
+Current runtime: `build-windows/beta-subtitle-accessibility-20261023/ui-frame-marker.mp4-r3/runtime`.
+The2407-input freeze reuses2394 actual immutable copies and adds13 changed/helper
+copies, avoiding another full C: snapshot. Both runs retain source/runtime/fixture
+guards. Exact GUI numeric-position conservation remains unqualified; visible held
+frame patterns/coarse elapsed stay fixed while some values reconcile by about1us.
+
+Next: per-track/secondary timing, FPS/speed and estimators. The FPS control's
+initialization and secondary-delay notification use differing scale directions;
+verify its native contract. Continue all remaining consumers/workflows,32-surface
+Figma/design/accessibility/OS-DPI, consolidated media, physical outputs, review
+and clean packaging. Full beta remains ACTIVE; Windows10 stays separately deferred.
+The prior controlled hover hold passed; original historical hover loss remains
+unconfirmed. Older status blocks below are historical. No install, commit/push,
+release/upload or shutdown occurred; both owned desktop processes are closed.
+<!-- subtitle-accessibility-status:end -->
+
+<!-- paused-subtitle-delay-status:start -->
+Latest selected repair (23 October): [Paused subtitle delay](doc/juxtopposed-references/native/home-paused-subtitle-delay-repair-20261023/README.md)
+is applied and accepted locally on the ordinary build. Delayed paused seeks
+retain the expected cue; current primary delay changes and Reset refresh it at
+the held video frame. The regular build uses the exact tested seven-file change,
+with no private replacement objects/headers or public ABI change.
+
+All eleven timing cases and 24 earlier startup/interval/track/frame-step/resume
+regressions pass on ordinary Core7ab80750. All35 native children exit normally;
+121 timing snapshots verify and44 actual seek-frame comparisons match the
+private candidate. Positive/negative offsets, time/position seeking, WASAPI and
+the no-audio controls retain their recorded scopes. Before failures and the
+private candidate remain intact in the separate investigation receipt.
+
+One actual ordinary desktop session covers ASS and mov_text/MP4: delayed Finnish
+captions appear after paused seeking; Reset immediately restores the middle cue
+without another user seek. Twelve actual keyboard nudges through50–600ms restore
+the earlier ASS cue. The next file reapplies the saved1.2-second default after
+the previous file's Reset. MP4 Reset, caption-bearing resumed playback and direct
+playing Quit pass; the session exits0 without checked GUI diagnostics. The
+saved default stays sub-delay=12. Two earlier ordinary preference sessions prove
+the actual editors/reopen and explicit-index priority; their broader timing
+workflow originally failed and is preserved as such.
+
+Current ordinary runtime:
+`build-windows/beta-subtitle-delay-repair-20261023/ui-frame-marker-ass.mkv-r4/runtime`.
+Tuple: Core7ab80750 / GUId0ff14c6 / MKVf46d8d15 / WASAPI4e4e. All2,400 actual
+input copies and551 immutable repair artifacts verify. This supersedes the
+earlier private-only/unapplied instructions. Previous replacement/external
+selection/frame-feedback/resume repairs retain their accepted scopes.
+
+Continue with the spinner accessibility value-write route (no change observed;
+actual focused Up-key adjustment works), default-delay next-media help,
+per-track/secondary timing, wider cue boundaries and lifecycle/stream policies.
+Exact GUI numeric progress conservation remains unqualified: ASS briefly shifts
+by roughly1us during nudges, and MP4 reconciles its position after Reset while
+the visible frame pattern/coarse elapsed stay fixed. Space after popup closure
+can activate the focused Subtitle tracks button; arbitrary-focus global Space
+is not accepted. Native images independently prove the tested held frames.
+
+The [controlled hover check](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/current-hover-20261023/README.md)
+passed a345.984-second untouched hold on its recorded ordinary tuple; original
+historical hover-loss attribution remains unconfirmed. No functional hover
+change was needed. Continue the complete thirteen-category/32-surface roadmap:
+remaining consumers/workflows, Figma/design, accessibility/OS DPI, consolidated
+real media, physical outputs, independent review and clean packaging. Windows10
+remains separately deferred. Full beta stays ACTIVE. All owned tests are closed
+normally. No install, commit/push, release/upload or shutdown occurred. Older
+status blocks below are historical; use this current runtime and scope.
+<!-- paused-subtitle-delay-status:end -->
+
+<!-- external-subtitle-selection-status:start -->
+Latest selected repair (23 October): [External subtitle selection](doc/juxtopposed-references/native/home-external-subtitle-selection-repair-20261023/README.md)
+is accepted locally on the ordinary build. Opening a subtitle while paused
+selects the new source's preferred track exclusively and retains the actual
+held picture in the tested SubRip/ASS/MP4 and two-track MKS cases. The four
+production sources are applied and ordinary Core/header dependents rebuilt;
+the earlier private-only plan and runtime directions below are superseded.
+
+The identical maintained worker/fixtures reproduce15 old failures and two
+load-only passes, then all17 ordinary passes. All17 earlier startup/interval
+regressions pass. All51 native children exit normally;536 paired-selection
+snapshots,2,340 actual frozen input copies and948 published artifacts verify.
+Three ordinary desktop file-dialog sessions open SRT, ASS and two-track MKS,
+show the automatically selected cue and sole checkmark, retain the visible
+marker/elapsed text, resume/Pause and close normally without checked GUI errors.
+The MKS desktop run also selects external Finnish and restores English.
+
+Current runtime:
+`build-windows/beta-external-subtitle-acceptance-20261023/ui-external.srt-r3/runtime`.
+Tuple: Coreea14300c / GUId0ff14c6 / MKVf46d8d15 / WASAPI4e4e. Existing exclusive
+selection is reused; subtitle identity is set before demux opening, and its
+PCR/reset/display-target controls cannot replace the main media timing boundary.
+Generic associated sources keep their prior behavior. Earlier paused-replacement,
+fade, accessible-progress and Matroska-interval repairs retain their scopes.
+The earlier rejected candidate failures remain in their immutable investigation.
+
+Two UI limits remain explicit. A transient Next frame OSD is reproduced during
+some ASS/MKS subtitle refreshes with no step key and an unchanged picture;
+correct that feedback next. The first accessible SRT seek's normalized slider
+value reconciles slightly on refresh: exact GUI numeric-value conservation and
+absolute seek PTS are not accepted. Native marker/no-audio-time checks provide
+the quantitative conservation proof. Expected native missing-file/dummy-window
+diagnostics and compiler warnings remain recorded.
+
+Then broaden playing/pending/nonseekable/recording, repeated addition/removal/
+restart and multi-selection policies, cold initial cues and language/default/
+sync flows. Original preview hover loss remains unconfirmed; a latest-runtime
+controlled check is still due. The caption-clearance preference remains saved.
+The full13-category/32-surface beta stays ACTIVE, including remaining consumers,
+design/accessibility/DPI, consolidated real-media, physical-output, independent
+review and clean-package gates. Windows10 comparison remains separately deferred.
+No install, commit/push, release/upload or shutdown occurred. All owned tests
+are closed normally. These are local repair results, not full-beta acceptance.
+<!-- external-subtitle-selection-status:end -->
+
+<!-- subtitle-replacement-repair-status:start -->
+Latest selected repair (23 October): [Paused subtitle replacement](doc/juxtopposed-references/native/home-paused-subtitle-replacement-repair-20261023/README.md)
+is accepted locally on the ordinary build. Embedded English/Finnish changes and
+explicit external-subtitle selection while paused now show the selected cue and
+retain the held picture in SubRip/Matroska, ASS/Matroska and mov_text/MP4 tests,
+with WASAPI and without audio. The earlier player-only candidate failed MP4
+frame conservation; its failure is preserved, and the decoder now retains the
+exact paused picture boundary after packet preroll.
+
+The maintained portable regression has six unchanged failures, six combined
+candidate passes and six ordinary passes. All17 earlier startup/subtitle-interval
+regressions pass. Evidence preserves40 normal native exits,345 replacement
+snapshots and three normal desktop exits with no checked GUI errors. Actual
+desktop language changes hold the visible marker and timeline; SubRip also
+checks English restoration, explicit external loading and resume/Pause.
+
+Current runtime:
+`build-windows/beta-subtitle-replacement-repair-20261023/ui-frame-marker.mkv-r3/runtime`.
+Tuple: GUId0ff14c6 / Coreef3e47fd / MKVf46d8d15 / WASAPI4e4e. This checkpoint
+supersedes the older active-runtime and candidate-only directions below. The
+ordinary build compiles matching player/input, decoder and ES-output sources;
+no private replacement objects or candidate logging are used. The2,290 input
+copies and715 published artifacts verify. Native diagnostics/compiler warnings
+remain recorded. The earlier fade, accessible-progress and Matroska-interval
+repairs retain their limited accepted scopes.
+
+Next: automatic external selection (the file loads, but the previous track stays
+selected until an explicit choice), cold initial cue delivery, language/default
+and synchronization flows. Broaden recording/nonseekable/pending-seek and
+previous-frame coverage. Frame conservation does not establish absolute seek
+PTS; WASAPI public paused time remains a separate issue. Desktop keyboard/first
+Play activation also remains unqualified. Complete caption layout and the saved
+morning caption-clearance preference remain open.
+
+The full13-category/32-surface beta remains ACTIVE: continue remaining feature,
+design/accessibility/DPI, physical-output, Windows10, independent review and
+clean-package gates. Original preview hover loss is still unconfirmed; its
+earlier controlled hold passed, with another latest-runtime check still due.
+Save nonurgent questions for morning. No install, commit/push, release/upload
+or shutdown occurred. All owned test windows and native jobs are closed.
+<!-- subtitle-replacement-repair-status:end -->
+
+<!-- paused-subtitle-replacement-status:start -->
+Latest investigation (23 October): [Paused subtitle replacement](doc/juxtopposed-references/native/home-paused-subtitle-replacement-investigation-20261023-r6/README.md).
+The accepted build restores captions after backward seek, but changing an
+embedded subtitle or explicitly selecting an external subtitle while paused
+clears the current cue until resume. This reproduces in original/remuxed and
+colored video with WASAPI and without audio.
+
+A separate Core candidate restores all 20 selected-caption observations across
+five paired cases. It is REJECTED for application: both no-audio cases advance
+the paused video-source timer point by 40ms per selection refresh, one frame in
+the 25fps fixtures. The unchanged controls retain that point. WASAPI's stale
+best-source time cannot qualify exact video-frame conservation. Do not promote
+candidate Core5837a5b7 or treat caption presence alone as workflow acceptance.
+
+The queued-SPU-only candidate made no difference in three runs. A raw-timer
+candidate was corrected before execution. The failed conservation preflight is
+retained. The canonical review corrects an overbroad summary in the first
+receipt without changing its frozen artifacts. Evidence preserves 21 normal
+native exits and 188 snapshots; native diagnostics remain visible.
+
+No production source was changed by this investigation. Current accepted
+runtime stays `build-windows/beta-caption-layout-20261023/ui-after-r1/runtime`,
+GUId0ff14c6 / Core000f1159 / MKVf46d8d15 / WASAPI4e4e. The caption fade,
+accessible progress and precise subtitle interval repairs retain their scopes.
+
+Next: trace the displayed-video/SMPTE source and seek normalization, or refill
+only subtitle data. Require repeated selection to conserve the paused picture
+and time, then maintained native regression, ordinary Core and desktop checks.
+Cold initial cues, automatic external selection, language/default/sync flows
+remain open. The caption-clearance preference is saved for morning; no new
+question is required. Full 13-category / 32-surface beta remains ACTIVE, with
+design/accessibility/DPI, physical outputs, Windows10, independent review and
+packaging still open. No install, commit/push, release/upload or shutdown.
+All owned native test processes exited normally.
+<!-- paused-subtitle-replacement-status:end -->
+
+<!-- caption-bottom-fade-status:start -->
+Latest selected repair (23 October): [Caption bottom fade repair](doc/juxtopposed-references/native/home-caption-bottom-fade-repair-20261023/README.md)
+is accepted locally. The redesigned player no longer draws the old bottom
+fade above its opaque control bar. The unchanged build visibly darkens the
+lower overlapping caption; the ordinary candidate keeps SubRip and ASS lines
+bright in fullscreen. Legacy controls retain their existing fade. Backward
+SubRip seeking, paused subtitle-menu open/Escape and resume/Pause work.
+
+Four ordinary GUI sessions exit 0 with no checked runtime errors or source,
+runtime or fixture drift. These are reviewed desktop observations, not image
+metrics or exact frame PTS. The new immutable receipt verifies 44 artifacts.
+The before/after freezes contain 2,242 actual input copies each; only Player.qml
+differs. The ordinary build regenerates Player QML/resource and relinks without
+private test objects; existing static-library linker warnings remain recorded.
+
+Current runtime: `build-windows/beta-caption-layout-20261023/ui-after-r1/runtime`.
+Tuple: GUId0ff14c6 / Core000f1159 / MKVf46d8d15 / WASAPI4e4e. This supersedes
+older active GUI/runtime directions below. Earlier precise subtitle interval
+and accessible progress repairs retain their accepted, limited scopes.
+
+Read-only Figma context and screenshots for Player247:445 and hidden-controls
+3328:11554 confirm video behind floating controls. The placeholder image's
+darker floor also exists with controls hidden; it is not evidence for an extra
+UI fade. No video resize, subtitle-position, saved-offset or top-fade change.
+
+One nonurgent design question is saved for morning: should captions temporarily
+move above visible controls, or keep their original position until controls
+hide? The original design does not specify this. Small-window caption coverage
+remains OPEN; preserve user offsets and authored ASS positions when deciding.
+See the receipt's morning-question.md. No answer is needed for independent work.
+
+Next: initial/new/external subtitle tracks, language/default and synchronization
+flows. Full caption layout, accessibility/DPI, physical outputs, Windows10,
+independent review and packaging remain open under the full 13-category /
+32-surface beta goal, which stays ACTIVE. Save questions for morning. No install,
+commit/push, release/upload or shutdown occurred; all owned VLC tests are closed.
+<!-- caption-bottom-fade-status:end -->
+
+<!-- progress-accessibility-status:start -->
+Latest selected repair (23 October): [Progress accessibility seeking](doc/juxtopposed-references/native/home-progress-accessibility-repair-20261023/README.md)
+is accepted locally. Qt's value interface writes the QML value property; the
+old progress bar did not commit that write to VLC. SliderBar now guards
+internal engine/drag display writes and routes an external accessible value
+through its existing released-state seek function once, with normalized bounds.
+The pointer/chapter state machine and native seek-speed policy remain.
+
+The healthy unchanged build reproduces no native seek from its accessible
+value interface. The candidate passes 39 actual-player checks: one request per
+changed value/pointer action, identical-value suppression, frozen pause,
+resume and no feedback seeks from ordinary playback updates. The initial
+combined cold-pause readiness failure is retained as test setup, not as an
+accessibility negative. The corrected setup plays until picture/statistics
+publication, then pauses. The private QtTest fixture is distributed for future
+regression use and stays out of the ordinary GUI DLL.
+
+Ordinary desktop value-setting shows blue at 25s, red at 5s and green at 45s/15s
+while paused. Pointer/global arrow seeking and resume/Pause/Quit 0 work. The
+final paused position remains exactly 0.46468585994901784 across observations.
+These are coarse content observations, not exact frame PTS. Arrow input used
+the observed ten-second global route; UIA still reported title text as focused.
+Do not infer slider-specific focus, short-step behavior or screen-reader speech.
+
+Current runtime: `build-windows/beta-caption-accessibility-20261023/ordinary-ui-r4/runtime`.
+Tuple: GUId368d5ec / Core000f1159 / MKVf46d8d15 / WASAPI4e4e. The final freeze
+has 2,232 actual inputs in source-ordinary-r3, not 2,232 compiled units. This
+supersedes older active GUI/runtime directions below. The receipt verifies
+67 artifacts, three normal private jobs and one normal ordinary GUI exit.
+The earlier precise Matroska repair remains accepted in its recorded scope.
+
+Next: caption clearance above visible controls and redundant bottom shading.
+Player.qml extends the unpinned video behind controls. The redesigned bar has
+its own background while the old outer fade can still darken captions.
+Preserve pin-controls policy and saved subtitle offsets; libass supplies
+absolute regions even for normal ASS, so a relative-bottom adjustment alone
+cannot qualify all positioned captions. Check Figma/video and the runtime
+safe-area path before changing that behavior. Complete accessibility/DPI,
+initial/new/external subtitle tracks, language/default/synchronization flows,
+physical outputs, Windows 10, independent review and packaging remain open.
+The full 13-category/32-surface goal stays ACTIVE. No morning question requires
+input yet. No install, commit/push, release/upload or shutdown occurred; all
+owned test processes closed normally.
+<!-- progress-accessibility-status:end -->
+
+<!-- paused-subtitle-seek-status:start -->
+Latest selected repair (23 October): [Paused subtitle interval seeking](doc/juxtopposed-references/native/home-paused-subtitle-interval-repair-20261023/README.md)
+is accepted locally for precise Matroska seeks. A contiguous subtitle-span
+index retains older cues still active beneath newer overlaps; header-only
+indexing avoids loading compressed AV payloads. AV anchors/preroll and the
+existing fast-seek policy remain. Four production Matroska files are updated.
+
+Eight ordinary caption scenarios pass; eight unfixed ordinary controls fail.
+Coverage includes cold English/Finnish, delayed-first cues, empty gaps, long
+overlapping SubRip/ASS cues, backward/repeated seeks, frozen pause and resume.
+Independent normal-playback caption masks are compared where configured. All
+16 C++ units were rebuilt together with the configured ordinary rules and
+matching headers; two unchanged C objects remain shared. Build/dependency and
+probe-preparation failures are retained with their corrections.
+
+Current runtime: `build-windows/beta-tracks-subtitles-20261023/ordinary-ui-r37/runtime`.
+Tuple: Core000f1159 / GUI716862a1 / MKVf46d8d15 / WASAPI4e4e. The final freeze
+has 2,210 actual input copies in source-r35c. This supersedes older Matroska
+runtime and next-step directions below; previous receipts remain immutable.
+The new receipt verifies 1,068 artifacts, 399 qualified native pictures,
+64 normal native jobs and one ordinary GUI exit.
+
+Header indexing reduces first-seek process reads on the 30.66 MB gap fixture
+from 27.40 MiB to 2.56 MiB. Long active cues still require replay from their
+start. These counters include probe/cache work; settle-plus-snapshot timings
+are not exact seek latency or physical-storage measurements. Pending-seek Stop
+passes in two private and one ordinary run. Two earlier file-log attempts
+missed the index window and remain inconclusive. Disabled-subtitle and fast
+seek controls pass; missing old captions under fast seek are preserved legacy
+behavior, not complete caption acceptance.
+
+The visible ordinary fullscreen player shows both overlapping captions,
+retains the older long cue after short cues end and on backward seek, keeps
+the exact paused position through subtitle-menu open/Escape, resumes/Pause and
+quits 0. Complete desktop subtitle acceptance is still OPEN: the 960x540 window
+covers its lower caption with the playback bar, and fullscreen's bottom gradient
+darkens that line. Direct accessibility progress value-setting did not commit
+a seek, although physical progress-bar input worked.
+
+Next: repair caption clearance above visible controls and accessible progress
+seek commitment; recheck windowed/fullscreen and keyboard behavior. Initial
+subtitles, paused track replacement, associated/external subtitles, saved
+language/default policy and synchronization edits remain open, followed by the
+remaining design/accessibility/DPI, physical-output, Windows 10, independent
+review and packaging gates. The full 13-category/32-surface goal stays ACTIVE.
+No question requires morning input. No install, commit/push, release/upload or
+shutdown occurred; all owned test processes closed normally.
+<!-- paused-subtitle-seek-status:end -->
+
+<!-- paused-tracks-investigation-status:start -->
+Latest selected repair (23 October): [Paused video startup](doc/juxtopposed-references/native/home-paused-video-startup-repair-20261023/README.md)
+now obtains the first video picture while keeping playback paused, even when
+audio fills the initial buffer before video packets arrive. It uses the
+decoder's first-picture state independently of user frame-step counts. No audio
+clock, subtitle demux/selection or GUI change is part of this repair.
+
+Nine ordinary native startup controls pass, including WASAPI, dummy/no audio,
+disabled subtitles, plain and remuxed video, audio-only, a single-picture file,
+and delayed video. Four original video failures remain recorded. The corrected
+paired probe checks actual selected tracks: an empty vout resource does not
+prove that an audio-only file has video. Existing audio7, bookmark/chapter9 and
+paused video-picture6 replays pass on the new Core. The ordinary visible app
+shows its video surface at cold paused startup, keeps the exact slider value
+through track-menu open/Escape, resumes/Pause and quits0. Subtitle text remains
+absent in those desktop observations; no full track-workflow acceptance.
+
+The timestamp-preserving remux retains all1,500 video and2,814 selected-audio
+packet payloads/PTS and starts paused correctly. This refines the [earlier
+12-run investigation](doc/juxtopposed-references/native/home-paused-tracks-investigation-20261023/README.md): the21ms shift is not a sufficient explanation.
+A separate private Core trace finds buffering ends with audio queued and no
+video packet received in the original container; the matching remux receives
+video before pause. The private trace DLL is not the acceptance build.
+
+Current ordinary tuple: GUI716862a1 / Core000f1159 / WASAPI4e4e. The runtime is
+`build-windows/beta-tracks-subtitles-20261023/ordinary-ui-r14/runtime`;2,147
+frozen inputs have actual copies in source-r14. Earlier receipts keep their
+own binary scopes; this tuple supersedes old active-Core instructions below.
+The new receipt verifies461 artifacts and retains45 normal investigation
+processes. R10's counter candidate, R11's uncompiled malformed generated source,
+and R12's incorrect audio-only test expectation stay recorded with corrections.
+The original buffer warning and native teardown/build/parser/cache warnings
+remain visible; no error-free-log or all-format claim.
+
+Next: trace Matroska subtitle seek points before video preroll and paused
+selected-track/associated-subtitle delivery. Native backward-seek and external
+selection cue gaps remain; post-start native pixel-presence patterns match the
+earlier controls. Saved language/track defaults, synchronization value changes,
+ordinary remaining workflows, Figma/design, accessibility/DPI, physical outputs,
+Windows10, independent review and packaging stay open under the full13-category/
+32-surface beta goal. Save questions for morning; none is required now. No
+installs, commit/push, release/upload or shutdown occurred.
+<!-- paused-tracks-investigation-status:end -->
+
+<!-- tracks-popup-input-status:start -->
+Earlier selected [track-menu input repair](doc/juxtopposed-references/native/home-tracks-popup-input-20261023/README.md)
+passes complete-menu component4 and actual native navigation6 checks, with
+original and intermediate failures retained. On its GUI716862a1/Core4422 tuple,
+outside dismissal preserves paused position; Escape routes from lists and
+synchronization editors; focus returns to the originating audio/subtitle button
+so Space reopens that menu. R3 separately qualifies subtitle Back; no exact
+whole-workflow or visual-design acceptance is claimed.
+
+The new [startup repair](doc/juxtopposed-references/native/home-paused-video-startup-repair-20261023/README.md) uses the same GUI and current Core000f1159;
+ordinary subtitle-menu open/Escape again retains paused startup position.
+The original placeholder finding is repaired in that selected startup scope.
+Paused subtitle cues, new-track/default-language policy, actual synchronization
+edits and complete track workflows remain open. The earlier track-menu receipt
+stays immutable, including its old startup error and separate binary scope.
+<!-- tracks-popup-input-status:end -->
+
+<!-- paused-audio-seek-status:start -->
+Earlier completed repair (23 October): [Initial paused audio seeking](doc/juxtopposed-references/native/home-paused-audio-repair-20261023/README.md)
+now updates elapsed time and slider together before first play. Core pending
+seek points use current input duration/live status and clear unavailable old
+positions. Output clocks and Qt controller/helper/UI timing policy are unchanged.
+The same real-controller executable fails3 cases on the old Core and passes7
+on Core4422fbb0. Exact producer policy15 passes; original source fails10.
+Ordinary GUI21d55d1c verifies pointer15s/.5, Go to Time9s/.3, resume/Pause/Quit0.
+Native bookmark/chapter replay9 and six paused-video picture checks pass.
+Historical close-notify diagnostics and parser/build warnings remain recorded.
+
+Source-r23 preserves2,120 current inputs; Core pre-build/native executable scopes
+and a preflight producer correction are explicit. No private hook ships in the
+ordinary app. Full13-category/32-surface beta, real live service, other formats,
+physical outputs, Windows10, design/accessibility/DPI, review and packaging stay
+open. That checkpoint used Core4422fbb0; new tests use the current Core000f1159 tuple above.
+Questions stay saved for morning. No dependencies, commit/push/release/upload or
+shutdown occurred.
+<!-- paused-audio-seek-status:end -->
+
+<!-- queue-addition-status:start -->
+Earlier completed workflow checkpoint (23 October): [Queue addition](doc/juxtopposed-references/native/home-queue-addition-20261023/README.md)
+passes Cancel, single and batch append, and addition while the Birch filter is
+active. All checkpoints keep Cedar paused at13s with the same slider value.
+Clearing the filter reveals Cedar/Birch/Aspen/Dune/Echo/Fir in visible order.
+Ordinary GUI f528dd1c exits normally with0, no captured error/Qt exceptions and
+unchanged runtime/source identities. Existing R17 source freeze has2,103 inputs;
+the new producer is recorded separately. No production change was needed.
+
+Two follow-ups are retained: the filter overlaps the Add toolbar button, and
+initially paused audio seeking moves the thumb without updating elapsed time
+until brief playback. The addition baseline was established after that playback.
+The [filter layout repair](doc/juxtopposed-references/native/home-queue-filter-layout-20261023/README.md)
+now passes six paired component cases and the existing panel geometry/assets
+suite. Ordinary GUI21d55d1c opens the actual picker from Add's center under an
+active filter, appends Fir, retains filtering and restores row placement on
+Escape. Normal Quit0, no runtime errors/Qt exceptions or identity drift; source-r19
+preserves2,108 inputs. Original component failures and first fixture font warning
+remain recorded. Initial paused audio seeking is still open and reproduces even
+without a start-time option. The [native investigation](doc/juxtopposed-references/native/home-paused-audio-seek-20261023/README.md)
+records eight normally closed cases: paused output time stays stale; all four
+actual WASAPI cases resume near the requested9s target. Dummy samples differ
+and are retained. This is an open issue, not a passing seek regression. Next:
+trace actual timer/controller callbacks before choosing a repair.
+Full beta, physical dragging/removal/touch, design/accessibility/DPI/hotplug,
+Windows10, remaining consumers, review and packaging remain open. Nonurgent
+questions are saved for morning. No dependencies, commit/push/release/upload or
+shutdown occurred.
+<!-- queue-addition-status:end -->
+
+<!-- queue-bookmark-chapter-status:start -->
+Earlier workflow checkpoint (23 October): [Bookmarks and chapters](doc/juxtopposed-references/native/home-queue-bookmarks-chapters-20261023/README.md)
+now have correct chapter times, actual pointer activation and mouse-then-Enter
+seeking. Native model 9 and exact pointer-subtree 6 checks pass; original time
+and input-hierarchy failures are retained. Native tests classify two historical
+headless close-notify messages at teardown; no other error diagnostics.
+Final ordinary GUI f528dd1c verifies chapter labels 0/6/12, Green via Enter,
+bookmark creation and keyboard/pointer seeking, correct empty states on another
+file, return to the original bookmarks, and cold persistence of the new 12s row.
+Both final processes exit normally without captured errors/Qt exceptions.
+Read-only isolated database verification confirms 0/6000/12000ms. Source-r17
+freezes 2,103 GUI/producer inputs; native test copies have a separate record.
+
+R16's successful pointer/time checks and failed Enter behavior remain recorded.
+R17 adds only existing navigationKeyScope for bookmark/chapter tabs; Queue0 and
+legacy policy are unchanged. Earlier Find, placement and docking receipts keep
+their separate scopes. Ordinary UI removal/rename, physical dragging/touch,
+design/accessibility/DPI/hotplug, remaining consumers, review and packaging stay
+open under the ACTIVE full 13-category/32-surface beta goal. Save questions for
+morning; user is asleep, all monitors and KB&M available. No dependencies,
+security/privacy changes, commit, push, release, upload or shutdown occurred.
+<!-- queue-bookmark-chapter-status:end -->
+
+<!-- queue-visibility-status:start -->
+Earlier workflow checkpoint (23 October): [Live Queue visibility](doc/juxtopposed-references/native/home-queue-visibility-20261023/README.md)
+now survives a visible dock/undock switch in both paused audio and embedded
+video. The live FSM transition follows requested visibility; startup policy and
+the state engine are unchanged. Exact production FSM/connection fixture: 20
+checks pass; original source fails precisely three redock cases. Ordinary
+GUI bd8f6cf7 verifies all five rows return without another Play queue click,
+Cedar paused at 00:00, normal Quit 0 and no captured error/Qt exceptions in two
+processes. Audio also verifies undocking a hidden queue stays hidden. Video's
+first redock capture is transitional; the settled observation passes without
+another action. Existing parser/window-size warnings remain recorded.
+
+Source-r14 freezes 2,090 actual files. R13 placement/lifetime and R8 Find receipts
+remain separate. Physical dragging, add/remove, real bookmark/chapter workflows,
+full design/accessibility/DPI/hotplug, remaining consumers, review and packaging
+stay open under the ACTIVE 13-category/32-surface goal. Save the slow hand-drag
+question for morning; user is asleep, all monitors and KB&M available. No new
+dependencies, commit, push, release, upload or shutdown. Next: real bookmark and
+chapter paths using isolated media-library settings and synthetic chapter media.
+<!-- queue-visibility-status:end -->
+
+<!-- queue-detached-status:start -->
+Earlier workflow checkpoint (23 October): [Detached Queue](doc/juxtopposed-references/native/home-queue-detached-20261023/README.md)
+is reachable beside a maximized player, including its complete native frame
+after Close/reopen. Placement15 and exact loader-binding18 checks pass; original
+bindings fail5 expected cases. Ordinary GUI2aef3286 verifies frame placement,
+detached Find/Birch filter/Escape, return to docked mode and normal Quit0 with
+no runtime diagnostics. Cedar stays paused at0; all5 rows remain. Source-r13
+preserves2,086 actual files. Failed R10/R11/R12 states remain recorded.
+
+This R13 run redocks and then explicitly activates Play queue. The later R14
+visibility checkpoint above resolves that separate live transition. Physical dragging,
+add/remove, bookmark/chapter flows, full design/accessibility/DPI/hotplug,
+remaining consumers, review and packaging. Full13-category/32-surface goalACTIVE.
+Morning question: does a slower hand drag reorder a queue item? Automated17ms
+drag ends before native drag startup; don't change drag code on that evidence.
+User is asleep; save nonurgent questions. No commit/push/release/upload/shutdown.
+<!-- queue-detached-status:end -->
+
+<!-- queue-find-status:start -->
+Current workflow follow-up (23 October): [Queue Find](doc/juxtopposed-references/native/home-queue-find-20261023/README.md)
+now opens its filter from a mouse-focused queue row without also opening the
+global folder dialog. Real QApplication/production-filter8 pass; original
+filter has exactly2 expected failures. Native routing17 pass; unchanged QML
+retains bounded proxy/geometry/overlay component receipts. Ordinary GUI903dc977
+verifies Find, Birch filtering, Escape, Title sorting, hide/show, Bookmarks'
+retained global Ctrl+F and normal Quit, with Cedar paused at0 throughout.
+Core0404d1f6 / WASAPI4e4e33c0. Source-r8 preserves2,072 actual files; production
+matches the GUI's source-r7, with only the regression counter corrected in R8.
+
+Two ordinary drag attempts did not reorder an item. A private passive trace
+identifies a17ms automated gesture ending while native drag start is pending,
+before any native drop event. Normal private Quit0/clean; no drag code changed.
+Morning question: does a slower hand drag reorder a queue item? Physical
+dragging, add/remove, detached queue and bookmark/chapter workflows
+remain open. Fresh Queue463:831 context/full screenshot is saved, actual blur
+still missing. Full13-category/32-surface beta, physical DPI/accessibility,
+remaining consumers, review and packaging stay active. No commit/push/release,
+upload/shutdown. User is asleep: save nonurgent questions for morning, KB&M idle.
+<!-- queue-find-status:end -->
+
+<!-- renderer-candidate-status:start -->
+Current checkpoint (22 October): controlled hover remains stable; the original
+loss is unconfirmed and may have followed the user's mouse movement. The
+[private hover observation](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/hover-r66/checkpoint.json)
+holds eligibility for 315.271 seconds and responds correctly to deliberate
+pointer exit/reentry. The earlier [ordinary R67 resource pair](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/resource-r67/checkpoint.json)
+retains native hover/window eligibility in both measured preview intervals,
+with actual endpoint pictures, normal pause/resume/Quit and no newly late/lost
+frames or lost audio buffers. Continuous pixel recording is not claimed.
+
+The memory investigation found repeated accessibility activation accumulating
+Qt scrollbar action connections. [Matching private factor controls](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/memory-r90/checkpoint.json)
+narrow it to activation notifications while all accessibility requests still
+forward. A narrow contrib patch adds UniqueConnection to the two action connects;
+accessibility remains enabled. The [native before/after regression](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/scrollbar-r93/checkpoint.json)
+reproduces two duplicate-action failures on the original Qt and passes all seven
+action/deactivation/reactivation checks with the patch. The fresh ordinary GUI
+b5eaf01a, with no private hooks, [holds idle memory](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/memory-r94/checkpoint.json)
+at 164–166 MB for 180 seconds, exposes the real Home accessibility tree and quits
+normally. [Native tests](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/native-r96/checkpoint.json)
+pass 26/0 skips on that same repaired GUI/Core/MP4 tuple. These new receipts bind
+1,799 source files, including the contrib patch/rules and maintained native test.
+Broader screen-reader and long-run allocation acceptance remains open.
+
+The scoped Qt 6.8.3 DirectComposition/D3D11 frame-wait default, explicit overrides,
+cached-backend ordering and native paint-host repairs remain candidates. Their
+historical [R63 renderer matrix](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/renderer-r63/checkpoint.json)
+passes six private journeys/832 checks/38 cards on its frozen source. The current
+[ordinary resource pair](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/resource-r95/checkpoint.json)
+now passes selected memory/throughput checks after the repair: both120s held
+previews retain native hover eligibility and actual endpoint pictures, private
+memory stays near293/296 MB, and playback has no newly late/lost frames or lost
+audio buffers. Both resume and quit normally. Selected CPU means are reported;
+universal resource-cost/promotion gates remain OPEN. Whole-board GPU power is
+not process-attributable. The fresh [Figma card reference](doc/juxtopposed-references/figma/20261022/timeline-thumbnail/README.md)
+requires actual backdrop blur, which is still unimplemented. Legacy compositor
+primary composition, layout/DPI/accessibility, remaining consumers/workflows,
+independent review and packaging remain open under the full thirteen-category/
+32-surface beta roadmap. Existing package and releases are unchanged; full beta
+acceptance is not claimed. Earlier entries below retain their dated source scopes.
+<!-- renderer-candidate-status:end -->
+
+<!-- audio-media-role-status:start -->
+Current feature follow-up (22 October): [Windows Media role](doc/juxtopposed-references/native/home-audio-media-role-20261022/README.md)
+now classifies new WASAPI streams without changing the selected endpoint or
+interrupting a paused owner. Native Windows startup passes14 cases across20
+real output sessions; COM contract15, Audio defaults35 and profile15 all pass
+with normal exits and zero skips or unexpected diagnostics. All nine roles are
+accepted by Windows; save failure, rollback/retry and cold restoration pass.
+Four ordinary app processes cover pointer/keyboard selection, native readback,
+help/restart feedback, cold Communication, the disabled non-WASAPI backend and
+actual Communication playback/pause/Quit. GUI33f10d62 / WASAPI4e4e33c0 / Core0404d1f6;
+2,064 final source copies are frozen, with production identical to ordinary R4.
+The old-provider negative and earlier failed log observer remain preserved.
+
+Four Audio controls remain gated: passthrough, Spatial audio and its mode, and
+adaptive visualization size. Fresh Figma row context and original SVG identity
+are saved, but its clipped1x1 screenshot does not establish pixel fidelity.
+Windows10 comparison, physical audio/receiver/routing, full design/DPI/screen-reader,
+actual thumbnail backdrop blur, other confirmed consumers/workflows, independent
+review and packaging remain open under the full13-category /32-surface goal.
+No commit/push/release/upload/shutdown occurred. No new dependencies were installed.
+<!-- audio-media-role-status:end -->
+
+<!-- audio-night-mode-status:start -->
+Earlier feature follow-up (22 October): [Night mode](doc/juxtopposed-references/native/home-audio-night-mode-20261022/README.md)
+now has an independent native preset and an enabled Audio Defaults consumer.
+The maintained audio suite passes 35 cases, and profile defaults pass 15, with
+no skips or unexpected diagnostics. Actual Off/On/Off PCM reduces settled loud
+sections by 12.266 dB while retaining quiet levels; paused-owner edits apply only
+to the saved default. Compressor parameters and its switch remain independent;
+rollback/retry and cold restoration pass. Three ordinary UI processes cover
+mouse/Left/Right, saved readback, cold On, compact/full-width layout and help.
+Final GUI 9069f43a / Core 0404d1f6; 2,051 R5 source inputs frozen. These are scoped
+consumer receipts; they do not replace earlier memory/performance source scopes
+or accept every audio format/device, screen-reader/DPI state or final package.
+At that earlier checkpoint five Audio controls remained gated; the newer
+Media role receipt above supersedes that count. Actual thumbnail backdrop blur, other confirmed
+consumers/workflows, broad design/accessibility, final review and packaging
+remain open under the full 13-category / 32-surface goal. No commit/push/release
+was performed. Code Connect setup was approved but left unwritten because the
+account is Professional and the installed workflow requires Organization/Enterprise.
+<!-- audio-night-mode-status:end -->
+
+
+21 October selected codec follow-up is now saved: [native formats](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/formats-r53/checkpoint.json)
+passes26/0skips, including18 independently referenced video pictures and FLAC
+fallback; [ordinary HEVC/WebM](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/ordinary-formats-r54/checkpoint.json)
+checks show a green8s card over a red2s paused primary, resumed advancement to6s
+and normal playing Quit in both processes. Ordinary decoding uses D3D11VA on
+the home GPU. No Qt warnings/native errors; native padding, initial-size fallback
+and AAC zero-sample warnings are retained with a separate review. The maintained
+`verify_timeline_thumbnail_media.py` verifies1796 current sources/82 artifacts.
+Power attribution, production latency solution, real blur and broader layout,
+DPI/accessibility/review/package gates remain open. No renderer default changed.
+
+21 October current follow-up: matched ordinary R52 workaround/control both
+pass playing/paused preview, resumed motion and normal Quit with no diagnostics.
+Playing-preview whole-board power averages45.6/44.8W. Both configurations have
+short power/memory-clock excursions; paused-preview averages52.9/48.8W include
+such excursions. The earlier sustained97W reading is preserved and remains
+unattributed. Resource cost and production promotion stay OPEN; no renderer
+default/package changed. The [power receipt](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/power-r52/checkpoint.json)
+binds1795 sources/28 artifacts, with that source state frozen at
+`build-windows/beta-timeline-thumbnails-20261021/source-ordinary-r52`.
+The new R53 native suite passes26/0skips, adding six video codec/container cases
+with2/8/14s FFmpeg reference checks and an audio-only fallback. The HEVC MKV has
+embedded subtitles/two audio tracks. Primary pause/time remains independent,
+then resumes/advances/stops. This is provider scope; ordinary format/UI, blur,
+physical DPI/accessibility, review/package and full beta gates remain open.
+
+21 October current power follow-up: the matched ordinary R52 B1/A1 pair both
+passes playback, paused preview, resumed motion and normal Quit with no diagnostics.
+With identical runtime/media and paused inspection gates, playing-preview board
+power averages45.6W workaround/44.8W control. Both configurations have short
+power/memory-clock excursions; the earlier sustained97W reading is preserved
+and remains unattributed. Resource cost and production promotion remain OPEN.
+The [power receipt](doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/power-r52/checkpoint.json)
+binds1795 sources/28 artifacts. Its source state is retained in
+`build-windows/beta-timeline-thumbnails-20261021/source-ordinary-r52`.
+Next codec/container qualification is in progress; do not count it as passed yet.
+No frame-wait default or package change; the full beta goal remains active.
+
+21 October storage cleanup: historical build/test folders and staging binaries
+now reside in `D:\Modding\vlc-juxtopposed\build-windows`; their original C: paths
+are retained through directory junctions/file symbolic links. About 298 GB was
+recovered, bringing C: to 66% used. The working checkout, registered home WSL
+disk and tools, current `beta-precise-seek-20261021` checkpoint,
+`beta-input-cancellation-20261021` staging base, `package` and `ui-env` remain
+physically on C:. New active builds should continue on C:. Historical runners
+that require same-volume runtime hard links may need a fresh C: staging copy.
+Archive selection, checksums and recovery notes are in
+`build-windows/storage-archive-20261021/README.md`, also copied to D:.
+All 843 archive links, retained tool/binary identities, and the R8 verifier
+(153 public bindings and 1,300 current inputs) passed after cleanup.
+
+21 October later preview validation: a separate startup-pause deadlock is fixed
+in candidate Core `0404d1f6cd89â€¦`; ordinary GUI `e8df140c4ecfâ€¦` and MP4 remain
+unchanged. Thumbnail inputs now ignore the playback startup-pause choice, while
+the main player retains it. The paired old Core stalls only with startup pause;
+the same native test exe/GUI/MP4/media with the repaired Core passes, and the full
+native suite passes19 with zero skips. Ordinary40s picture previews now work while
+the main movie continues, and normal Quit succeeds both while playing and after
+EOF. The latter run's original checker rejects its absent playing-stop messages;
+the separate saved EOF/STOPPED/Qt teardown/exit0 review preserves that distinction.
+See `startup-r50/checkpoint.json` (1795 source/65 artifact bindings) under the
+timeline references. Resource measurement integrity is established, but cost is
+NOT accepted: a workaround preview run shows~97W whole-board GPU power versus
+~44â€“46W control, despite low process CPU/GPU usage. Attribution is unresolved;
+repeat matched trials with board clocks and anonymous per-process engine data.
+No frame-wait default/package change or workaround promotion. Full beta remains
+incomplete; live handles and follow-up are in the timeline TASK-STATE.md.
+
+21 October preview timing investigation: all five private diagnostic runs exited
+normally and retained the existing rendered-pixel, placement, seek and Quit
+checks. No production code or shipping default changed. Activation/capture are
+small; the main UI instead records drawing synchronization waits near one second,
+including on cached previews. A paired inline time-tooltip experiment did not
+remove them. With the same R42 binary/media and renderer logging, the process-local
+`QT_D3D_MAX_FRAME_LATENCY=0` comparison changes 16 waits of at least900ms to none
+(maximum146ms including startup); cached preview readiness is at most27ms in that
+run. This supports investigating Qt/D3D11 frame waiting, without claiming an exact
+native stack or a production repair. The workaround is not promoted: ordinary
+moving playback, CPU/GPU/power, other outputs/instances/renderers and supported
+Windows versions still need qualification. Sources1794/artifacts21 and original
+compressed logs are bound in `timing-r44/checkpoint.json` under the timeline
+reference folder. Selected visible acceptance below retains its original scope.
+
+21 October latest visible preview checkpoint: R38/R39 pass693 actual-app checks
+and29 rendered card captures in four normal processes, plus an ordinary Light125%
+click/drag/Quit observation. Repaired Core `db78919ef2e3â€¦`, ordinary GUI
+`e8df140c4ecfâ€¦`, private GUI `1bd2c7ab347fâ€¦`, unchanged MP4 `917af1d1a006â€¦`.
+The cold first right-edge click exposed a misplaced card (x0 vs expected260);
+the picture card now uses nonfocused inline T.Popup, which clamps correctly.
+General tooltips are unchanged. Cold startup, six geometry clips, held seeks,
+six size/theme/scale variants, fullscreen/Escape, actual toggle Off/audio fallback,
+save denial/retry and decoded resume/Quit pass in these bounded scopes. The
+geometry GUI fixture was lengthened to18s to leave room for its unchanged resume
+assertion; all six reference PNGs are byte-identical. The failed short-fixture
+run and the genuine cold-placement negative are retained. Current visible
+verifier passes1794 source/47 artifact bindings under `visible-r38`; earlier
+native geometry receipt verifies against `source-public-r30`. Capture timings
+still include some1.18-1.26s samples, so responsiveness is open. Real backdrop
+blur, broader/live/network/HDR media, other layouts, physical DPI/accessibility,
+independent review and final packaging remain. Full beta is incomplete; no
+commit/push/release was requested in this continuation.
+
+21 October earlier thumbnail geometry repair: native R30 passes17 cases with no
+skips, including landscape, portrait, SAR2:1 and actual90/180/270-degree display
+matrices. Generated corner patterns and a neutral-white circle are checked
+against independent FFmpeg normalized/cropped images. The exact same test exe,
+GUI and MP4 module with old Core still fail all3 rotation cases. The bounded fix
+restores decoder output orientation on the raw thumbnail immediately before its
+callback; generic picture allocation and normal playback callbacks are unchanged.
+Candidate Core `db78919ef2e3â€¦`; GUI `20ece22dc225â€¦` and MP4 `917af1d1a006â€¦` unchanged.
+No protected base/package has been overwritten. This is native provider proof;
+visible GUI acceptance of the new Core remains open. Earlier R22/R23 visible
+proof keeps its old Core identity. Current geometry verifier passes1793 source/
+33 artifact bindings, with failures and the rejected metadata-free R25 fixtures
+retained. See `geometry-r30/checkpoint.json` under the timeline reference folder
+and run `modules/gui/qt/tests/verify_timeline_thumbnail_geometry.py`. The R22
+verifier now requires its historical `source-public-r22` snapshot. Continue the
+visible new-Core replay, responsiveness, blur, remaining media/layout/DPI,
+independent review and final packaging. Full beta remains incomplete.
+
+21 October earlier timeline-preview checkpoint: R22 passes262 actual-app checks
+and13 rendered card captures: precise/fast held dragging, left/right edges,
+compact/standard windows, explicit Dark/Light, interface scale1/1.25 and
+fullscreen with single-Escape exit. Playback resumes and Quit stops the primary
+before teardown; no errors/warnings. The only production delta from R17 is a
+null check in AcrylicController for its disappearing main window, fixing the
+reproduced shutdown warning. Private GUI `c6a6ef4eb557â€¦` is recorded in the full receipt;
+ordinary GUI `20ece22dc225â€¦` starts/quits normally in compact Light125%, but its
+hover/drag check was interrupted by external input and is not accepted.
+Core/MP4 are unchanged. Two initial captures needed about1.04s to present the
+correct image; responsiveness remains open. No provider/cache change was made.
+The retained negative R19/R20/R21 runs and new results are bound in
+`doc/juxtopposed-references/native/home-timeline-thumbnails-20261021/extended-r22/checkpoint.json`.
+Run `modules/gui/qt/tests/verify_timeline_thumbnail_extended.py` for current
+sources. The earlier receipt is historical; verify it with
+`verify_timeline_thumbnail_checkpoint.py --source-root build-windows/beta-timeline-thumbnails-20261021/source-public-r17`.
+Both passed. Blur, physical DPI, remaining layouts/media, ordinary hover,
+responsiveness, review and final packaging remain open; beta is incomplete.
+
+21 October earlier timeline-preview work: the independent provider and live
+Playback toggle (default Off, included in player profiles) are implemented. Older
+profiles without the field retain Off, with saved data preserved on load. Native
+backend/settings/profile cases pass 65; the matching private GUI passes 135/67/80
+selected checks across edit and both cold policies, with 11 rendered card captures.
+An ordinary compact-window check shows previews after pointer seeking/dragging
+and exits normally with Ctrl+Q. Ordinary GUI `657ea623af5bâ€¦`, private GUI
+`ad4a8188a0c6â€¦`, unchanged Core `9f9702bec96dâ€¦` and MP4 `917af1d1a006â€¦`.
+See `build-windows/beta-timeline-thumbnails-20261021/TASK-STATE.md` and the
+roadmap. Broader held-drag/edge/fullscreen/layout, live/rotated media, Light/DPI,
+backdrop blur, review and final-package gates remain open. This is not beta or
+full thumbnail-feature acceptance. Continue the complete roadmap.
+
+21 October earlier checkpoint: both observed seeking UI P2s pass selected repair checks.
+Core `9f9702bec96dâ€¦`, ordinary GUI `c382ebb2f89aâ€¦` and matching
+private GUI `054a3f54b009â€¦`. R8 native passes325 checks in three
 normal processes:17 serialized paused seeks, two actual held-pointer timeline
 cases and one playing seek. Both cold policies and actual save denial/retry pass.
 The held preview differs from the landed position, then release restores0.5;
@@ -21,9 +814,9 @@ the remaining settings consumers and thirteen-category/32-surface roadmap.
 The paired seek control is enabled in the candidate, with Playback model cases (24)
 passing. Testing exposed and repaired an MP4 absolute-index/local-count mistake:
 the actual helper changes from 1,121 failures to zero across 1,624 checks. With
-the same ordinary GUI `393619cf5176…` and corrected MP4 `917af1d1a006…`, the
+the same ordinary GUI `393619cf5176â€¦` and corrected MP4 `917af1d1a006â€¦`, the
 previous Fast 34-second request now displays the 30-second keyframe instead of 10.
-Core `d04e9134a43f…` and cache `1190b018b5e8…` are unchanged. Native R4 passes
+Core `d04e9134a43fâ€¦` and cache `1190b018b5e8â€¦` are unchanged. Native R4 passes
 all six explicit seek routes in both modes and the old policy after save denial.
 Final R5 passes 231/32/19 checks in three normal processes, 14 edit seeks plus both
 cold policies, actual bounded pointer retry and resumed decoded playback. One
@@ -36,7 +829,7 @@ visual/package or beta acceptance. All 1,295 frozen inputs and runtime/media mat
 
 Prior selected checkpoint: [profile conflict error visibility](doc/juxtopposed-references/native/home-profile-error-20261021/README.md)
 passes component30 and native30 checks, plus two ordinary shared-store playing
-processes on GUI `b27d70c7f249…`, Core `d04e9134a43f…`, cache `1190b018b5e8…`.
+processes on GUI `b27d70c7f249â€¦`, Core `d04e9134a43fâ€¦`, cache `1190b018b5e8â€¦`.
 The complete recovery instruction is revealed automatically after a rejected
 profile edit and when reopening with a retained error. The entered failed draft
 is preserved until Cancel; saved profiles remain unchanged through rejection
@@ -50,8 +843,8 @@ shared Qt ownership, physical DPI, broader settings/design and full beta gates
 remain open. No release or publication is claimed.
 
 Earlier 21 October: [shared Qt appearance and profile checks](doc/juxtopposed-references/native/home-shared-qt-20261021/README.md)
-qualify ordinary GUI `aa6fc26df153…` with unchanged Core `d04e9134a43f…` and
-cache `1190b018b5e8…`. The reproduced stale-window theme overwrite is repaired:
+qualify ordinary GUI `aa6fc26df153â€¦` with unchanged Core `d04e9134a43fâ€¦` and
+cache `1190b018b5e8â€¦`. The reproduced stale-window theme overwrite is repaired:
 both shared-store closing orders and a cold Light restart pass (five ordinary
 normal processes). Latest explicit theme commit survives older fullscreen exits;
 other instances retain their active appearance. Actual legacy menu/combo blocked
@@ -65,8 +858,8 @@ fullscreen state, while preserving the stored normal rectangle in these runs.
 
 Earlier 21 October cancellation checkpoint: the [input cancellation continuation](doc/juxtopposed-references/native/home-input-cancellation-20261021/README.md)
 passes the rapid-Start and restart-before-Quit-finalizer cases that failed on
-Core R8. Current Core `d04e9134a43f…`, cache `1190b018b5e8…`, unchanged ordinary
-GUI `d148035d54be…`. Four console processes cover18 cancellations, playback/seek
+Core R8. Current Core `d04e9134a43fâ€¦`, cache `1190b018b5e8â€¦`, unchanged ordinary
+GUI `d148035d54beâ€¦`. Four console processes cover18 cancellations, playback/seek
 recovery, clean WAV-under-MP3 fallback and genuine empty/invalid failures.
 Settings regression passes38 checks/27 normal processes/600 concurrent commits/
 1,200 nonoverlapping lock events; six selected model processes pass97 cases.
@@ -82,8 +875,8 @@ Earlier 21 October R8 checkpoint: the [shared native settings repair](doc/juxtop
 passes real-Core38/27 processes,600 concurrent commits/1,200 nonoverlapping lock
 events, Qt backend/model24, matching popup7/313 and geometry4/194. Both ordinary
 two-window closing orders preserve unrelated saved edits and independent paused
-media, with one fullscreen window. Core `3a7b0a360e3c…`, ordinary GUI
-`371bc858e3bb…`; matching private GUI and source identities are in the receipt.
+media, with one fullscreen window. Core `3a7b0a360e3câ€¦`, ordinary GUI
+`371bc858e3bbâ€¦`; matching private GUI and source identities are in the receipt.
 No unexpected native/Qt errors or forced cleanup. Shared Qt profile/geometry
 ownership, simultaneous playback/two-output routing, remaining consumers,
 visual/accessibility/OS-DPI and final-package acceptance stay open. Other settings
@@ -97,7 +890,7 @@ passes ordinary audio/audio and movie-plus-music pairs (four processes): direct
 fullscreen Quit leaves the other playing, then its direct Quit is clean too.
 All preserve normal window bounds. Four earlier private audio cases and three
 corrected private video/combined-media cases pass. Rapid-start cancellation
-diagnostics remained open on that tuple; GUI `d148035d54be…`, Core R8 unchanged. Only one explicit audio endpoint is available; Default aliases it.
+diagnostics remained open on that tuple; GUI `d148035d54beâ€¦`, Core R8 unchanged. Only one explicit audio endpoint is available; Default aliases it.
 The complete beta goal remains active.
 
 The earlier [whole-row popup focus repair](doc/juxtopposed-references/native/home-popup-duration-activation-20261020/focus-repair-r4/README.md)
@@ -106,7 +899,7 @@ source negative control. Title, slider, scale and full note remain visible.
 Its old Core/GUI identities are historical; the new matching replay is above.
 Native narrow/Light, title alignment and actual OS-DPI remain open.
 
-Goal resumed — **20 October 2026, after checkpoint `ed2f5d0155`**:
+Goal resumed â€” **20 October 2026, after checkpoint `ed2f5d0155`**:
 The user requested following the complete beta roadmap until further notice or
 completion. Both monitors are now authorized for visible tests until further
 notice. [Geometry activation](doc/juxtopposed-references/native/home-geometry-activation-20261020/README.md)
@@ -115,7 +908,7 @@ The strict full-run playing timing error is retained separately; its isolated
 repeat passes. Settings, Off-save/cold policy and active media have scoped proof.
 [Popup duration activation](doc/juxtopposed-references/native/home-popup-duration-activation-20261020/README.md)
 now passes seven native cases/283, three ordinary sessions and component12.
-Ordinary GUI `72ba439a30f0…`, private R3 `1f83aa0cbefc…`, source-r3 and
+Ordinary GUI `72ba439a30f0â€¦`, private R3 `1f83aa0cbefcâ€¦`, source-r3 and
 ordinary-runtime-r1 in `build-windows/beta-popup-duration-20261020`. Real Windows
 arguments777/0/10000, Never/minimized/Off, actual editor/retry/reopen and active
 state preservation pass. The accepted negative control has exactly one bounded
@@ -134,7 +927,7 @@ the original receipt retains its failed baseline. A remains fullscreen on its
 own paused media while B is used/closed. Shared Qt storage, separate actual audio
 endpoints and simultaneous playing-state tests remain open.
 
-Historical end-of-day checkpoint — **20 October 2026, superseded above**:
+Historical end-of-day checkpoint â€” **20 October 2026, superseded above**:
 The user requested commit and push, then continuation tomorrow. Work is paused;
 the complete beta remains unfinished. The geometry activation ordinary and
 private builds finished successfully (build exit0); no activation editor journey
@@ -145,7 +938,7 @@ The new source enables the geometry toggle as a development candidate only;
 the earlier R3 receipts below retain their separately verified scope. Popup
 duration remains gated. No build or visible test is left running.
 
-Goal resumed — **20 October 2026, Interface geometry and notifications**:
+Goal resumed â€” **20 October 2026, Interface geometry and notifications**:
 Current continuation: the geometry activation candidate now links the editor
 locally and has compiled in `build-windows/beta-geometry-activation-20261020`.
 Actual editor/Off acceptance is pending; R3 below remains its frozen earlier
@@ -162,8 +955,8 @@ reopen. R2 is rejected by genuine Windows system-menu Maximise, which reports
 geometry before state. R3 defers observed updates and now passes six native
 processes/89 checks plus three ordinary cold max/fullscreen sessions, exact
 1280x900 bounds/position, normal exits and no Qt/native errors. Hidden cross-
-monitor and minimize cases pass. Ordinary GUI `6de416fa3cae…`, private
-`7f7c229901fa…`, source-after-r3 in `build-windows/beta-geometry-memory-20261020`.
+monitor and minimize cases pass. Ordinary GUI `6de416fa3caeâ€¦`, private
+`7f7c229901faâ€¦`, source-after-r3 in `build-windows/beta-geometry-memory-20261020`.
 Real editor/Off-save/cold policy, active media and recovery/DPI remain open;
 the earlier R3 geometry gate stays false. A narrow lower-edge band on cold fullscreen is an open
 startup-frame observation, not whole-screen visual acceptance.
@@ -175,7 +968,7 @@ Figma MCP access succeeded for original Interface node `3062:11379` under the
 new authorization. The end-of-day commit/push is explicitly authorized; no
 release, dependency or security change is included.
 
-Goal continuation — **19 October 2026, settings, volume, tooltips and native media**:
+Goal continuation â€” **19 October 2026, settings, volume, tooltips and native media**:
 End-of-day checkpoint: the user requested commit and push, then continuation
 tomorrow. Work is paused after this checkpoint; the full beta remains unfinished.
 Next: window-position memory and popup duration, followed by the remaining
@@ -188,7 +981,7 @@ No release, dependency installation or security-setting change is included.
   Audio defaults32/Windows4
   and actual settings paused96/reopen77/playing92 pass normally on R4. The Interface
   switch clipping after restart feedback is repaired and component11 passes.
-  GUI ordinary `758df308cca3…`, private R4 `f7e7d95db75e…`, source-r4 in
+  GUI ordinary `758df308cca3â€¦`, private R4 `f7e7d95db75eâ€¦`, source-r4 in
   `build-windows/beta-settings-activation-20261019`.
 - Ordinary Windows typing saves the step correctly. **Repaired:** mouse-focused
   Right/Left change volume by the saved2.5 points without seeking the paused
@@ -206,9 +999,9 @@ No release, dependency installation or security-setting change is included.
   Close help. R7 adds hover priority; the same desired component test fails on
   exact recovered R6 source and passes on R7, preserving12 geometry cases.
   R7 now passes native39 with five edge placements/single-help checks, and direct
-  ordinary Windows Close→Home→Close help after accessible Maximize. Both exit
-  normally without Qt/native errors. Tooltip-scope ordinary GUI `9892032f4456…`, private
-  `a14c5d7c7cb4…`, source-r7 and `ordinary-runtime-r7` in the settings work folder.
+  ordinary Windows Closeâ†’Homeâ†’Close help after accessible Maximize. Both exit
+  normally without Qt/native errors. Tooltip-scope ordinary GUI `9892032f4456â€¦`, private
+  `a14c5d7c7cb4â€¦`, source-r7 and `ordinary-runtime-r7` in the settings work folder.
   Copied startup geometry shows a cropped right edge; one coordinate Restore
   attempt enters fullscreen. Readback identifies a normal1920-wide client
   starting19 pixels inside its1920-wide screen. Fresh in-bounds R7b starts
@@ -218,7 +1011,7 @@ No release, dependency installation or security-setting change is included.
 - [FLAC coded-tail repair](doc/juxtopposed-references/native/home-flac-coded-tail-20261019/README.md):
   old decode479,232/480,000; repaired decode480,000 with matching source PCM MD5.
   Paired same-executable and current-header packetizer8 plus prior strict
-  encoder/drain9 pass. Packetizer `5c9309434d44…`, demuxer `0e736e133723…`;
+  encoder/drain9 pass. Packetizer `5c9309434d44â€¦`, demuxer `0e736e133723â€¦`;
   Core/audio/library unchanged. Combined ordinary runtime:
   `build-windows/beta-settings-activation-20261019/ordinary-runtime-r7`.
 - Ordinary test app closed normally through Ctrl+Q; no firewall prompt was seen.
@@ -241,7 +1034,7 @@ No release, dependency installation or security-setting change is included.
   WASAPI consumes explicit endpoint65%; editing preserves current output/input/
   clock/volume. Ordinary Windows typing55%, device popup/keyboard, policies,
   dialog reopen and Ctrl+Q pass with independent config readback. Hardware labels
-  stay private. Audio-scope ordinary GUI `3857fa66519c…`, private `de7506005fca…`,
+  stay private. Audio-scope ordinary GUI `3857fa66519câ€¦`, private `de7506005fcaâ€¦`,
   `source-r1`, `ordinary-runtime-r1` in
   `build-windows/beta-audio-device-activation-20261019`. Protected modules unchanged.
   Earlier R4/R7 receipts retain their exact scope. No physical unplug/receiver/
@@ -255,7 +1048,7 @@ No release, dependency installation or security-setting change is included.
   pass while preserving current primary state. Ordinary Windows Off/Space On/
   feedback clear/Off and cold restart pass in two normal sessions. Cold Off hides
   the media name without stale restart feedback; config/media/runtime preserved.
-  Current ordinary GUI `d40f11aeefdf…`, private `4e09011ce1ee…`, source-r1 and
+  Current ordinary GUI `d40f11aeefdfâ€¦`, private `4e09011ce1eeâ€¦`, source-r1 and
   `ordinary-runtime-r1` in `build-windows/beta-interface-title-20261019`.
   Protected modules unchanged; earlier Audio/R4/R7 results retain exact scopes.
 
@@ -268,7 +1061,7 @@ No release, dependency installation or security-setting change is included.
   Component9/43/47, fullscreen-controls Off audio34/video36 and ordinary cold
   Always/2000ms hide/reveal/hover have separate scopes. The early keyboard failure
   was a test deadline error diagnosed in R8a and corrected in R9 without another
-  app change. Ordinary `598173d1ba52…`, private `dc2456a80a6c…`, source-r9;
+  app change. Ordinary `598173d1ba52â€¦`, private `dc2456a80a6câ€¦`, source-r9;
   `build-windows/beta-auto-hide-20261019/ordinary-runtime-r6`. Protected modules
   unchanged. All processes are terminal; current checkpoint is in that work folder.
   Whole-app visual/accessibility/OS-DPI/package acceptance remains open.
@@ -282,8 +1075,8 @@ No release, dependency installation or security-setting change is included.
   cross-screen selection/restoration passes for playing audio and paused video,
   with both Qt/Windows visibility measured; visible presentation stays on monitor2.
   Two ordinary Windows sessions pass selection, cold reopen, Home/End/Return,
-  restart-notice restoration, F11 and normal exit. Current ordinary `56a4a7620f15…`,
-  private `69af3dfee412…`, source-r3 and `ordinary-runtime-r1` in
+  restart-notice restoration, F11 and normal exit. Current ordinary `56a4a7620f15â€¦`,
+  private `69af3dfee412â€¦`, source-r3 and `ordinary-runtime-r1` in
   `build-windows/beta-fullscreen-screen-20261019`. Protected modules unchanged.
   Earlier private fixtures and a rejected hidden-resize warning are retained;
   arbitrary hidden resize, physical unplug, full DPI/visual/package stay open.
@@ -294,7 +1087,7 @@ duration) and confirmed workflows,
 then continue the full consumer/workflow/design/accessibility/package roadmap.
 Do not rerun any historical shutdown helper.
 
-Latest checkpoint — **19 October 2026, morning**:
+Latest checkpoint â€” **19 October 2026, morning**:
 The user requested a checkpoint commit/push followed by computer shutdown.
 Stop here; the full beta goal is unfinished. Git history/remote provide the
 publication receipt. This request does not authorize a beta release or tag.
@@ -302,7 +1095,7 @@ publication receipt. This request does not authorize a beta release or tag.
 - [Fullscreen controls](doc/juxtopposed-references/native/home-fullscreen-controls-20261019/README.md):
   actual audio/video On/Off138 checks, four normal exits, no Qt diagnostics or
   native errors. Policy41, Interface storage15 and component10 retain separate
-  scopes. Ordinary GUI `fd7f8af9b480…`, private GUI `8be8eff6e4d8…`, source-r6.
+  scopes. Ordinary GUI `fd7f8af9b480â€¦`, private GUI `8be8eff6e4d8â€¦`, source-r6.
 - [Playlist origins](doc/juxtopposed-references/native/home-playlist-context-20261019/README.md):
   actual Library On/Off67 checks, two normal exits, no Qt/native errors;
   actual names, literal labels, shared media, rename/deletion and paused state.
@@ -335,7 +1128,7 @@ original-design/accessibility/Windows-DPI checks and final matched package.
 The Windows10 comparison and original AUDIOSES cause remain explicitly deferred.
 No dependency, firewall, Defender or UAC setting changed in this continuation.
 
-Earlier continuation — **19 October 2026, 06:36 home time**:
+Earlier continuation â€” **19 October 2026, 06:36 home time**:
 the [settings consumer audit](doc/juxtopposed-settings-consumer-audit.md) now
 separates new native field behavior, existing evidence and concrete remaining
 gaps across all thirteen categories. Console R10 passes twelve cases for eight
@@ -343,8 +1136,8 @@ Playback and two Audio fields, normal exit/no Qt diagnostics; source-r10 and
 the [combined receipts](doc/juxtopposed-references/native/home-playback-consumers-20261019/README.md)
 preserve exact scope. Audio language and Audio Off are verified startup policies.
 The contradictory Audio on/off "next media" hint is corrected; Audio component19
-passes. Ordinary Audio R6 `45cee48bab4a…` and private playlist-origin UI R3
-`a199ec289e57…` compile against matching source. Their desktop tests remain **unexecuted**: the
+passes. Ordinary Audio R6 `45cee48bab4aâ€¦` and private playlist-origin UI R3
+`a199ec289e57â€¦` compile against matching source. Their desktop tests remain **unexecuted**: the
 same human firewall question is still pending. Older ordinary44ab/private0ce
 builds retain earlier source scopes; use the new matching R6/R3 manifests and
 guarded `run-native-ui-r3.py` after actual human dismissal. Native console R11
@@ -367,13 +1160,13 @@ inputs/scripts are prepared and must build after R7. Older R6/R3 snapshots are
 preserved. Do not execute any GUI until the pending human firewall question is
 answered. No Core/audio module or security/dependency/publication change occurred.
 
-Audio consumer continuation — **19 October 2026**: real Windows native device,
+Audio consumer continuation â€” **19 October 2026**: real Windows native device,
 startup-volume and live volume-step checks pass four cases, including setup and
 cleanup, with two MMDevice/WASAPI sessions and exact paused-input preservation.
 The audit repairs a false restart warning and help text for the linked live step
 policy. The identical desired test object reproduces the warning on the original
 model and passes with the repair. Existing Audio defaults/PCM32 and actual Audio
-component18 pass without Qt diagnostics. Ordinary GUI `44ab133418c4…` compiles;
+component18 pass without Qt diagnostics. Ordinary GUI `44ab133418c4â€¦` compiles;
 its ordinary playback/direct input are **not accepted**. MainCtx Audio consumer
 gates remain false. See the [scoped receipt](doc/juxtopposed-references/native/home-audio-consumers-20261019/README.md).
 Work/source: `build-windows/beta-audio-consumers-20261019`, `source-r5`.
@@ -386,7 +1179,7 @@ presentation contracts, not acceptance of every native field consumer.
 The Windows firewall question below is still pending: no visible app tests or
 security actions have resumed. Continue independent full-roadmap work. The
 playlist-origin private GUI has been rebuilt against this Audio repair as
-`0ce883cbd34b…`, matched to the ordinary `44ab133418c4…` production manifest;
+`0ce883cbd34bâ€¦`, matched to the ordinary `44ab133418c4â€¦` production manifest;
 use its guarded `run-native-ui-r2.py` after actual human dismissal, not R1.
 
 Playback consumer continuation: console R9 passes ten cases, including setup/
@@ -420,12 +1213,12 @@ and its runner, plus `tests/playback_main_playlist_probe.c`, still need
 EXTRA_DIST registration before final source packaging;
 that distribution-only edit is held until the current guarded GUI journeys.
 
-Playlist-origin continuation — **19 October 2026, implementation in progress**:
+Playlist-origin continuation â€” **19 October 2026, implementation in progress**:
 native per-entry source IDs and their immutable origins pass eight headless
 Core/controller tests. Their regression repairs a cached current item left stale
 when removing the playing/selected entry without changing its row index. Live
 and preview name labels, captured model/context-menu origin, and native
-rename/deletion lookup are wired; full ordinary GUI compiles as `baed8bab0407…`.
+rename/deletion lookup are wired; full ordinary GUI compiles as `baed8bab0407â€¦`.
 Those integration paths have **not** been run/accepted yet. Component25,
 single-play routing13 and existing queue/proxy checks pass in their own scopes.
 See the [scoped checkpoint](doc/juxtopposed-references/native/home-playlist-context-20261019/README.md).
@@ -434,17 +1227,17 @@ All builders/runners are terminal. The Favorite ordinary runtime below remains
 the accepted playback baseline; no new GUI is launched while its human firewall
 question is pending. Continue independent backend work and the full roadmap.
 
-Current-media continuation — **19 October 2026**: Favorite's MainCtx-owned
+Current-media continuation â€” **19 October 2026**: Favorite's MainCtx-owned
 native library service and shared tile pass initial89 / cold reopen30 / Library
 off21 / genuine write failure-retry43 (183), normal exits without Qt diagnostics.
 Changes repair checked/checkable state and Space activation, retain focus while
 busy, refuse retained last URLs and guard an empty queue caption. Independent
 SQLite values stay false after the failed write and become
-true after focused retry. Component24 passes; ordinary GUI `d944735cbabb…` passes
+true after focused retry. Component24 passes; ordinary GUI `d944735cbabbâ€¦` passes
 all five playback smokes with protected core/audio/library/source data unchanged.
 See the [scoped receipts](doc/juxtopposed-references/native/home-current-media-20261019/README.md).
 Work/scripts/rejected runs: `build-windows/beta-current-media-20261019`;
-matched source `source-r6b`, private GUI `c01bfecec0a9…`, ordinary runtime
+matched source `source-r6b`, private GUI `c01bfecec0a9â€¦`, ordinary runtime
 `ordinary-runtime-r6a`. All builders/native runners have finished.
 
 **One ordinary VLC app remains open on monitor2 behind a Windows firewall
@@ -458,10 +1251,10 @@ and backend work while the user sleeps: authoritative playlist-source metadata,
 HDR capability/consumer, other tile actions and the full roadmap. No publication,
 new Figma reads, dependencies or security changes are authorized.
 
-Customizer continuation — **19 October 2026**: the authored 31-entry palette,
+Customizer continuation â€” **19 October 2026**: the authored 31-entry palette,
 separate video/music drafts, checked Save/retry, Cancel, rendered layout consumers
 and shared timeline/volume presentation are implemented. The pinned R2 private
-GUI `12c39e7b4297…` passes actual paused111 / restart15 / playing111, normal exits
+GUI `12c39e7b4297â€¦` passes actual paused111 / restart15 / playing111, normal exits
 and no Qt diagnostics. New regressions cover pointer selection then Delete,
 clipped viewport drop refusal, and hiding the live presentation beneath the
 inert draft while keeping its native seek object and primary media alive. A
@@ -471,7 +1264,7 @@ four cold-process transport/default/profile runs pass. Native layout now passes
 guards) pass. The initial R2 launcher loaded R1 by mistake; those runs are
 explicitly rejected. Accepted R2a pins the exact DLL path/hash and new check names.
 
-Ordinary GUI `2c8d2d219d1f…` at
+Ordinary GUI `2c8d2d219d1fâ€¦` at
 `build-windows/beta-customizer-20261019/ordinary-runtime-ui-r2` passes all five
 playback checks. Direct Windows input on monitor2 opens the actual editor with
 Library off, adds a Spacer, saves via Ctrl+Return, verifies physical INI/reopen,
@@ -488,10 +1281,10 @@ are an explicit adaptation where original customizer exports are absent.
 The full goal remains active; no new Figma reads, publication, dependencies or
 security changes are authorized. Continue independent work while the user sleeps.
 
-Night continuation — **19 October 2026**: keyboard-return focus outlines are
+Night continuation â€” **19 October 2026**: keyboard-return focus outlines are
 repaired. Home menus with Library on/off pass 188 checks each, actual storage
 recovery passes 321, and compact video/audio pass 741/742. All five processes
-exit normally without Qt diagnostics. Ordinary focus R2 (GUI `39e3d70934ab…`)
+exit normally without Qt diagnostics. Ordinary focus R2 (GUI `39e3d70934abâ€¦`)
 passes five playback smokes plus direct Windows Shift+F10/Menu dismissal with
 visible focus rings. The isolated profile/pin remain preserved; the window
 closed normally. See the
@@ -508,7 +1301,7 @@ overwrite; isolated staged profile writes repair it and the exact test passes.
 See the [scoped profile receipts](doc/juxtopposed-references/native/home-profiles-20261019/README.md).
 MainCtx/native-menu/movable-form integration now passes native playing/paused
 journeys (79 each) and a fresh OS-process restart (15), normal exits and no
-diagnostics. Ordinary GUI `ebcccb603c70…`
+diagnostics. Ordinary GUI `ebcccb603c70â€¦`
 passes five playback regressions and direct Windows New/save/Shows selection on
 monitor 2; copied source settings and pins remain preserved. Restart restores
 the selected profile/defaults and verifies the actual native rate plus decoded
@@ -524,7 +1317,7 @@ beta roadmap remains active. The pre-integration source is preserved in
 No publication is authorized. The user is asleep; continue independent work if
 an actual prompt later needs their handling.
 
-Setup continuation — **19 October 2026**: the confirmed two-page theme/accent
+Setup continuation â€” **19 October 2026**: the confirmed two-page theme/accent
 preview and shortcut tour are implemented and mounted through the existing
 single modal owner. Native backend R3 passes 11 checks with a normal exit;
 the supplied-service setup component passes 65 checks and the shared host passes
@@ -538,7 +1331,7 @@ interaction remains unverified. Visual polish now fixes the System card's right
 corners, unselected swatch opacity and split shortcut chords. Private R4 now
 passes the same three setup journeys and both Library-on/off Home-menu journeys
 (185 each), with normal exits and no Qt diagnostics. Ordinary R3 (GUI
-`3701cfb268e8…`) passes five playback smokes, restored setup without a popup,
+`3701cfb268e8â€¦`) passes five playback smokes, restored setup without a popup,
 and actual Windows Shift+F10/Menu reopening. The native Controls startup-binding
 snapshot suite passes all 19 cases. The
 [setup receipt](doc/juxtopposed-references/native/home-setup-20261019/verification.json)
@@ -560,7 +1353,7 @@ plain F10 menubar toggling and the off-pin negative. See the
 A new user physical-keyboard comparison has not been performed. Computer Use
 resumed by the user's OSK request; the ordinary test window closed normally.
 
-Active beta goal checkpoint — **18 October 2026**: the
+Active beta goal checkpoint â€” **18 October 2026**: the
 [home interaction receipt](doc/juxtopposed-references/native/home-compact-dialogs-20261018/README.md)
 records twelve native movable-dialog cases / 508 checks and eight native compact
 video/audio cases / 1,483 checks. R5 Tab/padding-wheel fixes pass; newer error-action
@@ -578,7 +1371,7 @@ accessibility/DPI/visual/package acceptance remain open. Next: two-page setup.
 Read the ignored `build-windows/beta-compact-interaction-20261018/CHECKPOINT.json`
 for the current build/test handle and next action. The full goal remains active.
 
-Current execution plan — **18 October 2026**: the
+Current execution plan â€” **18 October 2026**: the
 [revised beta roadmap](doc/juxtopposed-beta-roadmap.md) supersedes the ordering and
 stale TODOs in earlier summaries. Its
 [32-surface readiness snapshot](doc/juxtopposed-references/beta-readiness-20261018.md)
@@ -589,7 +1382,7 @@ redesign and a clean Windows 11-tested candidate. Windows 10 remains explicitly
 deferred; no new goal, Git publication or Figma-read budget was activated by
 preparing these documents.
 
-Home resume override — **18 October 2026**: the authoritative checkout is again
+Home resume override â€” **18 October 2026**: the authoritative checkout is again
 **C:\Modding\vlc-juxtopposed**. The returned checkpoint `5829010294` was fast-forwarded
 into `juxtopposed-playback-bar` and matches origin. The previous home commit
 `89b4bd7c53` is retained on `codex/pre-homecoming-20261018`. The D:\homecoming_temp
@@ -650,7 +1443,7 @@ The user confirmed on 18 October that the Windows 10 machine is unavailable
 and requested preparing the comparison for later. Defer that platform check;
 keep its crash issue open. This does not pause the remaining home development.
 
-Departure override — **18 October 2026**: read [RETURN-HOME.md](RETURN-HOME.md)
+Departure override â€” **18 October 2026**: read [RETURN-HOME.md](RETURN-HOME.md)
 first. The user requested ramp-down, a return-home report, a Git commit/push and
 an SSD copy list. Development is paused for departure; the full beta is incomplete.
 The [window/navigation checkpoint](doc/juxtopposed-references/native/guest-window-navigation-20261018/README.md)
@@ -757,7 +1550,7 @@ All owned jobs are terminal; full beta remains incomplete and active, E: only, o
 heavy task at a time. Continue the original complete redesign scope after this checkpoint.
 
 The latest [default-resize Home checkpoint](doc/juxtopposed-references/native/guest-home-default-resize-20261018/README.md)
-reproduces a 16-pixel off-screen floating preview at 320×360 and clamps its width
+reproduces a 16-pixel off-screen floating preview at 320Ã—360 and clamps its width
 to available library space while retaining 16:9. Native populate/reopen/edges
 pass 288/137/112 (537) and ordinary playback 5 pass normally on unchanged
 Core0cdebe / GUIb9b9f3 / MLe3ec5e. Actual default Back/Home/Return, preview bounds,
@@ -968,8 +1761,8 @@ adds a lazy history backend without enabling Library browsing, starting indexing
 or changing roots. Native history40/52, controller17 and actual SQLite
 controller9+9 pass. A real decoded-playback regression also repairs whole-media
 resume percentages being scaled into a configured clip. Six decoded-history
-journeys and four ordinary GUI/local-HLS cases pass on core `186d65…2591`, GUI
-`843365…9e42` and ML `e3ec5e…c0a`; unchanged native 18/42/9/37 and 4/25/8 pass too.
+journeys and four ordinary GUI/local-HLS cases pass on core `186d65â€¦2591`, GUI
+`843365â€¦9e42` and ML `e3ec5eâ€¦c0a`; unchanged native 18/42/9/37 and 4/25/8 pass too.
 Home visit storage now permits a genuine locked-file failure/retry. All 1280
 frozen final inputs match, including 1263 unchanged Qt inputs after the Core fix.
 The [original Controls reference](doc/juxtopposed-references/figma/20261017/controls/README.md)
@@ -1141,7 +1934,7 @@ Windows crash. The final incremental GUI and source hashes are verified. Native 
 controller14 and real SQLite controller9, component8, ordinary4 and native
 Library18/42/9/Subtitle37 pass, all normal exits with no failures/errors/skips.
 Ordinary runtime is `build-windows/beta-privacy-20261017/ordinary-acceptance-r3/runtime`:
-core `dd8c11…9186`, GUI `fe5d00…0c81`, ML `0a9d2d…44e0`; prior runtimes/baseline
+core `dd8c11â€¦9186`, GUI `fe5d00â€¦0c81`, ML `0a9d2dâ€¦44e0`; prior runtimes/baseline
 are preserved. Earlier GUI passes are superseded. The Library-disabled backend
 gap from that checkpoint is superseded by the latest history/resume checkpoint
 above. Last.fm, actual Home/legacy clear/visit journeys, native visual/DPI,
@@ -1395,7 +2188,7 @@ The latest [global Playback checkpoint](doc/juxtopposed-references/native/playba
 adds the 19-value native page and authored Advanced time-shift rows. Its ordinary
 Windows build succeeds; the registered isolated native playlist/player fixture
 passes 23/0/0, including saved-rate restarts and three real locked-save recovery
-rows. Actual desktop checks restore 1.25×/Repeat All after restart, verify the
+rows. Actual desktop checks restore 1.25Ã—/Repeat All after restart, verify the
 main player's rate and queue, preserve the current rate while changing the next
 startup default, and apply Repeat Off immediately. A scrolled validation error
 now remains visible beside its focused field; the original/new strict oracle
@@ -1516,7 +2309,7 @@ filters/clears search, creates an ordered mixed playlist and verifies persistenc
 after restart, exiting 0. This proves the actual backend operations and does not
 substitute for the blocked Qt picker/library journey. Its userdata is isolated
 under `build-windows/native-library-final`; the user's library is unchanged.
-The full milestones 0–8 Goal remains active and milestone 2 is incomplete.
+The full milestones 0â€“8 Goal remains active and milestone 2 is incomplete.
 
 The next [header/library checkpoint](doc/juxtopposed-references/library/header-library-checkpoint.md)
 builds a shared back/forward/breadcrumb/count/sort/view/search header, compact
@@ -1530,7 +2323,7 @@ recorded in the checkpoint. No native GUI pass is claimed for these adapters:
 desktop input still awaits the firewall prompt, and title-strip/folder hierarchy,
 original icons and the remaining library presentation remain open. Both exact-head
 Windows workflows passed for the preceding `9f754b961c` checkpoint; check the new
-pushed revision separately through Code Review. Continue the full 0–8 Goal.
+pushed revision separately through Code Review. Continue the full 0â€“8 Goal.
 
 The header/library checkpoint was pushed as `9f743a4ffb`; all eight component
 suites passed in both exact-head Windows workflows through Code Review. The
@@ -1575,13 +2368,13 @@ The [subtitle duration checkpoint](doc/juxtopposed-references/settings/subtitle-
 adds the referenced three-decimal field/slider using the real duration filter and
 its current calculation mode. Eleven native rendered-output checks pass, including
 disabled/multiplier/seconds/content timing, expiry, repeated paused seeks and filter
-cycles at 4× speed, appearance with the filter active and inline/quoted-chain guards.
+cycles at 4Ã— speed, appearance with the filter active and inline/quoted-chain guards.
 Core repairs address source/system timing, cloned region ownership, styled text
 ranking, proxy removal and paused dejitter. All nine component suites and native
 clock/pipe/equalizer/video/paused-seek regressions pass. Matching core/filter/Qt DLLs
 are staged with preceding versions recoverable; exact hashes and before/after
 evidence are recorded. GUI/other-format/overlap/hardware/persistence/visual gates
-remain open. Continue all outstanding milestones 0–8.
+remain open. Continue all outstanding milestones 0â€“8.
 
 ## Scope and design credit
 
@@ -1665,7 +2458,7 @@ Actual Windows GUI checks verified:
 
 - Home renders with the media library both disabled and enabled, including
   repeated starts using cached D3D11 renderer settings.
-- The supplied 3840 × 2160 AV1 reference video decodes and displays. Keyboard
+- The supplied 3840 Ã— 2160 AV1 reference video decodes and displays. Keyboard
   and mouse play/pause and mouse mute/unmute update the native player and
   visible controls. A paused timeline seek from approximately 01:45 to 03:52
   updates its requested position/image, but triggers the core fault below.
@@ -1707,7 +2500,7 @@ real Qt proxy mapping, drops, silent selection resets, bookmark action gates,
 time formatting, duration updates without row-count changes, retained views,
 production overlay anchors and component UI scaling.
 
-Independent visual review of isolated 400 × 946 canonical components:
+Independent visual review of isolated 400 Ã— 946 canonical components:
 
 | Capture | Score over the assessed 85% of the rubric |
 | --- | --- |
@@ -1717,7 +2510,7 @@ Independent visual review of isolated 400 × 946 canonical components:
 
 All three pass the 9.5 canonical target. Final captures are byte-identical to
 the independently reviewed snapshots. Small text raster/advance differences
-of 1–3px remain. These are component scores, not a score for the entire app.
+of 1â€“3px remain. These are component scores, not a score for the entire app.
 The combined state/responsive category and full native behavior remain
 unassessed. Source reviews at the implementation checkpoint found no remaining
 actionable static finding; the later native pass above found runtime problems
@@ -2026,7 +2819,7 @@ Invalid entry, disabled Save, dismissal and reset/reopen pass on Windows. Comple
 GUI submission/playback and library/media journeys still require acceptance.
 No security permission choices were made. Next: complete the native journeys and
 port music cover/list and subtitle presets, with the full Home/conversion/preferences
-inventory. Keep the full 0–8 Goal active and draft PR/visual gates open.
+inventory. Keep the full 0â€“8 Goal active and draft PR/visual gates open.
 
 The following [native desktop checkpoint](doc/juxtopposed-references/library/desktop-checkpoint.md)
 repairs Add Folder's uninitialized QWidget parent and protects editable QML focus
@@ -2066,7 +2859,7 @@ The final Qt plugin is staged separately with rollback. Missing-artwork contrast
 and overlapping legacy title are repaired. Actual album-art blur, native narrow/DPI,
 other codecs/tracks, full settings/lyrics journeys and visual acceptance remain
 open. Integrate the prepared five-section Home next; subtitle preset peer-review
-repairs and New Playlist integration remain pending. Continue the full 0–8 Goal.
+repairs and New Playlist integration remain pending. Continue the full 0â€“8 Goal.
 
 The [five-section Home checkpoint](doc/juxtopposed-references/home/implementation-checkpoint.md)
 now connects actual video/audio history, validated folder/playlist visits and
@@ -2078,7 +2871,7 @@ final bounded-preview plugin is saved separately; full Home routes/visits/restar
 live Clear History/reset and visual acceptance remain pending. Music's clean-tree
 test repair passes both exact-head eleven-suite Windows workflows. Subtitle
 presets, New Playlist, cue timeline and conversion continue as separate work;
-the full milestones 0–8 Goal remains active.
+the full milestones 0â€“8 Goal remains active.
 
 The [subtitle preset checkpoint](doc/juxtopposed-references/advanced/subtitle-preset-checkpoint.md)
 now builds with persistent bounded presets, actual ordered track restoration,
@@ -2101,7 +2894,7 @@ native menu/save/restart and visual acceptance remain pending. Both exact-head
   tests. Current test preferences are portable private copies. No security choice
   was automated. Prepared independent repairs cover New Playlist unsafe paths and
   thumbnail previews, audio-only Home folder bootstrap, dark missing-art and cue
-  seeking. Integrate/build them sequentially, then conversion and the full 0–8 Goal.
+  seeking. Integrate/build them sequentially, then conversion and the full 0â€“8 Goal.
 
 ## Remaining design work and proposed order
 
@@ -2109,7 +2902,7 @@ The [vertical slice implementation plan](doc/juxtopposed-vertical-slice-plan.md)
 now defines the proposed breadth-first coverage ledger, connected user journeys,
 milestones and overnight continuation approach. Its first execution target is
 reference inventory, stable runtime and a shared shell/Home slice. The full
-milestones 0–8 Goal is active; no separate follow-up schedule has been created.
+milestones 0â€“8 Goal is active; no separate follow-up schedule has been created.
 
 1. **Reference inventory and stable runtime.** Catalogue every original screen,
    panel, dialog and reusable control. Reproduce and repair paused-seek clock

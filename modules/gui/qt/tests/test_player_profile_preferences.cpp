@@ -7,6 +7,7 @@
 #include "maininterface/player_profile_preferences.hpp"
 #include <vlc/vlc.h>
 #include <vlc_configuration.h>
+#include <vlc_modules.h>
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
@@ -98,8 +99,10 @@ private slots:
     void completeGroupsSaveAndRestoreExactly() {
         const auto before = capture(); auto target = before; QString error;
         put(target, "playback", "repeat", true); put(target, "playback", "loop", true);
+        put(target, "playback", "qt-timeline-thumbnails", true);
         put(target, "playback", "audio-track-id", QStringLiteral("native/custom-track-Ää"));
         put(target, "audio", "equalizer-preset", QStringLiteral("rock"));
+        put(target, "audio", "role", QStringLiteral("music"));
         put(target, "audio", "equalizer-bands", QStringLiteral("1 2 3 4 5 4 3 2 1 0"));
         put(target, "audio", "equalizer-preamp", double(float(3.25)));
         put(target, "audio", "audio-filter", QStringLiteral("equalizer:compressor"));
@@ -115,6 +118,39 @@ private slots:
         QVERIFY(bytes(path).contains("equalizer-bands=1 2 3 4 5 4 3 2 1 0"));
         QVERIFY2(native.preferences->apply(before, error), qPrintable(error)); QCOMPARE(capture(), before);
         QCOMPARE(config_GetInt("metadata-network-access"), proxyBefore);
+    }
+    void profilesBeforeThumbnailOptionRetainOffPolicy() {
+        QCOMPARE(config_GetType("qt-timeline-thumbnails"), VLC_VAR_BOOL);
+        const auto before = capture(); auto old = before; QString error;
+        auto fields = old.value(QStringLiteral("playback")).toMap();
+        QVERIFY(fields.remove(QStringLiteral("qt-timeline-thumbnails")));
+        old[QStringLiteral("playback")] = fields;
+        auto enabled = before; put(enabled, "playback", "qt-timeline-thumbnails", true);
+        QVERIFY2(native.preferences->apply(enabled,error),qPrintable(error));
+        QCOMPARE(config_GetInt("qt-timeline-thumbnails"),int64_t(1));
+        QVERIFY2(native.preferences->apply(old,error),qPrintable(error));
+        QCOMPARE(config_GetInt("qt-timeline-thumbnails"),int64_t(0));
+        QCOMPARE(capture(),before);
+        // Missing unrelated fields still fails the closed native contract.
+        fields.remove(QStringLiteral("repeat")); old[QStringLiteral("playback")] = fields;
+        const auto disk = bytes(path);
+        QVERIFY(!native.preferences->apply(old,error)); QCOMPARE(bytes(path),disk);
+    }
+    void nightModeFollowsAudioProfileAndPreservesManualCompressor() {
+        QVERIFY(module_exists("nightmode"));
+        config_PutFloat("compressor-ratio",2.5f);
+        config_PutFloat("compressor-threshold",-9.f);
+        const auto before=capture(); auto night=before; QString error;
+        put(night,"audio","audio-filter",QStringLiteral("nightmode:compressor"));
+        QVERIFY2(native.preferences->apply(night,error),qPrintable(error));
+        QCOMPARE(capture(),night);
+        auto day=night;put(day,"audio","audio-filter",QStringLiteral("compressor"));
+        for (const auto &target:{day,night,before}) {
+            QVERIFY2(native.preferences->apply(target,error),qPrintable(error));
+            QCOMPARE(capture(),target);
+            QCOMPARE(config_GetFloat("compressor-ratio"),2.5f);
+            QCOMPARE(config_GetFloat("compressor-threshold"),-9.f);
+        }
     }
     void helperOverridesAndSentinelsSurvive() {
         const auto before = capture(); auto target = before; QString error;
@@ -186,7 +222,10 @@ private slots:
 #endif
     }
     void savedDefaultsSurviveColdProcess() {
+        QVERIFY(module_exists("nightmode"));
         auto target = capture(); put(target, "playback", "repeat", true);
+        put(target, "audio", "role", QStringLiteral("communication"));
+        put(target, "audio", "audio-filter", QStringLiteral("nightmode:equalizer:compressor"));
         put(target, "audio", "equalizer-bands", QStringLiteral("0 1 2 3 4 5 4 3 2 1"));
         put(target, "subtitles", "sub-text-style-font", QStringLiteral("Inter Ää 日本語"));
         QString error; QVERIFY2(native.preferences->apply(target, error), qPrintable(error));

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="TestTimelineThumbnails" timestamp="2026&#x002D;10&#x002D;21T21:56:39" hostname="Starling" tests="26" failures="0" errors="0" skipped="0" time="20.159">
+  <properties>
+    <property name="QTestVersion" value="6.8.3"/>
+    <property name="QtVersion" value="6.8.3"/>
+    <property name="QtBuild" value="Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)"/>
+  </properties>
+  <testcase name="initTestCase" classname="TestTimelineThumbnails" time="0.085"/>
+  <testcase name="nativeFramesAtRequestedTimes" classname="TestTimelineThumbnails" time="0.554"/>
+  <testcase name="cacheAndSameSecond" classname="TestTimelineThumbnails" time="0.000"/>
+  <testcase name="latestRequestAndMediaGeneration" classname="TestTimelineThumbnails" time="0.585"/>
+  <testcase name="viewsCannotCancelEachOthersPreview" classname="TestTimelineThumbnails" time="0.526"/>
+  <testcase name="continuousMovementProducesFrames" classname="TestTimelineThumbnails" time="3.246">
+    <system-out>
+      <![CDATA[OWNED_QT_DIAG|info|Frames published during 100 moving requests: 19]]>
+    </system-out>
+  </testcase>
+  <testcase name="invalidTimeAndUnavailableMedia" classname="TestTimelineThumbnails" time="0.164"/>
+  <testcase name="independentPrimaryPlayback" classname="TestTimelineThumbnails" time="0.928">
+    <system-out>
+      <![CDATA[OWNED_QT_DIAG|info|Primary before=163695us after=351383us wall=187ms]]>
+    </system-out>
+  </testcase>
+  <testcase name="workerShutdown" classname="TestTimelineThumbnails" time="0.153"/>
+  <testcase name="stalledNetworkCancellationAndShutdown" classname="TestTimelineThumbnails" time="0.587"/>
+  <testcase name="geometryMatchesIndependentReference(landscape)" classname="TestTimelineThumbnails" time="0.186"/>
+  <testcase name="geometryMatchesIndependentReference(portrait)" classname="TestTimelineThumbnails" time="0.185"/>
+  <testcase name="geometryMatchesIndependentReference(sar&#x002D;2&#x002D;to&#x002D;1)" classname="TestTimelineThumbnails" time="0.197"/>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;90)" classname="TestTimelineThumbnails" time="0.183"/>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;180)" classname="TestTimelineThumbnails" time="0.232"/>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;270)" classname="TestTimelineThumbnails" time="0.181"/>
+  <testcase name="previewIgnoresPlaybackStartupPause(startup&#x002D;playing)" classname="TestTimelineThumbnails" time="1.476"/>
+  <testcase name="previewIgnoresPlaybackStartupPause(startup&#x002D;paused)" classname="TestTimelineThumbnails" time="0.907"/>
+  <testcase name="codecContainersKeepPrimaryPaused(h264.mp4)" classname="TestTimelineThumbnails" time="1.453"/>
+  <testcase name="codecContainersKeepPrimaryPaused(hevc&#x002D;multitrack.mkv)" classname="TestTimelineThumbnails" time="1.479"/>
+  <testcase name="codecContainersKeepPrimaryPaused(vp9.webm)" classname="TestTimelineThumbnails" time="1.449"/>
+  <testcase name="codecContainersKeepPrimaryPaused(mpeg4.avi)" classname="TestTimelineThumbnails" time="1.471"/>
+  <testcase name="codecContainersKeepPrimaryPaused(mpeg2.mpg)" classname="TestTimelineThumbnails" time="1.398"/>
+  <testcase name="codecContainersKeepPrimaryPaused(h264.ts)" classname="TestTimelineThumbnails" time="1.451"/>
+  <testcase name="codecContainersKeepPrimaryPaused(audio&#x002D;only.flac)" classname="TestTimelineThumbnails" time="1.068"/>
+  <testcase name="cleanupTestCase" classname="TestTimelineThumbnails" time="0.011"/>
+</testsuite>

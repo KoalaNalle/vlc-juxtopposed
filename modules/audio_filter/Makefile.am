@@ -23,6 +23,9 @@ noinst_LTLIBRARIES += libdynamics_common.la
 libcompressor_plugin_la_SOURCES = audio_filter/compressor.c \
 	audio_filter/dynamics.h
 libcompressor_plugin_la_LIBADD = libdynamics_common.la $(LIBM)
+libnightmode_plugin_la_SOURCES = $(libcompressor_plugin_la_SOURCES)
+libnightmode_plugin_la_CFLAGS = $(AM_CFLAGS) -DNIGHT_MODE_PRESET
+libnightmode_plugin_la_LIBADD = $(libcompressor_plugin_la_LIBADD)
 libexpander_plugin_la_SOURCES = audio_filter/expander.c \
 	audio_filter/dynamics.h
 libexpander_plugin_la_LIBADD = libdynamics_common.la $(LIBM)
@@ -67,6 +70,7 @@ audio_filter_PLUGINS += \
 	libaudiobargraph_a_plugin.la \
 	libchorus_flanger_plugin.la \
 	libcompressor_plugin.la \
+	libnightmode_plugin.la \
 	libexpander_plugin.la \
 	liblimiter_plugin.la \
 	libequalizer_plugin.la \

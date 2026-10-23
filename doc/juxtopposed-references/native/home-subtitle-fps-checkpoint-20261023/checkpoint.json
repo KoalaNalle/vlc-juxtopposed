@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-23",
+  "state": "paused-at-human-request",
+  "ordinaryBuildExitCode": 0,
+  "ordinaryGuiSha256": "faf4d30b89add9a08dbfc07d64b26dcae65b18a0a94028e4b24f64217e2f1b17",
+  "ordinaryDesktopFpsAccepted": false,
+  "fullBetaAccepted": false,
+  "nativeScope": "Controller FPS property, validation and secondary-delay contracts only; no rendered-caption acceptance",
+  "nativeAfterR3AndR4Functions": 10,
+  "sourceFreezeLimit": "The inherited source freeze omitted test_player_subtitle_delay.cpp and vlc_stub_modules.cpp. Historical sourceInputsUnchanged only covers its enumerated inputs. Current test sources are snapshotted here, not retrospectively proven to be the exact native build inputs; freeze the complete test dependency set on rerun.",
+  "componentScope": "Actual QML components with supplied models; no native persistence or desktop acceptance",
+  "sourceSha256": {
+    "modules/gui/qt/Makefile.am": "810710a159062f8a844a4abbc9b76921c35b572b6ebd634154960194c4995151",
+    "modules/gui/qt/player/player_controller.cpp": "eefecb3ecbc2381b16a3ecf16c22be5dd726e594e405d67d2cb7cc8f932eb1d9",
+    "modules/gui/qt/player/player_controller_p.hpp": "2be10cb86e8355c408174e9090de67f1ca1ef3f0d50fe11cca4e4e83243da32f",
+    "modules/gui/qt/player/qml/TracksPageSubtitle.qml": "b2a45787b7cd1054f2731cf2b0de80e0332b8fc52ef2eff0c1b0684f2c34f997",
+    "modules/gui/qt/player/qml/PlaybackSettingsMenu.qml": "8cb4ec4271247a50d72b7ab6ca1a997d927ab66b75da9968def93e6cd18d1c8d",
+    "modules/gui/qt/tests/test_player_subtitle_delay.cpp": "ced80e857ea1f4302e9e58d75bdfe05dbf15faacadd3dd543acc3d6799340603",
+    "modules/gui/qt/tests/vlc_stub_modules.cpp": "cec6ac52612041dd4e01f8945108473ff95954e705ad57043387b1a651fe27dd"
+  },
+  "postTestChange": "Removed the ineffective obsolete --avcodec-hw=none argument from the native test fixture. r4 artifacts remain unchanged. The restored fixture has not been rerun.",
+  "nextStep": "Refresh input freeze and launch a fresh ordinary FPS runtime; verify external SRT selection, 23.976/29.97/50/0 values, actual accessibility units, keyboard focus/reset and held-caption retiming before accepting this workflow.",
+  "notExecuted": "run-ui-r5.py was prepared but not executed; its old source freeze must be refreshed after this checkpoint."
+}

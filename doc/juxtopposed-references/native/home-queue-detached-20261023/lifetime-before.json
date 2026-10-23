@@ -1,0 +1,165 @@
+{
+  "passed": false,
+  "expectedNegativeVerified": true,
+  "cases": [
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "ready",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "ready-null-item",
+      "actual": "detached",
+      "expected": null,
+      "diagnostics": [
+        "<Unknown File>:15: TypeError: Cannot read property 'playlistView' of undefined"
+      ],
+      "passed": false
+    },
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "restored",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "docked-wins",
+      "actual": "docked",
+      "expected": "docked",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "loading",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/player/qml/Player.qml:0",
+      "phase": "loader-absent",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "ready",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "ready-null-item",
+      "actual": "detached",
+      "expected": null,
+      "diagnostics": [
+        "<Unknown File>:15: TypeError: Cannot read property 'playlistView' of undefined"
+      ],
+      "passed": false
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "restored",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "docked-wins",
+      "actual": "docked",
+      "expected": "docked",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "loading",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:0",
+      "phase": "loader-absent",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [
+        "<Unknown File>:14: TypeError: Cannot read property 'status' of undefined"
+      ],
+      "passed": false
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "ready",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "ready-null-item",
+      "actual": "detached",
+      "expected": null,
+      "diagnostics": [
+        "<Unknown File>:15: TypeError: Cannot read property 'playlistView' of undefined"
+      ],
+      "passed": false
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "restored",
+      "actual": "detached",
+      "expected": "detached",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "docked-wins",
+      "actual": "docked",
+      "expected": "docked",
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "loading",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "binding": "modules/gui/qt/maininterface/qml/MainDisplay.qml:1",
+      "phase": "loader-absent",
+      "actual": null,
+      "expected": null,
+      "diagnostics": [
+        "<Unknown File>:14: TypeError: Cannot read property 'status' of undefined"
+      ],
+      "passed": false
+    }
+  ],
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/Player.qml": "d71886e92862c716c4b0e5923d2062787bbfc9f704168b7d4704a9690dcd828c",
+    "modules/gui/qt/maininterface/qml/MainDisplay.qml": "3edcb42c64d9dd328f0f48c704b4b2543b9021953de199f6712ed05d3cd5410c"
+  },
+  "scope": "Exact production binding bodies in a real Qt engine with supplied docked/detached loader states. Not actual native window or desktop acceptance."
+}

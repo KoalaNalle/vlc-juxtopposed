@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "selectedPausedVideoStartupAccepted": true,
+  "fullTrackWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "sourceInputs": 2147,
+  "ordinaryCoreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "conclusions": [
+    "Timestamp-preserving remux starts paused correctly with unchanged A/V packet payloads and PTS: the21ms offset is not a sufficient explanation.",
+    "Private trace finds startup buffering ends with audio queued and no video packet received; deferred pause then prevents the first video picture. Remux/no-audio controls receive video before that pause. Logging is diagnostic and can affect timing.",
+    "A paused video decoder awaiting its first picture now consumes/requests input independently of explicit user frame-step counts. No audio clock, subtitle demux/selection, decoder layout or GUI change is part of this repair.",
+    "Nine ordinary native controls pass. Four old-video failures are retained: original with WASAPI, dummy audio, subtitles disabled, and a single-picture file. Audio-only producer expectation is corrected and paired on actual selected-track APIs.",
+    "Native post-resume/seek subtitle pixel-presence pattern matches the earlier trace controls; paused backward-seek and new-track/external-selection gaps remain. Ordinary desktop observations also retain absent subtitle text."
+  ],
+  "qualityCorrections": [
+    "R10 permits a first video via explicit frame countdown, but static review found that route also emits user frame-step notifications/OSD; retained as a candidate, not accepted. R11b uses first-picture state independently.",
+    "R11 generated C contains literal newline-prefix plus characters; inspection caught this before compiling it. R11b corrects the producer and leaves the uncompiled preflight intact.",
+    "R12 assumes audio-only has no vout resource. Both builds can retain an empty vout. R13 checks actual selected video tracks instead; both audio-only controls pass. R12 failed records remain unchanged.",
+    "The ordinary raw compiledSourceCount is the source-manifest size including headers/producers, not a claim that2147 translation units were compiled.",
+    "The earlier audio executable is reused unchanged. Its old source record differs only in two EXTRA_DIST lines in modules/gui/qt/Makefile.am; compiled controller/test sources remain checked."
+  ],
+  "retainedDiagnostics": [
+    "Empty-buffer prevention remains in original-container and single-picture startup logs; it is not hidden or renamed.",
+    "Native window-close messages are retained; audio test has no diagnostics, bookmark2 and video1 closes are checked at teardown.",
+    "Build deprecated-FIFO/delay/libtool/host-path warnings and cache/parser/codec/size/lateness warnings remain in raw logs."
+  ],
+  "nextSteps": [
+    "Trace Matroska subtitle seek points that precede video preroll: the backward5s request emits no SPU packet, unlike the original-container25s request.",
+    "Trace selected-track changes and associated subtitle demux while paused, including manual selection precedence and the UI/native display distinction.",
+    "Continue full13-category/32-surface beta roadmap: ordinary remaining workflows, Figma/design fidelity, accessibility/DPI, physical outputs, Windows10, review and packaging."
+  ],
+  "questionsForMorning": [],
+  "sideEffects": {
+    "installs": false,
+    "commit": false,
+    "push": false,
+    "release": false,
+    "upload": false,
+    "shutdown": false
+  }
+}

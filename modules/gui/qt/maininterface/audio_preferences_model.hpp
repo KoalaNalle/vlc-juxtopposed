@@ -24,6 +24,8 @@ public:
         bool windowsDevices = false; // Real Core Audio enumeration + matched MMDevice output, Root acceptance gate.
         bool authoredVolumeStep = false; // Real slider/wheel + native action closure, Root acceptance gate.
         bool windowsPassthrough = false; // Receiver acceptance is independent of endpoint/startup-volume support.
+        bool nightMode = false; // Independent native preset; opt in at the qualified owner.
+        bool windowsMediaRole = false; // Qualified WASAPI stream-category consumer.
     };
     explicit AudioPreferencesModel(qt_intf_t *, QObject *parent = nullptr);
     AudioPreferencesModel(qt_intf_t *, Consumers, QObject *parent = nullptr);

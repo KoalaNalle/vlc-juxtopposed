@@ -1,0 +1,131 @@
+{
+  "inputsValidated": true,
+  "playbackAccepted": false,
+  "producerSha256": "a8dcd27755d4304307ca548c6bdce5c9bac319876298e3e5f24f2c47f18f6e67",
+  "fixtureProducerSha256": "7c47c6eef8c19b8ac7b56c46e069a4e5245039cb52a2e2920336bb5d5e014c51",
+  "originalMediaSha256": "43432e7c472cf6dbdef90ab34253d9082e3e4f410cc11e2f08098597175f0199",
+  "records": [
+    {
+      "name": "preserve",
+      "mediaSha256": "a7a6a18a83a1ca49caa437fe972bc19f8e94731c3ae2f7d49fa3ce32a9c80154",
+      "streams": 5,
+      "packetComparisons": {
+        "video": {
+          "packets": 1500,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.000000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "0.000000",
+          "firstControlPts": "0.000000",
+          "probeSha256": "bf231f78296fdaa9e6b85974fe2ad658a021163dbf59769e897ef617b28facaa"
+        },
+        "audio": {
+          "packets": 2814,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.000000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "-0.021000",
+          "firstControlPts": "-0.021000",
+          "probeSha256": "62f7f2a102b9ad4899eb8f010d4d070042033ba475b4e4a3919f6b94a8ab172a"
+        }
+      }
+    },
+    {
+      "name": "plus1ms",
+      "mediaSha256": "d739aa91dafd399a68b9a16e4c3e7b2ef5a5773322c13f5e443efe10bb7dc8f9",
+      "streams": 5,
+      "packetComparisons": {
+        "video": {
+          "packets": 1500,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.001000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "0.000000",
+          "firstControlPts": "0.001000",
+          "probeSha256": "f28bcc71ae85fd3338688a0653559e1b52e4770c415016ad794fdad3929202f0"
+        },
+        "audio": {
+          "packets": 2814,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.001000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "-0.021000",
+          "firstControlPts": "-0.020000",
+          "probeSha256": "e504f08e64da43124439e3bb6feaf6b150cec54b45832db9b6303202bba52fcb"
+        }
+      }
+    },
+    {
+      "name": "plus21ms",
+      "mediaSha256": "24808036150f749c1cab5798d8507a1ecc40f4d433b2e12411a8b30d31d377ce",
+      "streams": 5,
+      "packetComparisons": {
+        "video": {
+          "packets": 1500,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.021000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "0.000000",
+          "firstControlPts": "0.021000",
+          "probeSha256": "500dac055f2cb5f2d9a11a5d42f0ddfc06e7ea36f926b1c50ca51c243fda5803"
+        },
+        "audio": {
+          "packets": 2814,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "0.021000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "-0.021000",
+          "firstControlPts": "0.000000",
+          "probeSha256": "32314c6dbdd91e5d57f1eb30b0acfef03a3a171605d12fbd821ebbc481087857"
+        }
+      }
+    }
+  ],
+  "rejectedControls": [
+    {
+      "name": "minus1ms",
+      "mediaSha256": "3b747986370a36338ce493e74dea1e2b4c7f1772ef03c63ba0267cdc0f01215c",
+      "streams": 5,
+      "packetComparisons": {
+        "video": {
+          "packets": 1500,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "-0.001000"
+          ],
+          "missingPtsPacketIndexes": [
+            0
+          ],
+          "firstOriginalPts": "0.000000",
+          "firstControlPts": null,
+          "probeSha256": "a0865fbc45c7dcc3e825b5a26d8862fbbc180e4188a744266f59c5034b87d971"
+        },
+        "audio": {
+          "packets": 2814,
+          "payloadsMatchOriginal": true,
+          "ptsShiftSecondsForTimestampedPackets": [
+            "-0.001000"
+          ],
+          "missingPtsPacketIndexes": [],
+          "firstOriginalPts": "-0.021000",
+          "firstControlPts": "-0.022000",
+          "probeSha256": "df9eae3a2ee177a09b2a3d1bcea933af17d1dc16ef13b5a83410e2c861573072"
+        }
+      },
+      "rejectionReason": "First video packet has no reported PTS after muxing; this is not an exact timestamp-offset control. Retain but do not use in the matched native comparison."
+    }
+  ],
+  "preflight": "Original comparer raised on missing minus1ms video PTS; its source is preserved as compare-timestamp-controls-r8-preflight.py. No accepted input record was overwritten."
+}

@@ -37,6 +37,7 @@
 #include "player/player_controller.hpp"
 #include "player/audio_equalizer.hpp"
 #include "player/audio_waveform.hpp"
+#include "player/timeline_thumbnails.hpp"
 #include "player/local_music_folder.hpp"
 #include "player/video_transform.hpp"
 #include "player/subtitle_appearance.hpp"
@@ -182,6 +183,7 @@ bool MainUI::setup(QQmlEngine* engine)
         new EffectsImageProvider(engine);
     engine->addImageProvider(QStringLiteral("svgcolor"), new SVGColorImageImageProvider());
     engine->addImageProvider(QStringLiteral("vlcaccess"), new VLCAccessImageProvider());
+    engine->addImageProvider(QStringLiteral("timelinepreview"), m_mainCtx->getTimelineThumbnails()->createImageProvider());
 
     m_component  = new QQmlComponent(engine, QStringLiteral("qrc:/qt/qml/VLC/MainInterface/MainInterface.qml"), QQmlComponent::PreferSynchronous, engine);
     if (m_component->isLoading())
@@ -255,6 +257,7 @@ void MainUI::registerQMLTypes()
         qmlRegisterUncreatableType<GeneralPreferencesModel>(uri, versionMajor, versionMinor, "GeneralPreferencesModel", "Use MainCtx.generalPreferences");
         qmlRegisterUncreatableType<InterfacePreferencesModel>(uri, versionMajor, versionMinor, "InterfacePreferencesModel", "Use MainCtx.interfacePreferences");
         qmlRegisterUncreatableType<PlaybackPreferencesModel>(uri, versionMajor, versionMinor, "PlaybackPreferencesModel", "Use MainCtx.playbackPreferences");
+        qmlRegisterUncreatableType<TimelineThumbnails>(uri, versionMajor, versionMinor, "TimelineThumbnails", "Use MainCtx.timelineThumbnails");
         qmlRegisterUncreatableType<VideoPreferencesModel>(uri, versionMajor, versionMinor, "VideoPreferencesModel", "Use MainCtx.videoPreferences");
         qmlRegisterUncreatableType<AudioPreferencesModel>(uri, versionMajor, versionMinor, "AudioPreferencesModel", "Use MainCtx.audioPreferences");
         qmlRegisterUncreatableType<SubtitlesPreferencesModel>(uri, versionMajor, versionMinor, "SubtitlesPreferencesModel", "Use MainCtx.subtitlesPreferences");

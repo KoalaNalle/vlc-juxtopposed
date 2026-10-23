@@ -99,6 +99,7 @@ private:
     QMutex m_setupStateLock;
 
     std::unique_ptr<QQuickView> m_quickView;
+    bool m_defaultFrameLatencyApplied = false;
 
     IDCompositionDevice *m_dcompDevice = nullptr;
     Microsoft::WRL::ComPtr<IDCompositionVisual> m_rootVisual;

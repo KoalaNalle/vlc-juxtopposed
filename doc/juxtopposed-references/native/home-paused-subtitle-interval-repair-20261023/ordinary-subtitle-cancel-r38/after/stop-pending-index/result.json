@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "candidateOnly": true,
+  "repairAccepted": false,
+  "configuration": {
+    "name": "stop-pending-index",
+    "media": "media-r31/cbr-overlap.mkv",
+    "language": "eng",
+    "audio": true,
+    "steps": []
+  },
+  "producerSha256": "e833d3e8c3c0d2dac81deb4dabaa7c8c0da1f48ab8c0cfe701e2dbf2f8dfa0c7",
+  "fixtureSha256": "ef33e20320351950afa728789dfa84f9ac05602c62c222cc81f940c37bbf39dc",
+  "coreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "mkvSha256": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\ordinary-subtitle-cancel-r38\\after\\stop-pending-index\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "teardownComplete": true,
+  "indexCancellationIsolated": true,
+  "scope": "Normal Stop request during a pending precise seek, not forced termination. Index-phase qualification uses a non-blocking public LibVLC log callback: request and AV anchors, increased own-process reads, and no final seek/preroll callback even after teardown. Own-process reads include probe/log activity and filesystem caches.",
+  "initialPauseReached": true,
+  "selectedEnglish": true,
+  "seekReturn": 0,
+  "stopReturn": 0,
+  "stopReached": true,
+  "stopToStoppedSeconds": 0.01599999999598367,
+  "preStopObservation": {
+    "elapsedSeconds": 0.031000000002677552,
+    "anchorSeen": true,
+    "finishedSeen": false,
+    "readBytesIncludingProbe": 2045676,
+    "triggered": true
+  },
+  "finalSeekMarkerPresent": false,
+  "callbackTimeline": [
+    {
+      "kind": "request",
+      "at": 43167.937,
+      "format": "seek request to i_pos = %lld"
+    },
+    {
+      "kind": "anchor",
+      "at": 43167.937,
+      "format": "seek: preroll{ track: %u, pts: %lld, fpos: %llu skip: %llu} "
+    },
+    {
+      "kind": "anchor",
+      "at": 43167.937,
+      "format": "seek: preroll{ track: %u, pts: %lld, fpos: %llu skip: %llu} "
+    },
+    {
+      "kind": "anchor",
+      "at": 43167.968,
+      "format": "seek: preroll{ track: %u, pts: %lld, fpos: %llu skip: %llu} "
+    },
+    {
+      "kind": "anchor",
+      "at": 43167.968,
+      "format": "seek: preroll{ track: %u, pts: %lld, fpos: %llu skip: %llu} "
+    }
+  ],
+  "fileSeekMarkerPresent": false,
+  "normalStopPassed": true,
+  "diagnostics": []
+}

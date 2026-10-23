@@ -1,0 +1,2427 @@
+{
+  "label": "frame-marker.mp4-wasapi",
+  "passed": true,
+  "fullBetaAccepted": false,
+  "scope": "Native paused selected-subtitle replacement, caption masks, actual frame-marker conservation, sampled pause and resume. Cold captions, automatic external selection, physical audibility, desktop and full beta require separate checks.",
+  "coreSha256": "9a8e12c1c705500ef79d9e1e0a5245d067b49d3bb6d0f87909b82569373eb117",
+  "mkvSha256": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-selection-20261023\\native-candidate-r2\\frame-marker.mp4-wasapi-automatic-ids\\probe\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "producerSha256": "791097ddca43a48ed457cfac4ac986be33353efeeace7dcaf8d325105c0d8207",
+  "fixtureProducerSha256": "4c745f4e1203ffd3ab3bb1aee7fbfe624e713d14b06c06af8a89d267abbcb71d",
+  "mediaSha256": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+  "externalSha256": "bac11b23c4424c1a29915acbaaf0576f4d8f21d78575549dd3c1e5f45b95774b",
+  "externalSelection": "automatic",
+  "externalPolicy": "ids",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 80001,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "initial-paused.png",
+      "snapshotSha256": "af0df3d06416583f11d868281f1a266d0a7e2a7add553b9b40d45224fb16ced4",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 0,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 80001
+        },
+        {
+          "state": 3,
+          "timeUs": 80001
+        },
+        {
+          "state": 3,
+          "timeUs": 80001
+        }
+      ]
+    },
+    {
+      "step": "played-paused",
+      "state": 3,
+      "timeUs": 1017332,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "played-paused.png",
+      "snapshotSha256": "cd46838141fa2c08976a9f3d03b4a8e679c9710636c26cda6667f5c6c3042c85",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 24,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 1017332
+        },
+        {
+          "state": 3,
+          "timeUs": 1017332
+        },
+        {
+          "state": 3,
+          "timeUs": 1017332
+        }
+      ]
+    },
+    {
+      "step": "normal-pause-finnish",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "288f6622c02ed48230a9a5a92a98779e77d335ec63fedafbaf7d0476fb7b2a85",
+      "snapshot": "normal-pause-finnish.png",
+      "snapshotSha256": "a801b24d784cbe3c8b215a6273808132ef57cadc54f1eeef2938f5fa793637aa",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1768,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 24,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "normal-pause-english",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "normal-pause-english.png",
+      "snapshotSha256": "933146eb5e94f38bd7c128fee19c78ff35eb3dc3b8b0c5ee1085ebb47141493b",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 24,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "seek-middle-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.046999999998661224,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "b18b1ff0eafca2f6e52b02cbeddff43e443c2722d40ba69f59d6aa96da6b8387",
+      "snapshot": "seek-middle-paused.png",
+      "snapshotSha256": "5f84d98aec9e2f96a26a69289f58b43c536ba5c99c10bf1b78072cafe48751f7",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1650,
+      "rgb": [
+        0,
+        0,
+        254
+      ],
+      "frameMarker": 625,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "seek-first-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "seek-first-paused.png",
+      "snapshotSha256": "7377c01d9a40b1377c4a2f8667f959fa8a6be662f5ea973da6494b226bde86b8",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "finnish-selected-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.030999999995401595,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "288f6622c02ed48230a9a5a92a98779e77d335ec63fedafbaf7d0476fb7b2a85",
+      "snapshot": "finnish-selected-paused.png",
+      "snapshotSha256": "18bb16053664431ba3622475a9a52efbe788a1d4a788a6e04c1fb1a9cc1762fc",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1768,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "same-track-selected-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "288f6622c02ed48230a9a5a92a98779e77d335ec63fedafbaf7d0476fb7b2a85",
+      "snapshot": "same-track-selected-paused.png",
+      "snapshotSha256": "f0304446ea76323dfae49ab0775c4809e5a3c5d34fef1ade9a4f1d7fc08b0133",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1768,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "repeat-0-eng",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01599999999598367,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "repeat-0-eng.png",
+      "snapshotSha256": "82ea6b0f74e464b92463356721ca71a65b1b97e5dabf38ac720ca0652bf64743",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "repeat-1-fin",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.014999999999417923,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "288f6622c02ed48230a9a5a92a98779e77d335ec63fedafbaf7d0476fb7b2a85",
+      "snapshot": "repeat-1-fin.png",
+      "snapshotSha256": "006a7fe52bede15e9090d572d73d95e001b908de0bd41bedc966ae800ec36f10",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1768,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "repeat-2-eng",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01600000000325963,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "16b4c0b28a74aa2a89cf144b16952044c2301233c84910107fc864f5567e6212",
+      "snapshot": "repeat-2-eng.png",
+      "snapshotSha256": "3a72d5b555e4bea02066013ec821765ede04ff46d538b55d6acff0ea04b052b6",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1483,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "repeat-3-fin",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "288f6622c02ed48230a9a5a92a98779e77d335ec63fedafbaf7d0476fb7b2a85",
+      "snapshot": "repeat-3-fin.png",
+      "snapshotSha256": "4133c9ce5f150166904fa5ebca890e0358ca84fd93469b661c7dfe5d67c93b77",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 1768,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "external-added-selected-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "56df861ff1c154734ebb64fd48811906/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.0930000000007567,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "552a87969ae28b6d7b42bbe3b4938c69e7be4b686bd7994cedea4ab8019f44a8",
+      "snapshot": "external-added-selected-paused.png",
+      "snapshotSha256": "8a38af85fbd156d20865e60c727226ad22baadb4e60fc8be840b8c9635a1a6c4",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2453,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "external-explicit-selected-paused",
+      "state": 3,
+      "timeUs": 907028,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "56df861ff1c154734ebb64fd48811906/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "552a87969ae28b6d7b42bbe3b4938c69e7be4b686bd7994cedea4ab8019f44a8",
+      "snapshot": "external-explicit-selected-paused.png",
+      "snapshotSha256": "eeab13af7b531f9abb41a10b93b9cace5ecfcc0d4f121c2ed54438133b4fde2f",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2453,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 123,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        },
+        {
+          "state": 3,
+          "timeUs": 907028
+        }
+      ]
+    },
+    {
+      "step": "external-after-resume",
+      "state": 3,
+      "timeUs": 5982104,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "56df861ff1c154734ebb64fd48811906/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54698536331
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0013330889336954893,
+            "rate": 1.0,
+            "ts": 80001,
+            "length": 60011000,
+            "systemDate": 54700001983
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54700919582
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.01733017280165303,
+            "rate": 1.0,
+            "ts": 1040001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.41659029177984036,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331805835596807,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08331807501957975,
+            "rate": 1.0,
+            "ts": 5000001,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.09968344136908233,
+            "rate": 1.0,
+            "ts": 5982104,
+            "length": 60011000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 54715411615
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06199999999807915,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "552a87969ae28b6d7b42bbe3b4938c69e7be4b686bd7994cedea4ab8019f44a8",
+      "snapshot": "external-after-resume.png",
+      "snapshotSha256": "6036f7990ab4ee5e13f39cdd98661e3dc3c84fac7df5eee5d85d871f2342ffaf",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2453,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 160,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5982104
+        },
+        {
+          "state": 3,
+          "timeUs": 5982104
+        },
+        {
+          "state": 3,
+          "timeUs": 5982104
+        }
+      ]
+    }
+  ],
+  "teardownComplete": true,
+  "initialPauseReached": true,
+  "resumeReached": true,
+  "playedPauseReached": true,
+  "finnishSelected": true,
+  "externalAddReturn": 0,
+  "externalTrackAdded": true,
+  "externalExplicitSelected": true,
+  "externalResumeReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "status": "terminal",
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-selection-20261023\\native-candidate-r2\\frame-marker.mp4-wasapi-automatic-ids\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-selection-20261023\\native-candidate-r2\\frame-marker.mp4-wasapi-automatic-ids\\runtime\\plugins\\plugins.dat: No error",
+    "mp4 warning: elst box found",
+    "mp4 warning: STTS table of 1 entries",
+    "mp4 warning: CTTS table of 499 entries",
+    "mp4 warning: elst box found",
+    "mp4 warning: STTS table of 4 entries",
+    "mp4 warning: elst box found",
+    "mp4 warning: STTS table of 6 entries",
+    "mp4 warning: elst box found",
+    "mp4 warning: STTS table of 6 entries",
+    "faad warning: decoded zero sample",
+    "main warning: window size missing",
+    "main warning: ES 0x3 is already unselected",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "main warning: non-dated audio buffer received"
+  ],
+  "actualWasapiSelected": true,
+  "actualAudioModules": [
+    "main debug: using audio output module \"mmdevice\"",
+    "main debug: using aout stream module \"wasapi\""
+  ],
+  "actualVideoDecoderLines": [
+    "avcodec debug: allowing 6 thread(s) for decoding",
+    "avcodec debug: using frame thread mode with 6 threads",
+    "main debug: using video decoder module \"avcodec\""
+  ],
+  "checks": {
+    "playPauseReady": true,
+    "pausedPictures": true,
+    "sampledClocksFrozen": true,
+    "captionsPresent": true,
+    "selectedLanguages": true,
+    "englishRestored": true,
+    "finnishDistinct": true,
+    "externalDistinct": true,
+    "normalFramesConserved": true,
+    "seekFramesConserved": true,
+    "explicitExternalSelected": true,
+    "resumeAdvanced": true,
+    "audioBackend": true,
+    "teardown": true,
+    "automaticExternalSelected": true,
+    "automaticExternalCaption": true,
+    "externalAdditionFrameConserved": true
+  },
+  "automaticExternalSelectionObserved": true,
+  "notQualified": [
+    "Cold initial caption delivery",
+    "WASAPI absolute paused get_time / exact media PTS",
+    "Desktop and physical audibility",
+    "Whole subtitle workflow and full beta"
+  ]
+}

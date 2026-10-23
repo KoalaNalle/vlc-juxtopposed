@@ -528,7 +528,7 @@ FocusScope {
             visible:root.sectionMatches(["Timing", "Subtitle delay"])
             SectionHeading{text:qsTr("Timing")}
             SettingRow{objectName:"subtitlessubtitleDelayRow";title:qsTr("Subtitle delay");visible:root.matches(title)||root.matches(qsTr("Timing"));opacity:root.supported("subtitleDelay")?1:.5
-                help:"";infoName:"subtitlessubtitleDelayInfo";controlHeight:(subtitleDelay.known?57:76)*root.uiScale
+                help:root.helpFor("subtitleDelay");infoName:"subtitlessubtitleDelayInfo";controlHeight:(subtitleDelay.known?57:76)*root.uiScale
                 ValueRange{id:subtitleDelay;valueKey:"subtitleDelay";accessibleTitle:qsTr("Subtitle delay")}
             }
         }

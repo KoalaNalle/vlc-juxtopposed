@@ -1,0 +1,91 @@
+{
+  "phase": "before",
+  "status": "terminal",
+  "passed": false,
+  "privateGui": true,
+  "privateCore": false,
+  "forcedCleanupUsed": false,
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "4a050d967539ad0c08afeb42bb98e0a0347e49bad8e7bbad512a4939db2166ee",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceManifestSha256": "711aa983ac87bafeb72b87f8113f5a83bd871c7fb4070e1a3ee456a42ede5b43",
+  "sourceCount": 2223,
+  "producerSha256": "0465e30f1c6025cbf36db250231fb43531365213f545a438c496db932105594d",
+  "qaSourceSha256": "d17f250e553ce4cb4578d7a87bccfc42c6112442f8f05bf52d3ddb2df3f15690",
+  "mediaSha256": "eff8af35a52060a728f89e8b4e75d6f85900077a7c9d0b21f9b13f25ff611a3e",
+  "command": [
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1b\\runtime\\vlc.exe",
+    "--intf=qt",
+    "--no-one-instance",
+    "--no-media-library",
+    "--no-crashdump",
+    "--no-qt-privacy-ask",
+    "--no-qt-updates-notif",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--config=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1b\\vlcrc",
+    "--file-logging",
+    "--log-verbose=2",
+    "--verbose=2",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1b\\vlc.log",
+    "--no-hw-dec",
+    "--no-sub-autodetect-file",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "pid": 29484,
+  "exitCode": 0,
+  "normalExit": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "native seek observer attaches",
+        "passed": true
+      },
+      {
+        "name": "synthetic media exists",
+        "passed": true
+      },
+      {
+        "name": "native player opens synthetic media",
+        "passed": true
+      },
+      {
+        "name": "normal video picture and published player statistics are ready",
+        "passed": true
+      },
+      {
+        "name": "native playback pauses before accessibility checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual accessible timeline value interface exists",
+        "passed": true
+      },
+      {
+        "name": "accessibility or pointer action reaches native seek",
+        "passed": false
+      }
+    ],
+    "error": "accessibility or pointer action reaches native seek",
+    "fullBetaAccepted": false,
+    "passed": false,
+    "privateFixture": true,
+    "requests": [],
+    "status": "awaiting-owned-window-inspection"
+  },
+  "runtimeUnchanged": true,
+  "sourceInputsUnchanged": true,
+  "mediaUnchanged": true,
+  "diagnostics": []
+}

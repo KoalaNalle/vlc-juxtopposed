@@ -1,0 +1,145 @@
+{
+  "family": "startup",
+  "case": "preserve-wasapi",
+  "status": "terminal",
+  "passed": true,
+  "privateCore": false,
+  "privateGui": false,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "sourceManifestSha256": "29035d3dfd95d7fb9e1e9b2dda8cf10cbc138827cfb6ac64b270a988a67d8a49",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+    "plugins/gui/libqt_plugin.dll": "d0ff14c66da4287a36a769754deead89c4ba616fb31fb8e1262c62a9a35e2678",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "fixtureSha256": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-r8\\preserve.mkv": "a7a6a18a83a1ca49caa437fe972bc19f8e94731c3ae2f7d49fa3ce32a9c80154"
+  },
+  "producerSha256": "c6567017d5e8e0516e8d26acbb0e1b82d90c5215a9185bb6d577fcd6a9f1f010",
+  "parentProducerSha256": "87800ece05414af6bd76f8dcbf112b6e6ad0729b1fae4a49efc43260595f4945",
+  "originalConfigSha256": "bb93fd5a464c59afaac769fccb195c69b13caff8db108f681bc0d3718b995dcd",
+  "pid": 18744,
+  "exitCode": 0,
+  "normalExit": true,
+  "result": {
+    "config": {
+      "name": "preserve-wasapi",
+      "media": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-r8\\preserve.mkv",
+      "audio": "wasapi",
+      "video": true,
+      "extraOptions": []
+    },
+    "passed": true,
+    "options": [
+      "--ignore-config",
+      "--no-media-library",
+      "--no-metadata-network-access",
+      "--no-ml-network-discovery",
+      "--no-osd",
+      "--no-video-title-show",
+      "--no-sub-autodetect-file",
+      "--vout=vdummy",
+      "--no-hw-dec",
+      "--audio-language=eng",
+      "--sub-language=eng",
+      "--verbose=2",
+      "--file-logging",
+      "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\startup-preserve-wasapi\\probe\\native.log",
+      "--aout=mmdevice",
+      "--mmdevice-backend=wasapi"
+    ],
+    "producerSha256": "c6567017d5e8e0516e8d26acbb0e1b82d90c5215a9185bb6d577fcd6a9f1f010",
+    "coreSha256": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+    "mediaSha256": "a7a6a18a83a1ca49caa437fe972bc19f8e94731c3ae2f7d49fa3ce32a9c80154",
+    "observations": [
+      {
+        "step": "initial-paused",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "selectedVideoTracks": 1,
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshotSha256": "62c301d5b579aef99f951629b7d47e9e5307b2d245a401a31443fd4b605b5bff",
+        "width": 960,
+        "height": 540
+      },
+      {
+        "step": "held-paused-0",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      },
+      {
+        "step": "held-paused-1",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      },
+      {
+        "step": "held-paused-2",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      },
+      {
+        "step": "held-paused-3",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      },
+      {
+        "step": "resumed",
+        "state": 2,
+        "timeUs": 263957,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      },
+      {
+        "step": "paused-again-or-ended",
+        "state": 3,
+        "timeUs": 264617,
+        "vouts": 1,
+        "selectedVideoTracks": 1
+      }
+    ],
+    "teardownComplete": true,
+    "assertions": {
+      "initialPaused": true,
+      "expectedVideoSelection": true,
+      "initialPicture": true,
+      "heldPausedClockStable": true,
+      "resumedOrShortMediaEnded": true,
+      "advancedOrShortMediaEnded": true,
+      "repausedOrShortMediaEnded": true
+    },
+    "playReturn": 0,
+    "initialPauseReached": true,
+    "stopReturn": 0,
+    "stopReached": true,
+    "diagnostics": [
+      "main error: window closed"
+    ],
+    "warnings": [
+      "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\runtime\\plugins\\plugins.dat: No error",
+      "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\runtime\\plugins\\plugins.dat: No error",
+      "avcodec warning: refusing to decode non validated subtitle codec",
+      "avcodec warning: refusing to decode non validated subtitle codec",
+      "faad warning: decoded zero sample",
+      "main warning: window size missing"
+    ],
+    "actualWasapiSelected": true
+  },
+  "sourceInputsUnchanged": true,
+  "parentUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true
+}

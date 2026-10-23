@@ -1847,6 +1847,7 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
     if (cat != AUDIO_ES && cat != SPU_ES && cat != VIDEO_ES)
         return VLC_EGENERIC;
     vlc_tick_t *cat_delay = &input->cat_delays[cat];
+    const vlc_tick_t old_delay = *cat_delay;
 
     if (absolute)
         *cat_delay = delay;
@@ -1863,6 +1864,8 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
                                es_format_category_to_string(cat),
                                (int)MS_FROM_VLC_TICK(delay));
         vlc_player_SendEvent(player, on_category_delay_changed, cat, delay);
+        if (cat == SPU_ES && old_delay != delay)
+            vlc_player_input_RefreshPausedSubtitle(input);
     }
     return VLC_SUCCESS;
 }
@@ -1895,6 +1898,7 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
         (trackpriv->t.fmt.i_cat != AUDIO_ES && trackpriv->t.fmt.i_cat != SPU_ES))
         return VLC_EGENERIC;
 
+    const vlc_tick_t old_delay = trackpriv->delay;
     if (absolute)
         trackpriv->delay = delay;
     else
@@ -1915,6 +1919,8 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
                                    trackpriv->t.name,
                                    (int)MS_FROM_VLC_TICK(delay));
         vlc_player_SendEvent(player, on_track_delay_changed, es_id, delay);
+        if (trackpriv->t.fmt.i_cat == SPU_ES && old_delay != delay)
+            vlc_player_input_RefreshPausedSubtitle(input);
     }
 
     return VLC_SUCCESS;

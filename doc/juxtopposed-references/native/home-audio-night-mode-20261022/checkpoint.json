@@ -1,0 +1,72 @@
+{
+  "passed": true,
+  "nightModeSavedDefaultsConsumerAccepted": true,
+  "fullBetaAccepted": false,
+  "date": "2026-10-22",
+  "scope": "Independent Night mode audio preset: saved defaults, real mono44100Hz PCM, paused-current-owner isolation, profile filter ownership, failure/retry, cold restart and ordinary Windows switch interaction.",
+  "preset": {
+    "peakRmsMix": 1,
+    "attackMs": 5,
+    "releaseMs": 200,
+    "thresholdDb": -18,
+    "ratio": 6,
+    "kneeDb": 5,
+    "makeupGainDb": 0
+  },
+  "pcm": {
+    "sourceFrames": 529200,
+    "windowsPerPass": 4,
+    "samplesPerWindow": 44100,
+    "loudOnToOffRmsRatio": 0.2436137857199521,
+    "loudReductionDb": -12.26596278607866,
+    "quietOnToOffRmsRatio": 1.000000235788189,
+    "offRestored": true
+  },
+  "evidence": {
+    "audioCases": 35,
+    "profileCases": 15,
+    "negativeAvailabilityFailuresExpected": 3,
+    "ordinaryUiProcesses": 3,
+    "sourceInputsR5": 2051
+  },
+  "identities": {
+    "guiR3": "0afa6ba23dec5275b292dedf6d7a5ee182d10070fd583cec24671214df403cb7",
+    "guiR4": "9069f43a5209aaf6347263c33dec76b5eaa131fe79a869cae785ef13c71006f9",
+    "nightMode": "99c4dabc35fb4ebd061b58187da2eec859fe368adaf346fa3dd8cf58d68193fb",
+    "audioTestR5": "a28679829586d92beec62ead84dc08da814578abba7e9ef74566669eb46cc33c",
+    "profileTestR3": "b99cdef0fe26ab662ebba90dcdaa5e097d5284490106ac9a92baa20ee7c2b05c",
+    "core": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6"
+  },
+  "knownLimits": [
+    "Mono44100Hz synthetic PCM reference; broader effect/format and device audibility acceptance remains separate.",
+    "No receiver, physical output routing, Windows10, full screen-reader, OS-DPI, performance or package promotion claim.",
+    "Compressor remains independent; enabling both intentionally stacks both effects.",
+    "Compression has attack/release and is not an absolute peak limiter."
+  ],
+  "sourceFreeze": "build-windows/beta-night-mode-20261022/source-r5; actual files plus snapshot.json verified before documentation changes.",
+  "rawBookkeeping": "Profile runner originally assumed16 cases; all13 discovered methods plus init/cleanup passed. Original aggregatefalse retained; separate review checks exact names and all15 results. R1 stale-moc setup failure and early output-name collision remain in ignored work.",
+  "artifacts": {
+    "audio-pcm.json": "8029253d66a63a0ac25c79dd44a39f34dcfd4d11ef366ad7ff8e7b2cc9677dc6",
+    "audio-results.txt": "a8e548739778c7c0b6acdcb5e418029933cb89e1a340de1151b50d3f9c246808",
+    "audio-results.xml": "88264d40d61c724206ffce880fabc27bcf52e4278faa122c265bb18d91f72338",
+    "audio-verification.json": "e81b8ad4f73730c6bcdd2e8455aad8da79848608673f97ba472b5907b95819b8",
+    "negative-control.json": "6b1c3c0899976f6882cbf9aeb4104a103460161107362000167e4a3be3bf90b6",
+    "negative-control.txt": "e95de87da59b6415f1dc418fcd4f9584e5d702d32e2eedb23fa39c8627f6f945",
+    "profile-functions.txt": "6b1d8513343d0668660563a2d8748b70947e6636970301c9b86e6c21eb2dd0a3",
+    "profile-inputs.json": "08016f05f6bd1b19a72c43cdef86cf06c2770c7a74d305ffef284281a78b4bf5",
+    "profile-results.txt": "cce74f413c0e300ccf1a3ee862288dc6014da194fcd4f397c86c56c3457020a3",
+    "profile-results.xml": "f26177ca0ba999d2d9c3a12dae100df275bc1220f112f0cde9622387fd621191",
+    "profile-verification-reviewed.json": "31399c00051f89c052049954f7aee2d18b9fdbcd29ca3e2f171eabafbec7cae5",
+    "profile-wrapper-original.json": "b7ef0064a606d728749080edd6a5c78b77282ded36e0e24245a7fbbc1f392183",
+    "reopen-r3-process.json": "0d2ae6f6e457f8d8f50217b2dad1af7c6431310448a645a7652168c75cf0c10e",
+    "reopen-r3-tree.txt": "c43432dc66d423a5606180afd2cea0903205da39180d223c2a95b40dbaab6994",
+    "source-inputs-r5.json": "b5076ccf47617177adb332fd9bc170d5c0623a7382151eec7eb91972e89521d9",
+    "ui-observations.json": "e33ba38803872d44d85d6b5a5b7b5279adc90670f2686399276c7fea35ee6e55",
+    "ui-r3-after-tree.txt": "9de91f7f24fe7208cf063cf1c7b60034676eb3aeca7206cc729ff4c1e12ba91e",
+    "ui-r3-before-tree.txt": "9de91f7f24fe7208cf063cf1c7b60034676eb3aeca7206cc729ff4c1e12ba91e",
+    "ui-r3-process.json": "37464e1e73e32f5ebd3b3268d0c4e028245940f9a6c811f80ae2346f00984859",
+    "ui-r4-after-right-tree.txt": "d2c38f6030d504089087f9186f902beb358e0b5073bac366060c01f5fe77db3b",
+    "ui-r4-help-tree.txt": "90b8a1eea163fc1f233df81b3c4778d80206ec682af18195af1aeecebc84ff72",
+    "ui-r4-process.json": "b542d6881492280884348a58691dcd5b1769d7d5541b4147a51ba8b388b780d0"
+  }
+}

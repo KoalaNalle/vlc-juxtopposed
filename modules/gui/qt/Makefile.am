@@ -333,6 +333,7 @@ libqt_plugin_la_SOURCES = \
 	player/player_timer_point.hpp \
 	player/audio_equalizer.cpp player/audio_equalizer.hpp \
 	player/audio_waveform.cpp player/audio_waveform.hpp \
+	player/timeline_thumbnails.cpp player/timeline_thumbnails.hpp \
 	player/local_music_folder.cpp player/local_music_folder.hpp \
 	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
 	dialogs/conversion_controller.cpp dialogs/conversion_controller.hpp \
@@ -574,6 +575,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/player_controller.moc.cpp \
 	player/audio_equalizer.moc.cpp \
 	player/audio_waveform.moc.cpp \
+	player/timeline_thumbnails.moc.cpp \
 	player/local_music_folder.moc.cpp \
 	dialogs/network_stream_model.moc.cpp \
 	dialogs/conversion_controller.moc.cpp \
@@ -1539,6 +1541,7 @@ libqml_module_player_a_QML = \
 	player/qml/MinimalView.qml \
 	player/qml/ResumeDialog.qml \
 	player/qml/SliderBar.qml \
+	player/qml/TimelineThumbnail.qml \
 	player/qml/TopBar.qml \
 	player/qml/TracksMenu.qml \
 	player/qml/TracksPage.qml \
@@ -2368,6 +2371,24 @@ test_qt_player_timer_point_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_player_timer_point
 TESTS += test_qt_player_timer_point
 
+test_qt_timeline_thumbnails_SOURCES = \
+	tests/test_timeline_thumbnails.cpp tests/media_player_probe.c \
+	player/timeline_thumbnails.cpp player/timeline_thumbnails.hpp
+nodist_test_qt_timeline_thumbnails_SOURCES = \
+	tests/test_timeline_thumbnails.moc player/timeline_thumbnails.moc.cpp
+BUILT_SOURCES += tests/test_timeline_thumbnails.moc
+CLEANFILES += tests/test_timeline_thumbnails.moc
+tests/test_qt_timeline_thumbnails-test_timeline_thumbnails.$(OBJEXT): tests/test_timeline_thumbnails.moc
+test_qt_timeline_thumbnails_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_timeline_thumbnails_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_timeline_thumbnails_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_timeline_thumbnails_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_timeline_thumbnails
+TESTS += test_qt_timeline_thumbnails
+if HAVE_WIN32
+test_qt_timeline_thumbnails_LDADD += -lws2_32
+endif
+
 test_qt_local_music_folder_SOURCES = \
 	tests/test_local_music_folder.cpp tests/media_player_probe.c tests/network_stream_probe.c \
 	player/local_music_folder.cpp player/local_music_folder.hpp
@@ -2453,6 +2474,8 @@ if HAVE_QT_QTEST
 # Actual PlayerController callbacks on the native NORMAL-lock playlist player.
 qt_player_controller_test_sources = \
 	tests/vlc_stub_modules.cpp \
+	util/checked_preferences_store.cpp \
+	util/checked_preferences_store.hpp \
 	player/player_controller.cpp \
 	player/input_models.cpp \
 	player/audio_equalizer.cpp \
@@ -3083,6 +3106,11 @@ EXTRA_DIST += tests/test_sidebar_pins_store.cpp tests/native_library/sidebar-pin
 
 EXTRA_DIST += tests/test_juxtopposed_sidebar_pins.py \
     tests/native_ui/sidebar_pins_journey.cpp tests/native_ui/sidebar_pins_journey.mk \
+    tests/native_ui/timeline_thumbnail_journey.cpp \
+    tests/native_library/make_timeline_thumbnail_fixtures.sh \
+    tests/native_library/make_timeline_geometry_fixtures.py \
+    tests/native_library/make_timeline_playback_fixtures.sh \
+    tests/native_library/make_timeline_format_fixtures.py \
     tests/native_ui/run_sidebar_pins_journey.py tests/native_ui/movable_dialog_journey.hpp \
     tests/native_ui/navigation_recovery_journey.hpp tests/native_ui/dialog_busy_journey.hpp \
     tests/native_ui/setup_journey.hpp tests/test_juxtopposed_setup.py
@@ -3101,6 +3129,20 @@ EXTRA_DIST += tests/test_player_profiles_store.cpp tests/test_player_profile_pre
     tests/native_library/playback-consumers.mk tests/native_library/run_playback_consumers.py \
     tests/native_library/player-profiles.mk tests/native_library/profile-preferences.mk \
     tests/native_library/profile-layout.mk tests/native_library/profile-model.mk
+EXTRA_DIST += tests/test_juxtopposed_queue_find.py
+EXTRA_DIST += tests/test_queue_filter_layout.py
+EXTRA_DIST += tests/test_tracks_popup_input.py
+EXTRA_DIST += tests/test_tracks_cancel_navigation.cpp tests/native_library/tracks-navigation.mk
+EXTRA_DIST += tests/test_native_paused_audio_seek.cpp tests/native_library/paused-audio.mk
+EXTRA_DIST += tests/test_player_seek_timer_point.cpp tests/player_seek_timer_probe.c \
+	tests/generate_player_seek_timer_test.py tests/native_library/seek-timer-point.mk
+EXTRA_DIST += tests/native_library/key-routing.mk
+EXTRA_DIST += util/queue_find_key_scope.hpp
+EXTRA_DIST += tests/test_item_key_event_filter.cpp tests/native_library/item-key-filter.mk
+EXTRA_DIST += util/detached_window_placement.hpp tests/test_detached_window_placement.cpp tests/native_library/detached-placement.mk
+EXTRA_DIST += tests/test_playlist_view_lifetime.py
+EXTRA_DIST += tests/test_playlist_visibility.py
+EXTRA_DIST += tests/test_queue_row_pointer.py
 
 if ENABLE_QT
 if HAVE_QT_QTEST
@@ -3127,3 +3169,5 @@ check_PROGRAMS += test_qt_setup_preferences
 TESTS += test_qt_setup_preferences
 endif
 endif
+
+EXTRA_DIST += tests/native_ui/seek_accessibility_journey.cpp tests/native_ui/seek_accessibility_journey.md

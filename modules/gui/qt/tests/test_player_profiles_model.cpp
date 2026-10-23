@@ -110,6 +110,39 @@ private slots:
         reopenModel();QVERIFY(model->available());QVERIFY(model->selectProfile(QStringLiteral("shows")));QCOMPARE(config_GetInt("audio-desync"),int64_t(0));
         QVERIFY(model->selectProfile(QStringLiteral("movies")));QCOMPARE(config_GetInt("audio-desync"),int64_t(100));
     }
+    void legacyThumbnailProfilesSelectAndRecover() {
+        QCOMPARE(config_GetType("qt-timeline-thumbnails"),VLC_VAR_BOOL);
+        auto old=savedDefaults();old.insert(QStringLiteral("layout"),model->layout()->snapshot());
+        auto playback=old.value(QStringLiteral("playback")).toMap();
+        QVERIFY(playback.remove(QStringLiteral("qt-timeline-thumbnails")));
+        old[QStringLiteral("playback")]=playback;
+        model.reset();
+        for(int operation : {0,1,2}) {
+            const auto legacyPath=settingsPath+QStringLiteral(".legacy-%1").arg(operation);
+            QSettings legacy(legacyPath,QSettings::IniFormat);
+            QString error;
+            {
+                PlayerProfilesStore store(&legacy);
+                QVERIFY2(store.reload(old,error),qPrintable(error));
+                // reload() keeps fresh factory profiles in memory. Persist a
+                // genuine old catalog before opening it with the new model.
+                QVERIFY2(store.beginSwitch(QStringLiteral("shows"),old,error),qPrintable(error));
+                if(!operation)QVERIFY2(store.finishSwitch(old,error),qPrintable(error));
+            }
+            QVERIFY(nativeChange({{QStringLiteral("qt-timeline-thumbnails"),operation==0}}));
+            const auto original=bytes(legacyPath);
+            PlayerProfilesModel candidate(native.intf,&legacy);
+            QVERIFY(candidate.available());QCOMPARE(bytes(legacyPath),original); // Read-only interpretation.
+            QCOMPARE(candidate.needsRecovery(),operation!=0);
+            const bool accepted=operation==0 ? candidate.selectProfile(QStringLiteral("music"))
+                : operation==1 ? candidate.retrySwitch() : candidate.restorePreviousProfile();
+            QVERIFY2(accepted,qPrintable(candidate.lastError()));
+            QVERIFY(!candidate.needsRecovery());
+            QCOMPARE(config_GetInt("qt-timeline-thumbnails"),int64_t(0));
+            QCOMPARE(candidate.selectedId(),operation==0 ? QStringLiteral("music")
+                : operation==2 ? QStringLiteral("movies") : QStringLiteral("shows"));
+        }
+    }
     void cancellingAndRejectedNamesPreserveActiveAndSavedProfiles() {
         QVERIFY(model->createProfile(QStringLiteral("Keep")));const auto before=bytes(settingsPath);const auto active=model->layout()->snapshot();
         QVERIFY(model->beginLayoutEdit());QVERIFY(model->layout()->insertTile(0,1,0,ControlListModel::STOP_BUTTON));

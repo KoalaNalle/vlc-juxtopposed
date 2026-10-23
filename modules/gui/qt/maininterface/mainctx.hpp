@@ -75,6 +75,7 @@ class ColorSchemeModel;
 class GeneralPreferencesModel;
 class InterfacePreferencesModel;
 class PlaybackPreferencesModel;
+class TimelineThumbnails;
 class VideoPreferencesModel;
 class AudioPreferencesModel;
 class SubtitlesPreferencesModel;
@@ -91,6 +92,7 @@ Q_MOC_INCLUDE("maininterface/player_profiles_model.hpp")
 Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
+Q_MOC_INCLUDE("player/timeline_thumbnails.hpp")
 Q_MOC_INCLUDE("maininterface/video_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/audio_preferences_model.hpp")
 Q_MOC_INCLUDE("maininterface/subtitles_preferences_model.hpp")
@@ -155,6 +157,7 @@ class MainCtx : public QObject
     Q_PROPERTY(GeneralPreferencesModel* generalPreferences READ getGeneralPreferences CONSTANT FINAL)
     Q_PROPERTY(InterfacePreferencesModel* interfacePreferences READ getInterfacePreferences CONSTANT FINAL)
     Q_PROPERTY(PlaybackPreferencesModel* playbackPreferences READ getPlaybackPreferences CONSTANT FINAL)
+    Q_PROPERTY(TimelineThumbnails* timelineThumbnails READ getTimelineThumbnails CONSTANT FINAL)
     Q_PROPERTY(VideoPreferencesModel* videoPreferences READ getVideoPreferences CONSTANT FINAL)
     Q_PROPERTY(AudioPreferencesModel* audioPreferences READ getAudioPreferences CONSTANT FINAL)
     Q_PROPERTY(SubtitlesPreferencesModel* subtitlesPreferences READ getSubtitlesPreferences CONSTANT FINAL)
@@ -306,6 +309,7 @@ public:
     inline GeneralPreferencesModel* getGeneralPreferences() const { return m_generalPreferences; }
     inline InterfacePreferencesModel* getInterfacePreferences() const { return m_interfacePreferences; }
     inline PlaybackPreferencesModel* getPlaybackPreferences() const { return m_playbackPreferences; }
+    inline TimelineThumbnails* getTimelineThumbnails() const { return m_timelineThumbnails; }
     inline VideoPreferencesModel* getVideoPreferences() const { return m_videoPreferences; }
     inline AudioPreferencesModel* getAudioPreferences() const { return m_audioPreferences; }
     inline SubtitlesPreferencesModel* getSubtitlesPreferences() const { return m_subtitlesPreferences; }
@@ -441,6 +445,8 @@ public:
         return window->format().depthBufferSize() > 0;
     }
 
+    Q_INVOKABLE static void placeDetachedQueue(QWindow *window, const QWindow *owner);
+
     // TODO: This functions is akin to Window Web API's `setTimeout()`. Get rid of this once
     //       once Qt implements it.
     Q_INVOKABLE static void setTimeout(const QJSValue& func, const int delay, const QJSValueList& params = {}, const QObject* context = nullptr)
@@ -545,6 +551,7 @@ protected:
     GeneralPreferencesModel* m_generalPreferences = nullptr;
     InterfacePreferencesModel* m_interfacePreferences = nullptr;
     PlaybackPreferencesModel* m_playbackPreferences = nullptr;
+    TimelineThumbnails* m_timelineThumbnails = nullptr;
     VideoPreferencesModel* m_videoPreferences = nullptr;
     AudioPreferencesModel* m_audioPreferences = nullptr;
     SubtitlesPreferencesModel* m_subtitlesPreferences = nullptr;

@@ -1,0 +1,6 @@
+{
+  "status": "preflight-assertion-rejected-overgeneralized-conclusion",
+  "repairAccepted": false,
+  "cause": "The first publication checker incorrectly expected every audio-enabled case to miss its initial picture. Plain-wasapi actually succeeds. The checker stopped before creating any README/checkpoint; partial raw copies were retained and checked byte-for-byte on resume.",
+  "correction": "Plain-wasapi is recorded as a positive counterexample. Three additional remux controls were run normally; all preserve compressed video packet payloads, shift video PTS21ms and start paused successfully. Final conclusions retain this confounding factor instead of attributing the issue to audio alone."
+}

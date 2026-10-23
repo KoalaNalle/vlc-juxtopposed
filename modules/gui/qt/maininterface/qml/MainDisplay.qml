@@ -257,8 +257,8 @@ FocusScope {
         plListView: {
             if (playlistLoader.active)
                 return playlistLoader.item
-            else if (playlistWindowLoader.status === Loader.Ready)
-                return playlistWindowLoader.item.playlistView
+            else if (playlistWindowLoader?.status === Loader.Ready)
+                return playlistWindowLoader.item?.playlistView ?? null
             else
                 return null
         }
@@ -281,8 +281,8 @@ FocusScope {
         plListView: {
             if (playlistLoader.active)
                 return playlistLoader.item
-            else if (playlistWindowLoader.status === Loader.Ready)
-                return playlistWindowLoader.item.playlistView
+            else if (playlistWindowLoader?.status === Loader.Ready)
+                return playlistWindowLoader.item?.playlistView ?? null
             else
                 return null
         }

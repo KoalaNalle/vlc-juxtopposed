@@ -1,0 +1,31 @@
+{
+  "status": "terminal",
+  "passed": false,
+  "privateFixture": true,
+  "syntheticMedia": true,
+  "forcedCleanupUsed": false,
+  "fullBetaAccepted": false,
+  "identities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/gui/libqt_plugin.dll": "ffa6387d69a2fce65b4abe980632a736488e40964d29817435f24171b09c0873",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "fa9f91e403e9072308ff1d2a55ca5610bcdb40b68c5ae711066af04b372dde31",
+  "phases": {},
+  "pid": 4820,
+  "loopbackPort": 55904,
+  "nativeRegression": {
+    "allPassed": false,
+    "checks": [],
+    "privateFixture": true,
+    "setupError": "qrc:/owned-scrollbar-regression.qml:2 module \"QtQuick.Controls\" plugin \"qtquickcontrols2plugin\" not found\n"
+  },
+  "nativeRegressionExpectedPass": false,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "diagnostics": [],
+  "scope": "PRIVATE native scrollbar regression, real Qt hidden component, repeated activation/action/deactivation/reactivation. Runner passed means lifecycle and expected regression outcome, including expected baseline failure; nativeRegression.allPassed is the actual functional oracle. No production fix acceptance, resource interval, media or debugger."
+}

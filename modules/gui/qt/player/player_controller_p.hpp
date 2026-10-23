@@ -146,7 +146,7 @@ public:
     VLCDuration  m_subtitleDelay;
     // Invalid means inherit category delay; never store INT64_MAX as a duration.
     VLCDuration  m_secondarySubtitleDelay;
-    float        m_subtitleFPS = 1.0;
+    float        m_subtitleFPS = 0.f;
 
     //timer
     vlc_player_timer_id* m_player_timer = nullptr;

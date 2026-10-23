@@ -1,0 +1,23 @@
+{
+  "queueFindShortcutAccepted": true,
+  "fullQueueWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "ordinaryGui": "903dc97739c6dee409e43e9aeda4a92f9b9757d36c87bfcc9ec91133a0420bb6",
+  "inputMethod": "Computer Use pointer and keyboard in the ordinary Windows11 app; synthetic silent WAV files only.",
+  "passedChecks": [
+    "Mouse-select Birch; Ctrl+F opens only the queue filter, without Open Folder.",
+    "Typing Birch yields one Birch row and the visible summary 1 item - 30s.",
+    "Escape clears/closes the filter and restores all five rows in their initial visible order.",
+    "Sort queue > Title produces Aspen, Birch, Cedar, Dune, Echo.",
+    "Bookmarks Ctrl+F opens the native Open Folder dialog; Escape dismisses it without selecting anything.",
+    "Queue hide/show retains sorted order; Find works again after mouse focus returns.",
+    "Cedar remains current and paused at 00:00:00 throughout; normal Ctrl+Q exits with code0."
+  ],
+  "unacceptedChecks": [
+    "Two drag attempts (Echo handle, then row body) did not change order. Cause not established; native drag/drop acceptance remains open.",
+    "No queue removal, native file addition, detached queue, screen reader or Windows DPI acceptance in this ordinary run.",
+    "Media library was disabled; Bookmarks showed its explicit unavailable message. Bookmark editing is not accepted by this run."
+  ],
+  "observationFile": "build-windows/beta-queue-workflow-20261022/ordinary-ui-r8-observations.json",
+  "note": "The original process receipt intentionally keeps passed=false/observationsRequired=true. This separate review qualifies only the checks listed here. UIA tree order and focused-element labels can be stale; final row order and filter caret were reviewed visually."
+}

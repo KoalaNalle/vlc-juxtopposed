@@ -323,33 +323,38 @@ vlc_player_UpdateTimerSeekState(vlc_player_t *player, vlc_tick_t time,
     vlc_mutex_lock(&player->timer.lock);
     struct vlc_player_timer_source *source = &player->timer.best_source;
 
+    /* The input can publish its duration before the first output clock point,
+     * notably when audio starts paused. Use that current input information for
+     * the request; an output point may still be unset or belong to old timing. */
+    const vlc_tick_t length = player->timer.input_length;
+    const bool live = player->timer.input_live;
+
     if (time == VLC_TICK_INVALID)
     {
         assert(position >= 0);
-        if (source->point.length != VLC_TICK_INVALID)
-            player->timer.seek_ts = position * source->point.length;
+        if (length != VLC_TICK_INVALID)
+            player->timer.seek_ts = position * length;
         else
             player->timer.seek_ts = VLC_TICK_INVALID;
     }
     else
         player->timer.seek_ts = time;
 
+    player->timer.seek_position = position;
     if (position < 0)
     {
         assert(time != VLC_TICK_INVALID);
-        if (source->point.length != VLC_TICK_INVALID && !source->point.live)
-            player->timer.seek_position = time / (double) source->point.length;
+        if (length != VLC_TICK_INVALID && !live)
+            player->timer.seek_position = time / (double) length;
     }
-    else
-        player->timer.seek_position = position;
 
     const struct vlc_player_timer_point point =
     {
         .position = player->timer.seek_position,
         .rate = source->point.rate,
         .ts = player->timer.seek_ts,
-        .length = source->point.length,
-        .live = source->point.live,
+        .length = length,
+        .live = live,
         .system_date = VLC_TICK_MAX,
     };
 

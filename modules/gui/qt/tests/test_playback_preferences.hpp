@@ -36,6 +36,7 @@ private slots:
     void nativeInputDefaultsAndMixedOpticalPaths();
     void timeShiftNativeBytesAndDirectory();
     void preciseSeekingRequiresActualConsumerGate();
+    void thumbnailPolicyPersistenceAndGate();
     void saveFailurePreservesDiskConfigAndLiveState_data();
     void saveFailurePreservesDiskConfigAndLiveState();
     void missingServiceAndActualPickerBoundary();

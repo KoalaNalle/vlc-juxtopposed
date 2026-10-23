@@ -8,6 +8,7 @@
 #include "qt.hpp"
 #include "util/singleton.hpp"
 #include "util/vlchotkeyconverter.hpp"
+#include "util/queue_find_key_scope.hpp"
 #include <vlc/vlc.h>
 #include <vlc_actions.h>
 #include <QCoreApplication>
@@ -229,6 +230,68 @@ private slots:
         key(&receiver,QEvent::KeyPress,Qt::Key_Space,Qt::ControlModifier);
         key(&receiver,QEvent::KeyRelease,Qt::Key_Space,Qt::ControlModifier);
         QCOMPARE(dispatched,(QVector<int64_t>{'f',KEY_MODIFIER_CTRL|' '}));
+        QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
+        compositor.focus = nullptr;
+    }
+    void mouseFocusedQueueOwnsFindButPreservesOtherHotkeys() {
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); QQuickItem queue; queue.setProperty("queueFindKeyScope",true);
+        KeyReceiver receiver; receiver.setParentItem(&queue); compositor.focus = &receiver;
+        MainCtx context(interface); InterfaceWindowHandler handler(interface,&context);
+        receiver.installEventFilter(&handler);
+        key(&receiver,QEvent::KeyPress,Qt::Key_F,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_F,Qt::ControlModifier);
+        QCOMPARE(receiver.presses,(QVector<int>{Qt::Key_F}));
+        QCOMPARE(receiver.releases,receiver.presses); QVERIFY(dispatched.isEmpty());
+        receiver.presses.clear(); receiver.releases.clear();
+        key(&receiver,QEvent::KeyPress,Qt::Key_F); key(&receiver,QEvent::KeyRelease,Qt::Key_F);
+        key(&receiver,QEvent::KeyPress,Qt::Key_O,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_O,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyPress,Qt::Key_F,Qt::ControlModifier|Qt::ShiftModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_F,Qt::ControlModifier|Qt::ShiftModifier);
+        QCOMPARE(dispatched,(QVector<int64_t>{'f',KEY_MODIFIER_CTRL|'o',KEY_MODIFIER_CTRL|KEY_MODIFIER_SHIFT|'f'}));
+        QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
+        compositor.focus = nullptr;
+    }
+    void inactiveOrHiddenQueueLeavesFindGlobal_data() {
+        QTest::addColumn<int>("state");
+        QTest::newRow("other-tab-or-legacy") << 0;
+        QTest::newRow("hidden-queue") << 1;
+        QTest::newRow("outside-queue") << 2;
+    }
+    void directPlayerDispatchRespectsFocusedQueueFind() {
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        QQuickItem queue; queue.setProperty("queueFindKeyScope",true);
+        KeyReceiver receiver; receiver.setParentItem(&queue); compositor.focus = &receiver;
+        MainCtx context(interface); dispatched.clear();
+        context.sendHotkey(Qt::Key_F,Qt::ControlModifier);
+        const auto focusedFind = dispatched;
+        dispatched.clear();
+        context.sendHotkey(Qt::Key_F,Qt::NoModifier);
+        context.sendHotkey(Qt::Key_O,Qt::ControlModifier);
+        context.sendVLCHotkey(KEY_MOUSEWHEELUP);
+        const auto otherKeys = dispatched;
+        dispatched.clear(); queue.setProperty("queueFindKeyScope",false);
+        context.sendHotkey(Qt::Key_F,Qt::ControlModifier);
+        const auto inactiveFind = dispatched;
+        compositor.focus = nullptr;
+        QCOMPARE(focusedFind,(QVector<int64_t>{}));
+        QCOMPARE(otherKeys,(QVector<int64_t>{'f',KEY_MODIFIER_CTRL|'o',KEY_MOUSEWHEELUP}));
+        QCOMPARE(inactiveFind,(QVector<int64_t>{KEY_MODIFIER_CTRL|'f'}));
+    }
+    void inactiveOrHiddenQueueLeavesFindGlobal() {
+        QFETCH(int,state);
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); QQuickItem queue; queue.setProperty("queueFindKeyScope",state!=0);
+        if (state==1) queue.setVisible(false);
+        KeyReceiver receiver;
+        if (state!=2) receiver.setParentItem(&queue);
+        compositor.focus = &receiver;
+        MainCtx context(interface); InterfaceWindowHandler handler(interface,&context);
+        receiver.installEventFilter(&handler);
+        key(&receiver,QEvent::KeyPress,Qt::Key_F,Qt::ControlModifier);
+        key(&receiver,QEvent::KeyRelease,Qt::Key_F,Qt::ControlModifier);
+        QCOMPARE(dispatched,(QVector<int64_t>{KEY_MODIFIER_CTRL|'f'}));
         QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
         compositor.focus = nullptr;
     }

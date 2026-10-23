@@ -2,7 +2,9 @@
 ifndef PROPOSAL_OUT
 $(error Set PROPOSAL_OUT to a fresh owned output directory)
 endif
-AUDIO_STARTUP_CPPFLAGS = $(DEFS) $(DEFAULT_INCLUDES) $(CPPFLAGS) $(AM_CPPFLAGS) $(QT_QTEST_COMMON_cppflags) -I$(srcdir) -I$(top_srcdir) -I$(top_srcdir)/src -I$(PROPOSAL_OUT)
+# Prefer the generated test metadata for this owned build over a stale moc in
+# the main Qt build directory. Source-relative includes keep their usual order.
+AUDIO_STARTUP_CPPFLAGS = -iquote $(PROPOSAL_OUT) $(DEFS) $(DEFAULT_INCLUDES) $(CPPFLAGS) $(AM_CPPFLAGS) $(QT_QTEST_COMMON_cppflags) -I$(srcdir) -I$(top_srcdir) -I$(top_srcdir)/src -I$(PROPOSAL_OUT)
 .PHONY: audio-startup-native
 audio-startup-native: $(PROPOSAL_OUT)/test_qt_audio_startup_consumer.exe
 $(PROPOSAL_OUT):

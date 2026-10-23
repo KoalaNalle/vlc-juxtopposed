@@ -25,6 +25,7 @@ import VLC.Style
 
 
 Window {
+    id: root
     visible: _componentCompleted && MainCtx.playqueuePanel.visible
 
     transientParent: MainCtx.intfMainWindow
@@ -44,8 +45,13 @@ Window {
             console.assert(transientParent)
             height = transientParent.height
             minimumHeight = transientParent.minimumHeight
-            x = transientParent.x + transientParent.width + 10
-            y = transientParent.y
+            MainCtx.placeDetachedQueue(this, transientParent)
+            // Windows may report zero frame margins while the native window
+            // is hidden. Recheck after showing it so its title bar also fits.
+            Qt.callLater(function() {
+                if (root.visible)
+                    MainCtx.placeDetachedQueue(root, root.transientParent)
+            })
         }
     }
 

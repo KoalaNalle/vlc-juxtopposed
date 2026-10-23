@@ -37,6 +37,7 @@
 #include <mmreg.h>
 #include <audioclient.h>
 #include "mmdevice.h"
+#include "wasapi_role.h"
 
 #include <vlc_codecs.h> // GUID_FMT/GUID_PRINT
 
@@ -798,6 +799,17 @@ static HRESULT Start(aout_stream_t *s, audio_sample_format_t *restrict pfmt,
     }
     sys->client = pv;
 
+    char *role = var_InheritString(s, "role");
+    HRESULT role_hr = vlc_wasapi_SetMediaRole(sys->client, role);
+    if (SUCCEEDED(role_hr))
+        msg_Dbg(s, "media role \"%s\" category %u accepted",
+                role != NULL ? role : "", (unsigned)vlc_wasapi_MediaCategory(role));
+    else if (role_hr == E_NOINTERFACE)
+        msg_Dbg(s, "audio stream category interface unavailable");
+    else
+        msg_Warn(s, "cannot set media role \"%s\" (error 0x%lX)",
+                 role != NULL ? role : "", role_hr);
+    free(role);
 
     if (b_spdif || b_hdmi)
     {

@@ -1,0 +1,23 @@
+{
+  "selectedWorkflowAccepted": true,
+  "fullQueueWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "method": "Computer Use in the ordinary Windows11 app with isolated portable settings/media library and synthetic chaptered MKV/plain MP4.",
+  "passedChecks": [
+    "Chapter labels visibly show00:00:00,00:00:06,00:00:12; pointer double-click seeks toBlue at6s in R16.",
+    "In R17, clickGreen then Enter seeks to12s with the Green picture while remaining paused.",
+    "UI Add creates bookmarks at6s and12s. Click a bookmark then Enter seeks to0 while paused.",
+    "Switching to the plain file clears the bookmark list and shows the no-chapters state. Returning to the chaptered file restores all three original bookmarks.",
+    "Cold restart restores all three bookmarks. Double-clicking the new12s row seeks to the Green picture at12s while paused.",
+    "Both final processes quit normally with exit0, no captured runtime errors/Qt exceptions and unchanged source/runtime identities."
+  ],
+  "limits": [
+    "No ordinary UI bookmark removal/rename, physical touch/screen-reader/DPI, all file formats, Windows10 or full design/package acceptance.",
+    "Next/Previous start playback. The short18s fixture reaches EOF during one return/refresh and advances to the plain file; that raw state is retained. A later return is paused and the original bookmarks are verified. No seek/quit/animation latency bound is claimed.",
+    "Process receipts retain passed=false/observationsRequired=true. This review accepts only the observed checks."
+  ],
+  "observations": [
+    "build-windows/beta-queue-workflow-20261022/ordinary-ui-r17/first-run/ui-observations.json",
+    "build-windows/beta-queue-workflow-20261022/ordinary-ui-r17/restart-run/ui-observations.json"
+  ]
+}

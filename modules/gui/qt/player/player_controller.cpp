@@ -45,6 +45,7 @@
 #endif
 
 #include <cassert>
+#include <cmath>
 
 #define POSITION_MIN_UPDATE_INTERVAL VLC_TICK_FROM_MS(15)
 
@@ -1290,6 +1291,7 @@ PlayerControllerPrivate::PlayerControllerPrivate(PlayerController *playercontrol
 {
     {
         vlc_player_locker locker{m_player};
+        m_subtitleFPS = vlc_player_GetAssociatedSubsFPS(m_player);
         m_player_listener = vlc_player_AddListener( m_player, &player_cbs, this );
         m_player_aout_listener = vlc_player_aout_AddListener( m_player, &player_aout_cbs, this );
         m_player_vout_listener = vlc_player_vout_AddListener( m_player, &player_vout_cbs, this );
@@ -1635,6 +1637,8 @@ void PlayerController::setSecondarySubtitleDelayMS(int ms)
 
 void PlayerController::setSubtitleFPS(float fps)
 {
+    if (!std::isfinite(fps) || fps < 0.f)
+        return;
     Q_D(PlayerController);
     vlc_player_locker lock{ d->m_player };
     if( !d->isCurrentItemSynced() )

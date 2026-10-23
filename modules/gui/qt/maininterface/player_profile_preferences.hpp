@@ -15,6 +15,9 @@ public:
     explicit PlayerProfilePreferences(qt_intf_t *intf) : m_intf(intf) {}
     static QStringList groups();
     static QStringList nativeKeys(const QString &group);
+    // Profiles saved before previews existed inherit their original off policy.
+    // This is an in-memory interpretation; loading never rewrites saved data.
+    static QVariantMap compatibleDefaults(QVariantMap);
     bool snapshot(QVariantMap &result, QString &error) const;
     // Validates both destinations and the ability to restore every changed
     // source field before the coordinator writes its switch journal.

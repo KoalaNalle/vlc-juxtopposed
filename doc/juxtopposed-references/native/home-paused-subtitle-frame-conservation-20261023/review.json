@@ -1,0 +1,19 @@
+{
+  "productionApplied": false,
+  "selectedRepairAccepted": false,
+  "fullBetaAccepted": false,
+  "ordinaryRuntime": "build-windows/beta-caption-layout-20261023/ui-after-r1/runtime",
+  "acceptedCoreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "candidateCoreSha256": "23d9b1b512ab297caadfe97b96437298f36bf343871d3baf7eeb840e0061dd2f",
+  "finding": "Timer video points include the VLC_TICK_0 origin. The demux precise seek adds that origin to its relative date. Use the current displayed-video/SMPTE point, remove its origin for the demux target and retain the original point for timer publication. Pending user targets keep their existing domain.",
+  "evidence": "Independently generated 11-bit red/black frame marker; 1500 frames at25fps and four direct FFmpeg reference extractions. Actual native snapshots show old candidate advancing125 to131 without audio, while the corrected candidate retains125 with captions through six changed selections and25 through two changes, in both audio modes.",
+  "limitations": [
+    "Private candidate with diagnostic logging; not the ordinary acceptance build.",
+    "The legacy child passed=false/privateCore=false labels are inherited probe metadata, not build-role proof. Parent runtime hashes identify all variants.",
+    "WASAPI public paused get_time remains stale or changes after reconstruction; only actual marker frames qualify its picture conservation.",
+    "No exact-caption-layout, ASS/MP4/unknown-frame-rate, pending-seek stress, disabled/recording policy, desktop, physical-audibility, DPI or full-beta acceptance.",
+    "Cold initial captions and b_select=true automatic external selection remain open; explicit selected-ID replacement is the qualified action.",
+    "Native buffer-deadlock prevention and vdummy window-closed errors remain recorded; no error-free-log claim."
+  ],
+  "next": "Promote a portable maintained frame-marker/subtitle replacement regression; remove candidate-only logging, build ordinary Core and repeat native and actual desktop checks. Broaden to ASS/other containers and policy controls before completing subtitle workflows."
+}
