@@ -3195,8 +3195,8 @@ static void SlaveDemux( input_thread_t *p_input )
         {
             if( in->b_slave_sub && in->b_can_rate_control )
             {
-                if( in->sub_rate != 0 ) /* Don't reset when it's the first time */
-                    es_out_Control(&priv->p_es_out->out, ES_OUT_RESET_PCR);
+                /* Subtitle timing follows the main clock. A slave rate change
+                 * must not reset the main video/audio PCR during a refill. */
                 float new_rate = priv->slave_subs_rate;
                 demux_Control( in->p_demux, DEMUX_SET_RATE, &new_rate );
             }

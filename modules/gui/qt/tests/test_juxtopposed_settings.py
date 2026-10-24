@@ -298,6 +298,23 @@ Item {
     delay.valueRequested.emit(-0.125)
     assert player.writes[-1] == ('audioDelayMS', -125)
     switch(3)
+    fps = accessible(page(), 'Subtitle frame rate')
+    fps_editor = accessible(fps, 'settingValueEditor')
+    before_fps_refresh = list(player.writes)
+    player.engine('subtitleFPS', 23.976)
+    QTest.qWait(20)
+    assert fps_editor.property('text') == '23.976 fps' and player.writes == before_fps_refresh
+    # Windows accessibility writes the text property without textEdited.
+    # Apply that same property route, then commit through the real editor.
+    fps_editor.setProperty('text', '29.97')
+    click(fps_editor)
+    QTest.keyClick(view, Qt.Key_Return)
+    QTest.qWait(20)
+    assert player.writes[-1] == ('subtitleFPS', 29.97), (player.writes, fps_editor.property('text'))
+    before_fps_refresh = list(player.writes)
+    player.engine('subtitleFPS', 50.)
+    QTest.qWait(20)
+    assert fps_editor.property('text') == '50.000 fps' and player.writes == before_fps_refresh
     accessible(page(), 'Subtitle track delay').valueRequested.emit(0.250)
     assert player.writes[-1] == ('subtitleDelayMS', 250)
     assert not appearance.writes

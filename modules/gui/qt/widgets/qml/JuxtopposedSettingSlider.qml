@@ -109,6 +109,12 @@ C.Control {
                     dirty = false;
                 }
                 onTextEdited: dirty = true
+                // Accessibility value writes change text without textEdited.
+                // Engine refreshes already equal the formatted model value.
+                onTextChanged: {
+                    if (text !== root.formatValue(root.value))
+                        dirty = true;
+                }
 
                 Binding {
                     property: "text"

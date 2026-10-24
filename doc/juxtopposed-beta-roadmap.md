@@ -1,24 +1,36 @@
 # Revised beta roadmap
 
 <!-- paused-fps-checkpoint:start -->
-## Paused checkpoint - 23 October 2026
+## Paused checkpoint - 24 October 2026
 
-Desktop testing is stopped at the owner's request. The previous subtitle-control
-accessibility and paused-delay repairs retain their recorded acceptance. The
-[subtitle frame-rate candidate](juxtopposed-references/native/home-subtitle-fps-checkpoint-20261023/README.md) is now compiled, with native controller
-contracts passing, but ordinary desktop/external-caption acceptance is pending.
-Its GUI is faf4d30b; the last accepted desktop GUI remains 9dd58c64 on Core7ab80750.
-Native tests retain dummy-renderer DX11/blend errors; the ineffective obsolete
-hardware argument was removed after those runs. Do not count them as caption
-rendering passes or assume the restored fixture has been rerun.
+Desktop tests are stopped at the owner's request. The [subtitle FPS repair
+checkpoint](juxtopposed-references/native/home-subtitle-fps-20261024/README.md) records the current changes and remaining failure.
+Paused external-caption FPS changes now refresh the held cue; rate changes no
+longer reset the main video/audio clock. Windows accessibility text edits now
+commit through the actual settings editor. The ordinary tuple is Coreb62f4145 /
+GUI79aef2b5 / MKVf46d8d15 / WASAPI4e4e33c0.
 
-Resume with a refreshed source freeze, fresh ordinary runtime and a genuinely
-selected external SRT: verify FPS 23.976/29.97/50/0, accessibility in real units,
-keyboard focus/Reset, engine feedback and immediate paused cue retiming. The
-prepared run-ui-r5.py has NOT run and its old freeze needs updating. Continue
-secondary timing and the complete thirteen-category/32-surface beta roadmap
-afterward. Windows 10 stays separately deferred. Older status blocks below are
-historical; the beta goal is paused and all owned test/build jobs have finished.
+The corrected native before/after comparison uses the same test executable:
+old Core fails and all11 functions pass on the new Core. All35 earlier timing,
+startup, interval and track regressions pass normally; the offscreen settings
+component suite also passes. The2706-input freeze and actual copies verify.
+Ordinary desktop edits immediately retime a genuinely selected external SRT,
+and native/QML editors exchange fractional values. Both desktop runs exit0;
+the new run has no checked diagnostics. Full FPS workflow acceptance is pending.
+
+Next: QML Reset settles at1 instead of0 after opening/closing the older native
+Synchronization dialog. Inspect its bounds/model feedback; the cause is not yet
+established. Then finish ordinary FPS seek/resume/playing/default/next-media
+checks, visual secondary timing and estimators. Earlier embedded-track false
+tests and antialias-mask false failures are documented separately and do not
+qualify external FPS. Native dummy-window warnings remain explicit.
+
+Continue the complete13-category/32-surface roadmap afterward: remaining
+consumers, design/accessibility/OS DPI, consolidated media, physical outputs,
+independent review and clean packaging. Windows10 remains separately deferred.
+Full beta is not ready. All owned test/build jobs are closed; the goal is paused.
+Older status blocks below are historical. No desktop tests may resume while
+the owner is using the computer.
 <!-- paused-fps-checkpoint:end -->
 
 <!-- subtitle-accessibility-status:start -->

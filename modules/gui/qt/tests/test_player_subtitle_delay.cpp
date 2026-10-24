@@ -11,9 +11,12 @@
 #include "player/subtitle_appearance.hpp"
 #include "maininterface/subtitle_preset_model.hpp"
 #include <vlc_input_item.h>
+#include <vlc_vout.h>
 #include <QDir>
+#include <QCryptographicHash>
 #include <QElapsedTimer>
 #include <QFileInfo>
+#include <QImage>
 #include <QSettings>
 #include <QSignalSpy>
 #include <QTemporaryDir>
@@ -174,13 +177,25 @@ private slots:
             vlc_player_locker lock{m_player};
             QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), true, false, true), VLC_SUCCESS);
         }
-        QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleTracks()->rowCount() == 2, 10000);
-        {
+        // A media may already contain two embedded tracks. Wait for the actual
+        // associated sources instead of mistaking those initial rows for SRTs.
+        auto findAssociated = [this, &fixtures](const QString &name, HeldEs &id) {
+            if (id) return true;
+            const auto uri = QUrl::fromLocalFile(fixtures.filePath(name)).toEncoded();
+            const QByteArray prefix = QCryptographicHash::hash(uri, QCryptographicHash::Md5).toHex() + '/';
             vlc_player_locker lock{m_player};
-            QCOMPARE(vlc_player_GetTrackCount(m_player, SPU_ES), size_t(2));
-            m_first.reset(vlc_player_GetTrackAt(m_player, SPU_ES, 0)->es_id);
-            m_second.reset(vlc_player_GetTrackAt(m_player, SPU_ES, 1)->es_id);
-        }
+            for (size_t i = 0; i < vlc_player_GetTrackCount(m_player, SPU_ES); ++i) {
+                auto *es = vlc_player_GetTrackAt(m_player, SPU_ES, i)->es_id;
+                if (QByteArray(vlc_es_id_GetStrId(es)).startsWith(prefix)) {
+                    id.reset(es);
+                    return true;
+                }
+            }
+            return false;
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(findAssociated("subtitle-style.srt", m_first), 10000);
+        QTRY_VERIFY_WITH_TIMEOUT(findAssociated("duration-cues.srt", m_second), 10000);
+        QVERIFY(m_first != m_second);
         QCOMPARE(select(m_first.get(), m_second.get()), 2u);
         QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
         QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
@@ -197,6 +212,124 @@ private slots:
         const auto fps = vlc_player_GetAssociatedSubsFPS(m_player);
         QCOMPARE(fps, 0.f); // the generated fixture inherits the native default
         QCOMPARE(m_controller->getSubtitleFPS(), fps);
+    }
+    void associatedFpsRetimesHeldCaption()
+    {
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        if (directory.isEmpty())
+            QSKIP("Set VLC_FPS_SNAPSHOTS and use the 60-second frame-marker fixture");
+        QVERIFY(QDir(directory).exists());
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        m_controller->setSubtitleFPS(0.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 0.f);
+
+        auto seek = [this](vlc_tick_t time) {
+            vlc_player_locker lock{m_player};
+            vlc_player_SetTime(m_player, time);
+        };
+        auto time = [this] {
+            vlc_player_locker lock{m_player};
+            return vlc_player_GetTime(m_player);
+        };
+        auto snapshot = [this, &directory](const QString &name) {
+            const auto path = QDir(directory).filePath(name + ".png");
+            vout_thread_t *output;
+            {
+                vlc_player_locker lock{m_player};
+                output = vlc_player_vout_Hold(m_player);
+            }
+            if (!output) return QImage();
+            var_Create(output, "snapshot-width", VLC_VAR_INTEGER);
+            var_SetInteger(output, "snapshot-width", 960);
+            var_Create(output, "snapshot-height", VLC_VAR_INTEGER);
+            var_SetInteger(output, "snapshot-height", 540);
+            var_Create(output, "snapshot-path", VLC_VAR_STRING);
+            var_SetString(output, "snapshot-path", qtu(path));
+            var_Create(output, "snapshot-format", VLC_VAR_STRING);
+            var_SetString(output, "snapshot-format", "png");
+            var_TriggerCallback(output, "video-snapshot");
+            vout_Release(output);
+            QImage image;
+            for (int i = 0; i < 100 && image.isNull(); ++i) {
+                QTest::qWait(20);
+                image.load(path);
+            }
+            return image.convertToFormat(QImage::Format_RGBA8888);
+        };
+        auto captionMask = [](const QImage &image) {
+            QByteArray mask;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x) {
+                    const auto c = image.pixelColor(x, y);
+                    mask.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return mask;
+        };
+        auto captionMatches = [](const QByteArray &actual, const QByteArray &reference) {
+            if (actual.size() != reference.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < actual.size(); ++i) {
+                intersection += actual[i] && reference[i];
+                united += actual[i] || reference[i];
+            }
+            // Reference cues sit over different marker colors. Their five
+            // threshold-edge antialias pixels differ; the wrong cue differs
+            // by thousands. Keep 99.5% overlap and exact held-video matching.
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        seek(VLC_TICK_FROM_SEC(24));
+        QTest::qWait(700);
+        const auto middle = snapshot("normal-middle-reference");
+        QVERIFY(!middle.isNull());
+        seek(VLC_TICK_FROM_SEC(12));
+        QTest::qWait(700);
+        const auto first = snapshot("normal-first-reference");
+        QVERIFY(!first.isNull());
+        const auto firstMask = captionMask(first), middleMask = captionMask(middle);
+        QVERIFY(firstMask.count(char(1)) > 100);
+        QVERIFY(middleMask.count(char(1)) > 100);
+        QVERIFY(firstMask != middleMask);
+        const auto heldTime = time();
+        QVERIFY(qAbs(heldTime - VLC_TICK_FROM_SEC(12)) < VLC_TICK_FROM_MS(50));
+        const auto picture = first.copy(0, 0, first.width(), first.height() * 3 / 4);
+        bool captionsMatch = true, picturesMatch = true, positionsMatch = true;
+        for (const auto fps : {50.f, 29.97f, 23.976f, 0.f}) {
+            m_controller->setSubtitleFPS(fps);
+            QTRY_COMPARE(m_controller->getSubtitleFPS(), fps);
+            QTest::qWait(700);
+            const auto image = snapshot(QString("live-%1").arg(fps, 0, 'f', 3));
+            QVERIFY(!image.isNull());
+            const bool caption = captionMatches(captionMask(image), fps == 50.f ? middleMask : firstMask);
+            const bool frame = image.copy(0, 0, image.width(), image.height() * 3 / 4) == picture;
+            const bool position = qAbs(time() - heldTime) < VLC_TICK_FROM_MS(50);
+            qInfo("FPS %.3f caption=%d heldFrame=%d heldTime=%d time=%lld", double(fps),
+                  caption, frame, position, static_cast<long long>(time()));
+            captionsMatch &= caption; picturesMatch &= frame; positionsMatch &= position;
+        }
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(300);
+        seek(VLC_TICK_FROM_SEC(12));
+        QTest::qWait(700);
+        const auto reseek = snapshot("seek-with-fps-50");
+        QVERIFY(!reseek.isNull());
+        captionsMatch &= captionMatches(captionMask(reseek), middleMask);
+        picturesMatch &= reseek.copy(0, 0, reseek.width(), reseek.height() * 3 / 4) == picture;
+        positionsMatch &= qAbs(time() - heldTime) < VLC_TICK_FROM_MS(50);
+        m_controller->setSubtitleFPS(0.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 0.f);
+        QTest::qWait(700);
+        const auto reset = snapshot("reset-after-fps-seek");
+        QVERIFY(!reset.isNull());
+        captionsMatch &= captionMatches(captionMask(reset), firstMask);
+        picturesMatch &= reset.copy(0, 0, reset.width(), reset.height() * 3 / 4) == picture;
+        positionsMatch &= qAbs(time() - heldTime) < VLC_TICK_FROM_MS(50);
+        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        QVERIFY2(captionsMatch, "Live FPS/reset must update the held external cue without a user seek");
+        QVERIFY2(picturesMatch, "FPS must preserve the held video picture");
+        QVERIFY2(positionsMatch, "FPS must preserve the held video time");
     }
     void associatedFpsNotificationsAndValidation()
     {

@@ -1222,9 +1222,10 @@ vlc_player_SetAssociatedSubsFPS(vlc_player_t *player, float fps)
     struct vlc_player_input *input = vlc_player_get_input_locked(player);
 
     var_SetFloat(player, "sub-fps", fps);
-    if (input)
-        input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SUBS_FPS,
-                                &(vlc_value_t) { .f_float = fps });
+    if (input
+     && input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SUBS_FPS,
+                                &(vlc_value_t) { .f_float = fps }) == VLC_SUCCESS)
+        vlc_player_input_RefreshPausedSubtitle(input);
     vlc_player_SendEvent(player, on_associated_subs_fps_changed, fps);
 }
 

@@ -220,7 +220,9 @@ bool VLCTestingEnv::init(bool nativePlayerFixture)
     qputenv("VLC_LIB_PATH", plugins);
 
     const char *nativeArgs[] = {"-v", "--ignore-config", "--no-media-library",
-        "--no-auto-preparse", "--vout=dummy", "--aout=dummy", "--text-renderer=freetype"};
+        "--no-auto-preparse", "--vout=dummy", "--aout=dummy", "--text-renderer=freetype",
+        // The dummy sink needs software pictures for subtitle blending.
+        "--no-hw-dec"};
     libvlc = nativePlayerFixture ? libvlc_new(ARRAY_SIZE(nativeArgs), nativeArgs)
                                 : libvlc_new(test_defaults_nargs, test_defaults_args);
     if (!libvlc)

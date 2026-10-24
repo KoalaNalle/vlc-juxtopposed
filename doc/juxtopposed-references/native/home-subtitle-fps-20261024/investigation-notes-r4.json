@@ -1,0 +1,7 @@
+{
+  "scope": "Evidence corrections before accepting an FPS repair",
+  "nativeR2AndR3RenderedCase": "Invalid external-FPS scenario: images show ENGLISH FIRST/MIDDLE CUE from embedded MP4 tracks. The inherited setup accepted the initial two embedded rows before the two associated SRT files loaded. Those rendered results cannot qualify or reject external FPS behavior.",
+  "retainedValidDesktopFailure": "ui-fps-r1 explicitly selected Track 3 and displayed EXTERNAL FPS FIRST/MIDDLE. Its observed stale paused cue and request/settled seek-position discrepancy remain valid.",
+  "correction": "The maintained setup now waits for the MD5 URL-based source identity of each requested external SRT. It no longer assumes that two existing tracks are the associated files. The new before/after comparison uses the same corrected test binary against the recorded old and new ordinary Core DLLs.",
+  "fullBetaAccepted": false
+}
