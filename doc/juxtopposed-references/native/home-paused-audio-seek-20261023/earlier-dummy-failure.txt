@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Modding\vlc-juxtopposed\build-windows\beta-queue-workflow-20261022\probe-initial-audio-r20b.py", line 75, in <module>
+    pause(player,0);wait(lambda:state(player)==2 and get_time(player)>8900000,'Resume from target')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Modding\vlc-juxtopposed\build-windows\beta-queue-workflow-20261022\probe-initial-audio-r20b.py", line 62, in wait
+    raise AssertionError(label+': '+str(sample()))
+AssertionError: Resume from target: {'state': 2, 'timeUs': 7992619, 'position': 0.2664206333333333, 'lengthUs': 30000000, 'seekable': True}

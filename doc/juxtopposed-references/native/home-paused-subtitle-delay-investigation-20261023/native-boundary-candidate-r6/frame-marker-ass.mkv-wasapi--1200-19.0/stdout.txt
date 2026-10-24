@@ -1,0 +1,12 @@
+cold-paused delay -1200000 frame 1 caption pixels 1346
+reference-first delay -1200000 frame 125 caption pixels 1346
+reference-middle delay -1200000 frame 625 caption pixels 1564
+boundary-seek delay -1200000 frame 475 caption pixels 1564
+boundary-settled delay -1200000 frame 475 caption pixels 1564
+live-reset delay 0 frame 475 caption pixels 1346
+live-positive delay 1200000 frame 475 caption pixels 1346
+live-negative delay -1200000 frame 475 caption pixels 1564
+live-zero delay 0 frame 475 caption pixels 1346
+before-playing-boundary delay -1200000 frame 450 caption pixels 1346
+after-playing-boundary delay -1200000 frame 506 caption pixels 1564
+{"passed": true, "checks": {"executionComplete": true, "initialPause": true, "teardown": true, "audioBackend": true, "distinctReferenceCaptions": true, "defaultDelayReadback": true, "boundarySeekCaption": true, "boundarySettledCaption": true, "boundaryPictureSettled": true, "pausedPictures": true, "sampledPause": true, "liveFramesConserved": true, "liveDelayReadback": true, "playingControlReached": true, "playingControlFrame": true, "playingControlCaption": true, "live-resetCaption": true, "live-positiveCaption": true, "live-negativeCaption": true, "live-zeroCaption": true}}

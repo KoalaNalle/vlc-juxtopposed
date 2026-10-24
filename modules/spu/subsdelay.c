@@ -34,6 +34,7 @@
 #include <vlc_filter.h>
 #include <vlc_subpicture.h>
 #include <vlc_es.h>
+#include <vlc_memstream.h>
 #include <stdlib.h>
 
 /*****************************************************************************
@@ -340,9 +341,10 @@ static int SubsdelayCreate( filter_t *p_filter )
     p_filter->p_sys = p_sys;
     p_filter->ops = &filter_ops;
 
-    config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options, p_filter->p_cfg );
-
     SubsdelayHeapInit( &p_sys->heap );
+
+    /* Inline options can invoke the callbacks installed above. */
+    config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options, p_filter->p_cfg );
 
     return VLC_SUCCESS;
 }
@@ -513,7 +515,8 @@ static void SubsdelayHeapDestroy( subsdelay_heap_t *p_heap )
     for( subsdelay_heap_entry_t *p_entry = p_heap->p_head;
          p_entry != NULL; p_entry = p_entry->p_next )
     {
-        p_entry->p_subpic->i_stop = p_entry->p_source->i_stop;
+        subpicture_SetStopTime(p_entry->p_subpic, p_entry->p_source->i_stop);
+        p_entry->i_new_stop = p_entry->p_source->i_stop;
 
         p_entry->p_filter = NULL;
     }
@@ -757,7 +760,7 @@ static void SubsdelayEntryNewStopValueUpdated( subsdelay_heap_entry_t *p_entry )
 {
     if( !p_entry->b_update_stop )
     {
-        p_entry->p_subpic->i_stop = p_entry->i_new_stop - VLC_TICK_FROM_MS(100); /* 0.1 sec less */
+        subpicture_SetStopTime(p_entry->p_subpic, p_entry->i_new_stop - VLC_TICK_FROM_MS(100)); /* 0.1 sec less */
     }
 }
 
@@ -946,22 +949,30 @@ static void SubpicUpdateWrapper( subpicture_t *p_subpic,
         p_entry->b_last_region_saved = true;
     }
 
-    vlc_spu_regions_Clear( &p_subpic->regions );
-
     /* call source update */
     struct vlc_spu_updater_configuration new_cfg = *cfg;
-    new_cfg.pts = p_entry->p_source->i_start +
-                ( (double)( p_entry->p_source->i_stop - p_entry->p_source->i_start ) * ( cfg->pts - p_entry->p_source->i_start ) ) /
-                ( p_entry->i_new_stop - p_entry->p_source->i_start );
+    const vlc_tick_t source_date = subpicture_GetSourceTime(p_subpic, cfg->pts);
+    const vlc_tick_t duration = p_entry->i_new_stop - p_entry->p_source->i_start;
+    new_cfg.pts = duration > 0 ? p_entry->p_source->i_start +
+        (vlc_tick_t)((double)(p_entry->p_source->i_stop - p_entry->p_source->i_start) *
+                    (source_date - p_entry->p_source->i_start) / duration)
+        : p_entry->p_source->i_start;
 
-    p_entry->p_source->regions = p_entry->p_subpic->regions;
+    vlc_spu_regions_init(&p_entry->p_source->regions);
+    if (!vlc_spu_regions_is_empty(&p_subpic->regions))
+        vlc_list_replace(&p_subpic->regions, &p_entry->p_source->regions);
+    vlc_spu_regions_init(&p_subpic->regions);
 
     subpicture_updater_t *updater = &p_entry->p_source->updater;
     updater->ops->update( p_entry->p_source, &new_cfg );
 
-    p_entry->p_subpic->regions = p_entry->p_source->regions;
+    if (!vlc_spu_regions_is_empty(&p_entry->p_source->regions))
+        vlc_list_replace(&p_entry->p_source->regions, &p_subpic->regions);
+    vlc_spu_regions_init(&p_entry->p_source->regions);
+    p_subpic->i_original_picture_width = p_entry->p_source->i_original_picture_width;
+    p_subpic->i_original_picture_height = p_entry->p_source->i_original_picture_height;
 
-    SubpicLocalUpdate( p_subpic, cfg->pts );
+    SubpicLocalUpdate( p_subpic, source_date );
 }
 
 /*****************************************************************************
@@ -1108,6 +1119,11 @@ static subpicture_t *SubpicClone( subpicture_t *p_source, subpicture_updater_t *
 
     /* copy the entire struct */
     memcpy( p_subpic, p_source, sizeof( subpicture_t ) );
+    // Intrusive list heads cannot be copied: transfer the regions to the clone.
+    vlc_spu_regions_init(&p_subpic->regions);
+    if (!vlc_spu_regions_is_empty(&p_source->regions))
+        vlc_list_replace(&p_source->regions, &p_subpic->regions);
+    vlc_spu_regions_init(&p_source->regions);
 
     /* restore private members */
     p_subpic->updater = subpic_updater;
@@ -1133,7 +1149,6 @@ static void SubpicDestroyClone( subpicture_t *p_subpic )
 static vlc_tick_t SubsdelayEstimateDelay( filter_t *p_filter, subsdelay_heap_entry_t *p_entry )
 {
     int i_mode;
-    int i_rank;
 
     filter_sys_t *p_sys = p_filter->p_sys;
 
@@ -1148,14 +1163,22 @@ static vlc_tick_t SubsdelayEstimateDelay( filter_t *p_filter, subsdelay_heap_ent
     {
         if( p_entry->p_subpic )
         {
-            subpicture_region_t *p_region =
-                vlc_spu_regions_first_or_null( &p_entry->p_subpic->regions );
-            if( p_region && ( p_region->p_text ) )
+            /* Style changes can split a word across segments, including an
+             * empty leading segment. Rank the complete cue text. */
+            struct vlc_memstream text;
+            vlc_memstream_open(&text);
+            subpicture_region_t *region;
+            vlc_spu_regions_foreach(region, &p_entry->p_subpic->regions)
             {
-            //FIXME: We only use a single segment here
-            i_rank = SubsdelayGetTextRank( p_region->p_text->psz_text );
-
-            return vlc_tick_from_sec( p_sys->f_factor * i_rank );
+                for (const text_segment_t *segment = region->p_text; segment; segment = segment->p_next)
+                    if (segment->psz_text) vlc_memstream_puts(&text, segment->psz_text);
+                vlc_memstream_putc(&text, ' ');
+            }
+            if (vlc_memstream_close(&text) == 0)
+            {
+                const int rank = SubsdelayGetTextRank(text.ptr);
+                free(text.ptr);
+                if (rank > 0) return vlc_tick_from_sec(p_sys->f_factor * rank);
             }
         }
 

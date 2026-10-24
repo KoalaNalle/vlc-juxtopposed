@@ -1,0 +1,89 @@
+{
+  "category": "Privacy",
+  "originalFields": 9,
+  "completeCategoryAccepted": false,
+  "fields": [
+    {
+      "key": "saveRecentlyPlayed",
+      "nodeId": "3062:11949",
+      "originalLabel": "Save recently played items",
+      "nativeOption": "save-recentplay",
+      "nativeConsumers": [
+        "src/player/medialib.c",
+        "modules/gui/qt/medialibrary/mlhomeactivity.cpp",
+        "modules/gui/qt/dialogs/open/open_panels.cpp",
+        "modules/gui/qt/maininterface/mainctx.cpp"
+      ],
+      "status": "Implemented in Privacy controller, player current/retiring input policy and Home visit policy. Fresh native policy cases pass; full native GUI integration pending. Final native/GUI tuple passes the scoped policy/controller/regression checks; actual native GUI journeys and complete category acceptance remain open."
+    },
+    {
+      "key": "rememberPlaybackPosition",
+      "nodeId": "3062:11955",
+      "originalLabel": "Remember the playback position",
+      "nativeOption": "remember-playback-pos",
+      "relatedNativeOption": "restore-playback-pos",
+      "status": "Dedicated save/restore permission implemented independently of Playback restore enum. Native storage and generation checks pass; full category acceptance pending. Final native/GUI tuple passes the scoped policy/controller/regression checks; actual native GUI journeys and complete category acceptance remain open."
+    },
+    {
+      "key": "historyExclusion",
+      "nodeId": "3062:12469",
+      "controlNodeId": "3176:16428",
+      "originalLabel": "Never remember items matching",
+      "nativeOption": "history-exclude-pattern",
+      "obsoleteRelatedOption": "qt-recentplay-filter",
+      "status": "Shared bounded case-sensitive UTF-8 wildcard substring rule implemented for URI, decoded local path, item/playlist name and Home folder visits. * means any sequence, ? one Unicode scalar; no regex or escapes. Rule changes invalidate pending writes. Native matcher/storage pass; Home integration acceptance pending. Final native/GUI tuple passes the scoped policy/controller/regression checks; actual native GUI journeys and complete category acceptance remain open."
+    },
+    {
+      "key": "clearHistory",
+      "nodeId": "3062:12484",
+      "controlNodeId": "3062:12486",
+      "originalLabel": "Clear history now",
+      "action": "vlc_ml_clear_history(VLC_ML_HISTORY_TYPE_GLOBAL)",
+      "status": "Implemented and checked with actual database failure/retry, local-store coordination and retiring inputs. Native GUI journeys and Library-disabled clear remain open; current action requires active Library."
+    },
+    {
+      "key": "internetMetadata",
+      "nodeId": "3062:11967",
+      "originalLabel": "Fetch titles and cover art from the internet",
+      "nativeOption": "metadata-network-access",
+      "sharedPreference": "Library.metadataSource",
+      "status": "Shares Library native option/cross-refresh; native persistence/restart checks and final GUI startup pass. Full category/desktop acceptance pending."
+    },
+    {
+      "key": "submitPlayedTracks",
+      "nodeId": "3062:12499",
+      "originalLabel": "Submit played tracks to last.fm",
+      "nativeOption": "extraintf",
+      "nativeModule": "audioscrobbler",
+      "status": "New activation explicitly unavailable until secure transport/authentication/service acceptance. Existing audioscrobbler entry can be removed while preserving other interfaces; restart required and verified at config level only."
+    },
+    {
+      "key": "lastfmUsername",
+      "nodeId": "3062:12524",
+      "controlNodeId": "3176:16431",
+      "originalLabel": "Last.fm username",
+      "nativeOption": "lastfm-username",
+      "status": "Shown with native saved value, unavailable for editing until secure service support passes. Not accepted."
+    },
+    {
+      "key": "lastfmSecondCredential",
+      "nodeId": "3062:12545",
+      "controlNodeId": "3176:16433",
+      "originalLabel": "Last.fm username",
+      "candidateNativeOption": "lastfm-password",
+      "interpretation": "Functional adaptation inferred from the separate native password option; the original label is preserved above and in the screenshot/context.",
+      "status": "Documented functional adaptation: native password option, label Last.fm password, contents masked. Original repeated username label remains archived. Editing unavailable; not accepted.",
+      "nativeOption": "lastfm-password",
+      "implementationLabel": "Last.fm password"
+    },
+    {
+      "key": "lastfmSubmissionUrl",
+      "nodeId": "3062:12535",
+      "controlNodeId": "3176:16435",
+      "originalLabel": "Last.fm submission URL",
+      "nativeOption": "scrobbler-url",
+      "status": "Native legacy host value shown, unavailable for editing pending genuine URL/HTTPS/authentication/service support. Not accepted."
+    }
+  ],
+  "implementationCheckpoint": "History40, native Qt14, actual SQLite controller9, QML8, final GUI/ordinary4 and Library18/42/9/Subtitle37 pass. Category remains incomplete."
+}

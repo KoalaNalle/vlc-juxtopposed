@@ -71,6 +71,7 @@ min_windows_version_test = '''
     libvlccore_deps += cc.find_library('normaliz')
     if not have_win_store
         libvlccore_deps += cc.find_library('winmm')
+        libvlccore_deps += cc.find_library('winhttp')
     else
         libvlccore_deps += cc.find_library('runtimeobject')
     endif
@@ -241,6 +242,7 @@ libvlccore_sources_base = files(
     'network/http_auth.c',
     'network/httpd.c',
     'network/io.c',
+    'network/proxy.c',
     'network/udp.c',
     'network/rootbind.c',
     'network/stream.c',
@@ -277,6 +279,7 @@ libvlccore_sources_base = files(
     'misc/keystore.c',
     'misc/renderer_discovery.c',
     'misc/threads.c',
+    'misc/process_priority.c',
     'misc/cpu.c',
     'misc/diffutil.c',
     'misc/epg.c',
@@ -554,5 +557,14 @@ vlc_tests += {
     'suite' : ['src'],
     'link_with' : [libvlccore],
 }
+
+if host_system == 'windows' and not have_win_store
+    vlc_tests += {
+        'name' : 'win32_pipe',
+        'sources' : files('test/win32_pipe.c'),
+        'suite' : ['src'],
+        'link_with' : [libvlccore],
+    }
+endif
 
 subdir('rust')

@@ -36,6 +36,7 @@
 
 #include <vlc_block.h>
 #include <vlc_modules.h>
+#include <vlc_configuration.h>
 
 #include <vlc_vout.h>
 #include <vlc_vout_osd.h>
@@ -90,6 +91,22 @@ static int OverrideProjectionCallback( vlc_object_t *, char const *,
 
 static int ChangeProjectionCallback( vlc_object_t *, char const *,
                               vlc_value_t, vlc_value_t, void * );
+
+static const char *const subtitle_style_variables[] = {
+    "sub-text-style-enabled", "sub-text-style-embedded", "sub-text-style-font",
+    "sub-text-style-color", "sub-text-style-outline-color", "sub-text-style-size-mode",
+    "sub-text-style-relative-size", "sub-text-style-pixel-size",
+    "sub-text-style-relative-outline", "sub-text-style-pixel-outline",
+    "sub-text-style-background-opacity",
+};
+
+static int SubtitleStyleCallback(vlc_object_t *obj, const char *name,
+                                vlc_value_t before, vlc_value_t after, void *data)
+{
+    VLC_UNUSED(name); VLC_UNUSED(before); VLC_UNUSED(after); VLC_UNUSED(data);
+    var_IncInteger(obj, "sub-text-style-revision");
+    return VLC_SUCCESS;
+}
 
 /*****************************************************************************
  * vout_IntfInit: called during the vout creation to initialise misc things.
@@ -210,6 +227,12 @@ void vout_CreateVars( vout_thread_t *p_vout )
     /* Create a few object variables we'll need later on */
     var_Create( p_vout, "snapshot-num", VLC_VAR_INTEGER );
     var_SetInteger( p_vout, "snapshot-num", 1 );
+
+    var_Create(p_vout, "sub-text-style-revision", VLC_VAR_INTEGER);
+    var_Create(p_vout, "sub-text-style-supported", VLC_VAR_BOOL);
+    for (size_t i = 0; i < ARRAY_SIZE(subtitle_style_variables); ++i)
+        var_Create(p_vout, subtitle_style_variables[i],
+                   config_GetType(subtitle_style_variables[i]) | VLC_VAR_DOINHERIT);
 
     var_Create( p_vout, "width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_vout, "height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -348,6 +371,9 @@ void vout_CreateVars( vout_thread_t *p_vout )
     /* Mouse coordinates */
     var_Create( p_vout, "mouse-button-down", VLC_VAR_INTEGER );
     var_Create( p_vout, "mouse-moved", VLC_VAR_COORDS );
+    /* 0 cancels a pending click, -1 is a double click, positive values are
+     * single-click candidates with that double-click interval in ms. */
+    var_Create(p_vout, "mouse-click-event", VLC_VAR_INTEGER);
 
     /* Device orientation */
     var_Create( p_vout, "viewpoint-moved", VLC_VAR_ADDRESS );
@@ -382,6 +408,8 @@ void vout_IntfInit( vout_thread_t *p_vout )
     var_AddCallback( p_vout, "fullscreen", FullscreenCallback, NULL );
     var_AddCallback( p_vout, "video-snapshot", SnapshotCallback, NULL );
     var_AddCallback( p_vout, "video-filter", VideoFilterCallback, NULL );
+    for (size_t i = 0; i < ARRAY_SIZE(subtitle_style_variables); ++i)
+        var_AddCallback(p_vout, subtitle_style_variables[i], SubtitleStyleCallback, NULL);
     var_AddCallback( p_vout, "sub-source", SubSourceCallback, NULL );
     var_AddCallback( p_vout, "sub-filter", SubFilterCallback, NULL );
     var_AddCallback( p_vout, "sub-margin", SubMarginCallback, NULL );
@@ -416,6 +444,8 @@ void vout_IntfDeinit(vlc_object_t *obj)
     var_DelCallback(obj, "sub-filter", SubFilterCallback, NULL);
     var_DelCallback(obj, "sub-source", SubSourceCallback, NULL);
     var_DelCallback(obj, "video-filter", VideoFilterCallback, NULL);
+    for (size_t i = 0; i < ARRAY_SIZE(subtitle_style_variables); ++i)
+        var_DelCallback(obj, subtitle_style_variables[i], SubtitleStyleCallback, NULL);
     var_DelCallback(obj, "video-snapshot", SnapshotCallback, NULL);
     var_DelCallback(obj, "fullscreen", FullscreenCallback, NULL);
     var_DelCallback(obj, "video-wallpaper", WallPaperCallback, NULL);

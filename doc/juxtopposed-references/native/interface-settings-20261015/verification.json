@@ -1,0 +1,238 @@
+{
+  "scope": "Bounded native Interface model/UI checkpoint; eight controls retain explicit unavailable status",
+  "sourceFiles": {
+    ".github/workflows/qml-ui-checks.yml": "3d17ba80a68f454cf4208bcc036933d6cd8c35ec970c7a5d151685abb3ca1103",
+    "modules/gui/qt/Makefile.am": "6ad950ecd4578fcaa81f704cf4c0ee0380e3a8d0a533db71720e86d94e8d6a5b",
+    "modules/gui/qt/assets.qrc": "46a2e3a843a9d7e9597ce19a741a87da25f6574f00f7bc0b36c8a6b9e0f936c2",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml": "802f8e428b0ec10abe0d443e53e0fce212a1b74b8d4450399872831057af4e83",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml": "14d585ff88db59042d0a90b73e6587b70dd9b5de22c45d176944929692874daa",
+    "modules/gui/qt/dialogs/systray/systray.cpp": "30e752df2f4128ad6a3c5b34b24a039c17fce116d479a45b6d9e669ff7c0d18a",
+    "modules/gui/qt/dialogs/systray/systray.hpp": "a469accb0e5d9bfa4e655a8d0ed39a5984da6c63b75dc7494794ade87492b0a0",
+    "modules/gui/qt/maininterface/general_preferences_model.cpp": "89f133915d9110cc64465774bb4c43268fac0a2750cb6ce9e7caad3c65d1e3e5",
+    "modules/gui/qt/maininterface/interface_window_handler.cpp": "d161f36791132efa35514f0dac0fd4ba43f40d42331685a44136c6ad47e0222e",
+    "modules/gui/qt/maininterface/interface_window_handler.hpp": "ecdf1ebb32d390e7708aa3dc7b1d564fbe30ca15c703dd9113bc6932b6bd60d8",
+    "modules/gui/qt/maininterface/mainctx.cpp": "597d07fb99efc674654529305d24297e9c48389b7e01ff619c4fc165cb0fd18d",
+    "modules/gui/qt/maininterface/mainctx.hpp": "8190605de2a593d40c90615ff32963604d91f86dc4ac6a0f99c7deb531806b87",
+    "modules/gui/qt/maininterface/mainui.cpp": "40b05d0238999a7ecefd731abb477d6b482f12fb4a858d05fc3727f7a0398d86",
+    "modules/gui/qt/maininterface/video_window_handler.cpp": "995dc6e3e17310c817bd0d8d788edadeace60d255822ab4fd08b4cc43d3d3f42",
+    "modules/gui/qt/maininterface/video_window_handler.hpp": "2ab89eb41aac786a0cca9bb4f8822dcf3089596fbda26e80e8366244ec8a80ad",
+    "modules/gui/qt/meson.build": "685d1bea154390fa297bb0f9ff6ab2027e5be3d49013af2317733b51724b9f07",
+    "modules/gui/qt/player/qml/Player.qml": "10a39b72779b6415599bd1f59aa39b16058fe1b97f7b427de9acb00464f75715",
+    "modules/gui/qt/player/qml/PlayerToolbarVisibilityFSM.qml": "1392aedb49b7032a55c3d9fa4fc3fba9984e0b50594531673a84f81a317b245f",
+    "modules/gui/qt/qt.cpp": "a7b76ac5c15ad638138c42c7f240f881e399ad6501b78a6d34c4bdea5c4d7c12",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml": "85ed0b57f38cdc9d4d11c2aa3d28677f2dac770a0007997732ef13f06f8f0462",
+    "modules/gui/qt/maininterface/interface_preferences_model.cpp": "12467a4632f305e50b967ace347c9fa56e212aaddfd93399e44307ddc8304f7c",
+    "modules/gui/qt/maininterface/interface_preferences_model.hpp": "baa1d52ef792d10e02181e717521b9557b880a98fcf665f659a6c97becbe1b5e",
+    "modules/gui/qt/pixmaps/juxtopposed/interface-settings-1ab84.svg": "f7f458d556413954f79c8dfdea7dca008a13218423f6613e22d90d7b108f9e07",
+    "modules/gui/qt/pixmaps/juxtopposed/interface-settings-8ba8e.svg": "aca9bd8e0bf52644fc78a169c32dd055d5cfb8f1611a228ab8ae0e9818b2e4b5",
+    "modules/gui/qt/tests/fixtures/juxtopposed_interface_settings_assets.json": "f1ad896a458ba71d7b728f4ef070c2b086ef20b0eef9a91c4497f9e00970af67",
+    "modules/gui/qt/tests/fixtures/juxtopposed_interface_v1_obsolete.json": "e5703e4313e7b7ac15a39eb5ffb56f31304275a5f0a1f735918365b9cbf6d3e5",
+    "modules/gui/qt/tests/fixtures/juxtopposed_interface_v1_original.py.txt": "d41cbcc5a99ce7014c43eb21729b859f674217527d91b584d040dfdae25a9029",
+    "modules/gui/qt/tests/interface_preferences_probe.c": "aae4966f7c72d729af20cdd43cb10541f182d0bab6343c9c7d5ce82b497ea4bf",
+    "modules/gui/qt/tests/test_fullscreen_screen_policy.cpp": "376adddb1344768a845f41fa2a4587060b4b62560f4fa3ae04c3f2d744778d4f",
+    "modules/gui/qt/tests/test_interface_preferences.cpp": "020d0d6093015de130c46581b1e1155ca7d4428cfa0c25b66dc2d8017a9ac375",
+    "modules/gui/qt/tests/test_juxtopposed_interface_settings.py": "8d374f73b1d217a542a95f03b433e42feea0c819c61c42685d3d505865a623b7",
+    "modules/gui/qt/util/checked_preferences_store.cpp": "80dcf4daaac42e3cbdb72b5351f3875329afa4f97591caaf6d426e551fe004d6",
+    "modules/gui/qt/util/checked_preferences_store.hpp": "db31dcd53c3313bbc9a7a30d9bfcef0225ebcc581e48e3865480b1b8f9519531",
+    "modules/gui/qt/util/fullscreen_screen_policy.hpp": "2567b6ae734a8839775c23c09c073f166c5911b8844ce8abdcf1a1c04def682b",
+    "modules/gui/qt/tests/fixtures/interface_toolbar/MainCtx.qml": "ba835a3ed08b92ae80a3b701e38aeb6c7cd48442f88248094a3d7f2a70f71bee",
+    "modules/gui/qt/tests/fixtures/interface_toolbar/Player.qml": "6fd9b2889a5230f8c965ffcf003d2561b1ed346f5e7b538eb6789bf1a12809d9",
+    "modules/gui/qt/tests/test_interface_toolbar_policy.py": "0e28350bfd52f407a2f333268d2518b833233e4739d1a6cf26824f1f9a741dfe",
+    "modules/gui/qt/tests/tst_InterfaceToolbarPolicy.qml": "e2e54aa608343552ab682d1f4d77f1e4c4b741753afdf0eb4e41b559036862e2"
+  },
+  "ordinaryBuildExitCode": 0,
+  "ordinaryQtSha256": "48b0bbbc37ad6447fb765d4dec204ddc71e811c50b3a15a3c5997e927a592165",
+  "nativeInterface": {
+    "process": {
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    "qtest": {
+      "tests": 14,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "runtimeFiles": {
+      "test_qt_interface_preferences.exe": "7ea6fb1110c40a96e5ee0d1a12d570d2b1a640a3139b82ac0efef00c8ab53673",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+    },
+    "realWindowsSaveLockAndRetry": true,
+    "fiveExistingNativeFlagRows": true,
+    "nativeConsumerGatesEnabled": false
+  },
+  "generalSharedStoreReplay": [
+    {
+      "variant": "desired",
+      "qtest": {
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "process": {
+        "exitCode": 0,
+        "terminationConfirmed": true
+      },
+      "sameOriginalAssertions": true,
+      "trackedRegisteredGeneralSuite": false
+    },
+    {
+      "variant": "policy",
+      "qtest": {
+        "tests": 32,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 1
+      },
+      "process": {
+        "exitCode": 0,
+        "terminationConfirmed": true
+      },
+      "sameOriginalAssertions": true,
+      "trackedRegisteredGeneralSuite": false
+    },
+    {
+      "variant": "fault",
+      "qtest": {
+        "tests": 3,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "process": {
+        "exitCode": 0,
+        "terminationConfirmed": true
+      },
+      "sameOriginalAssertions": true,
+      "trackedRegisteredGeneralSuite": false
+    }
+  ],
+  "generalHumanConfigPreserved": true,
+  "hiddenFullscreenPolicy": {
+    "process": {
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    "qtest": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "visibleApplicationOrDpiAcceptance": false
+  },
+  "toolbar": {
+    "original": {
+      "tests": 25,
+      "failures": 2,
+      "errors": 0,
+      "skipped": 0
+    },
+    "corrected": {
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "sameDesiredOracleSha256": "e2e54aa608343552ab682d1f4d77f1e4c4b741753afdf0eb4e41b559036862e2",
+    "suppliedPlayerAndMainCtxBoundary": true,
+    "realQtQuickTestTimers": true,
+    "nativeApplicationAcceptance": false
+  },
+  "component": {
+    "interface": {
+      "groupsOrChecks": 10,
+      "qtMessages": 0,
+      "nativeAcceptance": false
+    },
+    "general": {
+      "groupsOrChecks": 12,
+      "qtMessages": 0,
+      "nativeAcceptance": false
+    },
+    "host": {
+      "groupsOrChecks": 24,
+      "qtMessages": 0,
+      "nativeAcceptance": false,
+      "directedTransitions": 12,
+      "busyGuards": 9
+    },
+    "software": {
+      "groupsOrChecks": 23,
+      "qtMessages": 0,
+      "nativeAcceptance": false
+    }
+  },
+  "normalGuiQuits": [
+    {
+      "terminationConfirmed": true,
+      "exitCode": 0,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    {
+      "terminationConfirmed": true,
+      "exitCode": 0,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    {
+      "terminationConfirmed": true,
+      "exitCode": 0,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    {
+      "terminationConfirmed": true,
+      "exitCode": 0,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    }
+  ],
+  "captureAudit": {
+    "initialFinalRunSavedImagesInvalidStaleClosure": true,
+    "invalidImagesExcluded": true,
+    "replacementExplicitStateCapturesHaveCurrentWindowId": true,
+    "replacementImagesUnalteredDistinctSha256": [
+      "e9071d90109f4817d89257670b1d282c4ebb2f5088e2d4bfc1865bfc868a7652",
+      "511f84a8539067bd47931bca87e8a9f6d9dc3a7b13b1b49991a242803672b511",
+      "c12a2d70464983ba07e8300ad6cbe40f2d3991b6df15a85acf268cac68a2641e"
+    ]
+  },
+  "nativeGui": {
+    "monitor": 2,
+    "dpr": 1,
+    "decorationsOnThenOffRestoredAfterRestart": true,
+    "unicodeSkinPathSavedAndRestored": true,
+    "missingAndEmptySkinPathRejectedWithSavedValuePreserved": true,
+    "darkLightSwitchRestoredLight": true,
+    "lowerSectionsReachable": true,
+    "finalTallerViewportWasControlledOwnedProfileSeed": true,
+    "nativeResizeAcceptance": false
+  },
+  "originalArtwork": {
+    "author": "Juxtopposed",
+    "figmaFile": "zdNUYRVOH9lEtIxMYvh8DV",
+    "frame": "3046:10057",
+    "license": "CC BY 4.0; see existing designer notice and attribution",
+    "newUnchangedSvgFiles": {
+      "modules/gui/qt/pixmaps/juxtopposed/interface-settings-1ab84.svg": "f7f458d556413954f79c8dfdea7dca008a13218423f6613e22d90d7b108f9e07",
+      "modules/gui/qt/pixmaps/juxtopposed/interface-settings-8ba8e.svg": "aca9bd8e0bf52644fc78a169c32dd055d5cfb8f1611a228ab8ae0e9818b2e4b5"
+    }
+  },
+  "precedingHead": "ba175cfc69a90865d364695866e1adbd79f0bd9f",
+  "precedingAllFourCiJobsPassed": true,
+  "newHeadCiPending": true,
+  "newWindowsCiCommands": 25,
+  "nativeSkinPickerOrParserAccepted": false,
+  "nativeTrayJourneyAccepted": false,
+  "newConsumerAppAcceptance": false,
+  "completeFigmaOrBetaAcceptance": false,
+  "rawProfilesLogsOrPrivateMediaPublished": false
+}

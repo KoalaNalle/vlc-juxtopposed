@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestThreadRunner">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="0.1551"/>
+  </TestFunction>
+  <TestFunction name="testSimpleTask">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="28.2308"/>
+  </TestFunction>
+  <TestFunction name="testParallelTask">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="33.5874"/>
+  </TestFunction>
+  <TestFunction name="testParallelTaskQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="33.2661"/>
+  </TestFunction>
+  <TestFunction name="testQueuedTask">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="101.802"/>
+  </TestFunction>
+  <TestFunction name="testTargetDeletedDuringTask">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="633.445"/>
+  </TestFunction>
+  <TestFunction name="testTargetDeletedDuringTaskQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="633.796"/>
+  </TestFunction>
+  <TestFunction name="testTargetDeletedBeforeStart">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="651.618"/>
+  </TestFunction>
+  <TestFunction name="testTargetDeletedBeforeStartQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="668.449"/>
+  </TestFunction>
+  <TestFunction name="testTaskCanceledBeforeStart">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="680.681"/>
+  </TestFunction>
+  <TestFunction name="testTaskCanceledDuringExecution">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="635.259"/>
+  </TestFunction>
+  <TestFunction name="testTaskCanceledDuringExecutionQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="633.372"/>
+  </TestFunction>
+  <TestFunction name="testRunnerDestroyedDuringExecution">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="631.318"/>
+  </TestFunction>
+  <TestFunction name="testRunnerDestroyedDuringExecutionQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="635.72"/>
+  </TestFunction>
+  <TestFunction name="testDestroyDrainsRunningTasks">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="465.018"/>
+  </TestFunction>
+  <TestFunction name="testNestedTask">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="85.1657"/>
+  </TestFunction>
+  <TestFunction name="testNestedTaskQueued">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[same thread]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[different thread]]></DataTag>
+    </Incident>
+    <Duration msecs="83.1477"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="0.0346"/>
+  </TestFunction>
+  <Duration msecs="6636.57"/>
+</TestCase>

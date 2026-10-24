@@ -1,0 +1,28 @@
+{
+  "productionApplied": true,
+  "selectedRepairAccepted": true,
+  "ordinaryBuildAccepted": true,
+  "fullBetaAccepted": false,
+  "runtime": "build-windows/beta-external-subtitle-acceptance-20261023/ui-external.srt-r3/runtime",
+  "coreSha256": "ea14300c8c8366a99d17eab124216f543287822c18a85ed305eea0cc557b23d4",
+  "sourceFiles": {
+    "src/input/es_out.c": "00fc7a6c326809655462427e0980893afb1502206f6c49f5f5819191bc083ae0",
+    "src/input/es_out.h": "e97a31d5fbbf2c5fe31996ac31bbb2b82ab1be12df81295612dad8e87918fc72",
+    "src/input/es_out_source.c": "a00f3c3136bb67df126c61817b560758f019d8a142c9fcaa6269ba046cb7772d",
+    "src/input/input.c": "b67107eda76b90ec62e6a60bb3015a658bb3a9ead2507cc9e42dae1127130292"
+  },
+  "sourceInputCount": 2340,
+  "change": "Explicit runtime subtitle load-and-select reuses exclusive user selection, with preferred language/priority inside a multi-track source. Subtitle source identity is set before demux opening; its PCR/reset/display-target controls cannot replace the main-media clock or paused picture target. Generic associated sources retain their prior pass-through behavior.",
+  "evidence": "Identical maintained tests and fixtures: 15 old behavior failures plus 2 load-only passes; 17 new ordinary passes; 17 ordinary startup/interval regressions. All51 native children close normally. Three ordinary desktop file-dialog sessions check automatic selected captions, sole selection, held frame/elapsed text and resume/Pause.",
+  "earlierInvestigation": "../home-external-subtitle-selection-investigation-20261023/README.md",
+  "limits": [
+    "Paused runtime subtitle addition is the accepted scope; this is not whole-subtitle or full-beta acceptance.",
+    "Playing/pending/nonseekable/recording, repeated additions/removal/restart, multi-selection and generic associated audio/video still need targeted qualification.",
+    "Cold initial captions, absolute seek PTS, stale WASAPI public paused time, exact caption layout, physical audibility, Windows10 and DPI remain separate.",
+    "Native missing-file and dummy-window diagnostics and build warnings remain recorded. No error-free-native-log claim.",
+    "Desktop screenshots were reviewed through Computer Use; native marker pixels provide the quantitative frame-conservation proof.",
+    "The first accessible SubRip seek retains a requested slider value until track refresh reconciles it slightly. Elapsed text and actual held picture remain; exact GUI normalized-value conservation is not accepted.",
+    "A transient Next frame OSD appears on some ASS/MKS subtitle refreshes despite a held picture and no step key. This reproduced feedback defect remains open."
+  ],
+  "next": "Correct the reproduced Next frame feedback during subtitle refresh; broaden subtitle workflow policies and cold initial/default/language/sync behavior, then continue all13 categories/32 surfaces through remaining consumers, design/accessibility/DPI, consolidated real-media, review and clean-package gates."
+}

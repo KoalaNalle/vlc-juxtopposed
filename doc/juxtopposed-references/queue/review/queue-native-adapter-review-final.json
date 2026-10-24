@@ -1,0 +1,176 @@
+{
+  "review_type": "independent functional adapter review",
+  "scope": "Queue, Bookmarks and Chapters QML adapters; no appearance score; bookmark backend implementation excluded",
+  "baseline_commit": "b8f28cbcfae6c445b8ec8b34d4aec919478f258e",
+  "reviewed_revision": "Final stable adapter snapshot including reset-only coverage and repeat/shuffle feedback",
+  "status": "No remaining actionable adapter source finding; final six-suite validation belongs to root; native gates remain pending",
+  "reviewed_file_sha256": {
+    "tests/test_juxtopposed_queue.py": "1546A6DB4982A71A255F89447B16E864C46EE043AD0808E366DAA3973B00E604",
+    "playlist/qml/PlaylistDelegate.qml": "BB7430D6FC64A12056AF9BBD3CA8EC457F075E5BE2F05B5DEB215EC8115F1132",
+    "playlist/qml/JuxtopposedQueueRow.qml": "E57F5D38D42F01F67AB2567AF214E28B5FC68F2AAB06AC579054136D780DADA1",
+    "widgets/qml/SearchBox.qml": "E88D2385C1EDF72E7A3A1FED59975F9E0A187CB0EDEA9250814CFDBFA02C70DF",
+    "playlist/qml/JuxtopposedQueuePanel.qml": "B0AA8E664AB7F0BEA0BB169687282592BE8B601C363627164B7CC32601952EC8",
+    "tests/test_playlist_proxy_mapping.py": "EABD01291E041266EC6217B1E8B8AE1C88CF3294749B0A3B93F6B0D76AC206C0",
+    "playlist/qml/PlaylistPane.qml": "45E6BA7ACDB0E12823BBD14497950BD0B3876E980B89BB2F3481DC0446A0EAEB",
+    "playlist/qml/JuxtopposedBookmarkList.qml": "1EBEDADD4A3A4DA02EEEC27B297E5018152EFB4AB54BD0BB763EB1AA5E8852BE",
+    "player/qml/Player.qml": "E1FE375090FFD02634E2EA335DB2E05BBA6E44AA0EC78003209FFACDC37CB048"
+  },
+  "verified_checks": [
+    {
+      "check": "test_playlist_proxy_mapping.py",
+      "status": "passed",
+      "evidence": "Real Qt filter proxy exercises extracted production queue callbacks: source/view mapping, keyboard and touch activation, reversed-order selection removal, row moves, footer append, hidden rows, invalid targets, empty filter and empty queue.",
+      "limit": "Replacement playback controller; not full VLC pointer event delivery or native playlist execution."
+    },
+    {
+      "check": "test_juxtopposed_queue.py",
+      "status": "passed",
+      "evidence": "Production presentation controls emit expected header action signals, retain the supplied body view during opt-out, and pass long-label/duration and scaling checks.",
+      "limit": "Fixture body supplies sample records; this test does not instantiate native Bookmarks or Chapters adapters. No visual likeness grade assigned in this review."
+    },
+    {
+      "check": "JuxtopposedBookmarkList.qml syntax",
+      "status": "passed",
+      "evidence": "Qt 6.8.3 qmlformat parses the complete optional adapter.",
+      "limit": "Syntax parsing cannot establish that every native QML type and invocation loads in VLC."
+    },
+    {
+      "check": "QItemSelectionModel reset behavior",
+      "status": "verified",
+      "evidence": "Real Qt 6.8.3 beginResetModel/endResetModel clears selected indexes without emitting selectionChanged. The adapter now explicitly refreshes selection state after reset/removal."
+    },
+    {
+      "check": "Source mapping/drop preservation",
+      "status": "reviewed",
+      "evidence": "Queue view/source mapping and source-coordinate drop callbacks remain in place. Reparenting retains the existing ListView/selection model; global sort popup anchoring uses the visible redesigned button."
+    },
+    {
+      "check": "Optional media library",
+      "status": "reviewed",
+      "evidence": "VLC.MediaLibrary import is isolated to JuxtopposedBookmarkList.qml, loaded only when MainCtx.mediaLibraryAvailable is true; the adapter explicitly imports VLC.MainInterface for Navigation."
+    },
+    {
+      "check": "Chapter API contract",
+      "status": "reviewed",
+      "evidence": "Chapter rows use Player.chapters display/checked/time roles and invoke selectChapter(index) with a bounds guard. Current-chapter state and local selection are exposed separately."
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "bookmark_navigation_import",
+      "severity": "P1",
+      "resolution": "Added explicit VLC.MainInterface import; Navigation is registered there and imports are not transitive."
+    },
+    {
+      "id": "bookmark_selection_after_reset",
+      "severity": "P2",
+      "resolution": "Added selectionRevision invalidation and currentIndex clamping on model reset/removal."
+    },
+    {
+      "id": "bookmark_touch_removal",
+      "severity": "P2",
+      "resolution": "Touch and accessible press now select the bookmark before activating it, enabling removal through the toolbar."
+    },
+    {
+      "id": "bookmark_add_label",
+      "severity": "P2",
+      "resolution": "Shared panel exposes addDescription; Bookmarks uses Add bookmark instead of Add files."
+    },
+    {
+      "id": "chapter_accessible_selection",
+      "severity": "P2",
+      "resolution": "Accessible.selected now reflects local selection; the current chapter remains identified by its description."
+    },
+    {
+      "id": "queue_accessible_activation",
+      "severity": "P2",
+      "resolution": "Queue row supplies an accessible press action with mapped source-index validation and the displayed Unknown Title fallback."
+    },
+    {
+      "id": "proxy_test_wrong_handler",
+      "kind": "regression-test defect",
+      "resolution": "Test extraction is scoped to the actual queue ListView, preventing Chapters' onActionAtIndex from being mistaken for the queue activation callback. The corrected test passes."
+    }
+  ],
+  "withdrawn_findings": [
+    {
+      "id": "hidden_queue_delete",
+      "reason": "Initially suspected that unconditional Keys.forwardTo could delete selected hidden queue rows. A real Qt 6.8.3 test showed forwarding skips visible:false receivers, so the destructive-path claim was withdrawn. Active-tab routing was nevertheless added for useful visible-view keyboard behavior."
+    }
+  ],
+  "native_gates": [
+    {
+      "gate": "Full Windows VLC build and QML loading",
+      "status": "pending home verification",
+      "checks": "Compile all new resources and native API changes; open Queue, Bookmarks and Chapters with media library available and disabled."
+    },
+    {
+      "gate": "Queue input and context menu",
+      "status": "pending home verification",
+      "checks": "Mouse double-click, right-click, keyboard and accessibility activation select the intended source item; filtered multiselection removal/reorder and external/library drops work once."
+    },
+    {
+      "gate": "Bookmarks adapter against live model",
+      "status": "pending home verification",
+      "checks": "Add follows readiness and playback availability; touch/keyboard selection enables Remove; model reset clears selection state; remove([index(row,0)]) and native seek target the intended bookmark."
+    },
+    {
+      "gate": "Chapters against real metadata",
+      "status": "pending home verification",
+      "checks": "Mouse, keyboard, touch and accessibility actions select actual chapters; current state follows playback and survives media changes without stale rows."
+    },
+    {
+      "gate": "Focus, search and native sort",
+      "status": "pending home verification",
+      "checks": "Tab/Shift+Tab/arrows and Escape route through the visible tab and restore player focus. Ctrl+F search popup is visible and usable; sort popup is anchored inside the window and dispatches the intended criterion/order."
+    },
+    {
+      "gate": "Reparenting, docking and accessibility",
+      "status": "pending home verification",
+      "checks": "Classic/redesigned mode changes, docked/undocked views, fullscreen, resizing and DPI changes retain focus, selection, native drops, readable accessible labels and state."
+    }
+  ],
+  "reviewer_edits": "None to repository source in this review; only this report was saved.",
+  "final_round_source_checks": [
+    {
+      "evidence": "Pane exposes minimum/preferred widths; Player bounds maximumWidth at least to minimumWidth and clamps preferredWidth, preserving native resize behavior.",
+      "status": "reviewed",
+      "check": "Preferred and minimum width"
+    },
+    {
+      "evidence": "The existing ListView reparents between permanent legacyQueueHost and redesigned body, with anchors.fill: parent in both modes. Existing selection/model/drop objects persist.",
+      "status": "reviewed",
+      "check": "Permanent classic queue host"
+    },
+    {
+      "evidence": "Aggregation reads visible model DurationRole values directly, including the unfiltered source; durationRevision covers structural changes, empty role notifications and DurationRole changes while skipping current-only updates. Compact queue and full chapter time helpers use native tick methods and handle invalid values.",
+      "status": "reviewed",
+      "check": "Duration aggregation and formatting"
+    },
+    {
+      "evidence": "queueSelectionRevision is referenced in queueSelectionCount and updated on model switch/reset/removal, covering reset paths that do not emit selectionChanged.",
+      "status": "reviewed",
+      "check": "Queue reset selection count"
+    },
+    {
+      "evidence": "Redesigned mode reparents the existing SearchBox popup to the visible queue panel, binds its position there, retracts it when changing tabs, and restores focus to the visible tab body on close. Classic bindings restore when redesign mode is disabled.",
+      "status": "reviewed",
+      "check": "Search popup anchor and focus"
+    },
+    {
+      "status": "reviewed",
+      "check": "Repeat and shuffle state feedback",
+      "evidence": "Checked state remains driven by MainPlaylistController. Accessible names/tooltips distinguish Repeat off/all/current item and Shuffle off/on. Checked tint and border provide feedback without changing SVG sources or unchecked styling; native actions still call toggleRepeatMode/toggleRandom. No appearance score assigned."
+    },
+    {
+      "status": "resolved",
+      "check": "Reset-only selection coverage",
+      "evidence": "Queue and bookmark fixtures now retain rows across beginResetModel/endResetModel. QSignalSpy verifies zero Selection.changed events while the extracted production selectionCount bindings become zero. Bookmark clear-to-empty still verifies currentIndex -1."
+    }
+  ],
+  "final_round_test_coverage": {
+    "note": "Implementation agent reports both changed suites passing. This reviewer independently inspected the reset-only fixtures, feedback assertions and current file hashes; no full native execution is inferred.",
+    "status": "Coverage gap resolved in source; root owns final changed-test rerun and six-suite CI"
+  },
+  "record_normalization": "Local paths normalized to repository-relative paths for publication. Review scores, findings, source hashes and image bytes are unchanged."
+}

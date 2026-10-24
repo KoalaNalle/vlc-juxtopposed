@@ -1,0 +1,600 @@
+{
+  "passed": true,
+  "libvlcVersion": "4.0.0-dev Otto Chriek",
+  "cases": [
+    {
+      "name": "strict-88200",
+      "sourceFrames": 88200,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "peak": 0.396728515625,
+      "sourceSha256": "85a84280c479db83ea99615f45e456e19a25f51598c552cb8623156acebf1c29",
+      "flacSha256": "05d868a9646a34d93c709a7a34d732ac7a0f2cfca8965ef6595cbdbde96c8755",
+      "exactPcm": true,
+      "expectedFrames": 88200
+    },
+    {
+      "name": "boundary-one",
+      "sourceFrames": 1,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 1,
+      "peak": 0.396728515625,
+      "sourceSha256": "801b1901e1bfa29165a126815cb9127eb77548c94d5399f029c6480a7bf25afd",
+      "flacSha256": "4577f714d6f788b6c9bf2b0bf7a32eeb7266f007c16c746161d5bdc62fef8120",
+      "exactPcm": true,
+      "expectedFrames": 1
+    },
+    {
+      "name": "boundary-seventeen",
+      "sourceFrames": 17,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 17,
+      "peak": 0.396728515625,
+      "sourceSha256": "c79f0801b92f80b2ab4a23ae2ce12117b3a3b0593525dbae519d186aebd7463a",
+      "flacSha256": "68cacf5d9c7e154f50ce16d0e3d433f401d820473bbb5021865b2aa0c1d79338",
+      "exactPcm": true,
+      "expectedFrames": 17
+    },
+    {
+      "name": "boundary-B-minus-one",
+      "sourceFrames": 4095,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 4095,
+      "peak": 0.396728515625,
+      "sourceSha256": "91ec7729e76bed67fc2d4bdb1ea158860608afefc6b01e53c0cdb2ce9ee95ca7",
+      "flacSha256": "356660907d13f98f49f00e9f33c6f1ec7f620a8bd03c5054b794cc90086b8fd5",
+      "exactPcm": true,
+      "expectedFrames": 4095
+    },
+    {
+      "name": "boundary-B",
+      "sourceFrames": 4096,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 4096,
+      "peak": 0.396728515625,
+      "sourceSha256": "939173d7e178d7f15ecc325ad2468e9c56005638bc1b2f9e602209309982b1f2",
+      "flacSha256": "9369eea1c01b91fdb79b44a29dced2c97b51c4009cd8993f1b129224163a7f8b",
+      "exactPcm": true,
+      "expectedFrames": 4096
+    },
+    {
+      "name": "boundary-B-plus-one",
+      "sourceFrames": 4097,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 4097,
+      "peak": 0.396728515625,
+      "sourceSha256": "04e47b44edb81a2fcd12441b5caf1bd6acbad10143d1d859a609fcfb35b13ee8",
+      "flacSha256": "cfd8c102be1f0a15837fa61e7486584d361c841d7a66d8572184f1dc063fd5ed",
+      "exactPcm": true,
+      "expectedFrames": 4097
+    },
+    {
+      "name": "boundary-two-B-plus-seventeen",
+      "sourceFrames": 8209,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 8209,
+      "peak": 0.396728515625,
+      "sourceSha256": "dea12ecd508e645a3a17154f681eb35b6e10f332136bd662400d6bc2cd3e05aa",
+      "flacSha256": "15d5fc2bdb923c4fa9c08be9891644963be298eeb2ca0124cb20877789e69db2",
+      "exactPcm": true,
+      "expectedFrames": 8209
+    },
+    {
+      "name": "repeat-88200",
+      "sourceFrames": 88200,
+      "sourceRate": 44100,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "peak": 0.396728515625,
+      "sourceSha256": "85a84280c479db83ea99615f45e456e19a25f51598c552cb8623156acebf1c29",
+      "flacSha256": "05d868a9646a34d93c709a7a34d732ac7a0f2cfca8965ef6595cbdbde96c8755",
+      "exactPcm": true,
+      "expectedFrames": 88200
+    },
+    {
+      "name": "resample-8000-to-44100",
+      "sourceFrames": 16000,
+      "sourceRate": 8000,
+      "passed": true,
+      "encode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 0,
+        "finalState": 4,
+        "audioEncoderModules": [
+          "flac",
+          "flac"
+        ],
+        "audioDecoderModules": [
+          "araw"
+        ],
+        "eos": true
+      },
+      "header": {
+        "hex": "664c614380000022100010000000000000000ac440f00000000000000000000000000000000000000000",
+        "minBlockSize": 4096,
+        "maxBlockSize": 4096,
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16,
+        "totalSamples": 0,
+        "md5": "00000000000000000000000000000000",
+        "initialUnknownTotalsAndMd5": true
+      },
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "peak": 0.43792724609375,
+      "sourceSha256": "83a0c96acfa54242f78d5dfd1738da18ce750a397782813a8724dc087cfbaad0",
+      "flacSha256": "7a2b092df13251a18e69c71e84adef5bda250eaffe61ffb759462d3df2ace870",
+      "exactPcm": null,
+      "expectedFrames": 88200
+    }
+  ],
+  "evidence": "Actual forced built-in FLAC encode and complete built-in decode; no native unit/allocation fault or GUI claim.",
+  "actualBlockSize": 4096,
+  "exitCode": 0,
+  "isolatedUserdata": true,
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "602632d1eebdeb3559590a5b69315f5672163877fcc742487032d71a25ca1896",
+    "libflac_plugin.dll": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+  }
+}

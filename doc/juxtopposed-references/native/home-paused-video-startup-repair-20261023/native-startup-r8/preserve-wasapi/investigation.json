@@ -1,0 +1,308 @@
+{
+  "case": "preserve-wasapi",
+  "passed": false,
+  "investigationOnly": true,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r8\\preserve-wasapi\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "sourceManifest": "build-windows/beta-tracks-subtitles-20261023/inputs-r4.json",
+  "producerSha256": "f9a28348642e134a2b2677200caf122c624778184c383178a6c100e7ce3c28b8",
+  "fixtureProducerSha256": "7c47c6eef8c19b8ac7b56c46e069a4e5245039cb52a2e2920336bb5d5e014c51",
+  "mediaSha256": "a7a6a18a83a1ca49caa437fe972bc19f8e94731c3ae2f7d49fa3ce32a9c80154",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "snapshot": "initial-paused.png",
+      "snapshotSha256": "ff85f289d5b67ba2e7a86fcf0c6956cabce3e7f569f1e90a3d3ac1b9864136fa",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2271
+    },
+    {
+      "step": "played-paused",
+      "state": 3,
+      "timeUs": 1016142,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01600000000325963,
+      "snapshotAvailable": true,
+      "snapshot": "played-paused.png",
+      "snapshotSha256": "dfa9a7151594460037f3b1a2f1754bf73cea8dc793e18e6a8d59a6a31d614a5f",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2271
+    },
+    {
+      "step": "seek-middle-paused",
+      "state": 3,
+      "timeUs": 811566,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07899999999790452,
+      "snapshotAvailable": true,
+      "snapshot": "seek-middle-paused.png",
+      "snapshotSha256": "b67ad5fa78cd1879205d7fc0746f24fb6b295b248718f2cb4b50ed9852fbb098",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "seek-first-paused",
+      "state": 3,
+      "timeUs": 811566,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "snapshot": "seek-first-paused.png",
+      "snapshotSha256": "3a6ddb417c1293586068b5e67bfb95e6159a57f62577eb93e5183b29afa5a4ac",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "finnish-selected-paused",
+      "state": 3,
+      "timeUs": 811566,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01599999999598367,
+      "snapshotAvailable": true,
+      "snapshot": "finnish-selected-paused.png",
+      "snapshotSha256": "458c4a7072e56b11760071dad0a2184f3e5467cbba7bcfa8a19e13f2f80ee205",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "external-added-selected-paused",
+      "state": 3,
+      "timeUs": 811566,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": true
+        },
+        {
+          "id": "5f06d7e9ba985ee2a1ae05c5a110834f/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.046999999998661224,
+      "snapshotAvailable": true,
+      "snapshot": "external-added-selected-paused.png",
+      "snapshotSha256": "f8dbbd4320773c27a8cc66f1af57cf5cedc1b17b5b3cbc45eacf2b6e4f7a0338",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "external-explicit-selected-paused",
+      "state": 3,
+      "timeUs": 811566,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "5f06d7e9ba985ee2a1ae05c5a110834f/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "snapshot": "external-explicit-selected-paused.png",
+      "snapshotSha256": "5a0cd7d3baabb8d1f4628ce1f1fe36b4d8664d16483b5ef829d1f442a4be0d13",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "external-after-resume",
+      "state": 3,
+      "timeUs": 6543522,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/4",
+          "language": "eng",
+          "name": "English embedded - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/5",
+          "language": "fin",
+          "name": "Finnish embedded - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "5f06d7e9ba985ee2a1ae05c5a110834f/spu/0",
+          "language": null,
+          "name": "Track 3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07899999999790452,
+      "snapshotAvailable": true,
+      "snapshot": "external-after-resume.png",
+      "snapshotSha256": "43194edca08e80a070a23a21e8093881ed7b874df9f1c0cd05c5a9ae081b023f",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2481
+    }
+  ],
+  "teardownComplete": true,
+  "initialPauseReached": true,
+  "resumeReached": true,
+  "playedPauseReached": true,
+  "finnishSelected": true,
+  "externalAddReturn": 0,
+  "externalTrackAdded": true,
+  "externalExplicitSelected": true,
+  "externalResumeReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "status": "terminal",
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r8\\preserve-wasapi\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r8\\preserve-wasapi\\runtime\\plugins\\plugins.dat: No error",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "faad warning: decoded zero sample",
+    "main warning: window size missing",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec"
+  ],
+  "actualWasapiSelected": true,
+  "actualAudioModules": [
+    "main debug: using audio output module \"mmdevice\"",
+    "main debug: using aout stream module \"wasapi\""
+  ],
+  "actualVideoDecoderLines": [
+    "avcodec debug: allowing 6 thread(s) for decoding",
+    "avcodec debug: using frame thread mode with 6 threads",
+    "main debug: using video decoder module \"avcodec\""
+  ]
+}

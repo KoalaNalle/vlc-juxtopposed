@@ -85,6 +85,7 @@ config_PutPsz
 config_RemoveIntf
 config_ResetAll
 config_SaveConfigFile
+config_SaveChanges
 config_StringEscape
 config_StringUnescape
 date_Change
@@ -280,9 +281,12 @@ module_gettext
 module_list_free
 module_list_get
 module_need
+module_need_preferred
 module_provides
 module_unneed
 vlc_module_load
+vlc_module_cache_validate
+vlc_plugin_cache_output_protocol
 vlc_module_map
 vlc_module_match
 vlc_memstream_open
@@ -417,8 +421,10 @@ vlc_stream_fifo_Close
 vlc_strfplayer
 vlc_strftime
 subpicture_Delete
+subpicture_GetSourceTime
 subpicture_New
 subpicture_NewFromPicture
+subpicture_SetStopTime
 subpicture_Update
 vlc_spu_regions_Clear
 vlc_render_subpicture_New
@@ -610,6 +616,7 @@ vlc_getaddrinfo
 vlc_getaddrinfo_i11e
 vlc_getnameinfo
 vlc_getProxyUrl
+vlc_getProxyUrlForObject
 vlc_gettext
 vlc_html_color
 vlc_ngettext
@@ -819,12 +826,16 @@ fingerprinter_Destroy
 addons_manager_New
 addons_manager_Delete
 addons_manager_Gather
+addons_manager_GatherChecked
+addons_manager_GetDiscoveryResult
 addons_manager_LoadCatalog
+addons_manager_SaveCatalog
 addons_manager_Install
 addons_manager_Remove
 addon_entry_New
 addon_entry_Hold
 addon_entry_Release
+addon_entry_GetOperationResult
 vlc_renderer_item_new
 vlc_renderer_item_hold
 vlc_renderer_item_release
@@ -878,6 +889,7 @@ vlc_player_GetEsIdFromVout
 vlc_player_GetEsIdVout
 vlc_player_GetLength
 vlc_player_GetPosition
+vlc_player_GetPositionWithSeek
 vlc_player_GetProgram
 vlc_player_GetProgramAt
 vlc_player_GetProgramCount
@@ -891,6 +903,7 @@ vlc_player_GetStatistics
 vlc_player_GetSubtitleTextScale
 vlc_player_GetTeletextPage
 vlc_player_GetTime
+vlc_player_GetTimeWithSeek
 vlc_player_GetTitleList
 vlc_player_GetTrack
 vlc_player_GetTrackAt
@@ -1070,6 +1083,8 @@ vlc_preparser_req_GetItem
 vlc_preparser_req_Release
 vlc_preparser_Delete
 vlc_process_Spawn
+vlc_process_priority_get
+vlc_process_priority_apply
 vlc_process_Kill
 vlc_process_Terminate
 vlc_process_fd_Read
@@ -1077,3 +1092,10 @@ vlc_process_fd_Write
 vlc_preparser_msg_Init
 vlc_preparser_msg_Clean
 vlc_preparser_msg_serdes_Create
+
+vlc_player_SwapHistoryPolicy
+vlc_player_HistoryIsExcluded
+vlc_player_ClearHistory
+
+vlc_ml_history_available
+vlc_ml_history_get

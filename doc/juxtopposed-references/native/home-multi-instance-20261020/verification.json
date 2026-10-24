@@ -1,0 +1,29 @@
+{
+  "status": "shared_native_settings_lost_updates_reproduced",
+  "fullBetaAccepted": false,
+  "sharedSettingsConflictResolved": false,
+  "ordinaryGuiSha256": "72ba439a30f098555461289639ab3249e5fc45af0f8bbb257c4dc95b6214efae",
+  "privateHooks": false,
+  "sourceInputsUnchanged": true,
+  "normalExits": 2,
+  "scope": "Two actual ordinary processes, separate monitors and Qt storage, owned shared native config, different paused generated WAVs; A fullscreen while B edits; independent shutdown.",
+  "unverified": [
+    "Different active Windows audio endpoints",
+    "Simultaneous playing/seek/queue/track ownership",
+    "Shared Qt profile/geometry storage",
+    "Conflict repair and final package"
+  ],
+  "observations": [
+    "A saved duration5000; B saved only geometryOff and silently restored duration777.",
+    "Closing B did not close fullscreen A.",
+    "Closing A silently restored geometryOn while saving its stale process defaults."
+  ],
+  "artifacts": {
+    "after-A-duration.json": "5e9ff3b29d90d67da29abcdfdad0bed7b743ad18fea135e06692e37e874f26b0",
+    "after-B-close.json": "99d736e659b662f672517b8b13a1a3b02e9af9a5a6e7789f380bfd5ada018ca3",
+    "after-B-geometry.json": "1d8ef56ab796ddf0b4bb4d7ea6a3ca1ae2fabdb287d76106dd0377b4a1dc7215",
+    "after-both-close.json": "1d9e6d128586972b506bd025e37b25f1742463a10ea39adbc0fa6b58661f9aee",
+    "before.json": "73951adbda43cda7c73007a2dfce6891835593272eb1d3cc09a76d89540db72b",
+    "process.json": "6934ef72d7d3c9689065afbabf208f74f2a0cae5b5da259fb0fa1360a9782440"
+  }
+}

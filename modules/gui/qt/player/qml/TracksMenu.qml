@@ -26,9 +26,14 @@ import VLC.Style
 import VLC.Widgets as Widgets
 import VLC.Util
 
-// FIXME: Keyboard navigation needs to be fixed for this Popup.
 T.Popup {
     id: root
+
+    focus: true
+    // Dismissing the menu must not also toggle playback beneath it.
+    modal: true
+    dim: false
+    closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutside
 
     // Settings
     property var preferredWidth : stackView.currentItem.preferredWidth
@@ -38,6 +43,12 @@ T.Popup {
                     , root.parent.width)
 
     height: VLCStyle.dp(296, VLCStyle.scale)
+
+    function showTracks(column) {
+        stackView.pop(null)
+        open()
+        Qt.callLater(() => trackList.focusTrack(column))
+    }
 
     // Animations
 
@@ -84,6 +95,7 @@ T.Popup {
         }
 
         initialItem: TracksListPage {
+            id: trackList
             trackMenuController: trackMenuController
         }
 
@@ -126,7 +138,10 @@ T.Popup {
       signal requestBack()
 
       onRequestBack: {
-          stackView.pop()
+          if (stackView.depth > 1)
+              stackView.pop()
+          else
+              root.close()
       }
 
       onRequestAudioPage: {

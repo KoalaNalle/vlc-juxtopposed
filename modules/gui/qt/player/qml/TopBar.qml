@@ -25,6 +25,7 @@ import QtQuick.Window
 import VLC.MainInterface
 import VLC.Style
 import VLC.PlayerControls
+import VLC.Player
 import VLC.Playlist
 import VLC.Widgets as Widgets
 import VLC.Menus as Menus
@@ -59,7 +60,9 @@ FocusScope{
 
     // Private
 
-    property bool _showTopBar: (pinControls === false || showToolbar === false)
+    readonly property bool _juxtopposedControls: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
+
+    property bool _showTopBar: _juxtopposedControls || (pinControls === false || showToolbar === false)
 
     property bool _showCenterText: (pinControls && showToolbar === false && showCSD)
 
@@ -76,6 +79,9 @@ FocusScope{
     signal togglePlaylistVisibility()
     signal requestLockUnlockAutoHide(bool lock)
     signal backRequested()
+    signal homeRequested()
+    signal toggleNavigationVisibility()
+    property bool navigationVisible: false
 
     ///incomming signal to request all menu and popup to close
     signal forceUnlock()
@@ -131,6 +137,17 @@ FocusScope{
     //FIXME: if CSD will be weirdly placed if application safe-area are used,
     //nota that if you need a safe area (kiosk mode), you probably don't need CSD
     function _layout() {
+        if (_juxtopposedControls) {
+            let stripHeight = sharedStrip.implicitHeight
+            let toolbarHeight = showToolbar ? menubar.implicitHeight : 0
+            menubar.anchors.topMargin = stripHeight
+            menubar.height = toolbarHeight
+            logoOrResume.anchors.topMargin = stripHeight + toolbarHeight
+            logoOrResume.height = resumeVisible ? logoOrResume.implicitHeight : 0
+            implicitHeight = stripHeight + toolbarHeight + logoOrResume.height
+            reservedHeight = implicitHeight
+            return
+        }
         let offset = topMargin
 
         if (_showCenterText) {
@@ -200,13 +217,36 @@ FocusScope{
     }
 
     // Children
+    JuxtopposedTitlebar {
+        id: sharedStrip
+        anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top
+        height: implicitHeight
+        onImplicitHeightChanged: Qt.callLater(root._layout)
+        visible: root._juxtopposedControls
+        focus: visible
+        playerContext: true
+        navigationVisible: root.navigationVisible
+        mediaTitle: root.title
+        sourceTitle: ({home: qsTr("Home"), video: qsTr("Videos"), music: qsTr("Music"), network: qsTr("Network"), playlists: qsTr("Playlists"), recent: qsTr("Recent")})[History.viewPath[0]] || qsTr("Home")
+        showWindowControls: root.showCSD
+        onHomeRequested: root.homeRequested()
+        onSourceRequested: root.backRequested()
+        onNavigationRequested: root.toggleNavigationVisibility()
+        onLockAutoHide: locked => root.requestLockUnlockAutoHide(locked)
+        Navigation.parentItem: root
+        Navigation.downItem: root.Navigation.downItem
+        Connections {
+            target: root
+            function onForceUnlock() { sharedStrip.dismissRequested() }
+        }
+    }
 
     //drag and dbl click the titlebar in CSD mode
     Loader {
         id: tapNDrag
 
         anchors.fill: parent
-        active: root.showCSD
+        active: root.showCSD && !root._juxtopposedControls
         source: "qrc:///qt/qml/VLC/Widgets/CSDTitlebarTapNDrapHandler.qml"
 
         Connections {
@@ -233,11 +273,12 @@ FocusScope{
 
         onHoveredChanged: menu => root.requestLockUnlockAutoHide(hovered)
         onMenuOpenedChanged: menu => root.requestLockUnlockAutoHide(menuOpened)
-        onImplicitHeightChanged: root._layout()
+        onImplicitHeightChanged: Qt.callLater(root._layout)
     }
 
     Item {
         id: logoOrResume
+        visible: !root._juxtopposedControls || root.resumeVisible
 
         anchors.left: root.left
         anchors.top: root.top
@@ -260,7 +301,7 @@ FocusScope{
                 return 0
         }
 
-        onImplicitHeightChanged: root._layout()
+        onImplicitHeightChanged: Qt.callLater(root._layout)
 
         Item {
             id: logoGroup
@@ -312,7 +353,7 @@ FocusScope{
             //add aditional margin so it align with menubar text when visible (see MenuBar.qml)
             anchors.leftMargin: VLCStyle.margin_xsmall
 
-            maxWidth: ((root.showCSD && !root.pinControls) ? csdDecorations : playlistGroup).x
+            maxWidth: root._juxtopposedControls ? root.width - 12 * VLCStyle.dp(1, VLCStyle.scale) : ((root.showCSD && !root.pinControls) ? csdDecorations : playlistGroup).x
                 - VLCStyle.applicationHorizontalMargin
                 - VLCStyle.margin_large
 
@@ -343,7 +384,7 @@ FocusScope{
         readonly property bool _alignHCenter: _centerX > _leftLimit
                                               && _centerX + centerTitleText.implicitWidth < _rightLimit
 
-        visible: (_showCenterText && root.resumeVisible === false)
+        visible: !root._juxtopposedControls && (_showCenterText && root.resumeVisible === false)
 
         enabled: visible
 
@@ -383,7 +424,7 @@ FocusScope{
 
         width: root.textWidth - VLCStyle.margin_normal
 
-        visible: !root.pinControls
+        visible: !root._juxtopposedControls && !root.pinControls
 
         enabled: visible
 
@@ -406,9 +447,9 @@ FocusScope{
 
         focus: false
         height: VLCStyle.icon_normal
-        active: root.showCSD
-        enabled: root.showCSD
-        visible: root.showCSD
+        active: root.showCSD && !root._juxtopposedControls
+        enabled: root.showCSD && !root._juxtopposedControls
+        visible: root.showCSD && !root._juxtopposedControls
         source:  VLCStyle.palette.hasCSDImage
             ? "qrc:///qt/qml/VLC/Widgets/CSDThemeButtonSet.qml"
             : "qrc:///qt/qml/VLC/Widgets/CSDWindowButtonSet.qml"
@@ -432,7 +473,7 @@ FocusScope{
         anchors.right: parent.right
         anchors.rightMargin: root._sideMargin + extraRightMargin
 
-        visible: root._showTopBar
+        visible: !root._juxtopposedControls && root._showTopBar
 
         Widgets.IconToolButton {
             id: menuSelector
@@ -455,7 +496,7 @@ FocusScope{
 
             Navigation.parentItem: root
             Navigation.leftItem: backBtn
-            Navigation.rightItem: playlistButton
+            Navigation.rightItem: fullscreenButton.visible ? fullscreenButton : playlistButton
 
             onClicked: contextMenu.popup(this.mapToGlobal(0, height))
 
@@ -479,6 +520,24 @@ FocusScope{
             }
         }
 
+        JuxtopposedButton {
+            id: fullscreenButton
+            anchors.verticalCenter: parent.verticalCenter
+            visible: root._juxtopposedControls
+            enabled: Player.hasVideoOutput
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            source: "qrc:/juxtopposed/" + JuxtopposedPalette.icon("fullscreen.svg")
+            mirrorIcon: true
+            description: Player.fullscreen ? qsTr("Leave fullscreen") : qsTr("Fullscreen")
+            Navigation.parentItem: root
+            Navigation.leftItem: menuSelector.visible ? menuSelector : backBtn
+            Navigation.rightItem: playlistButton
+            Keys.priority: Keys.AfterItem
+            Keys.onPressed: (event) => Navigation.defaultKeyAction(event)
+            onClicked: Player.fullscreen = !Player.fullscreen
+            onHoveredChanged: root.requestLockUnlockAutoHide(hovered)
+        }
+
         PlaylistPane.PlaylistToggleButton {
             id: playlistButton
 
@@ -498,7 +557,8 @@ FocusScope{
             plListView: root.plListView
             
             Navigation.parentItem: root
-            Navigation.leftItem: menuSelector.visible ? menuSelector : backBtn
+            Navigation.leftItem: fullscreenButton.visible ? fullscreenButton
+                                                           : menuSelector.visible ? menuSelector : backBtn
 
             onClicked: togglePlaylistVisibility()
 

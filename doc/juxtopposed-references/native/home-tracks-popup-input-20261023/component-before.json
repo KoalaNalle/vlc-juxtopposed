@@ -1,0 +1,81 @@
+{
+  "passed": false,
+  "cases": [
+    {
+      "column": 0,
+      "dismissal": "escape",
+      "before": {
+        "visible": true,
+        "activeFocus": true,
+        "focusName": "subtitleFocus"
+      },
+      "checks": {
+        "opened": true,
+        "columnFocused": true,
+        "closed": true,
+        "closedOnce": true,
+        "playbackClickNotDelivered": true,
+        "originFocusRestored": true
+      },
+      "passed": true
+    },
+    {
+      "column": 0,
+      "dismissal": "outside-click",
+      "before": {
+        "visible": true,
+        "activeFocus": true,
+        "focusName": "subtitleFocus"
+      },
+      "checks": {
+        "opened": true,
+        "columnFocused": true,
+        "closed": true,
+        "closedOnce": true,
+        "playbackClickNotDelivered": false,
+        "originFocusRestored": true
+      },
+      "passed": false
+    },
+    {
+      "column": 1,
+      "dismissal": "escape",
+      "before": {
+        "visible": true,
+        "activeFocus": true,
+        "focusName": "audioFocus"
+      },
+      "checks": {
+        "opened": true,
+        "columnFocused": true,
+        "closed": true,
+        "closedOnce": true,
+        "playbackClickNotDelivered": true,
+        "originFocusRestored": true
+      },
+      "passed": true
+    },
+    {
+      "column": 1,
+      "dismissal": "outside-click",
+      "before": {
+        "visible": true,
+        "activeFocus": true,
+        "focusName": "audioFocus"
+      },
+      "checks": {
+        "opened": true,
+        "columnFocused": true,
+        "closed": true,
+        "closedOnce": true,
+        "playbackClickNotDelivered": false,
+        "originFocusRestored": true
+      },
+      "passed": false
+    }
+  ],
+  "diagnostics": [],
+  "sourceSha256": "12084ebd84ca1b46ee27edbbfea6d671dc9138885fbf1d27df4fadbb9239ce22",
+  "producerSha256": "558bc790da541af6d5164ed9c1fc944fcc8c16c37fc8834f6761366690e325a1",
+  "scope": "Check the complete production TracksMenu's popup input ownership in real Qt.\n\nTrack pages, palette and native models are supplied. This exercises popup focus,\nEscape, outside-click delivery and reopening, not track selection or decoding.\nAn ordinary VLC replay must separately check its real pages and hotkey routing.\n"
+}

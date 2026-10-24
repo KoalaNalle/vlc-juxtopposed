@@ -1,0 +1,954 @@
+{
+  "status": "r10_native_and_ordinary_smoke_pass_physical_shift_f10_pending",
+  "fullBetaAccepted": false,
+  "platform": "Windows 11 x64 build 26200",
+  "screen": "LF24T450F",
+  "testInput": "QtTest pointer and keyboard events delivered to the actual owned VLC QQuickWindow",
+  "nativeChecks": 508,
+  "modalCases": [
+    {
+      "popup": "juxtopposedNetworkDialog",
+      "scale": 1
+    },
+    {
+      "popup": "juxtopposedNewPlaylistDialog",
+      "scale": 1
+    },
+    {
+      "popup": "juxtopposedConversionDialog",
+      "scale": 1
+    },
+    {
+      "popup": "juxtopposedGlobalSettings",
+      "scale": 1
+    },
+    {
+      "popup": "juxtopposedNetworkDialog",
+      "scale": 1.5
+    },
+    {
+      "popup": "juxtopposedNewPlaylistDialog",
+      "scale": 1.5
+    },
+    {
+      "popup": "juxtopposedConversionDialog",
+      "scale": 1.5
+    },
+    {
+      "popup": "juxtopposedGlobalSettings",
+      "scale": 1.5
+    },
+    {
+      "popup": "juxtopposedNetworkDialog",
+      "scale": 2
+    },
+    {
+      "popup": "juxtopposedNewPlaylistDialog",
+      "scale": 2
+    },
+    {
+      "popup": "juxtopposedConversionDialog",
+      "scale": 2
+    },
+    {
+      "popup": "juxtopposedGlobalSettings",
+      "scale": 2
+    }
+  ],
+  "normalExit": true,
+  "forcedCleanupUsed": false,
+  "qtDiagnostics": 0,
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "sourceSha256": {
+    "modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml": "73769cb304d513de8ed6858551e0d7cfb0087f91348cd54b4bc235962856be18",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml": "217be8bcc33a8c2ec49fe2a3d32ba5712597441fb5b2fe80f5d0e84299c66a95",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedMovableDialog.qml": "d06a4c547a9915e951a4e2d8dccf57431c377ac57512aad1400089194f79211e",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml": "816c0debc0f9f0ccacb37ea2fa7052467ae3d78efa7c7c27c8847687a39d7baa",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml": "1771acb7cf4f95af6e6ed1cf2e38d37d1449d642e2b58efc38b26e1e503d1677",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml": "72699564fd8ee5f17834851c9e5e677b154ea820b074ac8b8e116a07fe79b86b",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedConversionDialog.qml": "8f4c9abaf0fe5901af6dd196bfc5b9b697b8f84756c55922af34ddc1bf3a2932",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml": "d0b184e2edf762053fa337f04db1096fe998228a92000cbfb9f4162b7ae66a16"
+  },
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "bcdb6bff80cea45c245ec69a41e7aecc9d7497c656d3e709ed0422570f98e6b9",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "rawReceipt": {
+    "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/verification.json",
+    "sha256": "154258a90c5ea381ff41e0197cb27dfcacb5a0ed9c15bd60c122c065e51d2196"
+  },
+  "privateInputs": {
+    "path": "build-windows/beta-compact-interaction-20261018/private-inputs-r4.json",
+    "sha256": "504689644b567dc16ac890ed07b637df07510b5857994d464962d0b145205460"
+  },
+  "captures": [
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale1-dragged.png",
+      "sha256": "6eb72581766b184668c6a740c1e286f6000f622fd4d439a1b2b1af5893d1fc7e",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale1-short.png",
+      "sha256": "2e79081252b006c9542aee2878ce3f7320421c5c9b9fae59c9d33727db200f07",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale1.5-dragged.png",
+      "sha256": "48b0cc81f43672c0380fccf9af106f5c727c9716ea5b31759af4f82ffbfa9017",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale1.5-short.png",
+      "sha256": "f61ef81c008ace78d4bc516295ec5e0263036bddbf44f566e853017f157d8cb9",
+      "width": 640,
+      "height": 540
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale2-dragged.png",
+      "sha256": "eb24d9047ea05b1e6f87dec7a9fe8cb4b5fefb60cee8513f63c7796a65aaac4a",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedConversionDialog-scale2-short.png",
+      "sha256": "09e2b158f36e5e4158148b028a5aa8479c6f8b5dd64be2155dd560c83b309d3e",
+      "width": 640,
+      "height": 720
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale1-dragged.png",
+      "sha256": "93307c8f84d51d282402a1a29963405dd059f1948e37f869455dba2a772243d1",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale1-short.png",
+      "sha256": "dae4bf075df3f5ca9d7025d98f548d268b287779bc5afc2c0085463eaea0ded9",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale1.5-dragged.png",
+      "sha256": "226814514aca6b4dd55c94f80f94a614306c927045909888684728260e2a3f83",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale1.5-short.png",
+      "sha256": "caba1bd80ba4d09b01b28c5511c70bd5a20e3eb4c0e39a9f43166f1df6acc3f8",
+      "width": 640,
+      "height": 540
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale2-dragged.png",
+      "sha256": "3b8bd2b07817b50f4b5a39e83b48dcb815d5a05f7d4472944cc2e86ff44cf004",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedGlobalSettings-scale2-short.png",
+      "sha256": "896f4313af3c23b24c15968fb0a6379bbfc943343974317b31bc9d8724dd06ba",
+      "width": 640,
+      "height": 720
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale1-dragged.png",
+      "sha256": "8f72ed268cb9185e78d65d9946c4c337e81bf69871bbde1acba82176c484638b",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale1-short.png",
+      "sha256": "9ffb91c81189893c4d19614ff98e5636d2aefd489f33ef95efa87f986c50f588",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale1.5-dragged.png",
+      "sha256": "7c755fb4416c491edd8c0631b07621b4256cd69ae865bb2052344498fa3b3dc6",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale1.5-short.png",
+      "sha256": "887e7bfa7a06aff0d88d2ea582a6ea7af56095b9fc943bb323da82f4d56b1c8b",
+      "width": 640,
+      "height": 540
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale2-dragged.png",
+      "sha256": "081bb7db7f5cc5203b60938b12fa4c69fefe50740b8df8e3dce238ddd5db5f07",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNetworkDialog-scale2-short.png",
+      "sha256": "dc873efa732f51daf446d57e2ad56f56bf9d55d5afc514cdcd58e650a35158f8",
+      "width": 640,
+      "height": 720
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale1-dragged.png",
+      "sha256": "7f67014b656bdeb67006a78903bdd1b579983fb0a25a71297351c02ea8af1630",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale1-short.png",
+      "sha256": "a6d7dee0dcd66aff2066fe7f397b9d7a22361db8f6adae226330cc27dd02de49",
+      "width": 640,
+      "height": 480
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale1.5-dragged.png",
+      "sha256": "6a1b8b976e7d1141ca9acda0d689c3983fdaa54544f68ef3f06957e44eec4b88",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale1.5-short.png",
+      "sha256": "85f5236e1dfa8f9b28776a08cea9fe093bc41ff2b3687faecf5cd1e71c88e43f",
+      "width": 640,
+      "height": 540
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale2-dragged.png",
+      "sha256": "59d9b2e6fdce8f7c41f10ae6676b64afec3ea785aa3dcbe3d2442c6fcf135301",
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "path": "build-windows/beta-compact-interaction-20261018/r4-titlebar-dialogs/titlebar-dialogs/native-modal-juxtopposedNewPlaylistDialog-scale2-short.png",
+      "sha256": "1af4ba63f2196fe4674a3e7d73ad07a00f9a7a8eb528bb2e398875ef78dc0cde",
+      "width": 640,
+      "height": 720
+    }
+  ],
+  "interfaceScales": [
+    1,
+    1.5,
+    2
+  ],
+  "actualWindowsDpiAccepted": false,
+  "visualFidelityAccepted": false,
+  "ordinaryCandidateRebuilt": false,
+  "compactMatrixAccepted": true,
+  "nativeBusyGuardsAccepted": false,
+  "nativeErrorRetryAccepted": true,
+  "componentChecks": {
+    "path": "build-windows/beta-compact-interaction-20261018/sidebar-component-r5/verification.json",
+    "passed": 31
+  },
+  "remaining": [
+    "Finish actual busy-operation, error/Retry and pin fallback cases.",
+    "Build and verify an ordinary GUI/package; finish every other applicable roadmap gate."
+  ],
+  "compactNativeChecks": 1483,
+  "compactCases": [
+    {
+      "mode": "titlebar-compact",
+      "checks": 741,
+      "normalExit": true,
+      "qtDiagnostics": 0,
+      "rawReceipt": {
+        "path": "build-windows/beta-compact-interaction-20261018/r5-titlebar-compact/verification.json",
+        "sha256": "325b4a45192cd52fbc2ea5e1a9dfe34dff144905a57fe2f91a2c4db925f390b7"
+      },
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "db97e8583417a6b42f0dc2ad544acdaaa815005cd55aae3d0b8cf72d2dbde4c2",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      },
+      "actualWindowCases": [
+        {
+          "height": 360,
+          "minimumHeight": 360,
+          "minimumWidth": 320,
+          "requestedHeight": 360,
+          "requestedWidth": 320,
+          "scale": 1,
+          "width": 320
+        },
+        {
+          "height": 360,
+          "minimumHeight": 360,
+          "minimumWidth": 320,
+          "requestedHeight": 360,
+          "requestedWidth": 480,
+          "scale": 1,
+          "width": 480
+        },
+        {
+          "height": 540,
+          "minimumHeight": 540,
+          "minimumWidth": 480,
+          "requestedHeight": 480,
+          "requestedWidth": 640,
+          "scale": 1.5,
+          "width": 640
+        },
+        {
+          "height": 720,
+          "minimumHeight": 720,
+          "minimumWidth": 640,
+          "requestedHeight": 480,
+          "requestedWidth": 640,
+          "scale": 2,
+          "width": 640
+        }
+      ],
+      "screen": "LF24T450F"
+    },
+    {
+      "mode": "titlebar-compact-audio",
+      "checks": 742,
+      "normalExit": true,
+      "qtDiagnostics": 0,
+      "rawReceipt": {
+        "path": "build-windows/beta-compact-interaction-20261018/r5-titlebar-compact-audio/verification.json",
+        "sha256": "40732bc2291674275cda1236bbd77da041e68a38414a0aa54e334289dc22177b"
+      },
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "db97e8583417a6b42f0dc2ad544acdaaa815005cd55aae3d0b8cf72d2dbde4c2",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      },
+      "actualWindowCases": [
+        {
+          "height": 360,
+          "minimumHeight": 360,
+          "minimumWidth": 320,
+          "requestedHeight": 360,
+          "requestedWidth": 320,
+          "scale": 1,
+          "width": 320
+        },
+        {
+          "height": 360,
+          "minimumHeight": 360,
+          "minimumWidth": 320,
+          "requestedHeight": 360,
+          "requestedWidth": 480,
+          "scale": 1,
+          "width": 480
+        },
+        {
+          "height": 540,
+          "minimumHeight": 540,
+          "minimumWidth": 480,
+          "requestedHeight": 480,
+          "requestedWidth": 640,
+          "scale": 1.5,
+          "width": 640
+        },
+        {
+          "height": 720,
+          "minimumHeight": 720,
+          "minimumWidth": 640,
+          "requestedHeight": 480,
+          "requestedWidth": 640,
+          "scale": 2,
+          "width": 640
+        }
+      ],
+      "screen": "LF24T450F"
+    }
+  ],
+  "acceptedNavigationSource": {
+    "path": "modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml",
+    "sha256": "73769cb304d513de8ed6858551e0d7cfb0087f91348cd54b4bc235962856be18",
+    "retainedPreimage": "build-windows/beta-compact-interaction-20261018/navigation-accepted-r5.qml"
+  },
+  "recoveryComponentChecks": {
+    "passed": 37,
+    "path": "build-windows/beta-compact-interaction-20261018/sidebar-component-r6/verification.json",
+    "sourceSha256": "7042607c3bbdcc176e13360757aea25302133a4937aa1e5d81bc344dd8367857",
+    "nativeAccepted": false
+  },
+  "currentNativePasses": [
+    {
+      "mode": "titlebar-busy",
+      "checks": 258,
+      "normalExit": true,
+      "qtDiagnostics": 0,
+      "receipt": "build-windows/beta-compact-interaction-20261018/r6-titlebar-busy/verification.json",
+      "receiptSha256": "54817ced83120c15d0777cee5828a412ebafe9a4fcb1725eefb1e355ecf2b839",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "eb24e8b8276168b3e28d7a0244e0c1e3f410523d66d4f9d8bfe921510a2b2ffe",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      }
+    },
+    {
+      "mode": "titlebar-compact",
+      "checks": 741,
+      "normalExit": true,
+      "qtDiagnostics": 0,
+      "receipt": "build-windows/beta-compact-interaction-20261018/r6-titlebar-compact/verification.json",
+      "receiptSha256": "910c5194ea8b6db1f4cbaa7610d50ae7bc7349542b7d0a0561eba14ff0ebfca2",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "eb24e8b8276168b3e28d7a0244e0c1e3f410523d66d4f9d8bfe921510a2b2ffe",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      }
+    },
+    {
+      "mode": "titlebar-compact-audio",
+      "checks": 742,
+      "normalExit": true,
+      "qtDiagnostics": 0,
+      "receipt": "build-windows/beta-compact-interaction-20261018/r6-titlebar-compact-audio/verification.json",
+      "receiptSha256": "da35404004b05af0b5cde2b5ea798efe450a33029ee90fcf029472a490256fbd",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "eb24e8b8276168b3e28d7a0244e0c1e3f410523d66d4f9d8bfe921510a2b2ffe",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      }
+    }
+  ],
+  "nativeConversionBusyGuardAccepted": true,
+  "nativeConversionBusyGuardScope": [
+    "active native encode input",
+    "refuse three competing modals",
+    "same-dialog reentry preserves job",
+    "busy header pointer drag",
+    "Close cancels worker before publishing",
+    "staging cleanup/source identity",
+    "paused primary independence"
+  ],
+  "nativeRecoveryFailures": [
+    {
+      "receipt": "build-windows/beta-compact-interaction-20261018/r6-titlebar-recovery/verification.json",
+      "receiptSha256": "9d4cb93faaeb4cc875448d6ea5004e30ed850a783336408831521bd84512dca4",
+      "normalExit": true,
+      "checks": 267,
+      "error": "actual native menu opens",
+      "remainingPins": 1,
+      "qtDiagnostics": 0
+    },
+    {
+      "receipt": "build-windows/beta-compact-interaction-20261018/r6-recovery-repeat/verification.json",
+      "receiptSha256": "3e3d49a92627fa16fc7d8cb53a40f51ce33d7b1fee9642a89c55ad72f2280a23",
+      "normalExit": true,
+      "checks": 267,
+      "error": "actual native menu opens",
+      "remainingPins": 1,
+      "qtDiagnostics": 0
+    }
+  ],
+  "recoveryPartialEvidence": "Real INI write-sharing failure, model/file preservation, keyboard Retry and exact two-pin readback pass before the later menu-reopening failure. Dismiss/last-pin fallback remain unverified.",
+  "nativeBusyPlaying": {
+    "passed": true,
+    "checks": 262,
+    "normalExit": true,
+    "forcedCleanupUsed": false,
+    "qtDiagnostics": 0,
+    "runtimeSha256": {
+      "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+      "plugins/gui/libqt_plugin.dll": "9b40ae6548b220cd990b30d4383b2a795993be7b2ebe19e45c871da8dca632da",
+      "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+    },
+    "receipt": {
+      "path": "build-windows/beta-compact-interaction-20261018/r7-titlebar-busy-playing/verification.json",
+      "sha256": "74bd873831090cc5fa842c6501bbcc96c167da4cccb6beb99efb489d2123b847"
+    },
+    "scope": "Actual conversion/cancel while independent primary playback advances; not full beta acceptance."
+  },
+  "ordinaryR6Smoke": {
+    "passed": true,
+    "runtimeSha256": {
+      "vlc-cache-gen.exe": "6c50e5c447f2c6fe32023379f73d531cf73d43695dca41c47c9f7e2e6ab6d3a7",
+      "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+      "plugins/gui/libqt_plugin.dll": "8463f2144bbf8da5888957b7377900fa9c1c937014914c25a8d4eb008a802ffe",
+      "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+      "plugins/demux/libwav_plugin.dll": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b",
+      "plugins/stream_out/libstream_out_transcode_plugin.dll": "b1a422d272a9486d1366a02841ce9cb9a97bdab7fe611aff24dd19fac4d5a23f",
+      "plugins/audio_filter/libsoxr_plugin.dll": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16",
+      "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a",
+      "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a",
+      "plugins/lua/liblua_plugin.dll": "0e52a7072c1e86ed64981281823ed6b1e1739aca0922da54c842db6e16a12d90",
+      "lua/intf/http.luac": "fd6fcb7af986d8b8fb58aa0b6fef14d0929e9e1cda73305173c5d78d9c3f3eff",
+      "lua/intf/modules/httprequests.luac": "4829075cb491c252d34688dcc33eddc26fb51311a144b2641b6f479d87ba217b",
+      "lua/http/js/ui.js": "766b6f31fab2d7c8ef22534266b3b8631e2836f9789056c027eb7c78838203b7",
+      "plugins/codec/libavcodec_plugin.dll": "1091ae5330f3c0d9532512aa0b966a4f64dae6a66e3711bc419fadeeb1a77803",
+      "plugins/video_filter/libpostproc_plugin.dll": "e12f15791a70a97496ece2e0ecc936c76258495825301d5834a086e2c666b297",
+      "plugins/codec/libx264_plugin.dll": "692651bcfe2a5ddf3db2e9297c52d3b9e5f688399ffd37077fa1db08df5c9f62",
+      "plugins/demux/libmkv_plugin.dll": "469751a13e8547291bbfc3bcc28e59cf0bebd7e8f6354c5bb00dfeb7c7cd359b",
+      "plugins/access/libhttp_plugin.dll": "77e7a0d38a7d9a3e0d670fb7baa881b57bb3926efb467785b5647dd4649e09e7",
+      "plugins/access/libhttps_plugin.dll": "d456b075cdf3e661b13aa68b757ac27ef69287de379df0790494837dbfcf522f",
+      "plugins/access/libwebdav_plugin.dll": "b31c12d2c739b18d5a683f97a87d585092b1a08215b429255d575a8b6e0bc8d7",
+      "plugins/access_output/libaccess_http_put_plugin.dll": "4d37ad8a89207fc0e4126de604207f7498c50be13da10cb09d720e2098341002",
+      "plugins/demux/libadaptive_plugin.dll": "5199ed28fc39501fa77dab1f959efc743883adc8b90f02f5f3717d65568573f6",
+      "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1",
+      "plugins/audio_output/libwasapi_plugin.dll": "54437150fa51e53a5df49958038248775fa438ebfb5b68279f1d63ace283464e",
+      "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+      "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+    },
+    "cases": {
+      "redesigned": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "elapsedSeconds": 11.212873899999977,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrames": [
+          "frame.png"
+        ],
+        "qmlDiagnostics": [],
+        "fileWriteErrors": 0,
+        "missingVisualCallbackErrors": 0,
+        "pcrMatchErrors": 0,
+        "newClockPropertyErrors": []
+      },
+      "traditional": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "elapsedSeconds": 10.761219600000913,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrames": [
+          "frame.png"
+        ],
+        "qmlDiagnostics": [],
+        "fileWriteErrors": 0,
+        "missingVisualCallbackErrors": 0,
+        "pcrMatchErrors": 0,
+        "newClockPropertyErrors": []
+      },
+      "redesigned-library": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "elapsedSeconds": 11.068020400001842,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "decodedFrames": [
+          "frame.png"
+        ],
+        "qmlDiagnostics": [],
+        "fileWriteErrors": 0,
+        "missingVisualCallbackErrors": 0,
+        "pcrMatchErrors": 0,
+        "newClockPropertyErrors": []
+      },
+      "live": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "elapsedSeconds": 5.568471700000373,
+        "qtLoaded": true,
+        "adaptiveLoaded": true,
+        "audioDecoderLoaded": true,
+        "qmlDiagnostics": [],
+        "fileWriteErrors": 0,
+        "missingVisualCallbackErrors": 0,
+        "pcrMatchErrors": 0,
+        "newClockPropertyErrors": []
+      },
+      "downloads-sample": {
+        "exitCode": 0,
+        "terminationConfirmed": true,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "elapsedSeconds": 6.355728400001681,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "decodedFrameCount": 1,
+        "sourceSizeBytes": 1672108,
+        "sourceStatUnchanged": true,
+        "hardwareDecoderMessages": [
+          "d3d11va: Using D3D11VA (NVIDIA GeForce RTX 3080 Ti, vendor 10de(NVIDIA), device 2208, revision a1)"
+        ],
+        "mediaAndFramePrivate": true
+      }
+    },
+    "receipt": {
+      "path": "build-windows/beta-compact-interaction-20261018/ordinary-playback-r6/verification.json",
+      "sha256": "dfe1018ac23f78d0dc0c6516876468c91d2558cbaadd58b310ed40f795a7ba5d"
+    },
+    "sourceRuntimeUnchanged": true,
+    "ordinaryPackageUnchanged": true,
+    "privateFixtureModulesShipped": false,
+    "fullVisualDpiOrBetaAcceptance": false
+  },
+  "computerUseMenuObservation": {
+    "path": "build-windows/beta-compact-interaction-20261018/native-menu-cu-r6/observation.json",
+    "sha256": "f21bf4d06d2e1d99ca42260b81ddb9f70e4aacb9d3edf390de9815a94f42de9f"
+  },
+  "r9ScopedResults": {
+    "nativeCases": {
+      "titlebar-recovery": {
+        "passed": true,
+        "checks": 316,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "031ac708200a5f954d71631dba80996ee1043ffd320754786ccb663c6d212857",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        },
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r9-titlebar-recovery/verification.json",
+          "sha256": "b6855100682e05f53474c6ac45cf1929bda0a8d5ea1204a2d0f7b7d5abc290ea"
+        }
+      },
+      "titlebar-compact": {
+        "passed": true,
+        "checks": 741,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "031ac708200a5f954d71631dba80996ee1043ffd320754786ccb663c6d212857",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        },
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r9-titlebar-compact/verification.json",
+          "sha256": "746f5b69cc9e1af1f577fde6953625d478881535ee9b98aa2f9796b9201b4572"
+        }
+      },
+      "titlebar-compact-audio": {
+        "passed": true,
+        "checks": 742,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "031ac708200a5f954d71631dba80996ee1043ffd320754786ccb663c6d212857",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        },
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r9-titlebar-compact-audio/verification.json",
+          "sha256": "7142ce1b098fd8e242f068c8b614046eb90af563dd51fddd0b60b06c42a3ca7f"
+        }
+      },
+      "titlebar-busy-playing": {
+        "passed": true,
+        "checks": 262,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "031ac708200a5f954d71631dba80996ee1043ffd320754786ccb663c6d212857",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        },
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r9-titlebar-busy-playing/verification.json",
+          "sha256": "b728a404bda75c49234c3061a1af296eb3876c3ed7b48388607af653d37d7d55"
+        }
+      }
+    },
+    "guiSha256": "031ac708200a5f954d71631dba80996ee1043ffd320754786ccb663c6d212857",
+    "exactRoutingFixture": {
+      "path": "build-windows/beta-compact-interaction-20261018/key-routing-r9-corrected/verification.json",
+      "sha256": "a958cd71041d10be65c62f1af5bb1167e01add87cf7abbba3e0ded1bbab813b4"
+    },
+    "ordinaryMenuObservation": {
+      "path": "build-windows/beta-compact-interaction-20261018/native-menu-cu-r9/observation.json",
+      "sha256": "e99fb1d8e8edae41644d6cca903f726bc86bf64e03188d6c04c311ce7a9c4985"
+    },
+    "emptyFooterNegative": {
+      "path": "build-windows/beta-compact-interaction-20261018/empty-footer-focus-probe/probe.json",
+      "sha256": "247fcf5f803888ebab0c01eff1f97acd33554abc32c8cdb705a2f92f01319345"
+    },
+    "nativeRecoveryCommitAndDismissAccepted": true,
+    "nativeRecoveryVisibilityAccepted": false,
+    "finding": "After empty-store Dismiss, Add remains focused but its bounds are y276..308 in a 186px viewport. Native screenshot review found this gap; the previous native assertion checked focus only.",
+    "visualFinding": "Retry/Dismiss currently use the default gray/blue Qt button appearance; align them with the sidebar tokens.",
+    "fullBetaAccepted": false
+  },
+  "r10ScopedResults": {
+    "nativeCases": {
+      "titlebar-home-menu": {
+        "passed": true,
+        "checks": 185,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-home-menu/verification.json",
+          "sha256": "8d3a21f0ca6f2d0f2f8751a68a96e79e784b4d2bf390b78317a7df2aa25aa224"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      },
+      "titlebar-recovery": {
+        "passed": true,
+        "checks": 319,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-recovery/verification.json",
+          "sha256": "4617177e1fc2c1d9c12b40e10ab71841b1f1618b0f1dfd2422b95b14ee9417cb"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      },
+      "titlebar-compact": {
+        "passed": true,
+        "checks": 741,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-compact/verification.json",
+          "sha256": "175650d096dd713540a2076bade8f3055c5adc0a8731c38c57c6d73d7a8de530"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      },
+      "titlebar-compact-audio": {
+        "passed": true,
+        "checks": 742,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-compact-audio/verification.json",
+          "sha256": "e9321337ffa3c6e37d68469319b75e47ef968d2dbd917f0d26b686d89feea658"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      },
+      "titlebar-busy-playing": {
+        "passed": true,
+        "checks": 262,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-busy-playing/verification.json",
+          "sha256": "89f2aee20118b4a34f72f4bb9e3ab776b7cebfd7e18d53e3b06745a65b4632e8"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      },
+      "titlebar-home-menu-library-off": {
+        "passed": true,
+        "checks": 185,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "qtDiagnostics": 0,
+        "receipt": {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-home-menu-off/verification.json",
+          "sha256": "3bed0f17e67b31b70f58edc6f5723a99a47249db32cf0209f8db4717f8bcf9b6"
+        },
+        "runtimeSha256": {
+          "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+          "plugins/gui/libqt_plugin.dll": "4aaa543afcbb0d8ba6d54895adc6f56019dca5d224cec69e72ebc95889a2b4bd",
+          "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+        }
+      }
+    },
+    "visibility": {
+      "componentChecks": 47,
+      "componentReceipt": {
+        "path": "build-windows/beta-compact-interaction-20261018/sidebar-component-r10/verification.json",
+        "sha256": "d3e585fb45f21ad19243b185c69531b974845c0ecc7f0df99da5f7e4df0e0e3d"
+      },
+      "componentTestSha256": "26f143bca2100e785ff1f62bd56fded8058c16acce3b699e0859763924bb2a41",
+      "negativeReceipt": {
+        "path": "build-windows/beta-compact-interaction-20261018/sidebar-component-r10-negative-corrected/verification.json",
+        "sha256": "57338d1eed360d7e4655fdd8c935ca63af55c2eec434ae42a00ada44391e501f"
+      },
+      "negativeQml": {
+        "path": "build-windows/beta-compact-interaction-20261018/navigation-accepted-r9.qml",
+        "sha256": "ce069cd1377d76e269dcd1e48b21473bba8cde89253b838d230fdaf4aecd022f"
+      },
+      "sourceQml": {
+        "path": "modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml",
+        "sha256": "5f2c788fb526adaba2fd23debd97c8746ce10048a3c8106d933996cb8811a03a"
+      },
+      "nativeVisibilityChecksPassed": true,
+      "capturesReviewed": [
+        {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-recovery/titlebar-recovery/native-sidebar-store-blocked.png",
+          "sha256": "5e63aa8312f8bae9fa18b89c86828de1378bb340257d3ca8893f3eadc55d5017"
+        },
+        {
+          "path": "build-windows/beta-compact-interaction-20261018/r10-titlebar-recovery/titlebar-recovery/native-sidebar-after-dismiss.png",
+          "sha256": "eaa3cadd76f7422ed914deebc2b9c66de956983718ac19c757b72f9777257e1d"
+        }
+      ],
+      "review": "Retry uses the sidebar dark colors and accent outline. Add remains in the viewport after Dismiss. This is a functional error-state adaptation, not full Figma or accessibility acceptance."
+    },
+    "ordinaryGui": {
+      "path": "build-windows/beta-compact-interaction-20261018/ordinary-runtime-r10.json",
+      "sha256": "d1e6928b59d06e657ab6efe52457c359ee06d0853a886318313aa234837121e8"
+    },
+    "ordinaryMenuObservation": {
+      "path": "build-windows/beta-compact-interaction-20261018/native-menu-cu-r10/observation.json",
+      "sha256": "7825e5596183d8c8a7d6d1087cae8825536974915e50fcd3eda82ea71638ea77"
+    },
+    "ordinaryPlayback": {
+      "passed": true,
+      "receipt": {
+        "path": "build-windows/beta-compact-interaction-20261018/ordinary-playback-r10/verification.json",
+        "sha256": "dc3d75faf81830a1fa96b3f79894bcbfecdffd52a840356f5950bb190260fd98"
+      },
+      "runtimeSha256": {
+        "vlc-cache-gen.exe": "6c50e5c447f2c6fe32023379f73d531cf73d43695dca41c47c9f7e2e6ab6d3a7",
+        "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "19ec1a17ac1fcbf7f0adcb9246dcfcc9d5494f30e64fb1a9ed8fec99189af5e7",
+        "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+        "plugins/demux/libwav_plugin.dll": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b",
+        "plugins/stream_out/libstream_out_transcode_plugin.dll": "b1a422d272a9486d1366a02841ce9cb9a97bdab7fe611aff24dd19fac4d5a23f",
+        "plugins/audio_filter/libsoxr_plugin.dll": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a",
+        "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a",
+        "plugins/lua/liblua_plugin.dll": "0e52a7072c1e86ed64981281823ed6b1e1739aca0922da54c842db6e16a12d90",
+        "lua/intf/http.luac": "fd6fcb7af986d8b8fb58aa0b6fef14d0929e9e1cda73305173c5d78d9c3f3eff",
+        "lua/intf/modules/httprequests.luac": "4829075cb491c252d34688dcc33eddc26fb51311a144b2641b6f479d87ba217b",
+        "lua/http/js/ui.js": "766b6f31fab2d7c8ef22534266b3b8631e2836f9789056c027eb7c78838203b7",
+        "plugins/codec/libavcodec_plugin.dll": "1091ae5330f3c0d9532512aa0b966a4f64dae6a66e3711bc419fadeeb1a77803",
+        "plugins/video_filter/libpostproc_plugin.dll": "e12f15791a70a97496ece2e0ecc936c76258495825301d5834a086e2c666b297",
+        "plugins/codec/libx264_plugin.dll": "692651bcfe2a5ddf3db2e9297c52d3b9e5f688399ffd37077fa1db08df5c9f62",
+        "plugins/demux/libmkv_plugin.dll": "469751a13e8547291bbfc3bcc28e59cf0bebd7e8f6354c5bb00dfeb7c7cd359b",
+        "plugins/access/libhttp_plugin.dll": "77e7a0d38a7d9a3e0d670fb7baa881b57bb3926efb467785b5647dd4649e09e7",
+        "plugins/access/libhttps_plugin.dll": "d456b075cdf3e661b13aa68b757ac27ef69287de379df0790494837dbfcf522f",
+        "plugins/access/libwebdav_plugin.dll": "b31c12d2c739b18d5a683f97a87d585092b1a08215b429255d575a8b6e0bc8d7",
+        "plugins/access_output/libaccess_http_put_plugin.dll": "4d37ad8a89207fc0e4126de604207f7498c50be13da10cb09d720e2098341002",
+        "plugins/demux/libadaptive_plugin.dll": "5199ed28fc39501fa77dab1f959efc743883adc8b90f02f5f3717d65568573f6",
+        "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1",
+        "plugins/audio_output/libwasapi_plugin.dll": "54437150fa51e53a5df49958038248775fa438ebfb5b68279f1d63ace283464e",
+        "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+        "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+      },
+      "cases": {
+        "redesigned": {
+          "exitCode": 0,
+          "terminationConfirmed": true,
+          "timedOut": false,
+          "forcedCleanupUsed": false,
+          "elapsedSeconds": 10.897454599999037,
+          "qtLoaded": true,
+          "d3d11Loaded": true,
+          "wasapiLoaded": true,
+          "decodedFrames": [
+            "frame.png"
+          ],
+          "qmlDiagnostics": [],
+          "fileWriteErrors": 0,
+          "missingVisualCallbackErrors": 0,
+          "pcrMatchErrors": 0,
+          "newClockPropertyErrors": []
+        },
+        "traditional": {
+          "exitCode": 0,
+          "terminationConfirmed": true,
+          "timedOut": false,
+          "forcedCleanupUsed": false,
+          "elapsedSeconds": 10.420161499998358,
+          "qtLoaded": true,
+          "d3d11Loaded": true,
+          "wasapiLoaded": true,
+          "decodedFrames": [
+            "frame.png"
+          ],
+          "qmlDiagnostics": [],
+          "fileWriteErrors": 0,
+          "missingVisualCallbackErrors": 0,
+          "pcrMatchErrors": 0,
+          "newClockPropertyErrors": []
+        },
+        "redesigned-library": {
+          "exitCode": 0,
+          "terminationConfirmed": true,
+          "timedOut": false,
+          "forcedCleanupUsed": false,
+          "elapsedSeconds": 10.82783240000208,
+          "qtLoaded": true,
+          "d3d11Loaded": true,
+          "wasapiLoaded": true,
+          "decodedFrames": [
+            "frame.png"
+          ],
+          "qmlDiagnostics": [],
+          "fileWriteErrors": 0,
+          "missingVisualCallbackErrors": 0,
+          "pcrMatchErrors": 0,
+          "newClockPropertyErrors": []
+        },
+        "live": {
+          "exitCode": 0,
+          "terminationConfirmed": true,
+          "timedOut": false,
+          "forcedCleanupUsed": false,
+          "elapsedSeconds": 5.432736300001125,
+          "qtLoaded": true,
+          "adaptiveLoaded": true,
+          "audioDecoderLoaded": true,
+          "qmlDiagnostics": [],
+          "fileWriteErrors": 0,
+          "missingVisualCallbackErrors": 0,
+          "pcrMatchErrors": 0,
+          "newClockPropertyErrors": []
+        },
+        "downloads-sample": {
+          "exitCode": 0,
+          "terminationConfirmed": true,
+          "timedOut": false,
+          "forcedCleanupUsed": false,
+          "elapsedSeconds": 6.196256200000789,
+          "qtLoaded": true,
+          "d3d11Loaded": true,
+          "decodedFrameCount": 1,
+          "sourceSizeBytes": 1672108,
+          "sourceStatUnchanged": true,
+          "hardwareDecoderMessages": [
+            "d3d11va: Using D3D11VA (NVIDIA GeForce RTX 3080 Ti, vendor 10de(NVIDIA), device 2208, revision a1)"
+          ],
+          "mediaAndFramePrivate": true
+        }
+      },
+      "privateFixtureModulesShipped": false,
+      "sourceRuntimeUnchanged": true,
+      "ordinaryPackageUnchanged": true,
+      "fullVisualDpiOrBetaAcceptance": false
+    },
+    "exactRoutingFixture": {
+      "path": "build-windows/beta-compact-interaction-20261018/key-routing-r9-corrected/verification.json",
+      "sha256": "a958cd71041d10be65c62f1af5bb1167e01add87cf7abbba3e0ded1bbab813b4"
+    },
+    "fullBetaAccepted": false
+  }
+}

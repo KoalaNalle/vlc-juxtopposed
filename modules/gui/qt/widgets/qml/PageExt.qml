@@ -39,6 +39,10 @@ T.Page {
 
     property bool isSearchable: _firstChild?.isSearchable ?? false
 
+    // Pages with a wrapper around their view can expose the actual model here.
+    property var libraryModel: _firstChild?.model ?? null
+    property int libraryItemCount: libraryModel?.count ?? _firstChild?.count ?? -1
+
     property var sortModel: _firstChild?.sortModel ?? null
 
     //property is *not* readOnly, a PageLoader may define a localMenuDelegate common for its subviews (music, video)
@@ -109,25 +113,117 @@ T.Page {
                              + (implicitHeaderHeight > 0 ? implicitHeaderHeight + spacing : 0)
                              + (implicitFooterHeight > 0 ? implicitFooterHeight + spacing : 0))
 
-    header: DefaultPageHeader {
-        text: root.title
+    function focusContent() {
+        if (typeof root.setCurrentItemFocus === "function")
+            root.setCurrentItemFocus(Qt.TabFocusReason)
+        else if (typeof root._firstChild?.setCurrentItemFocus === "function")
+            root._firstChild.setCurrentItemFocus(Qt.TabFocusReason)
+        else
+            root._firstChild?.forceActiveFocus(Qt.TabFocusReason)
+    }
 
-        leftPadding: VLCStyle.dynamicAppMargins(width) + VLCStyle.layout_left_margin + root.leftPadding
-        rightPadding: VLCStyle.dynamicAppMargins(width) + VLCStyle.layout_right_margin + root.rightPadding
-
-        sortMenu: root.sortMenu
-
-        search: _searchCtx
-        sort: _sortCtx
-
+    header: Loader {
+        height: item?.implicitHeight ?? 0
+        sourceComponent: MainCtx.juxtopposedControls ? juxtopposedHeader : traditionalHeader
         Navigation.parentItem: root
-        Navigation.downAction: function() {
-            if (typeof root.setCurrentItemFocus === "function")
-                root.setCurrentItemFocus(Qt.TabFocusReason)
-            else if (typeof root._firstChild?.setCurrentItemFocus === "function")
-             root._firstChild.setCurrentItemFocus(Qt.TabFocusReason)
-            else if (root._firstChild)
-                root._firstChild.forceActiveFocus(Qt.TabFocusReason)
+        Navigation.downAction: root.focusContent
+        onActiveFocusChanged: {
+            if (activeFocus && MainCtx.juxtopposedControls)
+                item?.setCurrentItemFocus(Qt.TabFocusReason)
+        }
+    }
+
+    Component {
+        id: juxtopposedHeader
+        JuxtopposedLibraryHeader {
+            id: libraryHeader
+            uiScale: VLCStyle.dp(1, VLCStyle.scale)
+            iconFontFamily: VLCIcons.fontFamily
+            backIcon: VLCIcons.back
+            viewIcon: MainCtx.gridView ? VLCIcons.list : VLCIcons.grid
+            searchIcon: VLCIcons.search
+            moreIcon: VLCIcons.more
+            canGoBack: !History.previousEmpty
+            canGoForward: !History.nextEmpty
+            sortAvailable: root.sort.available
+            searchAvailable: root.search.available
+            viewAvailable: root.hasGridListMode
+            searchPattern: root.search.pattern
+            itemCount: Math.max(0, root.libraryItemCount)
+            countAvailable: root.libraryItemCount >= 0
+            Navigation.parentItem: root.header
+            Keys.onPressed: event => Navigation.defaultKeyAction(event)
+            breadcrumbs: {
+                const section = root.pagePrefix[0]
+                const labels = {video: qsTr("Videos"), music: qsTr("Music"), playlists: qsTr("Playlists"),
+                                network: qsTr("Network"), home: qsTr("Home"), recent: qsTr("Recent")}
+                const first = labels[section] ?? root.title
+                const result = [{text: first, uri: section ? [section] : root.pagePrefix}]
+                if (root.title && root.title !== first)
+                    result.push({text: root.title, uri: root.pagePrefix})
+                return result
+            }
+            onBackRequested: History.previous(Qt.TabFocusReason)
+            onForwardRequested: History.next(Qt.TabFocusReason)
+            onBreadcrumbRequested: uri => {
+                if (!History.exactMatch(History.viewPath, uri))
+                    History.push(uri, Qt.TabFocusReason)
+            }
+            onViewRequested: MainCtx.gridView = !MainCtx.gridView
+            onSearchRequested: pattern => root.search.pattern = pattern
+            onContentFocusRequested: root.focusContent()
+            onSortRequested: position => {
+                const model = root.sort.model.map(entry => ({text: entry.text,
+                    checked: entry.criteria === root.sort.criteria,
+                    order: entry.criteria === root.sort.criteria ? root.sort.order : undefined}))
+                const menu = root.sortMenu ?? librarySortMenu
+                menu.popup(position, false, model)
+            }
+            onMoreRequested: position => libraryMenu.popup(position)
+            Connections {
+                target: root.search
+                function onAskShow() { libraryHeader.showSearch() }
+            }
+            Connections {
+                target: root.sortMenu
+                function onSelected(index) { root.selectLibrarySort(index) }
+            }
+        }
+    }
+
+    SortMenu {
+        id: librarySortMenu
+        ctx: MainCtx
+        onSelected: index => root.selectLibrarySort(index)
+    }
+    QmlGlobalMenu { id: libraryMenu; ctx: MainCtx }
+    function selectLibrarySort(index) {
+        if (!MainCtx.juxtopposedControls || index < 0 || index >= root.sort.model.length)
+            return
+        const criteria = root.sort.model[index].criteria
+        if (root.sort.criteria === criteria)
+            root.sort.order = root.sort.order === Qt.AscendingOrder ? Qt.DescendingOrder : Qt.AscendingOrder
+        else {
+            root.sort.criteria = criteria
+            root.sort.order = Qt.AscendingOrder
+        }
+    }
+
+    Component {
+        id: traditionalHeader
+        DefaultPageHeader {
+            text: root.title
+
+            leftPadding: VLCStyle.dynamicAppMargins(width) + VLCStyle.layout_left_margin + root.leftPadding
+            rightPadding: VLCStyle.dynamicAppMargins(width) + VLCStyle.layout_right_margin + root.rightPadding
+
+            sortMenu: root.sortMenu
+
+            search: _searchCtx
+            sort: _sortCtx
+
+            Navigation.parentItem: root
+            Navigation.downAction: root.focusContent
         }
     }
 

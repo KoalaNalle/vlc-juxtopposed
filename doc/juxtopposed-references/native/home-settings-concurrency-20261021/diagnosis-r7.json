@@ -1,0 +1,8 @@
+{
+  "accepted": false,
+  "coreR7OverlapFailed": true,
+  "evidence": "console-r7/lock-intervals.json proves one sidecar volume/file ID and74 acquire/release events without overlapping critical sections. Failure is replacement Windows error5; both source/destination attributes32, deletion not pending, metadata opens succeed.",
+  "isolatedReproduction": "pure-windows-r1 uses only Win32 API, no VLC/Core linked. First round240 replacements has two Windows error5 failures; immediate DELETE-access opens succeed on both files.",
+  "inference": "Transient environment/filesystem replacement denial is reproducible independently of the Core merge/lock algorithm; external owner or filter cause is unproven.",
+  "r8Change": "At most10 additional atomic replacement attempts with10ms waits, only Windows access-denied/sharing-violation. Interprocess lock and temp stay held; persistent failure still returns-1 with one error and unchanged destination."
+}

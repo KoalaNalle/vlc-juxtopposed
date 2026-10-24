@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+build_dir=/build/vlc
+repo=/checkout
+export PATH="$build_dir/extras/tools/build/bin:$build_dir/contrib/bin:/mnt/c/Windows/System32:$PATH"
+unset CC CXX
+exec 9> "$build_dir/.vlc-build.lock"
+flock -n 9 || exit 75
+qt_dir="$build_dir/win64/modules/gui/qt"
+# Change only this NEW fixture's timestamp: both runs execute identical bytes.
+touch -- "$repo/modules/gui/qt/tests/test_shared_modal_hotkeys.cpp"
+make -C "$qt_dir" -j8 test_qt_shared_modal_hotkeys.exe 'test_qt_shared_modal_hotkeys_CPPFLAGS=$(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src -DVLC_SHARED_MODAL_PRODUCTION_INCLUDE=\"/checkout/build-windows/conversion-modal-pending/unguarded-before/shared_modal_hotkey_production.inc\"' > "$repo/build-windows/shared-modal-before-build.log" 2>&1
+cp -- "$qt_dir/.libs/test_qt_shared_modal_hotkeys.exe" "$repo/build-windows/core-tests/test_qt_shared_modal_hotkeys_baseline.exe"
+touch -- "$repo/modules/gui/qt/tests/test_shared_modal_hotkeys.cpp"
+make -C "$qt_dir" -j8 test_qt_shared_modal_hotkeys.exe > "$repo/build-windows/shared-modal-final-build.log" 2>&1
+cp -- "$qt_dir/.libs/test_qt_shared_modal_hotkeys.exe" "$repo/build-windows/core-tests/test_qt_shared_modal_hotkeys.exe"
+cp -- "$qt_dir/tests/shared_modal_hotkey_production.inc" "$repo/build-windows/core-tests/shared_modal_hotkey_production.inc"
+cp -- "$qt_dir/tests/shared_modal_hotkey_production.inc.json" "$repo/build-windows/core-tests/shared_modal_hotkey_production.inc.json"

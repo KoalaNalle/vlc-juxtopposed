@@ -1,0 +1,85 @@
+{
+  "case": "plain-wasapi",
+  "passed": false,
+  "investigationOnly": true,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r6\\plain-wasapi\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi",
+    "--no-spu"
+  ],
+  "sourceManifest": "build-windows/beta-tracks-subtitles-20261023/inputs-r4.json",
+  "producerSha256": "c0139dd02367d925f132ffd32830ca47d708b4036f421dd21f9f1c8bd22ebc92",
+  "mediaSha256": "e15e2e90ef7b338845905385b81050e78145a87c59af7282596adbf6e31587c3",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 42334,
+      "vouts": 1,
+      "subtitleTracks": [],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.046999999998661224,
+      "snapshotAvailable": true,
+      "snapshot": "initial-paused.png",
+      "snapshotSha256": "2a606fa41695abba1a6d5c71a4ee9b5bf62b6c0a1f16586d561af44e85f85335",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    },
+    {
+      "step": "played-paused",
+      "state": 3,
+      "timeUs": 1016589,
+      "vouts": 1,
+      "subtitleTracks": [],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.0470000000022992,
+      "snapshotAvailable": true,
+      "snapshot": "played-paused.png",
+      "snapshotSha256": "3542d0706610eb6e1c6637c2bd5f781e49cf06c97afb3603c1d90c7ea0dd27fc",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0
+    }
+  ],
+  "teardownComplete": true,
+  "initialPauseReached": true,
+  "resumeReached": true,
+  "playedPauseReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "status": "terminal",
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r6\\plain-wasapi\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-r6\\plain-wasapi\\runtime\\plugins\\plugins.dat: No error",
+    "faad warning: decoded zero sample",
+    "main warning: window size missing"
+  ],
+  "actualWasapiSelected": true,
+  "actualAudioModules": [
+    "main debug: using audio output module \"mmdevice\"",
+    "main debug: using aout stream module \"wasapi\""
+  ],
+  "actualVideoDecoderLines": [
+    "avcodec debug: allowing 6 thread(s) for decoding",
+    "avcodec debug: using frame thread mode with 6 threads",
+    "main debug: using video decoder module \"avcodec\""
+  ]
+}

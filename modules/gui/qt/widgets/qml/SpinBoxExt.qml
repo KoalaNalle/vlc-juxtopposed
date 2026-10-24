@@ -27,6 +27,10 @@ import VLC.Widgets as Widgets
 T.SpinBox {
     id: control
 
+    // Qt Quick's accessible value interface reads these names rather than from/to.
+    readonly property int minimumValue: Math.min(from, to)
+    readonly property int maximumValue: Math.max(from, to)
+
     property color textColor: theme.fg.primary
     property color bgColor: theme.bg.primary
     property color borderColor:  theme.border

@@ -91,6 +91,8 @@ vlc_input_decoder_New( vlc_object_t *parent,
  * done for proper vout/aout pausing.
  */
 void vlc_input_decoder_ChangePause( vlc_input_decoder_t *, bool b_paused, vlc_tick_t i_date );
+/* Exact picture boundary for paused precise seeking. */
+void vlc_input_decoder_SetPausedPrerollTarget(vlc_input_decoder_t *, vlc_tick_t);
 
 /**
  * Changes the decoder rate.

@@ -38,6 +38,7 @@ public:
     void addDefaults();
 
     int nextId() const;
+    bool validateCurrentPage() override;
     void initializePage( int id );
     void reject();
 
@@ -49,6 +50,7 @@ private:
 
     qt_intf_t* p_intf;
     bool mlDefaults = false;
+    bool m_juxtopposedSetup = false;
 
     QButtonGroup* colorSchemeGroup = nullptr;
     QButtonGroup* colorSchemeImages = nullptr;

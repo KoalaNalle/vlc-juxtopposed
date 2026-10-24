@@ -71,6 +71,12 @@ ssize_t vlc_module_match(const char *capability, const char *names,
 VLC_API
 void *vlc_module_map(struct vlc_logger *log, module_t *mod);
 
+/** Validate a nonempty plugin cache using the native cache parser.
+ * This reads metadata only: it neither maps plugins nor modifies the module
+ * bank. The directory must contain plugins.dat for this Core's cache format. */
+VLC_API bool vlc_module_cache_validate(vlc_object_t *, const char *directory);
+#define vlc_module_cache_validate(o,d) vlc_module_cache_validate(VLC_OBJECT(o),d)
+
 /**
  * Finds and instantiates the best module of a certain type.
  * All candidates modules having the specified capability and name will be
@@ -97,6 +103,12 @@ VLC_API module_t *vlc_module_load(struct vlc_logger *log, const char *cap,
 
 VLC_API module_t * module_need( vlc_object_t *, const char *, const char *, bool ) VLC_USED;
 #define module_need(a,b,c,d) module_need(VLC_OBJECT(a),b,c,d)
+
+/** Try preferred module names before normal candidates, without forcing an
+ * activation to accept a format it would ordinarily reject. Failed activation
+ * resources are released as for module_need(). */
+VLC_API module_t *module_need_preferred(vlc_object_t *, const char *, const char *) VLC_USED;
+#define module_need_preferred(a,b,c) module_need_preferred(VLC_OBJECT(a),b,c)
 
 VLC_USED
 static inline module_t *module_need_var(vlc_object_t *obj, const char *cap,

@@ -376,6 +376,12 @@ static inline int net_GetPeerAddress( int fd, char *address, int *port )
  */
 VLC_API char *vlc_getProxyUrl(const char *);
 
+/** Resolve a proxy with the requesting object's runtime/CLI policy first.
+ * Empty selects system policy; direct:// explicitly bypasses all proxies.
+ * Inherited credentials remain scoped to their configured proxy authority.
+ */
+VLC_API char *vlc_getProxyUrlForObject(vlc_object_t *, const char *);
+
 # ifdef __cplusplus
 }
 # endif

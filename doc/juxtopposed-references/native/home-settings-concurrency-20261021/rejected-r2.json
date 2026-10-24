@@ -1,0 +1,5 @@
+{
+  "accepted": false,
+  "passedChecks": 26,
+  "reason": "Real concurrency, failure, format and typed value checks passed, but first-file creation failed: Windows vlc_open does not reliably map CreateFile failure to errno. R3 uses an explicit open-result distinction between absence and unreadable existing files. Destination not replaced on failed first save."
+}

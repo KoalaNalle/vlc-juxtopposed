@@ -143,6 +143,29 @@ processcommands = function ()
         end
     elseif command == "snapshot" then
         common.snapshot()
+    elseif command == "juxtopposed_wheel" then
+        local axis = _GET['axis']
+        local steps = type(_GET['steps']) == "string" and tonumber(_GET['steps']) or nil
+        -- This authenticated command consumes semantic steps, not key names.
+        -- Linked remotes share the active Mouse snapshot; others use their saved policy.
+        if (axis == "x" or axis == "y") and steps and steps == math.floor(steps)
+            and steps >= -8 and steps <= 8 and steps ~= 0 then
+            local policy = vlc.var.inherit(nil, "http-wheel-linked") and "hotkeys" or "http-wheel"
+            local mode_name = policy == "hotkeys" and ("hotkeys-" .. axis .. "-wheel-mode")
+                or ("http-wheel-" .. axis .. "-mode")
+            local mode = vlc.var.inherit(nil, mode_name)
+            local reverse_name = policy == "hotkeys" and "hotkeys-wheel-reverse" or "http-wheel-reverse"
+            if vlc.var.inherit(nil, reverse_name) then steps = -steps end
+            if mode == 0 then
+                vlc.volume.up(steps)
+            elseif mode == 2 or mode == 3 then
+                local seconds = vlc.var.inherit(nil, "extrashort-jump-size")
+                if seconds and seconds >= 0 and seconds <= 86400 then
+                    if mode == 3 then steps = -steps end
+                    vlc.player.seek_by_time_relative(steps * seconds * 1000000)
+                end
+            end
+        end
     elseif command == "volume" then
         common.volume(val)
     elseif command == "seek" then

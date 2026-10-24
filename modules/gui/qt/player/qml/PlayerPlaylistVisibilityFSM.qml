@@ -72,7 +72,9 @@ FSM {
             },
             updatePlaylistDocked: {
                 guard: () => MainCtx.playqueuePanel.docked,
-                target: fsmDocked
+                // A live docking change follows the requested visibility;
+                // fsmDocked.initialState is only the startup presentation rule.
+                target: MainCtx.playqueuePanel.visible ? fsmVisible : fsmHidden
             }
         })
     }

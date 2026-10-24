@@ -47,6 +47,37 @@ QtObject {
         ctx: MainCtx
     }
 
+    // Adapt only Juxtopposed surfaces. The existing native palette remains
+    // the authority for theme/System changes and custom legacy accent colors.
+    readonly property ColorContext juxtopposedViewColors: ColorContext {
+        palette: vlc_style.palette
+        colorSet: ColorContext.View
+    }
+    readonly property ColorContext juxtopposedWindowColors: ColorContext {
+        palette: vlc_style.palette
+        colorSet: ColorContext.Window
+    }
+    readonly property Binding juxtopposedNativePalette: Binding {
+        target: JuxtopposedPalette
+        property: "nativePalette"
+        value: vlc_style.palette
+    }
+    readonly property Binding juxtopposedNativeView: Binding {
+        target: JuxtopposedPalette
+        property: "nativeView"
+        value: vlc_style.juxtopposedViewColors
+    }
+    readonly property Binding juxtopposedNativeWindow: Binding {
+        target: JuxtopposedPalette
+        property: "nativeWindow"
+        value: vlc_style.juxtopposedWindowColors
+    }
+    readonly property Binding juxtopposedPreferences: Binding {
+        target: JuxtopposedPalette
+        property: "preferences"
+        value: MainCtx.generalPreferences
+    }
+
     readonly property real highPixelDensityThreshold: 5.9 // 150 dpi (dpmm)
 
     // Sizes

@@ -35,6 +35,15 @@ public:
     Q_PROPERTY(State stateFilter READ getStateFilter WRITE setStateFilter NOTIFY stateFilterChanged FINAL)
 
     Q_PROPERTY(int maxScore READ getMaxScore CONSTANT FINAL)
+    Q_PROPERTY(bool available READ available NOTIFY availabilityChanged FINAL)
+    Q_PROPERTY(bool busy READ busy NOTIFY busyChanged FINAL)
+    Q_PROPERTY(bool discovering READ discovering NOTIFY busyChanged FINAL)
+    Q_PROPERTY(QString lastError READ lastError NOTIFY lastErrorChanged FINAL)
+    Q_PROPERTY(QString statusText READ statusText NOTIFY statusTextChanged FINAL)
+    Q_PROPERTY(bool catalogSaveNeeded READ catalogSaveNeeded NOTIFY catalogSaveNeededChanged FINAL)
+    Q_PROPERTY(QString selectedKey READ selectedKey WRITE setSelectedKey NOTIFY selectionChanged FINAL)
+    Q_PROPERTY(bool canInstall READ canInstall NOTIFY selectionChanged FINAL)
+    Q_PROPERTY(bool canRemove READ canRemove NOTIFY selectionChanged FINAL)
 
     enum class State // equivalent to addon_state_t
     {
@@ -64,6 +73,8 @@ public:
         BROKEN,
         MANAGEABLE,
         UPDATABLE,
+        SELECTION_KEY,
+        STATE_LABEL,
     };
     Q_ENUM(Role)
 
@@ -92,11 +103,31 @@ public: //QAbstractListModel override
     QHash<int, QByteArray> roleNames() const override;
 
 public: //invokable functions
-    Q_INVOKABLE void installService(int idx);
-    Q_INVOKABLE void removeService(int idx);
+    Q_INVOKABLE bool installService(int idx);
+    Q_INVOKABLE bool removeService(int idx);
+    Q_INVOKABLE bool installByKey(const QString &key);
+    Q_INVOKABLE bool removeByKey(const QString &key);
+    Q_INVOKABLE bool installSelected();
+    Q_INVOKABLE bool removeSelected();
+    Q_INVOKABLE int selectionIndex() const;
 
-    Q_INVOKABLE void loadFromDefaultRepository();
-    Q_INVOKABLE void loadFromExternalRepository(QUrl uri);
+    Q_INVOKABLE bool loadFromDefaultRepository();
+    Q_INVOKABLE bool loadFromExternalRepository(QUrl uri);
+    Q_INVOKABLE bool addFromPackage(const QUrl &uri);
+    Q_INVOKABLE bool retryCatalogSave();
+    Q_INVOKABLE bool reloadCatalog();
+    Q_INVOKABLE void clearError();
+    Q_INVOKABLE void showAll();
+    bool available() const;
+    bool busy() const;
+    bool discovering() const;
+    QString lastError() const;
+    QString statusText() const;
+    bool catalogSaveNeeded() const;
+    QString selectedKey() const;
+    void setSelectedKey(const QString &key);
+    bool canInstall() const;
+    bool canRemove() const;
 
     Q_INVOKABLE static QString getLabelForType(Type type);
     Q_INVOKABLE static QColor getColorForType(Type type);
@@ -118,6 +149,12 @@ signals:
     void ctxChanged();
     void stateFilterChanged();
     void typeFilterChanged();
+    void availabilityChanged();
+    void busyChanged();
+    void lastErrorChanged();
+    void statusTextChanged();
+    void catalogSaveNeededChanged();
+    void selectionChanged();
 
 private:
     Q_DECLARE_PRIVATE(AddonsModel);

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite name="TestTimelineThumbnails" timestamp="2026&#x002D;10&#x002D;21T17:06:36" hostname="Starling" tests="17" failures="3" errors="0" skipped="0" time="7.957">
+  <properties>
+    <property name="QTestVersion" value="6.8.3"/>
+    <property name="QtVersion" value="6.8.3"/>
+    <property name="QtBuild" value="Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)"/>
+  </properties>
+  <testcase name="initTestCase" classname="TestTimelineThumbnails" time="0.094"/>
+  <testcase name="nativeFramesAtRequestedTimes" classname="TestTimelineThumbnails" time="0.609"/>
+  <testcase name="cacheAndSameSecond" classname="TestTimelineThumbnails" time="0.000"/>
+  <testcase name="latestRequestAndMediaGeneration" classname="TestTimelineThumbnails" time="0.593"/>
+  <testcase name="viewsCannotCancelEachOthersPreview" classname="TestTimelineThumbnails" time="0.527"/>
+  <testcase name="continuousMovementProducesFrames" classname="TestTimelineThumbnails" time="3.237">
+    <system-out>
+      <![CDATA[OWNED_QT_DIAG|info|Frames published during 100 moving requests: 14]]>
+    </system-out>
+  </testcase>
+  <testcase name="invalidTimeAndUnavailableMedia" classname="TestTimelineThumbnails" time="0.174"/>
+  <testcase name="independentPrimaryPlayback" classname="TestTimelineThumbnails" time="0.937">
+    <system-out>
+      <![CDATA[OWNED_QT_DIAG|info|Primary before=166643us after=341246us wall=174ms]]>
+    </system-out>
+  </testcase>
+  <testcase name="workerShutdown" classname="TestTimelineThumbnails" time="0.140"/>
+  <testcase name="stalledNetworkCancellationAndShutdown" classname="TestTimelineThumbnails" time="0.558"/>
+  <testcase name="geometryMatchesIndependentReference(landscape)" classname="TestTimelineThumbnails" time="0.166"/>
+  <testcase name="geometryMatchesIndependentReference(portrait)" classname="TestTimelineThumbnails" time="0.202"/>
+  <testcase name="geometryMatchesIndependentReference(sar&#x002D;2&#x002D;to&#x002D;1)" classname="TestTimelineThumbnails" time="0.177"/>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;90)" classname="TestTimelineThumbnails" time="0.182">
+    <failure type="fail" message="&apos;quadrants&apos; returned FALSE. (rotate&#x002D;90 corner colors match independent oriented reference)"/>
+  </testcase>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;180)" classname="TestTimelineThumbnails" time="0.181">
+    <failure type="fail" message="&apos;quadrants&apos; returned FALSE. (rotate&#x002D;180 corner colors match independent oriented reference)"/>
+  </testcase>
+  <testcase name="geometryMatchesIndependentReference(rotate&#x002D;270)" classname="TestTimelineThumbnails" time="0.171">
+    <failure type="fail" message="&apos;quadrants&apos; returned FALSE. (rotate&#x002D;270 corner colors match independent oriented reference)"/>
+  </testcase>
+  <testcase name="cleanupTestCase" classname="TestTimelineThumbnails" time="0.005"/>
+</testsuite>

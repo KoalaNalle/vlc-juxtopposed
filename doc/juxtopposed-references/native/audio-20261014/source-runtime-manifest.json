@@ -1,0 +1,57 @@
+{
+  "documentationDate": "2026-10-14",
+  "sourceHashesAtDocumentation": {
+    "test/modules/audio_filter/soxr_lifecycle.c": "73882bf3dc02325cab752363623806eb6b0b2127b283816e7b230119aea802b8",
+    "test/libvlc/native_audio_extra.py": "b78ac14672172e0f79fe4691235e63d0a09e87feec4c62d776fc24828be03776",
+    "modules/audio_filter/resampler/soxr.c": "76615fbc5de3dbbf7c95c367504e9e9eead60b305e1c029d590452c5592d21db",
+    "test/modules/packetizer/flac_eos.c": "801a7036e30fd142b89692bffa445a7e4d44a5cc61d441bd8bbed36a3e01a003",
+    "test/libvlc/native_flac_packetizer_extra.py": "45d839d0b69c9e900adfae22ddb93d024ddbf65ab84a433bb1178597c2f9164c",
+    "modules/packetizer/flac.c": "0d8f86b40853c3014c1c2b9bb4d8178b6dc518e19a9306ecb5d2aba56fc82383",
+    "modules/packetizer/flac.h": "f35b8777db0a47af806922d7ea744f8e74045086c61af919656dd48cb35ed2d1",
+    "modules/demux/flac.c": "b95a361c6cfbfb16359324e2e70ed5f9bb4b429aa5f500ecf0599e268f85f878",
+    "test/libvlc/native_flac_drain.py": "3ff0fc044cf2fdce8d20cc864698c043912b353f21660d2f807947b1423ac609",
+    "modules/codec/flac.c": "7ec7a57f4fa644eae1dae6ef673a92a90beb30aa467a0963c67722729e6690a2"
+  },
+  "sourceBuildProof": "Build owner reported successful final native CC/link then copied the exact result executables. See build evidence and evidence-index.json; source hashes alone are insufficient.",
+  "originalAuditManifestSha256": "af1908dddcdad71b9e67313595325ca343601e71d72897ff553b2aa673cc1e33",
+  "nativeResults": {
+    "soxr-native-reference-initialized-20261014": {
+      "passed": true,
+      "exitCode": 0,
+      "caseCount": 11,
+      "resultCopy": "results/soxr-verification.json"
+    },
+    "flac-packetizer-extra-native-20261014": {
+      "passed": true,
+      "exitCode": 0,
+      "caseCount": 7,
+      "resultCopy": "results/packetizer-verification.json"
+    },
+    "flac-native-beta-stage-20261014": {
+      "passed": true,
+      "exitCode": 0,
+      "caseCount": 9,
+      "resultCopy": "results/full-output-verification.json"
+    }
+  },
+  "runtimePackagesAtFrozenAudit": {
+    "slice-flac-complete-package": {
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+      "plugins/audio_filter/libsoxr_plugin.dll": "404984e2d4ae7c144797039da7248b930a610575c76ecab91a806f7198628e33",
+      "plugins/packetizer/libpacketizer_flac_plugin.dll": "c097dbb096b4144a0b12836b7acdc409ab47e6b12d81339dd439c58bad2b025e",
+      "plugins/demux/libflacsys_plugin.dll": "475f3569c22a117dc60ff2bd00579613a97d9671addf3ecf4eceff75a09e1c0b",
+      "plugins/codec/libflac_plugin.dll": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+    },
+    "slice-beta-native-package-20261014": {
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+      "plugins/audio_filter/libsoxr_plugin.dll": "d5600210c4932d41efdb1d2d6c7783965369f43f9c7ce6b9e5720d2bd0fb039d",
+      "plugins/packetizer/libpacketizer_flac_plugin.dll": "c097dbb096b4144a0b12836b7acdc409ab47e6b12d81339dd439c58bad2b025e",
+      "plugins/demux/libflacsys_plugin.dll": "475f3569c22a117dc60ff2bd00579613a97d9671addf3ecf4eceff75a09e1c0b",
+      "plugins/codec/libflac_plugin.dll": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+    }
+  },
+  "executionScope": "Packetizer7 ran on immutable complete package. Core/packetizer identity to staged package is a comparison, not a new native run; SoXR11 and FLAC9 selected staged package. The SoXR harness source-level fault path is distinct from the loaded plugin.",
+  "encoderIdentityScope": "FLAC full-output result records the staged actual built-in encoder f84a14ec…9dd2. Its identical bytes in the older complete package are a documentation-time identity comparison."
+}

@@ -126,6 +126,17 @@ static void
 vlc_player_destructor_AddInput(vlc_player_t *player,
                                struct vlc_player_input *input)
 {
+    /* The timer can already reflect resumed/decoded playback while the last
+     * INPUT_EVENT_TIMES position is still stale. Snapshot it while this input
+     * owns the timer; a later input must never supply this input's history. */
+    if (input == player->input && input->started)
+    {
+        const double position =
+            vlc_player_input_GetPos(input, false, vlc_tick_now());
+        if (position >= 0. && position <= 1.)
+            input->position_before_stop = position;
+    }
+
     if (input->started)
     {
         input->started = false;
@@ -1211,9 +1222,10 @@ vlc_player_SetAssociatedSubsFPS(vlc_player_t *player, float fps)
     struct vlc_player_input *input = vlc_player_get_input_locked(player);
 
     var_SetFloat(player, "sub-fps", fps);
-    if (input)
-        input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SUBS_FPS,
-                                &(vlc_value_t) { .f_float = fps });
+    if (input
+     && input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SUBS_FPS,
+                                &(vlc_value_t) { .f_float = fps }) == VLC_SUCCESS)
+        vlc_player_input_RefreshPausedSubtitle(input);
     vlc_player_SendEvent(player, on_associated_subs_fps_changed, fps);
 }
 
@@ -1493,6 +1505,26 @@ vlc_player_GetPosition(vlc_player_t *player)
     struct vlc_player_input *input = vlc_player_get_input_locked(player);
 
     return input ? vlc_player_input_GetPos(input, false, vlc_tick_now()) : -1.f;
+}
+
+vlc_tick_t
+vlc_player_GetTimeWithSeek(vlc_player_t *player)
+{
+    if (!vlc_player_get_input_locked(player)) return VLC_TICK_INVALID;
+    bool seeking = true;
+    vlc_tick_t time;
+    return vlc_player_GetTimerPoint(player, &seeking, vlc_tick_now(), &time, NULL) == VLC_SUCCESS
+        ? time : vlc_player_GetTime(player);
+}
+
+double
+vlc_player_GetPositionWithSeek(vlc_player_t *player)
+{
+    if (!vlc_player_get_input_locked(player)) return -1.0;
+    bool seeking = true;
+    double position;
+    return vlc_player_GetTimerPoint(player, &seeking, vlc_tick_now(), NULL, &position) == VLC_SUCCESS
+        ? position : vlc_player_GetPosition(player);
 }
 
 void
@@ -1816,6 +1848,7 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
     if (cat != AUDIO_ES && cat != SPU_ES && cat != VIDEO_ES)
         return VLC_EGENERIC;
     vlc_tick_t *cat_delay = &input->cat_delays[cat];
+    const vlc_tick_t old_delay = *cat_delay;
 
     if (absolute)
         *cat_delay = delay;
@@ -1832,6 +1865,8 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
                                es_format_category_to_string(cat),
                                (int)MS_FROM_VLC_TICK(delay));
         vlc_player_SendEvent(player, on_category_delay_changed, cat, delay);
+        if (cat == SPU_ES && old_delay != delay)
+            vlc_player_input_RefreshPausedSubtitle(input);
     }
     return VLC_SUCCESS;
 }
@@ -1864,6 +1899,7 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
         (trackpriv->t.fmt.i_cat != AUDIO_ES && trackpriv->t.fmt.i_cat != SPU_ES))
         return VLC_EGENERIC;
 
+    const vlc_tick_t old_delay = trackpriv->delay;
     if (absolute)
         trackpriv->delay = delay;
     else
@@ -1884,6 +1920,8 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
                                    trackpriv->t.name,
                                    (int)MS_FROM_VLC_TICK(delay));
         vlc_player_SendEvent(player, on_track_delay_changed, es_id, delay);
+        if (trackpriv->t.fmt.i_cat == SPU_ES && old_delay != delay)
+            vlc_player_input_RefreshPausedSubtitle(input);
     }
 
     return VLC_SUCCESS;
@@ -2073,6 +2111,7 @@ vlc_player_Delete(vlc_player_t *player)
     free(player->video_string_ids);
     free(player->audio_string_ids);
     free(player->sub_string_ids);
+    free(player->history_policy.exclusion_pattern);
 
     vlc_player_DestroyTimer(player);
 
@@ -2130,6 +2169,14 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
 
     player->play_and_pause = false;
     player->repeat = 0;
+    player->history_policy.save_history = var_InheritBool(player, "save-recentplay");
+    player->history_policy.remember_position = var_InheritBool(player, "remember-playback-pos");
+    player->history_policy.exclusion_pattern = var_InheritString(player, "history-exclude-pattern");
+    player->history_epoch = player->position_epoch = 0;
+    if (!player->history_policy.exclusion_pattern)
+        player->history_policy.exclusion_pattern = strdup("");
+    if (!player->history_policy.exclusion_pattern)
+        goto error;
 
 #define VAR_CREATE(var, flag) do { \
     if (var_Create(player, var, flag) != VLC_SUCCESS) \
@@ -2137,6 +2184,7 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
 } while(0)
 
     /* player variables */
+    VAR_CREATE("save-recentplay", VLC_VAR_BOOL | VLC_VAR_DOINHERIT);
     VAR_CREATE("rate", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
     VAR_CREATE("sub-fps", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT);
     VAR_CREATE("sub-text-scale", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
@@ -2195,6 +2243,7 @@ vlc_player_New(vlc_object_t *parent, enum vlc_player_lock_type lock_type)
     return player;
 
 error:
+    free(player->history_policy.exclusion_pattern);
     if (aout)
         vlc_player_aout_Deinit(player);
     var_DelCallback(player, "corks", vlc_player_CorkCallback, player);

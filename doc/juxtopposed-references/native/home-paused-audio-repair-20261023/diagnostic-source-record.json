@@ -1,0 +1,19 @@
+{
+  "originalSha256": "a3d7e7205cf9bfdcefdf4804971b5464b816b886fabaa0e34b65105688a0be42",
+  "instrumentedSha256": "eb0fca4ba970fc0816ddeda0c2234477be944481fb41d95a6d17e53e6bd3960f",
+  "passiveAdditions": [
+    "    vlc_owned_timer_trace(\"update-received\", point, that->seeking);\n",
+    "        vlc_owned_timer_trace(\"update-delivered\", &point_copy, that->seeking);\n",
+    "    vlc_owned_pause_trace(\"pause-received\", system_date);\n",
+    "        vlc_owned_pause_trace(\"pause-delivered\", system_date);\n",
+    "    vlc_owned_timer_trace(\"seek-received\", point, that->seeking);\n",
+    "        vlc_owned_timer_trace(\"seek-delivered\", &point_copy, that->seeking);\n"
+  ],
+  "instrumentationOnlyVerified": true,
+  "currentInputs": {
+    "player/player_controller.hpp": "697303f2599c5d866393603e3c76eb5fbd78f87fac173df4c6826ac0d36e61d4",
+    "player/player_controller_p.hpp": "765b2945faa08ebfbbd790e3fc12f153b9ea72cd3e174ca5f1c5c708371acfd8",
+    "player/player_timer_point.hpp": "74249ebfa0775396e7eae70b5ee65bfe1764fc88e2f7b28f68d3373e61a987fd"
+  },
+  "probeSha256": "e881c0e1566a988a753318db966b12d7fb75d8b6319c7c13385231969f7fc665"
+}

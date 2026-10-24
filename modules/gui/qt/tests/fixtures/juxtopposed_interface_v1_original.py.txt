@@ -1,0 +1,505 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+"""Owned Interface QML in the frozen real shell, using a strict supplied service.
+
+No compiled native preference consumers, persistence, file picker or desktop
+effects are accepted by this component-only test.
+"""
+import argparse
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import xml.etree.ElementTree as ET
+
+OUT = Path(__file__).resolve().parent
+ROOT = OUT.parents[1]
+GENERAL = ROOT / 'build-windows/global-preferences-ui-pending'
+APPEARANCE = ROOT / 'build-windows/global-appearance-pending'
+REFERENCE = ROOT / 'build-windows/figma-interface-20261014'
+os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+os.environ['QT_QUICK_BACKEND'] = 'software'
+os.environ['QML_DISABLE_DISK_CACHE'] = '1'
+os.environ['QT_QPA_FONTDIR'] = str(ROOT / 'modules/gui/qt/pixmaps/juxtopposed')
+import PySide6
+from PySide6.QtCore import QObject, Property, Signal, Slot, Qt, QUrl, QPointF, QEvent, QCoreApplication, qInstallMessageHandler
+from PySide6.QtGui import QGuiApplication, QKeyEvent
+from PySide6.QtQml import QQmlApplicationEngine, QQmlExpression, qmlContext, qmlRegisterSingletonType
+from PySide6.QtQuick import QQuickItem
+from PySide6.QtTest import QTest
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--output-dir', type=Path, required=True)
+options = parser.parse_args()
+results = options.output_dir.resolve()
+results.mkdir(parents=True, exist_ok=False)
+reference = json.loads((REFERENCE / 'reference-freeze.json').read_text())
+for name, expected in reference['filesSha256'].items():
+    assert hashlib.sha256((REFERENCE / name).read_bytes()).hexdigest() == expected
+general_freeze = json.loads((GENERAL / 'proposal-freeze.json').read_text())
+for name, expected in general_freeze['filesSha256'].items():
+    assert hashlib.sha256((GENERAL / name).read_bytes()).hexdigest() == expected
+assets = results / 'assets'
+assets.mkdir()
+for source in (GENERAL / 'assets').glob('*.svg'):
+    shutil.copyfile(source, assets / source.name)
+for name in ['new-playlist-close.svg', 'audio.svg', 'subtitles.svg', 'InterVariable.ttf']:
+    shutil.copyfile(ROOT / 'modules/gui/qt/pixmaps/juxtopposed' / name, assets / name)
+for source in (OUT / 'assets').glob('*.svg'):
+    shutil.copyfile(source, assets / source.name)
+runtime_assets = {}
+for source in assets.glob('*.svg'):
+    runtime_assets.setdefault(hashlib.sha256(source.read_bytes()).hexdigest(), []).append(source.name)
+for name, record in reference['assets'].items():
+    assert record['sha256'] in runtime_assets, ('Missing original Interface export', name)
+    for runtime_name in runtime_assets[record['sha256']]:
+        svg = ET.parse(assets/runtime_name).getroot()
+        assert [svg.attrib['width'],svg.attrib['height']] == [record['rootWidth'],record['rootHeight']]
+
+interface_seed = dict(customSkin=True, skinFile='', embeddedVideo=True, resizeVideo=False,
+    rememberGeometry=True, alwaysOnTop=False, windowDecorations=True, titleFileName=True,
+    fullscreenScreen=-1, compactMode=False, controlAutoHide=1, controlHideDelay=500,
+    fullscreenControls=True, systemTray=True, startMinimized=False, trackPopup=1,
+    popupDuration=4000, playlistTree=True)
+boolean_keys = {key for key, value in interface_seed.items() if type(value) is bool}
+
+class InterfacePreferences(QObject):
+    valuesChanged = Signal()
+    languagesChanged = Signal()
+    capabilitiesChanged = Signal()
+    screensChanged = Signal()
+    lastErrorChanged = Signal()
+    restartRequiredChanged = Signal()
+    updatesAvailableChanged = Signal()
+    def __init__(self):
+        super().__init__()
+        self.state = dict(interface_seed)
+        self.caps = {key: True for key in interface_seed}
+        self.requests, self.reloads, self.pickers = [], 0, 0
+        self.error, self.fail_next = '', ''
+        self.restart = False
+        self.screen_rows = [dict(index=0, name='Generated screen 1'), dict(index=1, name='Generated screen 2')]
+    values = Property('QVariantMap', lambda self: self.state, notify=valuesChanged)
+    capabilities = Property('QVariantMap', lambda self: self.caps, notify=capabilitiesChanged)
+    screens = Property('QVariantList', lambda self: self.screen_rows, notify=screensChanged)
+    lastError = Property(str, lambda self: self.error, notify=lastErrorChanged)
+    restartRequired = Property(bool, lambda self: self.restart, notify=restartRequiredChanged)
+    def set_error(self, text):
+        self.error = text
+        self.lastErrorChanged.emit()
+    def patch(self, **values):
+        self.state = {**self.state, **values}
+        self.valuesChanged.emit()
+    @Slot(str, 'QVariant', result=bool)
+    def setValue(self, key, value):
+        assert self.caps.get(key) is True and key in interface_seed, (key, value)
+        if key in boolean_keys:
+            assert type(value) is bool, (key, value, type(value))
+        elif key == 'skinFile':
+            assert type(value) is str
+        elif key in ['controlHideDelay', 'popupDuration']:
+            # Match the genuine General model's integer() validator: QML's
+            # Math.round yields an integral QVariantDouble, not always QMetaInt.
+            assert type(value) in [int, float] and math.isfinite(value) and value == int(value) and 0 <= value <= 10000, (key, value, type(value))
+        elif key in ['controlAutoHide', 'trackPopup']:
+            assert type(value) is int and value in [0, 1, 2], (key, value, type(value))
+        elif key == 'fullscreenScreen':
+            assert type(value) is int and value in [-1, 0, 1], (key, value, type(value))
+        self.requests.append([key, value])
+        if self.fail_next:
+            self.set_error(self.fail_next)
+            self.fail_next = ''
+            return False
+        self.patch(**{key: value})
+        self.set_error('')
+        return True
+    @Slot()
+    def reload(self):
+        self.reloads += 1
+        self.set_error('')
+        self.valuesChanged.emit()
+    @Slot(result=bool)
+    def chooseSkinFile(self):
+        self.pickers += 1
+        return False  # Supplied cancelled picker, not native picker acceptance.
+
+class GeneralPreferences(QObject):
+    """Separate strict General9 service; Interface writes must never reach it."""
+    valuesChanged = Signal()
+    languagesChanged = Signal()
+    lastErrorChanged = Signal()
+    restartRequiredChanged = Signal()
+    updatesAvailableChanged = Signal()
+    def __init__(self):
+        super().__init__()
+        self.state = dict(language='en',theme=2,accentIndex=0,showDialogs=True,
+            autoUpdates=False,developerMode=False,loggingEnabled=False,logFile='',logDetails=0)
+        self.reloads = 0
+    values = Property('QVariantMap',lambda self:self.state,notify=valuesChanged)
+    languages = Property('QVariantList',lambda self:[dict(code='auto',name='Automatic'),dict(code='en',name='English')],notify=languagesChanged)
+    lastError = Property(str,lambda self:'',notify=lastErrorChanged)
+    restartRequired = Property(bool,lambda self:False,notify=restartRequiredChanged)
+    updatesAvailable = Property(bool,lambda self:False,notify=updatesAvailableChanged)
+    def patch(self, **values):
+        assert all(key in self.state for key in values)
+        self.state = {**self.state, **values}
+        self.valuesChanged.emit()
+    @Slot()
+    def reload(self):
+        self.reloads += 1
+        self.valuesChanged.emit()
+    @Slot(str,'QVariant',result=bool)
+    def setValue(self,key,value):
+        raise AssertionError(('Interface reached unrelated General9 service',key,value))
+
+messages = []
+qInstallMessageHandler(lambda kind, context, text: messages.append(text))
+app = QGuiApplication([])
+model = InterfacePreferences()
+general = GeneralPreferences()
+palette_source = APPEARANCE / 'files/modules/gui/qt/style/JuxtopposedPalette.qml'
+qmlRegisterSingletonType(QUrl.fromLocalFile(str(palette_source)), 'VLC.Style', 1, 0, 'JuxtopposedPalette')
+engine = QQmlApplicationEngine()
+engine.rootContext().setContextProperty('suppliedPreferences', general)
+engine.rootContext().setContextProperty('suppliedInterface', model)
+driver = '''import QtQuick
+import QtQuick.Controls.Basic as C
+import VLC.Style
+import "@GENERAL@" as Global
+import "@INTERFACE@" as Interface
+C.ApplicationWindow {
+    id: window; width: 1080; height: 897; visible: true; color: "#111111"
+    property int advancedRequests: 0
+    property int fallbackRequests: 0
+    QtObject { id: nativePalette; property bool isDark: suppliedPreferences.values.theme !== 1 }
+    QtObject { id: nativeView; property var bg: ({primary:"#FAFAFA"}); property var fg: ({primary:"#212121", secondary:"#4D4D4D", negative:"#FF0000"}); property color separator:"#E0E0E0"; property color accent:"#017F89" }
+    QtObject { id: nativeWindow; property var bg: ({primary:"#EDEDED"}) }
+    Binding { target: JuxtopposedPalette; property: "nativePalette"; value: nativePalette }
+    Binding { target: JuxtopposedPalette; property: "nativeView"; value: nativeView }
+    Binding { target: JuxtopposedPalette; property: "nativeWindow"; value: nativeWindow }
+    Binding { target: JuxtopposedPalette; property: "preferences"; value: suppliedPreferences }
+    C.Button { id: opener; objectName: "opener"; text:"Settings"; onClicked: dialog.showDialog(opener) }
+    Component { id: interfacePage; Interface.JuxtopposedInterfaceSettings {
+        interfacePreferences: suppliedInterface
+        onAdvancedRequested: { dialog.close(); window.advancedRequests++ }
+    } }
+    Global.JuxtopposedGlobalSettings {
+        id: dialog; parent: window.contentItem
+        preferences: suppliedPreferences; appearance: JuxtopposedPalette
+        assetBase: "@ASSETS@"
+        selectedCategory: "interface"
+        title: selectedCategory === "interface" ? qsTr("Interface Settings") : qsTr("Global Settings")
+        categoryPages: ({interface: interfacePage})
+        categorySearchTerms: ({interface: @TERMS@})
+        onAboutToShow: suppliedInterface.reload()
+        onFallbackFocusRequested: window.fallbackRequests++
+    }
+}'''
+driver = driver.replace('@GENERAL@', (GENERAL / 'qml').as_uri()).replace('@INTERFACE@', (OUT / 'qml').as_uri()).replace('@ASSETS@', assets.as_uri() + '/').replace('@TERMS@', json.dumps(json.loads((OUT/'search-terms.json').read_text())))
+(results / 'driver.qml').write_text(driver, encoding='utf-8')
+engine.loadData(driver.encode(), QUrl.fromLocalFile(str(results / 'driver.qml')))
+assert engine.rootObjects(), messages[:20]
+window = engine.rootObjects()[0]
+dialog = window.findChild(QObject, 'juxtopposedGlobalSettings')
+assert dialog
+checks = []
+
+def item(name):
+    obj = window.findChild(QObject, name)
+    if obj is None:
+        queue = [window.contentItem()]
+        while queue:
+            candidate = queue.pop()
+            if candidate.objectName() == name:
+                obj = candidate
+                break
+            queue.extend(candidate.childItems())
+    assert obj is not None, (name, messages[:10])
+    return obj
+
+def evaluate(code):
+    expression = QQmlExpression(qmlContext(window), window, code)
+    value, _ = expression.evaluate()
+    assert not expression.hasError(), expression.error().toString()
+    QTest.qWait(20)
+    return value
+
+def reveal(name):
+    obj = item(name)
+    obj.forceActiveFocus(Qt.TabFocusReason)
+    QTest.qWait(25)
+    return obj
+
+def click(name):
+    obj = reveal(name)
+    QTest.mouseClick(window, Qt.LeftButton, Qt.NoModifier, obj.mapToScene(QPointF(obj.width()/2, obj.height()/2)).toPoint())
+    QTest.qWait(25)
+
+def select(name, index):
+    obj = reveal(name)
+    QTest.keyClick(window, Qt.Key_Space)
+    QTest.qWait(20)
+    assert item(name + 'Popup').property('visible')
+    QTest.keyClick(window, Qt.Key_Home)
+    for _ in range(index): QTest.keyClick(window, Qt.Key_Down)
+    QTest.keyClick(window, Qt.Key_Return)
+    QTest.qWait(25)
+    assert not item(name + 'Popup').property('visible')
+
+def done(name):
+    checks.append(name)
+    print('PASS', name, flush=True)
+
+def text(value):
+    for char in value:
+        QGuiApplication.sendEvent(window, QKeyEvent(QEvent.KeyPress, 0, Qt.NoModifier, char))
+        QGuiApplication.sendEvent(window, QKeyEvent(QEvent.KeyRelease, 0, Qt.NoModifier, char))
+    QTest.qWait(15)
+
+QTest.qWait(60)
+click('opener')
+assert dialog.property('visible') and dialog.property('selectedCategory') == 'interface'
+assert model.reloads == general.reloads == 1 and model.requests == []
+for key in boolean_keys - {'resizeVideo'}:
+    assert item('interface' + key).property('selected') is interface_seed[key], key
+assert item('interfaceresizeVideo').property('currentIndex') == 0
+assert item('interfacefullscreenScreen').property('currentIndex') == 0
+assert item('interfacecontrolAutoHide').property('currentIndex') == 1
+assert item('interfacetrackPopup').property('currentIndex') == 1
+assert item('interfacecontrolHideDelay').property('value') == .5
+assert item('interfacepopupDuration').property('value') == 4
+assert item('globalSettingsTitle').property('text') == 'Interface Settings'
+assert window.grabWindow().save(str(results / '01-interface-natural-component.png'))
+done('Frozen real shell mounts Interface required-property contract; all18 supplied native seeds render without writes')
+
+images = {}
+queue = [window.contentItem()]
+while queue:
+    obj = queue.pop()
+    queue.extend(obj.childItems())
+    if 'Original' not in obj.objectName() or not hasattr(obj, 'property'):
+        continue
+    url = obj.property('source')
+    if not url:
+        continue
+    assert url.isLocalFile() and Path(url.toLocalFile()).parent == assets
+    assert Path(url.toLocalFile()).stat().st_size > 0
+    expression = QQmlExpression(qmlContext(obj), obj, 'Number(status)')
+    state, _ = expression.evaluate()
+    assert not expression.hasError() and state == 1
+    name = Path(url.toLocalFile()).name
+    size = [obj.width(),obj.height()]
+    if 'OriginalTick' in obj.objectName():
+        index = int(obj.objectName().split('OriginalTick')[1])
+        expected_name = 'interface-settings-8ba8e.svg' if index in [0,20] else 'interface-settings-1ab84.svg'
+        assert name == expected_name
+        assert size == ([32,32] if index in [0,20] else [2,8])
+        assert obj.parentItem().width() == 0 and obj.parentItem().property('clip') is (index in [0,20])
+    elif obj.objectName().startswith('interface') and obj.objectName().endswith('InfoOriginal'):
+        assert name == 'global-settings-1f9fe.svg' and size == [18,18] and not obj.property('mirror')
+    elif obj.objectName().startswith('interface') and obj.objectName().endswith('OriginalChevron'):
+        assert name == 'global-settings-764c9.svg' and size == [24,24] and obj.property('mirror')
+    images[obj.objectName()] = dict(file=name,naturalSize=size,scale=obj.scale(),mirrored=obj.property('mirror'))
+assert len([name for name in images if 'OriginalTick' in name]) == 42
+assert len([name for name in images if name.startswith('interface') and name.endswith('InfoOriginal')]) == 15
+assert len([name for name in images if name.startswith('interface') and name.endswith('OriginalChevron')]) == 4
+assert images['globalCategoryinterfaceOriginalIcon']['file'] == 'global-settings-f1a4a.svg'
+assert images['generalAdvancedOriginalChevron']['file'] == 'global-settings-97863.svg'
+done('All21 contextual original identities;15 body info slots,4 mirrored dropdowns and42 original tick instances match declared natural geometry')
+
+for key in sorted(boolean_keys - {'resizeVideo'}):
+    before = model.state[key]
+    click('interface' + key)
+    assert model.requests[-1] == [key, not before]
+    assert item('interface' + key).property('selected') is not before
+    click('interface' + key)
+assert not model.error
+model.restart = True
+model.restartRequiredChanged.emit()
+QTest.qWait(20)
+assert item('interfaceSettingsRestart').isVisible() and not item('globalSettingsRestart').isVisible()
+model.restart = False
+model.restartRequiredChanged.emit()
+done('All strict boolean payloads use actual pointer controls and remain derived from supplied native values')
+
+select('interfaceresizeVideo', 1)
+assert model.requests[-1] == ['resizeVideo', True]
+select('interfacefullscreenScreen', 2)
+assert model.requests[-1] == ['fullscreenScreen', 1]
+select('interfacecontrolAutoHide', 2)
+assert model.requests[-1] == ['controlAutoHide', 2]
+select('interfacetrackPopup', 0)
+assert model.requests[-1] == ['trackPopup', 0]
+done('Dropdowns dispatch native-compatible bool, actual screen index, three-mode enum and exact tray enum')
+
+for key in ['controlHideDelay', 'popupDuration']:
+    slider = reveal('interface' + key)
+    before = model.state[key]
+    QTest.keyClick(window, Qt.Key_Right)
+    QTest.qWait(25)
+    assert model.requests[-1] == [key, before + 500]
+    assert slider.property('value') == (before + 500) / 1000
+done('Native QML slider keyboard events dispatch integral500ms steps with no startup writes')
+
+field = reveal('interfaceskinFile')
+QTest.keyClick(window, Qt.Key_A, Qt.ControlModifier)
+text("C:/Generated/UI's skin.vlt")
+QTest.keyClick(window, Qt.Key_Tab)
+QTest.qWait(20)
+assert model.requests[-1] == ['skinFile', "C:/Generated/UI's skin.vlt"]
+assert item('interfaceskinBrowse').hasActiveFocus()
+before = model.state['skinFile']
+click('interfaceskinBrowse')
+assert model.pickers == 1 and model.state['skinFile'] == before and not model.error
+done('Literal skin path commits unchanged; cancelled supplied picker dispatch preserves native value without false success')
+
+model.fail_next = 'The skin path could not be saved.'
+field = reveal('interfaceskinFile')
+QTest.keyClick(window, Qt.Key_A, Qt.ControlModifier)
+text('C:/Generated/rejected.vlt')
+QTest.keyClick(window, Qt.Key_Tab)
+QTest.qWait(20)
+assert field.property('text') == before
+assert item('interfaceSettingsError').property('text') == 'The skin path could not be saved.'
+assert not item('globalSettingsError').isVisible()
+model.fail_next = 'The mode could not be saved.'
+before = model.state['resizeVideo']
+select('interfaceresizeVideo', 0)
+assert model.state['resizeVideo'] is before and item('interfaceresizeVideo').property('currentIndex') == 1
+model.fail_next = 'The delay could not be saved.'
+slider = reveal('interfacecontrolHideDelay')
+before = model.state['controlHideDelay']
+QTest.keyClick(window, Qt.Key_Right)
+QTest.qWait(25)
+assert model.state['controlHideDelay'] == before and slider.property('value') == before / 1000
+model.fail_next = 'The option could not be saved.'
+before = model.state['alwaysOnTop']
+click('interfacealwaysOnTop')
+assert model.state['alwaysOnTop'] is before and item('interfacealwaysOnTop').property('selected') is before
+done('Text, dropdown, range and toggle failures preserve actual current values; frozen shell exposes genuine error text')
+
+model.patch(fullscreenScreen=99, controlAutoHide=-1, controlHideDelay=-1)
+QTest.qWait(25)
+assert item('interfacefullscreenScreen').property('currentIndex') == -1
+assert item('interfacecontrolAutoHide').property('currentIndex') == -1
+assert 'custom' in item('interfacefullscreenScreen').property('displayText')
+model.screen_rows.append(dict(index=99,name='Generated reconnected screen'))
+model.screensChanged.emit()
+QTest.qWait(20)
+assert item('interfacefullscreenScreen').property('currentIndex') == 3
+model.screen_rows.pop()
+model.screensChanged.emit()
+QTest.qWait(20)
+assert item('interfacefullscreenScreen').property('currentIndex') == -1
+before = len(model.requests)
+QTest.qWait(20)
+assert len(model.requests) == before
+model.patch(fullscreenScreen=-1, controlAutoHide=1, controlHideDelay=500)
+model.patch(controlHideDelay=777)
+QTest.qWait(20)
+assert math.isclose(item('interfacecontrolHideDelay').property('value'), .777)
+assert len(model.requests) == before
+model.patch(controlHideDelay=500)
+done('Disconnected-screen, unknown enum and legacy delay seeds are not silently coerced or written')
+
+model.patch(customSkin=False, embeddedVideo=False, systemTray=False)
+QTest.qWait(25)
+for key in ['skinFile', 'skinBrowse', 'resizeVideo', 'startMinimized', 'trackPopup', 'popupDuration']:
+    assert not item('interface' + key).property('enabled'), key
+model.patch(**interface_seed)
+model.caps = {key: False for key in interface_seed}
+model.capabilitiesChanged.emit()
+QTest.qWait(25)
+before = len(model.requests)
+for key in interface_seed:
+    assert not item('interface' + key).property('enabled'), key
+assert len(model.requests) == before
+description = QQmlExpression(qmlContext(item('interfacealwaysOnTop')), item('interfacealwaysOnTop'), 'Accessible.description')
+value, _ = description.evaluate()
+assert not description.hasError() and 'unavailable' in value
+assert item('interfaceUnsupportedMessage').isVisible() and '18' in item('interfaceUnsupportedMessage').property('text')
+saved_state = model.state
+model.state = {key:value for key,value in model.state.items() if key not in interface_seed}
+model.valuesChanged.emit()
+QTest.qWait(20)
+assert all(not item('interface'+key).property('enabled') for key in interface_seed)
+assert len(model.requests) == before
+model.state = saved_state
+model.valuesChanged.emit()
+model.caps = {key: True for key in interface_seed}
+model.capabilitiesChanged.emit()
+done('Native capability gates and actual skin/embed/tray dependencies disable unsupported behavior instead of accepting placeholder writes')
+
+geometry = []
+for width, height, scale in [(1080,897,1), (640,420,1), (960,600,1.5), (1280,720,2)]:
+    window.resize(width, height)
+    dialog.setProperty('uiScale', scale)
+    QTest.qWait(35)
+    for name in ['interfacecustomSkin', 'interfaceskinFile', 'interfaceresizeVideo', 'interfacefullscreenScreen',
+                 'interfacecontrolHideDelay', 'interfacetrackPopup', 'interfacepopupDuration', 'interfaceplaylistTree', 'generalAdvanced']:
+        obj = reveal(name)
+        assert obj.hasActiveFocus(), name
+        p = obj.mapToScene(QPointF(0,0))
+        viewport = item('globalSettingsPageScroll')
+        top = viewport.mapToScene(QPointF(0,0)).y()
+        assert p.x() >= -.5 and p.x()+obj.width() <= width+.5, (name, p, width)
+        assert p.y() >= top-.5 and p.y()+obj.height() <= top+viewport.height()+.5, (name, p, height)
+    for key in ['controlHideDelay', 'popupDuration']:
+        for index in range(21):
+            obj = item('interface'+key+'OriginalTick'+str(index))
+            expected = [32,32] if index in [0,20] else [2,8]
+            assert [obj.width(),obj.height()] == expected and obj.scale() == scale
+            assert obj.parentItem().width() == 0
+            assert obj.parentItem().property('clip') is (index in [0,20])
+    geometry.append(dict(window=[width,height], scale=scale, dialog=[dialog.property('width'),dialog.property('height')]))
+    if scale == 2: assert window.grabWindow().save(str(results/'02-interface-double-scale-focused.png'))
+done('Real controls reveal within frozen shell at natural, narrow,150% and200%; exact original range asset root sizes retained')
+
+window.resize(1080,897)
+dialog.setProperty('uiScale',1)
+search = reveal('globalSettingsSearch')
+text('Hide after')
+QTest.qWait(25)
+assert item('interfacecontrolHideDelay').isVisible() and not item('interfaceskinFile').isVisible()
+QTest.keyClick(window, Qt.Key_A, Qt.ControlModifier)
+QTest.keyClick(window, Qt.Key_Backspace)
+QTest.qWait(25)
+general.patch(theme=1, accentIndex=4)
+QTest.qWait(30)
+assert item('juxtopposedInterfaceSettings').property('accent').name() == '#18aad3'
+assert item('interfaceskinFile').property('color').name() != '#8f8f8f'
+assert window.grabWindow().save(str(results/'03-interface-shared-light-cyan-component.png'))
+done('Search uses category contract; actual frozen shared palette updates Interface rendered text/accent live')
+
+click('generalAdvanced')
+assert not dialog.property('visible') and window.property('advancedRequests') == 1 and item('opener').hasActiveFocus()
+click('opener')
+assert model.reloads == 2 and model.state['skinFile'] == interface_seed['skinFile']
+QTest.keyClick(window, Qt.Key_Escape)
+QTest.qWait(20)
+assert not dialog.property('visible') and item('opener').hasActiveFocus()
+done('Advanced and Escape retain intentional modal-close/opener-focus contract; reopen reloads without claiming native restart')
+
+destroyed = []
+engine.destroyed.connect(lambda: destroyed.append(True))
+window.close()
+engine.deleteLater()
+QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+QTest.qWait(30)
+assert destroyed == [True] and not messages, messages[:20]
+qmlformat = Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')
+parse = subprocess.run([str(qmlformat), '--ignore-settings', str(OUT/'qml/JuxtopposedInterfaceSettings.qml')],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=20)
+assert parse.returncode == 0 and not parse.stderr, parse.stderr
+record = dict(passed=True, cases=checks, caseCount=len(checks), messages=messages, geometry=geometry,
+              sourceSha256=hashlib.sha256((OUT/'qml/JuxtopposedInterfaceSettings.qml').read_bytes()).hexdigest(),
+              workerSha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+              frozenGeneralSha256=hashlib.sha256((GENERAL/'proposal-freeze.json').read_bytes()).hexdigest(),
+              frozenAppearanceSha256=hashlib.sha256((APPEARANCE/'proposal-freeze.json').read_bytes()).hexdigest(),
+              referenceSha256=hashlib.sha256((REFERENCE/'reference-freeze.json').read_bytes()).hexdigest(),
+              renderedImageInstances=images,
+              scope=__doc__, nativeAcceptance=False)
+(results/'verification.json').write_text(json.dumps(record,indent=2)+'\n')
+print('PASS component-only Interface proposal.', flush=True)

@@ -29,6 +29,7 @@
 #include "dialogs/dialogs_provider.hpp"
 #include "util/colorizedsvgicon.hpp"
 #include "maininterface/navigationmodel.hpp"
+#include "maininterface/player_profiles_model.hpp"
 
 // Qt includes
 #include <QPainter>
@@ -280,12 +281,47 @@ void QmlGlobalMenu::popup(QPoint pos)
     submenu = m_menu->addMenu(qtr( "Subti&tle" ));
     SubtitleMenu( p_intf, submenu );
 
+    if (m_ctx->juxtopposedControls()) {
+        auto *profiles = m_ctx->getPlayerProfiles();
+        if (profiles) {
+            auto *profileMenu = m_menu->addMenu(qtr("Profile (%1)").arg(profiles->selectedName().replace(QLatin1Char('&'),QStringLiteral("&&"))));
+            auto *selection = new QActionGroup(profileMenu);
+            selection->setExclusive(true);
+            for (const auto &entry : profiles->profiles()) {
+                const auto row = entry.toMap();
+                const auto id = row.value(QStringLiteral("id")).toString();
+                auto *action = profileMenu->addAction(row.value(QStringLiteral("name")).toString().replace(QLatin1Char('&'),QStringLiteral("&&")));
+                action->setCheckable(true); action->setChecked(id == profiles->selectedId());
+                action->setEnabled(profiles->available() && !profiles->busy() && !profiles->needsRecovery());
+                selection->addAction(action);
+                connect(action,&QAction::triggered,profiles,[profiles,id] {
+                    if (!profiles->selectProfile(id)) DialogsProvider::getInstance()->showPlayerProfilesDialog(false);
+                });
+            }
+            profileMenu->addSeparator();
+            auto *create = profileMenu->addAction(qtr("New"));
+            create->setEnabled(profiles->available() && !profiles->busy() && !profiles->needsRecovery());
+            connect(create,&QAction::triggered,this,[] {DialogsProvider::getInstance()->showPlayerProfilesDialog(true);});
+            if (profiles->needsRecovery() || profiles->unsaved() || !profiles->lastError().isEmpty()) {
+                auto *recovery = profileMenu->addAction(qtr("Profile changes…"));
+                connect(recovery,&QAction::triggered,this,[] {DialogsProvider::getInstance()->showPlayerProfilesDialog(false);});
+            }
+        }
+    }
+
     submenu = m_menu->addMenu(qtr( "Tool&s" ));
     ToolsMenu( p_intf, submenu );
 
     /* View menu, a bit different */
     submenu = m_menu->addMenu(qtr( "V&iew" ));
     ViewMenu( p_intf, submenu );
+    if (m_navigationAvailable) {
+        submenu->addSeparator();
+        auto *navigation = submenu->addAction(qtr("Navigation &Menu"));
+        navigation->setCheckable(true);
+        navigation->setChecked(m_navigationVisible);
+        connect(navigation, &QAction::triggered, this, &QmlGlobalMenu::navigationRequested);
+    }
 
     submenu = m_menu->addMenu(qtr( "&Help" ));
     HelpMenu( p_intf, submenu );
@@ -885,17 +921,18 @@ void PlaylistMediaContextMenu::popup(const QModelIndexList & selected, QPoint po
     auto menu =newMenu();
 
     MediaLib * ml = m_model->ml();
+    const auto origin = m_model->parentId();
 
     QAction * action = menu->addAction(qtr("Add and play"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addAndPlay(ids);
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addAndPlay(ids, {}, origin);
     });
 
     action = menu->addAction(qtr("Enqueue"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addToPlaylist(ids);
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addToPlaylist(ids, {}, origin);
     });
 
     action = menu->addAction(qtr("Add to playlist"));
@@ -906,8 +943,8 @@ void PlaylistMediaContextMenu::popup(const QModelIndexList & selected, QPoint po
 
     action = menu->addAction(qtr("Play as audio"));
 
-    connect(action, &QAction::triggered, [ml, ids]() {
-        ml->addAndPlay(ids, {":no-video"});
+    connect(action, &QAction::triggered, [ml, ids, origin]() {
+        ml->addAndPlay(ids, {":no-video"}, origin);
     });
 
     if (options.contains("information") && options["information"].typeId() == QMetaType::Int) {
@@ -1049,6 +1086,31 @@ PlaylistContextMenu::PlaylistContextMenu(QObject* parent)
     : QObject(parent)
 {}
 
+QVector<int> PlaylistContextMenu::sourceSelectedIndexes() const
+{
+    QVector<int> rows;
+    if (!m_selectionModel || !m_model)
+        return rows;
+
+    for (QModelIndex index : m_selectionModel->selectedRows())
+    {
+        // The selection belongs to the displayed model, which may be filtered.
+        // Queue actions always operate on the underlying playlist model.
+        while (index.isValid() && index.model() != m_model)
+        {
+            const auto proxy = qobject_cast<const QAbstractProxyModel*>(index.model());
+            if (!proxy)
+                break;
+            index = proxy->mapToSource(index);
+        }
+
+        if (index.isValid() && index.model() == m_model)
+            rows.push_back(index.row());
+    }
+
+    return rows;
+}
+
 void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
 {
     assert(m_ctx);
@@ -1060,7 +1122,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
     QAction* action;
 
     QList<QUrl> selectedUrlList;
-    for (const int modelIndex : m_selectionModel->selectedIndexesFlat())
+    for (const int modelIndex : sourceSelectedIndexes())
         selectedUrlList.push_back(m_model->itemAt(modelIndex).getUrl());
 
     PlaylistItem selectedItem;
@@ -1148,7 +1210,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
         action = m_menu->addAction( qtr("Remove Selected") );
         action->setIcon(QIcon(":/menu/remove.svg"));
         connect(action, &QAction::triggered, [this]( ) {
-            m_model->removeItems(m_selectionModel->selectedIndexesFlat());
+            m_model->removeItems(sourceSelectedIndexes());
         });
     }
 
@@ -1185,7 +1247,7 @@ void PlaylistContextMenu::popup(int selectedIndex, QPoint pos )
         {
             const QVariantMap varmap = it.toMap();
 
-            auto key = static_cast<PlaylistController::SortKey>(varmap.value("key").toInt());
+            auto key = static_cast<PlaylistController::SortKey>(varmap.value("criteria").toInt());
             QString label = varmap.value("text").toString();
 
             addSortAction(qtr("%1 Ascending").arg(label), key, PlaylistController::SORT_ORDER_ASC);

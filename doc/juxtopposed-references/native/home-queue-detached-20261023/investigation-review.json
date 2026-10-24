@@ -1,0 +1,7 @@
+{
+  "r10": "Original placement always adds owner width+10 to x. Showing a queue beside a maximized player makes capture fail twice with window crop outside captured monitor. Text-only UIA sees the detached queue; normal Quit0/clean.",
+  "r11": "Initial constrained placement shows complete frame at(-411,357),402x1033. Closing/reopening shifts its frame up31px to y326, clipping the title bar. Normal Quit0/clean; this candidate remains unaccepted for reopen.",
+  "r12": "Deferred post-show recheck restores identical complete first/reopen frame. Redocking produces one Player.qml playlistView-of-null TypeError; normal exit0. That warning is preserved, not accepted as clean.",
+  "r13": "Three exact topbar bindings tolerate null items while Loader reports Ready; two also tolerate an absent Loader. Original bindings fail5 of18 supplied-state checks; candidate18 pass. Actual same desktop sequence now exits0 with no diagnostics.",
+  "causeLimit": "Exact hidden QWindow frame-margin values were not directly sampled. A missing platform window returns empty margins in the locally built Qt source; deferred post-show placement addresses the observed31px mapping difference. Do not present an unmeasured margin value as native trace evidence."
+}

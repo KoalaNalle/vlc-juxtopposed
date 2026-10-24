@@ -1,0 +1,1398 @@
+{
+  "storeV2": {
+    "forcedCleanupUsed": false,
+    "pid": 13152,
+    "exitCode": 1,
+    "normalExit": false,
+    "counts": {
+      "tests": 20,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "sourceInputsUnchanged": true,
+    "sourcePackageUnchanged": true,
+    "sourceRuntimeSha256": {
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+      "plugins/gui/libqt_plugin.dll": "b9b9f341d8ed60c659a0d006244ac7cfe9dd86848cf99d6f366fcb433fb0e1a7"
+    },
+    "programSha256": "60964450c12e0b42244754646c79c58cb79b47303a637ff84616410ce577f0bf",
+    "runnerSha256": "a0bd36cb866c6cf7f294b002cfdee1e4a7dfa1e3b7b51fea5bcd2f3c0897dfbd",
+    "passed": false
+  },
+  "keyboard": {
+    "negativeReproduced": true,
+    "exitCode": 1,
+    "failure": "virtualized last row navigates to Add item",
+    "qmlSha256": "bbd888648dbcd9937437420f8a68fec3302d15ccf1709113ac61352bd2cccb8d",
+    "currentComponentPositive": "component-r5/verification.json"
+  },
+  "nativeWindows": {
+    "window-r1": {
+      "passed": false,
+      "fullBetaAccepted": false,
+      "privateGuiOnly": true,
+      "ordinaryGuiSha256": "b6404b3294e17db61251d7a2c7fc3ce9c3e87a4272ab45ece7dc552b9c198bdf",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "3eca8a3b1ac86c80de49f2be9e401b9273698d1c02829234b57dff8646808178",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      },
+      "cases": {
+        "populate": {
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "pid": 4872,
+          "exitCode": 0,
+          "elapsedSeconds": 19.0,
+          "journey": {
+            "checks": [
+              {
+                "name": "owned native window and MainCtx became ready",
+                "passed": true
+              },
+              {
+                "name": "real MainCtx owns pin service",
+                "passed": true
+              },
+              {
+                "name": "fresh native profile starts with no manual pins",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual owned file chooser opens",
+                "passed": true
+              },
+              {
+                "name": "pin chooser has actual main-window ownership",
+                "passed": true
+              },
+              {
+                "name": "actual chooser selects exact owned Unicode target",
+                "passed": true
+              },
+              {
+                "name": "actual chooser accepts asynchronously",
+                "passed": true
+              },
+              {
+                "name": "actual Add folder chooser saves first pin",
+                "passed": true
+              },
+              {
+                "name": "real native library indexes three generated files",
+                "passed": true
+              },
+              {
+                "name": "genuine playlist and tagged artist resolve on native worker",
+                "passed": true
+              },
+              {
+                "name": "native collection identities are real and typed",
+                "passed": true
+              },
+              {
+                "name": "native playlist pin request is accepted",
+                "passed": true
+              },
+              {
+                "name": "native artist pin request is accepted in issue order",
+                "passed": true
+              },
+              {
+                "name": "source request queues behind pending native collection resolution",
+                "passed": true
+              },
+              {
+                "name": "queued heterogeneous additions persist in request order",
+                "passed": true
+              },
+              {
+                "name": "worker completion does not reorder pin requests",
+                "passed": true
+              },
+              {
+                "name": "real tagged audio plays before Home pinning",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "actual Home listening history supplies a real media card",
+                "passed": false
+              }
+            ],
+            "error": "actual Home listening history supplies a real media card",
+            "fullBetaAccepted": false,
+            "mode": "populate",
+            "ownedWindowOnly": true,
+            "passed": false
+          },
+          "diagnostics": []
+        }
+      },
+      "runnerSha256": "2ee5972419b7c8127aac1004fd54840d10a9d5cf14568c6434ec98f3da067669",
+      "sourceInputsUnchanged": true,
+      "ordinaryGuiUnchanged": true,
+      "ownedMediaUnchanged": true
+    },
+    "window-r2": {
+      "passed": false,
+      "fullBetaAccepted": false,
+      "privateGuiOnly": true,
+      "ordinaryGuiSha256": "5a02b07f465de5537552472b81e300417ed7b88f5174e55bdc0a450e98d4834b",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "cc0bfeef85effbc5b0f3c707fc5748f4f1c834c314713893df9ce2094cc348a5",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      },
+      "cases": {
+        "populate": {
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "pid": 21068,
+          "exitCode": 0,
+          "elapsedSeconds": 21.187000000005355,
+          "journey": {
+            "checks": [
+              {
+                "name": "owned native window and MainCtx became ready",
+                "passed": true
+              },
+              {
+                "name": "real MainCtx owns pin service",
+                "passed": true
+              },
+              {
+                "name": "fresh native profile starts with no manual pins",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual owned file chooser opens",
+                "passed": true
+              },
+              {
+                "name": "pin chooser has actual main-window ownership",
+                "passed": true
+              },
+              {
+                "name": "actual chooser selects exact owned Unicode target",
+                "passed": true
+              },
+              {
+                "name": "actual chooser accepts asynchronously",
+                "passed": true
+              },
+              {
+                "name": "actual Add folder chooser saves first pin",
+                "passed": true
+              },
+              {
+                "name": "original folder SVG loads in actual native pin row",
+                "passed": true
+              },
+              {
+                "name": "real native library indexes three generated files",
+                "passed": true
+              },
+              {
+                "name": "genuine playlist and tagged artist resolve on native worker",
+                "passed": true
+              },
+              {
+                "name": "native collection identities are real and typed",
+                "passed": true
+              },
+              {
+                "name": "native playlist pin request is accepted",
+                "passed": true
+              },
+              {
+                "name": "native artist pin request is accepted in issue order",
+                "passed": true
+              },
+              {
+                "name": "source request queues behind pending native collection resolution",
+                "passed": true
+              },
+              {
+                "name": "queued heterogeneous additions persist in request order",
+                "passed": true
+              },
+              {
+                "name": "worker completion does not reorder pin requests",
+                "passed": true
+              },
+              {
+                "name": "real tagged audio plays before Home pinning",
+                "passed": true
+              },
+              {
+                "name": "seed audio completes through native stop before history expectations",
+                "passed": true
+              },
+              {
+                "name": "native seed audio restarts after history commit",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "actual Home listening history supplies a real media card",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual Home context action pins real media",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual owned file chooser opens",
+                "passed": true
+              },
+              {
+                "name": "pin chooser has actual main-window ownership",
+                "passed": true
+              },
+              {
+                "name": "actual file chooser cancellation preserves all pins",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual source address dialog opens",
+                "passed": true
+              },
+              {
+                "name": "actual source chooser completes",
+                "passed": true
+              },
+              {
+                "name": "duplicate source keeps stable identity and count",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual Control-Up reorders saved pin",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "keyboard reorder retains focus on same pin identity",
+                "passed": true
+              },
+              {
+                "name": "pin reorder shortcut does not leak into player volume",
+                "passed": true
+              },
+              {
+                "name": "owned real settings file can be locked exclusively",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual failed unpin preserves model and exposes checked retry",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual Retry completes the failed unpin in the same process",
+                "passed": true
+              },
+              {
+                "name": "real Home media card remains after unpin",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual Home action re-pins removed media",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "native context menu reorders by stable key",
+                "passed": true
+              },
+              {
+                "name": "persisted media pin exists",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pin starts native audio playback",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "real audio clock advances before pin navigation",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual folder/source pin enters native browser route",
+                "passed": true
+              },
+              {
+                "name": "native pinned browser enumerates genuine owned files",
+                "passed": true
+              },
+              {
+                "name": "browsing pin preserves exact playing primary input and advancing clock",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual folder/source pin enters native browser route",
+                "passed": true
+              },
+              {
+                "name": "native pinned browser enumerates genuine owned files",
+                "passed": true
+              },
+              {
+                "name": "browsing pin preserves exact playing primary input and advancing clock",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "primary pauses before native collection routes",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native collection pin opens its correct typed route",
+                "passed": false
+              }
+            ],
+            "error": "actual native collection pin opens its correct typed route",
+            "fullBetaAccepted": false,
+            "mode": "populate",
+            "ownedWindowOnly": true,
+            "passed": false
+          },
+          "diagnostics": []
+        }
+      },
+      "runnerSha256": "2ee5972419b7c8127aac1004fd54840d10a9d5cf14568c6434ec98f3da067669",
+      "sourceInputsUnchanged": true,
+      "ordinaryGuiUnchanged": true,
+      "ownedMediaUnchanged": true
+    },
+    "window-r3": {
+      "passed": false,
+      "fullBetaAccepted": false,
+      "privateGuiOnly": true,
+      "ordinaryGuiSha256": "f586824eb728631bca8bb74e9ffb34fb3f2ffbd90413c0c53911ba5f13780c66",
+      "runtimeSha256": {
+        "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+        "plugins/gui/libqt_plugin.dll": "10f58dfe36acdfcfd490d9c3700a991239440d0647bf20d1e18a5ffbc7096bf2",
+        "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+      },
+      "cases": {
+        "populate": {
+          "normalExit": true,
+          "forcedCleanupUsed": false,
+          "pid": 4460,
+          "exitCode": 0,
+          "elapsedSeconds": 21.421999999991385,
+          "journey": {
+            "checks": [
+              {
+                "name": "owned native window and MainCtx became ready",
+                "passed": true
+              },
+              {
+                "name": "real MainCtx owns pin service",
+                "passed": true
+              },
+              {
+                "name": "fresh native profile starts with no manual pins",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual owned file chooser opens",
+                "passed": true
+              },
+              {
+                "name": "pin chooser has actual main-window ownership",
+                "passed": true
+              },
+              {
+                "name": "actual chooser selects exact owned Unicode target",
+                "passed": true
+              },
+              {
+                "name": "actual chooser accepts asynchronously",
+                "passed": true
+              },
+              {
+                "name": "actual Add folder chooser saves first pin",
+                "passed": true
+              },
+              {
+                "name": "original folder SVG loads in actual native pin row",
+                "passed": true
+              },
+              {
+                "name": "real native library indexes three generated files",
+                "passed": true
+              },
+              {
+                "name": "genuine playlist and tagged artist resolve on native worker",
+                "passed": true
+              },
+              {
+                "name": "native collection identities are real and typed",
+                "passed": true
+              },
+              {
+                "name": "native playlist pin request is accepted",
+                "passed": true
+              },
+              {
+                "name": "native artist pin request is accepted in issue order",
+                "passed": true
+              },
+              {
+                "name": "source request queues behind pending native collection resolution",
+                "passed": true
+              },
+              {
+                "name": "queued heterogeneous additions persist in request order",
+                "passed": true
+              },
+              {
+                "name": "worker completion does not reorder pin requests",
+                "passed": true
+              },
+              {
+                "name": "real tagged audio plays before Home pinning",
+                "passed": true
+              },
+              {
+                "name": "seed audio completes through native stop before history expectations",
+                "passed": true
+              },
+              {
+                "name": "native seed audio restarts after history commit",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "actual Home listening history supplies a real media card",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual Home context action pins real media",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual owned file chooser opens",
+                "passed": true
+              },
+              {
+                "name": "pin chooser has actual main-window ownership",
+                "passed": true
+              },
+              {
+                "name": "actual file chooser cancellation preserves all pins",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual source address dialog opens",
+                "passed": true
+              },
+              {
+                "name": "actual source chooser completes",
+                "passed": true
+              },
+              {
+                "name": "duplicate source keeps stable identity and count",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual Control-Up reorders saved pin",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "keyboard reorder retains focus on same pin identity",
+                "passed": true
+              },
+              {
+                "name": "pin reorder shortcut does not leak into player volume",
+                "passed": true
+              },
+              {
+                "name": "owned real settings file can be locked exclusively",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual failed unpin preserves model and exposes checked retry",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual Retry completes the failed unpin in the same process",
+                "passed": true
+              },
+              {
+                "name": "real Home media card remains after unpin",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "actual Home action re-pins removed media",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native menu opens",
+                "passed": true
+              },
+              {
+                "name": "requested native menu action exists",
+                "passed": true
+              },
+              {
+                "name": "native menu closes after actual pointer selection",
+                "passed": true
+              },
+              {
+                "name": "native context menu reorders by stable key",
+                "passed": true
+              },
+              {
+                "name": "persisted media pin exists",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pin starts native audio playback",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "real audio clock advances before pin navigation",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual folder/source pin enters native browser route",
+                "passed": true
+              },
+              {
+                "name": "native pinned browser enumerates genuine owned files",
+                "passed": true
+              },
+              {
+                "name": "browsing pin preserves exact playing primary input and advancing clock",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual folder/source pin enters native browser route",
+                "passed": true
+              },
+              {
+                "name": "native pinned browser enumerates genuine owned files",
+                "passed": true
+              },
+              {
+                "name": "browsing pin preserves exact playing primary input and advancing clock",
+                "passed": true
+              },
+              {
+                "name": "actual Home route loads",
+                "passed": true
+              },
+              {
+                "name": "primary pauses before native collection routes",
+                "passed": true
+              },
+              {
+                "name": "actual pin ListView exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML target exists",
+                "passed": true
+              },
+              {
+                "name": "owned QML operation succeeds",
+                "passed": true
+              },
+              {
+                "name": "real pin delegate materializes in viewport",
+                "passed": true
+              },
+              {
+                "name": "actual pointer action is enabled",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target stays in owned window",
+                "passed": true
+              },
+              {
+                "name": "actual pointer target is inside clipped viewport",
+                "passed": true
+              },
+              {
+                "name": "actual native collection pin opens its correct typed route",
+                "passed": false
+              }
+            ],
+            "error": "actual native collection pin opens its correct typed route",
+            "failedPins": [
+              {
+                "artwork": "",
+                "available": true,
+                "key": "folder:e603ee6fc3e218efc3b1ee76f22604d553d524f259f8c9d4768fc56e4e167086",
+                "kind": "folder",
+                "mrl": "file:///E:/Modding/vlc-juxtopposed/build-windows/beta-sidebar-pins-20261018/window-r3/Owned%20Pins%20%C3%84%C3%A4%20%E6%97%A5%E6%9C%AC%E8%AA%9E",
+                "nativeId": "",
+                "nativeScope": "",
+                "title": "Owned Pins \u00c4\u00e4 \u65e5\u672c\u8a9e"
+              },
+              {
+                "artwork": "",
+                "available": true,
+                "key": "playlist:021cd306b0fe49666c27d340777b67f58afc45f099ed7c33060b745768e0e5c1",
+                "kind": "playlist",
+                "mrl": "",
+                "nativeId": "1",
+                "nativeScope": "05fd1f1a845030c443c438733589e3667b545ee786e857035f765975c1732c82",
+                "title": "Owned pins mix \u00c4\u00e4"
+              },
+              {
+                "artwork": "",
+                "available": true,
+                "key": "artist:be5c9683440e3de48c6507a3b4c6738a7a08dc35ebe5105966358434954d01de",
+                "kind": "artist",
+                "mrl": "",
+                "nativeId": "3",
+                "nativeScope": "05fd1f1a845030c443c438733589e3667b545ee786e857035f765975c1732c82",
+                "title": "Travel Artist \u00c4\u00e4"
+              },
+              {
+                "artwork": "",
+                "available": true,
+                "key": "media:c107411d81d3b718fe9daf29dc7dce68a0bca4eeb29c352d16fa37c4ce380e0e",
+                "kind": "media",
+                "mrl": "file:///E:/Modding/vlc-juxtopposed/build-windows/beta-sidebar-pins-20261018/window-r3/Owned%20Pins%20%C3%84%C3%A4%20%E6%97%A5%E6%9C%AC%E8%AA%9E/first.flac",
+                "nativeId": "",
+                "nativeScope": "",
+                "title": "First owned track"
+              },
+              {
+                "artwork": "",
+                "available": true,
+                "key": "source:e603ee6fc3e218efc3b1ee76f22604d553d524f259f8c9d4768fc56e4e167086",
+                "kind": "source",
+                "mrl": "file:///E:/Modding/vlc-juxtopposed/build-windows/beta-sidebar-pins-20261018/window-r3/Owned%20Pins%20%C3%84%C3%A4%20%E6%97%A5%E6%9C%AC%E8%AA%9E",
+                "nativeId": "",
+                "nativeScope": "",
+                "title": "Owned source \u00c4\u00e4"
+              }
+            ],
+            "failedRoute": [
+              "home",
+              "base"
+            ],
+            "fullBetaAccepted": false,
+            "mode": "populate",
+            "ownedWindowOnly": true,
+            "passed": false,
+            "pinServiceError": ""
+          },
+          "diagnostics": []
+        }
+      },
+      "runnerSha256": "2ee5972419b7c8127aac1004fd54840d10a9d5cf14568c6434ec98f3da067669",
+      "sourceInputsUnchanged": true,
+      "ordinaryGuiUnchanged": true,
+      "ownedMediaUnchanged": true
+    }
+  },
+  "signalWarning": "QML Connections: Signal uses unnamed parameter followed by named parameter.",
+  "diagnosis": "The unnamed MLItemId signal parameter prevented the QML connection. Naming all signal arguments fixes it; the earlier cancellation-only change did not."
+}

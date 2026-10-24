@@ -1,0 +1,5807 @@
+{
+  "label": "frame-marker.mkv-none",
+  "passed": false,
+  "fullBetaAccepted": false,
+  "scope": "Native paused explicit/automatic/load-only subtitle requests, optional missing-file requests, caption masks, actual frame-marker conservation, sampled pause and resume. Cold captions, physical audibility, desktop and full beta require separate checks.",
+  "coreSha256": "ef3e47fd08fa342954494584bbecbb03fb6a6e6631481c05700b0c76876ff41f",
+  "mkvSha256": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\native-before-r1\\frame-marker.mkv-none-preserve-language-multi-language.mks\\probe\\native.log",
+    "--no-audio"
+  ],
+  "producerSha256": "041d09603151ea15d8f5f0f0e2b0d3b474655f3344e0f92be03d0b5bdd9326b6",
+  "fixtureProducerSha256": "f4edeadd3b19760c5753bca9115cbcfa48d735397713665879774a085e4c39f4",
+  "mediaSha256": "62a66ba0a7348fe4b2d6a541d01409efcddb82aff39f32d8d9dc532948d46115",
+  "externalSha256": "781d1583eccd2c5d3dda1f6e10c8999ee109c2dd8fead09fc4212757fa31b80a",
+  "externalSelection": "preserve",
+  "externalPolicy": "language",
+  "externalFile": "multi-language.mks",
+  "expectedExternalTrackCount": 2,
+  "checkedMissingExternal": true,
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "initial-paused.png",
+      "snapshotSha256": "9f0dce7a1514c4df9adfd4e9236bdbefb0a1f130d0ea78e76786691492944ee4",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 1,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        }
+      ]
+    },
+    {
+      "step": "played-paused",
+      "state": 3,
+      "timeUs": 1021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01600000000325963,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "played-paused.png",
+      "snapshotSha256": "2252650da98fe5490da456b6419038e3e47e3668b54116be3a66b6d8e5b1ec9c",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 25,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        }
+      ]
+    },
+    {
+      "step": "normal-pause-finnish",
+      "state": 3,
+      "timeUs": 1021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07799999999406282,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "normal-pause-finnish.png",
+      "snapshotSha256": "65ff9a7690329f517202ecc7e5b4633fa8fe52b56b835e4ec49ce17df54d0d72",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 25,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        }
+      ]
+    },
+    {
+      "step": "normal-pause-english",
+      "state": 3,
+      "timeUs": 1021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "normal-pause-english.png",
+      "snapshotSha256": "93861a97db83e9223f052522d515131c6312439754f273d70f4dff5251ad3d06",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 25,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        },
+        {
+          "state": 3,
+          "timeUs": 1021334
+        }
+      ]
+    },
+    {
+      "step": "seek-middle-paused",
+      "state": 3,
+      "timeUs": 25021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.046999999998661224,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3bd1da9e601ca4decd6402df18763f6c00bea8a60eb9d7b066cf821c9cb08c4f",
+      "snapshot": "seek-middle-paused.png",
+      "snapshotSha256": "812a5d40db81ddb5a9746029d9baf8dcd0c01cfc79fe097c3c217bcb9989c50a",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2588,
+      "rgb": [
+        0,
+        0,
+        254
+      ],
+      "frameMarker": 625,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 25021334
+        },
+        {
+          "state": 3,
+          "timeUs": 25021334
+        },
+        {
+          "state": 3,
+          "timeUs": 25021334
+        }
+      ]
+    },
+    {
+      "step": "seek-first-paused",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.0940000000045984,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "seek-first-paused.png",
+      "snapshotSha256": "bf86fb12bb5e0ccb01acceefa3e271366a0346b9d4cd89e985c2e9d0d87b4b0e",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "finnish-selected-paused",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01600000000325963,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "finnish-selected-paused.png",
+      "snapshotSha256": "3ba51fe43ffe25f7c33111fad437394fed9a11aa81c28e713c7cb5b72b488a94",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "same-track-selected-paused",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "same-track-selected-paused.png",
+      "snapshotSha256": "cb3f2e66b04713270fd8ede027f3dd12fdcb87397862b6c280cb9fdad93c3a97",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "repeat-0-eng",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06300000000192085,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "repeat-0-eng.png",
+      "snapshotSha256": "54e35bf556168bbd429f7593263e33621300935f00f9dd5270ba2e9bfffaddb5",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "repeat-1-fin",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.046999999998661224,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "repeat-1-fin.png",
+      "snapshotSha256": "3b7e2f363f979e08fa16275a10c81ed2bbee638fe00c8653f9c2c04a5de05390",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "repeat-2-eng",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.0940000000045984,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "98d8944ccd3737369aee2631072752f64977006b6318505d372d2bff0161fd38",
+      "snapshot": "repeat-2-eng.png",
+      "snapshotSha256": "7e2aadbf04d8bff772525c0490c31ee15da4335e89a1aa1718fa535d7d07f0c9",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2268,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "repeat-3-fin",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.01599999999598367,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "repeat-3-fin.png",
+      "snapshotSha256": "36a43a171a4bae894d9425199920b449f4cc37e66b679833492b3d352a94dbd6",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "external-policy-before-add",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.06199999999807915,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "external-policy-before-add.png",
+      "snapshotSha256": "e105231158e337c41fc7e55e9ee8b23bd76a6d707567f63707a88f449b08ae8c",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "invalid-external-added-paused",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.09399999999732245,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "invalid-external-added-paused.png",
+      "snapshotSha256": "c69551ce320c7532886ed46e5c246d730adae32a15de52c53c224f851dbe281f",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "external-added-selected-paused",
+      "state": 3,
+      "timeUs": 5021334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": true
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/1",
+          "language": "eng",
+          "name": "Track 3 - [English]",
+          "selected": false
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/2",
+          "language": "fin",
+          "name": "Track 4 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.07800000000133878,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "3343d6c018f8e413640497d61fa38cc96389e95e9dab7ec29ab11d63dc5fcee8",
+      "snapshot": "external-added-selected-paused.png",
+      "snapshotSha256": "49394d66aed6cbb3520ea412ff686e090f43a4bb72ffc1cbca1563ecd0395e08",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 2719,
+      "rgb": [
+        252,
+        0,
+        0
+      ],
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "external-explicit-selected-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/1",
+          "language": "eng",
+          "name": "Track 3 - [English]",
+          "selected": true
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/2",
+          "language": "fin",
+          "name": "Track 4 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "snapshot": "external-explicit-selected-paused.png",
+      "snapshotSha256": "e5cdb8c68bccb6af1d65e667e6d8d251f3c7ca190d82694b7e3b072139935b2c",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0,
+      "rgb": [
+        130,
+        130,
+        130
+      ],
+      "frameMarker": 2047,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        }
+      ]
+    },
+    {
+      "step": "external-after-resume",
+      "state": 3,
+      "timeUs": 6101334,
+      "vouts": 1,
+      "subtitleTracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": false
+        },
+        {
+          "id": "spu/4",
+          "language": "fin",
+          "name": "Track 2 - [Finnish]",
+          "selected": false
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/1",
+          "language": "eng",
+          "name": "Track 3 - [English]",
+          "selected": true
+        },
+        {
+          "id": "ad46cfa8228d2e02fa188414ea7b352b/spu/2",
+          "language": "fin",
+          "name": "Track 4 - [Finnish]",
+          "selected": false
+        }
+      ],
+      "timerEvents": [
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0003553663940297513,
+            "rate": 1.0,
+            "ts": 21334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56471134302
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56472530831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56472650831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56472770831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56472890831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56473010831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56473130831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56473250831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56473370831
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56473470358
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.017013443054421883,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.4164515000583032,
+            "rate": 1.0,
+            "ts": 25000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.41680686645233295,
+            "rate": 1.0,
+            "ts": 25021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08329030001166064,
+            "rate": 1.0,
+            "ts": 5000000,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08364566640569039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": {
+            "position": 0.08364568306375039,
+            "rate": 1.0,
+            "ts": 5021334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "seek",
+          "point": null
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0010216887941230364,
+            "rate": 1.0,
+            "ts": 61334,
+            "length": 60031000,
+            "systemDate": 56488688773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0030206559944028918,
+            "rate": 1.0,
+            "ts": 181334,
+            "length": 60031000,
+            "systemDate": 56488808773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.005019623194682747,
+            "rate": 1.0,
+            "ts": 301334,
+            "length": 60031000,
+            "systemDate": 56488928773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0070185903949626025,
+            "rate": 1.0,
+            "ts": 421334,
+            "length": 60031000,
+            "systemDate": 56489048773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.009017557595242458,
+            "rate": 1.0,
+            "ts": 541334,
+            "length": 60031000,
+            "systemDate": 56489168773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.011016524795522313,
+            "rate": 1.0,
+            "ts": 661334,
+            "length": 60031000,
+            "systemDate": 56489288773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.013015491995802169,
+            "rate": 1.0,
+            "ts": 781334,
+            "length": 60031000,
+            "systemDate": 56489408773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.015014459196082025,
+            "rate": 1.0,
+            "ts": 901334,
+            "length": 60031000,
+            "systemDate": 56489528773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.01701342639636188,
+            "rate": 1.0,
+            "ts": 1021334,
+            "length": 60031000,
+            "systemDate": 56489648773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.019012393596641735,
+            "rate": 1.0,
+            "ts": 1141334,
+            "length": 60031000,
+            "systemDate": 56489768773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.02101136079692159,
+            "rate": 1.0,
+            "ts": 1261334,
+            "length": 60031000,
+            "systemDate": 56489888773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.023010327997201447,
+            "rate": 1.0,
+            "ts": 1381334,
+            "length": 60031000,
+            "systemDate": 56490008773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.025009295197481303,
+            "rate": 1.0,
+            "ts": 1501334,
+            "length": 60031000,
+            "systemDate": 56490128773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.027008262397761156,
+            "rate": 1.0,
+            "ts": 1621334,
+            "length": 60031000,
+            "systemDate": 56490248773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.02900722959804101,
+            "rate": 1.0,
+            "ts": 1741334,
+            "length": 60031000,
+            "systemDate": 56490368773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.031006196798320868,
+            "rate": 1.0,
+            "ts": 1861334,
+            "length": 60031000,
+            "systemDate": 56490488773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.03300516399860072,
+            "rate": 1.0,
+            "ts": 1981334,
+            "length": 60031000,
+            "systemDate": 56490608773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.03500413119888058,
+            "rate": 1.0,
+            "ts": 2101334,
+            "length": 60031000,
+            "systemDate": 56490728773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.03700309839916043,
+            "rate": 1.0,
+            "ts": 2221334,
+            "length": 60031000,
+            "systemDate": 56490848773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.03900206559944029,
+            "rate": 1.0,
+            "ts": 2341334,
+            "length": 60031000,
+            "systemDate": 56490968773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.041001032799720144,
+            "rate": 1.0,
+            "ts": 2461334,
+            "length": 60031000,
+            "systemDate": 56491088773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.043,
+            "rate": 1.0,
+            "ts": 2581334,
+            "length": 60031000,
+            "systemDate": 56491208773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.044998967200279856,
+            "rate": 1.0,
+            "ts": 2701334,
+            "length": 60031000,
+            "systemDate": 56491328773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.04699793440055971,
+            "rate": 1.0,
+            "ts": 2821334,
+            "length": 60031000,
+            "systemDate": 56491448773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.04899690160083957,
+            "rate": 1.0,
+            "ts": 2941334,
+            "length": 60031000,
+            "systemDate": 56491568773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.05099586880111942,
+            "rate": 1.0,
+            "ts": 3061334,
+            "length": 60031000,
+            "systemDate": 56491688773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.05299483600139928,
+            "rate": 1.0,
+            "ts": 3181334,
+            "length": 60031000,
+            "systemDate": 56491808773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.05499380320167913,
+            "rate": 1.0,
+            "ts": 3301334,
+            "length": 60031000,
+            "systemDate": 56491928773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.056992770401958985,
+            "rate": 1.0,
+            "ts": 3421334,
+            "length": 60031000,
+            "systemDate": 56492048773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.058991737602238845,
+            "rate": 1.0,
+            "ts": 3541334,
+            "length": 60031000,
+            "systemDate": 56492168773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0609907048025187,
+            "rate": 1.0,
+            "ts": 3661334,
+            "length": 60031000,
+            "systemDate": 56492288773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.06298967200279855,
+            "rate": 1.0,
+            "ts": 3781334,
+            "length": 60031000,
+            "systemDate": 56492408773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.06498863920307842,
+            "rate": 1.0,
+            "ts": 3901334,
+            "length": 60031000,
+            "systemDate": 56492528773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.06698760640335827,
+            "rate": 1.0,
+            "ts": 4021334,
+            "length": 60031000,
+            "systemDate": 56492648773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.06898657360363812,
+            "rate": 1.0,
+            "ts": 4141334,
+            "length": 60031000,
+            "systemDate": 56492768773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.07098554080391797,
+            "rate": 1.0,
+            "ts": 4261334,
+            "length": 60031000,
+            "systemDate": 56492888773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.07298450800419783,
+            "rate": 1.0,
+            "ts": 4381334,
+            "length": 60031000,
+            "systemDate": 56493008773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.07498347520447769,
+            "rate": 1.0,
+            "ts": 4501334,
+            "length": 60031000,
+            "systemDate": 56493128773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.07698244240475755,
+            "rate": 1.0,
+            "ts": 4621334,
+            "length": 60031000,
+            "systemDate": 56493248773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0789814096050374,
+            "rate": 1.0,
+            "ts": 4741334,
+            "length": 60031000,
+            "systemDate": 56493368773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08098037680531725,
+            "rate": 1.0,
+            "ts": 4861334,
+            "length": 60031000,
+            "systemDate": 56493488773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0829793440055971,
+            "rate": 1.0,
+            "ts": 4981334,
+            "length": 60031000,
+            "systemDate": 56493608773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08497831120587697,
+            "rate": 1.0,
+            "ts": 5101334,
+            "length": 60031000,
+            "systemDate": 56493728773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08697727840615682,
+            "rate": 1.0,
+            "ts": 5221334,
+            "length": 60031000,
+            "systemDate": 56493848773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.08897624560643667,
+            "rate": 1.0,
+            "ts": 5341334,
+            "length": 60031000,
+            "systemDate": 56493968773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.09097521280671653,
+            "rate": 1.0,
+            "ts": 5461334,
+            "length": 60031000,
+            "systemDate": 56494088773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.09297418000699638,
+            "rate": 1.0,
+            "ts": 5581334,
+            "length": 60031000,
+            "systemDate": 56494208773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.09497314720727625,
+            "rate": 1.0,
+            "ts": 5701334,
+            "length": 60031000,
+            "systemDate": 56494328773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.0969721144075561,
+            "rate": 1.0,
+            "ts": 5821334,
+            "length": 60031000,
+            "systemDate": 56494448773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.09897108160783595,
+            "rate": 1.0,
+            "ts": 5941334,
+            "length": 60031000,
+            "systemDate": 56494568773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.1009700488081158,
+            "rate": 1.0,
+            "ts": 6061334,
+            "length": 60031000,
+            "systemDate": 56494688773
+          }
+        },
+        {
+          "event": "update",
+          "point": {
+            "position": 0.10163637120820909,
+            "rate": 1.0,
+            "ts": 6101334,
+            "length": 60031000,
+            "systemDate": 9223372036854775807
+          }
+        },
+        {
+          "event": "paused",
+          "systemDate": 56494728793
+        }
+      ],
+      "snapshotReturn": 0,
+      "snapshotCallSeconds": 0.031000000002677552,
+      "snapshotAvailable": true,
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "snapshot": "external-after-resume.png",
+      "snapshotSha256": "aa5d6beb567eb76dc59e8c0480342aa48077867cee47b8539f12553d5d9c5ba9",
+      "width": 960,
+      "height": 540,
+      "brightPixels": 0,
+      "rgb": [
+        130,
+        130,
+        130
+      ],
+      "frameMarker": 2047,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 6101334
+        },
+        {
+          "state": 3,
+          "timeUs": 6101334
+        },
+        {
+          "state": 3,
+          "timeUs": 6101334
+        }
+      ]
+    }
+  ],
+  "teardownComplete": true,
+  "initialPauseReached": true,
+  "resumeReached": true,
+  "playedPauseReached": true,
+  "finnishSelected": true,
+  "invalidAddReturn": 0,
+  "externalAddReturn": 0,
+  "externalTrackAdded": true,
+  "externalExplicitSelected": true,
+  "externalResumeReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "status": "terminal",
+  "diagnostics": [
+    "dvdnav error: Could not open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt with libdvdcss.",
+    "dvdnav error: Can't open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt for reading",
+    "dvdnav error: vm: failed to open/read the DVD",
+    "dvdnav error: Could not open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt with libdvdcss.",
+    "dvdnav error: Can't open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt for reading",
+    "dvdnav error: vm: failed to open/read the DVD",
+    "filesystem error: cannot open file C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt (No error)",
+    "filesystem error: cannot open file C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt (No error)",
+    "dvdnav error: Could not open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt with libdvdcss.",
+    "dvdnav error: Can't open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt for reading",
+    "dvdnav error: vm: failed to open/read the DVD",
+    "dvdnav error: Could not open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt with libdvdcss.",
+    "dvdnav error: Can't open C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt for reading",
+    "dvdnav error: vm: failed to open/read the DVD",
+    "filesystem error: cannot open file C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt (No error)",
+    "filesystem error: cannot open file C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt (No error)",
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\native-before-r1\\frame-marker.mkv-none-preserve-language-multi-language.mks\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\native-before-r1\\frame-marker.mkv-none-preserve-language-multi-language.mks\\runtime\\plugins\\plugins.dat: No error",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "main warning: window size missing",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "dvdnav warning: cannot open DVD (C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt)",
+    "dvdnav warning: cannot open DVD (C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt)",
+    "dvdnav warning: cannot open DVD (C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt)",
+    "dvdnav warning: cannot open DVD (C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-external-subtitle-acceptance-20261023\\media-r1\\intentionally-missing-subtitle.srt)",
+    "main warning: failed to add file:///C:/Modding/vlc-juxtopposed/build-windows/beta-external-subtitle-acceptance-20261023/media-r1/intentionally-missing-subtitle.srt as slave",
+    "subtitle warning: failed to recognize subtitle type",
+    "subtitle warning: failed to recognize subtitle type",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec"
+  ],
+  "actualWasapiSelected": false,
+  "actualAudioModules": [
+    "main debug: using audio output module \"mmdevice\""
+  ],
+  "actualVideoDecoderLines": [
+    "avcodec debug: allowing 6 thread(s) for decoding",
+    "avcodec debug: using frame thread mode with 6 threads",
+    "main debug: using video decoder module \"avcodec\""
+  ],
+  "checks": {
+    "playPauseReady": true,
+    "pausedPictures": true,
+    "sampledClocksFrozen": true,
+    "captionsPresent": false,
+    "selectedLanguages": true,
+    "englishRestored": true,
+    "finnishDistinct": true,
+    "externalDistinct": true,
+    "normalFramesConserved": true,
+    "seekFramesConserved": false,
+    "explicitExternalSelected": true,
+    "resumeAdvanced": false,
+    "audioBackend": true,
+    "teardown": true,
+    "reportedPausedTimeConserved": false,
+    "invalidAdditionPreservesTracks": true,
+    "invalidAdditionPreservesCaption": true,
+    "invalidAdditionPreservesPicture": true,
+    "invalidAdditionPreservesTime": true,
+    "unselectedAdditionPreservesIds": true,
+    "unselectedAdditionPreservesCaption": true,
+    "externalAdditionFrameConserved": true,
+    "externalAdditionTimeConserved": true
+  },
+  "automaticExternalSelectionObserved": false,
+  "notQualified": [
+    "Cold initial caption delivery",
+    "Automatic external-track selection",
+    "WASAPI absolute paused get_time / exact media PTS",
+    "Desktop and physical audibility",
+    "Whole subtitle workflow and full beta"
+  ]
+}

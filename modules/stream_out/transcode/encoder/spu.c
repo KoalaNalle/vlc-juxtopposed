@@ -42,8 +42,8 @@ int transcode_encoder_spu_open( transcode_encoder_t *p_enc,
     p_enc->p_encoder->ops = NULL;
     p_enc->p_encoder->fmt_out.i_codec = p_cfg->i_codec;
 
-    p_enc->p_encoder->p_module = module_need( p_enc->p_encoder, "spu encoder",
-                                              p_cfg->psz_name, true );
+    p_enc->p_encoder->p_module = transcode_encoder_module_need(
+        p_enc->p_encoder, "spu encoder", p_cfg->psz_name );
 
     assert( p_enc->p_encoder->p_module == NULL ||
             p_enc->p_encoder->ops != NULL);

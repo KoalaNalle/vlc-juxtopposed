@@ -400,7 +400,7 @@ int transcode_encoder_video_open( transcode_encoder_t *p_enc,
     p_enc->p_encoder->ops = NULL;
 
     p_enc->p_encoder->p_module =
-        module_need( p_enc->p_encoder, "video encoder", p_cfg->psz_name, true );
+        transcode_encoder_module_need( p_enc->p_encoder, "video encoder", p_cfg->psz_name );
     if( !p_enc->p_encoder->p_module )
         return VLC_EGENERIC;
 

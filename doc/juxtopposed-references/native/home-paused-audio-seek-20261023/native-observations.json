@@ -1,0 +1,704 @@
+{
+  "status": "terminal",
+  "purpose": "Investigate actual paused audio time/position mismatch; no production change or full acceptance.",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1"
+  },
+  "producerSha256": "a8a1b8e03c9a39034b823cd90112662d6632e211aa1655ec2941da25286ed29b",
+  "mediaSha256": "17e181b8c513a37f62fadcaa1dd973b02769d1a2d0ed999a5317bdf34076b8b3",
+  "cases": [
+    {
+      "backend": "dummy",
+      "mode": "initial-paused",
+      "method": "position",
+      "exitCode": 0,
+      "result": {
+        "backend": "dummy",
+        "mode": "initial-paused",
+        "method": "position",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 25,
+            "position": 8e-07,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 25,
+          "position": 8e-07,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 106,
+          "position": 3.5e-06,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": false,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "dummy",
+      "mode": "initial-paused",
+      "method": "time",
+      "exitCode": 0,
+      "result": {
+        "backend": "dummy",
+        "mode": "initial-paused",
+        "method": "time",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 24,
+            "position": 7.666666666666667e-07,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 24,
+          "position": 7.666666666666667e-07,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 103,
+          "position": 3.4e-06,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": false,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "dummy",
+      "mode": "played-then-paused",
+      "method": "position",
+      "exitCode": 0,
+      "result": {
+        "backend": "dummy",
+        "mode": "played-then-paused",
+        "method": "position",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 1087427,
+            "position": 0.03624753333333334,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 1156469,
+            "position": 0.03854896666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 1156469,
+            "position": 0.03854896666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 1156469,
+            "position": 0.03854896666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 1156469,
+            "position": 0.03854896666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 1156469,
+            "position": 0.03854896666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 1087427,
+          "position": 0.03624753333333334,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 112,
+          "position": 3.7e-06,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": false,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "dummy",
+      "mode": "played-then-paused",
+      "method": "time",
+      "exitCode": 0,
+      "result": {
+        "backend": "dummy",
+        "mode": "played-then-paused",
+        "method": "time",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 1085620,
+            "position": 0.036187300000000006,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 1113140,
+            "position": 0.03710466666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 1113140,
+            "position": 0.03710466666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 1113140,
+            "position": 0.03710466666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 1113140,
+            "position": 0.03710466666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 1113140,
+            "position": 0.03710466666666666,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 1085620,
+          "position": 0.036187300000000006,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 126,
+          "position": 4.166666666666667e-06,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": false,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "mmdevice",
+      "mode": "initial-paused",
+      "method": "position",
+      "exitCode": 0,
+      "result": {
+        "backend": "mmdevice",
+        "mode": "initial-paused",
+        "method": "position",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 0,
+          "position": 0.0,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 9570333,
+          "position": 0.3190111333333333,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": true,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "mmdevice",
+      "mode": "initial-paused",
+      "method": "time",
+      "exitCode": 0,
+      "result": {
+        "backend": "mmdevice",
+        "mode": "initial-paused",
+        "method": "time",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 0,
+            "position": 0.0,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 0,
+          "position": 0.0,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 9570674,
+          "position": 0.31902250000000004,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": true,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "mmdevice",
+      "mode": "played-then-paused",
+      "method": "position",
+      "exitCode": 0,
+      "result": {
+        "backend": "mmdevice",
+        "mode": "played-then-paused",
+        "method": "position",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 991621,
+            "position": 0.033054,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 1104356,
+            "position": 0.036811866666666665,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 1104356,
+            "position": 0.036811866666666665,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 1104356,
+            "position": 0.036811866666666665,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 1104356,
+            "position": 0.036811866666666665,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 1104356,
+            "position": 0.036811866666666665,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 991621,
+          "position": 0.033054,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 9311377,
+          "position": 0.31037923333333334,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": true,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    },
+    {
+      "backend": "mmdevice",
+      "mode": "played-then-paused",
+      "method": "time",
+      "exitCode": 0,
+      "result": {
+        "backend": "mmdevice",
+        "mode": "played-then-paused",
+        "method": "time",
+        "seekSamples": [
+          {
+            "atSeconds": 0,
+            "state": 3,
+            "timeUs": 1010578,
+            "position": 0.0336859,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.2,
+            "state": 3,
+            "timeUs": 1150069,
+            "position": 0.03833563333333333,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 0.5,
+            "state": 3,
+            "timeUs": 1150069,
+            "position": 0.03833563333333333,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 1,
+            "state": 3,
+            "timeUs": 1150069,
+            "position": 0.03833563333333333,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 2,
+            "state": 3,
+            "timeUs": 1150069,
+            "position": 0.03833563333333333,
+            "lengthUs": 30000000,
+            "seekable": true
+          },
+          {
+            "atSeconds": 4,
+            "state": 3,
+            "timeUs": 1150069,
+            "position": 0.03833563333333333,
+            "lengthUs": 30000000,
+            "seekable": true
+          }
+        ],
+        "baseline": {
+          "state": 3,
+          "timeUs": 1010578,
+          "position": 0.0336859,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "pausedSeekTimeConsistent": false,
+        "resumed": {
+          "state": 2,
+          "timeUs": 9559115,
+          "position": 0.3186371666666667,
+          "lengthUs": 30000000,
+          "seekable": true
+        },
+        "resumedAtTarget": true,
+        "stopped": {
+          "state": 4,
+          "timeUs": 0,
+          "position": -1.0,
+          "lengthUs": 0,
+          "seekable": false
+        },
+        "normalStop": true,
+        "releasedNormally": true
+      }
+    }
+  ],
+  "forcedCleanupUsed": false,
+  "runtimeUnchanged": true
+}

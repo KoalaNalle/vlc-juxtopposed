@@ -1,0 +1,705 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "d40f11aeefdfaac14b5842f539dd9bd644bc364e3d8a4a3dc8ec9fbfeaeea008",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "4e09011ce1ee5d112ca26d453db3b50fb1722cfac982f787c7dc1d4193cc7e5f",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "interface-title-initial": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 13032,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 18.093000000000757,
+      "exitCode": 0,
+      "elapsedSeconds": 28.764999999999418,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual Interface title editor has a linked native consumer",
+            "passed": true
+          },
+          {
+            "name": "cold startup title policy matches saved preference without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused title journey clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "actual custom audio strip and native Windows caption obey cold startup policy",
+            "passed": true
+          },
+          {
+            "name": "no-write title and primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle is enabled",
+            "passed": true
+          },
+          {
+            "name": "owned title configuration exists",
+            "passed": true
+          },
+          {
+            "name": "owned title config locks for a genuine save failure",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title pointer edit saves restart policy without changing current title or playback",
+            "passed": true
+          },
+          {
+            "name": "keyboard restoration clears restart feedback and preserves current title and playback",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title editor leaves the opposite policy for cold reopen",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual Interface dialog reopen retains saved title policy and current startup title",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete title editor journey preserves primary playback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused title journey clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "same-instance next video keeps startup title policy despite saved opposite default",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "interface-title-initial",
+        "nativeInterfaceTitleAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-interface-title-20261019/ui-r1/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "titleStartupEnabled": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "mp4 warning: elst box found",
+        "mp4 warning: STTS table of 1 entries",
+        "main warning: window size missing"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "interface-title-off": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 29896,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 18.07800000000134,
+      "exitCode": 0,
+      "elapsedSeconds": 27.235000000000582,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual Interface title editor has a linked native consumer",
+            "passed": true
+          },
+          {
+            "name": "cold startup title policy matches saved preference without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "actual custom audio strip and native Windows caption obey cold startup policy",
+            "passed": true
+          },
+          {
+            "name": "no-write title and primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title pointer edit saves restart policy without changing current title or playback",
+            "passed": true
+          },
+          {
+            "name": "keyboard restoration clears restart feedback and preserves current title and playback",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title editor leaves the opposite policy for cold reopen",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual Interface dialog reopen retains saved title policy and current startup title",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete title editor journey preserves primary playback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused title journey clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "same-instance next video keeps startup title policy despite saved opposite default",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "interface-title-off",
+        "nativeInterfaceTitleAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-interface-title-20261019/ui-r1/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "titleStartupEnabled": false
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "mp4 warning: elst box found",
+        "mp4 warning: STTS table of 1 entries",
+        "main warning: window size missing"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "interface-title-restored": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 6040,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 23.54700000000048,
+      "exitCode": 0,
+      "elapsedSeconds": 33.71900000000096,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual Interface title editor has a linked native consumer",
+            "passed": true
+          },
+          {
+            "name": "cold startup title policy matches saved preference without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused title journey clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "actual custom audio strip and native Windows caption obey cold startup policy",
+            "passed": true
+          },
+          {
+            "name": "no-write title and primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title pointer edit saves restart policy without changing current title or playback",
+            "passed": true
+          },
+          {
+            "name": "keyboard restoration clears restart feedback and preserves current title and playback",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title editor leaves the opposite policy for cold reopen",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual title toggle materializes",
+            "passed": true
+          },
+          {
+            "name": "actual Interface dialog reopen retains saved title policy and current startup title",
+            "passed": true
+          },
+          {
+            "name": "Interface settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete title editor journey preserves primary playback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned input decodes through the actual main player",
+            "passed": true
+          },
+          {
+            "name": "title journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused title journey clock settles before editor actions",
+            "passed": true
+          },
+          {
+            "name": "same-instance next video keeps startup title policy despite saved opposite default",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "interface-title-restored",
+        "nativeInterfaceTitleAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-interface-title-20261019/ui-r1/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "titleStartupEnabled": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "mp4 warning: elst box found",
+        "mp4 warning: STTS table of 1 entries",
+        "main warning: window size missing"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "f45c2a375dc8d7d49548aa202a96f7912c5641a6fea58a21f01981ad57d33998",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true
+}

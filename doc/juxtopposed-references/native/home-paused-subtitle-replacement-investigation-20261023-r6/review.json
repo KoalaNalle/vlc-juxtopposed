@@ -1,0 +1,35 @@
+{
+  "productionApplied": false,
+  "selectedRepairAccepted": false,
+  "ordinaryAcceptedRuntime": "build-windows/beta-caption-layout-20261023/ui-after-r1/runtime",
+  "acceptedCoreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "candidateCoreSha256": "5837a5b7555099fd251385adb1caa109b1d6a8a56f93b41fc39515143840c4c5",
+  "findings": [
+    "Previous precise Matroska repair also restores backward-seek captions in all three replay cases.",
+    "New subtitle selection creates a decoder while the paused master does not demux new packets; merely allowing queued SPU consumption changes none of the observed cases.",
+    "Candidate reconstructs captions after a newly selected subtitle on paused seekable nonrecording input. WASAPI reconstruction requests use the pending seek-aware target, but its best-source time is stale and does not qualify video conservation. Both no-audio cases drift forward by40ms at every refresh; reject for application."
+  ],
+  "rejected": {
+    "r2": "Queued-SPU-only candidate: no behavior improvement in three actual native runs; never applied.",
+    "r3": "Raw timer candidate compiled but not run. Baseline time-watch data shows that the last raw source point can be 21ms while the paused clock is around 1s. R4 uses existing seek-aware interpolation."
+  },
+  "provenance": [
+    "Original child investigation labels passed=false and privateCore=false are inherited producer metadata; they do not identify the candidate build role. Parent runtime hashes and copied candidate sources are authoritative.",
+    "Child coreBuildScopeSha256 describes the earlier startup repair, not the newly compiled candidate player input object.",
+    "The candidate contains a diagnostic log. It is not the ordinary acceptance DLL.",
+    "Native diagnostics, including original buffer-deadlock prevention and vdummy window-closed teardown errors, remain preserved. No error-free-log claim."
+  ],
+  "limitations": [
+    "Single paused observations and coarse colored regions do not prove identical video frame PTS or a frozen clock across each reconstruction.",
+    "Absolute public paused time remains stale in WASAPI cases after seeking; do not treat it as target PTS.",
+    "Cold initial captions can still be absent. b_select=true external addition can retain the prior selected ID; explicit selection is the successful action.",
+    "No new desktop, physical audibility, DPI, Windows10, independent review, packaging or full-beta acceptance."
+  ],
+  "next": "Trace the current displayed-video/SMPTE source and seek target normalization, or use subtitle-only refill, before another candidate. Require repeated selection to conserve the paused picture/time, then maintained native and ordinary/desktop validation.",
+  "noInstallCommitPushReleaseShutdown": true,
+  "fullBetaAccepted": false,
+  "candidateRejectedForApplication": true,
+  "frameTimeDrift": "Both no-audio cases advance the paused video-source timer point by 40,000us per selection refresh; the matching unchanged controls hold the point. WASAPI best-source points remain stale, so they cannot qualify exact video conservation.",
+  "parentEvidenceDirectory": "home-paused-subtitle-replacement-investigation-20261023",
+  "parentCheckpointSha256": "befc73bbfbac6d12f81d8ea5d34b7b07bda6ed0f30d45553025e9d612eff6387"
+}

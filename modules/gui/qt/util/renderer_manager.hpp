@@ -59,6 +59,7 @@ public:
 public slots:
     void StartScan();
     void StopScan();
+    void applyDiscoveryPolicy();
 
     //QAbstractListModel override
 public:

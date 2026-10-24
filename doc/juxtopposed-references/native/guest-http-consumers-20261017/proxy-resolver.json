@@ -1,0 +1,263 @@
+{
+  "passed": true,
+  "expectedFailure": false,
+  "expectedLocalBypassFailure": false,
+  "forcedCleanupUsed": false,
+  "windowsSettingsOwned": true,
+  "realWinHttpPac": true,
+  "nativeCoreEntry": true,
+  "runtimeSha256": {
+    "libvlccore.dll": "6823ce2cbcf963eb63adcc68b46854236bd5da042fd89dc7d85105c33bee3e62",
+    "test_network_proxy.exe": "a0cebeb01381f2ba192c241d0d5b700320c5f6abbd19e731909ab3ee2d6abbc5"
+  },
+  "ownedPid": 13020,
+  "exitCode": 0,
+  "elapsedSeconds": 0.4850000000005821,
+  "ownedCoreImportBoundaryConfirmed": true,
+  "checks": [
+    [
+      "ok",
+      "1",
+      "explicit proxy preserved"
+    ],
+    [
+      "ok",
+      "2",
+      "explicit proxy never queries Windows settings"
+    ],
+    [
+      "ok",
+      "3",
+      "separate explicit password composed"
+    ],
+    [
+      "ok",
+      "4",
+      "embedded explicit password retained"
+    ],
+    [
+      "ok",
+      "5",
+      "credential composition does not inspect Windows settings"
+    ],
+    [
+      "ok",
+      "6",
+      "empty explicit value uses owned Windows proxy"
+    ],
+    [
+      "ok",
+      "7",
+      "Windows resolver was actually queried"
+    ],
+    [
+      "ok",
+      "8",
+      "system proxy does not receive old explicit password"
+    ],
+    [
+      "ok",
+      "9",
+      "HTTP selector chooses its own endpoint"
+    ],
+    [
+      "ok",
+      "10",
+      "HTTPS selector chooses its own endpoint"
+    ],
+    [
+      "ok",
+      "11",
+      "scheme-specific endpoint precedes generic fallback"
+    ],
+    [
+      "ok",
+      "12",
+      "generic endpoint used without matching selector"
+    ],
+    [
+      "ok",
+      "13",
+      "unsupported proxy scheme is not treated as an HTTP endpoint"
+    ],
+    [
+      "ok",
+      "14",
+      "exact bypass is case insensitive"
+    ],
+    [
+      "ok",
+      "15",
+      "wildcard bypass matches subdomain"
+    ],
+    [
+      "ok",
+      "16",
+      "bypass does not match a hostname suffix attack"
+    ],
+    [
+      "ok",
+      "17",
+      "local bypass handles dotless intranet host"
+    ],
+    [
+      "ok",
+      "18",
+      "local bypass does not bypass a dotted external host"
+    ],
+    [
+      "ok",
+      "19",
+      "local bypass does not bypass an IPv6 literal"
+    ],
+    [
+      "ok",
+      "20",
+      "local bypass does not treat a numeric IP literal as an intranet name"
+    ],
+    [
+      "ok",
+      "21",
+      "port-specific bypass matches exact port"
+    ],
+    [
+      "ok",
+      "22",
+      "port-specific bypass preserves other ports"
+    ],
+    [
+      "ok",
+      "23",
+      "IPv6 bypass matches address without losing its brackets"
+    ],
+    [
+      "ok",
+      "24",
+      "single-character bypass wildcard"
+    ],
+    [
+      "ok",
+      "25",
+      "single-character wildcard is bounded"
+    ],
+    [
+      "ok",
+      "26",
+      "Unicode bypass matches an IDNA hostname"
+    ],
+    [
+      "ok",
+      "27",
+      "Unicode case and port-specific bypass are preserved"
+    ],
+    [
+      "ok",
+      "28",
+      "ASCII IDNA bypass remains supported"
+    ],
+    [
+      "ok",
+      "29",
+      "out-of-range system proxy port is rejected"
+    ],
+    [
+      "ok",
+      "30",
+      "explicit direct mode bypasses a configured system proxy"
+    ],
+    [
+      "ok",
+      "31",
+      "explicit direct mode does not read system settings"
+    ],
+    [
+      "ok",
+      "32",
+      "non-HTTP target does not query system proxy settings"
+    ],
+    [
+      "ok",
+      "33",
+      "empty system configuration is direct"
+    ],
+    [
+      "ok",
+      "34",
+      "unavailable Windows settings safely return direct"
+    ],
+    [
+      "ok",
+      "35",
+      "actual proxy transport is restricted to the owned loopback server"
+    ],
+    [
+      "ok",
+      "36",
+      "actual VLC HTTP input opens through the owned system proxy"
+    ],
+    [
+      "ok",
+      "37",
+      "actual VLC HTTP input receives exact bytes from its proxy response"
+    ],
+    [
+      "ok",
+      "38",
+      "HTTP input invokes the actual Core resolver with owned settings"
+    ],
+    [
+      "ok",
+      "39",
+      "owned loopback PAC URL converted"
+    ],
+    [
+      "ok",
+      "40",
+      "real WinHTTP evaluates owned PAC proxy result"
+    ],
+    [
+      "ok",
+      "41",
+      "real WinHTTP preserves owned HTTPS PAC DIRECT result"
+    ],
+    [
+      "ok",
+      "42",
+      "real WinHTTP evaluates owned HTTP path proxy result"
+    ],
+    [
+      "ok",
+      "43",
+      "real WinHTTP evaluates a different HTTP path without reusing the host result"
+    ],
+    [
+      "ok",
+      "44",
+      "owned rejected-PAC URL allocated"
+    ],
+    [
+      "ok",
+      "45",
+      "PAC authentication rejection falls back to the configured static endpoint"
+    ]
+  ],
+  "normalTermination": true,
+  "actualVlcProxyTransportExercised": true,
+  "pacRequests": [
+    {
+      "path": "http://media.owned.invalid/owned-vlc-proxy-transport",
+      "authorizationPresent": false,
+      "proxyAuthorizationPresent": false
+    },
+    {
+      "path": "/owned.pac",
+      "authorizationPresent": false,
+      "proxyAuthorizationPresent": false
+    },
+    {
+      "path": "/owned.pac/rejected",
+      "authorizationPresent": false,
+      "proxyAuthorizationPresent": false
+    }
+  ]
+}

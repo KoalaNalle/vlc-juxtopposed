@@ -38,6 +38,16 @@ vlc_modules += {
     'plugin_dir' : 'audio_filter',
 }
 
+# Night mode uses a separate preset and parameter namespace.
+vlc_modules += {
+    'name' : 'nightmode',
+    'sources' : files('compressor.c'),
+    'c_args' : ['-DNIGHT_MODE_PRESET'],
+    'dependencies' : [m_lib],
+    'link_with' : [libdynamics],
+    'plugin_dir' : 'audio_filter',
+}
+
 # Expander module
 vlc_modules += {
     'name' : 'expander',

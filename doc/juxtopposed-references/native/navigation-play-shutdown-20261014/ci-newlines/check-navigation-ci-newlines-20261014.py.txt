@@ -1,0 +1,60 @@
+from pathlib import Path
+import hashlib
+import json
+import subprocess
+import sys
+
+repo=Path(__file__).resolve().parents[1]
+root=repo/'build-windows'
+output=root/'navigation-ci-newlines-20261014'
+output.mkdir(exist_ok=False)
+def sha(data):return hashlib.sha256(data).hexdigest()
+original=root/'music-network-navigation-pending/baseline-final-v2'
+sources=json.loads((original/'verification.json').read_text())['sourceSha256']
+records=[]
+identities=[]
+for variant in ('baseline','fixed'):
+    data={}
+    for name,expected in sources.items():
+        if variant=='fixed':raw=(repo/name).read_bytes()
+        elif name.endswith('/PageLoader.qml'):raw=(original/'modules/VLC/Widgets/PageLoader.qml').read_bytes()
+        elif name.endswith('/StackViewExt.qml'):raw=(original/'modules/VLC/Widgets/StackViewExt.qml').read_bytes()
+        elif name.endswith('/MainViewLoader.qml'):raw=(original/'modules/VLC/MainInterface/MainViewLoader.qml').read_bytes()
+        else:raw=(original/'source-snapshots'/name.removeprefix('modules/gui/qt/')).read_bytes()
+        if variant=='baseline':assert sha(raw)==expected,name
+        data[name]=raw
+    for endings in ('lf','crlf'):
+        overlay=output/(variant+'-'+endings+'-sources')
+        for name,raw in data.items():
+            normalized=raw.replace(b'\r\n',b'\n')
+            converted=normalized if endings=='lf' else normalized.replace(b'\n',b'\r\n')
+            destination=overlay/name
+            destination.parent.mkdir(parents=True,exist_ok=True)
+            destination.write_bytes(converted)
+            identities.append(dict(variant=variant,endings=endings,path=name,originalSha256=sha(raw),normalizedSha256=sha(normalized),materializedSha256=sha(converted)))
+        runner=repo/'modules/gui/qt/tests/run_music_network_navigation.py'
+        target=output/(variant+'-'+endings+'-results')
+        process=subprocess.run([sys.executable,str(runner),'--repo-root',str(repo),'--overlay',str(overlay),'--mode',variant,'--output-dir',str(target)],capture_output=True,timeout=35,creationflags=subprocess.CREATE_NO_WINDOW)
+        (output/(variant+'-'+endings+'-stdout.txt')).write_bytes(process.stdout)
+        (output/(variant+'-'+endings+'-stderr.txt')).write_bytes(process.stderr)
+        result=json.loads((target/'launcher-audit.json').read_text())
+        worker=json.loads((target/'verification.json').read_text())
+        assert process.returncode==0 and result['acceptedExpectedResult'] and not result['timedOut'] and not process.stderr
+        assert len(result['caseNames'])==27 and worker['passed']==(variant=='fixed')
+        if variant=='baseline':assert worker['negativeBaselineReproduced'] and len(worker['failedCases'])==27 and len(worker['messages'])==23
+        records.append(dict(variant=variant,endings=endings,expectedOutcomeObserved=True,childExitCode=result['childExitCode'],cases=len(result['caseNames']),failedCases=len(worker['failedCases']),diagnosticCount=len(worker['messages'])))
+        print(json.dumps(records[-1]),flush=True)
+# Reproduce the exact earlier startup error with the committed old helper and
+# the same CRLF fixed sources, without changing any production inputs.
+old=output/'original-worker';old.mkdir()
+for name in ('run_music_network_navigation.py','test_music_network_navigation.py'):
+    (old/name).write_bytes(subprocess.check_output(['git','show','bf2c2e1a09192d7c57e8af2138810abf494ef3ae:modules/gui/qt/tests/'+name],cwd=repo))
+process=subprocess.run([sys.executable,str(old/'run_music_network_navigation.py'),'--repo-root',str(repo),'--overlay',str(output/'fixed-crlf-sources'),'--mode','fixed','--output-dir',str(output/'original-crlf-results')],capture_output=True,timeout=35,creationflags=subprocess.CREATE_NO_WINDOW)
+assert process.returncode==1
+error=(output/'original-crlf-results/stderr.txt').read_text()
+assert "ValueError: substring not found" in error and "loader_start = device_text.index" in error
+report=dict(scope='Same 27-case oracle on LF and CRLF source materializations, preserving byte-exact copied QML/hash provenance. Original CRLF startup error reproduced separately. Supplied Qt adapters only; no new native application acceptance.',passed=True,cases=records,originalCrlfFailureReproduced=True,workerSha256=sha((repo/'modules/gui/qt/tests/test_music_network_navigation.py').read_bytes()),launcherSha256=sha((repo/'modules/gui/qt/tests/run_music_network_navigation.py').read_bytes()),sourceMaterializations=identities)
+(output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+runner=root/'run-ci-newlines-components-20261014.py'
+assert not runner.exists()
+runner.write_text((root/'run-navigation-native-fixed-components-20261014.py').read_text().replace('beta-navigation-native-fixed-components-20261014','beta-ci-newlines-components-20261014'),encoding='utf-8',newline='\n')

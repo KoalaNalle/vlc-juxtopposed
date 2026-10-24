@@ -50,6 +50,19 @@ typedef struct
     char data[];
 } vlc_ipc_data_t;
 
+/* Explicit Library IPC v1. Keep this block identical in both peers.
+ * Rejected means no queue insertion. Playback failure means the queue was
+ * accepted, so the sender must not replay the request or open it locally.
+ * Acceptance covers synchronous operations, not later decoder/input errors. */
+#define LIBRARY_IPC_QUERY_NAME L"VLC.LibraryOpen.v1"
+#define LIBRARY_IPC_VERSION 0x4c564301
+enum
+{
+    LIBRARY_IPC_REJECTED = 0,
+    LIBRARY_IPC_ACCEPTED = 1,
+    LIBRARY_IPC_ACCEPTED_PLAYBACK_FAILED = 2,
+};
+
 static void add_to_playlist(intf_thread_t *intf, const char *uri,
                             bool play_now, int options_count,
                             const char *const *options)
@@ -69,9 +82,91 @@ static void add_to_playlist(intf_thread_t *intf, const char *uri,
     input_item_Release(media);
 }
 
+/* New explicit policies use 2/3. Legacy payloads 0/1 retain their old path.
+ * Validate/allocate everything before changing the actual playback queue. */
+static LRESULT LibraryOpenFiles(intf_thread_t *intf, const COPYDATASTRUCT *message)
+{
+    if (!message || !message->lpData || message->cbData < sizeof(vlc_ipc_data_t)
+        || message->cbData > 16 * 1024 * 1024)
+        return LIBRARY_IPC_REJECTED;
+    const vlc_ipc_data_t *data = message->lpData;
+    if (data->argc <= 0 || data->argc > 4096 || (data->enqueue != 2 && data->enqueue != 3))
+        return LIBRARY_IPC_REJECTED;
+    const char **args = vlc_alloc(data->argc, sizeof(*args));
+    input_item_t **items = vlc_alloc(data->argc, sizeof(*items));
+    if (!args || !items) { free(args); free(items); return LIBRARY_IPC_REJECTED; }
+    size_t at = 0, available = message->cbData - sizeof(*data), count = 0;
+    int result = VLC_EINVAL;
+    bool accepted = false;
+    for (int i = 0; i < data->argc; ++i)
+    {
+        size_t length;
+        if (at > available || available - at < sizeof(length)) goto out;
+        memcpy(&length, data->data + at, sizeof(length)); at += sizeof(length);
+        if (!length || length > available - at) goto out;
+        const char *arg = data->data + at;
+        if (arg[length - 1] != '\0' || memchr(arg, '\0', length - 1) || !arg[0]) goto out;
+        args[i] = arg; at += length;
+    }
+    if (at != available || args[0][0] == ':') goto out;
+    for (int i = 0; i < data->argc; )
+    {
+        int options = 0;
+        while (i + options + 1 < data->argc && args[i + options + 1][0] == ':') ++options;
+        char *uri = strstr(args[i], "://") ? NULL : vlc_path2uri(args[i], NULL);
+        if (!strstr(args[i], "://") && !uri) { result = VLC_ENOMEM; goto out; }
+        input_item_t *item = input_item_New(uri ? uri : args[i], NULL); free(uri);
+        if (!item) { result = VLC_ENOMEM; goto out; }
+        items[count++] = item;
+        result = input_item_AddOptions(item, options, options ? &args[i + 1] : NULL, VLC_INPUT_OPTION_TRUSTED);
+        if (result != VLC_SUCCESS) goto out;
+        i += options + 1;
+    }
+    vlc_playlist_t *playlist = vlc_intf_GetMainPlaylist(intf);
+    vlc_playlist_Lock(playlist);
+    const size_t previous = vlc_playlist_Count(playlist);
+    const bool replace = data->enqueue == 2;
+    /* Insert's own allocation failure rolls back before notifying; insert
+     * first so the old queue is not destroyed if an allocation fails. */
+    result = vlc_playlist_Insert(playlist, replace ? 0 : previous, items, count);
+    if (result == VLC_SUCCESS)
+    {
+        accepted = true;
+        if (replace)
+        {
+            if (previous) vlc_playlist_Remove(playlist, count, previous);
+            /* The new queue is committed. GoTo may change player state even
+             * when it fails, so neither this receiver nor the sender retries
+             * or claims to restore the previous playback transactionally. */
+            result = vlc_playlist_GoTo(playlist, 0);
+            if (result != VLC_SUCCESS)
+                msg_Err(intf, "files accepted, but playlist selection failed (%d)", result);
+            else
+            {
+                result = vlc_playlist_Start(playlist);
+                if (result != VLC_SUCCESS)
+                    msg_Err(intf, "files accepted, but starting playback failed (%d)", result);
+            }
+        }
+    }
+    vlc_playlist_Unlock(playlist);
+out:
+    for (size_t i = 0; i < count; ++i) input_item_Release(items[i]);
+    free(items); free(args);
+    if (!accepted)
+        return LIBRARY_IPC_REJECTED;
+    return result == VLC_SUCCESS ? LIBRARY_IPC_ACCEPTED
+                                 : LIBRARY_IPC_ACCEPTED_PLAYBACK_FAILED;
+}
+
 static LRESULT CALLBACK WMCOPYWNDPROC(HWND hwnd, UINT uMsg,
                                       WPARAM wParam, LPARAM lParam)
 {
+    /* Registered messages are above the ordinary window-message range.
+     * An old receiver returns zero from DefWindowProc for this query. */
+    if (uMsg >= 0xc000 && uMsg == RegisterWindowMessageW(LIBRARY_IPC_QUERY_NAME))
+        return GetWindowLongPtr(hwnd, GWLP_USERDATA) ? LIBRARY_IPC_VERSION : 0;
+
     if( uMsg == WM_QUIT  )
     {
         PostQuitMessage( 0 );
@@ -84,6 +179,13 @@ static LRESULT CALLBACK WMCOPYWNDPROC(HWND hwnd, UINT uMsg,
             GetWindowLongPtr( hwnd, GWLP_USERDATA );
         if( intf == NULL )
             return 0; /* XXX: is this even possible? */
+
+        if (pwm_data && pwm_data->lpData && pwm_data->cbData >= sizeof(vlc_ipc_data_t))
+        {
+            vlc_ipc_data_t *incoming = pwm_data->lpData;
+            if (incoming->enqueue == 2 || incoming->enqueue == 3)
+                return LibraryOpenFiles(intf, pwm_data);
+        }
 
         /* Add files to the playlist */
         if( pwm_data->lpData )

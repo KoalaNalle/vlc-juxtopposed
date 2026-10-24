@@ -55,6 +55,7 @@ struct vlc_input_decoder_t {
     vlc_clock_t *clock;
     bool drained;
     bool started;
+    bool waiting;
 };
 
 static struct vlc_list opened_decoders;
@@ -92,6 +93,7 @@ vlc_input_decoder_New(vlc_object_t *parent,
     dec->clock = cfg->clock;
     dec->drained = false;
     dec->started = false;
+    dec->waiting = false;
     vlc_list_append(&dec->node, &opened_decoders);
     return dec;
 }
@@ -126,7 +128,7 @@ void vlc_input_decoder_ChangeRate(
 
 void vlc_input_decoder_StartWait(vlc_input_decoder_t *owner)
 {
-    (void)owner;
+    owner->waiting = true;
 }
 
 void vlc_input_decoder_Wait(vlc_input_decoder_t *owner)
@@ -136,7 +138,7 @@ void vlc_input_decoder_Wait(vlc_input_decoder_t *owner)
 
 void vlc_input_decoder_StopWait(vlc_input_decoder_t *owner)
 {
-    (void)owner;
+    owner->waiting = false;
     owner->started = true;
 }
 
@@ -574,11 +576,54 @@ static void test_preroll_rate(float rate)
     can_pace_control = false;
 }
 
+static void test_paused_seek(void)
+{
+    can_pace_control = true;
+
+    struct test_ctx ctx;
+    test_ctx_Init(&ctx, 1.f, VLC_TICK_FROM_MS(300));
+    struct vlc_input_es_out *out = ctx.out;
+    es_out_id_t *track = AddVideoTrack(out);
+    SendBlock(out, track);
+
+    /* Simulate a long pause without making the test sleep. Seeking buffers
+     * against this frozen date; later PCR updates must use the same date. */
+    const vlc_tick_t pause_date = vlc_tick_now() - VLC_TICK_FROM_SEC(60);
+    assert(es_out_SetPauseState(out, true, true, pause_date) == VLC_SUCCESS);
+    es_out_Control(&out->out, ES_OUT_RESET_PCR);
+
+    const vlc_tick_t target = VLC_TICK_0 + VLC_TICK_FROM_SEC(100);
+    for (unsigned i = 0; i <= 3; ++i)
+        es_out_SetPCR(&out->out, target + VLC_TICK_FROM_MS(100 * i));
+
+    struct vlc_input_decoder_t *dec =
+        vlc_list_first_entry_or_null(&opened_decoders,
+                                     struct vlc_input_decoder_t, node);
+    assert(dec != NULL && dec->started && !dec->waiting);
+
+    /* A PCR after buffering used to trigger another reset/rebuffer cycle. */
+    for (unsigned i = 4; i <= 6; ++i)
+    {
+        es_out_SetPCR(&out->out, target + VLC_TICK_FROM_MS(100 * i));
+        assert(!dec->waiting);
+    }
+
+    const vlc_tick_t resume_date = vlc_tick_now();
+    assert(es_out_SetPauseState(out, false, false, resume_date) == VLC_SUCCESS);
+    es_out_SetPCR(&out->out, target + VLC_TICK_FROM_MS(700));
+    assert(!dec->waiting);
+
+    es_out_Del(&out->out, track);
+    test_ctx_Destroy(&ctx);
+    can_pace_control = false;
+}
+
 int main(void)
 {
     test_playback();
     test_multiple_programs();
     test_preroll_rate(0.25f);
     test_preroll_rate(2.f);
+    test_paused_seek();
     return 0;
 }

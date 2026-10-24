@@ -1,0 +1,26 @@
+{
+  "preferredGuiImageBase": "0x140000000",
+  "textSymbolCount": 232427,
+  "snapshots": [
+    {
+      "snapshot": "render-stack-0.txt",
+      "matchingThreadCount": 1,
+      "threads": [
+        "  17  Id: 3eb0.6d40 Suspend: 1 Teb: 0000008f`ea762000 Unfrozen \"QSGRenderThread\"\nRetAddr               : Args to Child                                                           : Call Site\n00007ffd`607fbe9f     : 00000000`00000003 0000008f`efbffc70 00000216`1b9311e0 720796ae`cb0437db : ntdll!NtWaitForSingleObject+0x14\n00007ffc`73239c45     : 00000215`fa7949a0 0000008f`efbffbc0 00000215`00000001 00000000`00001674 : KERNELBASE!WaitForSingleObjectEx+0xaf\n00007ffc`72fe520c     : 00007ffc`74e1f020 00000215`fa7949a0 00007ffc`74e1f020 00000215`f2860710 : libqt_plugin!QRhiD3D11::beginFrame(QRhiSwapChain*, QFlags<QRhi::BeginFrameFlag>)+0x55\n00007ffc`7256c692     : 00007ffc`74e1f020 00000216`17408768 00000215`f28fbc10 00000216`174086b0 : libqt_plugin!QRhi::beginFrame(QRhiSwapChain*, QFlags<QRhi::BeginFrameFlag>)+0xac\n00007ffc`7256d8d3     : 00000000`00000000 00000000`00000000 00007ffc`73f11a95 00000000`00000000 : libqt_plugin!QSGRenderThread::syncAndRender()+0x192\n00007ffc`72485565     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : libqt_plugin!QSGRenderThread::run()+0x93\n00007ffd`618ddda7     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : libqt_plugin!QThreadPrivate::start(void*)+0x1e5\n00007ffd`633fee4c     : 00000000`00000000 00000000`00000000 000004f0`fffffb30 000004d0`fffffb30 : KERNEL32!BaseThreadInitThunk+0x17\n00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x2c\n"
+      ]
+    },
+    {
+      "snapshot": "render-stack-1.txt",
+      "matchingThreadCount": 0,
+      "threads": []
+    },
+    {
+      "snapshot": "render-stack-2.txt",
+      "matchingThreadCount": 1,
+      "threads": [
+        "  17  Id: 3eb0.6d40 Suspend: 1 Teb: 0000008f`ea762000 Unfrozen \"QSGRenderThread\"\nRetAddr               : Args to Child                                                           : Call Site\n00007ffd`607fbe9f     : 00000000`00000003 0000008f`efbffc70 00000215`facfe9a0 720796ae`cb0437db : ntdll!NtWaitForSingleObject+0x14\n00007ffc`73239c45     : 00000215`fa7949a0 0000008f`efbffbc0 00000215`00000001 00000000`00001674 : KERNELBASE!WaitForSingleObjectEx+0xaf\n00007ffc`72fe520c     : 00007ffc`74e1f020 00000215`fa7949a0 00007ffc`74e1f020 00000215`f2860710 : libqt_plugin!QRhiD3D11::beginFrame(QRhiSwapChain*, QFlags<QRhi::BeginFrameFlag>)+0x55\n00007ffc`7256c692     : 00007ffc`74e1f020 00000216`17408768 00000215`f28fbc10 00000216`174086b0 : libqt_plugin!QRhi::beginFrame(QRhiSwapChain*, QFlags<QRhi::BeginFrameFlag>)+0xac\n00007ffc`7256d8d3     : 00000000`00000000 00000000`00000000 00007ffc`73f11a95 00000000`00000000 : libqt_plugin!QSGRenderThread::syncAndRender()+0x192\n00007ffc`72485565     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : libqt_plugin!QSGRenderThread::run()+0x93\n00007ffd`618ddda7     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : libqt_plugin!QThreadPrivate::start(void*)+0x1e5\n00007ffd`633fee4c     : 00000000`00000000 00000000`00000000 000004f0`fffffb30 000004d0`fffffb30 : KERNEL32!BaseThreadInitThunk+0x17\n00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x2c\n"
+      ]
+    }
+  ],
+  "scope": "Native stack frames resolved against exact selected GUI DLL COFF symbols, not inferred from timing alone."
+}

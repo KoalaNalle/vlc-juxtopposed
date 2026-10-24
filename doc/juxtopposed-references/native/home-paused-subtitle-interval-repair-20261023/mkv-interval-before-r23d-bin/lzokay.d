@@ -1,0 +1,40 @@
+/root/vlc-juxtopposed-build/owned-mkv-interval-before-r23d/.libs/lzokay.o: \
+ /mnt/c/Modding/vlc-juxtopposed/build-windows/beta-tracks-subtitles-20261023/mkv-interval-r23d-source/before/lzokay.cpp \
+ ../config.h \
+ /mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../include/vlc_fixups.h \
+ /usr/share/mingw-w64/include/time.h \
+ /usr/share/mingw-w64/include/crtdefs.h \
+ /usr/share/mingw-w64/include/corecrt.h \
+ /usr/share/mingw-w64/include/_mingw.h \
+ /usr/share/mingw-w64/include/_mingw_mac.h \
+ /usr/share/mingw-w64/include/_mingw_secapi.h \
+ /usr/share/mingw-w64/include/vadefs.h \
+ /usr/share/mingw-w64/include/sdks/_mingw_ddk.h \
+ /usr/share/mingw-w64/include/sys/timeb.h \
+ /usr/share/mingw-w64/include/sec_api/sys/timeb_s.h \
+ /usr/share/mingw-w64/include/_timeval.h \
+ /usr/share/mingw-w64/include/pthread_time.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/stddef.h \
+ /usr/share/mingw-w64/include/stddef.h \
+ /usr/share/mingw-w64/include/stdio.h \
+ /usr/share/mingw-w64/include/corecrt_stdio_config.h \
+ /usr/share/mingw-w64/include/_mingw_off_t.h \
+ /usr/share/mingw-w64/include/swprintf.inl \
+ /usr/share/mingw-w64/include/sec_api/stdio_s.h \
+ /usr/share/mingw-w64/include/sys/types.h \
+ /usr/share/mingw-w64/include/dirent.h /usr/share/mingw-w64/include/io.h \
+ /usr/share/mingw-w64/include/string.h \
+ /usr/share/mingw-w64/include/sec_api/string_s.h \
+ /usr/share/mingw-w64/include/errno.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/type_traits \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/x86_64-w64-mingw32/bits/c++config.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/x86_64-w64-mingw32/bits/os_defines.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/x86_64-w64-mingw32/bits/cpu_defines.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/pstl/pstl_config.h \
+ /mnt/c/Modding/vlc-juxtopposed/build-windows/beta-tracks-subtitles-20261023/mkv-interval-r23d-source/before/lzokay.hpp \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/cstddef \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/cstdint \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/stdint.h \
+ /usr/share/mingw-w64/include/stdint.h \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/cstring \
+ /usr/lib/gcc/x86_64-w64-mingw32/13-posix/include/c++/limits

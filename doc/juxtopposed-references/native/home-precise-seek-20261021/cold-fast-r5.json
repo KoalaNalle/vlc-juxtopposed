@@ -1,0 +1,218 @@
+{
+  "status": "terminal",
+  "passed": true,
+  "case": "cold-fast",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "f85bb0c626386b85afca5b707f64c2f307c79399cd4e25f99e4ca6432f9794b7",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "dbee01e86ae50036e4fac19ab57bd0a7c1dcbcba7e91e734f958f8d0972bf347",
+  "runnerSha256": "8825a56d3abc7eb47cf072de05ef9ad9df7dd5a315f01a75f82c77a1a179dbd5",
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "keyframeSeconds": [
+    0.0,
+    10.0,
+    20.0,
+    30.0,
+    40.0,
+    50.0
+  ],
+  "ffprobeSha256": "cb1c395203d8badd5f65aad68d06016fb68d12e128c16f9a9f4c52d3b899a27f",
+  "pid": 23804,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "seek fixture settings are fenced to owned paths",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables its paired native precise seek consumer",
+        "passed": true
+      },
+      {
+        "name": "native startup restores the saved precise seek default",
+        "passed": true
+      },
+      {
+        "name": "owned generated MP4 opens",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts the owned MP4",
+        "passed": true
+      },
+      {
+        "name": "actual primary decodes and displays generated video",
+        "passed": true
+      },
+      {
+        "name": "native primary pauses before seek checks",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "cold actual toggle restores the saved precision choice",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native decoded playback resumes after seeks and settings edits",
+        "passed": true
+      }
+    ],
+    "controlGeometry": [
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      }
+    ],
+    "fullBetaAccepted": false,
+    "passed": true,
+    "privateFixture": true,
+    "seeks": [
+      {
+        "actualSeconds": 20.000000999999997,
+        "decodedPictures": 44,
+        "displayedPictures": 18,
+        "expectedSeconds": 20,
+        "label": "cold-fast-time",
+        "precise": false
+      }
+    ],
+    "status": "checks_complete"
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [],
+  "expectedDiagnostics": [],
+  "nativeSeekLogChecks": [
+    {
+      "label": "cold-fast-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 347,
+      "end": 411
+    }
+  ],
+  "quitLogOrder": {
+    "wait": 418,
+    "stopped": 450,
+    "teardown": 454
+  },
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "scope": "Native Qt explicit seek policy reaches actual MP4 accurate/fast branch, fresh displayed/decoded pictures and paused clock, settings rejection/retry and decoded resume. Does not establish frame-exact output, every format or physical scaling.",
+  "stderr.txtSha256": "b296d1c05f83746c7354a8e55104ca267168d32f7da4f2a8a791e9b6889cf498",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vlc.logSha256": "56e534f4ee7e82fb1e46295c0d4e7c8c5ff4d0d90b5037424ed6c3962c6c78af",
+  "journey.jsonSha256": "7c6dc1d429c92829bb6e42bda3fd9a1526b0789c672b65a3d28489b76b816022"
+}

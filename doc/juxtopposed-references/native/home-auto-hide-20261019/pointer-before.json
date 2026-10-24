@@ -1,0 +1,31 @@
+{
+  "passed": false,
+  "nativeApplicationAccepted": false,
+  "scope": "Exact production audio HoverHandler; offscreen Qt input/timer regression.\n\nThe supplied MainCtx/FSM boundaries count activity and arm a real Qt timer.\nThis does not establish native VLC playback or Windows input acceptance.\n",
+  "sourceSha256": "8754f4ce11b9f60d423a89f78ae0d4df8802911c7ec6a770539db233613468b9",
+  "extractedBlockSha256": "b290faa74bc3eb515ced0d0a8b92b058db98a921859d1cf124d9870ac251c0e6",
+  "checks": [
+    {
+      "name": "Exact production hover block loads with the supplied boundary",
+      "passed": true
+    },
+    {
+      "name": "Actual HoverHandler materializes",
+      "passed": true
+    },
+    {
+      "name": "Actual Qt pointer movement reveals once",
+      "passed": true
+    },
+    {
+      "name": "Point notification is a real Qt signal",
+      "passed": true
+    },
+    {
+      "name": "Unchanged point notification cannot restart the timer",
+      "passed": false
+    }
+  ],
+  "qtMessages": [],
+  "error": "Unchanged point notification cannot restart the timer"
+}

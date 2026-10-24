@@ -92,6 +92,7 @@ enum vlc_window_mouse_event_type {
     VLC_WINDOW_MOUSE_PRESSED /**< Pointer button press or single click */,
     VLC_WINDOW_MOUSE_RELEASED /**< Pointer button release */,
     VLC_WINDOW_MOUSE_DOUBLE_CLICK /**< Double click */,
+    VLC_WINDOW_MOUSE_CANCELLED /**< Pointer grab/gesture was cancelled */,
 };
 
 /**
@@ -136,7 +137,7 @@ typedef struct vlc_window_mouse_event
      *
      * See \ref vlc_mouse_button for possible values.
      *
-     * This is set if @c event does not equal \ref VLC_WINDOW_MOUSE_MOVED.
+     * This is set for pressed, released and double-click events.
      */
     int button_mask;
 } vlc_window_mouse_event_t;
@@ -715,6 +716,15 @@ static inline void vlc_window_ReportMouseDoubleClick(vlc_window_t *window,
 {
     const vlc_window_mouse_event_t mouse = {
         VLC_WINDOW_MOUSE_DOUBLE_CLICK, 0, 0, button,
+    };
+    vlc_window_SendMouseEvent(window, &mouse);
+}
+
+/** Reports a cancelled pointer gesture without synthesising a click. */
+static inline void vlc_window_ReportMouseCancelled(vlc_window_t *window)
+{
+    const vlc_window_mouse_event_t mouse = {
+        VLC_WINDOW_MOUSE_CANCELLED, 0, 0, 0,
     };
     vlc_window_SendMouseEvent(window, &mouse);
 }

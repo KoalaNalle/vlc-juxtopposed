@@ -84,6 +84,7 @@ enum device_acquisition_status {
 typedef struct
 {
     struct aout_stream_owner *stream; /**< Underlying audio output stream */
+    bool stop_requested; /**< Stream teardown queued to MMThread. */
     audio_output_t *aout;
     IMMDeviceEnumerator *it; /**< Device enumerator, NULL when exiting */
     IMMDevice *dev; /**< Selected output device, NULL if none */
@@ -783,11 +784,26 @@ static int DeviceSelect(audio_output_t *aout, const char *id)
     return ret;
 }
 
-/**
- * Main loop
- *
- * Adjust volume as long as device is unchanged
- * */
+/* MMThread owns the render-service calls and any wait on buffer_ready_event.
+ * Tear the stream down here after the preceding call or wait has returned. */
+static bool MMProcessStreamStop(audio_output_t *aout)
+{
+    aout_sys_t *sys = aout->sys;
+    if (!sys->stop_requested)
+        return false;
+
+    assert(sys->stream != NULL);
+    aout_stream_owner_Stop(sys->stream);
+    block_ChainRelease(sys->stream->chain);
+    sys->stream->chain = NULL;
+    aout_stream_owner_Delete(sys->stream);
+    sys->stream = NULL;
+    sys->stop_requested = false;
+    vlc_cond_broadcast(&sys->ready);
+    return true;
+}
+
+/** Adjust volume as long as the selected device is unchanged. */
 static void MMSessionMainloop(audio_output_t *aout, ISimpleAudioVolume *volume)
 {
     aout_sys_t *sys = aout->sys;
@@ -798,6 +814,8 @@ static void MMSessionMainloop(audio_output_t *aout, ISimpleAudioVolume *volume)
 
     while (sys->device_status != DEVICE_PENDING)
     {
+        if (MMProcessStreamStop(aout))
+            continue;
         if (volume != NULL)
         {
             if (atomic_exchange(&sys->session_volume_changed, false))
@@ -866,6 +884,8 @@ static void MMSessionMainloop(audio_output_t *aout, ISimpleAudioVolume *volume)
         vlc_mutex_unlock(&sys->lock);
         WaitForMultipleObjects(ev_count, events, FALSE, wait_ms);
         vlc_mutex_lock(&sys->lock);
+        if (MMProcessStreamStop(aout))
+            continue;
 
         if (sys->stream != NULL)
         {
@@ -1149,12 +1169,15 @@ static void *MMThread(void *data)
     vlc_mutex_lock(&sys->lock);
 
     do
+    {
+        MMProcessStreamStop(aout);
         if (sys->device_status != DEVICE_PENDING || FAILED(MMSession(aout, it)))
         {
             vlc_mutex_unlock(&sys->lock);
             WaitForSingleObject(sys->work_event, INFINITE);
             vlc_mutex_lock(&sys->lock);
         }
+    }
     while (sys->it != NULL);
 
     vlc_mutex_unlock(&sys->lock);
@@ -1324,14 +1347,13 @@ static void Stop(audio_output_t *aout)
 {
     aout_sys_t *sys = aout->sys;
 
-    assert(sys->stream != NULL);
-
-    EnterMTA();
-    aout_stream_owner_Stop(sys->stream);
-    LeaveMTA();
-
-    aout_stream_owner_Delete(sys->stream);
-    sys->stream = NULL;
+    vlc_mutex_lock(&sys->lock);
+    assert(sys->stream != NULL && !sys->stop_requested);
+    sys->stop_requested = true;
+    SetEvent(sys->work_event);
+    while (sys->stream != NULL)
+        vlc_cond_wait(&sys->ready, &sys->lock);
+    vlc_mutex_unlock(&sys->lock);
 }
 
 static void Close(vlc_object_t *);
@@ -1347,6 +1369,7 @@ static int Open(vlc_object_t *obj)
 
     aout->sys = sys;
     sys->stream = NULL;
+    sys->stop_requested = false;
     sys->aout = aout;
     sys->it = NULL;
     sys->dev = NULL;

@@ -31,6 +31,8 @@ class Media;
 }
 
 struct vlc_medialibrary_t;
+class MLHomeActivity;
+Q_MOC_INCLUDE("medialibrary/mlhomeactivity.hpp")
 
 class MediaLib : public QObject
 {
@@ -41,10 +43,14 @@ public:
     Q_PROPERTY(int  parsingProgress READ parsingProgress NOTIFY parsingProgressChanged FINAL)
     Q_PROPERTY(QString discoveryEntryPoint READ discoveryEntryPoint NOTIFY discoveryEntryPointChanged FINAL)
     Q_PROPERTY(bool idle READ idle NOTIFY idleChanged FINAL)
+    Q_PROPERTY(bool historyOnly READ historyOnly CONSTANT FINAL)
+    Q_PROPERTY(MLHomeActivity *homeActivity READ homeActivity CONSTANT FINAL)
 
 public:
     MediaLib(qt_intf_t* _intf, vlc::playlist::PlaylistController* playlistController, QObject* _parent = nullptr );
     ~MediaLib();
+    static std::unique_ptr<MediaLib> createHistorySource(qt_intf_t *, vlc::playlist::PlaylistController *, vlc_medialibrary_t *, QObject *parent);
+    bool historyOnly() const { return m_historyOnly; }
 
     Q_INVOKABLE static MLItemId deserializeMlItemIdFromString(const QString& serialized_id);
 
@@ -52,17 +58,22 @@ public:
     Q_INVOKABLE void addToPlaylist(const QString& mrl, const QStringList &options = {});
     Q_INVOKABLE void addToPlaylist(const QUrl& mrl, const QStringList &options = {});
     Q_INVOKABLE void addToPlaylist(const QVariantList& itemIdList, const QStringList &options = {});
+    // Native source-model context, captured when the command was issued.
+    void addToPlaylist(const QVariantList &, const QStringList &, MLItemId sourcePlaylist);
 
     Q_INVOKABLE void addAndPlay(const MLItemId &itemId, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QString& mrl, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QUrl& mrl, const QStringList &options = {});
     Q_INVOKABLE void addAndPlay(const QVariantList&itemIdList, const QStringList &options = {});
+    void addAndPlay(const QVariantList &, const QStringList &, MLItemId sourcePlaylist);
     Q_INVOKABLE void insertIntoPlaylist(size_t index, const QVariantList &itemIds /*QList<MLParentId>*/, const QStringList &options = {});
 
     Q_INVOKABLE void reload();
+    Q_INVOKABLE void addFolder(const QUrl &folder);
 
     Q_INVOKABLE void mlInputItem(const QVector<MLItemId>& itemIdVector, QJSValue callback);
 
+    inline MLHomeActivity *homeActivity() const { return m_homeActivity.get(); }
     inline bool idle() const { return m_idle; }
     inline int discoveryPending() const { return m_discoveryPending; }
     inline QString discoveryEntryPoint() const { return m_discoveryEntryPoint; }
@@ -165,7 +176,12 @@ public:
      */
     void cancelMLTask(const QObject* object, quint64 taskId);
 
+    // All history actions use the MainCtx-owned coordinated clear service.
+    void requestHistoryClear() { emit historyClearRequested(); }
+
 signals:
+    void historyClearRequested();
+    void folderAddFailed(QUrl folder);
     void discoveryStarted();
     void discoveryCompleted();
     void parsingProgressChanged( quint32 percent );
@@ -174,6 +190,7 @@ signals:
     void idleChanged();
 
 private:
+    MediaLib(qt_intf_t *, vlc::playlist::PlaylistController *, vlc_medialibrary_t *, bool historyOnly, QObject *parent);
     static void onMediaLibraryEvent( void* data, const vlc_ml_event_t* event );
 
 private:
@@ -187,8 +204,10 @@ private:
 
     /* Medialibrary */
     vlc_medialibrary_t* m_ml;
+    const bool m_historyOnly;
     std::unique_ptr<vlc_ml_event_callback_t, std::function<void(vlc_ml_event_callback_t*)>> m_event_cb;
     ThreadRunner* m_runner = nullptr;
+    std::unique_ptr<MLHomeActivity> m_homeActivity;
 
     QMap<QVector<MLItemId>, QVector<QJSValue>> m_inputItemQuery;
 };

@@ -53,6 +53,9 @@ SoutDialog::SoutDialog( QWindow *parent, qt_intf_t *_p_intf, const QString& inpu
     /* UI stuff */
     ui.setupUi( this );
     ui.inputBox->setMRL( inputChain );
+    // This is a default for the new wizard, not an override of an explicit
+    // local-output choice or a running stream.
+    ui.localOutput->setChecked( var_InheritBool(p_intf, "sout-display") );
     ui.helpEdit->setPlainText( qtr("This wizard will allow you to stream or "
             "convert your media for use locally, on your private network, "
             "or on the Internet.\n"
@@ -96,6 +99,7 @@ SoutDialog::SoutDialog( QWindow *parent, qt_intf_t *_p_intf, const QString& inpu
     setButtonText( QWizard::CancelButton, qtr("Cancel") );
     setButtonText( QWizard::NextButton, qtr("Next") );
     setButtonText( QWizard::FinishButton, qtr("Stream") );
+    updateChain();
 }
 
 void SoutDialog::closeTab( int i )

@@ -29,15 +29,22 @@
 #include <vlc_interface.h>
 #include <vlc_intf_strings.h>
 #include <vlc_preparser.h>
+#include <vlc_player.h>
 
 #include "qt.hpp"
 #include "dialogs_provider.hpp"
+#include "util/modal_input_guard.hpp"
+#include "network_stream_model.hpp"
+#include "conversion_controller.hpp"
+#include "new_playlist_model.hpp"
 #include "player/player_controller.hpp" /* Load Subtitles */
 #include "playlist/playlist_controller.hpp"
 #include "menus/menus.hpp"
 #include "util/qt_dirs.hpp"
 #include "util/vlchotkeyconverter.hpp"
 #include "maininterface/mainctx.hpp"
+#include "maininterface/general_preferences_model.hpp"
+#include "medialibrary/medialib.hpp"
 
 /* The dialogs */
 #include "dialogs/bookmarks/bookmarks.hpp"
@@ -64,6 +71,8 @@
 #include <QApplication>
 #include <QSignalMapper>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QDir>
 #include <QUrl>
 #include <QInputDialog>
 #include <QPointer>
@@ -102,10 +111,20 @@ DialogsProvider::DialogsProvider( qt_intf_t *_p_intf )
 
 {
     b_isDying = false;
+    auto *inputGuard = new ModalInputGuard(VLC_OBJECT(p_intf), this);
+    connect(this, &DialogsProvider::qmlDialogVisibleChanged, inputGuard,
+        [this, inputGuard] { inputGuard->setQmlVisible(m_qmlDialogVisible); });
 }
 
 DialogsProvider::~DialogsProvider()
 {
+    if (m_quitStopListener)
+    {
+        vlc_player_Lock(p_intf->p_player);
+        vlc_player_RemoveListener(p_intf->p_player, m_quitStopListener);
+        m_quitStopListener = nullptr;
+        vlc_player_Unlock(p_intf->p_player);
+    }
     /* free parentless menus  */
     VLCMenuBar::freeRendererMenu();
 }
@@ -157,7 +176,76 @@ void DialogsProvider::quit()
     b_isDying = true;
     assert(qApp);
     qApp->setProperty("isDying", true);
+
+    // Whole-application Quit must stop playback before Core unloads Qt. Audio
+    // otherwise keeps running through compositor/QML teardown and can rebuffer
+    // while the interface is being destroyed. Interface unloading on its own
+    // does not pass through this whole-application quit boundary.
+    auto *player = p_intf->p_player;
+    if (player)
+    {
+        static const vlc_player_cbs callbacks = [] {
+            vlc_player_cbs cbs{};
+            cbs.on_state_changed = [](vlc_player_t *, vlc_player_state state, void *data) {
+                if (state != VLC_PLAYER_STATE_STOPPED)
+                    return;
+                auto *provider = static_cast<DialogsProvider *>(data);
+                QMetaObject::invokeMethod(provider,
+                    [provider] { provider->finishQuitAfterPlaybackStop(); },
+                    Qt::QueuedConnection);
+            };
+            return cbs;
+        }();
+
+        vlc_player_Lock(player);
+        m_quitStopListener = vlc_player_AddListener(player, &callbacks, this);
+        if (!m_quitStopListener)
+        {
+            vlc_player_Unlock(player);
+            b_isDying = false;
+            qApp->setProperty("isDying", false);
+            msg_Err(p_intf, "cannot observe playback stop; please retry quitting");
+            return;
+        }
+        // Stop can succeed before the asynchronous state changes from STOPPED.
+        // Register and request under one lock so that completion cannot be missed.
+        const bool waiting = vlc_player_Stop(player) == VLC_SUCCESS
+            || vlc_player_GetState(player) != VLC_PLAYER_STATE_STOPPED;
+        if (!waiting)
+        {
+            vlc_player_RemoveListener(player, m_quitStopListener);
+            m_quitStopListener = nullptr;
+        }
+        vlc_player_Unlock(player);
+        if (waiting)
+        {
+            msg_Dbg(p_intf, "application quit waiting for primary playback to stop");
+            return;
+        }
+    }
     libvlc_Quit( vlc_object_instance(p_intf) );
+}
+
+void DialogsProvider::finishQuitAfterPlaybackStop()
+{
+    if (!m_quitStopListener)
+        return;
+
+    auto *player = p_intf->p_player;
+    vlc_player_Lock(player);
+    // A new Start may have happened before this queued completion ran, including
+    // one whose asynchronous state still says STOPPED. Stop it and wait again.
+    if (vlc_player_Stop(player) == VLC_SUCCESS
+        || vlc_player_GetState(player) != VLC_PLAYER_STATE_STOPPED)
+    {
+        vlc_player_Unlock(player);
+        return;
+    }
+    vlc_player_RemoveListener(player, m_quitStopListener);
+    m_quitStopListener = nullptr;
+    vlc_player_Unlock(player);
+    msg_Dbg(p_intf, "primary playback stopped; quitting application");
+    libvlc_Quit(vlc_object_instance(p_intf));
 }
 
 void DialogsProvider::customEvent( QEvent *event )
@@ -289,12 +377,49 @@ const QEvent::Type DialogEvent::DialogEvent_Type =
 
 void DialogsProvider::prefsDialog()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        if (!prefsDialogVisible()) emit showGlobalSettingsDialog();
+        return;
+    }
+#endif
+    openNativePrefsDialog(false);
+}
+
+void DialogsProvider::expertPrefsDialog()
+{
+    openNativePrefsDialog(true);
+}
+
+void DialogsProvider::openNativePrefsDialog(bool advanced)
+{
+    // Do not overlay a QML modal or cancel an in-flight operation. The Global
+    // shell closes before calling the intentional Advanced entry.
+    if (m_qmlDialogVisible) return;
     if (Q_LIKELY(!m_prefsDialog))
     {
-        m_prefsDialog = new PrefsDialog( nullptr, p_intf );
+        m_prefsDialog = new PrefsDialog(nullptr, p_intf);
         m_prefsDialog->setAttribute(Qt::WA_DeleteOnClose);
         m_prefsDialog->installEventFilter(this);
+        if (const auto *ctx = p_intf->p_mi)
+        {
+            if (auto *preferences = ctx->getGeneralPreferences())
+            {
+                connect(m_prefsDialog, &QDialog::accepted,
+                        preferences, &GeneralPreferencesModel::reload);
+                connect(m_prefsDialog, &PrefsDialog::preferencesReset,
+                        preferences, &GeneralPreferencesModel::reload);
+            }
+        }
+        if (advanced) m_prefsDialog->showAdvancedView();
         m_prefsDialog->open();
+    }
+    else if (advanced)
+    {
+        m_prefsDialog->showAdvancedView();
+        m_prefsDialog->raise();
+        m_prefsDialog->activateWindow();
     }
     else
     {
@@ -647,7 +772,140 @@ void DialogsProvider::openDiscDialog()
 }
 void DialogsProvider::openNetDialog()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        emit showNetworkStreamDialog();
+        return;
+    }
+#endif
     openDialog( OpenDialog::OPEN_NETWORK_TAB );
+}
+
+NetworkStreamModel *DialogsProvider::networkStream()
+{
+    if (!m_networkStream)
+    {
+        const auto *ctx = p_intf->p_mi;
+        auto *library = ctx && ctx->hasMediaLibrary() ? vlc_ml_instance_get(p_intf) : nullptr;
+        m_networkStream = std::make_unique<NetworkStreamModel>(p_intf->p_playlist, library, this);
+    }
+    return m_networkStream.get();
+}
+
+NewPlaylistModel *DialogsProvider::newPlaylist()
+{
+    if (!m_newPlaylist)
+    {
+        const auto *ctx = p_intf->p_mi;
+        auto *library = ctx && ctx->hasMediaLibrary() ? vlc_ml_instance_get(p_intf) : nullptr;
+        m_newPlaylist = std::make_unique<NewPlaylistModel>(library, newPlaylistArtworkDirectory(), this);
+        connect(m_newPlaylist.get(), &NewPlaylistModel::finished, this, [this](bool) {
+            if (m_newPlaylist->savedPlaylist().isValid())
+                emit newPlaylistSaved(m_newPlaylist->savedPlaylist());
+        });
+    }
+    return m_newPlaylist.get();
+}
+
+void DialogsProvider::newPlaylistDialog()
+{
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+        emit showNewPlaylistDialog();
+}
+
+void DialogsProvider::chooseNewPlaylistFiles()
+{
+    QPointer<NewPlaylistModel> model = newPlaylist();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !model->available() || model->busy() || model->partialSave()) return;
+    auto patterns = QStringLiteral(EXTENSIONS_MEDIA);
+    patterns.replace(';', ' ');
+    const auto urls = QFileDialog::getOpenFileUrls(nullptr, qtr("Select playlist files"),
+        ctx->getDialogFilePath(), qtr("Media files") + " (" + patterns + ");;" + qtr("All files") + " (*)",
+        nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || urls.isEmpty()) return;
+    ctx->setDialogFilePath(urls.last());
+    QVariantList ordered;
+    for (const auto &url : urls) ordered.append(url);
+    model->appendFiles(ordered);
+}
+
+void DialogsProvider::chooseNewPlaylistThumbnail()
+{
+    QPointer<NewPlaylistModel> model = newPlaylist();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !model->available() || model->busy() || model->partialSave()) return;
+    const auto image = QFileDialog::getOpenFileUrl(nullptr, qtr("Choose playlist thumbnail"),
+        ctx->getDialogFilePath(), qtr("Images") + " (*.png *.jpg *.jpeg *.webp *.bmp);;" + qtr("All files") + " (*)",
+        nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || image.isEmpty()) return;
+    ctx->setDialogFilePath(image);
+    model->setThumbnail(image);
+}
+
+ConversionController *DialogsProvider::conversion()
+{
+    if (!m_conversion)
+        m_conversion = std::make_unique<ConversionController>(VLC_OBJECT(p_intf), this);
+    return m_conversion.get();
+}
+
+void DialogsProvider::chooseConversionSource()
+{
+    QPointer<ConversionController> model = conversion();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || model->busy()) return;
+    const auto source = QFileDialog::getOpenFileUrl(nullptr, qtr("Choose audio to convert"),
+        model->sourceUrl().isEmpty() ? ctx->getDialogFilePath() : model->sourceUrl(),
+        qtr("Audio files") + " (*.wav *.flac *.mp3 *.ogg *.opus *.m4a *.aac *.aiff *.aif *.wma);;"
+            + qtr("All files") + " (*)", nullptr, QFileDialog::Options(), {QStringLiteral("file")});
+    if (!ctx || !model || model->busy() || source.isEmpty()) return;
+    ctx->setDialogFilePath(source);
+    model->setSourceUrl(source);
+}
+
+void DialogsProvider::chooseConversionDestination()
+{
+    QPointer<ConversionController> model = conversion();
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || model->busy()) return;
+    QUrl initial = model->destinationUrl();
+    if (initial.isEmpty())
+    {
+        if (model->sourceUrl().isLocalFile())
+        {
+            const QFileInfo input(model->sourceUrl().toLocalFile());
+            auto proposed = input.dir().filePath(input.completeBaseName() + QStringLiteral(".flac"));
+            if (QFileInfo::exists(proposed))
+                proposed = input.dir().filePath(input.completeBaseName() + QStringLiteral("-converted.flac"));
+            initial = QUrl::fromLocalFile(proposed);
+        }
+        else initial = ctx->getDialogFilePath();
+    }
+    auto destination = QFileDialog::getSaveFileUrl(nullptr, qtr("Save converted FLAC audio"),
+        initial, qtr("FLAC audio") + " (*.flac)", nullptr,
+        QFileDialog::DontConfirmOverwrite, {QStringLiteral("file")});
+    if (!ctx || !model || model->busy() || destination.isEmpty()) return;
+    if (destination.isLocalFile() && QFileInfo(destination.toLocalFile()).suffix().isEmpty())
+        destination = QUrl::fromLocalFile(destination.toLocalFile() + QStringLiteral(".flac"));
+    // The controller validates again at start and publishes without replacement;
+    // selecting an existing filename never authorizes an overwrite.
+    ctx->setDialogFilePath(destination);
+    model->setDestinationUrl(destination);
+}
+
+void DialogsProvider::setQmlDialogVisible(bool visible)
+{
+    if (m_qmlDialogVisible == visible) return;
+    m_qmlDialogVisible = visible;
+    emit qmlDialogVisibleChanged();
+}
+void DialogsProvider::setQmlInputFocused(bool focused)
+{
+    if (m_qmlInputFocused == focused) return;
+    m_qmlInputFocused = focused;
+    emit qmlInputFocusedChanged();
 }
 void DialogsProvider::openCaptureDialog()
 {
@@ -753,6 +1011,22 @@ void DialogsProvider::openUrlDialog()
  * pl helps you to choose from playlist or media library,
  * go to start or enqueue
  **/
+void DialogsProvider::addMediaLibraryFolder()
+{
+    QPointer<MainCtx> ctx = p_intf->p_mi;
+    if (!ctx || !ctx->hasMediaLibrary())
+        return;
+
+    const QUrl folder = QFileDialog::getExistingDirectoryUrl(nullptr,
+        qtr("Add folder to media library"), ctx->getDialogFilePath(),
+        QFileDialog::ShowDirsOnly, {QStringLiteral("file")});
+    if (folder.isEmpty() || !ctx)
+        return;
+
+    ctx->setDialogFilePath(folder);
+    ctx->getMediaLibrary()->addFolder(folder);
+}
+
 static void openDirectory( qt_intf_t *p_intf, bool go )
 {
     QString uri = DialogsProvider::getDirectoryDialog( p_intf );
@@ -963,6 +1237,19 @@ void DialogsProvider::openAndStreamingDialogs()
 
 void DialogsProvider::openAndTranscodingDialogs()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        emit showConversionDialog();
+        return;
+    }
+#endif
+    openLegacyTranscodingDialog();
+}
+
+void DialogsProvider::openLegacyTranscodingDialog()
+{
+    if (m_conversion && m_conversion->busy()) return;
     ensureDialog(m_openDialog);
     m_openDialog->showTab( OpenDialog::OPEN_FILE_TAB, OpenDialog::OPEN_AND_SAVE );
 }

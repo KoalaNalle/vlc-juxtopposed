@@ -67,6 +67,14 @@ private:
     bool applyKeyEvent(QKeyEvent * event) const;
 
 protected:
+    // Native decorations must finish establishing the client frame before
+    // the saved client rectangle is restored. Other platforms keep the
+    // original constructor order through the public delegating constructor.
+    enum class GeometryRestorePolicy { Immediate, AfterNativeDecoration };
+    InterfaceWindowHandler(qt_intf_t *_p_intf, MainCtx* mainCtx, QWindow* window,
+                           QObject *parent, GeometryRestorePolicy geometryRestore);
+    void restoreWindowGeometry();
+
     virtual void updateCSDWindowSettings();
 
 protected:
@@ -80,6 +88,7 @@ protected:
     bool m_isWindowTiled = false;
 
     bool m_pauseOnMinimize ;
+    bool m_rememberGeometry = true; // Same construction policy for restore/save.
     bool m_maximizedView = false;
     bool m_hideAfterCreation  = false; // --qt-start-minimized
 

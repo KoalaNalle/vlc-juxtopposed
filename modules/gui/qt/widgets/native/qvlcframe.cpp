@@ -25,9 +25,38 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QStyle>
+#include <QPointer>
+#include <QSharedPointer>
 
 #include "qvlcframe.hpp"
 #include "maininterface/compositor.hpp"
+
+namespace {
+struct NormalWindowGeometry {
+    QPointer<QScreen> screen;
+    QRect geometry;
+};
+using NormalWindowGeometryPtr = QSharedPointer<NormalWindowGeometry>;
+constexpr auto normalGeometryKey = "__vlcNormalWindowGeometry";
+}
+Q_DECLARE_METATYPE(NormalWindowGeometryPtr)
+
+void QVLCTools::updateWindowNormalGeometry(QWindow *window)
+{
+    if (!window || !window->screen() || !window->geometry().isValid()
+        || (window->windowStates() & (Qt::WindowMaximized | Qt::WindowFullScreen | Qt::WindowMinimized))
+        // Explicit fullscreen selection moves the normal window before entering
+        // fullscreen. Retain its original screen/rectangle through that move.
+        || window->property("__vlcFullscreenScreenPolicy").isValid())
+        return;
+    const auto previous = window->property(normalGeometryKey).value<NormalWindowGeometryPtr>();
+    if (previous && previous->screen == window->screen() && previous->geometry == window->geometry())
+        return;
+    auto normal = NormalWindowGeometryPtr::create();
+    normal->screen = window->screen();
+    normal->geometry = window->geometry();
+    window->setProperty(normalGeometryKey, QVariant::fromValue(normal));
+}
 
 void QVLCTools::saveWidgetPosition(QSettings *settings, QWidget *widget)
 {
@@ -36,6 +65,24 @@ void QVLCTools::saveWidgetPosition(QSettings *settings, QWidget *widget)
 
 void QVLCTools::saveWindowPosition(QSettings *settings, QWindow *window)
 {
+    QScreen *screen = window->screen();
+    QPoint position = window->position();
+    QRect geometry = window->geometry();
+    // Keep the actual observed client bounds, including VLC's custom native
+    // decorations. Platform normalGeometry() uses different non-client margins.
+    if (window->windowStates() & (Qt::WindowMaximized | Qt::WindowFullScreen | Qt::WindowMinimized))
+    {
+        const auto normal = window->property(normalGeometryKey).value<NormalWindowGeometryPtr>();
+        if (normal && normal->screen && normal->geometry.isValid()
+            && QGuiApplication::screens().contains(normal->screen.data()))
+        {
+            screen = normal->screen;
+            geometry = normal->geometry;
+            position = geometry.topLeft();
+        }
+    }
+    if (!screen)
+        return;
     //no standard way to do it, mimic what qt is doing internally
     QByteArray array;
     QDataStream serialized(&array, QIODevice::WriteOnly);
@@ -46,11 +93,11 @@ void QVLCTools::saveWindowPosition(QSettings *settings, QWindow *window)
     serialized << magicNumber
         << quint8(1) //version major
         << quint8(0) //version minor
-        << window->screen()->name()
-        << window->screen()->devicePixelRatio()
-        << window->screen()->geometry()
-        << window->position()
-        << window->geometry()
+        << screen->name()
+        << screen->devicePixelRatio()
+        << screen->geometry()
+        << position
+        << geometry
         << quint8(window->windowStates() & Qt::WindowMaximized)
         << quint8(window->windowStates() & Qt::WindowFullScreen);
     settings->setValue("geometry", array);
@@ -123,6 +170,7 @@ static bool restoreWindowPositionImpl(QSettings *settings, QWindow *window)
 
     window->setPosition(position);
     window->setGeometry(geometry);
+    QVLCTools::updateWindowNormalGeometry(window);
 
     if (maximized || fullscreen)
     {
@@ -156,6 +204,7 @@ void QVLCTools::restoreWindowPosition(QSettings *settings, QWindow *window, QSiz
     {
         window->setPosition(defPos);
     }
+    QVLCTools::updateWindowNormalGeometry(window);
 }
 
 

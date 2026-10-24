@@ -1,0 +1,20 @@
+{
+  "changedPriorInputs": [
+    "src/input/decoder.c",
+    "test/Makefile.am"
+  ],
+  "addedInputs": [
+    "build-windows/beta-tracks-subtitles-20261023/build-core-r14.sh",
+    "build-windows/beta-tracks-subtitles-20261023/prepare-r14.py",
+    "build-windows/beta-tracks-subtitles-20261023/prepare-startup-fixture-generator-r14.py",
+    "build-windows/beta-tracks-subtitles-20261023/run-native-startup-ordinary-r14.py",
+    "build-windows/beta-tracks-subtitles-20261023/run-ordinary-r14.py",
+    "test/libvlc/generate_paused_video_startup.sh",
+    "test/libvlc/native_paused_video_startup.md",
+    "test/libvlc/native_paused_video_startup.py"
+  ],
+  "ordinaryGuiReusedSha256": "716862a1e2b8ee0d5dd0673bcd471d7eb85ad7fb64a92ae4388f0d83ffefda8b",
+  "productionScope": "A paused video decoder awaiting its first picture can consume/request input independently of explicit frame stepping. Subtitle demux/selection and audio clocks stay unchanged.",
+  "privateCandidate": "startup-candidate-r11b-source",
+  "sourceSnapshot": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\source-r14"
+}

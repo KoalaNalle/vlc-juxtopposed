@@ -358,6 +358,17 @@ vlc_module_begin ()
     add_bool( "qt-minimal-view", false, QT_MINIMAL_MODE_TEXT,
               nullptr )
 
+    // Internal General/Interface preferences consumers; legacy behavior is
+    // preserved until the corresponding explicit mode/delay is selected.
+    add_bool("qt-remember-window-geometry", true,
+             N_("Remember the main window geometry"), nullptr)
+    add_integer_with_range("qt-controls-auto-hide", -1, -1, 2,
+             N_("Automatically hide player controls"), nullptr)
+    add_integer_with_range("qt-controls-hide-timeout", -1, -1, 10000,
+             N_("Player controls hide delay in milliseconds"), nullptr)
+    add_integer_with_range("qt-notification-duration", 3000, 0, 10000,
+             N_("Track notification duration hint in milliseconds"), nullptr)
+
     add_bool( "qt-system-tray", true, SYSTRAY_TEXT, SYSTRAY_LONGTEXT)
 
     add_integer( "qt-notification", NOTIFICATION_MINIMIZED,
@@ -427,7 +438,13 @@ vlc_module_begin ()
     add_bool( "qt-embedded-open", false, QT_NATIVEOPEN_TEXT,
                nullptr )
 
+    add_bool( "qt-juxtopposed-controls", true, N_("Use the Juxtopposed playback controls"),
+              N_("Use the playback bar designed by Juxtopposed on Windows. "
+                 "Disable to use the customizable VLC toolbar."))
+
     add_bool( "qt-pin-controls", false, QT_PIN_CONTROLS_TEXT, QT_PIN_CONTROLS_LONGTEXT )
+    add_bool( "qt-timeline-thumbnails", false, N_("Show thumbnail while scrubbing"),
+              N_("Generate independent video previews while pointing at the timeline."))
 
 
     add_obsolete_bool( "qt-advanced-pref" ) /* since 4.0.0 */
@@ -1168,16 +1185,24 @@ static void *Thread( void *obj )
         // settings value can be string (ini file), do not use `typeId()`:
         if (graphicsApiValue.isValid() && Q_LIKELY(graphicsApiValue.canConvert<int>()))
         {
+            // Select the cached backend before any compositor creates a window.
+            // Changing Qt Quick's global backend after a view has initialized
+            // leaves its existing RHI inconsistent with renderer resource queries.
+            const auto graphicsApi = static_cast<QSGRendererInterface::GraphicsApi>(graphicsApiValue.value<int>());
+            QQuickWindow::setGraphicsApi(graphicsApi);
+            if (p_intf->mainSettings->value(graphicsApiRhiSoftwareKey).value<bool>())
+                enableRhiSoftwareRenderer();
 
-            //some part of the probing needs to be executed on the GUI thread and some part will be ran in a background thread,
-            //so we defer the execution of this once the app is started. We can't start the task directly as qApp isn't set yet
-            //and there are scenarios where the main loop will never be run.
-            QMetaObject::invokeMethod(&app, [&](){
-                // A cached (by then) valid graphics api is found, use it:
-                QQuickWindow::setGraphicsApi(static_cast<QSGRendererInterface::GraphicsApi>(graphicsApiValue.value<int>()));
-                if (p_intf->mainSettings->value(graphicsApiRhiSoftwareKey).value<bool>())
-                    enableRhiSoftwareRenderer();
+            if (graphicsApi == QSGRendererInterface::OpenGL)
+            {
+                if (const auto format = createCompatibleOpenGLFormat())
+                    QSurfaceFormat::setDefaultFormat(*format);
+            }
+            qDebug() << "Selected cached Qt graphics API before interface creation:" << graphicsApi;
 
+            // Only the asynchronous probe waits for the event loop. Its GUI
+            // thread work may block while the worker tests another backend.
+            QMetaObject::invokeMethod(&app, [p_intf](){
                 // Asynchronous re-probe to see if the cached graphics api is still applicable.
                 // If not, QQuickWindow is going to emit scene graph error, and the application is
                 // likely going to terminate. However, when the user starts the application again
@@ -1225,19 +1250,6 @@ static void *Thread( void *obj )
 
                 const auto globalThreadPool = QThreadPool::globalInstance();
                 assert(globalThreadPool);
-
-                if (graphicsApiValue.toInt() == QSGRendererInterface::OpenGL)
-                {
-                    // Due to asynchronous probing, we need to set the default
-                    // format before the main interface window's (`::create()`)
-                    // is called. Since previous probe result succeeded with
-                    // OpenGL and required version, we can assume that the there
-                    // will be again a compatible OpenGL format, rather than
-                    // storing and re-using the version (considering that it
-                    // takes negligible time to re-create the compatible format):
-                    if (const auto format = createCompatibleOpenGLFormat()) /* [[likely]] */
-                        QSurfaceFormat::setDefaultFormat(*format);
-                }
 
                 rhiProbeTask->start(*globalThreadPool, -1);
             }, Qt::QueuedConnection);

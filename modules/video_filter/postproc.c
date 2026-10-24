@@ -204,6 +204,7 @@ static int OpenPostproc( filter_t *p_filter )
     }
     free( val.psz_string );
 
+    msg_Dbg( p_filter, "postprocessing quality: %"PRId64, val_orig.i_int );
     for( val.i_int = 0; val.i_int <= PP_QUALITY_MAX; val.i_int++ )
     {
         switch( val.i_int )

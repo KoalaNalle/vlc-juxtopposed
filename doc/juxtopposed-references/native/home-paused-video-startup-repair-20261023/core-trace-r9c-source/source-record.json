@@ -1,0 +1,16 @@
+{
+  "diagnosticOnly": true,
+  "productionSourceUnchanged": true,
+  "originalSha256": "166269ff1e4ea73640126c734eb34b40b51505b9ff90f28696567788812a2260",
+  "traceSha256": "d2eda7acf6932eb1279208c975dc1298cf39fb77c7b3408dd48642a3dc53f0f4",
+  "producerSha256": "32a4979b7951b5a90a9a97de54d237b28a08be89be73aa8ced497bc5db523483",
+  "instrumentedFunctions": [
+    "void vlc_input_decoder_Wait(",
+    "void vlc_input_decoder_ChangePause(",
+    "static int DecoderWaitUnblock(",
+    "static int ModuleThread_PlayVideo(",
+    "static void ModuleThread_QueueSpu(",
+    "void vlc_input_decoder_DecodeWithStatus("
+  ],
+  "scope": "Logging statements and one local observation flag only in a separate decoder translation unit; production source, object and ordinary Core remain untouched. This is diagnostic evidence, not a repair or acceptance build."
+}

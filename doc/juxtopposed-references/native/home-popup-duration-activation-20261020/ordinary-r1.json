@@ -1,0 +1,81 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateHooks": false,
+  "cases": {
+    "initial": {
+      "status": "ordinary_exited",
+      "phase": "initial",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "72ba439a30f098555461289639ab3249e5fc45af0f8bbb257c4dc95b6214efae",
+      "startupDuration": 777,
+      "pid": 12548,
+      "exitCode": 0,
+      "normalExit": true,
+      "sourceInputsUnchanged": true,
+      "generatedMediaUnchanged": true,
+      "platformDeliveries": [
+        {
+          "name": "Owned ordinary notification.wav",
+          "durationHintMs": 777
+        }
+      ],
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "savedDuration": 0
+    },
+    "cold-zero": {
+      "status": "ordinary_exited",
+      "phase": "cold-zero",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "72ba439a30f098555461289639ab3249e5fc45af0f8bbb257c4dc95b6214efae",
+      "startupDuration": 0,
+      "pid": 24828,
+      "exitCode": 0,
+      "normalExit": true,
+      "sourceInputsUnchanged": true,
+      "generatedMediaUnchanged": true,
+      "platformDeliveries": [
+        {
+          "name": "Owned ordinary notification.wav",
+          "durationHintMs": 0
+        }
+      ],
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "savedDuration": 10000
+    },
+    "cold-max": {
+      "status": "ordinary_exited",
+      "phase": "cold-max",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "72ba439a30f098555461289639ab3249e5fc45af0f8bbb257c4dc95b6214efae",
+      "startupDuration": 10000,
+      "pid": 28028,
+      "exitCode": 0,
+      "normalExit": true,
+      "sourceInputsUnchanged": true,
+      "generatedMediaUnchanged": true,
+      "platformDeliveries": [
+        {
+          "name": "Owned ordinary notification.wav",
+          "durationHintMs": 10000
+        }
+      ],
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "savedDuration": 10000
+    }
+  },
+  "observations": [
+    "Initial editor shows exact0.777s without opening writes; pointer change and Left/Right saves preserve paused00:00.",
+    "Cold zero and max are displayed without stale restart feedback and reach genuine Windows platform handler as0/10000.",
+    "Actual pointer and keyboard boundary steps0/500/0 and10000/9500/10000 verified with independent config readback. Home did not change the slider; no Home/End support is claimed."
+  ]
+}

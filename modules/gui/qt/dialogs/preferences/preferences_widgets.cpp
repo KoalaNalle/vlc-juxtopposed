@@ -1491,6 +1491,20 @@ void KeySelectorControl::selectKey( KeyTableItem *item, enum ColumnIndex column 
     delete d;
 }
 
+QVariantMap KeySelectorControl::requestedValues() const
+{
+    QVariantMap values;
+    for (QTreeWidgetItemIterator iter(table); *iter; ++iter)
+    {
+        const KeyTableItem *item = static_cast<KeyTableItem *>(*iter);
+        if (item->normal.config_name)
+            values.insert(QString::fromUtf8(item->normal.config_name), item->normal.keys);
+        if (item->global.config_name)
+            values.insert(QString::fromUtf8(item->global.config_name), item->global.keys);
+    }
+    return values;
+}
+
 void KeySelectorControl::doApply()
 {
     for (QTreeWidgetItemIterator iter(table); *iter; ++iter)

@@ -1031,7 +1031,9 @@ static int LoadGlyphs( filter_t *p_filter, paragraph_t *p_paragraph,
         {
             double f_outline_thickness = p_sys->i_outline_thickness / 100.0;
             f_outline_thickness = VLC_CLIP( f_outline_thickness, 0.0, 0.5 );
-            i_stroker_radius = ( metrics.height_px << 6 ) * f_outline_thickness;
+            i_stroker_radius = p_sys->outline_pixels >= 0.f
+                ? lroundf(VLC_CLIP(p_sys->outline_pixels, 0.f, 50.f) * 64.f)
+                : ( metrics.height_px << 6 ) * f_outline_thickness;
             FT_Stroker_Set( p_sys->p_stroker,
                             i_stroker_radius,
                             FT_STROKER_LINECAP_ROUND,

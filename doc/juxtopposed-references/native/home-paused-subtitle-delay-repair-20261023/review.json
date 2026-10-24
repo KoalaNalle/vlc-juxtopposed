@@ -1,0 +1,36 @@
+{
+  "productionApplied": true,
+  "selectedRepairAccepted": true,
+  "ordinaryBuildAccepted": true,
+  "fullBetaAccepted": false,
+  "coreSha256": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+  "sourceFiles": {
+    "src/input/decoder.c": "d4c4b1b31e08bb11aa628f00be06999c9d2c430f06049b69434d0f492b4445c0",
+    "src/input/es_out.c": "52c5ad89d2af4fda4408b85aaac8d56f84d6b9f648091a7dd4056ef36d3f7635",
+    "src/input/es_out.h": "f4c132ca328ce4e58475aa09456548048217bdfcf210a49216c3617c9f6fec11",
+    "src/input/input.c": "089c01fae5837d703d6a1b2f0438353de0e6c88888fd4cdfaefb44f682f99b0c",
+    "src/player/input.c": "e608b7d04a4ebaa3f8316064fbc15c5c5a6b33db137f2844cd6d0f85bc58245f",
+    "src/player/player.c": "eec8bfcb5b4e30bf09af8af09b83677f5124b3077c50d855f2f04ca5c75246e8",
+    "src/player/player.h": "4e4a7cb2eefdf56a487498e907048a96d6286bd38a60295c08d648c93525afbe"
+  },
+  "sourceInputCount": 2400,
+  "runtime": "build-windows/beta-subtitle-delay-repair-20261023/ui-frame-marker-ass.mkv-r4/runtime",
+  "cause": "Subtitle delay updates did not wake the decoder. Precise seek demux/packet preroll also used video time, discarding cues still active after a positive offset.",
+  "change": "Wake decoder delay consumers, retain earlier delayed cue data while preserving video/audio display boundaries, and refill seekable paused subtitles at the actual held frame. Preserve track override, recording, seekability, current-input and pending-target policies.",
+  "publicAbiChanged": false,
+  "ordinaryNativePasses": 35,
+  "guiNormalExits": 1,
+  "limits": [
+    "Desktop observations establish displayed text, marker pattern and coarse elapsed time; exact numeric conservation uses separate native image/timer checks.",
+    "The normalized GUI progress value changes by roughly one microsecond of media during the keyboard sequence, then returns on Reset; exact GUI numeric conservation remains unqualified.",
+    "An accessibility set_value request for the timing spinner left its value unchanged; actual focused Up-key adjustments worked. This input route needs separate accessibility investigation and is not claimed accepted.",
+    "Page Up left the focused spinner value unchanged; no support for that key is inferred.",
+    "After closing the track panel, Space reopened it while the Subtitle tracks toolbar button retained focus. Explicit Play resumed on one click; global Space acceptance after arbitrary popup focus is not claimed.",
+    "The MP4 normalized progress value reconciled after Reset; the visible frame pattern and coarse elapsed value stayed the same. Exact GUI numeric conservation remains unqualified.",
+    "Accepted scope is delayed paused seeking and current primary delay/reset, including next-file saved defaults, in the recorded generated media. Complete subtitle workflows remain open.",
+    "Per-track/secondary offsets and multiple selected tracks with independent delays, unknown-length/nonseekable/recording behavior, larger offsets, nonzero origins and more cue boundaries require separate qualification.",
+    "Native dummy-window diagnostics and compiler warnings remain preserved; no error-free-native-log claim or physical audibility claim.",
+    "Actual OS DPI, screen readers, Windows10 comparison, remaining consumer/design work, independent review and clean packaging remain full-beta gates."
+  ],
+  "next": "Investigate the spinner accessibility value-write route and default-delay help, qualify secondary/current timing and other remaining consumer/workflow cases, then continue the complete thirteen-category/32-surface roadmap."
+}

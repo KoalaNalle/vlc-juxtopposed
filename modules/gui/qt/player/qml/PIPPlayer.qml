@@ -60,24 +60,12 @@ T.Control {
     DoubleClickIgnoringItem {
         anchors.fill: parent
 
-        TapHandler {
-            gesturePolicy: TapHandler.WithinBounds
-
-            onDoubleTapped: (eventPoint, button) => {
-                // Docs are lying, there is no `deviceType`: QTBUG-135104
-                if (eventPoint.device.type !== PointerDevice.TouchScreen)
-                    MainCtx.playerView = true
-            }
-
-            onTapped: (eventPoint, button) => {
-                // Docs are lying, there is no `deviceType`: QTBUG-135104
-                if (eventPoint.device.type === PointerDevice.TouchScreen) {
-                    // Breaking the initial binding is intentional here:
-                    root.hideControls = !root.hideControls
-                } else {
-                    MainPlaylistController.togglePlayPause()
-                }
-            }
+        VideoInputTapHandler {
+            videoSurfaceProvider: MainCtx.videoSurfaceProvider
+            pixelRatio: MainCtx.effectiveDevicePixelRatio(root.Window.window) || 1
+            dragging: dragHandler.active
+            // Breaking the initial binding is intentional, as before.
+            onTouchTapped: root.hideControls = !root.hideControls
         }
 
         DragHandler {
@@ -108,6 +96,11 @@ T.Control {
                     blocking = true // Qt 6.3 feature
             }
         }
+    }
+
+    Connections {
+        target: Player
+        function onFullscreenChanged(fullscreen) { if (fullscreen) MainCtx.playerView = true }
     }
 
     background: VideoSurface {

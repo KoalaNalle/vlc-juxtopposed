@@ -591,6 +591,7 @@ static int InitVideoDecCommon( decoder_t *p_dec )
     else if( i_val == 2 ) p_context->skip_loop_filter = AVDISCARD_BIDIR;
     else if( i_val == 1 ) p_context->skip_loop_filter = AVDISCARD_NONREF;
     else p_context->skip_loop_filter = AVDISCARD_DEFAULT;
+    msg_Dbg( p_dec, "loop filter discard policy: %d", p_context->skip_loop_filter );
 
     /* ***** libavcodec frame skipping ***** */
     p_sys->b_hurry_up = var_CreateGetBool( p_dec, "avcodec-hurry-up" );

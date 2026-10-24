@@ -1,0 +1,47 @@
+{
+  "original": {
+    "process": {
+      "exitCode": 1,
+      "normalExit": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.11
+    },
+    "results": [
+      "FAIL: exact stereo packets=40 bad-lengths=40 bad-pts=0 bad-data=0 duration=0 expected=2000000",
+      "FAIL: partial stereo tail packets=41 bad-lengths=41 bad-pts=0 bad-data=0 duration=0 expected=2010000",
+      "FAIL: short mono packets=1 bad-lengths=1 bad-pts=0 bad-data=0 duration=0 expected=10000",
+      "FAIL: fractional packet duration packets=11 bad-lengths=11 bad-pts=0 bad-data=0 duration=0 expected=544217",
+      "FAIL: 48k partial tail packets=3 bad-lengths=3 bad-pts=0 bad-data=0 duration=0 expected=102104",
+      "FAIL: single sample frame packets=1 bad-lengths=1 bad-pts=0 bad-data=0 duration=0 expected=22",
+      "FAIL: float stereo packets=2 bad-lengths=2 bad-pts=0 bad-data=0 duration=0 expected=66645",
+      "FAIL: mu-law short odd payload packets=1 bad-lengths=1 bad-pts=0 bad-data=0 duration=0 expected=49875",
+      "FAIL: seek then final packet packets=20 bad-lengths=20 bad-pts=0 bad-data=0 duration=0 expected=1000000",
+      "RESULT: 9 cases, 9 failures"
+    ]
+  },
+  "repaired": {
+    "process": {
+      "exitCode": 0,
+      "normalExit": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.11
+    },
+    "results": [
+      "PASS: exact stereo packets=40 bad-lengths=0 bad-pts=0 bad-data=0 duration=2000000 expected=2000000",
+      "PASS: partial stereo tail packets=41 bad-lengths=0 bad-pts=0 bad-data=0 duration=2010000 expected=2010000",
+      "PASS: short mono packets=1 bad-lengths=0 bad-pts=0 bad-data=0 duration=10000 expected=10000",
+      "PASS: fractional packet duration packets=11 bad-lengths=0 bad-pts=0 bad-data=0 duration=544217 expected=544217",
+      "PASS: 48k partial tail packets=3 bad-lengths=0 bad-pts=0 bad-data=0 duration=102104 expected=102104",
+      "PASS: single sample frame packets=1 bad-lengths=0 bad-pts=0 bad-data=0 duration=22 expected=22",
+      "PASS: float stereo packets=2 bad-lengths=0 bad-pts=0 bad-data=0 duration=66645 expected=66645",
+      "PASS: mu-law short odd payload packets=1 bad-lengths=0 bad-pts=0 bad-data=0 duration=49875 expected=49875",
+      "PASS: seek then final packet packets=20 bad-lengths=0 bad-pts=0 bad-data=0 duration=1000000 expected=1000000",
+      "RESULT: 9 cases, 0 failures"
+    ]
+  },
+  "testSha256": "e811588e28db21e7fb2af8297eb471e642123d9b40cd263369d3b5e93b039c54",
+  "originalPluginSha256": "b026bf5be4e2ea841751eb86f5254b3fb5e22ce403d7f393c15480257cc7976c",
+  "repairedPluginSha256": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b"
+}

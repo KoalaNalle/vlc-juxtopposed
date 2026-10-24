@@ -36,6 +36,7 @@
 #include <QLabel>
 #include <QDialog>
 #include <QSet>
+#include <QVariantMap>
 #include <QContextMenuEvent>
 
 class QWidget;
@@ -424,6 +425,9 @@ public:
     void insertInto( QGridLayout*, int row = 0 ) override;
     void doApply() override;
     void storeValue() override {}
+    // Redesigned Controls uses checked, scoped persistence after validation.
+    // Reading the editor must never apply its unchecked classic save path.
+    QVariantMap requestedValues() const;
     enum ColumnIndex
     {
         ACTION_COL = 0,

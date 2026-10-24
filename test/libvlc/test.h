@@ -65,14 +65,41 @@ static const char test_default_sample[] = "mock://";
 
 static inline void test_setup(void)
 {
+    /* Relocated Windows/cross-built tests need their staged plugin tree,
+     * rather than the build host's path baked into TOP_BUILDDIR. */
+    const char *plugin_path = getenv("VLC_TEST_PLUGIN_PATH");
+#ifdef _WIN32
+    _set_error_mode(_OUT_TO_STDERR);
+#endif
+    if (plugin_path != NULL)
+    {
+        char *path = strdup(plugin_path);
+        assert(path != NULL);
+#ifdef _WIN32
+        assert(_putenv_s("VLC_PLUGIN_PATH", path) == 0);
+        assert(_putenv_s("VLC_LIB_PATH", path) == 0);
+#else
+        assert(setenv("VLC_PLUGIN_PATH", path, 1) == 0);
+        assert(setenv("VLC_LIB_PATH", path, 1) == 0);
+#endif
+        free(path);
+        return;
+    }
+#ifdef _WIN32
+    _putenv("VLC_PLUGIN_PATH=" TOP_BUILDDIR"/modules");
+    _putenv("VLC_LIB_PATH=" TOP_BUILDDIR"/modules");
+#else
     setenv("VLC_PLUGIN_PATH", TOP_BUILDDIR"/modules", 1);
     setenv("VLC_LIB_PATH", TOP_BUILDDIR"/modules", 1);
+#endif
 }
 
 static inline void test_init (void)
 {
     (void)test_default_sample; /* This one may not be used */
 
+#ifndef _WIN32
+    /* Windows has no alarm(); its test runner must enforce the timeout. */
     /* Make sure "make check" does not get stuck */
     /* Timeout of 10secs by default */
     unsigned alarm_timeout = 10;
@@ -89,6 +116,7 @@ static inline void test_init (void)
     }
     if (alarm_timeout != 0)
         alarm (alarm_timeout);
+#endif
 
     test_setup();
 }

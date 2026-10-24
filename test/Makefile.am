@@ -74,7 +74,9 @@ check_PROGRAMS = \
 	test_src_video_output_spu \
 	test_modules_lua_extension \
 	test_modules_misc_medialibrary \
+	test_modules_access_output_file \
 	test_modules_packetizer_helpers \
+	test_modules_packetizer_copy \
 	test_modules_packetizer_hxxx \
 	test_modules_packetizer_h264 \
 	test_modules_packetizer_h266 \
@@ -87,6 +89,7 @@ check_PROGRAMS = \
 	test_modules_codec_cea708_integration \
 	test_modules_keystore \
 	test_modules_demux_json \
+	test_modules_demux_wav_timing \
 	test_modules_demux_libmp4 \
 	test_modules_demux_timestamps \
 	test_modules_demux_timestamps_filter \
@@ -137,7 +140,11 @@ check_SCRIPTS = \
 # Disabled tests:
 EXTRA_PROGRAMS = \
 	test_src_input_stream_net \
+	test_libvlc_native_library_slice \
 	$(NULL)
+
+test_libvlc_native_library_slice_SOURCES = libvlc/native_library_slice.c
+test_libvlc_native_library_slice_LDADD = $(LIBVLCCORE) $(LIBVLC)
 
 EXTRA_DIST = \
 	modules/lua/extensions/extensions.lua \
@@ -357,7 +364,11 @@ test_modules_lua_playlist_parser_CPPFLAGS = $(AM_CPPFLAGS)
 test_modules_misc_medialibrary_SOURCES = modules/misc/medialibrary.c
 test_modules_misc_medialibrary_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_helpers_SOURCES = modules/packetizer/helpers.c
+test_modules_access_output_file_SOURCES = modules/access_output/file.c
+test_modules_access_output_file_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_helpers_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_packetizer_copy_SOURCES = modules/packetizer/copy.c
+test_modules_packetizer_copy_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_hxxx_SOURCES = modules/packetizer/hxxx.c
 test_modules_packetizer_hxxx_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_packetizer_h264_SOURCES = modules/packetizer/h264.c \
@@ -380,6 +391,9 @@ test_modules_keystore_SOURCES = modules/keystore/test.c
 test_modules_keystore_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_modules_tls_SOURCES = modules/misc/tls.c
 test_modules_tls_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_demux_wav_timing_SOURCES = modules/demux/wav_timing.c
+test_modules_demux_wav_timing_LDADD = $(LIBVLCCORE) $(LIBVLC)
+
 test_modules_demux_json_SOURCES = modules/demux/json.c \
 				../modules/demux/json/json.h
 test_modules_demux_json_LDADD = $(LIBVLCCORE) ../modules/libvlc_json.la
@@ -644,3 +658,84 @@ vlc_window_LDADD = ../lib/libvlc.la ../src/libvlccore.la ../compat/libcompat.la
 if HAVE_DYNAMIC_PLUGINS
 noinst_PROGRAMS += vlc-window
 endif
+
+# Explicit opt-in source-compiled SoXR/native ownership diagnostic.
+# Not part of check_PROGRAMS on builds without the optional SoXR dependency.
+EXTRA_PROGRAMS += test_modules_soxr_lifecycle
+test_modules_soxr_lifecycle_SOURCES = modules/audio_filter/soxr_lifecycle.c
+test_modules_soxr_lifecycle_CPPFLAGS = $(AM_CPPFLAGS) $(SOXR_CFLAGS)
+test_modules_soxr_lifecycle_LDADD = $(LIBVLCCORE) $(LIBVLC) $(SOXR_LIBS) $(LIBM)
+if HAVE_WIN32
+# Keep this owned MinGW diagnostic independent of unrelated PATH pthread DLLs.
+# Disable GCC POSIX's automatic dynamic -lpthread, then resolve actual static
+# dependency symbols after the source's libraries in the LDADD order.
+test_modules_soxr_lifecycle_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_soxr_lifecycle_LDADD += -l:libwinpthread.a
+endif
+
+# Explicit actual native FLAC packetizer/guarded header regression.
+EXTRA_PROGRAMS += test_modules_packetizer_flac_eos
+test_modules_packetizer_flac_eos_SOURCES = modules/packetizer/flac_eos.c
+test_modules_packetizer_flac_eos_LDADD = $(LIBVLCCORE) $(LIBVLC)
+if HAVE_WIN32
+test_modules_packetizer_flac_eos_LDFLAGS = $(AM_LDFLAGS) -static-libgcc -no-pthread
+test_modules_packetizer_flac_eos_LDADD += -l:libwinpthread.a
+endif
+
+# Real optional SoXR module timestamp regression.
+EXTRA_PROGRAMS += test_modules_soxr_timestamps
+test_modules_soxr_timestamps_SOURCES = modules/audio_filter/soxr_timestamps.c
+test_modules_soxr_timestamps_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
+
+# Explicit real media-library database failure/retry regression.
+EXTRA_PROGRAMS += test_modules_medialibrary_history
+test_modules_medialibrary_history_SOURCES = modules/misc/medialibrary_history.c
+test_modules_medialibrary_history_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src
+test_modules_medialibrary_history_LDADD = $(LIBVLCCORE) $(LIBVLC)
+EXTRA_DIST += libvlc/native_history_clear.py libvlc/native_history_playback.py
+
+# Opt-in drivers require the owned runtime and private fixture module supplied
+# by native_controls.py / native_controls_http.py; they are not installed.
+EXTRA_DIST += controls-native.mk src/interface/controls.c src/interface/controls_http.c \
+    libvlc/native_controls.py libvlc/native_controls_http.py libvlc/test_http_wheel_ui.py
+
+EXTRA_DIST += network-native.mk src/network/proxy_windows.c src/network/settings_consumers.c \
+    libvlc/native_network_proxy.py libvlc/native_network_settings.py libvlc/generate_network_tls.sh
+EXTRA_DIST += src/network/proxy_policy.c
+EXTRA_DIST += src/network/proxy_transport.c libvlc/native_http_runtime.py \
+    libvlc/native_http_policy.py libvlc/native_http_proxy.py libvlc/native_http_pac.py \
+    libvlc/generate_http_proxy_tls.sh libvlc/native_http.md
+EXTRA_DIST += libvlc/native_encoder_preference.py libvlc/native_flac_drain.py \
+    libvlc/native_conversion_controller.py libvlc/native_encoder.md
+EXTRA_DIST += libvlc/native_plugin_cache_rescan.py libvlc/native_plugin_cache_rescan.md
+EXTRA_DIST += priority-native.mk libvlc/native_process_priority.py libvlc/native_process_priority.md
+EXTRA_DIST += libvlc/native_recording_preferences.py libvlc/native_recording_preferences.md \
+    libvlc/native_recording_consumers.py libvlc/native_recording_worker.py \
+    libvlc/native_recording_encoders.py libvlc/native_recording_consumers.md
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_priority_startup
+test_priority_startup_SOURCES = src/misc/priority_startup.c
+test_priority_startup_LDADD = $(LIBVLC) $(LIBVLCCORE)
+test_priority_startup_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+EXTRA_PROGRAMS += test_addons
+test_addons_SOURCES = src/misc/addons.c
+test_addons_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/src
+test_addons_LDADD = $(LIBVLC) $(LIBVLCCORE)
+test_addons_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+endif
+
+EXTRA_DIST += addons-native.mk libvlc/native_addons.py libvlc/native_addons.md
+EXTRA_DIST += mmdevice-native.mk modules/audio_output/mmdevice_stop.c
+EXTRA_DIST += wasapi-role-native.mk modules/audio_output/wasapi_role.c
+EXTRA_DIST += libvlc/native_mmdevice_stop.py libvlc/native_mmdevice_stop.md
+EXTRA_DIST += libvlc/native_mmdevice_lifecycle.py
+EXTRA_DIST += libvlc/native_paused_video_startup.py \
+    libvlc/generate_paused_video_startup.sh libvlc/native_paused_video_startup.md
+
+EXTRA_DIST += libvlc/native_paused_subtitle_seek.py \
+    libvlc/generate_paused_subtitle_seek.sh libvlc/native_paused_subtitle_seek.md
+
+EXTRA_DIST += libvlc/native_paused_subtitle_tracks.py \
+    libvlc/generate_paused_subtitle_tracks.sh libvlc/native_paused_subtitle_tracks.md \
+    libvlc/native_paused_subtitle_delay.py libvlc/native_paused_subtitle_delay.md \
+    libvlc/native_player_callback_layout.c

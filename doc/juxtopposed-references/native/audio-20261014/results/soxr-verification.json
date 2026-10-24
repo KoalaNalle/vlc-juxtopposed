@@ -1,0 +1,58 @@
+{
+  "startedUtc": "2026-10-14T14:17:35.345708+00:00",
+  "passed": true,
+  "package": "build-windows/slice-beta-native-package-20261014",
+  "testExe": "build-windows/core-tests/test_modules_soxr_lifecycle.exe",
+  "expectedCases": [
+    "soxr_fixed_complete_and_repeat",
+    "soxr_downsample_complete",
+    "soxr_flush_then_new_signal",
+    "soxr_fixed_variable_transitions_independent_reference",
+    "soxr_true_bypass_variable_transitions_independent_reference",
+    "soxr_injected_allocation_failure_consumes_input",
+    "soxr_injected_alias_process_failure_releases_once",
+    "soxr_injected_gather_failure_releases_preserved_chain",
+    "soxr_injected_drain_allocation_failure_can_retry",
+    "soxr_switch_initial_drain_allocation_failure_can_retry",
+    "soxr_native_lifecycle_cleanup"
+  ],
+  "timeoutSeconds": 45,
+  "scope": "Current production SoXR source compiled into the native diagnostic with real libSoXR/native blocks. Ordinary fixed/downsample/flush/fixed/VR transitions and initial-ratio1 true bypass are compared to independently created SDK engines using exact counts and PCM tolerance1e-5, with repeated NULL-input SDK drains to actual zero; allocation/Gather/process error outcomes are explicitly injected at source API call sites and tracked via native release callbacks. This does not test actual process-wide OOM, the loaded SoXR DLL code path, encoded FLAC output, desktop playback or arbitrary media.",
+  "inputHashes": {
+    "build-windows/core-tests/test_modules_soxr_lifecycle.exe": "bce969b5929a03127b33b1536914d56fcb1d453aac129d0ae8f9168b82d47b6b",
+    "build-windows/slice-beta-native-package-20261014/libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "build-windows/slice-beta-native-package-20261014/libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+    "build-windows/slice-beta-native-package-20261014/plugins/audio_filter/libsoxr_plugin.dll": "d5600210c4932d41efdb1d2d6c7783965369f43f9c7ce6b9e5720d2bd0fb039d",
+    "build-windows/core-tests/libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "build-windows/core-tests/libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "sourceHashesAtRun": {
+    "test/modules/audio_filter/soxr_lifecycle.c": "73882bf3dc02325cab752363623806eb6b0b2127b283816e7b230119aea802b8",
+    "modules/audio_filter/resampler/soxr.c": "76615fbc5de3dbbf7c95c367504e9e9eead60b305e1c029d590452c5592d21db"
+  },
+  "sourceBuildProof": "Current source identities are recorded; Root must separately retain the successful compilation log/manifest linking this executable to those sources.",
+  "environment": {
+    "VLC_LIB_PATH": "build-windows/slice-beta-native-package-20261014/plugins",
+    "VLC_USERDATA_PATH": "build-windows/soxr-native-reference-initialized-20261014/userdata"
+  },
+  "ownedPid": 35148,
+  "exitCode": 0,
+  "actualCases": [
+    "soxr_fixed_complete_and_repeat",
+    "soxr_downsample_complete",
+    "soxr_flush_then_new_signal",
+    "soxr_fixed_variable_transitions_independent_reference",
+    "soxr_true_bypass_variable_transitions_independent_reference",
+    "soxr_injected_allocation_failure_consumes_input",
+    "soxr_injected_alias_process_failure_releases_once",
+    "soxr_injected_gather_failure_releases_preserved_chain",
+    "soxr_injected_drain_allocation_failure_can_retry",
+    "soxr_switch_initial_drain_allocation_failure_can_retry",
+    "soxr_native_lifecycle_cleanup"
+  ],
+  "evidenceHashes": {
+    "stdout.txt": "c04cfef6e2241a6b800a730bd93f4503c1cbaeec520155e049e5161f8b3029d2",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "finishedUtc": "2026-10-14T14:17:35.597956+00:00"
+}

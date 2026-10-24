@@ -1,0 +1,25 @@
+{
+  "status": "terminal-paused-with-open-failure",
+  "pid": 20864,
+  "core": "b62f414569c494ba866089afeae46f6cdc4c4e260d63b6a554d60c4dcfe54561",
+  "gui": "79aef2b55acc95eafcd9c0165162b46c11841787862bba680ee1e0be0a7e0577",
+  "observations": [
+    "Explicitly selected Track 3 and observed EXTERNAL FPS FIRST. Embedded English was initially selected despite the added CLI external file.",
+    "Paused seek to progress 0.2 settles at 0.20062988452117111 and elapsed 00:00:12, with the green/black marker picture and EXTERNAL FPS FIRST.",
+    "Playback settings > Subtitles initially reads 23.976 fps. Windows set_value writes text 50; focus and Enter now commit 50.000 fps rather than discarding it.",
+    "An independent settled observation shows EXTERNAL FPS MIDDLE without a user seek, with unchanged progress 0.20062988452117111, elapsed 00:00:12 and visible marker picture.",
+    "The settings Synchronization tools action opens the existing native Adjustments and Effects dialog. Its FPS spinner reads 50, confirming cross-editor state.",
+    "A Windows accessibility write of 29.97 to that native spinner immediately restores EXTERNAL FPS FIRST while the paused GUI time/position remain unchanged. The native dialog then closes normally.",
+    "The first input attempt returned geometry unavailable while a native regression video window was in front. Fresh window selection and activation recovered it. A later cached Close index was unavailable; a fresh screenshot-backed Close action succeeded. No failed input was blindly repeated.",
+    "The QML synchronization spinner picks up native-dialog 29.969999313354492 FPS. Accessibility writes 23.976 and reads 23.97599983215332; a focused Up settles at 24.076000213623047. Writing 50 immediately shows EXTERNAL FPS MIDDLE at the same held marker/time.",
+    "FAILURE after opening/closing the native synchronization dialog: QML Reset changes 50 to 1, not the intended 0. The caption returns to EXTERNAL FPS FIRST. This cross-editor reset feedback remains unaccepted; the UI session has not completed qualification."
+  ],
+  "fullBetaAccepted": false,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true,
+  "checkedRuntimeDiagnostics": [],
+  "ordinaryFpsWorkflowAccepted": false,
+  "stopReason": "Owner requested wrap-up and use of the computer; normal Ctrl+Q exit."
+}

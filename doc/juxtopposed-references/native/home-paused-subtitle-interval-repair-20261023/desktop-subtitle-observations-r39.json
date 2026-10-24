@@ -1,0 +1,103 @@
+{
+  "selectedPausedMatroskaSeekAccepted": true,
+  "nativeMatrixAccepted": true,
+  "ordinaryFullscreenSeekAccepted": true,
+  "completeDesktopSubtitleWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "716862a1e2b8ee0d5dd0673bcd471d7eb85ad7fb64a92ae4388f0d83ffefda8b",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "rawVerificationSha256": "bd72fdb205b7c22c706752dca1b101eaa10c0bfad24a743952cdae5c112819a2",
+  "pid": 3864,
+  "windowId": 7604168,
+  "method": "Live Computer Use screenshots and accessibility observations from the owned ordinary GUI. Visual interpretations are recorded explicitly, not independent desktop pixel-mask tests. Immediate accessibility states sometimes lagged the picture; settled observations were refreshed before conclusions.",
+  "observations": [
+    {
+      "step": "startup-windowed",
+      "elapsed": "00:00:00",
+      "progress": 0.0003553663940297513,
+      "paused": true,
+      "visual": "Red video surface. No visible caption; no initial-subtitle acceptance."
+    },
+    {
+      "step": "accessibility-value-attempt",
+      "requestedProgress": 0.52,
+      "progressBefore": 0.0003553663940297513,
+      "progressAfter": 0.0003553663940297513,
+      "outcome": "Setter returned without an error, but two observations showed no actual seek. Separate accessibility issue remains."
+    },
+    {
+      "step": "windowed-physical-seek",
+      "elapsed": "00:00:31",
+      "progress": 0.5253623188405797,
+      "paused": true,
+      "visual": "SECOND SHORT OVERLAY visible at lower edge. LONG line is covered by the playback bar in the 960x540 window."
+    },
+    {
+      "step": "fullscreen-overlap",
+      "elapsed": "00:00:31",
+      "progress": 0.5254174176675385,
+      "paused": true,
+      "visual": "Both SECOND SHORT OVERLAY and LONG OVERLAPPING CUE readable on red. Bottom gradient darkens the lower line."
+    },
+    {
+      "step": "fullscreen-after-short-ended",
+      "elapsed": "00:00:36",
+      "progress": 0.6144834930777423,
+      "paused": true,
+      "visual": "Only LONG OVERLAPPING CUE remains on red after the 30-32s cue ended."
+    },
+    {
+      "step": "fullscreen-backward-after-first-short-ended",
+      "elapsed": "00:00:15",
+      "progress": 0.2502262664290117,
+      "paused": true,
+      "visual": "LONG OVERLAPPING CUE remains on green after seeking backward past the 10-12s cue."
+    },
+    {
+      "step": "subtitle-menu-open",
+      "elapsed": "00:00:15",
+      "progress": 0.2502262664290117,
+      "paused": true,
+      "subtitleRows": [
+        "Track 1 - [English]"
+      ]
+    },
+    {
+      "step": "subtitle-menu-escape",
+      "elapsed": "00:00:15",
+      "progress": 0.2502262664290117,
+      "paused": true,
+      "menuDismissed": true
+    },
+    {
+      "step": "resume",
+      "elapsed": "00:00:20",
+      "progress": 0.34462670953340774,
+      "button": "Pause"
+    },
+    {
+      "step": "pause-again",
+      "elapsed": "00:00:27",
+      "progress": 0.4646167480135263,
+      "button": "Play"
+    },
+    {
+      "step": "quit",
+      "exitCode": 0,
+      "forcedCleanup": false
+    }
+  ],
+  "remaining": [
+    "Small-window playback controls cover the bottom caption line; fullscreen bottom gradient also darkens it.",
+    "Direct accessibility progress value-setting did not commit a seek.",
+    "Initial subtitles, paused track replacement, external subtitles, language/default policy and synchronization remain separate."
+  ],
+  "questionsForMorning": [],
+  "scope": "Selected source repair accepted for precise Matroska subtitle seeking. Full desktop workflow and 13-category/32-surface beta remain open. No installs, commit/push, release/upload or shutdown."
+}

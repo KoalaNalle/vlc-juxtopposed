@@ -81,7 +81,7 @@ MainViewLoader {
 
     isSearchable: true
     list: list
-    grid: grid
+    grid: MainCtx.juxtopposedControls ? compactGrid : grid
     emptyLabel: emptylabel
 
     sortModel: [
@@ -138,6 +138,29 @@ MainViewLoader {
         coverRole: "thumbnail"
 
         defaultCover: VLCStyle.noArtVideoCover
+    }
+
+    Component {
+        id: compactGrid
+        JuxtopposedVideoGrid {
+            model: root.model
+            selectionModel: root.selectionModel
+            dragItem: root.dragItem
+            contextMenu: root.contextMenu
+            headerDelegate: root.header
+            displayMarginBeginning: root.displayMarginBeginning
+            displayMarginEnd: root.displayMarginEnd
+            interactive: root.interactive
+            reuseItems: root.reuseItems
+            Navigation.parentItem: root
+            onActionAtIndex: root.onAction(selectionModel.selectedIndexes)
+            onItemDoubleClicked: model => root.onDoubleClick(model)
+            onFocusInitializationRequested: {
+                root.resetFocus()
+                if (!selectionModel.hasSelection && model.count > 0)
+                    selectionModel.select(model.index(0, 0), ItemSelectionModel.ClearAndSelect)
+            }
+        }
     }
 
     Component {

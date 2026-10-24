@@ -1,0 +1,543 @@
+{
+  "legacyResponseAdaptation": "206 without Content-Range, intentionally rejected by modern reader and tolerated by legacy reader; finite response",
+  "passed": true,
+  "cases": {
+    "modern-http-proxy": {
+      "forcedCleanupUsed": false,
+      "pid": 980,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "modern-tls-proxy-1.2": {
+      "forcedCleanupUsed": false,
+      "pid": 19016,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.2"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "modern-connect-1.2": {
+      "forcedCleanupUsed": false,
+      "pid": 13188,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "CONNECT",
+          "path": "127.0.0.1:56063",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        },
+        {
+          "role": "origin",
+          "method": "GET",
+          "path": "/owned?tls=1.2",
+          "proxyAuthorizationPresent": false,
+          "ownedProxyAuthenticated": false,
+          "tlsVersion": "TLSv1.2"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 21,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "modern-tls-proxy-1.3": {
+      "forcedCleanupUsed": false,
+      "pid": 8576,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.3",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.3"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.3",
+      "passed": true
+    },
+    "modern-connect-1.3": {
+      "forcedCleanupUsed": false,
+      "pid": 7020,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "CONNECT",
+          "path": "127.0.0.1:56063",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        },
+        {
+          "role": "origin",
+          "method": "GET",
+          "path": "/owned?tls=1.3",
+          "proxyAuthorizationPresent": false,
+          "ownedProxyAuthenticated": false,
+          "tlsVersion": "TLSv1.3"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 21,
+      "expectedTls": "TLSv1.3",
+      "passed": true
+    },
+    "legacy-http-proxy": {
+      "forcedCleanupUsed": false,
+      "pid": 11592,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": null
+        }
+      ],
+      "accessModules": [
+        "oldhttp"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "legacy-tls-proxy-1.2": {
+      "forcedCleanupUsed": false,
+      "pid": 12528,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.2"
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.2"
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.2",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.2"
+        }
+      ],
+      "accessModules": [
+        "oldhttp"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "legacy-tls-proxy-1.3": {
+      "forcedCleanupUsed": false,
+      "pid": 3052,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.3",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.3"
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.3",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.3"
+        },
+        {
+          "role": "proxy",
+          "method": "GET",
+          "path": "http://127.0.0.1:56062/owned?tls=1.3",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.3"
+        }
+      ],
+      "accessModules": [
+        "oldhttp"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 20,
+      "expectedTls": "TLSv1.3",
+      "passed": true
+    },
+    "modern-nested-tls-1.2": {
+      "forcedCleanupUsed": false,
+      "pid": 18860,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "CONNECT",
+          "path": "127.0.0.1:56063",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.2"
+        },
+        {
+          "role": "origin",
+          "method": "GET",
+          "path": "/owned?tls=1.2",
+          "proxyAuthorizationPresent": false,
+          "ownedProxyAuthenticated": false,
+          "tlsVersion": "TLSv1.2"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 21,
+      "expectedTls": "TLSv1.2",
+      "passed": true
+    },
+    "modern-nested-tls-1.3": {
+      "forcedCleanupUsed": false,
+      "pid": 10660,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [
+        {
+          "role": "proxy",
+          "method": "CONNECT",
+          "path": "127.0.0.1:56063",
+          "proxyAuthorizationPresent": true,
+          "ownedProxyAuthenticated": true,
+          "tlsVersion": "TLSv1.3"
+        },
+        {
+          "role": "origin",
+          "method": "GET",
+          "path": "/owned?tls=1.3",
+          "proxyAuthorizationPresent": false,
+          "ownedProxyAuthenticated": false,
+          "tlsVersion": "TLSv1.3"
+        }
+      ],
+      "accessModules": [
+        "http"
+      ],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": true,
+      "bytesReceived": 21,
+      "expectedTls": "TLSv1.3",
+      "passed": true
+    },
+    "modern-untrusted-proxy": {
+      "forcedCleanupUsed": false,
+      "pid": 13836,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [],
+      "accessModules": [],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": false,
+      "bytesReceived": 0,
+      "expectedTls": "TLSv1.2",
+      "certificateRejected": true,
+      "passed": true
+    },
+    "modern-proxy-name-mismatch": {
+      "forcedCleanupUsed": false,
+      "pid": 9664,
+      "exitCode": 0,
+      "normalExit": true,
+      "events": [],
+      "accessModules": [],
+      "logHasCredential": false,
+      "originSawProxyCredential": false,
+      "payloadMatches": false,
+      "bytesReceived": 0,
+      "expectedTls": "TLSv1.2",
+      "certificateRejected": true,
+      "passed": true
+    }
+  },
+  "events": [
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "CONNECT",
+      "path": "127.0.0.1:56063",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "origin",
+      "method": "GET",
+      "path": "/owned?tls=1.2",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.3",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "proxy",
+      "method": "CONNECT",
+      "path": "127.0.0.1:56063",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "origin",
+      "method": "GET",
+      "path": "/owned?tls=1.3",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": null
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.2",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.3",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.3",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "proxy",
+      "method": "GET",
+      "path": "http://127.0.0.1:56062/owned?tls=1.3",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "proxy",
+      "method": "CONNECT",
+      "path": "127.0.0.1:56063",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "origin",
+      "method": "GET",
+      "path": "/owned?tls=1.2",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false,
+      "tlsVersion": "TLSv1.2"
+    },
+    {
+      "role": "proxy",
+      "method": "CONNECT",
+      "path": "127.0.0.1:56063",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true,
+      "tlsVersion": "TLSv1.3"
+    },
+    {
+      "role": "origin",
+      "method": "GET",
+      "path": "/owned?tls=1.3",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false,
+      "tlsVersion": "TLSv1.3"
+    }
+  ],
+  "serverErrors": [],
+  "systemProxySettingsUsed": false,
+  "personalCredentialsUsed": false,
+  "osCertificateStoreChanged": false,
+  "runtimeSha256": {
+    "libvlccore.dll": "6823ce2cbcf963eb63adcc68b46854236bd5da042fd89dc7d85105c33bee3e62",
+    "plugins/access/libhttps_plugin.dll": "d456b075cdf3e661b13aa68b757ac27ef69287de379df0790494837dbfcf522f",
+    "plugins/access/libhttp_plugin.dll": "77e7a0d38a7d9a3e0d670fb7baa881b57bb3926efb467785b5647dd4649e09e7",
+    "plugins/misc/libgnutls_plugin.dll": "55699b006d1d3302f9abe835c7ddb331035f65b30626a36b65f11378b9a16936"
+  },
+  "certificateSha256": {
+    "trust/ca.pem": "99ac114fe25b1fa63da2f41445d280f02a82ce2fa88e5a07c6198278257dd1b1",
+    "server.pem": "db54de0839b476d37bb9b786f9c4c4ed55620baff4a855244b605bbbb35f6b45",
+    "wrong-server.pem": "d075e82f203ae3e04bc107dd7f406a4e19fb4aa67dae87e419a23ab86a5c5f96"
+  }
+}

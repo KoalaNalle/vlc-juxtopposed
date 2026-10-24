@@ -99,7 +99,7 @@ public:
     virtual ~SPrefsPanel();
     void apply();
 #ifdef _WIN32
-    void cleanLang();
+    static void cleanLang();
 #endif
 
 private:

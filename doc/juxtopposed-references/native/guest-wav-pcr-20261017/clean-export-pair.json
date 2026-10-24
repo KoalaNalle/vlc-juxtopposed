@@ -1,0 +1,65 @@
+{
+  "cases": {
+    "original": {
+      "runnerExitCode": 1,
+      "exitCode": 0,
+      "normalExit": true,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.235,
+      "outputSamples": 16000,
+      "expectedSamples": 16000,
+      "completePcm": true,
+      "silencePeakLsb": 1,
+      "fileWriteErrors": 0,
+      "missingVisualCallbackErrors": 0,
+      "pcrMatchErrors": 1,
+      "runtimeSha256": {
+        "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "da2989f73d5fc1040104ee745c13538375a6381e8f2d37d0979bb0a5af9c6345",
+        "plugins/demux/libwav_plugin.dll": "b026bf5be4e2ea841751eb86f5254b3fb5e22ce403d7f393c15480257cc7976c",
+        "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+        "plugins/stream_out/libstream_out_transcode_plugin.dll": "cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c"
+      },
+      "cleanVisualCallbacksRequired": true,
+      "configuredVisualizer": false,
+      "cleanPcrRequired": true,
+      "passed": false
+    },
+    "repaired": {
+      "runnerExitCode": 0,
+      "exitCode": 0,
+      "normalExit": true,
+      "timedOut": false,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "elapsedSeconds": 0.188,
+      "outputSamples": 16000,
+      "expectedSamples": 16000,
+      "completePcm": true,
+      "silencePeakLsb": 1,
+      "fileWriteErrors": 0,
+      "missingVisualCallbackErrors": 0,
+      "pcrMatchErrors": 0,
+      "runtimeSha256": {
+        "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "da2989f73d5fc1040104ee745c13538375a6381e8f2d37d0979bb0a5af9c6345",
+        "plugins/demux/libwav_plugin.dll": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b",
+        "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+        "plugins/stream_out/libstream_out_transcode_plugin.dll": "cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c"
+      },
+      "cleanVisualCallbacksRequired": true,
+      "configuredVisualizer": false,
+      "cleanPcrRequired": true,
+      "passed": true
+    }
+  },
+  "onlyChangedBinaries": [
+    "plugins/demux/libwav_plugin.dll"
+  ],
+  "diagnosticInstrumentation": false,
+  "runnerSha256": "55a3f07d31d03f20b79fe586883e3e253c5bea9eaba90c167b5a5aa9fee0e6dc"
+}

@@ -1,0 +1,251 @@
+{
+  "phase": "after",
+  "status": "terminal",
+  "passed": true,
+  "privateGui": true,
+  "privateCore": false,
+  "forcedCleanupUsed": false,
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "86ad9d7c14c8f658391a3120036b1ea4547e3c8887a508871f3e2923d52cb534",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceManifestSha256": "ae3db296020be2fa6da3a18dbc7dbd5cab81d1c7a3bd8478a9df499f74675269",
+  "sourceCount": 2227,
+  "producerSha256": "0465e30f1c6025cbf36db250231fb43531365213f545a438c496db932105594d",
+  "qaSourceSha256": "d17f250e553ce4cb4578d7a87bccfc42c6112442f8f05bf52d3ddb2df3f15690",
+  "mediaSha256": "eff8af35a52060a728f89e8b4e75d6f85900077a7c9d0b21f9b13f25ff611a3e",
+  "command": [
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-after-r1b\\runtime\\vlc.exe",
+    "--intf=qt",
+    "--no-one-instance",
+    "--no-media-library",
+    "--no-crashdump",
+    "--no-qt-privacy-ask",
+    "--no-qt-updates-notif",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--config=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-after-r1b\\vlcrc",
+    "--file-logging",
+    "--log-verbose=2",
+    "--verbose=2",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-after-r1b\\vlc.log",
+    "--no-hw-dec",
+    "--no-sub-autodetect-file",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "pid": 25924,
+  "exitCode": 0,
+  "normalExit": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "native seek observer attaches",
+        "passed": true
+      },
+      {
+        "name": "synthetic media exists",
+        "passed": true
+      },
+      {
+        "name": "native player opens synthetic media",
+        "passed": true
+      },
+      {
+        "name": "normal video picture and published player statistics are ready",
+        "passed": true
+      },
+      {
+        "name": "native playback pauses before accessibility checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual accessible timeline value interface exists",
+        "passed": true
+      },
+      {
+        "name": "accessibility or pointer action reaches native seek",
+        "passed": true
+      },
+      {
+        "name": "native picture and Qt position settle after seek",
+        "passed": true
+      },
+      {
+        "name": "one value or pointer action issues exactly one native seek",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the paused media",
+        "passed": true
+      },
+      {
+        "name": "display value reconciles with the native landing",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual accessible timeline value interface exists",
+        "passed": true
+      },
+      {
+        "name": "accessibility or pointer action reaches native seek",
+        "passed": true
+      },
+      {
+        "name": "native picture and Qt position settle after seek",
+        "passed": true
+      },
+      {
+        "name": "one value or pointer action issues exactly one native seek",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the paused media",
+        "passed": true
+      },
+      {
+        "name": "display value reconciles with the native landing",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "accessible range reports normalized bounds",
+        "passed": true
+      },
+      {
+        "name": "identical accessible value does not seek",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual accessible timeline value interface exists",
+        "passed": true
+      },
+      {
+        "name": "accessibility or pointer action reaches native seek",
+        "passed": true
+      },
+      {
+        "name": "native picture and Qt position settle after seek",
+        "passed": true
+      },
+      {
+        "name": "one value or pointer action issues exactly one native seek",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the paused media",
+        "passed": true
+      },
+      {
+        "name": "display value reconciles with the native landing",
+        "passed": true
+      },
+      {
+        "name": "normal playback advances after accessibility and pointer seeks",
+        "passed": true
+      },
+      {
+        "name": "ordinary position updates never feed back as seeks",
+        "passed": true
+      },
+      {
+        "name": "playback pauses normally",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "actual accessible timeline value interface exists",
+        "passed": true
+      },
+      {
+        "name": "accessibility or pointer action reaches native seek",
+        "passed": true
+      },
+      {
+        "name": "native picture and Qt position settle after seek",
+        "passed": true
+      },
+      {
+        "name": "one value or pointer action issues exactly one native seek",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the paused media",
+        "passed": true
+      },
+      {
+        "name": "display value reconciles with the native landing",
+        "passed": true
+      }
+    ],
+    "fullBetaAccepted": false,
+    "passed": true,
+    "privateFixture": true,
+    "requests": [
+      {
+        "displayedPictures": 11,
+        "label": "accessible-forward",
+        "nativeSeekCount": 1,
+        "nativeTime": 373026,
+        "qtPosition": 0.42,
+        "requested": 0.42,
+        "slider": 0.42
+      },
+      {
+        "displayedPictures": 16,
+        "label": "accessible-backward",
+        "nativeSeekCount": 1,
+        "nativeTime": 373026,
+        "qtPosition": 0.09,
+        "requested": 0.09,
+        "slider": 0.09
+      },
+      {
+        "displayedPictures": 19,
+        "label": "pointer-after-accessibility",
+        "nativeSeekCount": 1,
+        "nativeTime": 373026,
+        "qtPosition": 0.6485507246376812,
+        "requested": 0.65,
+        "slider": 0.6485507246376812
+      },
+      {
+        "displayedPictures": 44,
+        "label": "accessible-after-playback",
+        "nativeSeekCount": 1,
+        "nativeTime": 39198060,
+        "qtPosition": 0.26,
+        "requested": 0.26,
+        "slider": 0.26
+      }
+    ],
+    "status": "checks_complete"
+  },
+  "runtimeUnchanged": true,
+  "sourceInputsUnchanged": true,
+  "mediaUnchanged": true,
+  "diagnostics": []
+}

@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "expectedFailure": true,
+  "events": [
+    {
+      "role": "pac",
+      "path": "/owned.pac",
+      "authorizationPresent": false,
+      "proxyAuthorizationPresent": false
+    },
+    {
+      "role": "origin",
+      "path": "/owned?route=proxy",
+      "authorizationPresent": false,
+      "proxyAuthorizationPresent": false
+    }
+  ],
+  "systemProxySettingsReadOrChanged": false,
+  "personalCredentialsUsed": false,
+  "dnsScope": "media.owned.invalid mapped to 127.0.0.1 inside this owned process only",
+  "forcedCleanupUsed": false,
+  "pid": 18920,
+  "exitCode": 1,
+  "normalExit": false,
+  "checks": [
+    [
+      "ok",
+      "1",
+      "actual Core proxy settings and DNS boundaries are owned"
+    ],
+    [
+      "ok",
+      "2",
+      "PAC and media transport are restricted to owned loopback servers"
+    ],
+    [
+      "ok",
+      "3",
+      "actual native instance initializes"
+    ],
+    [
+      "ok",
+      "4",
+      "owned PAC URL converted"
+    ],
+    [
+      "ok",
+      "5",
+      "actual HTTP media opens after a path-specific PAC lookup"
+    ],
+    [
+      "not ok",
+      "6",
+      "actual HTTP routing preserves the complete path and query"
+    ]
+  ],
+  "pacInputUrls": [
+    "http://media.owned.invalid:56096"
+  ],
+  "noCredentialsSent": true,
+  "runtimeSha256": {
+    "libvlccore.dll": "49d4c62a6e0be9aa586ca82a7448783de191e2024387352c42688f993784bd7e",
+    "plugins/access/libhttps_plugin.dll": "b98b4ea3ca157b668658a97ac4f52ad86f0716dcdf19f7b66ae42bccd401da40",
+    "plugins/access/libhttp_plugin.dll": "795598441ddc5e02f7c931850cc72b565a211431538be0d02c464dea9462d559"
+  },
+  "executableSha256": "49e3db88d55f4bea7e6ae03a269e40a30b86a5157f7ff7ea38f1d31726cd007d"
+}

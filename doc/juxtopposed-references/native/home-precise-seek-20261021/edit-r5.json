@@ -1,0 +1,1402 @@
+{
+  "status": "terminal",
+  "passed": true,
+  "case": "edit",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "f85bb0c626386b85afca5b707f64c2f307c79399cd4e25f99e4ca6432f9794b7",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "dbee01e86ae50036e4fac19ab57bd0a7c1dcbcba7e91e734f958f8d0972bf347",
+  "runnerSha256": "8825a56d3abc7eb47cf072de05ef9ad9df7dd5a315f01a75f82c77a1a179dbd5",
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "keyframeSeconds": [
+    0.0,
+    10.0,
+    20.0,
+    30.0,
+    40.0,
+    50.0
+  ],
+  "ffprobeSha256": "cb1c395203d8badd5f65aad68d06016fb68d12e128c16f9a9f4c52d3b899a27f",
+  "pid": 4920,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "seek fixture settings are fenced to owned paths",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables its paired native precise seek consumer",
+        "passed": true
+      },
+      {
+        "name": "native startup restores the saved precise seek default",
+        "passed": true
+      },
+      {
+        "name": "owned generated MP4 opens",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts the owned MP4",
+        "passed": true
+      },
+      {
+        "name": "actual primary decodes and displays generated video",
+        "passed": true
+      },
+      {
+        "name": "native primary pauses before seek checks",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "owned native config replacement is blocked",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual bounded pointer state capture saved",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "failed actual precision save preserves config and accepted policy with error feedback",
+        "passed": true
+      },
+      {
+        "name": "failed save preserves paused media and clock",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual bounded pointer state capture saved",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "same actual toggle retries successfully after storage recovers",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "actual page reveal route scrolls the requested control into view",
+        "passed": true
+      },
+      {
+        "name": "entire seek toggle is inside the clipped settings viewport before pointer input",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "native decoded playback resumes after seeks and settings edits",
+        "passed": true
+      }
+    ],
+    "controlGeometry": [
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 847,
+        "beforeTop": 815,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      },
+      {
+        "beforeBottom": 810,
+        "beforeTop": 778,
+        "bottom": 810,
+        "control": "playbackpreciseSeeking",
+        "top": 778,
+        "viewportHeight": 815
+      }
+    ],
+    "fullBetaAccepted": false,
+    "passed": true,
+    "privateFixture": true,
+    "retry": {
+      "errorSignals": 1,
+      "lastError": "",
+      "nativeFast": 0,
+      "precise": true,
+      "valueSignals": 1
+    },
+    "seeks": [
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 44,
+        "displayedPictures": 18,
+        "expectedSeconds": 24.2,
+        "label": "precise-time",
+        "precise": true
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 45,
+        "displayedPictures": 23,
+        "expectedSeconds": 30,
+        "label": "fast-time",
+        "precise": false
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 46,
+        "displayedPictures": 33,
+        "expectedSeconds": 24.2,
+        "label": "precise-position",
+        "precise": true
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 47,
+        "displayedPictures": 43,
+        "expectedSeconds": 30,
+        "label": "fast-position",
+        "precise": false
+      },
+      {
+        "actualSeconds": 34.160001,
+        "decodedPictures": 48,
+        "displayedPictures": 53,
+        "expectedSeconds": 34.2,
+        "label": "precise-relative-time",
+        "precise": true
+      },
+      {
+        "actualSeconds": 40.000001,
+        "decodedPictures": 49,
+        "displayedPictures": 62,
+        "expectedSeconds": 40,
+        "label": "fast-relative-time",
+        "precise": false
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 50,
+        "displayedPictures": 71,
+        "expectedSeconds": 24.2,
+        "label": "precise-timeline",
+        "precise": true
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 51,
+        "displayedPictures": 80,
+        "expectedSeconds": 30,
+        "label": "fast-timeline",
+        "precise": false
+      },
+      {
+        "actualSeconds": 32.960001,
+        "decodedPictures": 52,
+        "displayedPictures": 89,
+        "expectedSeconds": 33,
+        "label": "precise-forward",
+        "precise": true
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 53,
+        "displayedPictures": 97,
+        "expectedSeconds": 30,
+        "label": "fast-forward",
+        "precise": false
+      },
+      {
+        "actualSeconds": 26.960001,
+        "decodedPictures": 54,
+        "displayedPictures": 106,
+        "expectedSeconds": 27,
+        "label": "precise-backward",
+        "precise": true
+      },
+      {
+        "actualSeconds": 20.000000999999997,
+        "decodedPictures": 55,
+        "displayedPictures": 115,
+        "expectedSeconds": 20,
+        "label": "fast-backward",
+        "precise": false
+      },
+      {
+        "actualSeconds": 30.000000999999997,
+        "decodedPictures": 56,
+        "displayedPictures": 124,
+        "expectedSeconds": 30,
+        "label": "fast-after-rejected-save",
+        "precise": false
+      },
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 57,
+        "displayedPictures": 136,
+        "expectedSeconds": 24.2,
+        "label": "precise-after-retry",
+        "precise": true
+      }
+    ],
+    "status": "checks_complete"
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "expectedDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "nativeSeekLogChecks": [
+    {
+      "label": "precise-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 346,
+      "end": 591
+    },
+    {
+      "label": "fast-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 594,
+      "end": 658
+    },
+    {
+      "label": "precise-position",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 661,
+      "end": 907
+    },
+    {
+      "label": "fast-position",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 910,
+      "end": 974
+    },
+    {
+      "label": "precise-relative-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 34200001"
+      ],
+      "requestedSeconds": 34.200001,
+      "nativeDateMicroseconds": 34200001,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 977,
+      "end": 1223
+    },
+    {
+      "label": "fast-relative-time",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 8360ms alignment to 48360001"
+      ],
+      "requestedSeconds": 48.360001,
+      "nativeDateMicroseconds": 48360001,
+      "prerollOrAlignmentMs": 8360,
+      "passed": true,
+      "begin": 1226,
+      "end": 1292
+    },
+    {
+      "label": "precise-timeline",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 1295,
+      "end": 1540
+    },
+    {
+      "label": "fast-timeline",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 1543,
+      "end": 1608
+    },
+    {
+      "label": "precise-forward",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 3000ms preroll (use input-fast-seek to avoid) to 33000001"
+      ],
+      "requestedSeconds": 33.000001,
+      "nativeDateMicroseconds": 33000001,
+      "prerollOrAlignmentMs": 3000,
+      "passed": true,
+      "begin": 1611,
+      "end": 1825
+    },
+    {
+      "label": "fast-forward",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 5960ms alignment to 35960001"
+      ],
+      "requestedSeconds": 35.960001,
+      "nativeDateMicroseconds": 35960001,
+      "prerollOrAlignmentMs": 5960,
+      "passed": true,
+      "begin": 1828,
+      "end": 1893
+    },
+    {
+      "label": "precise-backward",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 7000ms preroll (use input-fast-seek to avoid) to 27000001"
+      ],
+      "requestedSeconds": 27.000000999999997,
+      "nativeDateMicroseconds": 27000001,
+      "prerollOrAlignmentMs": 7000,
+      "passed": true,
+      "begin": 1896,
+      "end": 2212
+    },
+    {
+      "label": "fast-backward",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 3960ms alignment to 23960001"
+      ],
+      "requestedSeconds": 23.960001,
+      "nativeDateMicroseconds": 23960001,
+      "prerollOrAlignmentMs": 3960,
+      "passed": true,
+      "begin": 2215,
+      "end": 2283
+    },
+    {
+      "label": "fast-after-rejected-save",
+      "branch": "alignment",
+      "lines": [
+        "mp4 debug: seeking with 4200ms alignment to 34200000"
+      ],
+      "requestedSeconds": 34.2,
+      "nativeDateMicroseconds": 34200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 2289,
+      "end": 2353
+    },
+    {
+      "label": "precise-after-retry",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 4200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 4200,
+      "passed": true,
+      "begin": 2356,
+      "end": 2601
+    }
+  ],
+  "quitLogOrder": {
+    "wait": 2609,
+    "stopped": 2641,
+    "teardown": 2645
+  },
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "scope": "Native Qt explicit seek policy reaches actual MP4 accurate/fast branch, fresh displayed/decoded pictures and paused clock, settings rejection/retry and decoded resume. Does not establish frame-exact output, every format or physical scaling.",
+  "stderr.txtSha256": "73d61cc4b9460b889b84f0d0a8ecd47946f37a1a26a74ed7c2cbc43a2b66c9f4",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vlc.logSha256": "a9aab05e09d93eb520c5fad4dd6cb63154f54632bc205042f3ea99b109045436",
+  "journey.jsonSha256": "2b644eb48dcbef1b2d593f743c3aad31e97e3274aadc892bd5a94324275da162"
+}

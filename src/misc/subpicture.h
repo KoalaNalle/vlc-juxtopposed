@@ -21,6 +21,9 @@
  *****************************************************************************/
 
 picture_t * subpicture_region_cache_GetPicture( subpicture_region_t * );
+void subpicture_Invalidate(subpicture_t *);
+bool subpicture_GetStopTime(const subpicture_t *, vlc_tick_t *);
+void subpicture_SetSourceTiming(subpicture_t *, vlc_tick_t, vlc_tick_t, float);
 void subpicture_region_cache_Invalidate( subpicture_region_t * );
 const video_format_t * subpicture_region_cache_GetFormat( const subpicture_region_t * );
 int subpicture_region_cache_Assign( subpicture_region_t *p_region, picture_t * );

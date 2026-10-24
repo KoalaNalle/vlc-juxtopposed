@@ -1,0 +1,135 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateHooks": false,
+  "cases": {
+    "initial": {
+      "status": "ordinary_exited",
+      "phase": "initial",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "7d50711efded6c0fd79f2e6972a94ca92d4d3809ffdd549d9046f45ccb88708b",
+      "geometryBefore": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "pid": 2152,
+      "exitCode": 0,
+      "normalExit": true,
+      "geometryAfter": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "sourceInputsUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "independentSavedRememberGeometry": 0
+    },
+    "cold-off": {
+      "status": "ordinary_exited",
+      "phase": "cold-off",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "7d50711efded6c0fd79f2e6972a94ca92d4d3809ffdd549d9046f45ccb88708b",
+      "geometryBefore": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "pid": 16324,
+      "exitCode": 0,
+      "normalExit": true,
+      "geometryAfter": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "sourceInputsUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "independentSavedRememberGeometry": 1
+    },
+    "cold-on": {
+      "status": "ordinary_exited",
+      "phase": "cold-on",
+      "privateHooks": false,
+      "fullBetaAccepted": false,
+      "forcedCleanupUsed": false,
+      "guiSha256": "7d50711efded6c0fd79f2e6972a94ca92d4d3809ffdd549d9046f45ccb88708b",
+      "geometryBefore": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "pid": 15616,
+      "exitCode": 0,
+      "normalExit": true,
+      "geometryAfter": {
+        "sha256": "aaa3e7aef021a808d77d1736744ac103869cbd066526c3ad11e3a0682eb5a36f",
+        "screen": "LF24T450F",
+        "dpr": 1.0,
+        "client": [
+          -1880,
+          397,
+          1280,
+          900
+        ],
+        "maximized": false,
+        "fullscreen": false
+      },
+      "sourceInputsUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "independentSavedRememberGeometry": 1
+    }
+  },
+  "observations": [
+    "Actual ordinary pointer toggle Off shows restart feedback without resizing the current window.",
+    "Cold Off starts at default600x420; actual Windows Maximize then saved On still leaves original geometry bytes intact on exit.",
+    "Cold On restores1280x900 on the saved screen; Interface toggle is On with no stale restart feedback."
+  ]
+}

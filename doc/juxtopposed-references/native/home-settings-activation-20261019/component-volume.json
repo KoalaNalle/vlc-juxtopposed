@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "cases": [
+    "Original Light background89px and complete fill86px identities/root dimensions verified; clipped53px fragment is not shipped",
+    "Current production and narrowly historical Dark asset control render pixel-identically at0/50/100/150/200%; engine state emits no user actions",
+    "Actual production Light bar selects full original assets live; full-range clipping shows86px, not stretched53px artwork",
+    "Light interior fill/background pixels agree with unchanged tracked designer composite at the same clipping boundary",
+    "Actual0\u2013200% clip geometry and fixed full artwork scale correctly in both themes at100/150/200%; native max binding preserved",
+    "Pointer-selected volume owns subsequent arrow keys without requiring synthetic focus",
+    "Real keyboard,wheel,pointer controls retain source-exact native Player write/unmute contract and autohide lock/unlock signals",
+    "Mute/engine updates and live theme changes preserve volume without emitting input"
+  ],
+  "caseCount": 8,
+  "messages": [],
+  "geometry": [
+    {
+      "width": 1920,
+      "scale": 1,
+      "fullFillSize": [
+        86.0,
+        24.56
+      ]
+    },
+    {
+      "width": 1280,
+      "scale": 2,
+      "fullFillSize": [
+        172.0,
+        49.12
+      ]
+    },
+    {
+      "width": 960,
+      "scale": 1.5,
+      "fullFillSize": [
+        129.0,
+        36.839999999999996
+      ]
+    }
+  ],
+  "designerCompositeSamples": [
+    {
+      "point": [
+        30,
+        20
+      ],
+      "actual": "#a0a767",
+      "reference": "#9fa767",
+      "maxChannelDifference": 1
+    },
+    {
+      "point": [
+        45,
+        20
+      ],
+      "actual": "#bfbd46",
+      "reference": "#bebe46",
+      "maxChannelDifference": 1
+    },
+    {
+      "point": [
+        65,
+        20
+      ],
+      "actual": "#888888",
+      "reference": "#888888",
+      "maxChannelDifference": 0
+    }
+  ],
+  "nativeAcceptance": false,
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml": "dfb9aa3c1461175d65bf7ddf72b3e5f1dbdc0fffe8581b0caf1193ba18d546bd",
+    "modules/gui/qt/player/qml/JuxtopposedVolumeControl.qml": "da6c5d4b1f70a989e5c1989bab809862ecdf9754f6dae82aec3a0da91a73ddf1",
+    "modules/gui/qt/player/qml/JuxtopposedLayoutRow.qml": "2bdfaea58acbf9ebe361b18ea81b33c60948ae7cf4efe82a834a7e7bcb5470bc",
+    "modules/gui/qt/player/qml/ControlBar.qml": "11cebddac831950565d6a6b7e80aa57b29a13031e94e3b33421b5a779240acc2",
+    "modules/gui/qt/player/qml/JuxtopposedButton.qml": "93aa7baf0682b4c5a1ea6180c301d8473d621f01a48e461d9b316eb297cd63ff",
+    "modules/gui/qt/player/qml/JuxtopposedSeekBackground.qml": "54bd60033852fc738ee6d9cb86333247d0a221f5a73bd3f5120db8599125e284",
+    "modules/gui/qt/style/JuxtopposedPalette.qml": "2bc270d19be0491f71af9c23ea2c0b233efb6f0d1befd322a3f3be1085ed23a1"
+  },
+  "historicalControlReversions": {
+    "source: root.assetBase + root.appearance.icon(\"volume-background.svg\")": "source: root.assetBase + \"volume-background.svg\"",
+    "source: root.assetBase + root.appearance.icon(\"volume-fill.svg\")": "source: root.assetBase + \"volume-fill.svg\""
+  },
+  "artworkFixtureSha256": "24639d56db810ddb2adb2d1e01d1e41bb2705107e63dcda4ba39a2d885b54dc2",
+  "designerCompositeSha256": "38e55e1e2cb44008333f6fc6272abc50c04a0bf72b8938f8858661371e1a7067",
+  "repoRoot": "C:\\Modding\\vlc-juxtopposed",
+  "outputDirectory": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-settings-activation-20261019\\volume-pointer-after",
+  "workerSha256": "5b86f2e0b2ceffe778179c3905bcf4389bdf3310c6dd14b70488a53785ddec0d",
+  "nativeBindingSourceSha256": "11cebddac831950565d6a6b7e80aa57b29a13031e94e3b33421b5a779240acc2",
+  "actualBindingLines": "            volume: Player.volume\n            maximumVolume: MainCtx.maxVolume / 100\n            muted: Player.muted",
+  "actualVolumeHandler": "            onVolumeRequested: (value) => {\n                Player.muted = false\n                Player.volume = value\n            }\n",
+  "scope": "Actual production Light/Dark volume artwork and native binding contract.\n\nSupplied QObject state only: not a compiled native VLC or OS theme test.\n"
+}

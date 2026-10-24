@@ -31,6 +31,7 @@
 #include <vlc_vout.h>
 #include <vlc_vout_osd.h>
 #include <vlc_subpicture.h>
+#include "osd_feedback_duration.h"
 
 typedef struct {
     int  position;
@@ -134,10 +135,13 @@ void vout_OSDText(vout_thread_t *vout, int channel,
 void vout_OSDMessageVa(vout_thread_t *vout, int channel,
                        const char *format, va_list args)
 {
+    if (!var_InheritBool(vout, "osd-shortcut-feedback"))
+        return;
     char *string;
     if (vasprintf(&string, format, args) != -1) {
         vout_OSDText(vout, channel,
-                     SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_RIGHT, VLC_TICK_FROM_SEC(1),
+                     SUBPICTURE_ALIGN_TOP|SUBPICTURE_ALIGN_RIGHT,
+                     vlc_osd_feedback_duration(VLC_OBJECT(vout), VLC_TICK_FROM_SEC(1)),
                      string);
         free(string);
     }

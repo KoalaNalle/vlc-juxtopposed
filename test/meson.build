@@ -28,6 +28,7 @@ foreach vlc_test: vlc_tests
         'env',
         'enabled',
         'wrapper',
+        'register_test',
     ]
 
     foreach key : vlc_test.keys()
@@ -92,6 +93,11 @@ foreach vlc_test: vlc_tests
         cpp_args: [vlc_test.get('cpp_args', []), common_args],
         objc_args: [vlc_test.get('objc_args', []), common_args])
 
+    # Owned integration targets require an explicit portable-runtime runner.
+    if not vlc_test.get('register_test', true)
+        continue
+    endif
+
     # Handle optional test wrapper (e.g., xvfb-run for X11 tests)
     # The wrapper must be a program object
     if vlc_test.has_key('wrapper')
@@ -115,6 +121,34 @@ foreach vlc_test: vlc_tests
             depends: [test_modules_deps])
     endif
 endforeach
+
+if host_system == 'windows'
+    executable('test_addons', 'src/misc/addons.c',
+        include_directories: [vlc_include_dirs, include_directories('..', '../src')],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+    )
+    executable('test_priority_startup', 'src/misc/priority_startup.c',
+        include_directories: [vlc_include_dirs],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+        win_subsystem: 'console')
+endif
+
+if host_machine.system() == 'windows' and not have_win_store
+    foreach network_driver : ['proxy_windows', 'settings_consumers', 'proxy_policy', 'proxy_transport']
+        executable('test_network_' + network_driver,
+            'src/network/' + network_driver + '.c',
+            include_directories: [vlc_include_dirs, include_directories('../src')],
+            link_with: [libvlc, libvlccore, vlc_libcompat],
+            dependencies: [cc.find_library('winhttp'), cc.find_library('normaliz')],
+            build_by_default: false,
+            install: false,
+            win_subsystem: 'console')
+    endforeach
+endif
 
 libvlc_demux_defines = []
 libvlc_demux_deps = []
@@ -162,3 +196,15 @@ executable('vlc-window', 'vlc-window.c',
     c_args: common_args,
     install: false,
     win_subsystem: 'console')
+
+# Owned integration drivers are invoked explicitly by the portable-runtime
+# runners, with their isolated config, fixture modules and loopback services.
+foreach controls_driver : ['controls', 'controls_http']
+    executable('test_' + controls_driver,
+        'src/interface/' + controls_driver + '.c',
+        include_directories: [vlc_include_dirs, include_directories('../src')],
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        build_by_default: false,
+        install: false,
+        win_subsystem: 'console')
+endforeach

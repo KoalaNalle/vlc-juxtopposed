@@ -1,0 +1,19 @@
+{
+  "productionApplied": false,
+  "files": {
+    "src/player/input.c": "070effdd2dffbadc64c28668f0e49af99541ea8b4596f1bced769092c851a129",
+    "src/player/timer.c": "8be4cd0af9d8c92c1e7886b2f777153371c07807d6b9ecef7f3133f4c6f83b62",
+    "src/input/input.c": "03208445f36dfe442ad4b9adf554303c8d97653d9f8b26f51c0acc821cbee904",
+    "modules/demux/mkv/matroska_segment.cpp": "d504d02ef43eb0835e2598d692267ab9da1f62aaf0d7880486de133efb090a28",
+    "modules/demux/mkv/mkv.cpp": "b34847db2882c33dc88fe341dd47b23aaff2e6bd80f0b444cfac7175c4803518",
+    "include/vlc_config.h": "b83bad3c35fea9c9239e8105f56db2d053f9f924c90242a6a6f743eb9bedcefb"
+  },
+  "observations": [
+    "Timer source points use stream ts minus input normal time and start offset plus VLC_TICK_0 (1).",
+    "Matroska precise seek sets next-display time to VLC_TICK_0 plus requested relative media date.",
+    "The previous candidate passed a timer point as a relative seek date, making its threshold later than the current picture.",
+    "The current candidate uses the displayed-video/SMPTE source and removes its tick origin; pending user seek targets retain their existing domain.",
+    "The frame-marker fixture independently identifies 1500 video frames at 25fps; reference extractions 0,125,126,625 decode correctly."
+  ],
+  "candidateNotAccepted": true
+}

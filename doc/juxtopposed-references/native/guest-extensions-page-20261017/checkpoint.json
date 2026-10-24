@@ -1,0 +1,1441 @@
+{
+  "recordedAtUtc": "2026-10-17T16:15:47+00:00",
+  "source": {
+    "baseHead": "32cd62fc4d71b0b59d6a2e79c7ea72f3a6234112",
+    "revision": "implementation commit containing this record",
+    "uncommittedAtTestTime": true,
+    "ordinaryFrozenManifest": "ordinary-inputs.json",
+    "privateFrozenManifest": "private-inputs.json"
+  },
+  "scope": "Confirmed original Extensions page and scoped native behavior; not full beta/visual/DPI/platform/package acceptance.",
+  "platform": "Windows 10 Pro build 19045 x64 guest",
+  "ordinaryRuntimeSha256": {
+    "libvlccore.dll": "bf29403169b936e2156bcfcd0f03a38fbbaad0d9b54fd0e7d9e843e4bdb5bc33",
+    "plugins/gui/libqt_plugin.dll": "17d870ec6dbb978ce3aa1a11f1dd9974425a21b996018cec15e67b3837c81eb1",
+    "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+    "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+  },
+  "nativeWindows": {
+    "passed": true,
+    "cases": {
+      "empty": {
+        "passed": true,
+        "checks": 16,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "diagnostics": [],
+        "lateWindowEvent": {
+          "ownedLateHitTestSent": true,
+          "windowAlive": true
+        },
+        "assertions": [
+          {
+            "name": "real MainCtx and native window ready",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "MainCtx owns Extensions service",
+            "passed": true
+          },
+          {
+            "name": "service owns actual AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "add-on catalog remains lazy before first settings use",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "original Extensions page mounts",
+            "passed": true
+          },
+          {
+            "name": "compiled page binds real controller and model",
+            "passed": true
+          },
+          {
+            "name": "first page use initializes actual catalog manager",
+            "passed": true
+          },
+          {
+            "name": "actual catalog cache becomes ready",
+            "passed": true
+          },
+          {
+            "name": "fresh native profile renders original empty design",
+            "passed": true
+          },
+          {
+            "name": "original startup control defaults On",
+            "passed": true
+          },
+          {
+            "name": "all original visible SVG slots render",
+            "passed": true
+          }
+        ]
+      },
+      "edit": {
+        "passed": true,
+        "checks": 121,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "diagnostics": [],
+        "lateWindowEvent": {
+          "ownedLateHitTestSent": true,
+          "windowAlive": true
+        },
+        "assertions": [
+          {
+            "name": "real MainCtx and native window ready",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "MainCtx owns Extensions service",
+            "passed": true
+          },
+          {
+            "name": "service owns actual AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "saved On loads installed extension metadata before opening any menu",
+            "passed": true
+          },
+          {
+            "name": "add-on catalog remains lazy before first settings use",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "original Extensions page mounts",
+            "passed": true
+          },
+          {
+            "name": "compiled page binds real controller and model",
+            "passed": true
+          },
+          {
+            "name": "first page use initializes actual catalog manager",
+            "passed": true
+          },
+          {
+            "name": "actual catalog cache becomes ready",
+            "passed": true
+          },
+          {
+            "name": "two actual manual scripts appear",
+            "passed": true
+          },
+          {
+            "name": "manual nil-UUID rows have distinct stable keys",
+            "passed": true
+          },
+          {
+            "name": "manual scripts cannot enter managed mutation routes",
+            "passed": true
+          },
+          {
+            "name": "extensionsList",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "End selects last actual row",
+            "passed": true
+          },
+          {
+            "name": "Home selects first actual row",
+            "passed": true
+          },
+          {
+            "name": "startup API rejects nonboolean values",
+            "passed": true
+          },
+          {
+            "name": "rejected startup value never writes config",
+            "passed": true
+          },
+          {
+            "name": "real Windows handle denies startup config publication",
+            "passed": true
+          },
+          {
+            "name": "extensionsLoadOnStartup",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "failed checkbox save rolls back native and visible state",
+            "passed": true
+          },
+          {
+            "name": "failed checkbox save preserves original config bytes",
+            "passed": true
+          },
+          {
+            "name": "extensionsLoadOnStartup",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "unlocked startup checkbox retry saves Off",
+            "passed": true
+          },
+          {
+            "name": "extensionsLoadOnStartup",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "startup checkbox restores On for current native consumer test",
+            "passed": true
+          },
+          {
+            "name": "extensionsAdd",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "Add opens the real owned QFileDialog",
+            "passed": true
+          },
+          {
+            "name": "owned file chooser accepts or cancels within its bounded wait",
+            "passed": true
+          },
+          {
+            "name": "cancelled chooser performs no install",
+            "passed": true
+          },
+          {
+            "name": "extensionsAdd",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "Add opens the real owned QFileDialog",
+            "passed": true
+          },
+          {
+            "name": "owned file chooser accepts or cancels within its bounded wait",
+            "passed": true
+          },
+          {
+            "name": "accepted Unicode VLP installs through native manager",
+            "passed": true
+          },
+          {
+            "name": "actual local package reports success",
+            "passed": true
+          },
+          {
+            "name": "visible add-on result replaces earlier saved-preference timing",
+            "passed": true
+          },
+          {
+            "name": "installed package has stable managed key",
+            "passed": true
+          },
+          {
+            "name": "installed selection enables Remove only",
+            "passed": true
+          },
+          {
+            "name": "descending order actually moves selected row",
+            "passed": true
+          },
+          {
+            "name": "sorting preserves exact action identity",
+            "passed": true
+          },
+          {
+            "name": "selected sorted row has an earlier neighbor",
+            "passed": true
+          },
+          {
+            "name": "keyboard Up moves from stable selection after sorting resets the view",
+            "passed": true
+          },
+          {
+            "name": "extensionsSearch",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "actual local search filters manual script",
+            "passed": true
+          },
+          {
+            "name": "filtering clears a hidden action selection",
+            "passed": true
+          },
+          {
+            "name": "extensionsSearch",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "cleared search restores actual items",
+            "passed": true
+          },
+          {
+            "name": "extensionsSearch",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "second keyboard query filters actual items",
+            "passed": true
+          },
+          {
+            "name": "Escape clears local search through the original field handler",
+            "passed": true
+          },
+          {
+            "name": "clearing search with Escape keeps settings open",
+            "passed": true
+          },
+          {
+            "name": "real Windows handle denies script deletion",
+            "passed": true
+          },
+          {
+            "name": "extensionsRemove",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "locked Remove completes with native failure",
+            "passed": true
+          },
+          {
+            "name": "failed removal preserves file/retry action and clears stale progress",
+            "passed": true
+          },
+          {
+            "name": "extensionsRemove",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "unlocked Remove retries successfully",
+            "passed": true
+          },
+          {
+            "name": "removed selected entry enables actual Add",
+            "passed": true
+          },
+          {
+            "name": "extensionsAdd",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "Add installs selected catalog entry without chooser",
+            "passed": true
+          },
+          {
+            "name": "selected reinstall preserves exact fixture bytes",
+            "passed": true
+          },
+          {
+            "name": "real Windows handle denies catalog replacement",
+            "passed": true
+          },
+          {
+            "name": "extensionsRemove",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "storage completes despite locked catalog",
+            "passed": true
+          },
+          {
+            "name": "actual catalog failure separates completed file work from pending save",
+            "passed": true
+          },
+          {
+            "name": "failed catalog publication preserves original bytes",
+            "passed": true
+          },
+          {
+            "name": "extensionsRetryCatalog",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "locked catalog retry remains available",
+            "passed": true
+          },
+          {
+            "name": "extensionsRetryCatalog",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "unlocked UI retry saves catalog without repeating storage",
+            "passed": true
+          },
+          {
+            "name": "extensionsAdd",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "selected Add restores package after catalog recovery",
+            "passed": true
+          },
+          {
+            "name": "catalog recovery preserves exact selected package bytes",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryrecording",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "page navigation retains manager and selection",
+            "passed": true
+          },
+          {
+            "name": "obsolete callback generations do not repopulate reset model",
+            "passed": true
+          },
+          {
+            "name": "generation reset preserves distinct current row identities",
+            "passed": true
+          },
+          {
+            "name": "globalSettingsClose",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "existing native Plugins route remains functional",
+            "passed": true
+          },
+          {
+            "name": "owned native Plugins window closes through its native slot",
+            "passed": true
+          },
+          {
+            "name": "native Plugins view shares exact application AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "closing native Plugins preserves application manager and selection",
+            "passed": true
+          },
+          {
+            "name": "existing native extension policy loads actual module",
+            "passed": true
+          },
+          {
+            "name": "actual Lua engine discovers owned startup fixture",
+            "passed": true
+          },
+          {
+            "name": "actual native menu exposes owned extension action",
+            "passed": true
+          },
+          {
+            "name": "actual Lua extension activates through native menu action",
+            "passed": true
+          },
+          {
+            "name": "extensionsLoadOnStartup",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "startup Off saved through original checkbox",
+            "passed": true
+          },
+          {
+            "name": "saving startup Off preserves the active Lua extension",
+            "passed": true
+          },
+          {
+            "name": "saving Off does not unload currently loaded extension menus",
+            "passed": true
+          },
+          {
+            "name": "extensionsAdvanced",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "Advanced opens actual native expert preferences",
+            "passed": true
+          },
+          {
+            "name": "native Advanced closes normally",
+            "passed": true
+          }
+        ]
+      },
+      "reopen": {
+        "passed": true,
+        "checks": 21,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "diagnostics": [],
+        "lateWindowEvent": {
+          "ownedLateHitTestSent": true,
+          "windowAlive": true
+        },
+        "assertions": [
+          {
+            "name": "real MainCtx and native window ready",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "MainCtx owns Extensions service",
+            "passed": true
+          },
+          {
+            "name": "service owns actual AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "effective startup Off leaves extension metadata unloaded",
+            "passed": true
+          },
+          {
+            "name": "add-on catalog remains lazy before first settings use",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "original Extensions page mounts",
+            "passed": true
+          },
+          {
+            "name": "compiled page binds real controller and model",
+            "passed": true
+          },
+          {
+            "name": "first page use initializes actual catalog manager",
+            "passed": true
+          },
+          {
+            "name": "actual catalog cache becomes ready",
+            "passed": true
+          },
+          {
+            "name": "startup Off persists in real saved preferences",
+            "passed": true
+          },
+          {
+            "name": "installed package files persist across process restart",
+            "passed": true
+          },
+          {
+            "name": "native catalog restores installed managed entry",
+            "passed": true
+          },
+          {
+            "name": "saved Off prevents actual native extension menu loading",
+            "passed": true
+          },
+          {
+            "name": "extensionsLoadOnStartup",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "startup On saves through actual checkbox",
+            "passed": true
+          }
+        ]
+      },
+      "startup-on": {
+        "passed": true,
+        "checks": 16,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "diagnostics": [],
+        "lateWindowEvent": {
+          "ownedLateHitTestSent": true,
+          "windowAlive": true
+        },
+        "assertions": [
+          {
+            "name": "real MainCtx and native window ready",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "MainCtx owns Extensions service",
+            "passed": true
+          },
+          {
+            "name": "service owns actual AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "saved On loads installed extension metadata before opening any menu",
+            "passed": true
+          },
+          {
+            "name": "add-on catalog remains lazy before first settings use",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "original Extensions page mounts",
+            "passed": true
+          },
+          {
+            "name": "compiled page binds real controller and model",
+            "passed": true
+          },
+          {
+            "name": "first page use initializes actual catalog manager",
+            "passed": true
+          },
+          {
+            "name": "actual catalog cache becomes ready",
+            "passed": true
+          },
+          {
+            "name": "saved startup On persists",
+            "passed": true
+          },
+          {
+            "name": "saved On loads real extension metadata through native consumer",
+            "passed": true
+          }
+        ]
+      },
+      "override-off": {
+        "passed": true,
+        "checks": 16,
+        "normalExit": true,
+        "forcedCleanupUsed": false,
+        "diagnostics": [],
+        "lateWindowEvent": {
+          "ownedLateHitTestSent": true,
+          "windowAlive": true
+        },
+        "assertions": [
+          {
+            "name": "real MainCtx and native window ready",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "native caption button hit testing still works while GUI is alive",
+            "passed": true
+          },
+          {
+            "name": "MainCtx owns Extensions service",
+            "passed": true
+          },
+          {
+            "name": "service owns actual AddonsModel",
+            "passed": true
+          },
+          {
+            "name": "effective startup Off leaves extension metadata unloaded",
+            "passed": true
+          },
+          {
+            "name": "add-on catalog remains lazy before first settings use",
+            "passed": true
+          },
+          {
+            "name": "globalCategoryextensions",
+            "passed": true
+          },
+          {
+            "name": "target belongs to an owned QQuickWindow",
+            "passed": true
+          },
+          {
+            "name": "original Extensions page mounts",
+            "passed": true
+          },
+          {
+            "name": "compiled page binds real controller and model",
+            "passed": true
+          },
+          {
+            "name": "first page use initializes actual catalog manager",
+            "passed": true
+          },
+          {
+            "name": "actual catalog cache becomes ready",
+            "passed": true
+          },
+          {
+            "name": "command-line Off preserves saved On default",
+            "passed": true
+          },
+          {
+            "name": "native menu also respects command-line startup Off",
+            "passed": true
+          }
+        ]
+      }
+    },
+    "totalChecks": 190,
+    "ordinaryGuiUnchanged": true,
+    "noFaultDumpCreated": true
+  },
+  "productionCatalog": {
+    "passed": true,
+    "checks": 17,
+    "listRowsIncludingOwnedFixtures": 115,
+    "normalExit": true,
+    "thirdPartyPackagesInstalled": false,
+    "diagnostics": []
+  },
+  "nativeRegression": {
+    "accepted": true,
+    "cases": 49,
+    "assertions": 948,
+    "sourceRuntimePreserved": true,
+    "probeSha256": "f9147609e6c2d6fa065ee86f62659970c9118a99809d6c719edbccda3bf26708",
+    "runtimeSha256": {
+      "libvlccore.dll": "bf29403169b936e2156bcfcd0f03a38fbbaad0d9b54fd0e7d9e843e4bdb5bc33",
+      "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+      "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+    },
+    "caseResults": [
+      {
+        "case": "normal",
+        "mode": "normal",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 26,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "remove-first",
+        "mode": "remove-first",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 20,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "install-twice",
+        "mode": "install-twice",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 25,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "queued-install",
+        "mode": "queued-install",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 28,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "queued-remove-catalog",
+        "mode": "queued-remove-catalog",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 22,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "reentrant-found",
+        "mode": "reentrant-found",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 26,
+        "accepted": true,
+        "filesMatchExpected": true
+      },
+      {
+        "case": "invalid-root",
+        "mode": "discover-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 14,
+        "accepted": true
+      },
+      {
+        "case": "truncated-xml",
+        "mode": "discover-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 14,
+        "accepted": true
+      },
+      {
+        "case": "invalid-uuid",
+        "mode": "discover-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 14,
+        "accepted": true
+      },
+      {
+        "case": "missing-package",
+        "mode": "discover-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 14,
+        "accepted": true
+      },
+      {
+        "case": "short-file-uri",
+        "mode": "discover-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 14,
+        "accepted": true
+      },
+      {
+        "case": "catalog-root",
+        "mode": "catalog-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 11,
+        "accepted": true
+      },
+      {
+        "case": "catalog-truncated",
+        "mode": "catalog-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 11,
+        "accepted": true
+      },
+      {
+        "case": "catalog-invalid-uuid",
+        "mode": "catalog-invalid",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 11,
+        "accepted": true
+      },
+      {
+        "case": "unicode-uppercase-package",
+        "mode": "normal",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 26,
+        "accepted": true
+      },
+      {
+        "case": "catalog-publication-failure",
+        "mode": "catalog-save-failure",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "catalogPreserved": true,
+        "actualInstalledBytes": true,
+        "temporaryFilesCleaned": true
+      },
+      {
+        "case": "catalog-publication-retry",
+        "mode": "catalog-save-retry",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 26,
+        "accepted": true,
+        "catalogTracksInstalledFile": true
+      },
+      {
+        "case": "restart-after-catalog-retry",
+        "mode": "catalog-check",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 15,
+        "accepted": true
+      },
+      {
+        "case": "filename-collision",
+        "mode": "install-failure",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "existingBytesPreserved": true,
+        "noPartialOrTemporaryFiles": true
+      },
+      {
+        "case": "partial-missing-resource",
+        "mode": "install-failure",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "existingBytesPreserved": true,
+        "noPartialOrTemporaryFiles": true
+      },
+      {
+        "case": "second-file-collision",
+        "mode": "install-failure",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "existingBytesPreserved": true,
+        "noPartialOrTemporaryFiles": true
+      },
+      {
+        "case": "duplicate-resource",
+        "mode": "install-failure",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "existingBytesPreserved": true,
+        "noPartialOrTemporaryFiles": true
+      },
+      {
+        "case": "selected-local-replacement",
+        "mode": "replace-source",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 32,
+        "accepted": true,
+        "selectedPackageBytesMatch": true
+      },
+      {
+        "case": "durable-install",
+        "mode": "install-only",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 23,
+        "accepted": true,
+        "installedBytesMatch": true,
+        "catalogTracksFile": true
+      },
+      {
+        "case": "restart-installed",
+        "mode": "catalog-check",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 15,
+        "accepted": true
+      },
+      {
+        "case": "locked-remove",
+        "mode": "catalog-locked-remove",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 20,
+        "accepted": true,
+        "filePreserved": true,
+        "catalogPreserved": true
+      },
+      {
+        "case": "restart-after-failure",
+        "mode": "catalog-check",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 15,
+        "accepted": true
+      },
+      {
+        "case": "unlocked-retry",
+        "mode": "catalog-remove",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 20,
+        "accepted": true,
+        "fileRemoved": true,
+        "catalogUntracksFile": true
+      },
+      {
+        "case": "restart-after-removal",
+        "mode": "catalog-empty",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 11,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-00",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-01",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-02",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-03",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-04",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-05",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-06",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-07",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-08",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-09",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-10",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-11",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-12",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-13",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-14",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-15",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-16",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-17",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-18",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      },
+      {
+        "case": "pending-shutdown-19",
+        "mode": "delete-pending",
+        "exitCode": 0,
+        "forcedCleanupUsed": false,
+        "checks": 19,
+        "accepted": true
+      }
+    ]
+  },
+  "ordinaryPlayback": {
+    "passed": true,
+    "cases": {
+      "redesigned": {
+        "exitCode": 0,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "terminationConfirmed": true,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "selectedQmlOrAssertionDiagnostics": 0,
+        "decodedFrameCount": 1
+      },
+      "traditional": {
+        "exitCode": 0,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "terminationConfirmed": true,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "selectedQmlOrAssertionDiagnostics": 0,
+        "decodedFrameCount": 1
+      },
+      "redesigned-library": {
+        "exitCode": 0,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "terminationConfirmed": true,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "wasapiLoaded": true,
+        "selectedQmlOrAssertionDiagnostics": 0,
+        "decodedFrameCount": 1
+      },
+      "live": {
+        "exitCode": 0,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "terminationConfirmed": true,
+        "qtLoaded": true,
+        "adaptiveLoaded": true,
+        "audioDecoderLoaded": true,
+        "selectedQmlOrAssertionDiagnostics": 0
+      },
+      "downloads-sample": {
+        "exitCode": 0,
+        "timedOut": false,
+        "forcedCleanupUsed": false,
+        "terminationConfirmed": true,
+        "qtLoaded": true,
+        "d3d11Loaded": true,
+        "decodedFrameCount": 1,
+        "sourceStatUnchanged": true,
+        "selectedQmlOrAssertionDiagnostics": 0,
+        "rawMediaLogsAndFramesRemainPrivate": true
+      }
+    },
+    "sourceRuntimeUnchanged": true,
+    "ordinaryPackageUnchanged": true,
+    "privateFixtureModulesShipped": false
+  },
+  "assets": {
+    "1b0f7.svg": {
+      "sha256": "75b1efc01fbf135aafec9e8d89201da74b33fef70b0ab35a0e89d83e8ef7e9c7",
+      "matchesOriginal": true
+    },
+    "97863.svg": {
+      "sha256": "b041b5c30b4d268d5c33ceb09a04b92682a11e3f0d14d5a853b135cc884ae079",
+      "matchesOriginal": true
+    },
+    "1bf8a.svg": {
+      "sha256": "346eea75f71c46db66aa0770dbed04b8626c016d5294cfc13055f232d92d2fbe",
+      "matchesOriginal": true
+    },
+    "f1a4a.svg": {
+      "sha256": "57469f7cdd0656158a87c931efe496db418d97ae8857ba8ff9d51fe91ba1022d",
+      "matchesOriginal": true
+    },
+    "80d5a.svg": {
+      "sha256": "23a415e37fe8cd9377a7b341af6cfec0951a84021dd3e752b9a9e0e7b401ed27",
+      "matchesOriginal": true
+    },
+    "9c2da.svg": {
+      "sha256": "a17fe29bc387c07968ded7cf8d17b98bb91d0f1526b6460c2aeccd59ff4f5ac2",
+      "matchesOriginal": true
+    },
+    "66cd9.svg": {
+      "sha256": "22ae12638cf118f888fd55b894913869be8ad39a011e63f30c5285bf1d60cb02",
+      "matchesOriginal": true
+    },
+    "7d179.svg": {
+      "sha256": "33ac324b8820908c51c25ba047042f53b47cb8e4093a8547b8e8b1ef10d4b943",
+      "matchesOriginal": true
+    },
+    "36bfa.svg": {
+      "sha256": "7fcdee3b71e796f204ea6343762b9a9f5a86a160a4f3644385f5c56eada8bb7c",
+      "matchesOriginal": true
+    },
+    "ad68b.svg": {
+      "sha256": "52abf9b432f863c7304f353d1cfa2a7c900e93ff973b7de257654f0caa20ad0b",
+      "matchesOriginal": true
+    },
+    "ec3f6.svg": {
+      "sha256": "bb61b56e2f254f6a5ff2baa087ed919b5434fc3b03d635ff422d320c5346f601",
+      "matchesOriginal": true
+    },
+    "432a4.svg": {
+      "sha256": "dde68f38501de0c3a9a42844ac9785e1f5b8e4f227085d9e309d3b314ead9765",
+      "matchesOriginal": true
+    },
+    "3ffd5.svg": {
+      "sha256": "61cbd309fbc92b4a68a52f7e2c9de9d9077e7056995c4f04f43d1d7edcd8925f",
+      "matchesOriginal": true
+    },
+    "cf6e1.svg": {
+      "sha256": "5f7c12b56cebf318975de017fb17940cdb5cce4418ef051712181f0eb4d7649a",
+      "matchesOriginal": true
+    },
+    "6db55.svg": {
+      "sha256": "2a0f66ce1bfd750d747c8364c0d51ec92bde1343e9824f032b8c0eef8f5898ac",
+      "matchesOriginal": true
+    },
+    "08f95.svg": {
+      "sha256": "23ce850421acbf3a7932b35651f32e4703023f7e3c9483492b6cc17156ad7102",
+      "matchesOriginal": true
+    },
+    "f7e21.svg": {
+      "sha256": "ca2a7a1c5b4fedb94ba1ba453d54d3fd990aa85e3e95084ca8f987fec282addb",
+      "matchesOriginal": true
+    }
+  },
+  "frozenInputs": {
+    "ordinary": 1910,
+    "private": 5,
+    "changed": 0
+  },
+  "priorFailures": {
+    "R8": "Private QDialog-only scan missed actual PluginDialog, a QVLCFrame/QWidget. Normal exits; first 103 edit assertions passed.",
+    "R9": "Private fixture build rejected direct call to protected native close slot. Corrected with Qt slot invocation in R10.",
+    "earlier": "QML semantic failures, chooser targeting, private empty-text helper and actual caption event-filter shutdown defect retained in earlier run folders and SECURITY-TRIP.md."
+  },
+  "limits": [
+    "Incremental configured Autotools build; no clean final beta package or native Meson build acceptance.",
+    "Native captures at the default guest scale; themes, full focus/accessibility, narrow/short, 150/200% and monitor movement remain open.",
+    "No independent whole-surface fidelity score is assigned.",
+    "Native chooser is exercised through the owned Qt widget dialog; Windows shell-native chooser coverage remains separate.",
+    "Windows 11 is not validated by these Windows 10 results.",
+    "Public-source rollback-delete failure and POSIX publication paths retain their prior untested qualifications."
+  ]
+}

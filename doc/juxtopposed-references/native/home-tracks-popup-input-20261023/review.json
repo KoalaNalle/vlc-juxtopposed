@@ -1,0 +1,32 @@
+{
+  "selectedPopupInputAccepted": true,
+  "fullTrackWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "changes": [
+    "Track menu owns focus, explicitly closes on Escape/outside press, consumes outside input and does not dim the video.",
+    "Track columns and speed button forward Navigation cancellation to root; synchronization pages request Back. Back pops a nested page or closes the root menu.",
+    "On close, the originating audio/subtitle button receives keyboard-visible focus, so the unchanged native hotkey policy leaves its next Space in Qt."
+  ],
+  "evidence": {
+    "componentCases": 4,
+    "originalComponentFailures": 2,
+    "nativeNavigationCasesIncludingSetupCleanup": 6,
+    "originalNavigationFailures": 4,
+    "nativeScope": "Actual NavigationAttached/key helper and exact source cancellation/parent bindings, with supplied hierarchy/event/requestBack receiver. Audio/subtitle data rows share one column route; this does not count independent model/decoder verification.",
+    "ordinaryR4": "Escape closes either origin; Space reopens that same origin; outside video click closes without starting playback; audio synchronization Escape returns to list then closes; exact Play/6s/0.11324967927891905 retained throughout selected checks. Ordinary resume/Pause/Quit works.",
+    "ordinaryR3": "Subtitle synchronization first Escape returns to list, second closes with unchanged paused29s/exact position. Source of those nested-page handlers is unchanged in R4. Its failed Space follow-up remains recorded."
+  },
+  "openFindings": [
+    "Generated H264 Matroska starts paused with a music placeholder and main error: buffer deadlock prevented; first Play establishes video. Every ordinary process retains this error, so no clean overall run is claimed.",
+    "After a paused seek into a long embedded Finnish cue, the expected first cue is absent in the unobscured video. External SRT selection at a paused time also leaves no visible first cue; resume shows EXTERNAL FIRST CUE. No root cause or repair is accepted yet.",
+    "Native subtitle loading adds external Track3 while Finnish stays selected in R1; explicit Track3 selection works. Automatic-selection policy needs investigation before treating that observation as a separate defect."
+  ],
+  "limits": [
+    "Popup input only: no saved default language/track preference timing, complete subtitle consumer, physical audibility/outputs, full visual design, screen reader, DPI/touch/hotplug, Windows10 or whole-beta/package acceptance.",
+    "Some UIA reads lag visible transitions. R1 step names including finnishCueVisibleAfterPausedSeek and externalSubtitleAfterToggleClose describe failed attempts; the notes and this review explicitly reject their apparent success. Popup-covered frames are not cue-display proofs.",
+    "Initial component setup attempts missed import modules, then a color type import, then font/null-window setup. Original folders remain. The clean before-r2d control and after-r3 use the same final producer.",
+    "The first native test omitted static platform initialization and produced a Qt startup error. It was acknowledged normally and classified separately; the corrected R3b executable is identical for the failing/passing pair.",
+    "Raw ordinary passed=false receipts remain unchanged. All four ordinary processes exit normally0 without forced cleanup and preserve their source/runtime/media identities; all retain the startup diagnostic.",
+    "Earlier hover/performance, native audio and queue evidence retains its original binary scope. Core4422 and WASAPI4e4e remain unchanged by this QML-only repair."
+  ]
+}

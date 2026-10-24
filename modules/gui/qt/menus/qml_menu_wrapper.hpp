@@ -153,11 +153,14 @@ class QmlGlobalMenu : public VLCMenuBar
 {
     Q_OBJECT
     SIMPLE_MENU_PROPERTY(MainCtx*, ctx, nullptr)
+    SIMPLE_MENU_PROPERTY(bool, navigationAvailable, false)
+    SIMPLE_MENU_PROPERTY(bool, navigationVisible, false)
 
     Q_PROPERTY(bool shown READ isShown NOTIFY shownChanged FINAL)
 
 public:
     explicit QmlGlobalMenu(QObject *parent = nullptr);
+    Q_SIGNAL void navigationRequested();
 
     bool isShown() const { return m_shown; };
 
@@ -480,6 +483,7 @@ signals:
 public slots:
     void popup(int currentIndex, QPoint pos );
 private:
+    QVector<int> sourceSelectedIndexes() const;
     std::unique_ptr<QMenu> m_menu;
 };
 

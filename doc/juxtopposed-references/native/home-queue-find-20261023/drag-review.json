@@ -1,0 +1,11 @@
+{
+  "fullQueueWorkflowAccepted": false,
+  "physicalDragAccepted": false,
+  "observation": "Automated press/move/release spans17ms. At release the actual DragHandler/attached Drag are active, one source row is selected and _pendingNativeDragStart is still true. After release the FSM returns inactive; no native drag/drop event reaches the window.",
+  "interpretation": "This attempt finishes before the existing asynchronous image/data preparation starts native dragging. It cannot establish a faulty queue drop operation or qualify physical dragging.",
+  "limitations": [
+    "Private observer can perturb timing; the measured duration belongs to this run only.",
+    "Attached Drag.active QQmlProperty lookup was unavailable (null); the actual QQuickDragAttached active property was present.",
+    "A slower human drag remains a morning question; no production drag code changed."
+  ]
+}

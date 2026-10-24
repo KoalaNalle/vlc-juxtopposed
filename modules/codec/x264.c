@@ -870,6 +870,8 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.i_bitdepth = 10;
 # endif
 #endif
+    msg_Dbg( p_enc, "x264 requested preset: %s; tuning: %s",
+             psz_preset ? psz_preset : "medium", psz_tune ? psz_tune : "" );
     free( psz_preset );
     free( psz_tune );
     p_sys->param.i_csp = p_sys->i_colorspace;
@@ -1362,6 +1364,11 @@ static int  Open ( vlc_object_t *p_this )
         CloseEncoder(p_enc);
         return VLC_EGENERIC;
     }
+
+    x264_param_t effective;
+    x264_encoder_parameters( p_sys->h, &effective );
+    msg_Dbg( p_enc, "x264 effective parameters: threads=%d cabac=%d bframes=%d lookahead=%d",
+             effective.i_threads, effective.b_cabac, effective.i_bframe, effective.rc.i_lookahead );
 
     /* get the globals headers */
     size_t i_extra = x264_encoder_headers( p_sys->h, &nal, &i_nal );

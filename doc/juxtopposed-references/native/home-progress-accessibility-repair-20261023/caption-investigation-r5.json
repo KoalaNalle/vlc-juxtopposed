@@ -1,0 +1,16 @@
+{
+  "implemented": false,
+  "findings": [
+    "Player.qml anchors VideoSurface across the overlay viewport when controls are unpinned. The bottom bar then covers the lower caption.",
+    "The redesigned playback bar supplies its own background but the outer controlBar.background can be invisible, allowing the old bottom fade to darken captions above it.",
+    "sub-margin is a saved appearance/preset setting and is expressed in destination pixels; changing it for temporary controls would affect user settings semantics.",
+    "libass renders absolute TOP|LEFT regions, including normally styled ASS. A generic relative-bottom margin adjustment alone cannot qualify positioned ASS or preserve all of its layouts."
+  ],
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/Player.qml": "6781de5823dc3011e88f9fe987ea551c13ceaff7dba39eea7b36bebeee3bfbfd",
+    "modules/gui/qt/player/qml/ControlBar.qml": "d381bd8eda634d5cc5706511793612be4695573497ec18af45961bbb5e828e6b",
+    "modules/codec/libass.c": "3d43c9a9d5505678f44169b1c947e8ff71e01155f7f4bb9f3317753d9155b30b",
+    "src/video_output/vout_subpictures.c": "b06a46497b9e27dbf5b3dfcc46047b40f5d06b9258844a7383d5f71a9844db28"
+  },
+  "next": "Check the design/video reference and runtime safe-area options while preserving pin-controls policy, saved offsets, overlap geometry and positioned subtitles. Remove redundant redesigned bottom shading as a separate bounded change if confirmed."
+}

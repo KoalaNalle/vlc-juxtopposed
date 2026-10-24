@@ -32,9 +32,11 @@
 #include <vlc_threads.h>
 
 #include "vlc_configuration.h"
+#include <vlc_config_transaction.h>
 
 #include <errno.h>
 #include <assert.h>
+#include <math.h>
 
 #include "configuration.h"
 #include "modules/modules.h"
@@ -146,9 +148,13 @@ int vlc_param_SetString(struct vlc_param *param, const char *value)
 void config_PutPsz(const char *psz_name, const char *psz_value)
 {
     vlc_mutex_lock(&config_lock);
-    vlc_param_SetString(vlc_param_Find(psz_name), psz_value);
+    struct vlc_param *param = vlc_param_Find(psz_name);
+    if (vlc_param_SetString(param, psz_value) == 0)
+    {
+        param->pending = true;
+        atomic_store_explicit(&config_dirty, true, memory_order_release);
+    }
     vlc_mutex_unlock(&config_lock);
-    atomic_store_explicit(&config_dirty, true, memory_order_release);
 }
 
 void config_PutInt(const char *name, int64_t i_value)
@@ -165,11 +171,12 @@ void config_PutInt(const char *name, int64_t i_value)
     if (i_value > p_config->max.i)
         i_value = p_config->max.i;
 
-    atomic_store_explicit(&param->value.i, i_value, memory_order_relaxed);
     vlc_mutex_lock(&config_lock);
+    atomic_store_explicit(&param->value.i, i_value, memory_order_relaxed);
     p_config->value.i = i_value;
-    vlc_mutex_unlock(&config_lock);
+    param->pending = true;
     atomic_store_explicit(&config_dirty, true, memory_order_release);
+    vlc_mutex_unlock(&config_lock);
 }
 
 void config_PutFloat(const char *name, float f_value)
@@ -189,11 +196,153 @@ void config_PutFloat(const char *name, float f_value)
     else if (f_value > p_config->max.f)
         f_value = p_config->max.f;
 
-    atomic_store_explicit(&param->value.f, f_value, memory_order_relaxed);
     vlc_mutex_lock(&config_lock);
+    atomic_store_explicit(&param->value.f, f_value, memory_order_relaxed);
     p_config->value.f = f_value;
-    vlc_mutex_unlock(&config_lock);
+    param->pending = true;
     atomic_store_explicit(&config_dirty, true, memory_order_release);
+    vlc_mutex_unlock(&config_lock);
+}
+
+/* Callers hold config_lock, including across file replacement. */
+void config_AcknowledgeSave(void)
+{
+    for (vlc_plugin_t *p = vlc_plugins; p != NULL; p = p->next)
+        for (size_t i = 0; i < p->conf.size; ++i)
+            p->conf.params[i].pending = false;
+    atomic_store_explicit(&config_dirty, false, memory_order_release);
+}
+
+int (config_SaveChanges)(libvlc_int_t *obj, const vlc_config_change *changes,
+                         size_t count)
+{
+    if (count == 0)
+        return 0;
+    if (changes == NULL)
+        return -1;
+
+    struct saved_value {
+        struct vlc_param *param;
+        union { int64_t i; float f; char *str; } before;
+        char *replacement;
+        bool pending;
+    } *saved = vlc_alloc(count, sizeof(*saved));
+    if (saved == NULL)
+        return -1;
+    memset(saved, 0, count * sizeof(*saved));
+
+    int ret = -1;
+    vlc_mutex_lock(&config_lock);
+    /* Validate and allocate the entire change set before publishing anything. */
+    for (size_t i = 0; i < count; ++i)
+    {
+        const vlc_config_change *change = changes + i;
+        struct vlc_param *param = change->name ? vlc_param_Find(change->name) : NULL;
+        if (param == NULL || param->unsaved || param->obsolete
+         || config_GetType(change->name) != change->type)
+            goto out;
+        for (size_t j = 0; j < i; ++j)
+            if (saved[j].param == param)
+                goto out;
+        const module_config_t *item = &param->item;
+        switch (change->type)
+        {
+            case VLC_VAR_BOOL:
+            case VLC_VAR_INTEGER:
+                if (change->value.i < item->min.i || change->value.i > item->max.i)
+                    goto out;
+                saved[i].before.i = atomic_load_explicit(&param->value.i, memory_order_relaxed);
+                break;
+            case VLC_VAR_FLOAT:
+                if (!isfinite(change->value.f)
+                 || ((item->min.f != 0.f || item->max.f != 0.f)
+                     && (change->value.f < item->min.f || change->value.f > item->max.f))
+                 || (float)(round((double)change->value.f * 1000000.) / 1000000.) != change->value.f)
+                    goto out;
+                saved[i].before.f = atomic_load_explicit(&param->value.f, memory_order_relaxed);
+                break;
+            case VLC_VAR_STRING:
+                if (change->value.str && strpbrk(change->value.str, "\r\n"))
+                    goto out;
+                if (change->value.str && *change->value.str)
+                {
+                    saved[i].replacement = strdup(change->value.str);
+                    if (saved[i].replacement == NULL)
+                        goto out;
+                }
+                saved[i].before.str = atomic_load_explicit(&param->value.str, memory_order_relaxed);
+                break;
+            default:
+                goto out;
+        }
+        saved[i].param = param;
+        saved[i].pending = param->pending;
+    }
+
+    const bool dirty = atomic_load_explicit(&config_dirty, memory_order_relaxed);
+    for (size_t i = 0; i < count; ++i)
+    {
+        struct vlc_param *param = saved[i].param;
+        switch (changes[i].type)
+        {
+            case VLC_VAR_BOOL:
+            case VLC_VAR_INTEGER:
+                atomic_store_explicit(&param->value.i, changes[i].value.i, memory_order_relaxed);
+                param->item.value.i = changes[i].value.i;
+                break;
+            case VLC_VAR_FLOAT:
+                atomic_store_explicit(&param->value.f, changes[i].value.f, memory_order_relaxed);
+                param->item.value.f = changes[i].value.f;
+                break;
+            case VLC_VAR_STRING:
+                atomic_store_explicit(&param->value.str, saved[i].replacement, memory_order_release);
+                param->item.value.psz = saved[i].replacement;
+                break;
+        }
+        param->pending = true;
+    }
+    atomic_store_explicit(&config_dirty, true, memory_order_release);
+    ret = config_SaveConfigFileLocked(obj);
+    if (ret != 0)
+    {
+        for (size_t i = 0; i < count; ++i)
+        {
+            struct vlc_param *param = saved[i].param;
+            switch (changes[i].type)
+            {
+                case VLC_VAR_BOOL:
+                case VLC_VAR_INTEGER:
+                    atomic_store_explicit(&param->value.i, saved[i].before.i, memory_order_relaxed);
+                    param->item.value.i = saved[i].before.i;
+                    break;
+                case VLC_VAR_FLOAT:
+                    atomic_store_explicit(&param->value.f, saved[i].before.f, memory_order_relaxed);
+                    param->item.value.f = saved[i].before.f;
+                    break;
+                case VLC_VAR_STRING:
+                    atomic_store_explicit(&param->value.str, saved[i].before.str, memory_order_release);
+                    param->item.value.psz = saved[i].before.str;
+                    break;
+            }
+            param->pending = saved[i].pending;
+        }
+        atomic_store_explicit(&config_dirty, dirty, memory_order_release);
+    }
+    /* Strings published during a failed transaction can also have readers. */
+    vlc_rcu_synchronize();
+    if (ret == 0)
+        for (size_t i = 0; i < count; ++i)
+            if (changes[i].type == VLC_VAR_STRING)
+            {
+                free(saved[i].before.str);
+                saved[i].replacement = NULL; /* now owned by the parameter */
+            }
+out:
+    vlc_mutex_unlock(&config_lock);
+    for (size_t i = 0; i < count; ++i)
+        free(saved[i].replacement);
+    free(saved);
+    return ret;
 }
 
 ssize_t config_GetIntChoices(const char *name,
@@ -522,10 +671,12 @@ void config_ResetAll(void)
             else
             if (IsConfigStringType (p_config->i_type))
                 vlc_param_SetString(param, p_config->orig.psz);
+            if (CONFIG_ITEM(p_config->i_type) && !param->obsolete && !param->unsaved)
+                param->pending = true;
         }
     }
-    vlc_mutex_unlock(&config_lock);
     atomic_store_explicit(&config_dirty, true, memory_order_release);
+    vlc_mutex_unlock(&config_lock);
 }
 
 

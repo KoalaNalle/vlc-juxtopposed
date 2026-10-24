@@ -1,0 +1,46 @@
+# Preserve original Figma export bytes and their provenance hashes on Windows.
+modules/gui/qt/pixmaps/juxtopposed/*.svg -text
+doc/juxtopposed-references/queue/*.svg -text
+
+# Preserve frozen native proof bytes and their recorded SHA-256 identities.
+doc/juxtopposed-references/native/shared-modal-20261014/** -text
+doc/juxtopposed-references/native/conversion-desktop-20261014/** -text
+doc/juxtopposed-references/native/navigation-leaf-20261014/** -text
+doc/juxtopposed-references/native/conversion-literal-path-20261014/** -text
+doc/juxtopposed-references/native/navigation-desktop-20261014/** -text
+doc/juxtopposed-references/native/navigation-play-shutdown-20261014/** -text
+
+# Preserve the byte identities of the 19 October native validation receipts.
+doc/juxtopposed-references/native/home-audio-device-activation-20261019/** -text
+doc/juxtopposed-references/native/home-auto-hide-20261019/** -text
+doc/juxtopposed-references/native/home-flac-coded-tail-20261019/** -text
+doc/juxtopposed-references/native/home-fullscreen-screen-20261019/** -text
+doc/juxtopposed-references/native/home-interface-title-20261019/** -text
+doc/juxtopposed-references/native/home-settings-activation-20261019/** -text
+doc/juxtopposed-references/native/home-titlebar-tooltip-20261019/** -text
+doc/juxtopposed-references/native/home-video-warning-20261019/** -text
+doc/juxtopposed-references/native/home-geometry-memory-20261020/** -text
+doc/juxtopposed-references/native/home-geometry-activation-20261020/** -text
+doc/juxtopposed-references/native/home-multi-instance-20261020/** -text
+doc/juxtopposed-references/native/home-popup-duration-20261020/** -text
+doc/juxtopposed-references/native/home-popup-duration-activation-20261020/** -text
+doc/juxtopposed-references/native/home-settings-concurrency-20261021/** -text
+doc/juxtopposed-references/native/home-quit-stop-20261021/** -text
+doc/juxtopposed-references/native/home-input-cancellation-20261021/** -text
+doc/juxtopposed-references/native/home-shared-qt-20261021/** -text
+doc/juxtopposed-references/native/home-profile-error-20261021/** -text
+doc/juxtopposed-references/native/home-precise-seek-20261021/** -text
+
+# Preserve the newly retrieved original Privacy reference artwork bytes.
+doc/juxtopposed-references/figma/20261017/privacy/assets/*.svg -text
+
+/modules/gui/qt/pixmaps/juxtopposed/privacy-settings-*.svg -text
+
+# Preserve the original Controls reference artwork bytes.
+doc/juxtopposed-references/figma/20261017/controls/assets/*.svg -text
+
+# Unified-diff blank context lines intentionally contain one space.
+contrib/src/medialibrary/history-only.patch whitespace=-blank-at-eol
+
+# Preserve the subtitle FPS checkpoint's recorded byte identities.
+doc/juxtopposed-references/native/home-subtitle-fps-20261024/** -text

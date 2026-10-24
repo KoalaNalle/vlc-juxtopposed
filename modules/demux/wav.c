@@ -90,7 +90,6 @@ static int Demux( demux_t *p_demux )
     block_t     *p_block;
     const int64_t i_pos = vlc_stream_Tell( p_demux->s );
     unsigned int i_read_size = p_sys->i_frame_size;
-    uint32_t i_read_samples = p_sys->i_frame_samples;
 
 
     if( p_sys->i_data_size > 0 )
@@ -103,8 +102,6 @@ static int Demux( demux_t *p_demux )
         if ( i_end < i_pos + i_read_size )
         {
             i_read_size = i_end - i_pos;
-            i_read_samples = ( p_sys->i_frame_size - i_read_size )
-                           * p_sys->i_frame_samples / p_sys->i_frame_size;
         }
     }
 
@@ -113,6 +110,9 @@ static int Demux( demux_t *p_demux )
         msg_Warn( p_demux, "cannot read data" );
         return VLC_DEMUXER_EOF;
     }
+
+    const uint32_t i_read_samples = (uint64_t)p_block->i_buffer
+                                 * p_sys->i_frame_samples / p_sys->i_frame_size;
 
     p_block->i_dts =
     p_block->i_pts = date_Get( &p_sys->pts );
@@ -126,9 +126,10 @@ static int Demux( demux_t *p_demux )
                              p_sys->i_chans_to_reorder,
                              p_sys->pi_chan_table, p_sys->fmt.i_codec );
 
+    /* Publish each packet's duration, including the final packet for which a
+     * packetizer cannot infer duration from a following timestamp. */
+    p_block->i_length = date_Increment( &p_sys->pts, i_read_samples ) - p_block->i_pts;
     es_out_Send( p_demux->out, p_sys->p_es, p_block );
-
-    date_Increment( &p_sys->pts, i_read_samples );
 
     return VLC_DEMUXER_SUCCESS;
 }

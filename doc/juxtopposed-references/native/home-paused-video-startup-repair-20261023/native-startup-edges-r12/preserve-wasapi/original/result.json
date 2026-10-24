@@ -1,0 +1,104 @@
+{
+  "config": {
+    "name": "preserve-wasapi",
+    "media": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-r8\\preserve.mkv",
+    "audio": "wasapi",
+    "video": true,
+    "extraOptions": []
+  },
+  "passed": true,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-edges-r12\\preserve-wasapi\\original\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "producerSha256": "b4dd122d1f582adee11d2302014b56b0930d42917a335e2c6798b162bb0ef2ac",
+  "coreSha256": "4422fbb02fb22857c257340d486a0310c923526d6d276127258566d3ac2671de",
+  "mediaSha256": "a7a6a18a83a1ca49caa437fe972bc19f8e94731c3ae2f7d49fa3ce32a9c80154",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshotSha256": "2ac0fb5d3d05f4954f27a9ec178dcac2cfec96e94452ee0a47250107a2eddb84",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "step": "held-paused-0",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1
+    },
+    {
+      "step": "held-paused-1",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1
+    },
+    {
+      "step": "held-paused-2",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1
+    },
+    {
+      "step": "held-paused-3",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1
+    },
+    {
+      "step": "resumed",
+      "state": 2,
+      "timeUs": 264432,
+      "vouts": 1
+    },
+    {
+      "step": "paused-again-or-ended",
+      "state": 3,
+      "timeUs": 265194,
+      "vouts": 1
+    }
+  ],
+  "teardownComplete": true,
+  "assertions": {
+    "initialPaused": true,
+    "initialPicture": true,
+    "heldPausedClockStable": true,
+    "resumedOrShortMediaEnded": true,
+    "advancedOrShortMediaEnded": true,
+    "repausedOrShortMediaEnded": true
+  },
+  "playReturn": 0,
+  "initialPauseReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-edges-r12\\preserve-wasapi\\original\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-edges-r12\\preserve-wasapi\\original\\runtime\\plugins\\plugins.dat: No error",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "faad warning: decoded zero sample"
+  ],
+  "actualWasapiSelected": true
+}

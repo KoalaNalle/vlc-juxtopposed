@@ -76,23 +76,17 @@ vlc_tls_t *vlc_https_connect(vlc_tls_client_t *creds, const char *name,
     return tls;
 }
 
-static char *vlc_http_proxy_find(const char *hostname, unsigned port,
-                                 bool secure)
+static char *vlc_http_request_url(const char *host, unsigned port, bool secure,
+                                   const struct vlc_http_msg *request)
 {
-    const char *fmt;
-    char *url, *proxy = NULL;
-
-    if (strchr(hostname, ':') != NULL)
-        fmt = port ? "http%s://[%s]:%u" : "http%s://[%s]";
-    else
-        fmt = port ? "http%s://%s:%u" : "http%s://%s";
-
-    if (likely(asprintf(&url, fmt, secure ? "s" : "", hostname, port) >= 0))
-    {
-        proxy = vlc_getProxyUrl(url);
-        free(url);
-    }
-    return proxy;
+    char *authority = vlc_http_authority(host, port), *url = NULL;
+    const char *path = vlc_http_msg_get_path(request);
+    if (authority == NULL) return NULL;
+    if (path == NULL || *path != '/') path = "/";
+    if (asprintf(&url, "%s://%s%s", secure ? "https" : "http", authority, path) < 0)
+        url = NULL;
+    free(authority);
+    return url;
 }
 
 
@@ -103,6 +97,8 @@ struct vlc_http_mgr
     vlc_tls_client_t *creds;
     struct vlc_http_cookie_jar_t *jar;
     struct vlc_http_conn *conn;
+    char *uri;
+    char *proxy;
 };
 
 static struct vlc_http_conn *vlc_http_mgr_find(struct vlc_http_mgr *mgr,
@@ -151,9 +147,6 @@ static struct vlc_http_msg *vlc_https_request(struct vlc_http_mgr *mgr,
     vlc_tls_t *tls;
     bool http2 = true;
 
-    if (mgr->creds == NULL && mgr->conn != NULL)
-        return NULL; /* switch from HTTP to HTTPS not implemented */
-
     if (mgr->creds == NULL)
     {   /* First TLS connection: load x509 credentials */
         mgr->creds = vlc_tls_ClientCreate(mgr->obj);
@@ -173,12 +166,11 @@ static struct vlc_http_msg *vlc_https_request(struct vlc_http_mgr *mgr,
             return resp; /* existing connection reused */
     }
 
-    char *proxy = vlc_http_proxy_find(host, port, true);
+    const char *proxy = mgr->proxy;
     if (proxy != NULL)
     {
-        tls = vlc_https_connect_proxy(mgr->creds, mgr->creds,
+        tls = vlc_https_connect_proxy(mgr->logger, mgr->creds,
                                       host, port, &http2, proxy);
-        free(proxy);
     }
     else
         tls = vlc_https_connect(mgr->creds, host, port, &http2);
@@ -218,9 +210,6 @@ static struct vlc_http_msg *vlc_http_request(struct vlc_http_mgr *mgr,
                                              const struct vlc_http_msg *req,
                                              bool idempotent, bool payload)
 {
-    if (mgr->creds != NULL && mgr->conn != NULL)
-        return NULL; /* switch from HTTPS to HTTP not implemented */
-
     if (idempotent)
     {
         struct vlc_http_msg *resp = vlc_http_mgr_reuse(mgr, host, port, req,
@@ -232,22 +221,33 @@ static struct vlc_http_msg *vlc_http_request(struct vlc_http_mgr *mgr,
     struct vlc_http_conn *conn;
     struct vlc_http_stream *stream;
 
-    char *proxy = vlc_http_proxy_find(host, port, false);
+    const char *proxy = mgr->proxy;
     if (proxy != NULL)
     {
-        vlc_url_t url;
-
-        vlc_UrlParse(&url, proxy);
-        free(proxy);
-
-        if (url.psz_host != NULL)
-            stream = vlc_h1_request(mgr->logger, url.psz_host,
-                                    url.i_port ? url.i_port : 80, true, req,
-                                    idempotent, payload, &conn);
-        else
-            stream = NULL;
-
-        vlc_UrlClean(&url);
+        vlc_url_t endpoint;
+        bool valid = vlc_UrlParse(&endpoint, proxy) == 0
+            && endpoint.psz_host && endpoint.psz_protocol
+            && (!strcasecmp(endpoint.psz_protocol, "http") || !strcasecmp(endpoint.psz_protocol, "https"));
+        stream = NULL;
+        if (valid && !strcasecmp(endpoint.psz_protocol, "https")) {
+            if (mgr->creds == NULL) mgr->creds = vlc_tls_ClientCreate(mgr->obj);
+            bool http2 = false; /* The forward proxy request uses HTTP/1.1. */
+            vlc_tls_t *tls = mgr->creds ? vlc_https_connect(mgr->creds, endpoint.psz_host,
+                endpoint.i_port ? endpoint.i_port : 443, &http2) : NULL;
+            if (tls != NULL) {
+                conn = vlc_h1_conn_create(mgr->logger, tls, true);
+                if (conn == NULL) vlc_tls_Close(tls);
+                else {
+                    stream = vlc_http_stream_open(conn, req, payload);
+                    if (stream == NULL) vlc_http_conn_release(conn);
+                }
+            }
+        } else if (valid) {
+            stream = vlc_h1_request(mgr->logger, endpoint.psz_host,
+                endpoint.i_port ? endpoint.i_port : 80, true, req,
+                idempotent, payload, &conn);
+        }
+        vlc_UrlClean(&endpoint);
     }
     else
         stream = vlc_h1_request(mgr->logger, host, port ? port : 80, false,
@@ -278,8 +278,32 @@ struct vlc_http_msg *vlc_http_mgr_request(struct vlc_http_mgr *mgr, bool https,
     if (port && vlc_http_port_blocked(port))
         return NULL;
 
-    return (https ? vlc_https_request : vlc_http_request)(mgr, host, port, m,
-                                                          idempotent, payload);
+    char *uri = vlc_http_request_url(host, port, https, m);
+    if (uri == NULL) return NULL;
+    if (!idempotent || mgr->conn == NULL || mgr->uri == NULL || strcmp(mgr->uri, uri)) {
+        /* PAC sees the complete request path/query. Never reuse a connection to
+         * a different origin or a route chosen for a different request URL. */
+        char *proxy = vlc_getProxyUrlForObject(mgr->obj, uri);
+        if (mgr->conn != NULL) vlc_http_mgr_release(mgr, mgr->conn);
+        free(mgr->uri); free(mgr->proxy);
+        mgr->uri = uri; mgr->proxy = proxy;
+    } else free(uri);
+
+    struct vlc_http_msg *request = vlc_http_req_copy(m);
+    if (request == NULL) return NULL;
+    if (!https && mgr->proxy != NULL) {
+        vlc_url_t endpoint;
+        bool valid = vlc_UrlParse(&endpoint, mgr->proxy) == 0;
+        if (valid && endpoint.psz_username != NULL)
+            valid = vlc_http_msg_add_creds_basic(request, true, endpoint.psz_username,
+                endpoint.psz_password ? endpoint.psz_password : "") == 0;
+        vlc_UrlClean(&endpoint);
+        if (!valid) { vlc_http_msg_destroy(request); return NULL; }
+    }
+    struct vlc_http_msg *response = (https ? vlc_https_request : vlc_http_request)(
+        mgr, host, port, request, idempotent, payload);
+    vlc_http_msg_destroy(request);
+    return response;
 }
 
 struct vlc_http_cookie_jar_t *vlc_http_mgr_get_jar(struct vlc_http_mgr *mgr)
@@ -299,6 +323,8 @@ struct vlc_http_mgr *vlc_http_mgr_create(vlc_object_t *obj,
     mgr->creds = NULL;
     mgr->jar = jar;
     mgr->conn = NULL;
+    mgr->uri = NULL;
+    mgr->proxy = NULL;
     return mgr;
 }
 
@@ -308,5 +334,7 @@ void vlc_http_mgr_destroy(struct vlc_http_mgr *mgr)
         vlc_http_mgr_release(mgr, mgr->conn);
     if (mgr->creds != NULL)
         vlc_tls_ClientDelete(mgr->creds);
+    free(mgr->uri);
+    free(mgr->proxy);
     free(mgr);
 }

@@ -1,0 +1,40 @@
+{
+  "status": "reproduced_mp4_landing_failure",
+  "passed": false,
+  "privateFixture": false,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "393619cf5176b2e7e3e8b50b1feffad5121cb1b8859ab7b012a191db85d6459c",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "34d89499b9291eb4c18420c4235a9d950235300e2fece98ff78b2f9034c690a1"
+  },
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "inputsSha256": "000aa770e228fc9f71f1550ffd1243275d7f49163524816e6c76dfd6232a2875",
+  "pid": 24540,
+  "exitCode": 0,
+  "normalExit": true,
+  "diagnostics": [],
+  "nativeSeekLines": [
+    "mp4 debug: seeking with 14161ms preroll (use input-fast-seek to avoid) to 24161073",
+    "mp4 debug: seeking with 24084ms alignment to 34084033",
+    "mp4 debug: seeking with 24084ms alignment to 34084033"
+  ],
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "vlc.logSha256": "00172ed6179df6cb354f8453c377305f738e8ce475bc7ee5a798d84f3cce0124",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "stderr.txtSha256": "e604971655ddd7db3746e1cab6b2975bc0fccbc705a69259493efedb1cd7fdcf",
+  "quitLogOrder": {
+    "wait": 978,
+    "stopped": 1010,
+    "teardown": 1014
+  },
+  "rawReceiptSha256": "8aacbc0502a447e4bdc5d05424bbce25a07f781524976fcca64bd24008e2826e",
+  "observations": "On precise timeline24.161 shows burned24.160/frame604. Actual Toggle Off then timeline34.084 shows burned10.000/frame250 and resumes from there; old MP4 log aligns24.084s backwards. Normal clean exit.",
+  "productDefect": "MP4 chunk lookup compares absolute sample index to local chunk count."
+}

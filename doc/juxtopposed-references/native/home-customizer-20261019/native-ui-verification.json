@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "ordinaryPackageAccepted": false,
+  "guiSha256": "12c39e7b4297b63f099bf41caaecb179d39bffbd8f0c90cbd77fb98ff08097ca",
+  "cases": {
+    "customizer-paused": {
+      "passed": true,
+      "normalExit": true,
+      "checks": 111,
+      "diagnostics": []
+    },
+    "customizer-reopen": {
+      "passed": true,
+      "normalExit": true,
+      "checks": 15,
+      "diagnostics": []
+    },
+    "customizer-playing": {
+      "passed": true,
+      "normalExit": true,
+      "checks": 111,
+      "diagnostics": []
+    }
+  },
+  "totalChecks": 237,
+  "sourceManifestSha256": {
+    "ordinary": "7bc18b71f6391d9c5aa9ad3f647e67975e8834fd5341c7de4aae299ace55a237",
+    "private": "377c2da42c7615088e9c08bab1d8b552364f8b30aace4ea3c0bcf7451e6858fb"
+  },
+  "sourceCheckpoint": "build-windows/beta-customizer-20261019/source-ui-r2/checkpoint.json",
+  "captures": {
+    "native-customizer-draft.png": "29c69cffb0a1e00b1e6fc304d023d16e534e46c3b0a07fe5e1c3e97856beb45a",
+    "native-customizer-applied.png": "3eb07a5a3f378c05416bcdee4f7dde849db78579ad6a0bd70c557ab32b449f2e",
+    "native-customizer-save-error.png": "09973d793b5a8390e2f95b78e4e6ad626d6d5be419a7f99100ed3fc49a218475",
+    "native-customizer-reopened.png": "c9818db9c43ef499e40b3d9b78161b1aa5e279d6bbd9cc5c47f58dcd3794e32f"
+  },
+  "scope": "Actual Windows native Tools/customizer, separate native video/music drafts, pointer focus/Delete, clipped drop refusal, Cancel, checked save conflict/retry, real shared bar/seek object preservation and normal cold process restart. Owned generated media, monitor2.",
+  "notAccepted": [
+    "All31 tile consumers",
+    "Favorite and HDR integration",
+    "Authoritative playlist source name",
+    "Full original icon/pixel fidelity",
+    "Screen reader and OS DPI",
+    "Ordinary/final-package acceptance"
+  ],
+  "rejectedRuns": {
+    "native-customizer-paused-r2": "Loaded R1 DLL due to slash-specific QA argument replacement. Rejected, rerun with exact path/hash and required new check names.",
+    "native-customizer-playing-r2": "Same rejected launcher mismatch; exact R2 binary is verified by r2a."
+  }
+}

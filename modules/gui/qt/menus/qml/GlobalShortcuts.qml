@@ -21,6 +21,8 @@ import VLC.MainInterface
 import VLC.Dialogs
 
 Item {
+    id: root
+    readonly property string queueShortcut: "Ctrl+L"
 
     ShortcutExt{ context: Qt.WindowShortcut; sequence:"Ctrl+O"; onActivated: DialogsProvider.simpleOpenDialog(); }
     ShortcutExt{ sequence:"Ctrl+Shift+O"; onActivated: DialogsProvider.openFileDialog(); }
@@ -42,7 +44,7 @@ Item {
 
     ShortcutExt{ sequence:"Ctrl+Shift+W"; onActivated: DialogsProvider.vlmDialog(); }
 
-    ShortcutExt{ sequence:"Ctrl+L"; onActivated: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible; }
+    ShortcutExt{ sequence:root.queueShortcut; onActivated: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible; }
 
     ShortcutExt{ sequence:"F1"; onActivated: DialogsProvider.helpDialog() }
     ShortcutExt{ sequence:"F10"; onActivated: MainCtx.toggleToolbarMenu() }

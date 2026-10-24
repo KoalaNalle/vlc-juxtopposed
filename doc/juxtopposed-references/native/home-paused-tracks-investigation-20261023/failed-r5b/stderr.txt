@@ -1,0 +1,8 @@
+[h264 @ 000001f184b921c0] Reinit context to 960x544, pix_fmt: yuv420p
+[h264 @ 000001f184b921c0] Reinit context to 960x544, pix_fmt: yuv420p
+[h264 @ 000001f184b921c0] Reinit context to 960x544, pix_fmt: yuv420p
+Traceback (most recent call last):
+  File "C:\Modding\vlc-juxtopposed\build-windows\beta-tracks-subtitles-20261023\native-startup-r5b.py", line 96, in <module>
+    result.update(status='terminal',diagnostics=[line for line in lines if re.search(r'\berror:|Assertion failed|Binding loop|ReferenceError|TypeError',line)],warnings=[line for line in lines if 'warning:' in line],actualWasapiSelected=any('using aout stream module "wasapi"' in line for line in lines),actualVideoDecoderLines=[line for line in lines if 'thread mode' in line or 'allowing ' in line or 'using video decoder module' in line])
+                                                                           ^^
+NameError: name 're' is not defined. Did you forget to import 're'?

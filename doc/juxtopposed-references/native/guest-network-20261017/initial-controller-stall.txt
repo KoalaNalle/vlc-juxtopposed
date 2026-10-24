@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "E:\Modding\vlc-juxtopposed\build-windows\beta-network-20261017\verify-controller-r1.py", line 28, in <module>
+    suite=ET.parse(result/'qtest.xml').getroot() if (result/'qtest.xml').exists() else None
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Apps\Python312\Lib\xml\etree\ElementTree.py", line 1204, in parse
+    tree.parse(source, parser)
+  File "E:\Apps\Python312\Lib\xml\etree\ElementTree.py", line 569, in parse
+    self._root = parser._parse_whole(source)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+xml.etree.ElementTree.ParseError: no element found: line 1, column 0

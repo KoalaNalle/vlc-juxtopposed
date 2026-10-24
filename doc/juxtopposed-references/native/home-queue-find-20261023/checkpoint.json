@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "queueFindShortcutAccepted": true,
+  "fullQueueWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "date": "2026-10-23",
+  "scope": "Mouse-focused redesigned Queue Find ownership and prevention of duplicate application shortcut dispatch; selected ordinary filter/sort/visibility checks.",
+  "nativeFilterCases": 8,
+  "nativeFilterNegativeFailures": 2,
+  "nativeRoutingCases": 17,
+  "componentScopes": [
+    "proxy mapping/actions",
+    "geometry at logical uiScale100/150/200",
+    "overlay anchoring"
+  ],
+  "identities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/gui/libqt_plugin.dll": "903dc97739c6dee409e43e9aeda4a92f9b9757d36c87bfcc9ec91133a0420bb6",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408"
+  },
+  "sourceInputs": 2072,
+  "sourceFreeze": "build-windows/beta-queue-workflow-20261022/source-r8",
+  "ordinaryGuiSourceFreeze": "build-windows/beta-queue-workflow-20261022/source-r7",
+  "productionIdenticalToOrdinaryR7": true,
+  "earlierEvidence": "R4 routing bodies and R3 QML inputs are hash-identical in their bounded scopes; the toolbar filter has its own real QApplication regression.",
+  "knownLimits": [
+    "Two drag attempts (Echo handle, then row body) did not change order. Cause not established; native drag/drop acceptance remains open.",
+    "No queue removal, native file addition, detached queue, screen reader or Windows DPI acceptance in this ordinary run.",
+    "Media library was disabled; Bookmarks showed its explicit unavailable message. Bookmark editing is not accepted by this run.",
+    "Figma Queue463:831 full context and400x946 screenshot inspected. Original assets/layout unchanged. Actual background blur remains missing; no whole-surface pixel acceptance.",
+    "No renderer-performance, Windows10 or final-package promotion. Full13-category/32-surface beta remains active."
+  ],
+  "artifacts": {
+    "filter-original-verification.json": "c37a23c4913a489b9942cee95ee1ec223f3bd085cdaae07ed46526a38adbedb5",
+    "filter-original-results.txt": "8d9b73c4e9dca175db1a109bf68175bfce6df064a7fe8c0cd93c7838bce9ee50",
+    "filter-original-results.xml": "aac07a624329f02301137531c1728c047e1c1ec7ce0a2626c4ab550577bdd04d",
+    "filter-fixed-verification.json": "e8fe8d37c9b34599a5e1bcfd3ad716b29665f475236be48b91cedaf0981067c9",
+    "filter-fixed-results.txt": "9cfb2dcf7884910706bdc5f2e63c2d89007be317a36a3315c3309d277739ff5a",
+    "filter-fixed-results.xml": "28f474ddfc760f9c69250fde66f9146941cf74d7b0cb81aa8fee1729dc597eb0",
+    "routing-fixed-verification.json": "807c3b212153208738cc1f7bc2d5dbd093b960127872ce08e0b7fbaf1af79fc2",
+    "routing-fixed-results.txt": "20a89440b752185ad7a6e2cea98a9ceb224075afaf86be41d9d112b72fe5d322",
+    "routing-fixed-results.xml": "22fddc00c03bd5f7d973439a4f89d460bd71d4f7d0c5d8c4b2cfdb6b84126fdc",
+    "routing-negative-verification.json": "3a2987e50bce53f5116fda64bc062fdb7ec260fc6d2a7444173b5fad6d92646d",
+    "routing-negative-results.txt": "4b2c6d9e47393ffbde7b4fc1200030a85aa80687f511139949e8ea3fc4ae506e",
+    "routing-negative-results.xml": "276f06427a95a20f9428c0cae62c1798d9bb4a3a7579803d582bbc04e6e53207",
+    "component-proxy.json": "ef2a74d90e4c303af17f9fb57eab2268d64881c89026f22074b7db9a751d7098",
+    "component-overlay.json": "8a47759849c1a8cdf75d159514f87fe2bd068718a76d7481543584e4cdfe9899",
+    "component-geometry.json": "4e6af2e74bdc73c5a456c370f05fc4a2a5484a7a42b7e7c99c614d660412585c",
+    "ordinary-process.json": "18bfc0e412898f885907d543f1dbb21d0ed3bc8d199129a74f58c696cb9dc692",
+    "test-only-source-delta.json": "26d1e74788e7e76b55bb924d89e315c0adb52f6a4e13c25e2a9856d523d3defc",
+    "source-inputs.json": "6336e9ad17c92ed72619fcb0bd88acb11715af68a8654e451cd327274f9564f3",
+    "ordinary-review.json": "8ac5aec37ba26cd10a156e3213f4d138194725c9ecaaadc62a0c5174b0d40d37",
+    "investigation-review.json": "153626392c6838d002099c82b512adca6d29f2369d27da756dedc4ba6a393299",
+    "drag-observation.json": "37574bb8dc1cb42b8abff00b63eecf00d6edddaffa95208f15a724abbd152292",
+    "drag-process.json": "fee0853bec6d704d8d69980b1998f5f3018b06a3840b6627df1c69d438126fab",
+    "drag-review.json": "2e41fe7296c94a4e2642cffc544a2f2bca28fa5af83c7f3439ae1f87e2eb5cb0"
+  },
+  "dragFollowUp": "Private passive trace identifies a17ms automated gesture ending while native drag start is pending; native drop never starts in this attempt. Slower physical dragging remains unaccepted."
+}

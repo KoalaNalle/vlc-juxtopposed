@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "C:\Modding\vlc-juxtopposed\build-windows\beta-queue-workflow-20261022\probe-initial-audio-r20.py", line 65, in <module>
+    wait(lambda:state(player)==3 and get_length(player)>0 and seekable(player),'Paused ready')
+  File "C:\Modding\vlc-juxtopposed\build-windows\beta-queue-workflow-20261022\probe-initial-audio-r20.py", line 60, in wait
+    raise AssertionError(label+': '+str(sample()))
+AssertionError: Paused ready: {'state': 2, 'timeUs': 7876313, 'position': 0.2625441, 'lengthUs': 30000000, 'seekable': True}

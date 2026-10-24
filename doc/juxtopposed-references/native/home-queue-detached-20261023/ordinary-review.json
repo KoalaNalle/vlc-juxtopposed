@@ -1,0 +1,35 @@
+{
+  "detachedPlacementAccepted": true,
+  "fullQueueWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "method": "Computer Use in the ordinary Windows11 application with synthetic silent WAV files and isolated portable settings.",
+  "guiSha256": "2aef3286c7072524fae1dc7eda83764d189549b721a56805a79b960f90d5bb1a",
+  "firstShowFrameCapture": {
+    "width": 402,
+    "height": 1033,
+    "originX": -411,
+    "originY": 357,
+    "zIndex": 1
+  },
+  "reopenedFrameCapture": {
+    "width": 402,
+    "height": 1033,
+    "originX": -411,
+    "originY": 357,
+    "zIndex": 1
+  },
+  "passedChecks": [
+    "Maximized player; Menu > View > Docked Play Queue toggled off, then Play queue shows a complete detached frame on the left display.",
+    "Native title-bar Close hides only the detached queue. Reopening reproduces the complete visible frame at the same position.",
+    "Mouse-selected Birch; Ctrl+F opens the detached filter, typing Birch leaves only that row, Escape restores all five rows.",
+    "Menu redocks the queue; explicit Play queue activation returns all five original rows in docked mode. Ctrl+F works after row focus returns.",
+    "Cedar remains the current paused track at0 throughout. Normal Ctrl+Q exits0 with no runtime diagnostics."
+  ],
+  "limits": [
+    "Redocking currently hides the panel; this run explicitly reopens it. Seamless visibility retention is not accepted.",
+    "No physical DPI changes, display unplug, all monitor arrangements or Windows10 claim.",
+    "No queue drag/removal/addition, actual bookmarks/chapters or full design/screen-reader/package acceptance."
+  ],
+  "observationFile": "build-windows/beta-queue-workflow-20261022/ordinary-ui-r13-observations.json",
+  "note": "The unmodified process receipt keeps passed=false/observationsRequired=true; this separate review qualifies only these observed checks."
+}

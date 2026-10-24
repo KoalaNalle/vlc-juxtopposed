@@ -1,0 +1,18 @@
+from pathlib import Path
+import hashlib
+import json
+
+repo = Path(__file__).resolve().parents[1]
+proposal = repo / 'build-windows/page-loader-leaf-pending'
+manifest = json.loads((proposal / 'manifest.json').read_text(encoding='utf-8'))
+assert hashlib.sha256((proposal / 'integration.patch').read_bytes()).hexdigest() == 'f8d4ffb18327e3cf94fa29a373afeb928cd7290f5d6f07dd36d0c830782514d1'
+for name, entry in manifest['files'].items():
+    source, target = proposal / 'shadow' / name, repo / name
+    assert hashlib.sha256(source.read_bytes()).hexdigest() == entry['shadowSha256'], name
+    if entry.get('newFile'):
+        assert not target.exists(), name
+    else:
+        assert hashlib.sha256(target.read_bytes()).hexdigest() == entry['baseSha256'], name
+for name in manifest['files']:
+    (repo / name).write_bytes((proposal / 'shadow' / name).read_bytes())
+print(json.dumps({'integrated': len(manifest['files']), 'patch': manifest['patchSha256']}))

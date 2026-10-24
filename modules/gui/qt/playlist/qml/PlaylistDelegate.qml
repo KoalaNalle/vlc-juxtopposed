@@ -31,11 +31,18 @@ import VLC.Util
 T.Control {
     id: delegate
 
-    Accessible.name: title
+    Accessible.name: title || qsTr("Unknown Title")
+    Accessible.onPressAction: {
+        const sourceIndex = delegate.mappedIndex()
+        if (sourceIndex >= 0 && sourceIndex < MainPlaylistController.count)
+            MainPlaylistController.goTo(sourceIndex, true)
+    }
 
     // Properties
 
     property Flickable view: ListView.view
+    property bool juxtopposed: false
+    property real uiScale: VLCStyle.scale
 
     readonly property bool selected : view.selectionModel.selectedIndexesFlat.includes(index)
 
@@ -49,7 +56,7 @@ T.Control {
                                                       dropAreaLayout.dragPosition.x,
                                                       dropAreaLayout.dragPosition.y)
 
-    readonly property Item artworkTextureProvider: contentItem?.artworkTextureProvider ?? null
+    readonly property Item artworkTextureProvider: juxtopposed ? null : contentItem?.artworkTextureProvider ?? null
 
     // Model roles:
     required property int index
@@ -78,11 +85,11 @@ T.Control {
 
     hoverEnabled: true
 
-    verticalPadding: VLCStyle.margin_xxxsmall
+    verticalPadding: juxtopposed ? 0 : VLCStyle.margin_xxxsmall
 
-    leftPadding: VLCStyle.margin_normal
+    leftPadding: juxtopposed ? 0 : VLCStyle.margin_normal
 
-    rightPadding: VLCStyle.margin_normal
+    rightPadding: juxtopposed ? 0 : VLCStyle.margin_normal
 
     implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                             implicitContentWidth + leftPadding + rightPadding)
@@ -93,16 +100,30 @@ T.Control {
 
     ListView.delayRemove: dragHandler.active
 
-    T.ToolTip.visible: ( visible && (visualFocus || hovered) &&
-                         (textInfoColumn.implicitWidth > textInfoColumn.width) )
+    T.ToolTip.visible: (visible && (visualFocus || hovered) &&
+                       (juxtopposed ? queueRow.titleElided
+                                    : textInfoColumn.implicitWidth > textInfoColumn.width))
 
     // NOTE: This is useful for keyboard navigation on a column, to avoid blocking visibility on
     //       the surrounding items.
     T.ToolTip.timeout: (visualFocus) ? VLCStyle.duration_humanMoment : 0
 
-    T.ToolTip.text: (textInfo.text + '\n' + textArtist.text)
+    T.ToolTip.text: juxtopposed ? (title || qsTr("Unknown Title"))
+                              : (textInfo.text + '\n' + textArtist.text)
 
     T.ToolTip.delay: VLCStyle.delayToolTipAppear
+
+    Accessible.role: Accessible.ListItem
+    Accessible.selected: selected
+    Accessible.description: {
+        if (!juxtopposed)
+            return ""
+        if (isCurrent && Player.playingState === Player.PLAYING_STATE_PLAYING)
+            return qsTr("Playing, %1").arg(queueRow.durationText)
+        if (isCurrent && Player.playingState === Player.PLAYING_STATE_PAUSED)
+            return qsTr("Paused, %1").arg(queueRow.durationText)
+        return queueRow.durationText
+    }
 
     // Events
 
@@ -133,7 +154,8 @@ T.Control {
     }
 
     background: Widgets.AnimatedBackground {
-        color: selected ? theme.bg.highlight : theme.bg.primary
+        color: selected ? theme.bg.highlight
+                        : delegate.juxtopposed && !delegate.hovered ? "transparent" : theme.bg.primary
 
         enabled: theme.initialized
 
@@ -166,8 +188,21 @@ T.Control {
 
         property alias artworkTextureProvider: artwork.effectiveTextureProviderItem
 
+        JuxtopposedQueueRow {
+            id: queueRow
+            visible: delegate.juxtopposed
+            Layout.fillWidth: true
+            uiScale: delegate.uiScale
+            title: delegate.title || qsTr("Unknown Title")
+            durationText: delegate.duration.valid() ? delegate.duration.formatHMS() : "—"
+            // Current/selection/focus appearance keeps VLC's working native
+            // feedback until the corresponding Figma states are available.
+            titleColor: delegate.isCurrent || delegate.selected ? theme.fg.primary : "#969696"
+        }
+
         Item {
             id: artworkItem
+            visible: !delegate.juxtopposed
 
             Layout.preferredHeight: VLCStyle.icon_playlistArt
             Layout.preferredWidth: VLCStyle.icon_playlistArt
@@ -213,7 +248,7 @@ T.Control {
                 }
 
                 readonly property url targetSource: (delegate?.artwork.toString()) ? VLCAccessImage.uri(delegate.artwork) : VLCStyle.noArtAlbumCover
-                readonly property url defaultSource: delegate.preparsed ? targetSource : ""
+                readonly property url defaultSource: !delegate.juxtopposed && delegate.preparsed ? targetSource : ""
 
                 onStatusChanged: {
                     if (source !== VLCStyle.noArtAlbumCover && status === Image.Error)
@@ -238,7 +273,7 @@ T.Control {
                 Timer {
                     id: artworkTimer
                     running: defaultRunning
-                    readonly property bool defaultRunning: (artwork.status === Image.Null)
+                    readonly property bool defaultRunning: !delegate.juxtopposed && (artwork.status === Image.Null)
                     interval: VLCStyle.duration_long
                     onTriggered: {
                         // Remove the preparse guard, enough time has passed:
@@ -271,6 +306,7 @@ T.Control {
 
         ColumnLayout {
             id: textInfoColumn
+            visible: !delegate.juxtopposed
 
             Layout.fillWidth: true
             Layout.fillHeight: true
@@ -299,6 +335,7 @@ T.Control {
 
         Widgets.ListLabel {
             id: textDuration
+            visible: !delegate.juxtopposed
 
             text: delegate.duration.formatHMS()
             horizontalAlignment: Text.AlignHCenter
@@ -396,7 +433,7 @@ T.Control {
 
             onSingleTapped: (eventPoint, button) => {
                 // initial action is handled in `DelegateTouchTapHandler`
-                MainPlaylistController.goTo(delegate.index, true)
+                MainPlaylistController.goTo(delegate.mappedIndex(), true)
             }
 
             onDoubleTapped: (eventPoint, button) => {

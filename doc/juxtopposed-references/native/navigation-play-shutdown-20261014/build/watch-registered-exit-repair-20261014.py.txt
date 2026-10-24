@@ -1,0 +1,28 @@
+import ctypes as C
+from ctypes import wintypes as W
+from datetime import datetime, timezone
+import json
+from pathlib import Path
+import time
+
+def now():return datetime.now(timezone.utc).isoformat()
+kernel=C.WinDLL('kernel32',use_last_error=True)
+kernel.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];kernel.OpenProcess.restype=W.HANDLE
+kernel.WaitForSingleObject.argtypes=[W.HANDLE,W.DWORD];kernel.WaitForSingleObject.restype=W.DWORD
+kernel.GetExitCodeProcess.argtypes=[W.HANDLE,C.POINTER(W.DWORD)];kernel.GetExitCodeProcess.restype=W.BOOL
+kernel.CloseHandle.argtypes=[W.HANDLE]
+handle=kernel.OpenProcess(0x100000|0x1000,False,26676)
+assert handle
+code=W.DWORD()
+assert kernel.GetExitCodeProcess(handle,C.byref(code)) and code.value==259
+started=now();ticks=time.monotonic()
+print('Original repaired-navigation player is live; monitoring its quit.',flush=True)
+wait=kernel.WaitForSingleObject(handle,60000)
+assert kernel.GetExitCodeProcess(handle,C.byref(code))
+kernel.CloseHandle(handle)
+record=dict(pid=26676,waitStartedUtc=started,queriedUtc=now(),elapsedSeconds=time.monotonic()-ticks,initialWinApiExitCode=259,waitResult=wait,winApiExitCode=code.value,timedOut=wait==258,terminationConfirmed=wait==0)
+output=Path(__file__).resolve().parent/'registered-exit-repair-desktop-20261014/process-exit.json'
+assert not output.exists()
+output.write_text(json.dumps(record,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(record))
+raise SystemExit(0 if wait==0 and code.value==0 else 1)

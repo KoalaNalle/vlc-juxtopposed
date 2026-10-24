@@ -1,0 +1,19 @@
+from pathlib import Path
+import hashlib
+import json
+import os
+
+repo=Path(__file__).resolve().parents[1]
+pending=repo/'build-windows/conversion-literal-file-path-pending'
+manifest=json.loads((pending/'manifest.json').read_text(encoding='utf-8'))
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+name='modules/gui/qt/tests/test_conversion_controller.cpp'
+assert digest(repo/name)==manifest['baseSha256'][name]
+assert digest(repo/'modules/gui/qt/dialogs/conversion_controller.cpp')==manifest['baseSha256']['modules/gui/qt/dialogs/conversion_controller.cpp']
+assert digest(repo/'test/libvlc/native_conversion_controller.py')==manifest['shadowSha256']['test/libvlc/native_conversion_controller.py']
+assert digest(pending/'shadow'/name)==manifest['shadowSha256'][name]
+(repo/name).write_bytes((pending/'shadow'/name).read_bytes())
+os.utime(repo/'modules/gui/qt/dialogs/conversion_controller.cpp',None)
+receipt=dict(phase='fixtures-corrected',setupFailure='Earlier endswith routing mistook test_conversion_controller.cpp for the production controller and skipped the new test. No baseline run was accepted.',sourceSha256={name:digest(repo/name) for name in manifest['baseSha256']})
+(pending/'root-fixtures-corrected-integration.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(receipt))

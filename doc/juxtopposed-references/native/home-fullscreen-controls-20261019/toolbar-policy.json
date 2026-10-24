@@ -1,0 +1,99 @@
+{
+  "scope": "Actual production toolbar FSM, FSMState and Helpers; supplied mutable MainCtx/Player boundary; shared Qt QuickTest software/offscreen.",
+  "nativeApplicationAccepted": false,
+  "nativeConsumerAccepted": false,
+  "sourceIdentities": {
+    "modules/gui/qt/player/qml/PlayerToolbarVisibilityFSM.qml": {
+      "sourceSha256": "643eb4cb902f68762b7148df0e4f6faa08ca93338fb150f411b8eba8f00ebfd9",
+      "stagedSha256": "643eb4cb902f68762b7148df0e4f6faa08ca93338fb150f411b8eba8f00ebfd9"
+    },
+    "modules/gui/qt/util/qml/FSM.qml": {
+      "sourceSha256": "3d64ceeaa0ec7704b6cc4c87d4600059dc95edea21eabe7c521aacb203c27594",
+      "stagedSha256": "3d64ceeaa0ec7704b6cc4c87d4600059dc95edea21eabe7c521aacb203c27594"
+    },
+    "modules/gui/qt/util/qml/FSMState.qml": {
+      "sourceSha256": "4e35e076522df8464273e1bfdcff436ef8363899841f86b8be9e7003ad0e3168",
+      "stagedSha256": "4e35e076522df8464273e1bfdcff436ef8363899841f86b8be9e7003ad0e3168"
+    },
+    "modules/gui/qt/util/qml/Helpers.qml": {
+      "sourceSha256": "abd6c0cd39513c3bded9385d92f7cd32b1f87fe2bac7199b2f4757ef5148337e",
+      "stagedSha256": "abd6c0cd39513c3bded9385d92f7cd32b1f87fe2bac7199b2f4757ef5148337e"
+    },
+    "modules/gui/qt/tests/fixtures/interface_toolbar/MainCtx.qml": {
+      "sourceSha256": "2abdc2124e94de90b1828986b8ace52a90857af4af64c5b9f222cb23682eef58",
+      "stagedSha256": "2abdc2124e94de90b1828986b8ace52a90857af4af64c5b9f222cb23682eef58"
+    },
+    "modules/gui/qt/tests/fixtures/interface_toolbar/Player.qml": {
+      "sourceSha256": "6fd9b2889a5230f8c965ffcf003d2561b1ed346f5e7b538eb6789bf1a12809d9",
+      "stagedSha256": "6fd9b2889a5230f8c965ffcf003d2561b1ed346f5e7b538eb6789bf1a12809d9"
+    },
+    "modules/gui/qt/tests/tst_InterfaceToolbarPolicy.qml": {
+      "sourceSha256": "fd48f7fe869edf758611cc17dc5a774d32d422b98374c04430321aacbfb6d9ba",
+      "stagedSha256": "fd48f7fe869edf758611cc17dc5a774d32d422b98374c04430321aacbfb6d9ba"
+    }
+  },
+  "expectedTests": 41,
+  "timeoutSeconds": 45,
+  "timeout": false,
+  "exitCode": 0,
+  "passed": true,
+  "qtest": {
+    "name": "InterfaceToolbarPolicy",
+    "timestamp": "2026-10-19T07:03:11",
+    "hostname": "Starling",
+    "tests": "41",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0",
+    "time": "10.889"
+  },
+  "cases": [
+    "InterfaceToolbarPolicy::initTestCase",
+    "InterfaceToolbarPolicy::test_audioVideoTransitionUsesActualPolicy",
+    "InterfaceToolbarPolicy::test_fullscreenControls(-1-false-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(-1-false-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(-1-true-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(-1-true-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(0-false-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(0-false-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(0-true-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(0-true-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(1-false-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(1-false-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(1-true-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(1-true-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(2-false-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(2-false-true)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(2-true-false)",
+    "InterfaceToolbarPolicy::test_fullscreenControls(2-true-true)",
+    "InterfaceToolbarPolicy::test_fullscreenTransitionRevealsWindowed",
+    "InterfaceToolbarPolicy::test_legacyInteractiveAndExplicitNever",
+    "InterfaceToolbarPolicy::test_modes(-1-false-false)",
+    "InterfaceToolbarPolicy::test_modes(-1-false-true)",
+    "InterfaceToolbarPolicy::test_modes(-1-true-false)",
+    "InterfaceToolbarPolicy::test_modes(-1-true-true)",
+    "InterfaceToolbarPolicy::test_modes(0-false-false)",
+    "InterfaceToolbarPolicy::test_modes(0-false-true)",
+    "InterfaceToolbarPolicy::test_modes(0-true-false)",
+    "InterfaceToolbarPolicy::test_modes(0-true-true)",
+    "InterfaceToolbarPolicy::test_modes(1-false-false)",
+    "InterfaceToolbarPolicy::test_modes(1-false-true)",
+    "InterfaceToolbarPolicy::test_modes(1-true-false)",
+    "InterfaceToolbarPolicy::test_modes(1-true-true)",
+    "InterfaceToolbarPolicy::test_modes(2-false-false)",
+    "InterfaceToolbarPolicy::test_modes(2-false-true)",
+    "InterfaceToolbarPolicy::test_modes(2-true-false)",
+    "InterfaceToolbarPolicy::test_modes(2-true-true)",
+    "InterfaceToolbarPolicy::test_nestedLocksStopTimerAndRelease",
+    "InterfaceToolbarPolicy::test_realTimer(zero)",
+    "InterfaceToolbarPolicy::test_realTimer(nonPreset777)",
+    "InterfaceToolbarPolicy::test_realTimer(maximum10000)",
+    "InterfaceToolbarPolicy::cleanupTestCase"
+  ],
+  "qtProperties": {
+    "QTestVersion": "6.8.3",
+    "QtVersion": "6.8.3",
+    "QtBuild": "Qt 6.8.3 (x86_64-little_endian-llp64 shared (dynamic) release build; by MSVC 2022)"
+  },
+  "warningLines": []
+}

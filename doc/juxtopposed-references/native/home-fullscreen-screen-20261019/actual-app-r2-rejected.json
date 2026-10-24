@@ -1,0 +1,851 @@
+{
+  "passed": false,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "56a4a7620f15ac9e9c6c3fc6553884d9c41ac31d95c2dd2de45c4941d7b0d0f8",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "2671eb79e3ad2c6411e14888a094511dce01b5c7cbea304874044ec78e087b39",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "fullscreen-screen-initial": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 23952,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 22.593999999997322,
+      "exitCode": 0,
+      "elapsedSeconds": 35.89099999999962,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen screen journey is confined to the approved visible monitor",
+            "passed": true
+          },
+          {
+            "name": "screen journey starts from a normal window on the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx and model restore the exact cold screen policy",
+            "passed": true
+          },
+          {
+            "name": "screen choices enumerate genuine connected Qt screens",
+            "passed": true
+          },
+          {
+            "name": "screen choice index and label agree with the actual Qt output",
+            "passed": true
+          },
+          {
+            "name": "screen choice index and label agree with the actual Qt output",
+            "passed": true
+          },
+          {
+            "name": "owned media decodes through the actual primary player",
+            "passed": true
+          },
+          {
+            "name": "screen journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused native clock settles before screen policy changes",
+            "passed": true
+          },
+          {
+            "name": "no-write primary state control passes before screen editing",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen editor materializes",
+            "passed": true
+          },
+          {
+            "name": "actual Interface opening refreshes the ready embedded Windows compositor capability",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual combo preserves the cold choice or truthfully leaves a missing choice unselected",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "owned screen config locks for a genuine save failure",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup delegate is visible for pointer selection",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup delegate is visible for pointer selection",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual screen edit saves a restart policy without changing the active fullscreen target",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "restoring the startup screen clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual embedded-video toggle exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "saving detached mode disables only its unsupported screen editor and preserves the saved target and current input",
+            "passed": true
+          },
+          {
+            "name": "restoring embedded mode re-enables screen selection and clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual Interface host dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen editor materializes",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual dialog reopen preserves saved target and truthful restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual Interface host dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx signal and main-window handler enter fullscreen on the startup target",
+            "passed": true
+          },
+          {
+            "name": "actual main-window fullscreen holder is acquired through the production route",
+            "passed": true
+          },
+          {
+            "name": "visible fullscreen entry preserves primary playback and the startup selection",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual handler returns the visible window to the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "same-monitor fullscreen release preserves exact normal client geometry and primary state",
+            "passed": true
+          },
+          {
+            "name": "complete screen editor and handler journey preserves primary input queue tracks and clocks",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "explicitHiddenCrossScreenTested": false,
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-screen-initial",
+        "nativeFullscreenScreenAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "savedScreenIndex": 1,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-fullscreen-screen-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupScreenIndex": -1
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "fullscreen-screen-explicit-playing": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 28344,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 10.796999999998661,
+      "exitCode": 0,
+      "elapsedSeconds": 28.437999999998283,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen screen journey is confined to the approved visible monitor",
+            "passed": true
+          },
+          {
+            "name": "screen journey starts from a normal window on the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx and model restore the exact cold screen policy",
+            "passed": true
+          },
+          {
+            "name": "screen choices enumerate genuine connected Qt screens",
+            "passed": true
+          },
+          {
+            "name": "screen choice index and label agree with the actual Qt output",
+            "passed": true
+          },
+          {
+            "name": "screen choice index and label agree with the actual Qt output",
+            "passed": true
+          },
+          {
+            "name": "owned media decodes through the actual primary player",
+            "passed": true
+          },
+          {
+            "name": "screen journey reaches its requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "no-write primary state control passes before screen editing",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen editor materializes",
+            "passed": true
+          },
+          {
+            "name": "actual Interface opening refreshes the ready embedded Windows compositor capability",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual combo preserves the cold choice or truthfully leaves a missing choice unselected",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual service rejects invalid screen choices without changing saved or active primary state",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual screen edit saves a restart policy without changing the active fullscreen target",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "restoring the startup screen clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual screen popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual Interface host dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen editor materializes",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen screen combo is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual dialog reopen preserves saved target and truthful restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual Interface host dismisses normally",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx signal and main-window handler enter fullscreen on the startup target",
+            "passed": true
+          },
+          {
+            "name": "actual main-window fullscreen holder is acquired through the production route",
+            "passed": true
+          },
+          {
+            "name": "visible fullscreen entry preserves primary playback and the startup selection",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual handler returns the visible window to the approved monitor",
+            "passed": true
+          },
+          {
+            "name": "same-monitor fullscreen release preserves exact normal client geometry and primary state",
+            "passed": true
+          },
+          {
+            "name": "real second output exists for the hidden cross-screen route",
+            "passed": true
+          },
+          {
+            "name": "actual app window is hidden in Qt and Windows before cross-screen preparation",
+            "passed": true
+          },
+          {
+            "name": "actual hidden main window starts on a genuine different output",
+            "passed": true
+          },
+          {
+            "name": "saved startup target actually moves the hidden app window to monitor2 before presentation",
+            "passed": true
+          },
+          {
+            "name": "selected fullscreen is visibly presented only on monitor2",
+            "passed": false
+          }
+        ],
+        "error": "selected fullscreen is visibly presented only on monitor2",
+        "failedPins": [],
+        "failedRoute": [
+          "home",
+          "base"
+        ],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-screen-explicit-playing",
+        "ownedWindowOnly": true,
+        "passed": false,
+        "pinServiceError": "",
+        "screenName": "LF24T450F",
+        "startupGateUsed": true
+      },
+      "diagnostics": [
+        "qt warning: (default) setGeometry: Unable to set geometry 900x650+45+45 (frame: 916x658+37+45) on QQuickView/\"\" on \"LC27G7xT\". Resulting geometry: 884x642+53+45 (frame: 900x650+45+45) margins: 8, 0, 8, 8 minimum size: 320x360 MINMAXINFO(maxSize=POINT(x=0, y=0), maxpos=POINT(x=0, y=0), maxtrack=POINT(x=0, y=0), mintrack=POINT(x=336, y=368)))"
+      ],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "qt warning: (default) setGeometry: Unable to set geometry 900x650+45+45 (frame: 916x658+37+45) on QQuickView/\"\" on \"LC27G7xT\". Resulting geometry: 884x642+53+45 (frame: 900x650+45+45) margins: 8, 0, 8, 8 minimum size: 320x360 MINMAXINFO(maxSize=POINT(x=0, y=0), maxpos=POINT(x=0, y=0), maxtrack=POINT(x=0, y=0), mintrack=POINT(x=336, y=368)))"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "2451bbebbda6dab828e93931867b5426f1ffb99aaf88ee577fb1482264c0166f",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true,
+  "ownedGeneratedVideoSourceUnchanged": true
+}

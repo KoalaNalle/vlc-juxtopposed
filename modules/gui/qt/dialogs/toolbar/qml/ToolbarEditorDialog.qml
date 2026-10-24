@@ -17,6 +17,7 @@
  *****************************************************************************/
 import QtQuick
 import QtQuick.Templates as T
+import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 
 import VLC.MainInterface
@@ -112,7 +113,7 @@ WindowDialog {
                     implicitWidth: implicitContentWidth
                     font.pixelSize: VLCStyle.fontSize_normal
 
-                    delegate: ItemDelegate {
+                    delegate: C.ItemDelegate {
                         width: comboBox.width
                         leftPadding: comboBox.leftPadding
                         background: Item {}

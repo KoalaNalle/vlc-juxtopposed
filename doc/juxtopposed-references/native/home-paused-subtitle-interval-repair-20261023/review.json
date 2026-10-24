@@ -1,0 +1,76 @@
+{
+  "selectedPausedMatroskaSeekAccepted": true,
+  "completeDesktopSubtitleWorkflowAccepted": false,
+  "fullBetaAccepted": false,
+  "ordinaryIdentities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "716862a1e2b8ee0d5dd0673bcd471d7eb85ad7fb64a92ae4388f0d83ffefda8b",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceFreezes": [
+    {
+      "manifest": "mkv-interval-r23d-source/source-record.json",
+      "sha256": "a2896d9163e8a2fd3031139ab359f12460c263294c8a5d9a8dc1ff5d81cc5851",
+      "actualFrozenInputs": 2196
+    },
+    {
+      "manifest": "mkv-headers-r29-source/source-record.json",
+      "sha256": "989d136c09fd4ba8b7981cf11c57e3f0d022473e08491ed98ceb97935a066196",
+      "actualFrozenInputs": 2199
+    },
+    {
+      "manifest": "inputs-r35c.json",
+      "sha256": "546e0fc7c4cfb8555acec24864d5eb2ca6b491926c0d58b8ac52664a56f75262",
+      "actualFrozenInputs": 2210
+    }
+  ],
+  "previousImmutableReceipts": {
+    "home-paused-video-startup-repair-20261023": "3e2a0b43500486d315af1123a282b933aa8b42b322b97137a2e7c28e8d720b9e",
+    "home-paused-subtitle-seek-investigation-20261023": "32863cb564ccabb8684d7905ed60bd2e6cc26fb06c886ffa90c4b44799b805b8"
+  },
+  "explanation": "Keep a contiguous index of subtitle block spans. A precise seek can replay from the earliest still-active cue before the AV seek bound, including older overlapping cues. Preserve AV time/skip anchors and fast-seek policy. Header-only indexing avoids loading compressed video/audio payloads; normal playback still reads full payloads.",
+  "validation": [
+    "Eight ordinary caption cases pass; their eight unfixed ordinary controls fail. English/Finnish, cold/delayed cues, gaps, overlapping SubRip and ASS, backward/repeated seeks, frozen paused clocks and resume are included.",
+    "Configured ordinary rules rebuild all sixteen C++ units with matching class headers. Object hashes, real dependencies and the actual link command are retained.",
+    "Private full-payload/header controls pass all sixteen cases. First seek on the 30.66MB gap file drops from 27.40MiB to 2.56MiB of process reads. A long cue starting at zero still needs replay, measured at 29.43MiB including the probe.",
+    "Pending-seek Stop is isolated using a non-blocking public LibVLC log callback and normal stop_async. Private two and ordinary one cancellation runs pass. The earlier two file-log attempts stop normally but miss the scan and remain inconclusive.",
+    "Six private and three ordinary policy controls preserve disabled-subtitle and fast-seek behavior. The existing missing long cue under fast seek is recorded, not accepted as a complete caption workflow.",
+    "Visible ordinary fullscreen shows both overlapping captions, keeps the older cue after short cues end and after backward seeking, holds the exact paused position through subtitle-menu open/Escape, resumes/Pause and quits normally."
+  ],
+  "limits": [
+    "The small 960x540 window covers the lower caption line with the playback bar; fullscreen bottom gradient also darkens that line. This blocks complete desktop subtitle acceptance.",
+    "Direct accessibility progress set_value returns without committing a seek in this observation. Physical progress-bar input works. Keep accessibility work open.",
+    "Initial subtitles, new selected tracks, external associated subtitles, language/default policy and synchronization edits remain separate.",
+    "Process I/O/CPU includes probe/PNG/font reads and filesystem caches. Settle/snapshot timings are not exact seek latency or physical disk benchmarks. No universal large-movie or network performance claim.",
+    "Native raw time fields are output-clock observations; colors prove only ten-second segments."
+  ],
+  "provenanceCorrections": [
+    "R23/b/c are uncompiled static refinements; R23d and R29 rebuild every C++ unit in each phase. R23d private object names derive per-unit labels; R29 uses ordinary-style names, and the final ordinary build uses standard object paths.",
+    "R25 preparation initially expected one pass assignment rather than two, then its producer metadata referenced the generated parent variable; no native run preceded correction. Preflight producers and the finalizer remain.",
+    "R26 build auditor expected a libtool output prefix, but the configured wrapper is doltlibtool. The corrected audit checks the recorded wrapper command and object hashes.",
+    "R35 retained stale objects because canonical assume-new names did not match configured source spellings and old .Plo files were dummy. R35b rebuilt all sixteen and linked successfully; a subsequent provenance-copy filename was wrong because the configured later -MF emitted standard .Plo files. R35c collects those real dependencies after make -q succeeds, without recompiling.",
+    "R35b preflight expected exit1 for the original make failure; the saved shell code was2. The original producer is retained and corrected before its freeze/build.",
+    "The ASS reference parent retains an inherited original overlap-generator provenance label; the actual ASS fixture was generated by generate-subtitle-cost-r26.sh, and its bytes are identified in result.json. That generator and packet probes are included.",
+    "The ordinary R38 comparison/worker text retains inherited private-candidate labels. Process runtime identities, source manifest and ordinary build audit establish their actual ordinary DLL scope; raw records are unchanged.",
+    "The GUI wrapper intentionally leaves passed:false until observations are reviewed. desktop-subtitle-observations-r39.json records selected success and rejects complete desktop acceptance; the raw wrapper is unchanged."
+  ],
+  "nextActions": [
+    "Repair caption clearance above visible controls in small windows and remove the gradient obscuring readable caption text; use existing video/subtitle geometry policy and revalidate windowed/fullscreen.",
+    "Repair progress accessibility seek commitment, then recheck keyboard/range behavior.",
+    "Continue remaining subtitle/track workflows and the full13-category/32-surface beta roadmap."
+  ],
+  "questionsForMorning": [],
+  "sideEffects": {
+    "localProductionSourceEdited": true,
+    "ordinaryTestRuntimeCreated": true,
+    "installs": false,
+    "commit": false,
+    "push": false,
+    "release": false,
+    "upload": false,
+    "shutdown": false
+  }
+}

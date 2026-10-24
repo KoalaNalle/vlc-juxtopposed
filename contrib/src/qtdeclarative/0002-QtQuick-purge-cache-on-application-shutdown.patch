@@ -1,0 +1,38 @@
+From: VLC contributors
+Subject: [PATCH] QtQuick: purge the pixmap cache on application shutdown
+
+Qt may run in an interface thread while the module's static destructors run
+later on the process thread. Purge unused pixmaps and stop their expiry timer
+from QCoreApplication's cleanup phase, before the owning thread exits. Remove
+the cleanup callback if the library unloads first, and allow registration for
+a later application instance. Keep referenced pixmaps and normal cache reuse.
+
+--- a/src/quick/util/qquickpixmapcache.cpp
++++ b/src/quick/util/qquickpixmapcache.cpp
+@@ -23,0 +24 @@
++#include <QtCore/qbasicatomic.h>
+@@ -1221,0 +1223,8 @@
++Q_CONSTINIT static QBasicAtomicInt pixmapCacheCleanupRegistered = Q_BASIC_ATOMIC_INITIALIZER(0);
++
++static void cleanupPixmapCache()
++{
++    QQuickPixmapCache::instance()->purgeCache();
++    pixmapCacheCleanupRegistered.storeRelaxed(0);
++}
++
+@@ -1224,0 +1234,4 @@
++    if (!pixmapCacheCleanupRegistered.loadRelaxed()
++            && pixmapCacheCleanupRegistered.testAndSetRelaxed(0, 1)) {
++        qAddPostRoutine(cleanupPixmapCache);
++    }
+@@ -1229,0 +1243 @@
++    qRemovePostRoutine(cleanupPixmapCache);
+@@ -1385 +1399,7 @@
+-    shrinkCache(m_unreferencedCost);
++    // Include zero-cost entries: purging must leave no unused pixmaps behind.
++    while (m_lastUnreferencedPixmap)
++        shrinkCache(1);
++    if (m_timerId >= 0) {
++        killTimer(m_timerId);
++        m_timerId = -1;
++    }

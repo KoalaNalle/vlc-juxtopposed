@@ -1,0 +1,36 @@
+********* Start testing of TestVideoTransform *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+QINFO  : TestVideoTransform::initTestCase() original: RGBY
+PASS   : TestVideoTransform::initTestCase()
+QINFO  : TestVideoTransform::actualFlipAndRotation() horizontal: GRYB
+QINFO  : TestVideoTransform::actualFlipAndRotation() vertical: BYRG
+QINFO  : TestVideoTransform::actualFlipAndRotation() rotate-90: GYRB
+QINFO  : TestVideoTransform::actualFlipAndRotation() horizontal-rotate-90: YGBR
+QINFO  : TestVideoTransform::actualFlipAndRotation() rotate-37: RGBY
+QINFO  : TestVideoTransform::actualFlipAndRotation() restored: RGBY
+PASS   : TestVideoTransform::actualFlipAndRotation()
+QINFO  : TestVideoTransform::externalTransformNormalization(90) external-90: BRYG
+QINFO  : TestVideoTransform::externalTransformNormalization(90) normalized-90: BRYG
+PASS   : TestVideoTransform::externalTransformNormalization(90)
+QINFO  : TestVideoTransform::externalTransformNormalization(180) external-180: YBGR
+QINFO  : TestVideoTransform::externalTransformNormalization(180) normalized-180: YBGR
+PASS   : TestVideoTransform::externalTransformNormalization(180)
+QINFO  : TestVideoTransform::externalTransformNormalization(270) external-270: GYRB
+QINFO  : TestVideoTransform::externalTransformNormalization(270) normalized-270: GYRB
+PASS   : TestVideoTransform::externalTransformNormalization(270)
+QINFO  : TestVideoTransform::externalTransformNormalization(hflip) external-hflip: GRYB
+QINFO  : TestVideoTransform::externalTransformNormalization(hflip) normalized-hflip: GRYB
+PASS   : TestVideoTransform::externalTransformNormalization(hflip)
+QINFO  : TestVideoTransform::externalTransformNormalization(vflip) external-vflip: BYRG
+QINFO  : TestVideoTransform::externalTransformNormalization(vflip) normalized-vflip: BYRG
+PASS   : TestVideoTransform::externalTransformNormalization(vflip)
+QINFO  : TestVideoTransform::externalTransformNormalization(transpose) external-transpose: RBGY
+QINFO  : TestVideoTransform::externalTransformNormalization(transpose) normalized-transpose: RBGY
+PASS   : TestVideoTransform::externalTransformNormalization(transpose)
+QINFO  : TestVideoTransform::externalTransformNormalization(antitranspose) external-antitranspose: YGBR
+QINFO  : TestVideoTransform::externalTransformNormalization(antitranspose) normalized-antitranspose: YGBR
+PASS   : TestVideoTransform::externalTransformNormalization(antitranspose)
+PASS   : TestVideoTransform::engineSynchronizationValidationAndLifetime()
+PASS   : TestVideoTransform::cleanupTestCase()
+Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, 7791ms
+********* Finished testing of TestVideoTransform *********

@@ -3,6 +3,14 @@
 #include <cassert>
 
 #include "maininterface/navigationmodel.hpp"
+#include "maininterface/subtitle_preset_model.hpp"
+#include "maininterface/general_preferences_model.hpp"
+#include "maininterface/interface_preferences_model.hpp"
+#include "maininterface/playback_preferences_model.hpp"
+#include "maininterface/video_preferences_model.hpp"
+#include "maininterface/audio_preferences_model.hpp"
+#include "maininterface/subtitles_preferences_model.hpp"
+#include "maininterface/library_preferences_model.hpp"
 
 #include "medialibrary/medialib.hpp"
 #include "medialibrary/mlqmltypes.hpp"
@@ -16,6 +24,8 @@
 #include "medialibrary/mlvideomodel.hpp"
 #include "medialibrary/mlrecentmediamodel.hpp"
 #include "medialibrary/mlrecentvideomodel.hpp"
+#include "medialibrary/mlrecentaudiomodel.hpp"
+#include "medialibrary/mlhomeactivity.hpp"
 #include "medialibrary/mlfoldersmodel.hpp"
 #include "medialibrary/mlvideogroupsmodel.hpp"
 #include "medialibrary/mlvideofoldersmodel.hpp"
@@ -25,6 +35,13 @@
 #include "medialibrary/mlbookmarkmodel.hpp"
 
 #include "player/player_controller.hpp"
+#include "player/audio_equalizer.hpp"
+#include "player/audio_waveform.hpp"
+#include "player/timeline_thumbnails.hpp"
+#include "player/local_music_folder.hpp"
+#include "player/video_transform.hpp"
+#include "player/subtitle_appearance.hpp"
+#include "player/subtitle_cue_timeline.hpp"
 #include "player/player_controlbar_model.hpp"
 #include "player/control_list_model.hpp"
 #include "player/control_list_filter.hpp"
@@ -60,6 +77,9 @@
 
 #include "dialogs/help/aboutmodel.hpp"
 #include "dialogs/dialogs_provider.hpp"
+#include "dialogs/network_stream_model.hpp"
+#include "dialogs/conversion_controller.hpp"
+#include "dialogs/new_playlist_model.hpp"
 #include "dialogs/dialogs/dialogmodel.hpp"
 #ifdef UPDATE_CHECK
 #include "dialogs/help/help.hpp" // UpdateModel
@@ -163,6 +183,7 @@ bool MainUI::setup(QQmlEngine* engine)
         new EffectsImageProvider(engine);
     engine->addImageProvider(QStringLiteral("svgcolor"), new SVGColorImageImageProvider());
     engine->addImageProvider(QStringLiteral("vlcaccess"), new VLCAccessImageProvider());
+    engine->addImageProvider(QStringLiteral("timelinepreview"), m_mainCtx->getTimelineThumbnails()->createImageProvider());
 
     m_component  = new QQmlComponent(engine, QStringLiteral("qrc:/qt/qml/VLC/MainInterface/MainInterface.qml"), QQmlComponent::PreferSynchronous, engine);
     if (m_component->isLoading())
@@ -232,6 +253,15 @@ void MainUI::registerQMLTypes()
         assert(dynamic_cast<MainCtxWin32*>(m_mainCtx));
         qmlRegisterAnonymousType<MainCtxWin32>(uri, versionMajor);
 #endif
+        qmlRegisterUncreatableType<SubtitlePresetModel>(uri, versionMajor, versionMinor, "SubtitlePresetModel", "Use MainCtx.subtitlePresets");
+        qmlRegisterUncreatableType<GeneralPreferencesModel>(uri, versionMajor, versionMinor, "GeneralPreferencesModel", "Use MainCtx.generalPreferences");
+        qmlRegisterUncreatableType<InterfacePreferencesModel>(uri, versionMajor, versionMinor, "InterfacePreferencesModel", "Use MainCtx.interfacePreferences");
+        qmlRegisterUncreatableType<PlaybackPreferencesModel>(uri, versionMajor, versionMinor, "PlaybackPreferencesModel", "Use MainCtx.playbackPreferences");
+        qmlRegisterUncreatableType<TimelineThumbnails>(uri, versionMajor, versionMinor, "TimelineThumbnails", "Use MainCtx.timelineThumbnails");
+        qmlRegisterUncreatableType<VideoPreferencesModel>(uri, versionMajor, versionMinor, "VideoPreferencesModel", "Use MainCtx.videoPreferences");
+        qmlRegisterUncreatableType<AudioPreferencesModel>(uri, versionMajor, versionMinor, "AudioPreferencesModel", "Use MainCtx.audioPreferences");
+        qmlRegisterUncreatableType<SubtitlesPreferencesModel>(uri, versionMajor, versionMinor, "SubtitlesPreferencesModel", "Use MainCtx.subtitlesPreferences");
+        qmlRegisterUncreatableType<LibraryPreferencesModel>(uri, versionMajor, versionMinor, "LibraryPreferencesModel", "Use MainCtx.libraryPreferences");
         qmlRegisterTypesAndRevisions<SearchCtx>(uri, versionMajor);
         qmlRegisterTypesAndRevisions<SortCtx>(uri, versionMajor);
         qmlRegisterUncreatableType<UINotifier>(uri, versionMajor, versionMinor, "UINotifier", "");
@@ -278,6 +308,9 @@ void MainUI::registerQMLTypes()
         qmlRegisterUncreatableType<DialogId>( uri, versionMajor, versionMinor, "dialogId", "");
         assert(DialogsProvider::getInstance());
         qmlRegisterSingletonInstance<DialogsProvider>(uri, versionMajor, versionMinor, "DialogsProvider", DialogsProvider::getInstance());
+        qmlRegisterUncreatableType<NetworkStreamModel>(uri, versionMajor, versionMinor, "NetworkStreamModel", "Use DialogsProvider.networkStream");
+        qmlRegisterUncreatableType<ConversionController>(uri, versionMajor, versionMinor, "ConversionController", "Use DialogsProvider.conversion");
+        qmlRegisterUncreatableType<NewPlaylistModel>(uri, versionMajor, versionMinor, "NewPlaylistModel", "Use DialogsProvider.newPlaylist");
         assert(DialogErrorModel::getInstance<false>());
         qmlRegisterSingletonInstance<DialogErrorModel>(uri, versionMajor, versionMinor, "DialogErrorModel", DialogErrorModel::getInstance<false>());
 
@@ -314,6 +347,12 @@ void MainUI::registerQMLTypes()
         qmlRegisterUncreatableType<ProgramListModel>(uri, versionMajor, versionMinor, "ProgramListModel", "available programs of a media" );
         assert(m_intf->p_mainPlayerController);
         qmlRegisterSingletonInstance<PlayerController>(uri, versionMajor, versionMinor, "Player", m_intf->p_mainPlayerController);
+        qmlRegisterUncreatableType<AudioEqualizer>(uri, versionMajor, versionMinor, "AudioEqualizer", "Use Player.equalizer");
+        qmlRegisterUncreatableType<AudioWaveform>(uri, versionMajor, versionMinor, "AudioWaveform", "Use Player.waveform");
+        qmlRegisterUncreatableType<LocalMusicFolderModel>(uri, versionMajor, versionMinor, "LocalMusicFolderModel", "Use Player.musicFolder");
+        qmlRegisterUncreatableType<VideoTransform>(uri, versionMajor, versionMinor, "VideoTransform", "Use Player.videoTransform");
+        qmlRegisterUncreatableType<SubtitleAppearance>(uri, versionMajor, versionMinor, "SubtitleAppearance", "Use Player.subtitleAppearance");
+        qmlRegisterUncreatableType<SubtitleCueTimeline>(uri, versionMajor, versionMinor, "SubtitleCueTimeline", "Use Player.subtitleTimeline");
         qmlRegisterTypesAndRevisions<TimedText>(uri, versionMajor);
         qmlRegisterType<PlayerHighResolutionTimeUpdater>(uri, versionMajor, versionMinor, "HighResolutionTimeUpdater");
         qmlRegisterUncreatableMetaObject(VLCTickForeign::staticMetaObject, uri, versionMajor, versionMinor, "VLCTick", "Not Instantiable" );
@@ -456,42 +495,48 @@ void MainUI::registerQMLTypes()
         qmlProtectModule(uri, versionMajor);
     }
 
-    if (m_mainCtx->hasMediaLibrary())
     {
         const char* uri = "VLC.MediaLibrary";
         const int versionMajor = 1;
         const int versionMinor = 0;
 
-        // @uri VLC.MediaLibrary
-        assert(m_mainCtx->getMediaLibrary());
-        qmlRegisterSingletonInstance<MediaLib>(uri, versionMajor, versionMinor, "MediaLib", m_mainCtx->getMediaLibrary());
-
+        // Register history readers without constructing a Library frontend.
+        qmlRegisterUncreatableType<MediaLib>(uri, versionMajor, versionMinor, "HistoryMediaLib", "Owned by the playback history service");
         qmlRegisterUncreatableType<MLItemId>( uri, versionMajor, versionMinor, "mediaId", "");
         qmlRegisterUncreatableType<MLBaseModel>( uri, versionMajor, versionMinor, "MLBaseModel", "ML Base Model is uncreatable." );
-        qmlRegisterType<MLAlbumModel>( uri, versionMajor, versionMinor, "MLAlbumModel" );
-        qmlRegisterType<MLArtistModel>( uri, versionMajor, versionMinor, "MLArtistModel" );
-        qmlRegisterType<MLAudioModel>( uri, versionMajor, versionMinor, "MLAudioModel" );
-        qmlRegisterType<MLGenreModel>( uri, versionMajor, versionMinor, "MLGenreModel" );
-        qmlRegisterType<MLUrlModel>( uri, versionMajor, versionMinor, "MLUrlModel" );
-        qmlRegisterType<MLMediaModel>( uri, versionMajor, versionMinor, "MLMediaModel" );
-        qmlRegisterType<MLVideoModel>( uri, versionMajor, versionMinor, "MLVideoModel" );
-        qmlRegisterType<MLRecentVideoModel>( uri, versionMajor, versionMinor, "MLRecentVideoModel" );
-        qmlRegisterType<MLVideoGroupsModel>( uri, versionMajor, versionMinor, "MLVideoGroupsModel" );
-        qmlRegisterType<MLVideoFoldersModel>( uri, versionMajor, versionMinor, "MLVideoFoldersModel" );
-        qmlRegisterType<MLPlaylistListModel>( uri, versionMajor, versionMinor, "MLPlaylistListModel" );
-        qmlRegisterType<MLPlaylistModel>( uri, versionMajor, versionMinor, "MLPlaylistModel" );
-        qmlRegisterType<MLBookmarkModel>( uri, versionMajor, versionMinor, "MLBookmarkModel" );
-
-        qmlRegisterType<NetworkMediaModel>( uri, versionMajor, versionMinor, "NetworkMediaModel");
-        qmlRegisterType<NetworkDeviceModel>( uri, versionMajor, versionMinor, "NetworkDeviceModel");
-        qmlRegisterType<NetworkSourcesModel>( uri, versionMajor, versionMinor, "NetworkSourcesModel");
-        qmlRegisterType<AddonsModel>( uri, versionMajor, versionMinor, "ServicesDiscoveryModel");
-        qmlRegisterType<MLFoldersModel>( uri, versionMajor, versionMinor, "MLFolderModel");
+        qmlRegisterUncreatableType<MLHomeActivity>(uri, versionMajor, versionMinor, "MLHomeActivity", "Owned by MediaLib");
         qmlRegisterType<MLRecentMediaModel>( uri, versionMajor, versionMinor, "MLRecentMediaModel" );
 
-        qmlRegisterType<PlaylistListContextMenu>( uri, versionMajor, versionMinor, "PlaylistListContextMenu" );
-        qmlRegisterType<PlaylistMediaContextMenu>( uri, versionMajor, versionMinor, "PlaylistMediaContextMenu" );
+        if (m_mainCtx->hasMediaLibrary())
+        {
+            // @uri VLC.MediaLibrary
+            assert(m_mainCtx->getMediaLibrary());
+            qmlRegisterSingletonInstance<MediaLib>(uri, versionMajor, versionMinor, "MediaLib", m_mainCtx->getMediaLibrary());
 
+            qmlRegisterType<MLAlbumModel>( uri, versionMajor, versionMinor, "MLAlbumModel" );
+            qmlRegisterType<MLArtistModel>( uri, versionMajor, versionMinor, "MLArtistModel" );
+            qmlRegisterType<MLAudioModel>( uri, versionMajor, versionMinor, "MLAudioModel" );
+            qmlRegisterType<MLGenreModel>( uri, versionMajor, versionMinor, "MLGenreModel" );
+            qmlRegisterType<MLUrlModel>( uri, versionMajor, versionMinor, "MLUrlModel" );
+            qmlRegisterType<MLMediaModel>( uri, versionMajor, versionMinor, "MLMediaModel" );
+            qmlRegisterType<MLVideoModel>( uri, versionMajor, versionMinor, "MLVideoModel" );
+            qmlRegisterType<MLRecentVideoModel>( uri, versionMajor, versionMinor, "MLRecentVideoModel" );
+            qmlRegisterType<MLRecentAudioModel>(uri, versionMajor, versionMinor, "MLRecentAudioModel");
+            qmlRegisterType<MLVideoGroupsModel>( uri, versionMajor, versionMinor, "MLVideoGroupsModel" );
+            qmlRegisterType<MLVideoFoldersModel>( uri, versionMajor, versionMinor, "MLVideoFoldersModel" );
+            qmlRegisterType<MLPlaylistListModel>( uri, versionMajor, versionMinor, "MLPlaylistListModel" );
+            qmlRegisterType<MLPlaylistModel>( uri, versionMajor, versionMinor, "MLPlaylistModel" );
+            qmlRegisterType<MLBookmarkModel>( uri, versionMajor, versionMinor, "MLBookmarkModel" );
+
+            qmlRegisterType<NetworkMediaModel>( uri, versionMajor, versionMinor, "NetworkMediaModel");
+            qmlRegisterType<NetworkDeviceModel>( uri, versionMajor, versionMinor, "NetworkDeviceModel");
+            qmlRegisterType<NetworkSourcesModel>( uri, versionMajor, versionMinor, "NetworkSourcesModel");
+            qmlRegisterType<AddonsModel>( uri, versionMajor, versionMinor, "ServicesDiscoveryModel");
+            qmlRegisterType<MLFoldersModel>( uri, versionMajor, versionMinor, "MLFolderModel");
+
+            qmlRegisterType<PlaylistListContextMenu>( uri, versionMajor, versionMinor, "PlaylistListContextMenu" );
+            qmlRegisterType<PlaylistMediaContextMenu>( uri, versionMajor, versionMinor, "PlaylistMediaContextMenu" );
+        }
         qmlRegisterModule(uri, versionMajor, versionMinor);
         qmlProtectModule(uri, versionMajor);
     }

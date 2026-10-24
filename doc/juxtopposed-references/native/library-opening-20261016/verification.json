@@ -1,0 +1,176 @@
+{
+  "date": "2026-10-16",
+  "scope": "Morning opening/folder and remaining subtitle desktop checkpoint; full beta remains incomplete",
+  "baseCommit": "6a258e99a89c745b8ba2e28865c3045b14409db8",
+  "baseCI": {
+    "run": 38765572111,
+    "status": "success",
+    "jobs": [
+      "playback-ui",
+      "qml-dependency-remake"
+    ],
+    "newLocalChangesRemoteCI": "not run; no push"
+  },
+  "native": {
+    "opening-final": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "opening-before": {
+      "tests": 42,
+      "failures": 3,
+      "errors": 0,
+      "skipped": 0
+    },
+    "process-final": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "subtitles-final": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "sameOpeningFixtureBeforeAfter": true,
+  "desktopPassed": [
+    "Monitor 2 retained",
+    "Include subfolders saves and opens two nested files",
+    "One-instance, file-manager exclusion, append and hidden flags persist after restart",
+    "Explicit replace saves playlist-open-mode=0",
+    "Hidden ON adds dot/Windows-hidden/visible files; OFF on next opening adds only visible and retains existing queue",
+    "Top alignment survives restart and renders English/Finnish embedded SRT",
+    "V selects Finnish; seeking decodes its cue",
+    "2000ms shortcut feedback visible at 1295ms and expired at 2463ms",
+    "Feedback OFF persists across restart and seek still works without overlay",
+    "Filename overlay remains visible with shortcut feedback OFF",
+    "Seven ordinary app launches quit normally; six separately saved final logs end with logger stopped"
+  ],
+  "feedbackTiming": [
+    {
+      "phase": "immediate",
+      "ms": 130
+    },
+    {
+      "phase": "before-expiry",
+      "ms": 1295
+    },
+    {
+      "phase": "after-expiry",
+      "ms": 2463
+    }
+  ],
+  "desktopBuilds": "Subtitle and initial Library persistence checks used r4 Core/r2 or r5 Qt; final hidden ON/OFF journey used matched r6 components.",
+  "consumerGates": {
+    "instancePolicy": true,
+    "openingQueue": true,
+    "hiddenAttributes": true,
+    "metadataFetch": false
+  },
+  "restoration": {
+    "profileRestored": true,
+    "originalPortableFilesPreservedExceptMonitorGeometry": true,
+    "personalConfigUnchanged": true,
+    "personalConfigAfter": {
+      "vlc-qt-interface.ini": "9f999cae67d7476f08cf92902a7faaa2aad1009670cf8ba4d711d7d4d80e09b2",
+      "vlcrc": "9f4cad17c8daea07aba39d4b5eeaba3f8916f43b23a815ee547f25b6554744f8"
+    },
+    "geometryPreservedOnMonitor2": true,
+    "testProfile": "build-windows/library-morning-20261016/desktop/portable-tested",
+    "packageSha256": {
+      "libvlccore.dll": "c2e4a33eb24a059a29c0f52c403cc4c4010833fea499387fb695208ef96d61c6",
+      "vlc.exe": "702be626979749a2e59156000f4b49096beffd60b318ed12656ee56c61d0be36",
+      "vlc-preparser.exe": "2a50bfdbd53094ed33d74f469d8e71248bb4fcce84dd43bb904c00e20001970c",
+      "plugins/gui/libqt_plugin.dll": "769de7e835e30b5d006c58323710742253c093a6754c7d3d0d896ea6e0c41779",
+      "plugins/access/libfilesystem_plugin.dll": "0df15409d2e58d0f50c98100737ca13d9c4023320694cc9036e29e20e7c459f0",
+      "plugins/control/libwin_msg_plugin.dll": "ef3c7cc2fa28b3a8806fcfbb532da0f3dcfc7fedf75305a9392e9e4cedf12483",
+      "plugins/misc/libpreparserserializer_json_plugin.dll": "6e918bffaa3469e17abcee91901b4e76a32af46ac460622517b755cc4907650b",
+      "plugins/text_renderer/libfreetype_plugin.dll": "d102b09767056a9acb6ab3b007c653c9561dba17857d5a8258d07242a5856ceb"
+    },
+    "shippingDiagnosticsOrFakeProviders": false
+  },
+  "sourceSha256": {
+    ".github/workflows/qml-ui-checks.yml": "3875b456eb6b04fd16ecd62d8ac14dc2a7f590ae9c926673b26c4ccb77406a29",
+    "bin/preparser/main.c": "3edfd3322d4eae00d9762b6b031992f1e8d0fe86c55ed4af3c282395cb2a305d",
+    "include/vlc_preparser_ipc.h": "baef479e5f7a89ad7919a4fabeb245c06a8c98f3c0813f7535451ebc69b9760a",
+    "modules/access/directory.c": "543f6815da330d5a61f25d67d6e0d12e996b0afbb44032dbd5bda3474db424a2",
+    "modules/control/win_msg.c": "015cc050752c3c336a34b188e0b3fbc235e3e6e56834b3927ec9098eee93aad7",
+    "modules/gui/qt/Makefile.am": "8f12683593a56e493b68bf91807bc18725d1ffb853def3719478915c6d9899d1",
+    "modules/gui/qt/maininterface/library_preferences_model.cpp": "0ea6180c9247c284c05f7eeb2a8c5661023c02f8429ffda2d1492526034bdf92",
+    "modules/gui/qt/maininterface/mainctx.cpp": "1e27397a3c7a36b44096bb01d7294d2b130b946f3ad6af8a15eb7ca1eee1b5e8",
+    "modules/gui/qt/tests/test_library_preferences.cpp": "f6a08918bbf271fc6c14a20348d19b73e73d5899fa0349ba609d179d64f7b622",
+    "modules/misc/preparser_serializer/json/fromjson.c": "17460a88fe7444b60b05e6ef477e7f22c5ae88dea280736ecbcdb55afbbaa9bf",
+    "modules/misc/preparser_serializer/json/tojson.c": "9c402b3296019e48158544c0d0413b6ef4503f8f5eb723b2a337a9c24a51544f",
+    "src/libvlc-module.c": "308c68244f03108747423f3f6f1d2f1a003516ebe5c791f4f27ac65e8550a61b",
+    "src/preparser/external.c": "91886cfa7592009c15d7ec687635170fcdac6f5099e38597e525a042b6b3027a",
+    "src/preparser/internal.c": "6e01860e9dc2ca6579d52f4d8676ed57e050d43e08827f0baa5a15629271a646",
+    "src/preparser/ipc.c": "a603cd2e1712909e82644d72fff064d7d928e662a9ffdb712fc1dee6536450cc",
+    "src/win32/specific.c": "93b0e314f68fec5b6a47fa6875cb096c4fcf60f22c859be0fd488fa9020f6c10",
+    "modules/gui/qt/tests/test_library_ipc_errors.py": "3adf2b5f37b39e427a01e3c60d3d7229b5ff90dcf89f594efae66eb677ba0dd3",
+    "modules/gui/qt/tests/library_ipc_receiver_errors.c": "51f3eda6a6c56ea12ebc994da6136f046779207e277be832331e1a40ee3afee9",
+    "modules/gui/qt/tests/library_ipc_sender_errors.c": "319befa4230df373b3ac7619a03ae85c2812260c522ee0e8ee37cf165307da33",
+    "modules/gui/qt/tests/test_library_opening_process.cpp": "e343ea1ad939e831779e476d6c947f4abe894329b58f7079ab8d19b04e321977",
+    "modules/gui/qt/tests/native_library/modules.mk": "f41f268a755dfc94c9c500a832c3c4956a96c88aac491e54cb651cdabd9ecbf8",
+    "modules/gui/qt/tests/native_library/preferences.mk": "d619b83463928c18d85cf6a0cbb4e216aac4d8dc7141446567d59d866112562f",
+    "modules/gui/qt/tests/native_library/prepare.py": "36e1ba0b0b0869ebae9f503cedbc54dee9cd39005daaeed80ddb7efe7d6db8e0",
+    "modules/gui/qt/tests/native_library/process.mk": "1eaa9e98e4f7deda1be348d5873e6e923086c82c211d98ced177a01c140f18da",
+    "modules/gui/qt/tests/native_library/README.md": "8deb83e9a208b84fcab3e8b744f156151270864ef34901b24b357d003e624240",
+    "modules/gui/qt/tests/native_library/run.py": "f7fc5a18f89c1295ed3c23fc8f168ea42c3a17691cb0a226b0c9963857aeda11"
+  },
+  "artifacts": {
+    "opening-final": {
+      "originalTxtSha256": "04e48f860f07e94b93a61fafc6168ebc28cac11edeae70628be77c5a5656dcf8",
+      "sanitizedTxtSha256": "d96af8d186e0b8bd005e48008dfec8b7fdea191a7ca9a7dc476937b4996800a3"
+    },
+    "opening-before": {
+      "originalTxtSha256": "9c63527aaaf4fc4b079be4d8408aa15996b29da4eb4baa735349789dd5290ba2",
+      "sanitizedTxtSha256": "653e3659a96415900b2530001dc60fc7d4765407ffa786bd78cd3684726e97fa"
+    },
+    "process-final": {
+      "originalTxtSha256": "d37a69b532396156e886133e4798e768d34b5c8f6a0bd52c16f8c52d65bf9e04",
+      "sanitizedTxtSha256": "d9d570933b2291a46af6dc563f13c92ed9b5ed9b8916bf2c18010568809cbc93"
+    },
+    "subtitles-final": {
+      "originalTxtSha256": "4e7d67ea8248371bc630ee3c9672b9d30c3165fd712d771b6b96c756da013c8f",
+      "sanitizedTxtSha256": "aa4b5d5d695d889027a1ddaf123c5f97ddc4a2ad5b73ccfe83034b1dae65eb75"
+    },
+    "folder-root-before": {
+      "originalTxtSha256": "601ed3fd31c0c972feac456365668d6b9f626f6cc518f3808a10b187988b8a02",
+      "sanitizedTxtSha256": "58ae3f7d2221a23dbc1371ca479e44e0ced31581a4f1950dba5b45749e719e02"
+    },
+    "folder-artwork-before": {
+      "originalTxtSha256": "cd247c89e922cda64c81f12ef0c6907bc40246f8db738dc49ad549f41e3af234",
+      "sanitizedTxtSha256": "3c36da853d28893060744be9ab06b95ac5d67b5ed885cd6ac9b2bf857d32c081"
+    }
+  },
+  "screenshots": {
+    "03-recursive-folder-queue.png": "5cfa701bfd7ee113e0360b3ff89caacb619ea41f8c3687b6ccda4fe494c268d4",
+    "04-top-english.png": "a8ba0705e20226e758b81340a9c246ef3bec95724bf1637aec021fff36100448",
+    "05-finnish-feedback-immediate.png": "fd7921887b97dcd0cfc6de812a4a0999227fa499e67f8b8420aed853df30db3c",
+    "08-feedback-before-expiry.png": "a45f5786e7fa1539f3122c255df368534115a38f8871fba2e3ea7616bf5ba921",
+    "09-feedback-after-expiry.png": "b3ce1e02d0e35835ac6843b7ed9e1893a00618e8155ca294ac918d091df4c320",
+    "10-feedback-off-saved.png": "50c8bd5e019845b5187a9f070ca220db0c7c50cdbce2f1435a9ce27d317f8191",
+    "11-filename-with-feedback-off.png": "19d4fda9cc8d297039822265433fc87d0014c6b4721728b8326b46e8f96abdf5",
+    "12-no-shortcut-overlay.png": "51b137754d2ea8353b745e2cfda7ead3b9503e978ea800e0ecf435769629df57",
+    "14-library-restored.png": "25a0f4bdd87408387d3cf4d8de67d80fe97638fc886c9c5a190e13eafec135a8",
+    "16-hidden-on-fixed.png": "d0ce5d4a9d7bbe6534a9f35ae9e782d649a8cbf2a18ce472e8e92962b51e72cd",
+    "17-hidden-off-replace-saved.png": "d98f0ca0d32ae1c4dbdafd59672369b35aec0faf7e60a8ea8fafbb87a6eee988",
+    "18-hidden-off-next-folder.png": "05097174b37dffeb3cb8cc202923ce8c92c6906518f5a71fcc08ee266b1b79c5"
+  },
+  "knownRemainingGates": [
+    "Optional metadata/artwork cancellation/fallback/provider-scope acceptance remains deferred and its consumer stays false",
+    "Windows launcher still injects --media-library; actual startup-OFF behavior is not accepted by native libvlc preservation tests",
+    "A transient earlier isolated parser Runtime Library window was observed; inspection timed out on app approval, no retained crash details or matching WER event; child exit behavior remains a diagnostic gate",
+    "Dark styling of the legacy Custom On/Off menu and broader Figma/DPI/media/preset acceptance remain open",
+    "Other beta categories, clean licensed package, remote CI for these local changes and publication remain open"
+  ],
+  "temporaryDirectoryTracingRemoved": true,
+  "archivedShadowFilesConsumed": false,
+  "committedOrPushed": false,
+  "localReproduction": "modules/gui/qt/tests/native_library/README.md"
+}

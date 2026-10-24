@@ -1,0 +1,124 @@
+{
+  "recordedUtc": "2026-10-18T17:24:32.770832+00:00",
+  "gitHead": "5829010294283290c603046c493d975ae12fe9b7",
+  "branch": "juxtopposed-playback-bar",
+  "changesCommitted": false,
+  "fullBetaAccepted": false,
+  "goalComplete": false,
+  "historicalWin10AudioAvProvenFixed": false,
+  "platform": {
+    "windowsBuild": 26200,
+    "architecture": "x64",
+    "monitor": "LF24T450F (monitor 2)"
+  },
+  "candidate": "build-windows/beta-native-cache-home-20261018/ordinary-runtime-r3",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "f82534592d350136127eae4c7ecaaf75930d823cee0d3e631fa61d414073bd20",
+    "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1",
+    "plugins/audio_output/libwasapi_plugin.dll": "54437150fa51e53a5df49958038248775fa438ebfb5b68279f1d63ace283464e",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "sourceSha256": {
+    "modules/audio_output/mmdevice.c": "829d62670efc7d8a5841f5c392ec687ffb69dbf1617fdf86a5358b3697383f4e",
+    "modules/audio_output/mmdevice.h": "e7528079a30022ab731ac7e82151a461a32a9115288e7cc9e6a1088e095ae28a",
+    "modules/gui/qt/Makefile.am": "a483f9db3bd8c1bd527248c34442cbd56b1f43345e5472f84b270bb011b9e1bd",
+    "modules/gui/qt/tests/native_ui/sidebar_pins_journey.cpp": "c9efe08973a92a6bd3ee1a80f7bf04f3860b2bb7ee18a09d0957d31ddb591866",
+    "modules/gui/qt/tests/native_ui/run_sidebar_pins_journey.py": "4d9924e54fbda0eaca5db9bb8c905e45d8b15e56db93d0a1a48388e551dc50dd",
+    "modules/gui/qt/tests/test_juxtopposed_music_player.py": "e539f24ad73d546913bf5be089c3bec2171bf232f7a4c32dbb545634b8f31923",
+    "contrib/src/qtdeclarative/rules.mak": "4fd07898fec4a063f682f0be3f6a5b4d4c78a2a38ef6115e893b3589c2ea1023",
+    "contrib/src/qtdeclarative/0002-QtQuick-purge-cache-on-application-shutdown.patch": "c863f2dd8ed0e38ecbd0b0f9ba97c681aced3fa710f3bb92c0c645ad3a45fecb",
+    "test/modules/audio_output/mmdevice_stop.c": "60d41990ac12c8bb91e5300f2656ad9857fe4fe054b26425e58e1e4b3e5b13f8",
+    "test/mmdevice-native.mk": "93356832f94eb9e795e19e7e44bffad847f6294d7c98b36a7aa60c54c6e2a6ba",
+    "test/libvlc/native_mmdevice_stop.py": "0174365961e87962cb873cffa202bb2bdc55755d70dba2cadaa493128a14fd1b",
+    "test/libvlc/native_mmdevice_lifecycle.py": "13b8cb5be082569b6d218116e77e30f217d8c0e7598ad8bda938365969a7d5f9",
+    "test/Makefile.am": "a53e7003ccbeb762fc44c5f668c6f04a94f31d0901077d6aa2a3b4b1990ee727"
+  },
+  "qt": {
+    "nativeProcesses": 16,
+    "checks": 3297,
+    "focusCaseChecksIncluded": 232,
+    "diagnostics": 0,
+    "normalExits": 16,
+    "negativeOldArchiveDetected": true,
+    "negativeLateWarningCaptured": true,
+    "installedPatchedArchiveSha256": "9967abc133210d25c185665fdaafdad56eeedd4226157182a07e42d53b76b3df",
+    "newFigmaReads": 0
+  },
+  "audio": {
+    "controlledOriginalOverlapCases": 8,
+    "currentControlledCases": 32,
+    "controlledModes": [
+      "timer",
+      "play",
+      "buffer-wait",
+      "idle"
+    ],
+    "actualDeviceCycles": 16,
+    "actualMissingDeviceFallbacks": 8,
+    "ordinaryQtCases": 5,
+    "ordinaryGeneratedHlsRuns": 20,
+    "forcedCleanupUsed": false,
+    "historicalCrashCause": "teardown race is a supported hypothesis; original exception context is unavailable",
+    "exactWindows10ValidationPending": true,
+    "physicalDeviceLossValidationPending": true
+  },
+  "yleVideoOnly": {
+    "videoPlaybackPassed": true,
+    "audioPlaybackAccepted": false,
+    "initialCombinedAudioVideoGatePassed": false,
+    "scopeNote": "The supplied video rendition produced a decoded frame and normal exit. No audio decoder or WASAPI stream opened. The original combined gate correctly remains false; this assessment accepts video playback only.",
+    "originalResult": "verification.json",
+    "evidenceRetained": true
+  },
+  "preservedInputs": {
+    "core": 458,
+    "store": 8,
+    "thread": 4,
+    "untracked": 5
+  },
+  "rawEvidenceRoot": "build-windows/beta-native-cache-home-20261018",
+  "evidence": {
+    "qt": "window-r2/verification.json",
+    "qtNegative": "qt-negative-control.json",
+    "audioProbe": "stop-positive-run-r4/result.json",
+    "audioLifecycle": "audio-lifecycle-r1/result.json",
+    "ordinary": "ordinary-playback-r3/verification.json",
+    "hls": "hls-stress-r2/verification.json",
+    "yleInitialCombinedGate": "yle-live-r1/verification.json",
+    "audioCodeMapping": "audio-code-inspection-r2.log",
+    "runtimeReplacement": "mmdevice-runtime-replacement-r3.json"
+  },
+  "noNewDependencyOrSecuritySettingsChanges": true,
+  "windows10ComparisonKit": {
+    "archive": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-native-cache-home-20261018\\windows10-audio-recheck-20261018.zip",
+    "sha256": "fb0c9817a718160b71ad983636a30853b302855f192ee6967fd074ff0a0a53fc",
+    "bytes": 28711538,
+    "files": 45,
+    "crcVerified": true,
+    "baseFilesChecked": 28,
+    "sameHostKitSelfcheck": {
+      "platform": "Windows 11",
+      "audioBefore": {
+        "realDeviceCycles": 16,
+        "ordinaryHlsRuns": 2,
+        "passed": true
+      },
+      "audioAfter": {
+        "controlledCases": 32,
+        "realDeviceCycles": 16,
+        "ordinaryHlsRuns": 2,
+        "passed": true
+      }
+    },
+    "windows10Acceptance": false,
+    "originalWindows10AudioAvResolved": false,
+    "personalMediaProfilesDumpsIncluded": false
+  },
+  "windows10ValidationPlan": {
+    "status": "deferred_by_user",
+    "dateLocal": "2026-10-18",
+    "reason": "Original Windows 10 guest machine is unavailable; comparison kit prepared for later.",
+    "otherHomeDevelopmentPaused": false
+  }
+}

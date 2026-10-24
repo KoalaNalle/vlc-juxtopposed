@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+build_dir=/build/vlc
+repo=/checkout
+export PATH="$build_dir/extras/tools/build/bin:$build_dir/contrib/bin:/windows/System32:$PATH"
+unset CC CXX
+exec 9> "$build_dir/.vlc-build.lock"
+flock -n 9 || exit 75
+qt_dir="$build_dir/win64/modules/gui/qt"
+make -C "$qt_dir" Makefile widgets/qml.deps maininterface/qml.deps medialibrary/qml.deps network/qml.deps dialogs/qml.deps > "$repo/build-windows/registered-exit-repair-resource-build.log" 2>&1
+make -C "$qt_dir" widgets/res.qrc widgets/qmldir maininterface/res.qrc maininterface/qmldir medialibrary/res.qrc medialibrary/qmldir network/res.qrc network/qmldir dialogs/res.qrc dialogs/qmldir >> "$repo/build-windows/registered-exit-repair-resource-build.log" 2>&1
+make -C "$qt_dir" -j8 libqt_plugin.la > "$repo/build-windows/registered-exit-repair-gui-build.log" 2>&1
+cp -- "$qt_dir/.libs/libqt_plugin.dll" "$repo/build-windows/staged-registered-exit-repair-libqt_plugin.dll"

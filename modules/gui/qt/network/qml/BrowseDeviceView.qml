@@ -19,6 +19,7 @@
  *****************************************************************************/
 
 import QtQuick
+import QtQml.Models
 
 
 import VLC.Style
@@ -68,6 +69,55 @@ FocusScope {
 
     property alias leftPadding: loader.anchors.leftMargin
     property alias rightPadding: loader.anchors.rightMargin
+
+    // Saved row restoration uses this view's existing selection and cursor.
+    property int initialIndex: -1
+    property bool _pendingInitialIndexReset: false
+    property int _rememberedIndex: -1
+    property Item _trackedView: null
+
+    onInitialIndexChanged: {
+        _pendingInitialIndexReset = initialIndex !== -1
+        _restoreInitialIndex()
+    }
+    onModelChanged: {
+        _rememberedIndex = -1
+        _pendingInitialIndexReset = initialIndex !== -1
+        _restoreInitialIndex()
+    }
+    onCurrentIndexChanged: {
+        if (!_pendingInitialIndexReset && _currentView === _trackedView && currentIndex >= 0)
+            _rememberedIndex = currentIndex
+    }
+    Connections {
+        target: root.model
+        function onCountChanged() { if (root._pendingInitialIndexReset) root._restoreInitialIndex() }
+        function onLoadingChanged() { if (root._pendingInitialIndexReset) root._restoreInitialIndex() }
+    }
+    Connections {
+        target: modelSelect
+        function onModelChanged() { if (root._pendingInitialIndexReset) root._restoreInitialIndex() }
+    }
+    Connections {
+        target: root._currentView
+        function onModelChanged() { if (root._pendingInitialIndexReset) root._restoreInitialIndex() }
+    }
+
+    function _setViewIndex(index) {
+        _currentView.setCurrentItem(index)
+        if (typeof _currentView.positionViewAtIndex === "function")
+            _currentView.positionViewAtIndex(index, ItemView.Contain)
+    }
+    function _restoreInitialIndex() {
+        if (!_pendingInitialIndexReset || !model || modelSelect.model !== model
+                || model.loading || model.count === 0 || !_currentView || _currentView.model !== model)
+            return
+        const index = initialIndex >= 0 && initialIndex < model.count ? initialIndex : 0
+        modelSelect.select(model.index(index, 0), ItemSelectionModel.ClearAndSelect)
+        _setViewIndex(index)
+        _rememberedIndex = index
+        _pendingInitialIndexReset = false
+    }
 
     // Private
 
@@ -136,7 +186,7 @@ FocusScope {
 
         _currentView.currentIndex = index
 
-        _currentView.currentItem.forceActiveFocus(Qt.MouseFocusReason)
+        _currentView.setCurrentItemFocus(Qt.MouseFocusReason)
     }
 
     function onDoubleClicked(model, index) {
@@ -166,6 +216,17 @@ FocusScope {
         focus: (model.count !== 0)
 
         sourceComponent: (MainCtx.gridView) ? grid : list
+
+        onLoaded: {
+            const previousIndex = root._rememberedIndex
+            root._trackedView = item
+            if (root._pendingInitialIndexReset)
+                root._restoreInitialIndex()
+            else if (previousIndex >= 0 && previousIndex < root.model.count)
+                root._setViewIndex(previousIndex)
+            else if (root.currentIndex >= 0)
+                root._rememberedIndex = root.currentIndex
+        }
     }
 
     Component {

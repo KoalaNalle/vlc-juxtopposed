@@ -18,8 +18,10 @@
 import QtQuick
 
 import VLC.MainInterface
+import VLC.Dialogs
 
 Shortcut {
     context: Qt.ApplicationShortcut
-    enabled: MainCtx.useGlobalShortcuts
+    enabled: MainCtx.useGlobalShortcuts && !DialogsProvider.qmlDialogVisible
+             && !DialogsProvider.qmlInputFocused
 }

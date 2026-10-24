@@ -1,0 +1,19 @@
+{
+  "generatorSha256": "19489332571406dee7a3eb88f4171ef655e992be43c61b6d354e776adcf08cc0",
+  "preflightProducerSha256": "46ea767961e96cec4afda34d37468b1350a737e906e7558c63eb7031ce334349",
+  "metadataFinalizerSha256": "2f08baf329fb9a33957cbe2e97901c54e02a2f7b33d356bb4d8e86b38af499b0",
+  "preflightCorrections": [
+    "The pass-assignment appears twice; only the first belongs to observe(). This assertion failed before creating a worker.",
+    "The generator then created both valid scripts but tried to read a reference variable that belongs to the generated parent. Metadata finalization failed before native execution. This helper reads that literal from the parsed parent without executing it."
+  ],
+  "workerSha256": "b6d3674764b2859c9171f71dc6f7747cc3844f9a6d9165858bc7c07b82cf8a42",
+  "parentSha256": "0ccb1616bc1a7c7b79075ae356121b2d4f225ee6cd6216a0c6d1bc2a44c0e393",
+  "references": {
+    "native-mkv-overlap-r21/after/overlapping-cues/seek-0-overlap-first.png": "6aaffa151e6d70f894ff517f08d379adb41a85f682815bcf98bcbc7b48b809fc",
+    "native-overlap-reference-r22/before/normal-playback-reference/normal-playback-after-short-cue-ended.png": "160cc153d8b0ada392d2495a44b6f09140a2726ba2d14e51111cc7e2ead4eb21",
+    "native-overlap-mask-reference-r24/before/normal-playback-reference/normal-overlap-31s.png": "39b33d254fbf2967d742a1496031aa12db9f8b5fcad630e76bc33b11c7800cf0",
+    "native-overlap-mask-reference-r24/before/normal-playback-reference/normal-long-alone-35s.png": "f9cc152385971e75d390284bdc06be628c506f13fcf67ce2ba41dfec438a7fcb"
+  },
+  "nativeExecutionStartedAtFinalization": false,
+  "scope": "Matched full-plugin controls; reference comparison qualifies complete overlapping captions.11s uses the earlier visually verified candidate picture;15s/31s/35s use separate normal-playback controls. Production source/runtime remain unchanged."
+}

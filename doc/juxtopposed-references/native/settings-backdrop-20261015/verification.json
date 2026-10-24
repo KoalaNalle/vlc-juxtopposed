@@ -1,0 +1,113 @@
+{
+  "scope": "Bounded native Home backdrop, conservative video tint fallback and warm QML packaging repair",
+  "sourceFiles": {
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml": "0288e2b698f5c57cb9777538ca4fdb6253c2bf1ab80f9c7930927c6bcd4fccde",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedDialogsHost.qml": "fef35144052bf3408e05e2c437d8e824e890714061bd46b5dcb342d33c115448",
+    "modules/gui/qt/maininterface/qml/MainInterface.qml": "d999bc351b06aa5da5ea411402280099a931520fc8343f081b5ec5d47087a416",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml": "12970f743768ce8307615f957bda3c77d9183d7a8214f9333bc60ee407b35f17",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml": "380043651c99652560b12d3cc1284bf61ddf05f9613d83fc12ff3fd6d6feb0b5",
+    "modules/gui/qt/Makefile.am": "71c1b103019f421cdcbb477bbb49564cfe86554d39e80d17134ac3beb7458710",
+    "modules/gui/qt/meson.build": "1998c881023b5c5928d5a520afc7a3fd292fcc3ebbd3cf8b13988b46afc8c0d9",
+    ".github/workflows/qml-ui-checks.yml": "da3697c863d4f6363a7b755367599b2f6ad6b9f4611d2e03949f0fd5988745ad",
+    "modules/gui/qt/tests/juxtopposed_backdrop_fixture.py": "0a0325510ebbd14db94494ddd2f74e5141fa9d5f32d6ba096282530d43fc27ef",
+    "modules/gui/qt/tests/test_juxtopposed_dialogs_host.py": "62950e527e117d282983e9a4befd5413f08677e6bf310cf1c9a94786d03b7613",
+    "modules/gui/qt/tests/test_juxtopposed_global_settings.py": "a9d1ca6d24dee2384297e1a6ef54b0f92f2c2c8255fccb8ee55159679ba2191c",
+    "modules/gui/qt/tests/test_juxtopposed_settings_backdrop.py": "5bc0fc7251969d1e210a3260674d73b45e87ef3c5953b68a5181eadc2149d875",
+    "modules/gui/qt/tests/test_qml_module_lists.py": "8e4e2bca8597528e16c8b19814357ebf4a18f83d95a8fcca41d9c0533b02fea3",
+    "modules/gui/qt/tests/fixtures/qml_dependencies_stable_cmp_recipe.inc": "a8fb6b2fa709bd426754050af41d66f90a6ec2d0faf6a194e4b72d5a67700854"
+  },
+  "currentQtSha256": "1f8056853763bc7d11b8e0faaa6ac6a18a66519de48c83a6958d2ee5ff2688f6",
+  "nativeBuildExitCode": 0,
+  "nativeAppNormalQuits": [
+    {
+      "waitResult": 0,
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    {
+      "waitResult": 0,
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    },
+    {
+      "waitResult": 0,
+      "exitCode": 0,
+      "terminationConfirmed": true,
+      "userConfigUnchanged": true,
+      "forcedCleanupUsed": false
+    }
+  ],
+  "nativeShaderFixture": {
+    "graphicsApi": 4,
+    "devicePixelRatio": 1,
+    "stripeRange": 0,
+    "transitionWidths": {
+      "1": 67,
+      "1.5": 99
+    },
+    "qmlWarningCount": 0,
+    "rootAndEngineDestroyed": true
+  },
+  "sameOriginalNativeAssertions": 39,
+  "nativeShaderFixtureIsVlcVideo": false,
+  "generalGroups": 12,
+  "hostChecks": 24,
+  "hostTransitions": 12,
+  "hostBusyGuards": 9,
+  "softwareBackdropChecks": 23,
+  "gnuMake": {
+    "eager": {
+      "passed": true,
+      "makeVersion": "GNU Make 4.3",
+      "cases": [
+        {
+          "mode": "historical-eager",
+          "exitCode": 2,
+          "desiredOracle": true
+        },
+        {
+          "mode": "current-production",
+          "exitCode": 0,
+          "desiredOracle": true
+        }
+      ]
+    },
+    "warm": {
+      "passed": true,
+      "makeVersion": "GNU Make 4.3",
+      "cases": [
+        {
+          "mode": "baseline-stable-cmp",
+          "exitCode": 0,
+          "desiredClosure": false,
+          "expectedPairControl": true
+        },
+        {
+          "mode": "fault-no-stamp-input",
+          "exitCode": 2,
+          "desiredClosure": false,
+          "expectedPairControl": true
+        },
+        {
+          "mode": "current-production-warm",
+          "exitCode": 0,
+          "desiredClosure": true,
+          "expectedPairControl": true
+        }
+      ]
+    }
+  },
+  "priorLightHead": "73ab60e6b96372b09fa0f5cdf49224b7b4030d1e",
+  "priorLightAllFourCiJobsPassed": true,
+  "newHeadCiPending": true,
+  "newWindowsWorkflowCommands": 23,
+  "fullVideoBlurAccepted": false,
+  "fullFigmaFidelityAccepted": false,
+  "performanceDpiAccepted": false,
+  "normalQuitLatencyClaimed": false,
+  "rawProfilesLogsPrivateMediaPublished": false
+}

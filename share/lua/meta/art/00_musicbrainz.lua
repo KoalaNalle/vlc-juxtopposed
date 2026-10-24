@@ -23,7 +23,7 @@ function descriptor()
 end
 
 function try_query(mbid)
-    local relquery = "http://mb.videolan.org/ws/2/release/" .. mbid
+    local relquery = "https://mb.videolan.org/ws/2/release/" .. mbid
     local s = vlc.stream( relquery )
     if not s then return nil end
     local page = s:read( 65653 )
@@ -32,7 +32,7 @@ function try_query(mbid)
     if found then
         front, _ = string.find( page, "<front>true</front>" )
         if front then
-            return "http://coverartarchive.org/release/"..mbid.."/front-500"
+            return "https://coverartarchive.org/release/"..mbid.."/front-500"
         end
     end
 
@@ -76,12 +76,12 @@ function fetch_art()
 
     if not releaseid and meta["artist"] and meta["album"] then
         query = "artist:\"" .. meta["artist"] .. "\" AND release:\"" .. meta["album"] .. "\""
-        relquery = "http://mb.videolan.org/ws/2/release/?query=" .. vlc.strings.encode_uri_component( query )
+        relquery = "https://mb.videolan.org/ws/2/release/?query=" .. vlc.strings.encode_uri_component( query )
         releaseid = get_releaseid( relquery )
     end
     if not releaseid and meta["artist"] and meta["title"] then
         query = "artist:\"" .. meta["artist"] .. "\" AND recording:\"" .. meta["title"] .. "\""
-        recquery = "http://mb.videolan.org/ws/2/recording/?query=" .. vlc.strings.encode_uri_component( query )
+        recquery = "https://mb.videolan.org/ws/2/recording/?query=" .. vlc.strings.encode_uri_component( query )
         releaseid = get_releaseid( recquery )
     end
     if releaseid then

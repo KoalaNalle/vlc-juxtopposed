@@ -558,9 +558,7 @@ static void RenderCharAXYZ( filter_t *p_filter,
                            int g,
                            const ft_drawing_functions *draw )
 {
-    VLC_UNUSED(p_filter);
     /* Render all glyphs and underline/strikethrough */
-    filter_sys_t *p_sys = p_filter ? p_filter->p_sys : NULL;
     for( int i = p_line->i_first_visible_char_index; i <= p_line->i_last_visible_char_index; i++ )
     {
         const line_character_t *ch = &p_line->p_character[i];
@@ -606,7 +604,8 @@ static void RenderCharAXYZ( filter_t *p_filter,
 
         /* Don't render if invisible or not wanted */
         if(
-           (g == 0 && 0 == (ch->p_style->i_style_flags & STYLE_SHADOW) ) ||
+           (g == 0 && (0 == (ch->p_style->i_style_flags & STYLE_SHADOW) ||
+                       i_a == 0 || p_glyph_selected == NULL)) ||
            (g == 1 && 0 == (ch->p_style->i_style_flags & STYLE_OUTLINE) )
           )
             continue;
@@ -614,33 +613,12 @@ static void RenderCharAXYZ( filter_t *p_filter,
         uint8_t i_x, i_y, i_z;
         draw->extract( i_color, &i_x, &i_y, &i_z );
 
-        /* Choose glyph to draw and compute its position.
-         * If the shadow glyph was not pre-generated (ch->p_shadow == NULL),
-         * we fallback to using the main glyph bitmap, shifted by the configured
-         * shadow vector (scaled by current default font size). This avoids
-         * requiring glyph creation earlier in the pipeline while still making
-         * the shadow visible when the UI option is enabled.
-         */
+        /* An outline may use the main glyph when no outline was generated.
+         * Shadows require the glyph and bounds prepared during layout. */
         const FT_BitmapGlyph p_glyph = p_glyph_selected ? p_glyph_selected : p_glyph_main;
 
         int i_glyph_y = i_offset_y - p_glyph->top;
         int i_glyph_x = i_offset_x + p_glyph->left;
-
-        /* If we're rendering the shadow and we need to fallback to main glyph,
-         * apply the configured shadow shift in pixel units.
-         */
-        if( g == 0 && !p_glyph_selected && p_sys )
-        {
-            /* p_sys->f_shadow_vector_{x,y} are fractions of font size.
-             * Use i_font_default_size (set during Render) as a reasonable scale.
-             * Round to nearest int.
-             */
-            int i_font_ref = p_sys->i_font_default_size ? p_sys->i_font_default_size : 1;
-            int sx = (int)lrintf(p_sys->f_shadow_vector_x * (float)i_font_ref);
-            int sy = (int)lrintf(p_sys->f_shadow_vector_y * (float)i_font_ref);
-            i_glyph_x += sx;
-            i_glyph_y += sy;
-        }
 
         draw->blend( p_picture, i_glyph_x, i_glyph_y,
                     i_a, i_x, i_y, i_z, p_glyph );
@@ -889,7 +867,7 @@ static size_t AddTextAndStyles( filter_sys_t *p_sys,
     if ( p_mgstyle == NULL )
         return 0;
 
-    if( p_style )
+    if( p_style && p_sys->use_embedded_style )
         /* Replace defaults with segment values */
         text_style_Merge( p_mgstyle, p_style, true );
 
@@ -1039,7 +1017,40 @@ static subpicture_region_t *Render( filter_t *p_filter,
     bool b_grid = (p_region_in->text_flags & VLC_SUBPIC_TEXT_FLAG_GRID_MODE) != 0;
     p_sys->i_scale = ( b_grid ) ? 100 : var_InheritInteger( p_filter, "sub-text-scale");
 
+    text_style_t *previous_style = p_sys->p_default_style;
+    p_sys->p_default_style = text_style_Duplicate(p_sys->p_original_style);
+    if (!p_sys->p_default_style)
+    {
+        p_sys->p_default_style = previous_style;
+        return NULL;
+    }
     UpdateDefaultLiveStyles( p_filter );
+    p_sys->use_embedded_style = true;
+    p_sys->outline_pixels = -1.f;
+    if (var_GetBool(p_filter, "sub-text-is-subtitle") && !b_grid &&
+        var_InheritBool(p_filter, "sub-text-style-enabled"))
+    {
+        text_style_t *style = p_sys->p_default_style;
+        p_sys->use_embedded_style = var_InheritBool(p_filter, "sub-text-style-embedded");
+        char *font = var_InheritString(p_filter, "sub-text-style-font");
+        if (font && *font)
+        {
+            free(style->psz_fontname);
+            style->psz_fontname = font;
+        }
+        else free(font);
+        style->i_font_color = var_InheritInteger(p_filter, "sub-text-style-color");
+        style->i_outline_color = var_InheritInteger(p_filter, "sub-text-style-outline-color");
+        style->i_background_alpha = var_InheritInteger(p_filter, "sub-text-style-background-opacity");
+        const bool pixels = var_InheritInteger(p_filter, "sub-text-style-size-mode") == 1;
+        style->i_font_size = pixels ? lroundf(var_InheritFloat(p_filter, "sub-text-style-pixel-size")) : 0;
+        style->f_font_relsize = pixels ? 0.f : var_InheritFloat(p_filter, "sub-text-style-relative-size");
+        if (pixels) p_sys->outline_pixels = var_InheritFloat(p_filter, "sub-text-style-pixel-outline");
+        else p_sys->i_outline_thickness = var_InheritFloat(p_filter, "sub-text-style-relative-outline");
+    }
+    if (strcmp(previous_style->psz_fontname, p_sys->p_default_style->psz_fontname) != 0)
+        p_sys->p_faceid = NULL;
+    text_style_Delete(previous_style);
 
     int i_font_default_size = ConvertToLiveSize( p_filter, p_sys->p_default_style );
     if( !p_sys->p_faceid || i_font_default_size != p_sys->i_font_default_size )
@@ -1304,6 +1315,8 @@ static int Create( filter_t *p_filter )
 
     /* fills default and forced style */
     FillDefaultStyles( p_filter );
+    p_sys->p_original_style = text_style_Duplicate(p_sys->p_default_style);
+    if (!p_sys->p_original_style) goto error;
 
     if( var_InheritBool( p_filter, "freetype-yuvp" ) )
         p_sys->i_forced_chroma = VLC_CODEC_YUVP;
@@ -1362,6 +1375,7 @@ static void Destroy( filter_t *p_filter )
 
     /* Text styles */
     text_style_Delete( p_sys->p_default_style );
+    text_style_Delete( p_sys->p_original_style );
     text_style_Delete( p_sys->p_forced_style );
 
     /* Attachments */

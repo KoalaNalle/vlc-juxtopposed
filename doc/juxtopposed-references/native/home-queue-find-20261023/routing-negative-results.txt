@@ -1,0 +1,25 @@
+********* Start testing of TestSharedModalHotkeys *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+QINFO  : TestSharedModalHotkeys::initTestCase() ROUTING_PRODUCTION_SHA256 {"modules/gui/qt/maininterface/interface_window_handler.cpp": "27cb9e5271a36780e0ab53b2df9f7c812073fd6027df133b050615a2688fa31d", "modules/gui/qt/maininterface/mainctx.cpp": "e0b0059829918e61543faf1b4bc8368865ff250519a40dc7aaa83580cf8aa259"}
+PASS   : TestSharedModalHotkeys::initTestCase()
+PASS   : TestSharedModalHotkeys::absentProviderPreservesDirectDispatch()
+PASS   : TestSharedModalHotkeys::mouseFocusOutsideModalDispatchesNativeKeys()
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(left)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(right)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(up)
+PASS   : TestSharedModalHotkeys::mouseFocusedVolumeOwnsPlainArrows(down)
+PASS   : TestSharedModalHotkeys::modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch()
+PASS   : TestSharedModalHotkeys::outsideModalQtNavigationPolicyRemains()
+PASS   : TestSharedModalHotkeys::mouseFocusedSidebarKeepsNavigationAndContextKeys()
+PASS   : TestSharedModalHotkeys::sidebarScopePreservesUnclaimedPlayerShortcuts()
+PASS   : TestSharedModalHotkeys::mouseFocusedQueueOwnsFindButPreservesOtherHotkeys()
+FAIL!  : TestSharedModalHotkeys::directPlayerDispatchRespectsFocusedQueueFind() Compared lists have different sizes.
+   Actual   (focusedFind) size: 1
+   Expected ((QVector<int64_t>{})) size: 0
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_shared_modal_hotkeys.cpp(278) : failure location
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(other-tab-or-legacy)
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(hidden-queue)
+PASS   : TestSharedModalHotkeys::inactiveOrHiddenQueueLeavesFindGlobal(outside-queue)
+PASS   : TestSharedModalHotkeys::cleanupTestCase()
+Totals: 16 passed, 1 failed, 0 skipped, 0 blacklisted, 121ms
+********* Finished testing of TestSharedModalHotkeys *********

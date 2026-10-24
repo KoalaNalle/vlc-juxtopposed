@@ -1,0 +1,83 @@
+{
+  "privateHooks": false,
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "9892032f4456e38b831884aa72c9bbdcbeeb75113d670abe804de52e4adaabbf",
+    "plugins/packetizer/libpacketizer_flac_plugin.dll": "5c9309434d4404b216ecf06f158fd6431ff87d4f7918f9bbfb97f304a84bdda8",
+    "plugins/demux/libflacsys_plugin.dll": "0e736e13372384ddd0292db329fce5b7cd05a3d359b8194ea4d79f301fea8049",
+    "plugins/audio_output/libmmdevice_plugin.dll": "0d29a257b562716f32a1a5bc2530951d8df3fb98063a3a2ca211df45638307b1",
+    "plugins/audio_output/libwasapi_plugin.dll": "54437150fa51e53a5df49958038248775fa438ebfb5b68279f1d63ace283464e"
+  },
+  "mediaSha256": "d6f72b287e6be68b36d2c7ea2423f4e9dbaac8aade53680b16ce257df55cf501",
+  "sourceGeometryUnchanged": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "status": "ordinary_exited",
+  "pid": 20004,
+  "exitCode": 0,
+  "normalExit": true,
+  "mediaUnchanged": true,
+  "protectedRuntimeUnchanged": true,
+  "passed": true,
+  "scope": "Ordinary Windows H264 four-color rendered-frame observation and fullscreen/windowed return on monitor 2; scoped initial-window-size warning review.",
+  "screenName": "LF24T450F",
+  "sourceFixtureSha256": "ce321d8d4d437d96fc120c61d592e22aafddcdd35179b62df13ad4fa1e3dc9b2",
+  "generatedH264Sha256": "d6f72b287e6be68b36d2c7ea2423f4e9dbaac8aade53680b16ce257df55cf501",
+  "referenceFrameSha256": "988f6fbb816a870decb58bc174a78710247a726bce54bc28e889299324dc8925",
+  "generation": "Existing owned 128x128 quadrant MP4 -> installed ffmpeg libx264, yuv420p, preset fast, CRF18; no dependency installation.",
+  "videoFrameObservations": [
+    "Paused startup shows red/green/blue/yellow quadrants in their source orientation with centered square image and side bars.",
+    "Space starts playback; Space pauses with visible clock00:00:12.",
+    "F11 fullscreen preserves all four quadrants and square aspect.",
+    "F11 return restores the maximized image and visible paused clock00:00:12.",
+    "Accessible Restore returns to normal state. Corner drag does not change dimensions; no smaller-window resize acceptance."
+  ],
+  "nativeErrors": [],
+  "nativeWarnings": [
+    "mp4 warning: elst box found",
+    "mp4 warning: STTS table of 1 entries",
+    "mp4 warning: CTTS table of 1495 entries",
+    "main warning: window size missing"
+  ],
+  "qtDiagnostics": [],
+  "reportedSizes": [
+    [
+      1920,
+      1032
+    ],
+    [
+      1920,
+      1080
+    ],
+    [
+      1904,
+      1072
+    ],
+    [
+      1920,
+      1032
+    ]
+  ],
+  "nativePlayerStateEvents": [
+    "VLC_PLAYER_STATE_STARTED",
+    "VLC_PLAYER_STATE_PLAYING",
+    "VLC_PLAYER_STATE_PAUSED",
+    "VLC_PLAYER_STATE_PLAYING",
+    "VLC_PLAYER_STATE_PAUSED"
+  ],
+  "nonQtCodecStderr": [
+    "[h264 @ 00000254140f9b80] Reinit context to 128x128, pix_fmt: yuv420p"
+  ],
+  "rawComputerUseCaptureSaved": false,
+  "closeAction": "Ctrl+Q",
+  "pixelPerfectAcceptance": false,
+  "screenReaderAccepted": false,
+  "exactNativeClockAccepted": false,
+  "hardwareDecodingAccepted": false,
+  "warningReview": {
+    "source": "src/video_output/display.c:vout_display_New",
+    "trigger": "Initial display width or height is zero; Core calls vout_display_GetDefaultDisplaySize before opening the display.",
+    "outcome": "One warning retained; later nonzero size reports, actual colored Direct3D11 frames and normal exit pass in this scope.",
+    "limits": "Does not prove every provider, format, GPU, monitor, OS-DPI or startup timing combination."
+  }
+}

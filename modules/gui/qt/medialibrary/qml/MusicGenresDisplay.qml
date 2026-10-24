@@ -47,6 +47,7 @@ Widgets.PageLoader {
 
         Widgets.PageExt {
             id: genrePage
+            property alias initialIndex: genresView.initialIndex
 
             title: qsTr("Genres")
 
@@ -68,6 +69,11 @@ Widgets.PageLoader {
                 sortOrder: genrePage.sort.order
                 sortCriteria: genrePage.sort.criteria
 
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "all"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
+
                 onShowAlbumView: (id, name, reason) => {
                     History.push([...root.pagePrefix, "albums"], { parentId: id, genreName: name }, reason)
                 }
@@ -80,6 +86,7 @@ Widgets.PageLoader {
 
         Widgets.PageExt {
             id: albumGenrePage
+            property alias initialIndex: albumsView.initialIndex
             property string genreName: ""
             property alias parentId: albumsView.parentId
 
@@ -97,7 +104,10 @@ Widgets.PageLoader {
                 sortOrder: albumGenrePage.sort.order
                 sortCriteria: albumGenrePage.sort.criteria
 
-                onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "albums"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
             }
 
             displayMarginBeginning: root.displayMarginBeginning

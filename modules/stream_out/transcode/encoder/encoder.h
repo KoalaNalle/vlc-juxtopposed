@@ -23,6 +23,10 @@
 
 typedef struct transcode_encoder_t transcode_encoder_t;
 
+/* Select explicit profile encoders strictly. Automatic jobs may prefer a
+ * compatible module, without forcing it to accept an unsupported format. */
+module_t *transcode_encoder_module_need(encoder_t *, const char *, const char *);
+
 typedef struct
 {
     vlc_fourcc_t i_codec; /* (0 if not transcode) */

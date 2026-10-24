@@ -1,0 +1,399 @@
+{
+  "scope": "Same 27-case oracle on LF and CRLF source materializations, preserving byte-exact copied QML/hash provenance. Original CRLF startup error reproduced separately. Supplied Qt adapters only; no new native application acceptance.",
+  "passed": true,
+  "cases": [
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "expectedOutcomeObserved": true,
+      "childExitCode": 1,
+      "cases": 27,
+      "failedCases": 27,
+      "diagnosticCount": 23
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "expectedOutcomeObserved": true,
+      "childExitCode": 1,
+      "cases": 27,
+      "failedCases": 27,
+      "diagnosticCount": 23
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "expectedOutcomeObserved": true,
+      "childExitCode": 0,
+      "cases": 27,
+      "failedCases": 0,
+      "diagnosticCount": 0
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "expectedOutcomeObserved": true,
+      "childExitCode": 0,
+      "cases": 27,
+      "failedCases": 0,
+      "diagnosticCount": 0
+    }
+  ],
+  "originalCrlfFailureReproduced": true,
+  "workerSha256": "36bcdaaff6763e6e178c6d37bc3f6e86d43b42ea948e3f3b40cb74edc96f0c56",
+  "launcherSha256": "c0d6ec3eec217445267622f6b713c50f1f196c26156f2a145df1862d9676194f",
+  "sourceMaterializations": [
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/widgets/qml/PageLoader.qml",
+      "originalSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "normalizedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "materializedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/widgets/qml/StackViewExt.qml",
+      "originalSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "normalizedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "materializedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/maininterface/qml/MainViewLoader.qml",
+      "originalSha256": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+      "normalizedSha256": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+      "materializedSha256": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicAlbumsDisplay.qml",
+      "originalSha256": "aa87be8a9b9ca6fdd67ac433f0031b41fba91c5d3cfb770fdecc425598cd2ee5",
+      "normalizedSha256": "aa87be8a9b9ca6fdd67ac433f0031b41fba91c5d3cfb770fdecc425598cd2ee5",
+      "materializedSha256": "aa87be8a9b9ca6fdd67ac433f0031b41fba91c5d3cfb770fdecc425598cd2ee5"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicArtistsDisplay.qml",
+      "originalSha256": "37ca3540e2f461627f7c121c709e691aa453bbefe870c8d0e4ff94b3088baf8d",
+      "normalizedSha256": "37ca3540e2f461627f7c121c709e691aa453bbefe870c8d0e4ff94b3088baf8d",
+      "materializedSha256": "37ca3540e2f461627f7c121c709e691aa453bbefe870c8d0e4ff94b3088baf8d"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicGenresDisplay.qml",
+      "originalSha256": "d4549065e3d66dda7405abb26d4632c0b42ab500e9a967e22e06c5af5643656d",
+      "normalizedSha256": "d4549065e3d66dda7405abb26d4632c0b42ab500e9a967e22e06c5af5643656d",
+      "materializedSha256": "d4549065e3d66dda7405abb26d4632c0b42ab500e9a967e22e06c5af5643656d"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicPlaylistsDisplay.qml",
+      "originalSha256": "8e4b7928f6ea67543b5de4c85be8ea1043bb1a4618af12d170fac1312107f0dc",
+      "normalizedSha256": "8e4b7928f6ea67543b5de4c85be8ea1043bb1a4618af12d170fac1312107f0dc",
+      "materializedSha256": "8e4b7928f6ea67543b5de4c85be8ea1043bb1a4618af12d170fac1312107f0dc"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseDisplay.qml",
+      "originalSha256": "23337d20569d28bfa6a1524ae27e4dcf5eb23cfbe46107fc0c6a427fcf755b21",
+      "normalizedSha256": "23337d20569d28bfa6a1524ae27e4dcf5eb23cfbe46107fc0c6a427fcf755b21",
+      "materializedSha256": "23337d20569d28bfa6a1524ae27e4dcf5eb23cfbe46107fc0c6a427fcf755b21"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseDeviceView.qml",
+      "originalSha256": "1289e7be444bc910e4703ce4b86b78b8e55993a6ecc433a29db77f67d2fd182a",
+      "normalizedSha256": "1289e7be444bc910e4703ce4b86b78b8e55993a6ecc433a29db77f67d2fd182a",
+      "materializedSha256": "1289e7be444bc910e4703ce4b86b78b8e55993a6ecc433a29db77f67d2fd182a"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseTreeDisplay.qml",
+      "originalSha256": "48fbfb9ac903448209d7b6561e2205737bc35d65caa7b547e177c2654e075b0f",
+      "normalizedSha256": "48fbfb9ac903448209d7b6561e2205737bc35d65caa7b547e177c2654e075b0f",
+      "materializedSha256": "48fbfb9ac903448209d7b6561e2205737bc35d65caa7b547e177c2654e075b0f"
+    },
+    {
+      "variant": "baseline",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/ServicesHomeDisplay.qml",
+      "originalSha256": "6bead3f0861ae2a30ab34371ec5f0548e8fec9276673d0344d9ea2e4a6429493",
+      "normalizedSha256": "6bead3f0861ae2a30ab34371ec5f0548e8fec9276673d0344d9ea2e4a6429493",
+      "materializedSha256": "6bead3f0861ae2a30ab34371ec5f0548e8fec9276673d0344d9ea2e4a6429493"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/widgets/qml/PageLoader.qml",
+      "originalSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "normalizedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "materializedSha256": "c627ea358f371d4d7b5d5c0d66aa1c9cc0e1a015cab66a716647b307ce52a921"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/widgets/qml/StackViewExt.qml",
+      "originalSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "normalizedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "materializedSha256": "111667b36b2601e34091d4f14b63adb4f942a66398ce67e18c4008e0b8bbb50b"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/maininterface/qml/MainViewLoader.qml",
+      "originalSha256": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+      "normalizedSha256": "c6250de66d654fa61fdef5cf075ba23de9d5fa396b57884e3cdde7d29ac536e0",
+      "materializedSha256": "d30ee6b622207a2659765d94d718b64bfa888eb5488bc38c520d55a96a929ef3"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicAlbumsDisplay.qml",
+      "originalSha256": "aa87be8a9b9ca6fdd67ac433f0031b41fba91c5d3cfb770fdecc425598cd2ee5",
+      "normalizedSha256": "aa87be8a9b9ca6fdd67ac433f0031b41fba91c5d3cfb770fdecc425598cd2ee5",
+      "materializedSha256": "b2cf881637fec0cce0c9182cf25627e2c78efef556341c84c392e60c275e1bbc"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicArtistsDisplay.qml",
+      "originalSha256": "37ca3540e2f461627f7c121c709e691aa453bbefe870c8d0e4ff94b3088baf8d",
+      "normalizedSha256": "37ca3540e2f461627f7c121c709e691aa453bbefe870c8d0e4ff94b3088baf8d",
+      "materializedSha256": "4307e7da44a4c73190ccad1c252e581d1e5386f64a4cb24aa7c82f0aaac4f378"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicGenresDisplay.qml",
+      "originalSha256": "d4549065e3d66dda7405abb26d4632c0b42ab500e9a967e22e06c5af5643656d",
+      "normalizedSha256": "d4549065e3d66dda7405abb26d4632c0b42ab500e9a967e22e06c5af5643656d",
+      "materializedSha256": "d1dc728f9452fa57f72dbf95e37d09165410b9b0a5e6014730061f1e712f671f"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicPlaylistsDisplay.qml",
+      "originalSha256": "8e4b7928f6ea67543b5de4c85be8ea1043bb1a4618af12d170fac1312107f0dc",
+      "normalizedSha256": "8e4b7928f6ea67543b5de4c85be8ea1043bb1a4618af12d170fac1312107f0dc",
+      "materializedSha256": "4661ec91d6841ed56ba8d4c43f7679c634753ba1c9eb23cbccb33f05092f9aea"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseDisplay.qml",
+      "originalSha256": "23337d20569d28bfa6a1524ae27e4dcf5eb23cfbe46107fc0c6a427fcf755b21",
+      "normalizedSha256": "23337d20569d28bfa6a1524ae27e4dcf5eb23cfbe46107fc0c6a427fcf755b21",
+      "materializedSha256": "6ba1095ddfd8fbc34551a212f1e8643baea143ca07868743b7f633b30535d995"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseDeviceView.qml",
+      "originalSha256": "1289e7be444bc910e4703ce4b86b78b8e55993a6ecc433a29db77f67d2fd182a",
+      "normalizedSha256": "1289e7be444bc910e4703ce4b86b78b8e55993a6ecc433a29db77f67d2fd182a",
+      "materializedSha256": "9b9c6b37ad70e9860738861191dbbc73ab51b50f3cf1421ff234e421ef93e35c"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseTreeDisplay.qml",
+      "originalSha256": "48fbfb9ac903448209d7b6561e2205737bc35d65caa7b547e177c2654e075b0f",
+      "normalizedSha256": "48fbfb9ac903448209d7b6561e2205737bc35d65caa7b547e177c2654e075b0f",
+      "materializedSha256": "2c08b5ab2b297834a975ed1778e6fe037010a48b4421d855f3f5a9b25aa35d49"
+    },
+    {
+      "variant": "baseline",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/ServicesHomeDisplay.qml",
+      "originalSha256": "6bead3f0861ae2a30ab34371ec5f0548e8fec9276673d0344d9ea2e4a6429493",
+      "normalizedSha256": "6bead3f0861ae2a30ab34371ec5f0548e8fec9276673d0344d9ea2e4a6429493",
+      "materializedSha256": "44d36ed5ba3ff456c8d0b8e485a9cfdc5f14144380d6d6813e8dfe8db4e96908"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/widgets/qml/PageLoader.qml",
+      "originalSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "normalizedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "materializedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/widgets/qml/StackViewExt.qml",
+      "originalSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "normalizedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "materializedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/maininterface/qml/MainViewLoader.qml",
+      "originalSha256": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+      "normalizedSha256": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+      "materializedSha256": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicAlbumsDisplay.qml",
+      "originalSha256": "4c135131833852e1ec8dcdc8df46cbac2e3902aa5e9a0b207989a2a8d0398279",
+      "normalizedSha256": "4c135131833852e1ec8dcdc8df46cbac2e3902aa5e9a0b207989a2a8d0398279",
+      "materializedSha256": "4c135131833852e1ec8dcdc8df46cbac2e3902aa5e9a0b207989a2a8d0398279"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicArtistsDisplay.qml",
+      "originalSha256": "1561ac48d11340cc0bc5c1bb7e80d0f14d07d49cfd5d3dc13d13e682069e359f",
+      "normalizedSha256": "1561ac48d11340cc0bc5c1bb7e80d0f14d07d49cfd5d3dc13d13e682069e359f",
+      "materializedSha256": "1561ac48d11340cc0bc5c1bb7e80d0f14d07d49cfd5d3dc13d13e682069e359f"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicGenresDisplay.qml",
+      "originalSha256": "8a15130f1368ae398afefe14d019f7fdcbd955c161a9cd6505df5ba489a57e1c",
+      "normalizedSha256": "8a15130f1368ae398afefe14d019f7fdcbd955c161a9cd6505df5ba489a57e1c",
+      "materializedSha256": "8a15130f1368ae398afefe14d019f7fdcbd955c161a9cd6505df5ba489a57e1c"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicPlaylistsDisplay.qml",
+      "originalSha256": "2419d1b5361e9afc5aa9f5f4461e634fae91be9be3bf6b5ba63c053defb81e5b",
+      "normalizedSha256": "2419d1b5361e9afc5aa9f5f4461e634fae91be9be3bf6b5ba63c053defb81e5b",
+      "materializedSha256": "2419d1b5361e9afc5aa9f5f4461e634fae91be9be3bf6b5ba63c053defb81e5b"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseDisplay.qml",
+      "originalSha256": "61ecc1e3680382ce7d703ea2f280fe8c6ecf98c2ce557dd3318083c3e312d419",
+      "normalizedSha256": "61ecc1e3680382ce7d703ea2f280fe8c6ecf98c2ce557dd3318083c3e312d419",
+      "materializedSha256": "61ecc1e3680382ce7d703ea2f280fe8c6ecf98c2ce557dd3318083c3e312d419"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseDeviceView.qml",
+      "originalSha256": "548d2497605682e678ce97cbba18a1001e7b5721e78a1e7cd5100812b595e780",
+      "normalizedSha256": "548d2497605682e678ce97cbba18a1001e7b5721e78a1e7cd5100812b595e780",
+      "materializedSha256": "548d2497605682e678ce97cbba18a1001e7b5721e78a1e7cd5100812b595e780"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/BrowseTreeDisplay.qml",
+      "originalSha256": "83daa4df74ec43faef535c6176c3a91e0068dc762bf48460ae8a97cfbe775f90",
+      "normalizedSha256": "83daa4df74ec43faef535c6176c3a91e0068dc762bf48460ae8a97cfbe775f90",
+      "materializedSha256": "83daa4df74ec43faef535c6176c3a91e0068dc762bf48460ae8a97cfbe775f90"
+    },
+    {
+      "variant": "fixed",
+      "endings": "lf",
+      "path": "modules/gui/qt/network/qml/ServicesHomeDisplay.qml",
+      "originalSha256": "9219b4eae95aa8ea3b4f7bb94d44d4b988c67f1dfbd14e3ac1062ecb1cb12689",
+      "normalizedSha256": "9219b4eae95aa8ea3b4f7bb94d44d4b988c67f1dfbd14e3ac1062ecb1cb12689",
+      "materializedSha256": "9219b4eae95aa8ea3b4f7bb94d44d4b988c67f1dfbd14e3ac1062ecb1cb12689"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/widgets/qml/PageLoader.qml",
+      "originalSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "normalizedSha256": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "materializedSha256": "c627ea358f371d4d7b5d5c0d66aa1c9cc0e1a015cab66a716647b307ce52a921"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/widgets/qml/StackViewExt.qml",
+      "originalSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "normalizedSha256": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "materializedSha256": "111667b36b2601e34091d4f14b63adb4f942a66398ce67e18c4008e0b8bbb50b"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/maininterface/qml/MainViewLoader.qml",
+      "originalSha256": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+      "normalizedSha256": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+      "materializedSha256": "b873c2397fa9912ceef30ede5b03b917f169010087553eb4a9d129d40bc211af"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicAlbumsDisplay.qml",
+      "originalSha256": "4c135131833852e1ec8dcdc8df46cbac2e3902aa5e9a0b207989a2a8d0398279",
+      "normalizedSha256": "4c135131833852e1ec8dcdc8df46cbac2e3902aa5e9a0b207989a2a8d0398279",
+      "materializedSha256": "bb591fb313aa561849187e6b31ea4caee5adca9f8e3e01bc6d42d33ff79dd39d"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicArtistsDisplay.qml",
+      "originalSha256": "1561ac48d11340cc0bc5c1bb7e80d0f14d07d49cfd5d3dc13d13e682069e359f",
+      "normalizedSha256": "1561ac48d11340cc0bc5c1bb7e80d0f14d07d49cfd5d3dc13d13e682069e359f",
+      "materializedSha256": "33f3276a305705c91a3a44d9cdb2b4abdf7d6f98ac292d12364385aa1c7583cf"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicGenresDisplay.qml",
+      "originalSha256": "8a15130f1368ae398afefe14d019f7fdcbd955c161a9cd6505df5ba489a57e1c",
+      "normalizedSha256": "8a15130f1368ae398afefe14d019f7fdcbd955c161a9cd6505df5ba489a57e1c",
+      "materializedSha256": "d81c70eb3f63e0ef250b2c7c77117fa88dde9b9df0ffab9cace2361f0cd55c11"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/medialibrary/qml/MusicPlaylistsDisplay.qml",
+      "originalSha256": "2419d1b5361e9afc5aa9f5f4461e634fae91be9be3bf6b5ba63c053defb81e5b",
+      "normalizedSha256": "2419d1b5361e9afc5aa9f5f4461e634fae91be9be3bf6b5ba63c053defb81e5b",
+      "materializedSha256": "2092beaae4e621f8371643abbfccfc64d5283676b423474aa6419fd52e19d09d"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseDisplay.qml",
+      "originalSha256": "61ecc1e3680382ce7d703ea2f280fe8c6ecf98c2ce557dd3318083c3e312d419",
+      "normalizedSha256": "61ecc1e3680382ce7d703ea2f280fe8c6ecf98c2ce557dd3318083c3e312d419",
+      "materializedSha256": "4f45ed150404c7935d6ef1855ccb2d0c4b056acc433958b6b6bff033747236fd"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseDeviceView.qml",
+      "originalSha256": "548d2497605682e678ce97cbba18a1001e7b5721e78a1e7cd5100812b595e780",
+      "normalizedSha256": "548d2497605682e678ce97cbba18a1001e7b5721e78a1e7cd5100812b595e780",
+      "materializedSha256": "07b5275896ef36aa017e8848bf50488bfebc35986f8a5d6b552302c4c73bcc5d"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/BrowseTreeDisplay.qml",
+      "originalSha256": "83daa4df74ec43faef535c6176c3a91e0068dc762bf48460ae8a97cfbe775f90",
+      "normalizedSha256": "83daa4df74ec43faef535c6176c3a91e0068dc762bf48460ae8a97cfbe775f90",
+      "materializedSha256": "93b60441055f2091280d5b91000dd399853b9a66cf4cdb61ebcf72b14552563d"
+    },
+    {
+      "variant": "fixed",
+      "endings": "crlf",
+      "path": "modules/gui/qt/network/qml/ServicesHomeDisplay.qml",
+      "originalSha256": "9219b4eae95aa8ea3b4f7bb94d44d4b988c67f1dfbd14e3ac1062ecb1cb12689",
+      "normalizedSha256": "9219b4eae95aa8ea3b4f7bb94d44d4b988c67f1dfbd14e3ac1062ecb1cb12689",
+      "materializedSha256": "cf3e116cd3289bb58550a12be6e07ccb29a7a7cd03013d5d7aa1e141c0cd6e6b"
+    }
+  ]
+}

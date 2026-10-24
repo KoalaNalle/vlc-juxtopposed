@@ -1,0 +1,876 @@
+{
+  "family": "subtitle",
+  "case": "ass-overlapping",
+  "status": "terminal",
+  "passed": true,
+  "privateCore": true,
+  "privateGui": false,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "sourceManifestSha256": "a41ce9e9f063f3a98c1047ccfb346019a4cdba2db0148928d7e8a918637d86c8",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "19a5438da4dcd74f3c20655ec8342ccaee5df6deb22073c3cd882c76ee7477cb",
+    "plugins/gui/libqt_plugin.dll": "d0ff14c66da4287a36a769754deead89c4ba616fb31fb8e1262c62a9a35e2678",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "fixtureSha256": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-generator-smoke-r35\\ass-overlap.mkv": "2b86f2a1d05146425f1bc32c7299c1d4add1b18d2179b010dd5976e497aba089",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-ass-overlap-reference-r27\\before\\normal-playback-reference\\normal-overlap-31s.png": "d8446b48cb64af2708d1f31c31fabb9904473c188883e689c4cb64bf5354e318",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-ass-overlap-reference-r27\\before\\normal-playback-reference\\normal-long-alone-35s.png": "4ba9a81fde375237982422cf7665e062d0f68c2c467072941d33ecf301f42945"
+  },
+  "producerSha256": "f1e95933e4f72e58de038b1572f6075001fc62542adc5482a363b9251459b8b9",
+  "parentProducerSha256": "4d16983406c7e34ff954a4064b8afd479c0326b1840b49f3c3099bd9f13a5414",
+  "originalConfigSha256": "555b2e93cc0f4b9fc73b7e02f75c1c302307729a82384abcad3c25d5e8a30137",
+  "pid": 9272,
+  "exitCode": 0,
+  "normalExit": true,
+  "result": {
+    "passed": true,
+    "fullBeta": false,
+    "configuration": {
+      "name": "ass-overlapping",
+      "media": "media-generator-smoke-r35/ass-overlap.mkv",
+      "language": "eng",
+      "audio": true,
+      "steps": [
+        {
+          "name": "cold-both",
+          "target": 31,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png"
+        },
+        {
+          "name": "long-alone",
+          "target": 35,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        {
+          "name": "first-long",
+          "target": 5,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        {
+          "name": "first-overlap",
+          "target": 11,
+          "color": 1,
+          "subtitle": true
+        },
+        {
+          "name": "long-after-first",
+          "target": 15,
+          "color": 1,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        {
+          "name": "both-again",
+          "target": 31,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png"
+        }
+      ]
+    },
+    "producerSha256": "f1e95933e4f72e58de038b1572f6075001fc62542adc5482a363b9251459b8b9",
+    "coreSha256": "19a5438da4dcd74f3c20655ec8342ccaee5df6deb22073c3cd882c76ee7477cb",
+    "mkvSha256": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "fixtureSha256": "2b86f2a1d05146425f1bc32c7299c1d4add1b18d2179b010dd5976e497aba089",
+    "options": [
+      "--ignore-config",
+      "--no-media-library",
+      "--no-metadata-network-access",
+      "--no-ml-network-discovery",
+      "--no-osd",
+      "--no-video-title-show",
+      "--no-sub-autodetect-file",
+      "--vout=vdummy",
+      "--no-hw-dec",
+      "--audio-language=eng",
+      "--sub-language=eng",
+      "--stats-min-report-interval=10",
+      "--verbose=2",
+      "--file-logging",
+      "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\regressions-candidate-r5\\subtitle-ass-overlapping\\probe\\native.log",
+      "--aout=mmdevice",
+      "--mmdevice-backend=wasapi"
+    ],
+    "observations": [
+      {
+        "step": "initial-paused",
+        "state": 3,
+        "timeUs": 61334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 18420,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 14688,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 0,
+          "decodedVideo": 2,
+          "decodedAudio": 1,
+          "displayedPictures": 1,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "initial-paused.png",
+        "snapshotSha256": "c7dd6f6ee64a1f245da008204661bd8d3787d581287c2063de7ab1060c3a4d61",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 1754,
+        "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828"
+      },
+      {
+        "step": "seek-0-cold-both",
+        "state": 3,
+        "timeUs": 31021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 420246,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 14688,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 0,
+          "decodedVideo": 2,
+          "decodedAudio": 1,
+          "displayedPictures": 1,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-0-cold-both.png",
+        "snapshotSha256": "1df5594f79333243320a066486bd79d303bf13f9cb5f69c178dbfafdfb3970fd",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 3606,
+        "whiteMaskSha256": "8791400569264d45939c84f4527b55ea0cd0943fb41249c0b61929639c893971",
+        "expected": {
+          "name": "cold-both",
+          "target": 31,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png",
+        "referencePictureSha256": "d8446b48cb64af2708d1f31c31fabb9904473c188883e689c4cb64bf5354e318",
+        "captionMaskJaccard": 1.0,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.014999999999418,
+        "processCpuSecondsIncludingProbe": 0.140625,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 790,
+          "writeOperations": 5,
+          "otherOperations": 4729,
+          "readBytes": 907510,
+          "writeBytes": 39849,
+          "otherBytes": 286346
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 18420,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 14688,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 0,
+          "decodedVideo": 2,
+          "decodedAudio": 1,
+          "displayedPictures": 1,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 401826,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          }
+        ]
+      },
+      {
+        "step": "seek-1-long-alone",
+        "state": 3,
+        "timeUs": 35021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 28384,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 2,
+          "decodedVideo": 3,
+          "decodedAudio": 1,
+          "displayedPictures": 11,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-1-long-alone.png",
+        "snapshotSha256": "ccafa1e9e9c2edcd7458feb0524c78901f81f566c22dde3d654e399cc0d08087",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 1754,
+        "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828",
+        "expected": {
+          "name": "long-alone",
+          "target": 35,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png",
+        "referencePictureSha256": "4ba9a81fde375237982422cf7665e062d0f68c2c467072941d33ecf301f42945",
+        "captionMaskJaccard": 1.0,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.014999999999418,
+        "processCpuSecondsIncludingProbe": 0.09375,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 10,
+          "writeOperations": 5,
+          "otherOperations": 779,
+          "readBytes": 74408,
+          "writeBytes": 31937,
+          "otherBytes": 45380
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 420246,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 14688,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 0,
+          "decodedVideo": 2,
+          "decodedAudio": 1,
+          "displayedPictures": 1,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 387144,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 35021334
+          },
+          {
+            "state": 3,
+            "timeUs": 35021334
+          },
+          {
+            "state": 3,
+            "timeUs": 35021334
+          },
+          {
+            "state": 3,
+            "timeUs": 35021334
+          }
+        ]
+      },
+      {
+        "step": "seek-2-first-long",
+        "state": 3,
+        "timeUs": 5021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 42304,
+          "demuxBitrate": 0.013212828896939754,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 4,
+          "decodedVideo": 4,
+          "decodedAudio": 1,
+          "displayedPictures": 26,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-2-first-long.png",
+        "snapshotSha256": "1f3432d14360f59302a69996324a284cc40c2eaa8029fb534c0b5aee3d8e9563",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 1754,
+        "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828",
+        "expected": {
+          "name": "first-long",
+          "target": 5,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png",
+        "referencePictureSha256": "4ba9a81fde375237982422cf7665e062d0f68c2c467072941d33ecf301f42945",
+        "captionMaskJaccard": 1.0,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.0779999999940628,
+        "processCpuSecondsIncludingProbe": 0.109375,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 10,
+          "writeOperations": 5,
+          "otherOperations": 89,
+          "readBytes": 74408,
+          "writeBytes": 35045,
+          "otherBytes": 3290
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 28384,
+          "demuxBitrate": 0.0,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 2,
+          "decodedVideo": 3,
+          "decodedAudio": 1,
+          "displayedPictures": 11,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 0,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 5021334
+          },
+          {
+            "state": 3,
+            "timeUs": 5021334
+          },
+          {
+            "state": 3,
+            "timeUs": 5021334
+          },
+          {
+            "state": 3,
+            "timeUs": 5021334
+          }
+        ]
+      },
+      {
+        "step": "seek-3-first-overlap",
+        "state": 3,
+        "timeUs": 11021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 55894,
+          "demuxBitrate": 0.01057455874979496,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 6,
+          "decodedVideo": 5,
+          "decodedAudio": 1,
+          "displayedPictures": 41,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-3-first-overlap.png",
+        "snapshotSha256": "6f56002bd6dd6a5b7bea8c76099aef1b264fd1edd23772ed04ab22dcc003378f",
+        "rgb": [
+          0,
+          254,
+          0
+        ],
+        "brightPixels": 3233,
+        "whiteMaskSha256": "a4a6b41d441c9537b0791c5349aa2ad6e268631d2eff49e658cebcd60ad3a98e",
+        "expected": {
+          "name": "first-overlap",
+          "target": 11,
+          "color": 1,
+          "subtitle": true
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": false,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.014999999999418,
+        "processCpuSecondsIncludingProbe": 0.03125,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 8,
+          "writeOperations": 5,
+          "otherOperations": 99,
+          "readBytes": 84792,
+          "writeBytes": 47412,
+          "otherBytes": 4080
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 42304,
+          "demuxBitrate": 0.013212828896939754,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 4,
+          "decodedVideo": 4,
+          "decodedAudio": 1,
+          "displayedPictures": 26,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 0,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 11021334
+          },
+          {
+            "state": 3,
+            "timeUs": 11021334
+          },
+          {
+            "state": 3,
+            "timeUs": 11021334
+          },
+          {
+            "state": 3,
+            "timeUs": 11021334
+          }
+        ]
+      },
+      {
+        "step": "seek-4-long-after-first",
+        "state": 3,
+        "timeUs": 15021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 69535,
+          "demuxBitrate": 0.009819009341299534,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 8,
+          "decodedVideo": 6,
+          "decodedAudio": 1,
+          "displayedPictures": 57,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-4-long-after-first.png",
+        "snapshotSha256": "50d7e2d160568a4805151112401b0b4e9c2cba735ae95f3d280f7cea2b6075cb",
+        "rgb": [
+          0,
+          254,
+          0
+        ],
+        "brightPixels": 1754,
+        "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828",
+        "expected": {
+          "name": "long-after-first",
+          "target": 15,
+          "color": 1,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-long-alone-35s.png",
+        "referencePictureSha256": "4ba9a81fde375237982422cf7665e062d0f68c2c467072941d33ecf301f42945",
+        "captionMaskJaccard": 1.0,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.0,
+        "processCpuSecondsIncludingProbe": 0.109375,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 10,
+          "writeOperations": 5,
+          "otherOperations": 119,
+          "readBytes": 75011,
+          "writeBytes": 41129,
+          "otherBytes": 5120
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 55894,
+          "demuxBitrate": 0.01057455874979496,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 6,
+          "decodedVideo": 5,
+          "decodedAudio": 1,
+          "displayedPictures": 41,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 0,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 15021334
+          },
+          {
+            "state": 3,
+            "timeUs": 15021334
+          },
+          {
+            "state": 3,
+            "timeUs": 15021334
+          },
+          {
+            "state": 3,
+            "timeUs": 15021334
+          }
+        ]
+      },
+      {
+        "step": "seek-5-both-again",
+        "state": 3,
+        "timeUs": 31021334,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 82983,
+          "demuxBitrate": 0.010288315825164318,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 10,
+          "decodedVideo": 7,
+          "decodedAudio": 1,
+          "displayedPictures": 72,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "seek-5-both-again.png",
+        "snapshotSha256": "2002ee9c535c824df035067d9cf4fd2dca6e33dcdedd4a316e174d9f9dd646c3",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 3606,
+        "whiteMaskSha256": "8791400569264d45939c84f4527b55ea0cd0943fb41249c0b61929639c893971",
+        "expected": {
+          "name": "both-again",
+          "target": 31,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true,
+          "frozenPausedClock": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png",
+        "referencePictureSha256": "d8446b48cb64af2708d1f31c31fabb9904473c188883e689c4cb64bf5354e318",
+        "captionMaskJaccard": 1.0,
+        "passed": true,
+        "seekToSnapshotSecondsIncludingFixedSettle": 1.0939999999973224,
+        "processCpuSecondsIncludingProbe": 0.109375,
+        "processIoDeltaIncludingProbe": {
+          "readOperations": 10,
+          "writeOperations": 5,
+          "otherOperations": 167,
+          "readBytes": 118540,
+          "writeBytes": 55079,
+          "otherBytes": 8088
+        },
+        "statsBeforeSeek": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 69535,
+          "demuxBitrate": 0.009819009341299534,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 8,
+          "decodedVideo": 6,
+          "decodedAudio": 1,
+          "displayedPictures": 57,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 1,
+          "lostAudioBuffers": 0
+        },
+        "reportedReadBytesDelta": 0,
+        "pausedSamples": [
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          },
+          {
+            "state": 3,
+            "timeUs": 31021334
+          }
+        ]
+      },
+      {
+        "step": "after-resume-at-final-target",
+        "state": 3,
+        "timeUs": 31200520,
+        "vouts": 1,
+        "tracks": [
+          {
+            "id": "spu/3",
+            "language": "eng",
+            "name": "Track 1 - [English]",
+            "selected": true
+          }
+        ],
+        "stats": {
+          "available": true,
+          "readBytes": 807390,
+          "inputBitrate": 0.0,
+          "demuxReadBytes": 100121,
+          "demuxBitrate": 0.009816378355026245,
+          "demuxCorrupted": 0,
+          "demuxDiscontinuity": 12,
+          "decodedVideo": 34,
+          "decodedAudio": 62,
+          "displayedPictures": 115,
+          "latePictures": 0,
+          "lostPictures": 0,
+          "playedAudioBuffers": 61,
+          "lostAudioBuffers": 0
+        },
+        "snapshotReturn": 0,
+        "snapshotAvailableWhilePaused": true,
+        "snapshot": "after-resume-at-final-target.png",
+        "snapshotSha256": "b1a0bf34eebf22db4f300d548a232dc8fe8d848106e65b89f43830c9fccb5e35",
+        "rgb": [
+          253,
+          0,
+          0
+        ],
+        "brightPixels": 3606,
+        "whiteMaskSha256": "8791400569264d45939c84f4527b55ea0cd0943fb41249c0b61929639c893971",
+        "expected": {
+          "name": "both-again",
+          "target": 31,
+          "color": 0,
+          "subtitle": true,
+          "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png"
+        },
+        "maskComparisonPerformed": false,
+        "assertions": {
+          "paused": true,
+          "picture": true,
+          "targetColor": true,
+          "subtitlePresence": true,
+          "subtitleMask": true,
+          "referenceCaptions": true
+        },
+        "referenceComparisonPerformed": true,
+        "referencePicture": "native-ass-overlap-reference-r27/before/normal-playback-reference/normal-overlap-31s.png",
+        "referencePictureSha256": "d8446b48cb64af2708d1f31c31fabb9904473c188883e689c4cb64bf5354e318",
+        "captionMaskJaccard": 1.0,
+        "passed": true
+      }
+    ],
+    "teardownComplete": true,
+    "scope": "Native coarse target colors, actual subtitle pixels and reference-caption comparisons where configured, frozen pause and resume. Process I/O/CPU includes the probe, generated PNG reads, font/library reads and filesystem-cache effects; it is not physical storage throughput, exclusive demux work, exact video PTS or a universal performance acceptance.",
+    "initialPauseReached": true,
+    "requestedSubtitleLanguageSelected": true,
+    "resumeAdvancedFromRequestedTarget": true,
+    "repaused": true,
+    "stopReturn": 0,
+    "stopReached": true,
+    "diagnostics": [
+      "main error: window closed"
+    ],
+    "warnings": [
+      "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\regressions-candidate-r5\\runtime\\plugins\\plugins.dat: No error",
+      "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\regressions-candidate-r5\\runtime\\plugins\\plugins.dat: No error",
+      "faad warning: decoded zero sample",
+      "main warning: window size missing"
+    ],
+    "actualWasapiSelected": true
+  },
+  "sourceInputsUnchanged": true,
+  "parentUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true
+}

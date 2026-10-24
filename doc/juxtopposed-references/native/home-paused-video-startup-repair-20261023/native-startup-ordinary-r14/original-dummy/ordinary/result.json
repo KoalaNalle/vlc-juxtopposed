@@ -1,0 +1,113 @@
+{
+  "config": {
+    "name": "original-dummy",
+    "media": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-r1\\multi-language.mkv",
+    "audio": "dummy",
+    "video": true,
+    "extraOptions": []
+  },
+  "passed": true,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-ordinary-r14\\original-dummy\\ordinary\\native.log",
+    "--aout=adummy"
+  ],
+  "producerSha256": "c6567017d5e8e0516e8d26acbb0e1b82d90c5215a9185bb6d577fcd6a9f1f010",
+  "coreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "mediaSha256": "43432e7c472cf6dbdef90ab34253d9082e3e4f410cc11e2f08098597175f0199",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 21334,
+      "vouts": 1,
+      "selectedVideoTracks": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshotSha256": "b8736a57b8e6cccdcdcf5e3124190880865618a8875a44691d0de7f62d8170bc",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "step": "held-paused-0",
+      "state": 3,
+      "timeUs": 21334,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-1",
+      "state": 3,
+      "timeUs": 21334,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-2",
+      "state": 3,
+      "timeUs": 21334,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-3",
+      "state": 3,
+      "timeUs": 21334,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "resumed",
+      "state": 2,
+      "timeUs": 222589,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "paused-again-or-ended",
+      "state": 3,
+      "timeUs": 223292,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    }
+  ],
+  "teardownComplete": true,
+  "assertions": {
+    "initialPaused": true,
+    "expectedVideoSelection": true,
+    "initialPicture": true,
+    "heldPausedClockStable": true,
+    "resumedOrShortMediaEnded": true,
+    "advancedOrShortMediaEnded": true,
+    "repausedOrShortMediaEnded": true
+  },
+  "playReturn": 0,
+  "initialPauseReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "diagnostics": [
+    "main error: buffer deadlock prevented",
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-ordinary-r14\\original-dummy\\ordinary\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-startup-ordinary-r14\\original-dummy\\ordinary\\runtime\\plugins\\plugins.dat: No error",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "avcodec warning: refusing to decode non validated subtitle codec",
+    "faad warning: decoded zero sample",
+    "main warning: window size missing"
+  ],
+  "actualWasapiSelected": false
+}

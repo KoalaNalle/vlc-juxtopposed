@@ -1,0 +1,43 @@
+{
+  "patchSha256": "f8d4ffb18327e3cf94fa29a373afeb928cd7290f5d6f07dd36d0c830782514d1",
+  "registeredEditsPerformed": false,
+  "gitCommandsRun": false,
+  "nativeCompiled": false,
+  "nativeExecuted": false,
+  "nativeGuiCausalityEstablished": false,
+  "expectedFixedCases": [
+    "expandedVideoLeafIndex",
+    "pendingInitialResetDoesNotReplayAfterGridSwitch",
+    "countBeforeLoadingSettlesConsumesPendingIndex",
+    "defaultPlaylistLeafZeroIndex",
+    "genuineIdTitleBeforeConstruction",
+    "adapterBackForwardLeafRestoration",
+    "playlistToRealNoIndexHomeContract",
+    "sameParentReloadAndGroupAlias",
+    "explicitChildFalseNewAndReusedParent",
+    "unknownLeafPropertyFailsWithoutDropping",
+    "conditionalNoMlLeaf"
+  ],
+  "evidenceSha256": {
+    "baseline": {
+      "build-windows/page-loader-leaf-component-baseline-v5-20261014/verification.json": "911a3b65ce56a816f3b7c3700fe97c169404fc5fb4e9abe6c948e46b1874027d",
+      "build-windows/page-loader-leaf-component-baseline-v5-20261014/messages.txt": "6631bf885f064bb84c62b63e5ff5e653b1c8194a35e3c6337e387ad1334c3990"
+    },
+    "fixed": {
+      "build-windows/page-loader-leaf-component-fixed-v5-20261014/verification.json": "64ce8f4ef229b2f718d584f17f510d6fb7ebcef004c082ab150e54a32497b8fc",
+      "build-windows/page-loader-leaf-component-fixed-v5-20261014/messages.txt": "21dec38686a0ff57ed8913fadb436c10cfc0b91c4dac35d6891fd59e9a187516"
+    },
+    "loading-before": {
+      "build-windows/page-loader-leaf-loading-before-v5-20261014/verification.json": "5e39edcf1a88d8c2ebd617fc11d139806da63e362fd78ea72c0df615ccad02af",
+      "build-windows/page-loader-leaf-loading-before-v5-20261014/messages.txt": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    }
+  },
+  "filesSha256": {
+    "manifest.json": "51062cfe1382e1a253ad9eb0204e8c00753767b8c5d5199051520422bbd6d74e",
+    "README.md": "55076264cdd260b4616820a34d97fc50f65b0ca17bb9df63f53980ac696a513b",
+    "CHECKPOINT_AUDIT.md": "f9be2c35aec1d3105e2bada36c271dc21c8353fc8b01a68ddd44c20145566996",
+    "prepare.py": "64e8b59b4679e41a730bef2e402424d790d1df70c3d0fb5e21e100c536c97502",
+    "prepare_loading_before.py": "f1986dc27fc126c34356079c4e1e94c8197c01f1cee05292494066a3568d28c1",
+    "verify_freeze.py": "74ca588ca31a11e1cdcc58312d017274642e7ccb0765e0d266fd66677ede57a6"
+  }
+}

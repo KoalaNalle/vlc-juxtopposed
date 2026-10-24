@@ -1,0 +1,55 @@
+    void inheritedFileFormatKeepsLiteralPercentDestination()
+    {
+        // Own a preference parent instead of changing the shared test player's
+        // options. The controller is declared later, so it joins before this
+        // real VLC configuration object is deleted on every return path.
+        const auto deletePreferences = [](vlc_object_t *object) { vlc_object_delete(object); };
+        std::unique_ptr<vlc_object_t, decltype(deletePreferences)> preferences(
+            static_cast<vlc_object_t *>(vlc_object_create(
+                vlc_test_media_player_object(m_player), sizeof(vlc_object_t))), deletePreferences);
+        QVERIFY(preferences);
+        QCOMPARE(var_Create(preferences.get(), "sout-file-format", VLC_VAR_BOOL), VLC_SUCCESS);
+        QCOMPARE(var_SetBool(preferences.get(), "sout-file-format", true), VLC_SUCCESS);
+        const auto literalFolder = m_directory.filePath("literal 100%% %Y");
+        const auto formattedFolder = m_directory.filePath("literal 100% "
+            + QString::number(QDateTime::currentDateTime().date().year()));
+        QVERIFY(QDir().mkpath(literalFolder));
+        QVERIFY(QDir().mkpath(formattedFolder));
+        const auto sentinel = QUrl::fromLocalFile(QDir(formattedFolder).filePath("sentinel.keep"));
+        QFile other(sentinel.toLocalFile());
+        QVERIFY(other.open(QIODevice::WriteOnly | QIODevice::NewOnly));
+        const QByteArray sentinelBytes("Preserve the unrelated formatted-path sibling");
+        QCOMPARE(other.write(sentinelBytes), qint64(sentinelBytes.size())); other.close();
+        const auto sentinelHash = hash(sentinel), sourceHash = hash(m_source);
+        QVERIFY(!sentinelHash.isEmpty() && !sourceHash.isEmpty());
+        const auto destination = QUrl::fromLocalFile(QDir(literalFolder).filePath("literal result.flac"));
+        ConversionController controller(preferences.get());
+        configure(controller, m_source, destination);
+        QVERIFY(controller.canStart()); QVERIFY(controller.start());
+        QTRY_VERIFY_WITH_TIMEOUT(!controller.busy(), 15000);
+        QVERIFY2(controller.state() == ConversionController::Succeeded, qPrintable(controller.error()));
+        QCOMPARE(controller.outputUrl(), destination);
+        QVERIFY(var_GetBool(preferences.get(), "sout-file-format"));
+        QCOMPARE(hash(m_source), sourceHash); QCOMPARE(hash(sentinel), sentinelHash);
+        QFile flac(destination.toLocalFile());
+        QVERIFY(flac.open(QIODevice::ReadOnly)); QCOMPARE(flac.read(4), QByteArray("fLaC")); flac.close();
+        QCOMPARE(QDir(literalFolder).entryList({".vlc-convert-*"},
+            QDir::Dirs | QDir::Hidden | QDir::NoDotAndDotDot).size(), 0);
+        QCOMPARE(QDir(formattedFolder).entryList(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot),
+            QStringList{"sentinel.keep"});
+        // Published-file playback is independent of conversion's own second
+        // stage. Inherited formatting must not break either native file sink.
+        m_outputBuffers = 0; m_outputSamples = 0; m_peak = 0;
+        libvlc_audio_set_callbacks(m_player, outputAudio, nullptr, nullptr, nullptr, nullptr, this);
+        libvlc_audio_set_format(m_player, "FL32", 44100, 1);
+        const auto uri = destination.toEncoded();
+        auto *media = libvlc_media_new_location(uri.constData()); QVERIFY(media);
+        libvlc_media_player_set_media(m_player, media); libvlc_media_release(media);
+        QCOMPARE(libvlc_media_player_play(m_player), 0);
+        QTRY_VERIFY_WITH_TIMEOUT(m_outputBuffers > 2, 10000);
+        QTRY_COMPARE_WITH_TIMEOUT(libvlc_media_player_get_state(m_player), libvlc_Stopped, 10000);
+        QVERIFY2(std::abs(qint64(m_outputSamples.load()) - 88200) <= 100,
+            "A literal percent-folder conversion must preserve complete native audio");
+        QVERIFY(m_peak > .3 && m_peak < .5);
+        noTemporaryDirectories();
+    }

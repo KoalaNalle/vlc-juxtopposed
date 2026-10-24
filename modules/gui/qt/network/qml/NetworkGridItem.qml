@@ -55,6 +55,10 @@ Widgets.GridItem {
     cacheImage: true // we may have network thumbnail
 
     fallbackImage: {
+        // A delegate can exist before its model roles are available.
+        if (!model.artworkFallback)
+            return ""
+
         return SVGColorImage.colorize(model.artworkFallback)
                             .color1(root.colorContext.fg.primary)
                             .accent(root.colorContext.accent)

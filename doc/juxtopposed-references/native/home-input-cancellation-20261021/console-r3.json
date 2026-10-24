@@ -1,0 +1,956 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "consoleOnly": true,
+  "scope": "Real native Windows PCM playback/cancellation and failure behavior; no GUI or audible-quality acceptance.",
+  "runtimeIdentities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd"
+  },
+  "fixtureHashes": {
+    "empty.wav": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "invalid.wav": "fc1bb5575dece769c879bc533aaaf5ef49b9438c1dea30b5ee96d578eab831e1",
+    "misnamed.mp3": "b476b1b4f3437b8c0e22e3a2a7f9b27e19f8d85e1d7af6aa675b4cb7354b86ce",
+    "valid.wav": "b476b1b4f3437b8c0e22e3a2a7f9b27e19f8d85e1d7af6aa675b4cb7354b86ce"
+  },
+  "runnerSha256": "03311473528f112bef67f2e6e0e2dd3d82e39a6006a6fb6c256241db31426877",
+  "cases": {
+    "rapid-recovery": {
+      "forcedCleanupUsed": false,
+      "pid": 4568,
+      "exitCode": 0,
+      "normalExit": true,
+      "observations": {
+        "passed": true,
+        "mode": "rapid-recovery",
+        "cancellations": [
+          {
+            "repetition": 0,
+            "delaySeconds": 0,
+            "beforeStop": {
+              "state": 4,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 0,
+            "delaySeconds": 0.001,
+            "beforeStop": {
+              "state": 1,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 0,
+            "delaySeconds": 0.004,
+            "beforeStop": {
+              "state": 1,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 0,
+            "delaySeconds": 0.01,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 0,
+            "delaySeconds": 0.025,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 0,
+            "delaySeconds": 0.06,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0,
+            "beforeStop": {
+              "state": 4,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0.001,
+            "beforeStop": {
+              "state": 1,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0.004,
+            "beforeStop": {
+              "state": 1,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0.01,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0.025,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 1,
+            "delaySeconds": 0.06,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0,
+            "beforeStop": {
+              "state": 4,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0.001,
+            "beforeStop": {
+              "state": 1,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 0,
+              "demuxBytes": 0,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0.004,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0.01,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0.025,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          },
+          {
+            "repetition": 2,
+            "delaySeconds": 0.06,
+            "beforeStop": {
+              "state": 2,
+              "timeUs": 0,
+              "statsValid": true,
+              "readBytes": 113664,
+              "demuxBytes": 9600,
+              "decoded": 0,
+              "played": 0,
+              "lost": 0
+            },
+            "finalState": 4,
+            "stateEvents": [
+              1,
+              2,
+              5,
+              4
+            ]
+          }
+        ],
+        "samples": [
+          {
+            "state": 2,
+            "timeUs": 994761,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1095909,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1196828,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1297891,
+            "statsValid": true,
+            "readBytes": 492544,
+            "demuxBytes": 489600,
+            "decoded": 50,
+            "played": 50,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1399078,
+            "statsValid": true,
+            "readBytes": 492544,
+            "demuxBytes": 489600,
+            "decoded": 50,
+            "played": 50,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1500103,
+            "statsValid": true,
+            "readBytes": 492544,
+            "demuxBytes": 489600,
+            "decoded": 50,
+            "played": 50,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1601071,
+            "statsValid": true,
+            "readBytes": 543744,
+            "demuxBytes": 537600,
+            "decoded": 55,
+            "played": 55,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1701860,
+            "statsValid": true,
+            "readBytes": 543744,
+            "demuxBytes": 537600,
+            "decoded": 55,
+            "played": 55,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1802930,
+            "statsValid": true,
+            "readBytes": 543744,
+            "demuxBytes": 537600,
+            "decoded": 55,
+            "played": 55,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1904133,
+            "statsValid": true,
+            "readBytes": 605184,
+            "demuxBytes": 595200,
+            "decoded": 61,
+            "played": 61,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 2005120,
+            "statsValid": true,
+            "readBytes": 605184,
+            "demuxBytes": 595200,
+            "decoded": 61,
+            "played": 61,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 2106180,
+            "statsValid": true,
+            "readBytes": 656384,
+            "demuxBytes": 652800,
+            "decoded": 67,
+            "played": 67,
+            "lost": 0
+          }
+        ],
+        "stateEvents": [
+          5,
+          4,
+          1,
+          5,
+          4,
+          1,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          5,
+          4,
+          1,
+          5,
+          4,
+          1,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          5,
+          4,
+          1,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4,
+          1,
+          2,
+          5,
+          4
+        ],
+        "afterSeek": {
+          "state": 2,
+          "timeUs": 5000001,
+          "statsValid": true,
+          "readBytes": 687704,
+          "demuxBytes": 681600,
+          "decoded": 70,
+          "played": 70,
+          "lost": 0
+        },
+        "afterSeekProgress": {
+          "state": 2,
+          "timeUs": 5980904,
+          "statsValid": true,
+          "readBytes": 1116864,
+          "demuxBytes": 1104000,
+          "decoded": 114,
+          "played": 114,
+          "lost": 0
+        },
+        "explicitStopAcknowledged": true
+      },
+      "nativeErrors": [],
+      "runtimeFailureSeen": false,
+      "nativeWarnings": [
+        "main warning: cannot insert stream filter prefetch,cache",
+        "main warning: cannot insert stream filter prefetch,cache",
+        "main warning: cannot insert stream filter prefetch,cache"
+      ],
+      "prebufferBytes": [
+        0,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        0,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        0,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "wasapiOpened": true,
+      "wavDemuxSelected": true,
+      "pluginCacheLoads": 1,
+      "loadedModules": [
+        "601"
+      ],
+      "passed": true
+    },
+    "empty": {
+      "forcedCleanupUsed": false,
+      "pid": 19392,
+      "exitCode": 0,
+      "normalExit": true,
+      "observations": {
+        "passed": true,
+        "mode": "empty",
+        "cancellations": [],
+        "samples": [],
+        "stateEvents": [
+          1,
+          6,
+          5,
+          4
+        ],
+        "errorStateObserved": true,
+        "errorSample": {
+          "state": 4,
+          "timeUs": 0,
+          "statsValid": true,
+          "readBytes": 0,
+          "demuxBytes": 0,
+          "decoded": 0,
+          "played": 0,
+          "lost": 0
+        }
+      },
+      "nativeErrors": [
+        "cache_read error: cannot pre fill buffer",
+        "mjpeg error: cannot peek",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed",
+        "dvdread error: DVDISOVolumeInfo, failed to read ISO9660 Primary Volume Descriptor",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed",
+        "dvdread error: DVDISOVolumeInfo, failed to read ISO9660 Primary Volume Descriptor",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /AUDIO_TS/AUDIO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /AUDIO_TS/AUDIO_TS.BUP failed",
+        "dvdread error: DVDISOVolumeInfo, failed to read ISO9660 Primary Volume Descriptor",
+        "main error: Your media can't be opened",
+        "main error: VLC is unable to open the MRL 'file:///C:/Modding/vlc-juxtopposed/build-windows/beta-input-cancellation-20261021/console-r3-on-core-r1/fixtures/empty.wav'. Check the log for details."
+      ],
+      "runtimeFailureSeen": false,
+      "nativeWarnings": [
+        "main warning: cannot insert stream filter prefetch,cache",
+        "mjpeg warning: no more data",
+        "dvdread warning: cannot open VMG info",
+        "dvdread warning: cannot open RTAV_VMGI info",
+        "dvdread warning: cannot open AMG info"
+      ],
+      "prebufferBytes": [],
+      "wasapiOpened": false,
+      "wavDemuxSelected": false,
+      "pluginCacheLoads": 1,
+      "loadedModules": [
+        "601"
+      ],
+      "passed": true
+    },
+    "invalid": {
+      "forcedCleanupUsed": false,
+      "pid": 24940,
+      "exitCode": 0,
+      "normalExit": true,
+      "observations": {
+        "passed": true,
+        "mode": "invalid",
+        "cancellations": [],
+        "samples": [],
+        "stateEvents": [
+          1,
+          6,
+          5,
+          4
+        ],
+        "errorStateObserved": true,
+        "errorSample": {
+          "state": 4,
+          "timeUs": 0,
+          "statsValid": true,
+          "readBytes": 0,
+          "demuxBytes": 0,
+          "decoded": 0,
+          "played": 0,
+          "lost": 0
+        }
+      },
+      "nativeErrors": [
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed",
+        "main error: Playback failure",
+        "main error: Cannot play a non-UDF mastered DVD.",
+        "dvdread error: Invalid UDF DVD. (Found ISO9660 'deliberately')",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /VIDEO_TS/VIDEO_TS.BUP failed",
+        "main error: Playback failure",
+        "main error: Cannot play a non-UDF mastered DVD.",
+        "dvdread error: Invalid UDF DVD. (Found ISO9660 'deliberately')",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /AUDIO_TS/AUDIO_TS.IFO failed",
+        "dvdread error: DVDOpenFileUDF:UDFFindFile /AUDIO_TS/AUDIO_TS.BUP failed",
+        "main error: Playback failure",
+        "main error: Cannot play a non-UDF mastered DVD.",
+        "dvdread error: Invalid UDF DVD. (Found ISO9660 'deliberately')",
+        "main error: Your media can't be opened",
+        "main error: VLC is unable to open the MRL 'file:///C:/Modding/vlc-juxtopposed/build-windows/beta-input-cancellation-20261021/console-r3-on-core-r1/fixtures/invalid.wav'. Check the log for details."
+      ],
+      "runtimeFailureSeen": false,
+      "nativeWarnings": [
+        "dvdread warning: cannot open VMG info",
+        "dvdread warning: cannot open RTAV_VMGI info",
+        "dvdread warning: cannot open AMG info"
+      ],
+      "prebufferBytes": [
+        1024
+      ],
+      "wasapiOpened": false,
+      "wavDemuxSelected": false,
+      "pluginCacheLoads": 1,
+      "loadedModules": [
+        "601"
+      ],
+      "passed": true
+    },
+    "misnamed": {
+      "forcedCleanupUsed": false,
+      "pid": 29132,
+      "exitCode": 0,
+      "normalExit": true,
+      "observations": {
+        "passed": true,
+        "mode": "misnamed",
+        "cancellations": [],
+        "samples": [
+          {
+            "state": 2,
+            "timeUs": 990196,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1091099,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1192138,
+            "statsValid": true,
+            "readBytes": 441344,
+            "demuxBytes": 432000,
+            "decoded": 44,
+            "played": 44,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1292920,
+            "statsValid": true,
+            "readBytes": 482304,
+            "demuxBytes": 480000,
+            "decoded": 49,
+            "played": 49,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1393496,
+            "statsValid": true,
+            "readBytes": 482304,
+            "demuxBytes": 480000,
+            "decoded": 49,
+            "played": 49,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1494384,
+            "statsValid": true,
+            "readBytes": 533504,
+            "demuxBytes": 528000,
+            "decoded": 54,
+            "played": 54,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1595511,
+            "statsValid": true,
+            "readBytes": 533504,
+            "demuxBytes": 528000,
+            "decoded": 54,
+            "played": 54,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1696525,
+            "statsValid": true,
+            "readBytes": 533504,
+            "demuxBytes": 528000,
+            "decoded": 54,
+            "played": 54,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1797591,
+            "statsValid": true,
+            "readBytes": 594944,
+            "demuxBytes": 585600,
+            "decoded": 60,
+            "played": 60,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1898361,
+            "statsValid": true,
+            "readBytes": 594944,
+            "demuxBytes": 585600,
+            "decoded": 60,
+            "played": 60,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 1999011,
+            "statsValid": true,
+            "readBytes": 594944,
+            "demuxBytes": 585600,
+            "decoded": 60,
+            "played": 60,
+            "lost": 0
+          },
+          {
+            "state": 2,
+            "timeUs": 2100106,
+            "statsValid": true,
+            "readBytes": 646144,
+            "demuxBytes": 643200,
+            "decoded": 66,
+            "played": 66,
+            "lost": 0
+          }
+        ],
+        "stateEvents": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "afterSeek": {
+          "state": 2,
+          "timeUs": 5000001,
+          "statsValid": true,
+          "readBytes": 678744,
+          "demuxBytes": 672000,
+          "decoded": 69,
+          "played": 69,
+          "lost": 0
+        },
+        "afterSeekProgress": {
+          "state": 2,
+          "timeUs": 5980063,
+          "statsValid": true,
+          "readBytes": 1052544,
+          "demuxBytes": 1046400,
+          "decoded": 108,
+          "played": 108,
+          "lost": 0
+        },
+        "explicitStopAcknowledged": true
+      },
+      "nativeErrors": [],
+      "runtimeFailureSeen": false,
+      "nativeWarnings": [],
+      "prebufferBytes": [
+        1024,
+        1024
+      ],
+      "wasapiOpened": true,
+      "wavDemuxSelected": true,
+      "pluginCacheLoads": 1,
+      "loadedModules": [
+        "601"
+      ],
+      "passed": true
+    }
+  },
+  "runtimeIdentitiesUnchanged": true,
+  "fixtureHashesUnchanged": true,
+  "sourceInputsUnchanged": true
+}

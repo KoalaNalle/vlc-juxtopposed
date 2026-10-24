@@ -1,0 +1,654 @@
+{
+  "case": "edit",
+  "status": "terminal",
+  "passed": true,
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "9f9702bec96dd8b56807831d987c4cdb1ec018fbdeafb042df750c2809c53dcf",
+    "plugins/gui/libqt_plugin.dll": "ad4a8188a0c668c528f79e602ee81a0e01304081fb7e1b41d683ed5d75297ec7",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "ead274797476e33588b8b257758f4b29ffa4e35c95059ea3df349023e4fbeeaa",
+  "runnerSha256": "5c32b0c8a473e9cf783039344c88e2a1bb9ed210b7ea37f8a9723e27d94ad3e2",
+  "mediaSha256": {
+    "preview-motion-1080p.mp4": "3ebde0e2c041981c0f3ddb85b01d7fb69f0e18e16dd4161038de7550aac82bbe",
+    "preview-silent.wav": "512a25be1b2dc6ef4a3f3abec8ca3b109f8a7803a8907f7a20c8b8547330c945"
+  },
+  "pid": 24248,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "native and Qt settings are fenced to the owned runtime",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables the implemented preview consumer",
+        "passed": true
+      },
+      {
+        "name": "fresh or cold startup restores the expected thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "disabled previews preserve the existing time tooltip path",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual toggle commits thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "native saved preference and live provider agree",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "leaving the timeline closes the preview and cancels work",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual toggle commits thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "native saved preference and live provider agree",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "switching the setting off restores time-only behavior",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "owned thumbnail config replacement is blocked",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "failed actual toggle preserves saved policy and provider state",
+        "passed": true
+      },
+      {
+        "name": "rejected thumbnail toggle retains focus and local feedback",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "same actual thumbnail toggle retries after storage recovers",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "audio-only source clears video previews and keeps the time label path",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "preview timestamp matches the sampled scene in Figma hours-minutes-seconds format",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "rendered preview background exists",
+        "passed": true
+      },
+      {
+        "name": "whole preview card fits its rendering surface",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "decoded playback resumes after preview/settings checks",
+        "passed": true
+      }
+    ],
+    "fullBetaAccepted": false,
+    "hoverState": {
+      "enabled": true,
+      "loading": false,
+      "requested": 14.25,
+      "sampled": 14,
+      "second": 14,
+      "source": "image://timelinepreview/5",
+      "visiblePopup": true,
+      "wanted": true,
+      "windowActive": true
+    },
+    "passed": true,
+    "previews": [
+      {
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:02",
+        "name": "preview-red",
+        "requested": 2.25,
+        "sampled": 2,
+        "scale": 1,
+        "width": 272
+      },
+      {
+        "color": "#00d600",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:08",
+        "name": "preview-green",
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "width": 272
+      },
+      {
+        "color": "#000dff",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:14",
+        "name": "preview-blue",
+        "requested": 14.25,
+        "sampled": 14,
+        "scale": 1,
+        "width": 272
+      },
+      {
+        "color": "#00d600",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:08",
+        "name": "preview-after-retry",
+        "requested": 8.25,
+        "sampled": 8,
+        "scale": 1,
+        "width": 272
+      },
+      {
+        "color": "#000dff",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:00:14",
+        "name": "preview-reopened",
+        "requested": 14.25,
+        "sampled": 14,
+        "scale": 1,
+        "width": 272
+      }
+    ],
+    "privateFixture": true,
+    "status": "checks_complete"
+  },
+  "diagnostics": [],
+  "rawDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "expectedDiagnostics": [
+    "main error: cannot replace configuration file (Windows error 5)"
+  ],
+  "realD3D11Opened": true,
+  "quitLogOrder": {
+    "wait": 1046,
+    "stopped": 1074,
+    "teardown": 1078
+  },
+  "scope": "Actual Qt settings, live timeline consumer, native rendered preview pixels, disabled/audio fallback, config denial/retry and decoded resume. Visual/Figma/OS scaling/full beta gates remain separate."
+}

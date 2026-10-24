@@ -1,0 +1,32 @@
+********* Start testing of TestTimelineThumbnails *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestTimelineThumbnails::initTestCase()
+PASS   : TestTimelineThumbnails::nativeFramesAtRequestedTimes()
+PASS   : TestTimelineThumbnails::cacheAndSameSecond()
+PASS   : TestTimelineThumbnails::latestRequestAndMediaGeneration()
+PASS   : TestTimelineThumbnails::viewsCannotCancelEachOthersPreview()
+QINFO  : TestTimelineThumbnails::continuousMovementProducesFrames() OWNED_QT_DIAG|info|Frames published during 100 moving requests: 19
+PASS   : TestTimelineThumbnails::continuousMovementProducesFrames()
+PASS   : TestTimelineThumbnails::invalidTimeAndUnavailableMedia()
+QINFO  : TestTimelineThumbnails::independentPrimaryPlayback() OWNED_QT_DIAG|info|Primary before=163695us after=351383us wall=187ms
+PASS   : TestTimelineThumbnails::independentPrimaryPlayback()
+PASS   : TestTimelineThumbnails::workerShutdown()
+PASS   : TestTimelineThumbnails::stalledNetworkCancellationAndShutdown()
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(landscape)
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(portrait)
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(sar-2-to-1)
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(rotate-90)
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(rotate-180)
+PASS   : TestTimelineThumbnails::geometryMatchesIndependentReference(rotate-270)
+PASS   : TestTimelineThumbnails::previewIgnoresPlaybackStartupPause(startup-playing)
+PASS   : TestTimelineThumbnails::previewIgnoresPlaybackStartupPause(startup-paused)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(h264.mp4)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(hevc-multitrack.mkv)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(vp9.webm)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(mpeg4.avi)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(mpeg2.mpg)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(h264.ts)
+PASS   : TestTimelineThumbnails::codecContainersKeepPrimaryPaused(audio-only.flac)
+PASS   : TestTimelineThumbnails::cleanupTestCase()
+Totals: 26 passed, 0 failed, 0 skipped, 0 blacklisted, 20160ms
+********* Finished testing of TestTimelineThumbnails *********

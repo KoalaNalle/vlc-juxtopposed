@@ -179,7 +179,16 @@ VLCTestingEnv::VLCTestingEnv()
 
 VLCTestingEnv::~VLCTestingEnv()
 {
-    libvlc_release(libvlc);
+    if (m_ownedInterface)
+    {
+        if (m_ownedInterface->p_sys)
+            CloseIntf(VLC_OBJECT(m_ownedInterface));
+        m_ownedInterface->p_sys = nullptr;
+        intf = nullptr;
+        vlc_object_delete(m_ownedInterface);
+    }
+    if (libvlc)
+        libvlc_release(libvlc);
     testenv = nullptr;
 }
 
@@ -189,7 +198,7 @@ static const char * test_defaults_args[] = {
 
 static const int test_defaults_nargs = ARRAY_SIZE(test_defaults_args);
 
-bool VLCTestingEnv::init()
+bool VLCTestingEnv::init(bool nativePlayerFixture)
 {
     //see test/libvlc/test.h
     QByteArray alarm_timeout = qgetenv("VLC_TEST_TIMEOUT");
@@ -203,13 +212,39 @@ bool VLCTestingEnv::init()
         qputenv("QTEST_FUNCTION_TIMEOUT", alarm_timeout);
     }
 
-    setenv("VLC_PLUGIN_PATH", TOP_BUILDDIR"/modules", 1);
-    setenv("VLC_LIB_PATH", TOP_BUILDDIR"/modules", 1);
+    // A cross-built native diagnostic can run against a staged runtime whose
+    // Windows path differs from the configure-time build path.
+    const auto runtimePlugins = qgetenv("VLC_TEST_PLUGIN_PATH");
+    const auto plugins = runtimePlugins.isEmpty() ? QByteArray(TOP_BUILDDIR "/modules") : runtimePlugins;
+    qputenv("VLC_PLUGIN_PATH", plugins);
+    qputenv("VLC_LIB_PATH", plugins);
 
-    libvlc = libvlc_new(test_defaults_nargs, test_defaults_args);
+    const char *nativeArgs[] = {"-v", "--ignore-config", "--no-media-library",
+        "--no-auto-preparse", "--vout=dummy", "--aout=dummy", "--text-renderer=freetype",
+        // The dummy sink needs software pictures for subtitle blending.
+        "--no-hw-dec"};
+    libvlc = nativePlayerFixture ? libvlc_new(ARRAY_SIZE(nativeArgs), nativeArgs)
+                                : libvlc_new(test_defaults_nargs, test_defaults_args);
     if (!libvlc)
         return false;
-    libvlc_InternalAddIntf(libvlc->p_libvlc_int, MODULE_STRING);
+    if (nativePlayerFixture)
+    {
+        // Use the real global main playlist and its NORMAL-lock player with
+        // only the Qt interface context supplied by this existing fixture.
+        // The owned thread is never linked into LibVLC's interface list.
+        m_ownedInterface = vlc_object_create<intf_thread_t>(libvlc->p_libvlc_int);
+        if (!m_ownedInterface)
+            return false;
+        m_ownedInterface->p_next = nullptr;
+        m_ownedInterface->p_sys = nullptr;
+        m_ownedInterface->p_module = nullptr;
+        m_ownedInterface->pf_show_dialog = nullptr;
+        m_ownedInterface->p_cfg = nullptr;
+        if (OpenIntf(VLC_OBJECT(m_ownedInterface)) != VLC_SUCCESS)
+            return false;
+    }
+    else
+        libvlc_InternalAddIntf(libvlc->p_libvlc_int, MODULE_STRING);
     libvlc_InternalPlay(libvlc->p_libvlc_int);
 
     if (!intf)

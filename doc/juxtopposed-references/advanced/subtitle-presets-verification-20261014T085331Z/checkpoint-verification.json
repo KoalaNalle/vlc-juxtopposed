@@ -1,0 +1,201 @@
+{
+  "recordedAtUtc": "2026-10-14T08:53:31Z",
+  "scope": "Compiled native subtitle preset persistence, controller timing, renderer regression; separate supplied-controller component evidence",
+  "desktopGuiAccepted": false,
+  "figmaVisualAccepted": false,
+  "completeVerticalSliceAccepted": false,
+  "nativeSuites": [
+    {
+      "record": "native-preset-results.txt",
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0,
+      "elapsedMs": 3324,
+      "cases": [
+        "TestSubtitlePresets::initTestCase()",
+        "TestSubtitlePresets::saveApplyDefaultAndActualPixels()",
+        "TestSubtitlePresets::batchedSnapshotNotifications()",
+        "TestSubtitlePresets::submittedWritesAreNotReplayedDuringConfirmation()",
+        "TestSubtitlePresets::freshPlayerAndSettingsRestore()",
+        "TestSubtitlePresets::actualTrackSelectionIsRestored()",
+        "TestSubtitlePresets::dualTrackOutputRolesAndLiveDurationCommands()",
+        "TestSubtitlePresets::unavailableCorruptStorageAndWriteFailure()",
+        "TestSubtitlePresets::staleOutputAndResetDoNotResurrectPresets()",
+        "TestSubtitlePresets::cleanupTestCase()"
+      ]
+    },
+    {
+      "record": "native-controller-results.txt",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "elapsedMs": 879,
+      "cases": [
+        "TestPlayerSubtitleDelay::initTestCase()",
+        "TestPlayerSubtitleDelay::sentinelCategoryAndEffectivePayload()",
+        "TestPlayerSubtitleDelay::relativeAdjustmentAndExactNativeUnits()",
+        "TestPlayerSubtitleDelay::currentRoleWinsBeforeQueuedCacheRefresh()",
+        "TestPlayerSubtitleDelay::actualDefaultClearsAllPerTrackOverrides()",
+        "TestPlayerSubtitleDelay::unselectAndNewRoleDoNotCarryAnOverride()",
+        "TestPlayerSubtitleDelay::queuedOldMediaEventsAndDetachedInputClearCache()",
+        "TestPlayerSubtitleDelay::cleanupTestCase()"
+      ]
+    },
+    {
+      "record": "native-appearance-results.txt",
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "elapsedMs": 24161,
+      "cases": [
+        "TestSubtitleAppearance::initTestCase()",
+        "TestSubtitleAppearance::embeddedFormattingAndLiveColor()",
+        "TestSubtitleAppearance::fontUnitsFamilyAndScale()",
+        "TestSubtitleAppearance::outlineBackgroundAndOffset()",
+        "TestSubtitleAppearance::validationEngineChangesAndUnavailable()",
+        "TestSubtitleAppearance::playbackMessagesKeepTheirAppearance()",
+        "TestSubtitleAppearance::durationTiming(disabled)",
+        "TestSubtitleAppearance::durationTiming(multiplier)",
+        "TestSubtitleAppearance::durationTiming(extra-seconds)",
+        "TestSubtitleAppearance::durationTiming(text-content)",
+        "TestSubtitleAppearance::cleanupTestCase()"
+      ]
+    }
+  ],
+  "inputControlFifoOverflowsFinal": 0,
+  "componentSuitesPassedReportedByRoot": 13,
+  "componentSuiteEvidenceIncluded": "Subtitle preset production QML with supplied controller only",
+  "compiledQtPlugin": {
+    "source": "build-windows/staged-presets-libqt_plugin.dll",
+    "sha256": "d5bd60835b5e1ba30d95aefa5268fbcb2a9941f65da2a74923b9a8a05c5a073b",
+    "desktopTestedAtCheckpoint": false,
+    "buildLabel": "Initial preset build; final Home route repair GUI rebuild pending",
+    "stagedPackagePathAtInitialCheckpoint": "build-windows/slice-presets-package/plugins/gui/libqt_plugin.dll",
+    "finalPackageSha256PendingRootUpdate": true
+  },
+  "nativeCaptionCaptureDescription": "320 x 180 BGRA memory-video frames from actual VLC/Freetype diagnostics; these contain no desktop window or preset menu",
+  "sourceFrozen": true,
+  "files": [
+    {
+      "file": "native-preset-results.txt",
+      "source": "build-windows/presets-native-final-20261014/results.txt",
+      "sha256": "7b880a2795d530fc273364560efdb4d72edb2e668d891a4d5f753bc3afa63c5d",
+      "bytes": 948
+    },
+    {
+      "file": "native-preset-verification.json",
+      "source": "build-windows/presets-native-final-20261014/verification.json",
+      "sha256": "5c2cfbdb53383671c3b6943c8989ef876c74864b217f3e021f94a8ad53b54638",
+      "bytes": 1270
+    },
+    {
+      "file": "native-controller-results.txt",
+      "source": "build-windows/player-subtitle-delay-native-real-interface-20261014/results.txt",
+      "sha256": "cdee0a45ac107050e7a4f2233be6be199b9f84bb8d3298148e874db1a955d99b",
+      "bytes": 866
+    },
+    {
+      "file": "native-appearance-results.txt",
+      "source": "build-windows/presets-appearance-regression-20261014/results.txt",
+      "sha256": "20853b2591f9b76f54c7a32bc27a50e4df8c6b1216b171cbd241c53c627ec0fc",
+      "bytes": 6156
+    },
+    {
+      "file": "native-initial-failures.txt",
+      "source": "build-windows/presets-native-first-20261014/results.txt",
+      "sha256": "6ab23b1652a06da79e263e58623e2c962c873bab380ae2d1f4dcb1c7e2d5b82c",
+      "bytes": 1411
+    },
+    {
+      "file": "native-initial-timeout.txt",
+      "source": "build-windows/presets-native-first-20261014/timeout.txt",
+      "sha256": "de7f39504f839e11fc0f99ce8a806b90c34303696b4ad4784d5b09e0a1eb08f4",
+      "bytes": 48
+    },
+    {
+      "file": "component-verification.json",
+      "source": "ui-previews/subtitle-presets/subtitle-presets-verification.json",
+      "sha256": "1d143f7faac3b670bd692652ab0c07342c2653c893b54533a659a3a69c5b2c9d",
+      "bytes": 956
+    },
+    {
+      "file": "native-caption-saved-red.png",
+      "source": "build-windows/presets-native-final-20261014/saved-red.png",
+      "sha256": "d52e3269c95de1fbb56b46c922c6f3e7864fb375666328e6983a8163be0f2dfa",
+      "bytes": 4567
+    },
+    {
+      "file": "native-caption-default-green.png",
+      "source": "build-windows/presets-native-final-20261014/default-green.png",
+      "sha256": "025fe3cda2414ccc724b7330b2d26d9710eb0b5809ac8afe2c735d1a12644c36",
+      "bytes": 1136
+    },
+    {
+      "file": "native-caption-restart-restored-red.png",
+      "source": "build-windows/presets-native-final-20261014/restart-restored-red.png",
+      "sha256": "40e5d70296595e0824d65fcc25c31029d201e130d9dd39b3d91ade437510b4a3",
+      "bytes": 3736
+    },
+    {
+      "file": "native-caption-duration-extra-seconds.png",
+      "source": "build-windows/presets-appearance-regression-20261014/duration-0-2.png",
+      "sha256": "96c2ecd4cfc6a08852397e50513f348233c91bd4a833f4abc67d53d4f0bb9e72",
+      "bytes": 1129
+    },
+    {
+      "file": "native-caption-duration-disabled-expired.png",
+      "source": "build-windows/presets-appearance-regression-20261014/duration-1-0.png",
+      "sha256": "2c89bf1f9e9b2300485a92271919c74dd7d4f38ac28de57d4dc6f986dd4d5db7",
+      "bytes": 627
+    },
+    {
+      "file": "native-initial-fifo-excerpt.txt",
+      "source": "build-windows/presets-native-first-20261014/subtitle-presets-native.log",
+      "sha256": "d4f5a61a86548a2c406e50988a5e7f22bf1e2e8ebdba6b38c4aa622bcb2bed98",
+      "bytes": 1048
+    },
+    {
+      "file": "subtitle-presets-520x700-1.png",
+      "source": "ui-previews/subtitle-presets/subtitle-presets-520x700-1.png",
+      "sha256": "79c78f4e1318120d8ee2830eaed8af8ea14b766165d7efd3b2c87cfea4fcf6a3",
+      "bytes": 11017,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    },
+    {
+      "file": "subtitle-preset-name-520x700-1.png",
+      "source": "ui-previews/subtitle-presets/subtitle-preset-name-520x700-1.png",
+      "sha256": "2b07406b2a36335eaad0ed26911078934a7bfe8e5162be4f56ce367e1d7f9699",
+      "bytes": 11940,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    },
+    {
+      "file": "subtitle-presets-320x480-1.png",
+      "source": "ui-previews/subtitle-presets/subtitle-presets-320x480-1.png",
+      "sha256": "7c3765fa76fdc7c00b934b5d35ae78532301bdcd8ad2872ab2b2bb9084a9db4d",
+      "bytes": 9564,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    },
+    {
+      "file": "subtitle-preset-name-320x480-1.png",
+      "source": "ui-previews/subtitle-presets/subtitle-preset-name-320x480-1.png",
+      "sha256": "e77cc2cc3c18fc982587d6679118efb6483d51bdfa833bc70ca422bfc335cd09",
+      "bytes": 10462,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    },
+    {
+      "file": "subtitle-presets-720x900-1.5.png",
+      "source": "ui-previews/subtitle-presets/subtitle-presets-720x900-1.5.png",
+      "sha256": "cc574c00014e2f7033e6cf48b6684455ecd443472873dca1a5c6bb442d0da262",
+      "bytes": 17140,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    },
+    {
+      "file": "subtitle-preset-name-720x900-1.5.png",
+      "source": "ui-previews/subtitle-presets/subtitle-preset-name-720x900-1.5.png",
+      "sha256": "6522195b6594e384b38c94dfae376b5654dca84c88fb16b14c8683fdfc2e2ff3",
+      "bytes": 18330,
+      "evidence": "Supplied-controller component preview; not desktop/native GUI"
+    }
+  ],
+  "desktopGateAtCheckpoint": "User manually dismissed firewall; root observed Home History ml:null assertion, repaired both bindings to MediaLib, Home component passed; GUI rebuild and desktop retest pending"
+}

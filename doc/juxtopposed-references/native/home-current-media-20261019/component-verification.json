@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "checks": [
+    "opening creates a draft without saving",
+    "all palette entries are available to the draft editor",
+    "adding edits only the selected player draft",
+    "music and video drafts remain independent",
+    "explicit removal edits the selected draft",
+    "failed Save retains both accepted layout and editable draft",
+    "Save retry publishes the accepted draft once",
+    "closing restores the actual opener",
+    "Escape cancels draft changes without saving",
+    "a running operation prevents dismissal and competing Save",
+    "actual palette-to-player pointer drag inserts into draft without playback actions",
+    "actual player-to-palette pointer drag removes only the draft control",
+    "overflow case has an actually scrolled player row",
+    "clipped control-row padding is not a drop destination",
+    "pointer selection gives the actual editable player tile keyboard focus",
+    "compact editor stays inside its owning window",
+    "authoritative checked state reaches both the actual button and accessibility properties",
+    "unchecked state remains a natively checkable control",
+    "actual unchecked click requests one action without guessing a successful state change",
+    "actual checked click preserves confirmed state until the owner accepts removal",
+    "actual Qt accessible interface exposes a checked toggle button",
+    "native accessibility Press requests one action without optimistic toggling",
+    "Return requests exactly one action and retains owner-confirmed state",
+    "Space after pointer-style focus requests one action through the native key-ownership seam"
+  ],
+  "diagnostics": [],
+  "sourceSha256": {
+    "modules/gui/qt/tests/test_juxtopposed_player_customizer.py": "9379164141ad367e1eb59c0abf501a01bc105008b9c823bdbc6ce8097c0e678b",
+    "modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml": "dfb9aa3c1461175d65bf7ddf72b3e5f1dbdc0fffe8581b0caf1193ba18d546bd",
+    "modules/gui/qt/player/qml/JuxtopposedVolumeControl.qml": "aae2ff7f32f5b617436c496949d91138463d1184bb37ea78eabb4a599116a303",
+    "modules/gui/qt/player/qml/JuxtopposedLayoutRow.qml": "2bdfaea58acbf9ebe361b18ea81b33c60948ae7cf4efe82a834a7e7bcb5470bc",
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml": "304c6cda9489d304576b204377ef8a2ccaa1e4de7a148054a944105f9d2c9afd"
+  },
+  "scope": "Actual production customizer and shared bar preview; owned controller contract, not native C++/media or design-fidelity acceptance"
+}

@@ -1,0 +1,10 @@
+--- a/modules/gui/qt/dialogs/conversion_controller.cpp
++++ b/modules/gui/qt/dialogs/conversion_controller.cpp
+@@ -112,6 +112,7 @@
+     if (!validate) transcode.option("ab", "128", false);
+     SoutModule access("file");
+     access.option("no-overwrite");
++    access.option("no-format"); // Both owned stage paths are literal, never strftime templates.
+     auto &sink = sout.begin("std");
+     sink.option("access", access);
+     sink.option("mux", validate ? "raw" : "flac", false);

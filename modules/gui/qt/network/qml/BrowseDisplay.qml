@@ -100,10 +100,12 @@ Widgets.PageLoader {
 
         Widgets.PageExt {
             id: browseFoldersPage
+            property alias initialIndex: viewFolders.initialIndex
 
             title: folderModel.name
 
             BrowseDeviceView {
+                id: viewFolders
                 property var sortModel: [
                     { text: qsTr("Alphabetic"), criteria: "name" },
                     { text: qsTr("Url"),        criteria: "mrl"  }
@@ -126,7 +128,10 @@ Widgets.PageLoader {
 
                 onBrowse: (tree, reason) => { root._showBrowseNode(tree, reason) }
 
-                onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "folders"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
             }
         }
     }
@@ -137,6 +142,7 @@ Widgets.PageLoader {
         Widgets.PageExt {
 
             id: browseDevicePage
+            property alias initialIndex: viewDevice.initialIndex
 
             //@type {NetworkDeviceModel.SDCatType}
             required property int sd_source
@@ -176,7 +182,10 @@ Widgets.PageLoader {
                     root._showBrowseNode(tree, reason)
                 }
 
-                onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "device"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
             }
         }
     }
@@ -220,7 +229,10 @@ Widgets.PageLoader {
 
             onHomeButtonClicked: reason => root._showHome(reason)
 
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "browse"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
         }
     }
 }

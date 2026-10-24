@@ -1,0 +1,6 @@
+{
+  "cause": "The live Floating-to-Docked transition targeted the parent Docked state, reapplying its startup-only initial visibility rule. In player audio this hides and clears the requested flag; embedded video selects the local hidden state.",
+  "change": "Only the live transition now targets the Visible or Hidden child according to the requested panel visibility. Parent startup policy, the hierarchical FSM engine and detached onClosing behavior are unchanged.",
+  "fixtureSetupFailure": "The first fixture used an illegal uppercase fake QML property and did not execute. That output remains under visibility-before-r14. Supplying the constant as a QML enum fixes only the fixture setup; the original production FSM then fails exactly three redock cases.",
+  "scope": "Complete production FSM/FSMState/Helpers and exact Player signal connections in real Qt with supplied MainCtx state; separate ordinary audio/video desktop checks."
+}

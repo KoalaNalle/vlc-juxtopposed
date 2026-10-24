@@ -1,0 +1,294 @@
+{
+  "date": "2026-10-16",
+  "scope": "Bounded Library metadata/artwork; full beta incomplete",
+  "baseCommit": "6a258e99a89c745b8ba2e28865c3045b14409db8",
+  "native": {
+    "metadata-final": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "opening-final": {
+      "tests": 42,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "process-final": {
+      "tests": 9,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "subtitles-final": {
+      "tests": 37,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "finalParentExitsNormal": true,
+  "finalForcedCleanup": false,
+  "lifecycleControl": {
+    "sameExecutableAndPrivateModules": true,
+    "before": {
+      "tests": 8,
+      "failures": 6,
+      "errors": 0,
+      "skipped": 0
+    },
+    "after": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "separateEarlierExecutable": true
+  },
+  "finalAuditRegression": {
+    "sameExecutable": true,
+    "beforeLifecycleOnly": {
+      "tests": 8,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "afterExpandedMetadata": {
+      "tests": 18,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "checks": [
+      "Metadata-only success must not mark an unparsed file parsed",
+      "A duration updated while lookup runs remains unchanged by metadata commit"
+    ]
+  },
+  "controlledNetworkProviders": true,
+  "liveInternetServiceCoverage": false,
+  "consumerGates": {
+    "instancePolicy": true,
+    "openingQueue": true,
+    "hiddenAttributes": true,
+    "metadataFetch": true
+  },
+  "desktop": {
+    "launches": 4,
+    "monitor": 2,
+    "window": {
+      "x": -1711,
+      "y": 403,
+      "width": 1502,
+      "height": 941
+    },
+    "passed": [
+      "Enabled local metadata mode read before and after restart",
+      "Owned FLAC title, artist, album and embedded artwork displayed",
+      "Library indexed owned album/artist/cover",
+      "Indexed album/cover survive restart",
+      "Final Core smoke retains indexed album/cover"
+    ],
+    "privacySettingChangedThroughUI": false,
+    "builds": "First three launches used the final artwork library with pre-audit Core; fourth uses final ordinary-build-r7 tuple"
+  },
+  "restoration": {
+    "profileRestored": true,
+    "portableFilesByteIdentical": true,
+    "originalPortableFileCount": 10,
+    "testProfile": "build-windows\\metadata-20261016\\desktop\\portable-tested",
+    "personalConfigUnchanged": true,
+    "personalConfigAfter": {
+      "vlcrc": "9f4cad17c8daea07aba39d4b5eeaba3f8916f43b23a815ee547f25b6554744f8",
+      "vlc-qt-interface.ini": "9f999cae67d7476f08cf92902a7faaa2aad1009670cf8ba4d711d7d4d80e09b2"
+    },
+    "monitor2Used": true,
+    "geometryMatchesTested": {
+      "geometry": true,
+      "Preferences/geometry": true
+    },
+    "normalQuitLogs": 4,
+    "noPackageProcesses": true,
+    "shippingPrivateModules": [],
+    "packageSha256": {
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "21d9c9a0e7934a6f41e508c434cc8ecd1cff548650f6bfd1664086cd2acad9df",
+      "vlc.exe": "702be626979749a2e59156000f4b49096beffd60b318ed12656ee56c61d0be36",
+      "vlc-preparser.exe": "05c8d0c6ea0176c6dfc14aa6e3f7bf24f5c3cf64fa7347a78c6e5a8a3d4e412a",
+      "plugins/gui/libqt_plugin.dll": "f94cd566b046c2514379cb0758d2fd35f48aea3ace28ada2fab569a4d1a9e3ca",
+      "plugins/misc/libmedialibrary_plugin.dll": "23ad7065282e7b3b8106b1cf8bb249c5e3b2e9805c2180ed0cd045bd1c4d4147",
+      "plugins/misc/libpreparserserializer_json_plugin.dll": "6e918bffaa3469e17abcee91901b4e76a32af46ac460622517b755cc4907650b",
+      "plugins/access/libfilesystem_plugin.dll": "0df15409d2e58d0f50c98100737ca13d9c4023320694cc9036e29e20e7c459f0",
+      "plugins/control/libwin_msg_plugin.dll": "ef3c7cc2fa28b3a8806fcfbb532da0f3dcfc7fedf75305a9392e9e4cedf12483",
+      "plugins/text_renderer/libfreetype_plugin.dll": "d102b09767056a9acb6ab3b007c653c9561dba17857d5a8258d07242a5856ceb"
+    },
+    "desktopFirstThreeBuildSha256": {
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "aaab89ff751f250f5163329a61d96dada1a7b04c55b444fb54ca37ffa1936253",
+      "vlc.exe": "702be626979749a2e59156000f4b49096beffd60b318ed12656ee56c61d0be36",
+      "vlc-preparser.exe": "1c5574c3dceda230a2aae5ac70fe858b64e0fba1a9d3bb210dab022d0ee0a09c",
+      "plugins/gui/libqt_plugin.dll": "f94cd566b046c2514379cb0758d2fd35f48aea3ace28ada2fab569a4d1a9e3ca",
+      "plugins/misc/libmedialibrary_plugin.dll": "23ad7065282e7b3b8106b1cf8bb249c5e3b2e9805c2180ed0cd045bd1c4d4147",
+      "plugins/misc/libpreparserserializer_json_plugin.dll": "6e918bffaa3469e17abcee91901b4e76a32af46ac460622517b755cc4907650b",
+      "plugins/access/libfilesystem_plugin.dll": "0df15409d2e58d0f50c98100737ca13d9c4023320694cc9036e29e20e7c459f0",
+      "plugins/control/libwin_msg_plugin.dll": "ef3c7cc2fa28b3a8806fcfbb532da0f3dcfc7fedf75305a9392e9e4cedf12483",
+      "plugins/text_renderer/libfreetype_plugin.dll": "d102b09767056a9acb6ab3b007c653c9561dba17857d5a8258d07242a5856ceb"
+    },
+    "finalAuditSmokeProfile": "build-windows\\metadata-20261016\\desktop\\portable-tested-final-audit"
+  },
+  "compiledSourceSha256": {
+    "src/preparser/fetcher.c": "4cd8d83590f1a65865cd44b26fc9464dae27b8c9c13fab859246aae0464a3a7c",
+    "src/preparser/fetcher.h": "601a755adf82c56d751f5f0c0e83e30247313c2021bd37c4e8f7598f3e60bb0c",
+    "src/preparser/internal.c": "23d8b7651fc031bf2549ffbd82d6ec150f4eec45a1ae9404f2a68bacb1b5bb93",
+    "src/playlist/playlist.c": "5d326010fcea3902f6777ac196a249624370e44d69084fa454c8541d8c2e5491",
+    "src/playlist/playlist.h": "9a28dfaa3dfba882bc034b06e5b0b8cf02c3711de32ba4b2dd658fa50960a915",
+    "src/playlist/preparse.c": "054387b579be0fe7fa8e7d6bdf0a6e5e99d22f4861e48677e97f6c66eb14f77a",
+    "src/playlist/item.c": "923ff5d54d3904667993e9319de5783f047a3109e91f78dee9b667a081fde6eb",
+    "src/playlist/item.h": "b5699f7cf07c737fde7aab823db5041977e425b9f3b3a5e2b666f3acd0e3f288",
+    "src/playlist/content.c": "64b18d6e53d91b225cb2f01a96d8bff26369ae836895ef4babbd99a396bf8202",
+    "modules/misc/medialibrary/MetadataExtractor.cpp": "9fd9f0727b9471d792e57ebafd2ad4333a38e02fca06a6c6bb2d521f0fd6c432",
+    "modules/misc/medialibrary/medialibrary.h": "40c80f99e3a062a7344e09665570648c4062a4ee48a5847c51f0a4358b64db41",
+    "modules/gui/qt/maininterface/mainctx.cpp": "8bfb469af4da213b1ea1687727e32f698060de477653bbef49dc78a2f0d21c30"
+  },
+  "preparedNativeInputs": {
+    "scope": "Current production policy bodies and private receiver entry; no shipping diagnostic exports",
+    "sha256": {
+      "input/maininterface/library_preferences_model.cpp": "0ea6180c9247c284c05f7eeb2a8c5661023c02f8429ffda2d1492526034bdf92",
+      "input/maininterface/library_preferences_model.hpp": "0927b4dfda9433c467ddab9849e305240f48ffb5e0f5009dda84b79c07bd1d08",
+      "input/tests/library_policies.c": "0c3a1b8aff79e12589d5dea5367c4724632bd185e6d765d5a59649e524a08b66",
+      "input/tests/library_preferences_probe.c": "a5c2fa7d07c7465c5ddab7aeba7bab766d4efaf6a5b556007dec15f2a01f2f11",
+      "input/tests/test_library_preferences.cpp": "6424bbc1e3e5611b15df5d9542843219d53807838ce42236832427e3a041cf18",
+      "input/tests/win_msg.c": "f68f236b8892ed7d3c717bfdc90746a8b9a074bdf8dac54c62bf8ea4d1504c21"
+    }
+  },
+  "sourceSha256": {
+    ".github/workflows/qml-ui-checks.yml": "3875b456eb6b04fd16ecd62d8ac14dc2a7f590ae9c926673b26c4ccb77406a29",
+    "bin/preparser/main.c": "3edfd3322d4eae00d9762b6b031992f1e8d0fe86c55ed4af3c282395cb2a305d",
+    "include/vlc_preparser_ipc.h": "baef479e5f7a89ad7919a4fabeb245c06a8c98f3c0813f7535451ebc69b9760a",
+    "modules/access/directory.c": "543f6815da330d5a61f25d67d6e0d12e996b0afbb44032dbd5bda3474db424a2",
+    "modules/control/win_msg.c": "015cc050752c3c336a34b188e0b3fbc235e3e6e56834b3927ec9098eee93aad7",
+    "modules/gui/qt/Makefile.am": "8f12683593a56e493b68bf91807bc18725d1ffb853def3719478915c6d9899d1",
+    "modules/gui/qt/maininterface/library_preferences_model.cpp": "0ea6180c9247c284c05f7eeb2a8c5661023c02f8429ffda2d1492526034bdf92",
+    "modules/gui/qt/maininterface/mainctx.cpp": "8bfb469af4da213b1ea1687727e32f698060de477653bbef49dc78a2f0d21c30",
+    "modules/gui/qt/tests/library_fixture_fetcher.c": "9e89f3ac92a40e4cf084e3da4f290eb6c0f8e890c0239f50c4e552e2efa18e9b",
+    "modules/gui/qt/tests/library_ipc_receiver_errors.c": "51f3eda6a6c56ea12ebc994da6136f046779207e277be832331e1a40ee3afee9",
+    "modules/gui/qt/tests/library_ipc_sender_errors.c": "319befa4230df373b3ac7619a03ae85c2812260c522ee0e8ee37cf165307da33",
+    "modules/gui/qt/tests/native_library/README.md": "cc0fd9ce49e93c98c59100794d16561515875d8a32ff5b156280bf49256ff8cf",
+    "modules/gui/qt/tests/native_library/modules.mk": "f41f268a755dfc94c9c500a832c3c4956a96c88aac491e54cb651cdabd9ecbf8",
+    "modules/gui/qt/tests/native_library/preferences.mk": "d619b83463928c18d85cf6a0cbb4e216aac4d8dc7141446567d59d866112562f",
+    "modules/gui/qt/tests/native_library/prepare.py": "36e1ba0b0b0869ebae9f503cedbc54dee9cd39005daaeed80ddb7efe7d6db8e0",
+    "modules/gui/qt/tests/native_library/process.mk": "1eaa9e98e4f7deda1be348d5873e6e923086c82c211d98ced177a01c140f18da",
+    "modules/gui/qt/tests/native_library/run.py": "ac81d1ff601ef93a28ff9d8ec7f273322bfea6511015fd2995685d77662c40c6",
+    "modules/gui/qt/tests/test_library_ipc_errors.py": "3adf2b5f37b39e427a01e3c60d3d7229b5ff90dcf89f594efae66eb677ba0dd3",
+    "modules/gui/qt/tests/test_library_opening_process.cpp": "e343ea1ad939e831779e476d6c947f4abe894329b58f7079ab8d19b04e321977",
+    "modules/gui/qt/tests/test_library_preferences.cpp": "6424bbc1e3e5611b15df5d9542843219d53807838ce42236832427e3a041cf18",
+    "modules/misc/medialibrary/MetadataExtractor.cpp": "9fd9f0727b9471d792e57ebafd2ad4333a38e02fca06a6c6bb2d521f0fd6c432",
+    "modules/misc/medialibrary/medialibrary.h": "40c80f99e3a062a7344e09665570648c4062a4ee48a5847c51f0a4358b64db41",
+    "modules/misc/preparser_serializer/json/fromjson.c": "17460a88fe7444b60b05e6ef477e7f22c5ae88dea280736ecbcdb55afbbaa9bf",
+    "modules/misc/preparser_serializer/json/tojson.c": "9c402b3296019e48158544c0d0413b6ef4503f8f5eb723b2a337a9c24a51544f",
+    "src/libvlc-module.c": "308c68244f03108747423f3f6f1d2f1a003516ebe5c791f4f27ac65e8550a61b",
+    "src/playlist/content.c": "64b18d6e53d91b225cb2f01a96d8bff26369ae836895ef4babbd99a396bf8202",
+    "src/playlist/item.c": "923ff5d54d3904667993e9319de5783f047a3109e91f78dee9b667a081fde6eb",
+    "src/playlist/item.h": "b5699f7cf07c737fde7aab823db5041977e425b9f3b3a5e2b666f3acd0e3f288",
+    "src/playlist/playlist.c": "5d326010fcea3902f6777ac196a249624370e44d69084fa454c8541d8c2e5491",
+    "src/playlist/playlist.h": "9a28dfaa3dfba882bc034b06e5b0b8cf02c3711de32ba4b2dd658fa50960a915",
+    "src/playlist/preparse.c": "054387b579be0fe7fa8e7d6bdf0a6e5e99d22f4861e48677e97f6c66eb14f77a",
+    "src/preparser/external.c": "91886cfa7592009c15d7ec687635170fcdac6f5099e38597e525a042b6b3027a",
+    "src/preparser/fetcher.c": "4cd8d83590f1a65865cd44b26fc9464dae27b8c9c13fab859246aae0464a3a7c",
+    "src/preparser/fetcher.h": "601a755adf82c56d751f5f0c0e83e30247313c2021bd37c4e8f7598f3e60bb0c",
+    "src/preparser/internal.c": "23d8b7651fc031bf2549ffbd82d6ec150f4eec45a1ae9404f2a68bacb1b5bb93",
+    "src/preparser/ipc.c": "a603cd2e1712909e82644d72fff064d7d928e662a9ffdb712fc1dee6536450cc",
+    "src/win32/specific.c": "93b0e314f68fec5b6a47fa6875cb096c4fcf60f22c859be0fd488fa9020f6c10"
+  },
+  "artifacts": {
+    "metadata-final": {
+      "originalTxtSha256": "dc88cf8a9e698801dc596d76c20c87acfadcaafcd9421d44e7dc7b932c0981ae",
+      "sanitizedTxtSha256": "341eaff0bd761c61b440f5a8de6f7ec070030e008131c1360d5af213f1a0674f"
+    },
+    "opening-final": {
+      "originalTxtSha256": "90bca6bb02022e4845e83f79ac11d132e3bc980fa411b2c00853ed991b0c9bc1",
+      "sanitizedTxtSha256": "8e13238f1e0c67cc7f48a9da077b8af5129dc5ac75206c4c031c8320a5854fdd"
+    },
+    "process-final": {
+      "originalTxtSha256": "f3d240ab59966c6fa46c3299288ae0d870deaa1877feca78a3e6353bd8926ca7",
+      "sanitizedTxtSha256": "a1d274b60ebecd8c03b0137ba82f39ebc1b52013d7511d6912d20b1b6e4de67c"
+    },
+    "subtitles-final": {
+      "originalTxtSha256": "cd320c4bfcb8c28898a6130f203f3f562c1dfc1f02344fe75dd4a4e9c33a02ab",
+      "sanitizedTxtSha256": "fe9ef580d22130d261a20291339a21d6f99f086ed7e432711473fff01b632805"
+    },
+    "lifecycle-before": {
+      "originalTxtSha256": "23e255632415748eaa518848d294478d35037b65b722599b1290790cd460df40",
+      "sanitizedTxtSha256": "8ed958a8d2ed0672d554ac5c77613aad6a6499f19019e71637be9ffd6e4409f2"
+    },
+    "lifecycle-after": {
+      "originalTxtSha256": "d4647286fa3aea4922f2f59c3f3723a923b4d314a1900ef63381757ff27dd0cd",
+      "sanitizedTxtSha256": "df42139f166593d3ca6a609bf12d38418c816dc3c62c34e2852b57ba777ad813"
+    },
+    "artwork-before": {
+      "originalTxtSha256": "7dd6015ac09bf16f53f86feb3db038b5f036dc7b83605774cadac114411ed67b",
+      "sanitizedTxtSha256": "bc0528a06a91a5027301efdc2ae2eb8ae0eb47af3e1f9f05c2acae8a4eeb3df5"
+    },
+    "subtitle-first-failure": {
+      "originalTxtSha256": "1cd7fb91d8ff83589954d14acaa223d396ff6714d10716aba7102a454c1a0c2b",
+      "sanitizedTxtSha256": "bfc6bd872a349e053cc8c9c8b623b998ba5410cd3c4579cfb52b90a50257df34"
+    },
+    "subtitle-save-before": {
+      "originalTxtSha256": "f5df2a0b656121f51c9fd93d9259d8349f2de968f29bb9e14a92e0468d5a120d",
+      "sanitizedTxtSha256": "4b686ea112091b54df2391254775018ba0ed0f295fa70bf8f2150dded8fb2e3a"
+    },
+    "subtitle-save-after": {
+      "originalTxtSha256": "dce330a89296534c49e88ec8c976224ecd7a40637f8949c6778bcc5a91a17ed4",
+      "sanitizedTxtSha256": "f121983fce2bedc3e2f8595db9cdab4a7d1d15094b9ea89f8a7fcb5aa5aaa7f9"
+    },
+    "subtitle-first-full-replay": {
+      "originalTxtSha256": "d1dd583394b55cb6677eddfd4495d61242c03920a925ba0b1ecb0d6e7019a01b",
+      "sanitizedTxtSha256": "3fd2e066b322199aee9f13f345d26008800649808880d5657a4657a80ecec49f"
+    },
+    "parse-flag-before": {
+      "originalTxtSha256": "9371590cdd38dcc0668fb52ff07ec8237a4d3153c7458a34d0cc2668a7f0fb94",
+      "sanitizedTxtSha256": "b59c04d65d17b0ef5a2a7258ff287c81344ea0793da48839e1255e0671368b8e"
+    }
+  },
+  "screenshots": {
+    "01-library-local-enabled.jpg": "7c69cc9589fa076f23f09e5220a87138906a59c0fb69cd3d03f2d4cee73072b0",
+    "02-local-title-cover.jpg": "71787d5145c4d5bd2a3fe9b00c4cce52d559464095d3613b4ca855a46006241b",
+    "03-embedded-tags-cover.jpg": "e0e7cdb72b1e0907fc4a4009838a063d9c7dadc9410aa02973fe0085aec912d5",
+    "04-indexed-album-cover.jpg": "72770bae3953c192cdf15aee4135a480d5028f3a1b08e6a2b624d27dbb7c9809",
+    "05-local-mode-after-restart.jpg": "2ba2b74afd850a82b064929d233f08fd1ac655d55b885dfaa44a959640024c92",
+    "06-album-after-restart.jpg": "0c9bfd34430793266a5e51b76d0bcfa63441962f82b791849aa789f433fab056",
+    "07-final-core-album.jpg": "823a6183a47179b592e56c7cbe2bbf8c0ce00bef668d328b81c28401e77972d0"
+  },
+  "privateAssertion": {
+    "screenshot": "00-private-helper-assertion.png",
+    "sha256": "af0b335ce92c9f480249bf8aba232cce1240b9a0e20d5ee74bf9dee3bb244c23",
+    "cause": "Private provider inherited an undefined child test option into config_GetInt; guarded variable access plus explicit environment fallback replaces it",
+    "earlierMorningWindowProvenIdentical": false
+  },
+  "retainedFailures": {
+    "artworkBeforeRepair": {
+      "tests": 18,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "subtitleFirstFailure": {
+      "tests": 37,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0
+    },
+    "subtitleSaveCause": "unconfirmed; isolated old/new pass, then two unchanged full passes",
+    "initialHarness": "Earlier provider/harness revisions were invalid, failed or timed out; retained only under ignored metadata-20261016 work",
+    "prematureRun": "metadata-art-final stopped before process launch because private modules were not yet built; metadata-art-final-r2 is the completed acceptance run"
+  },
+  "limits": [
+    "Cooperative lookup deadline; no hard guarantee for a provider ignoring interrupts",
+    "Library fetched cover handoff accepts local regular JPEG/PNG files up to 20 MiB",
+    "Public provider availability and wider formats remain unaccepted",
+    "Actual Windows saved media-library OFF still overridden by launcher",
+    "Figma/DPI/full design and remaining categories, clean licensed package and remote CI/publication remain open"
+  ],
+  "archivedShadowFilesConsumed": false,
+  "committedOrPushed": false
+}

@@ -2268,6 +2268,7 @@ vout_thread_t *vout_Create(vlc_object_t *object)
     vout_InitInterlacingSupport(vout, &sys->interlacing);
 
     sys->is_late_dropped = var_InheritBool(vout, "drop-late-frames");
+    msg_Dbg(vout, "late frame dropping: %d", sys->is_late_dropped);
 
     vlc_mutex_init(&sys->filter.lock);
 

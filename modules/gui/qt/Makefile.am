@@ -88,6 +88,8 @@ endif
 if HAVE_WIN32
 libqt_plugin_la_CXXFLAGS += $(LIBCOMCXXFLAGS)
 libqt_plugin_la_LIBADD += $(LIBCOM) -lcomctl32 -luuid -ldwmapi
+libqt_plugin_la_LIBADD += -lntdll
+libqt_plugin_la_LDFLAGS += -Wl,--wrap=pthread_key_delete
 endif
 if UPDATE_CHECK
 libqt_plugin_la_CPPFLAGS += -DUPDATE_CHECK
@@ -147,6 +149,7 @@ libqt_plugin_la_SOURCES = \
 	dialogs/preferences/expert_view.hpp \
 	dialogs/preferences/preferences.cpp \
 	dialogs/preferences/preferences.hpp \
+	dialogs/preferences/controls_shortcuts.cpp dialogs/preferences/controls_shortcuts.hpp \
 	dialogs/preferences/preferences_widgets.cpp \
 	dialogs/preferences/preferences_widgets.hpp \
 	dialogs/preferences/simple_preferences.cpp \
@@ -179,6 +182,34 @@ libqt_plugin_la_SOURCES = \
 	maininterface/interface_window_handler.cpp \
 	maininterface/interface_window_handler.hpp \
 	maininterface/mainctx.cpp \
+	maininterface/general_preferences_model.cpp maininterface/general_preferences_model.hpp \
+	maininterface/interface_preferences_model.cpp maininterface/interface_preferences_model.hpp \
+	maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
+	maininterface/audio_preferences_model.cpp maininterface/audio_preferences_model.hpp \
+	maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
+	maininterface/library_preferences_model.cpp maininterface/library_preferences_model.hpp \
+	maininterface/privacy_preferences_model.cpp maininterface/privacy_preferences_model.hpp \
+	maininterface/controls_preferences_model.cpp maininterface/controls_preferences_model.hpp \
+	maininterface/network_preferences_model.cpp maininterface/network_preferences_model.hpp \
+	maininterface/performance_preferences_model.cpp maininterface/performance_preferences_model.hpp \
+	maininterface/recording_preferences_model.cpp maininterface/recording_preferences_model.hpp util/cast_discovery_policy.hpp \
+	maininterface/extensions_preferences_model.cpp maininterface/extensions_preferences_model.hpp \
+	maininterface/sidebar_pins_model.cpp maininterface/sidebar_pins_model.hpp \
+	maininterface/player_profiles_store.cpp maininterface/player_profiles_store.hpp \
+	maininterface/player_profile_preferences.cpp maininterface/player_profile_preferences.hpp \
+	maininterface/player_profile_layout.cpp maininterface/player_profile_layout.hpp \
+	maininterface/player_profiles_model.cpp maininterface/player_profiles_model.hpp \
+	maininterface/history_media_source.cpp maininterface/history_media_source.hpp \
+	maininterface/sidebar_pins_store.cpp maininterface/sidebar_pins_store.hpp \
+	util/modal_input_guard.cpp util/modal_input_guard.hpp \
+	maininterface/video_preferences_model.cpp maininterface/video_preferences_model.hpp \
+	util/audio_defaults_policy.hpp util/audio_windows_devices.cpp util/audio_windows_devices.hpp \
+	util/playback_seek_policy.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp \
+	util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp \
+	util/recent_network_history.cpp util/recent_network_history.hpp \
+	util/fullscreen_screen_policy.hpp \
+	util/interface_language_map.hpp \
 	maininterface/mainctx.hpp \
 	maininterface/mainctx_submodels.cpp maininterface/mainctx_submodels.hpp \
 	maininterface/mainui.cpp \
@@ -193,6 +224,8 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/medialib.hpp \
 	medialibrary/mlmediastore.cpp \
 	medialibrary/mlmediastore.hpp \
+	medialibrary/mlcurrentmedia.cpp \
+	medialibrary/mlcurrentmedia.hpp \
 	medialibrary/mlalbum.cpp \
 	medialibrary/mlalbum.hpp \
 	medialibrary/mlalbummodel.cpp \
@@ -232,6 +265,12 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/mlrecentmediamodel.hpp \
 	medialibrary/mlrecentvideomodel.cpp \
 	medialibrary/mlrecentvideomodel.hpp \
+	medialibrary/mlrecentaudiomodel.cpp \
+	medialibrary/mlrecentaudiomodel.hpp \
+	medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivity.hpp \
+	medialibrary/mlhomeactivitydata.cpp \
+	medialibrary/mlhomeactivitydata.hpp \
 	medialibrary/mlurlmodel.cpp \
 	medialibrary/mlurlmodel.hpp \
 	medialibrary/mlvideo.cpp \
@@ -275,6 +314,7 @@ libqt_plugin_la_SOURCES = \
 	network/networksourcesmodel.hpp \
 	network/networkmediamodel.cpp \
 	network/networkmediamodel.hpp \
+	network/networktreeitem.hpp \
 	network/standardpathmodel.cpp \
 	network/standardpathmodel.hpp \
 	network/vlcmediasourcewrapper.hpp \
@@ -290,6 +330,25 @@ libqt_plugin_la_SOURCES = \
 	player/delay_estimator.cpp \
 	player/delay_estimator.hpp \
 	player/player_controller.cpp player/player_controller.hpp player/player_controller_p.hpp \
+	player/player_timer_point.hpp \
+	player/audio_equalizer.cpp player/audio_equalizer.hpp \
+	player/audio_waveform.cpp player/audio_waveform.hpp \
+	player/timeline_thumbnails.cpp player/timeline_thumbnails.hpp \
+	player/local_music_folder.cpp player/local_music_folder.hpp \
+	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp \
+	dialogs/conversion_controller.cpp dialogs/conversion_controller.hpp \
+	dialogs/new_playlist_model.cpp \
+	dialogs/new_playlist_model.hpp \
+	dialogs/new_playlist_data.cpp \
+	dialogs/new_playlist_data.hpp \
+	player/video_transform.cpp player/video_transform.hpp \
+	player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.hpp \
+	player/subtitle_cue_timeline.cpp \
+	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+	util/filterchain.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
 	player/control_list_model.cpp player/control_list_model.hpp \
 	player/control_list_filter.cpp \
@@ -449,6 +508,24 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/compositor_platform.moc.cpp \
 	maininterface/interface_window_handler.moc.cpp \
 	maininterface/mainctx.moc.cpp \
+	maininterface/general_preferences_model.moc.cpp \
+	maininterface/interface_preferences_model.moc.cpp \
+	maininterface/playback_preferences_model.moc.cpp \
+	maininterface/audio_preferences_model.moc.cpp \
+	maininterface/subtitles_preferences_model.moc.cpp \
+	maininterface/library_preferences_model.moc.cpp \
+	maininterface/privacy_preferences_model.moc.cpp \
+	maininterface/controls_preferences_model.moc.cpp \
+	maininterface/network_preferences_model.moc.cpp \
+	maininterface/performance_preferences_model.moc.cpp \
+	maininterface/recording_preferences_model.moc.cpp \
+	maininterface/extensions_preferences_model.moc.cpp \
+	maininterface/sidebar_pins_model.moc.cpp \
+	maininterface/player_profile_layout.moc.cpp \
+	maininterface/player_profiles_model.moc.cpp \
+	maininterface/history_media_source.moc.cpp \
+	util/plugin_cache_rescan.moc.cpp \
+	maininterface/video_preferences_model.moc.cpp \
 	maininterface/mainctx_submodels.moc.cpp \
 	maininterface/mainui.moc.cpp \
 	maininterface/navigationmodel.moc.cpp \
@@ -456,6 +533,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	maininterface/video_window_handler.moc.cpp \
 	medialibrary/medialib.moc.cpp \
 	medialibrary/mlmediastore.moc.cpp \
+	medialibrary/mlcurrentmedia.moc.cpp \
 	medialibrary/mlalbummodel.moc.cpp \
 	medialibrary/mlaudiomodel.moc.cpp \
 	medialibrary/mlartistmodel.moc.cpp \
@@ -467,6 +545,8 @@ nodist_libqt_plugin_la_SOURCES = \
 	medialibrary/mlqmltypes.moc.cpp \
 	medialibrary/mlrecentmediamodel.moc.cpp \
 	medialibrary/mlrecentvideomodel.moc.cpp \
+	medialibrary/mlrecentaudiomodel.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
 	medialibrary/mlurlmodel.moc.cpp \
 	medialibrary/mlvideo.moc.cpp \
 	medialibrary/mlmediamodel.moc.cpp \
@@ -485,6 +565,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	network/networkbasemodel.moc.cpp \
 	network/networksourcesmodel.moc.cpp \
 	network/networkmediamodel.moc.cpp \
+	network/networktreeitem.moc.cpp \
 	network/standardpathmodel.moc.cpp \
 	style/colorcontext.moc.cpp \
 	style/systempalette.moc.cpp \
@@ -492,6 +573,17 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/delay_estimator.moc.cpp \
 	player/input_models.moc.cpp \
 	player/player_controller.moc.cpp \
+	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
+	player/timeline_thumbnails.moc.cpp \
+	player/local_music_folder.moc.cpp \
+	dialogs/network_stream_model.moc.cpp \
+	dialogs/conversion_controller.moc.cpp \
+	dialogs/new_playlist_model.moc.cpp \
+	player/video_transform.moc.cpp \
+	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
 	player/control_list_model.moc.cpp \
 	player/control_list_filter.moc.cpp \
@@ -578,7 +670,8 @@ libqt_plugin_la_SOURCES += \
 	maininterface/win32windoweffects_module.cpp \
 	maininterface/win32windoweffects_module.hpp \
 	util/csdmenu_win32.c \
-	util/csdmenu_win32.h
+	util/csdmenu_win32.h \
+	util/winpthreads_shutdown.cpp
 
 nodist_libqt_plugin_la_SOURCES += maininterface/mainctx_win32.moc.cpp \
 	maininterface/compositor_win7.moc.cpp
@@ -790,6 +883,218 @@ ui_%.h: %.ui
 # Resources
 
 libqt_plugin_la_RES = \
+	pixmaps/juxtopposed/ATTRIBUTION.md \
+	pixmaps/juxtopposed/sidebar-home-inactive-27471.svg \
+	pixmaps/juxtopposed/sidebar-home-504e1.svg \
+	pixmaps/juxtopposed/sidebar-videos-7c4e4.svg \
+	pixmaps/juxtopposed/sidebar-music-61ad2.svg \
+	pixmaps/juxtopposed/sidebar-network-6db55.svg \
+	pixmaps/juxtopposed/sidebar-playlists-c9326.svg \
+	pixmaps/juxtopposed/sidebar-recent-50e8b.svg \
+	pixmaps/juxtopposed/titlebar-logo-29ba5.svg \
+	pixmaps/juxtopposed/setup-system-theme.svg \
+	pixmaps/juxtopposed/titlebar-menu-d7959.svg \
+	pixmaps/juxtopposed/titlebar-navigation-b130a.svg \
+	pixmaps/juxtopposed/titlebar-separator-8e020.svg \
+	pixmaps/juxtopposed/titlebar-minimize-928df.svg \
+	pixmaps/juxtopposed/titlebar-maximize-dccb1.svg \
+	pixmaps/juxtopposed/titlebar-fullscreen-d41b8.svg \
+	pixmaps/juxtopposed/sidebar-add-bfdda.svg \
+	pixmaps/juxtopposed/extensions-settings-1b0f7.svg \
+	pixmaps/juxtopposed/extensions-settings-97863.svg \
+	pixmaps/juxtopposed/extensions-settings-1bf8a.svg \
+	pixmaps/juxtopposed/extensions-settings-f1a4a.svg \
+	pixmaps/juxtopposed/extensions-settings-80d5a.svg \
+	pixmaps/juxtopposed/extensions-settings-9c2da.svg \
+	pixmaps/juxtopposed/extensions-settings-66cd9.svg \
+	pixmaps/juxtopposed/extensions-settings-7d179.svg \
+	pixmaps/juxtopposed/extensions-settings-36bfa.svg \
+	pixmaps/juxtopposed/extensions-settings-ad68b.svg \
+	pixmaps/juxtopposed/extensions-settings-ec3f6.svg \
+	pixmaps/juxtopposed/extensions-settings-432a4.svg \
+	pixmaps/juxtopposed/extensions-settings-3ffd5.svg \
+	pixmaps/juxtopposed/extensions-settings-cf6e1.svg \
+	pixmaps/juxtopposed/extensions-settings-6db55.svg \
+	pixmaps/juxtopposed/extensions-settings-08f95.svg \
+	pixmaps/juxtopposed/extensions-settings-f7e21.svg \
+	pixmaps/juxtopposed/recording-settings-1b0f7.svg \
+	pixmaps/juxtopposed/recording-settings-764c9.svg \
+	pixmaps/juxtopposed/recording-settings-97863.svg \
+	pixmaps/juxtopposed/recording-settings-1bf8a.svg \
+	pixmaps/juxtopposed/recording-settings-f1a4a.svg \
+	pixmaps/juxtopposed/recording-settings-80d5a.svg \
+	pixmaps/juxtopposed/recording-settings-9c2da.svg \
+	pixmaps/juxtopposed/recording-settings-66cd9.svg \
+	pixmaps/juxtopposed/recording-settings-7d179.svg \
+	pixmaps/juxtopposed/recording-settings-36bfa.svg \
+	pixmaps/juxtopposed/recording-settings-ad68b.svg \
+	pixmaps/juxtopposed/recording-settings-ec3f6.svg \
+	pixmaps/juxtopposed/recording-settings-432a4.svg \
+	pixmaps/juxtopposed/recording-settings-3ffd5.svg \
+	pixmaps/juxtopposed/recording-settings-cf6e1.svg \
+	pixmaps/juxtopposed/recording-settings-6db55.svg \
+	pixmaps/juxtopposed/recording-settings-74961.svg \
+	pixmaps/juxtopposed/recording-settings-05bc9.svg \
+	pixmaps/juxtopposed/recording-settings-1f9fe.svg \
+	pixmaps/juxtopposed/performance-settings-05bc9.svg \
+	pixmaps/juxtopposed/performance-settings-08f95.svg \
+	pixmaps/juxtopposed/performance-settings-1b0f7.svg \
+	pixmaps/juxtopposed/performance-settings-1bf8a.svg \
+	pixmaps/juxtopposed/performance-settings-1f9fe.svg \
+	pixmaps/juxtopposed/performance-settings-36bfa.svg \
+	pixmaps/juxtopposed/performance-settings-3ffd5.svg \
+	pixmaps/juxtopposed/performance-settings-432a4.svg \
+	pixmaps/juxtopposed/performance-settings-4dae7.svg \
+	pixmaps/juxtopposed/performance-settings-66cd9.svg \
+	pixmaps/juxtopposed/performance-settings-6db55.svg \
+	pixmaps/juxtopposed/performance-settings-764c9.svg \
+	pixmaps/juxtopposed/performance-settings-7d179.svg \
+	pixmaps/juxtopposed/performance-settings-80d5a.svg \
+	pixmaps/juxtopposed/performance-settings-9c2da.svg \
+	pixmaps/juxtopposed/performance-settings-ad68b.svg \
+	pixmaps/juxtopposed/performance-settings-cf6e1.svg \
+	pixmaps/juxtopposed/performance-settings-ec3f6.svg \
+	pixmaps/juxtopposed/performance-settings-f1a4a.svg \
+	pixmaps/juxtopposed/network-settings-05bc9.svg \
+	pixmaps/juxtopposed/network-settings-08f95.svg \
+	pixmaps/juxtopposed/network-settings-1b0f7.svg \
+	pixmaps/juxtopposed/network-settings-1bf8a.svg \
+	pixmaps/juxtopposed/network-settings-1f9fe.svg \
+	pixmaps/juxtopposed/network-settings-36bfa.svg \
+	pixmaps/juxtopposed/network-settings-3ffd5.svg \
+	pixmaps/juxtopposed/network-settings-432a4.svg \
+	pixmaps/juxtopposed/network-settings-66cd9.svg \
+	pixmaps/juxtopposed/network-settings-764c9.svg \
+	pixmaps/juxtopposed/network-settings-7d179.svg \
+	pixmaps/juxtopposed/network-settings-7f8c3.svg \
+	pixmaps/juxtopposed/network-settings-80d5a.svg \
+	pixmaps/juxtopposed/network-settings-97863.svg \
+	pixmaps/juxtopposed/network-settings-9c2da.svg \
+	pixmaps/juxtopposed/network-settings-ad68b.svg \
+	pixmaps/juxtopposed/network-settings-cf6e1.svg \
+	pixmaps/juxtopposed/network-settings-ec3f6.svg \
+	pixmaps/juxtopposed/network-settings-f1a4a.svg \
+	pixmaps/juxtopposed/controls-settings-05bc9.svg \
+	pixmaps/juxtopposed/controls-settings-08f95.svg \
+	pixmaps/juxtopposed/controls-settings-1b0f7.svg \
+	pixmaps/juxtopposed/controls-settings-1bf8a.svg \
+	pixmaps/juxtopposed/controls-settings-3ffd5.svg \
+	pixmaps/juxtopposed/controls-settings-432a4.svg \
+	pixmaps/juxtopposed/controls-settings-46129.svg \
+	pixmaps/juxtopposed/controls-settings-66cd9.svg \
+	pixmaps/juxtopposed/controls-settings-6db55.svg \
+	pixmaps/juxtopposed/controls-settings-764c9.svg \
+	pixmaps/juxtopposed/controls-settings-7d179.svg \
+	pixmaps/juxtopposed/controls-settings-80d5a.svg \
+	pixmaps/juxtopposed/controls-settings-97863.svg \
+	pixmaps/juxtopposed/controls-settings-9c2da.svg \
+	pixmaps/juxtopposed/controls-settings-ad68b.svg \
+	pixmaps/juxtopposed/controls-settings-cf6e1.svg \
+	pixmaps/juxtopposed/controls-settings-ec3f6.svg \
+	pixmaps/juxtopposed/controls-settings-f1a4a.svg \
+	pixmaps/juxtopposed/privacy-settings-05bc9.svg \
+	pixmaps/juxtopposed/privacy-settings-08f95.svg \
+	pixmaps/juxtopposed/privacy-settings-1b0f7.svg \
+	pixmaps/juxtopposed/privacy-settings-1bf8a.svg \
+	pixmaps/juxtopposed/privacy-settings-1f9fe.svg \
+	pixmaps/juxtopposed/privacy-settings-36bfa.svg \
+	pixmaps/juxtopposed/privacy-settings-3ffd5.svg \
+	pixmaps/juxtopposed/privacy-settings-432a4.svg \
+	pixmaps/juxtopposed/privacy-settings-66cd9.svg \
+	pixmaps/juxtopposed/privacy-settings-6db55.svg \
+	pixmaps/juxtopposed/privacy-settings-80d5a.svg \
+	pixmaps/juxtopposed/privacy-settings-9c2da.svg \
+	pixmaps/juxtopposed/privacy-settings-a1bba.svg \
+	pixmaps/juxtopposed/privacy-settings-ad68b.svg \
+	pixmaps/juxtopposed/privacy-settings-cf6e1.svg \
+	pixmaps/juxtopposed/privacy-settings-ec3f6.svg \
+	pixmaps/juxtopposed/privacy-settings-f1a4a.svg \
+	pixmaps/juxtopposed/library-settings-f12f7.svg \
+	pixmaps/juxtopposed/subtitles-settings-1ab84.svg \
+	pixmaps/juxtopposed/subtitles-settings-1f9fe.svg \
+	pixmaps/juxtopposed/subtitles-settings-4d76e.svg \
+	pixmaps/juxtopposed/subtitles-settings-764c9.svg \
+	pixmaps/juxtopposed/subtitles-settings-8ba8e.svg \
+	pixmaps/juxtopposed/subtitles-settings-97863.svg \
+	pixmaps/juxtopposed/audio-settings-1ab84.svg \
+	pixmaps/juxtopposed/audio-settings-1f9fe.svg \
+	pixmaps/juxtopposed/audio-settings-5f3f8.svg \
+	pixmaps/juxtopposed/audio-settings-764c9.svg \
+	pixmaps/juxtopposed/audio-settings-8ba8e.svg \
+	pixmaps/juxtopposed/audio-settings-97863.svg \
+	pixmaps/juxtopposed/video-settings-1ab84.svg \
+	pixmaps/juxtopposed/video-settings-1f9fe.svg \
+	pixmaps/juxtopposed/video-settings-764c9.svg \
+	pixmaps/juxtopposed/video-settings-7aced.svg \
+	pixmaps/juxtopposed/video-settings-8ba8e.svg \
+	pixmaps/juxtopposed/video-settings-97863.svg \
+	pixmaps/juxtopposed/playback-settings-1ab84.svg \
+	pixmaps/juxtopposed/playback-settings-1f9fe.svg \
+	pixmaps/juxtopposed/playback-settings-764c9.svg \
+	pixmaps/juxtopposed/playback-settings-8ba8e.svg \
+	pixmaps/juxtopposed/playback-settings-97863.svg \
+	pixmaps/juxtopposed/playback-settings-bc944.svg \
+	pixmaps/juxtopposed/interface-settings-1ab84.svg \
+	pixmaps/juxtopposed/interface-settings-8ba8e.svg \
+	pixmaps/juxtopposed/volume-background-light.svg \
+	pixmaps/juxtopposed/volume-fill-light.svg \
+	pixmaps/juxtopposed/global-settings-05bc9.svg \
+	pixmaps/juxtopposed/global-settings-08f95.svg \
+	pixmaps/juxtopposed/global-settings-1b0f7.svg \
+	pixmaps/juxtopposed/global-settings-1bf8a.svg \
+	pixmaps/juxtopposed/global-settings-1f9fe.svg \
+	pixmaps/juxtopposed/global-settings-36bfa.svg \
+	pixmaps/juxtopposed/global-settings-4dae7.svg \
+	pixmaps/juxtopposed/global-settings-66cd9.svg \
+	pixmaps/juxtopposed/global-settings-6db55.svg \
+	pixmaps/juxtopposed/global-settings-764c9.svg \
+	pixmaps/juxtopposed/global-settings-7d179.svg \
+	pixmaps/juxtopposed/global-settings-80d5a.svg \
+	pixmaps/juxtopposed/global-settings-97863.svg \
+	pixmaps/juxtopposed/global-settings-ad68b.svg \
+	pixmaps/juxtopposed/global-settings-cf6e1.svg \
+	pixmaps/juxtopposed/global-settings-ec3f6.svg \
+	pixmaps/juxtopposed/global-settings-f1a4a.svg \
+	pixmaps/juxtopposed/audio.svg \
+	pixmaps/juxtopposed/audio-light.svg \
+	pixmaps/juxtopposed/fullscreen.svg \
+	pixmaps/juxtopposed/fullscreen-light.svg \
+	pixmaps/juxtopposed/Inter-LICENSE.txt \
+	pixmaps/juxtopposed/InterVariable.ttf \
+	pixmaps/juxtopposed/next.svg \
+	pixmaps/juxtopposed/pause.svg \
+	pixmaps/juxtopposed/play.svg \
+	pixmaps/juxtopposed/previous.svg \
+	pixmaps/juxtopposed/queue.svg \
+	pixmaps/juxtopposed/queue-light.svg \
+	pixmaps/juxtopposed/queue-add.svg \
+	pixmaps/juxtopposed/queue-bookmarks.svg \
+	pixmaps/juxtopposed/queue-bookmarks-active.svg \
+	pixmaps/juxtopposed/queue-chapters.svg \
+	pixmaps/juxtopposed/queue-chapters-active.svg \
+	pixmaps/juxtopposed/queue-move.svg \
+	pixmaps/juxtopposed/queue-remove.svg \
+	pixmaps/juxtopposed/queue-repeat.svg \
+	pixmaps/juxtopposed/queue-shuffle.svg \
+	pixmaps/juxtopposed/queue-sort.svg \
+	pixmaps/juxtopposed/queue-tab-active.svg \
+	pixmaps/juxtopposed/queue-tab-inactive.svg \
+	pixmaps/juxtopposed/new-playlist-add.svg \
+	pixmaps/juxtopposed/new-playlist-close.svg \
+	pixmaps/juxtopposed/new-playlist-divider.svg \
+	pixmaps/juxtopposed/settings.svg \
+	pixmaps/juxtopposed/subtitles.svg \
+	pixmaps/juxtopposed/subtitles-light.svg \
+	pixmaps/juxtopposed/timeline-chevron-left.svg \
+	pixmaps/juxtopposed/timeline-chevron-right.svg \
+	pixmaps/juxtopposed/timeline-minus.svg \
+	pixmaps/juxtopposed/timeline-plus.svg \
+	pixmaps/juxtopposed/volume-background.svg \
+	pixmaps/juxtopposed/volume-fill.svg \
+	pixmaps/juxtopposed/volume-mask.svg \
+	pixmaps/juxtopposed/volume-muted.svg \
+	pixmaps/juxtopposed/volume.svg \
+	pixmaps/juxtopposed/volume-light.svg \
 	pixmaps/VLCIcons.ttf \
 	pixmaps/addons/addon_default.svg \
 	pixmaps/addons/addon_broken.svg \
@@ -1036,6 +1341,35 @@ libqml_module_dialogs_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_dialogs_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/CustomDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedMovableDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml \
+	dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedDialogsHost.qml \
+	dialogs/dialogs/qml/JuxtopposedSetupDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedSetupPreview.qml \
+	dialogs/dialogs/qml/JuxtopposedPlayerProfilesDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml \
+	dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedAudioSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml \
+	dialogs/dialogs/qml/JuxtopposedControlsSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedRecordingSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedExtensionsSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsFields.qml \
+	dialogs/dialogs/qml/JuxtopposedVideoSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml \
+	dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml \
+	dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml \
+	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
@@ -1061,6 +1395,9 @@ libqml_module_maininterface_a_QML = \
 	maininterface/qml/MainInterface.qml \
 	maininterface/qml/MainViewLoader.qml \
 	maininterface/qml/MainDisplay.qml \
+	maininterface/qml/JuxtopposedNavigation.qml \
+	maininterface/qml/JuxtopposedTitlebar.qml \
+	maininterface/qml/JuxtopposedNavigationPane.qml \
 	maininterface/qml/SideNavigationPane.qml \
 	maininterface/qml/SideNavigationDelegate.qml \
 	maininterface/qml/NoMedialibHome.qml
@@ -1083,6 +1420,16 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/AudioGridItem.qml \
 	medialibrary/qml/HomeDisplay.qml \
 	medialibrary/qml/HomePage.qml \
+	medialibrary/qml/JuxtopposedHomeCard.qml \
+	medialibrary/qml/JuxtopposedHomeDashboard.qml \
+	medialibrary/qml/JuxtopposedHomeCollectionView.qml \
+	medialibrary/qml/JuxtopposedHomePage.qml \
+	medialibrary/qml/JuxtopposedHomeHistoryPage.qml \
+	medialibrary/qml/JuxtopposedRecentPage.qml \
+	medialibrary/qml/JuxtopposedRecentDisplay.qml \
+	medialibrary/qml/JuxtopposedHomeCollectionPage.qml \
+	medialibrary/qml/JuxtopposedHomeFolderPage.qml \
+	medialibrary/qml/JuxtopposedHomeSorting.js \
 	medialibrary/qml/MediaView.qml \
 	medialibrary/qml/VideoGroupDisplay.qml \
 	medialibrary/qml/MusicAlbums.qml \
@@ -1094,6 +1441,7 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/MusicAllArtists.qml \
 	medialibrary/qml/MusicArtistsDisplay.qml \
 	medialibrary/qml/MusicDisplay.qml \
+	medialibrary/qml/MusicCategoriesDisplay.qml \
 	medialibrary/qml/MusicGenres.qml \
 	medialibrary/qml/MusicGenresDisplay.qml \
 	medialibrary/qml/MusicPlaylistsDisplay.qml \
@@ -1108,10 +1456,12 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/PlaylistMedia.qml \
 	medialibrary/qml/PlaylistMediaDisplay.qml \
 	medialibrary/qml/VideoPlaylistsDisplay.qml \
+	medialibrary/qml/JuxtopposedPlaylistsDisplay.qml \
 	medialibrary/qml/VideoGridItem.qml \
 	medialibrary/qml/VideoInfoExpandPanel.qml \
 	medialibrary/qml/VideoListDisplay.qml \
 	medialibrary/qml/VideoGridDisplay.qml \
+	medialibrary/qml/JuxtopposedVideoGrid.qml \
 	medialibrary/qml/MusicAlbumSectionDelegate.qml \
 	medialibrary/qml/MLGlobalShortcuts.qml \
 	medialibrary/qml/Bookmarks.qml \
@@ -1166,11 +1516,24 @@ libqml_module_player_a_ModulePath = VLC/Player
 libqml_module_player_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_player_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_player_a_QML = \
+	player/qml/JuxtopposedButton.qml \
+	player/qml/JuxtopposedSeekBackground.qml \
+	player/qml/JuxtopposedPlaybackBar.qml \
+	player/qml/JuxtopposedVolumeControl.qml \
+	player/qml/JuxtopposedLayoutRow.qml \
+	player/qml/JuxtopposedSubtitleCueTimeline.qml \
+	player/qml/JuxtopposedSubtitleTimelineAdapter.qml \
+	player/qml/JuxtopposedSubtitleTimelineToggle.qml \
+	player/qml/JuxtopposedMusicPlayer.qml \
+	player/qml/PlaybackSettingsMenu.qml \
+	player/qml/JuxtopposedSettingsPanel.qml \
+	player/qml/JuxtopposedSubtitlePresets.qml \
 	player/qml/ControlBar.qml \
 	player/qml/PlaybackSpeed.qml \
 	player/qml/LyricsFlickable.qml \
 	player/qml/MiniPlayer.qml \
 	player/qml/PIPPlayer.qml \
+	player/qml/VideoInputTapHandler.qml \
 	player/qml/Player.qml \
 	player/qml/PlayerControlLayout.qml \
 	player/qml/PlayerPlaylistVisibilityFSM.qml \
@@ -1178,6 +1541,7 @@ libqml_module_player_a_QML = \
 	player/qml/MinimalView.qml \
 	player/qml/ResumeDialog.qml \
 	player/qml/SliderBar.qml \
+	player/qml/TimelineThumbnail.qml \
 	player/qml/TopBar.qml \
 	player/qml/TracksMenu.qml \
 	player/qml/TracksPage.qml \
@@ -1255,6 +1619,10 @@ libqml_module_playlist_a_ModulePath = VLC/Playlist
 libqml_module_playlist_a_CXXFLAGS = $(libqt_plugin_la_CXXFLAGS)
 libqml_module_playlist_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_playlist_a_QML = \
+	playlist/qml/JuxtopposedBookmarkList.qml \
+	playlist/qml/JuxtopposedBookmarkActions.qml \
+	playlist/qml/JuxtopposedQueuePanel.qml \
+	playlist/qml/JuxtopposedQueueRow.qml \
 	playlist/qml/PlaylistDelegate.qml \
 	playlist/qml/PlaylistPane.qml \
 	playlist/qml/PlaylistDetachedWindow.qml
@@ -1270,6 +1638,7 @@ libqml_module_style_a_CPPFLAGS = $(libqt_plugin_la_CPPFLAGS)
 libqml_module_style_a_QML =
 libqml_module_style_a_Singleton_QML = \
 	style/AcrylicController.qml \
+	style/JuxtopposedPalette.qml \
 	style/VLCStyle.qml
 libqml_module_style_a_SOURCES = $(QML_MODULE_style_SRC)
 nodist_libqml_module_style_a_SOURCES = style/qmlassets.cpp $(QML_MODULE_style_NODIST_EXTRA)
@@ -1354,12 +1723,18 @@ libqml_module_widgets_a_QML = \
 	widgets/qml/ScaledImage.qml \
 	widgets/qml/TextAutoScroller.qml \
 	widgets/qml/SearchBox.qml \
+	widgets/qml/TextInputFocus.qml \
 	widgets/qml/SliderExt.qml \
 	widgets/qml/SortControl.qml \
 	widgets/qml/SpinBoxExt.qml \
 	widgets/qml/StackViewExt.qml \
 	widgets/qml/PageLoader.qml \
 	widgets/qml/PageExt.qml \
+	widgets/qml/JuxtopposedLibraryHeader.qml \
+	widgets/qml/JuxtopposedMediaRow.qml \
+	widgets/qml/JuxtopposedCategoryList.qml \
+	widgets/qml/JuxtopposedSettingSlider.qml \
+	widgets/qml/JuxtopposedSettingChoice.qml \
 	widgets/qml/ButtonExt.qml \
 	widgets/qml/TableColumns.qml \
 	widgets/qml/TextFieldExt.qml \
@@ -1568,6 +1943,9 @@ endif
 # text functions.
 QML_RULES_DEPS = $(libqt_plugin_la_QML_MODULES:=/qml.deps)
 
+# Always replace a remade included dependency file. GNU make 4.3 can miss a
+# main Makefile rebuilt indirectly when an included file retains its timestamp.
+# The per-module source-list stamps below still suppress unrelated QRC rebuilds.
 # Since every QML modules is built into a given directory, we can use $(@D)
 # to get the module name.
 $(QML_RULES_DEPS): Makefile
@@ -1579,9 +1957,11 @@ $(QML_RULES_DEPS): Makefile
 	  echo '$(@D)/qmlcache_loader.cpp: $(@D)/qmlcachegen.rsp'; \
 	  echo '$(@D)/qmlassets.cpp: $$(builddir)/$(@D)/qmldir.qrc $$(builddir)/$(@D)/res.qrc'; \
 	  echo '$(@D)/qmlassets.cpp: $$(libqml_module_$(@D)_a_QML) $$(libqml_module_$(@D)_a_Singleton_QML)'; \
-	  echo '$$(libqml_module_$(@D)_a_QML:.qml=.cpp) $$(libqml_module_$(@D)_a_Singleton_QML:.qml=.cpp): $$(builddir)/$(@D)/res.qrc'; \
-	} > $@.tmp && \
-	if cmp -s $@.tmp $@; then rm -f $@.tmp; else mv $@.tmp $@; fi
+	  echo 'qml_$(@D)_cachegen_sources = $$(libqml_module_$(@D)_a_QML) $$(libqml_module_$(@D)_a_Singleton_QML)'; \
+	  echo 'qml_$(@D)_cachegen_qml = $$(qml_$(@D)_cachegen_sources:.qml=.cpp)'; \
+	  echo 'qml_$(@D)_cachegen_js = $$(qml_$(@D)_cachegen_qml:.js=.cpp)'; \
+	  echo '$$(qml_$(@D)_cachegen_js:.mjs=.cpp): $$(builddir)/$(@D)/res.qrc'; \
+	} > $@.tmp && mv $@.tmp $@
 
 BUILT_SOURCES += $(QML_RULES_DEPS)
 CLEANFILES += $(QML_RULES_DEPS)
@@ -1772,11 +2152,15 @@ test_ml_model_SOURCES = \
 	util/locallistcacheloader.hpp \
 	medialibrary/mlqmltypes.hpp \
 	medialibrary/mlbasemodel.hpp medialibrary/mlbasemodel.cpp \
+	medialibrary/mlplaylist.hpp medialibrary/mlplaylist.cpp \
 	medialibrary/medialib.hpp medialibrary/medialib.cpp \
+	medialibrary/mlhomeactivity.hpp medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivitydata.hpp medialibrary/mlhomeactivitydata.cpp \
+	dialogs/new_playlist_data.hpp dialogs/new_playlist_data.cpp \
 	medialibrary/mlthreadpool.hpp medialibrary/mlthreadpool.cpp \
 	playlist/playlist_controller.hpp playlist/playlist_controller.cpp \
-	playlist/playlist_item.hpp playlist/playlist_item.cpp
-
+	playlist/playlist_item.hpp playlist/playlist_item.cpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
 nodist_test_ml_model_SOURCES = \
 	tests/test_ml_model.moc \
 	util/base_model.moc.cpp \
@@ -1786,6 +2170,7 @@ nodist_test_ml_model_SOURCES = \
 	medialibrary/mlqmltypes.moc.cpp \
 	medialibrary/mlbasemodel.moc.cpp \
 	medialibrary/medialib.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
 	medialibrary/mlthreadpool.moc.cpp \
 	playlist/playlist_controller.moc.cpp \
 	playlist/playlist_item.moc.cpp
@@ -1878,6 +2263,190 @@ test_qt_navigation_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_navigation_model
 TESTS += test_qt_navigation_model
 
+test_qt_navigation_history_SOURCES = \
+	tests/vlc_stub_modules.cpp \
+	tests/test_navigation_history.cpp \
+	util/navigation_history.hpp \
+	util/navigation_history.cpp \
+	medialibrary/mlqmltypes.hpp
+nodist_test_qt_navigation_history_SOURCES = \
+	tests/test_navigation_history.moc \
+	util/navigation_history.moc.cpp \
+	medialibrary/mlqmltypes.moc.cpp \
+	network/networktreeitem.moc.cpp
+BUILT_SOURCES += tests/test_navigation_history.moc
+CLEANFILES += tests/test_navigation_history.moc
+test_qt_navigation_history_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_navigation_history_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_navigation_history_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_navigation_history_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_navigation_history
+TESTS += test_qt_navigation_history
+
+test_qt_audio_equalizer_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_audio_equalizer.cpp tests/media_player_probe.c \
+	player/audio_equalizer.cpp player/audio_equalizer.hpp \
+	util/variables.cpp util/variables.hpp
+nodist_test_qt_audio_equalizer_SOURCES = \
+	tests/test_audio_equalizer.moc player/audio_equalizer.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_audio_equalizer.moc
+CLEANFILES += tests/test_audio_equalizer.moc
+test_qt_audio_equalizer_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_audio_equalizer_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_equalizer_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_equalizer_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_equalizer
+TESTS += test_qt_audio_equalizer
+
+test_qt_audio_waveform_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_audio_waveform.cpp tests/media_player_probe.c \
+	player/audio_waveform.cpp player/audio_waveform.hpp util/soutchain.cpp util/soutchain.hpp
+nodist_test_qt_audio_waveform_SOURCES = \
+	tests/test_audio_waveform.moc player/audio_waveform.moc.cpp
+BUILT_SOURCES += tests/test_audio_waveform.moc
+CLEANFILES += tests/test_audio_waveform.moc
+test_qt_audio_waveform_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_audio_waveform_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_waveform_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_waveform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_waveform
+TESTS += test_qt_audio_waveform
+
+test_qt_home_activity_SOURCES = \
+	tests/test_home_activity.cpp tests/network_stream_probe.c \
+	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp \
+	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
+nodist_test_qt_home_activity_SOURCES = \
+	tests/test_home_activity.moc medialibrary/mlqmltypes.moc.cpp
+BUILT_SOURCES += tests/test_home_activity.moc
+CLEANFILES += tests/test_home_activity.moc
+test_qt_home_activity_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_home_activity_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_home_activity_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_home_activity_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_home_activity
+TESTS += test_qt_home_activity
+
+test_qt_new_playlist_SOURCES = \
+	tests/test_new_playlist.cpp tests/network_stream_probe.c \
+	dialogs/new_playlist_model.cpp dialogs/new_playlist_model.hpp \
+	dialogs/new_playlist_data.cpp dialogs/new_playlist_data.hpp medialibrary/mlqmltypes.hpp \
+	util/vlctick.cpp util/vlctick.hpp \
+	medialibrary/mlplaylist.cpp medialibrary/mlplaylist.hpp
+nodist_test_qt_new_playlist_SOURCES = \
+	tests/test_new_playlist.moc dialogs/new_playlist_model.moc.cpp medialibrary/mlqmltypes.moc.cpp
+BUILT_SOURCES += tests/test_new_playlist.moc
+CLEANFILES += tests/test_new_playlist.moc
+test_qt_new_playlist_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_new_playlist_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_new_playlist_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_new_playlist_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_new_playlist
+TESTS += test_qt_new_playlist
+
+test_qt_network_stream_SOURCES = \
+	tests/test_network_stream.cpp tests/network_stream_probe.c \
+	dialogs/network_stream_model.cpp dialogs/network_stream_model.hpp
+nodist_test_qt_network_stream_SOURCES = \
+	tests/test_network_stream.moc dialogs/network_stream_model.moc.cpp
+BUILT_SOURCES += tests/test_network_stream.moc
+CLEANFILES += tests/test_network_stream.moc
+test_qt_network_stream_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_network_stream_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_network_stream_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_network_stream_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_network_stream
+TESTS += test_qt_network_stream
+
+test_qt_player_timer_point_SOURCES = \
+	tests/test_player_timer_point.cpp player/player_timer_point.hpp
+nodist_test_qt_player_timer_point_SOURCES = tests/test_player_timer_point.moc
+BUILT_SOURCES += tests/test_player_timer_point.moc
+CLEANFILES += tests/test_player_timer_point.moc
+test_qt_player_timer_point_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_timer_point_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_timer_point_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_timer_point_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_player_timer_point
+TESTS += test_qt_player_timer_point
+
+test_qt_timeline_thumbnails_SOURCES = \
+	tests/test_timeline_thumbnails.cpp tests/media_player_probe.c \
+	player/timeline_thumbnails.cpp player/timeline_thumbnails.hpp
+nodist_test_qt_timeline_thumbnails_SOURCES = \
+	tests/test_timeline_thumbnails.moc player/timeline_thumbnails.moc.cpp
+BUILT_SOURCES += tests/test_timeline_thumbnails.moc
+CLEANFILES += tests/test_timeline_thumbnails.moc
+tests/test_qt_timeline_thumbnails-test_timeline_thumbnails.$(OBJEXT): tests/test_timeline_thumbnails.moc
+test_qt_timeline_thumbnails_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_timeline_thumbnails_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_timeline_thumbnails_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_timeline_thumbnails_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_timeline_thumbnails
+TESTS += test_qt_timeline_thumbnails
+if HAVE_WIN32
+test_qt_timeline_thumbnails_LDADD += -lws2_32
+endif
+
+test_qt_local_music_folder_SOURCES = \
+	tests/test_local_music_folder.cpp tests/media_player_probe.c tests/network_stream_probe.c \
+	player/local_music_folder.cpp player/local_music_folder.hpp
+nodist_test_qt_local_music_folder_SOURCES = \
+	tests/test_local_music_folder.moc player/local_music_folder.moc.cpp
+BUILT_SOURCES += tests/test_local_music_folder.moc
+CLEANFILES += tests/test_local_music_folder.moc
+test_qt_local_music_folder_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_local_music_folder_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_local_music_folder_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_local_music_folder_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_local_music_folder
+TESTS += test_qt_local_music_folder
+
+test_qt_video_transform_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_video_transform.cpp tests/media_player_probe.c \
+	player/video_transform.cpp player/video_transform.hpp \
+	util/variables.cpp util/variables.hpp
+nodist_test_qt_video_transform_SOURCES = \
+	tests/test_video_transform.moc player/video_transform.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_video_transform.moc
+CLEANFILES += tests/test_video_transform.moc
+test_qt_video_transform_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_video_transform_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_video_transform_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_video_transform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_video_transform
+TESTS += test_qt_video_transform
+
+test_qt_subtitle_cue_timeline_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_subtitle_cue_timeline.cpp tests/media_player_probe.c \
+	player/subtitle_cue_data.cpp player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.cpp player/subtitle_cue_timeline.hpp
+nodist_test_qt_subtitle_cue_timeline_SOURCES = \
+	tests/test_subtitle_cue_timeline.moc player/subtitle_cue_timeline.moc.cpp
+BUILT_SOURCES += tests/test_subtitle_cue_timeline.moc
+CLEANFILES += tests/test_subtitle_cue_timeline.moc
+test_qt_subtitle_cue_timeline_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_subtitle_cue_timeline_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitle_cue_timeline_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitle_cue_timeline_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitle_cue_timeline
+TESTS += test_qt_subtitle_cue_timeline
+
+test_qt_subtitle_appearance_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_subtitle_appearance.cpp tests/media_player_probe.c \
+	player/subtitle_appearance.cpp player/subtitle_appearance.hpp util/variables.cpp util/variables.hpp
+nodist_test_qt_subtitle_appearance_SOURCES = \
+	tests/test_subtitle_appearance.moc player/subtitle_appearance.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_subtitle_appearance.moc
+CLEANFILES += tests/test_subtitle_appearance.moc
+test_qt_subtitle_appearance_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_subtitle_appearance_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitle_appearance_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitle_appearance_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitle_appearance
+TESTS += test_qt_subtitle_appearance
+
 
 endif
 
@@ -1896,3 +2465,709 @@ EXTRA_DIST += tests/tst_FSM.qml
 TESTS += tests/tst_FSM.qml
 endif
 endif
+
+EXTRA_DIST += tests/test_juxtopposed_playback_bar.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+# Actual native subtitle preset persistence and rendered-output diagnostic.
+# Actual PlayerController callbacks on the native NORMAL-lock playlist player.
+qt_player_controller_test_sources = \
+	tests/vlc_stub_modules.cpp \
+	util/checked_preferences_store.cpp \
+	util/checked_preferences_store.hpp \
+	player/player_controller.cpp \
+	player/input_models.cpp \
+	player/audio_equalizer.cpp \
+	player/audio_waveform.cpp \
+	player/local_music_folder.cpp \
+	player/video_transform.cpp \
+	player/subtitle_appearance.cpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.cpp \
+	maininterface/subtitle_preset_model.cpp \
+	util/audio_device_model.cpp \
+	util/variables.cpp \
+	util/varchoicemodel.cpp \
+	util/renderer_manager.cpp \
+	util/vlctick.cpp \
+	dialogs/extensions/extensions_manager.cpp \
+	dialogs/extensions/extensions.cpp \
+	widgets/native/customwidgets.cpp \
+	widgets/native/animators.cpp \
+	util/soutchain.cpp \
+	util/imagehelper.cpp \
+	player/player_controller.hpp \
+	player/input_models.hpp \
+	player/audio_equalizer.hpp \
+	player/audio_waveform.hpp \
+	player/local_music_folder.hpp \
+	player/video_transform.hpp \
+	player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.hpp \
+	maininterface/subtitle_preset_model.hpp \
+	util/audio_device_model.hpp \
+	util/variables.hpp \
+	util/varchoicemodel.hpp \
+	util/renderer_manager.hpp \
+	util/vlctick.hpp \
+	dialogs/extensions/extensions_manager.hpp \
+	dialogs/extensions/extensions.hpp \
+	widgets/native/customwidgets.hpp \
+	widgets/native/animators.hpp \
+	util/soutchain.hpp \
+	util/imagehelper.hpp
+qt_player_controller_test_moc_sources = \
+	player/player_controller.moc.cpp \
+	player/input_models.moc.cpp \
+	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
+	player/local_music_folder.moc.cpp \
+	player/video_transform.moc.cpp \
+	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
+	util/audio_device_model.moc.cpp \
+	util/variables.moc.cpp \
+	util/varchoicemodel.moc.cpp \
+	util/renderer_manager.moc.cpp \
+	util/vlctick.moc.cpp \
+	dialogs/extensions/extensions_manager.moc.cpp \
+	dialogs/extensions/extensions.moc.cpp \
+	widgets/native/customwidgets.moc.cpp \
+	widgets/native/animators.moc.cpp
+test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_sources) tests/test_player_subtitle_delay.cpp
+nodist_test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_moc_sources) tests/test_player_subtitle_delay.moc
+BUILT_SOURCES += tests/test_player_subtitle_delay.moc
+CLEANFILES += tests/test_player_subtitle_delay.moc
+test_qt_player_subtitle_delay_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_subtitle_delay_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_subtitle_delay_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_subtitle_delay_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_player_subtitle_delay
+TESTS += test_qt_player_subtitle_delay
+
+# The same production controller dependencies, exercised through local HLS.
+test_qt_player_timeline_SOURCES = \
+	$(qt_player_controller_test_sources) \
+	tests/test_player_timeline.cpp
+nodist_test_qt_player_timeline_SOURCES = \
+	$(qt_player_controller_test_moc_sources) \
+	tests/test_player_timeline.moc
+BUILT_SOURCES += tests/test_player_timeline.moc
+CLEANFILES += tests/test_player_timeline.moc
+tests/test_qt_player_timeline-test_player_timeline.$(OBJEXT): tests/test_player_timeline.moc
+test_qt_player_timeline_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_player_timeline_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_player_timeline_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_player_timeline_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+if HAVE_WIN32
+test_qt_player_timeline_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_player_timeline_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_player_timeline_LDADD += -lntdll
+endif
+check_PROGRAMS += test_qt_player_timeline
+TESTS += test_qt_player_timeline
+EXTRA_DIST += tests/native_timeline_fixtures.sh tests/native_timeline_server.py \
+	tests/run_native_timeline.py tests/README.native-timeline.md
+
+test_qt_subtitle_presets_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_subtitle_presets.cpp tests/media_player_probe.c \
+	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+	player/subtitle_appearance.cpp player/subtitle_appearance.hpp util/variables.cpp util/variables.hpp
+nodist_test_qt_subtitle_presets_SOURCES = \
+	tests/test_subtitle_presets.moc maininterface/subtitle_preset_model.moc.cpp \
+	player/subtitle_appearance.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_subtitle_presets.moc
+CLEANFILES += tests/test_subtitle_presets.moc
+test_qt_subtitle_presets_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_subtitle_presets_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitle_presets_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitle_presets_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitle_presets
+TESTS += test_qt_subtitle_presets
+endif
+endif
+EXTRA_DIST += tests/test_juxtopposed_subtitle_presets.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+# Actual local ML, production controller and NORMAL-lock chapter/bookmark models.
+test_qt_native_bookmarks_chapters_SOURCES = \
+	tests/test_native_bookmarks_chapters.cpp \
+	tests/native_model_probe.c \
+	tests/network_stream_probe.c \
+	player/player_controller.cpp \
+	player/input_models.cpp \
+	player/audio_equalizer.cpp \
+	player/audio_waveform.cpp \
+	player/local_music_folder.cpp \
+	player/video_transform.cpp \
+	player/subtitle_appearance.cpp \
+	player/subtitle_cue_data.cpp \
+	player/subtitle_cue_timeline.cpp \
+	maininterface/subtitle_preset_model.cpp \
+	util/audio_device_model.cpp \
+	util/variables.cpp \
+	util/varchoicemodel.cpp \
+	util/renderer_manager.cpp \
+	util/vlctick.cpp \
+	dialogs/extensions/extensions_manager.cpp \
+	dialogs/extensions/extensions.cpp \
+	widgets/native/customwidgets.cpp \
+	widgets/native/animators.cpp \
+	util/soutchain.cpp \
+	util/imagehelper.cpp \
+	player/player_controller.hpp \
+	player/input_models.hpp \
+	player/audio_equalizer.hpp \
+	player/audio_waveform.hpp \
+	player/local_music_folder.hpp \
+	player/video_transform.hpp \
+	player/subtitle_appearance.hpp \
+	player/subtitle_cue_data.hpp \
+	player/subtitle_cue_timeline.hpp \
+	maininterface/subtitle_preset_model.hpp \
+	util/audio_device_model.hpp \
+	util/variables.hpp \
+	util/varchoicemodel.hpp \
+	util/renderer_manager.hpp \
+	util/vlctick.hpp \
+	dialogs/extensions/extensions_manager.hpp \
+	dialogs/extensions/extensions.hpp \
+	widgets/native/customwidgets.hpp \
+	widgets/native/animators.hpp \
+	util/soutchain.hpp \
+	util/imagehelper.hpp \
+	medialibrary/mlbookmarkmodel.cpp \
+	medialibrary/mlbookmarkmodel.hpp \
+	medialibrary/medialib.cpp \
+	medialibrary/medialib.hpp \
+	medialibrary/mlhomeactivity.cpp \
+	medialibrary/mlhomeactivity.hpp \
+	medialibrary/mlhomeactivitydata.cpp \
+	medialibrary/mlhomeactivitydata.hpp \
+	dialogs/new_playlist_data.cpp \
+	dialogs/new_playlist_data.hpp \
+	medialibrary/mlthreadpool.cpp \
+	medialibrary/mlthreadpool.hpp \
+	medialibrary/mlqmltypes.hpp \
+	playlist/playlist_controller.cpp \
+	playlist/playlist_controller.hpp \
+	playlist/playlist_item.cpp \
+	playlist/playlist_item.hpp \
+	util/checked_preferences_store.cpp util/checked_preferences_store.hpp
+nodist_test_qt_native_bookmarks_chapters_SOURCES = \
+	tests/test_native_bookmarks_chapters.moc \
+	player/player_controller.moc.cpp \
+	player/input_models.moc.cpp \
+	player/audio_equalizer.moc.cpp \
+	player/audio_waveform.moc.cpp \
+	player/local_music_folder.moc.cpp \
+	player/video_transform.moc.cpp \
+	player/subtitle_appearance.moc.cpp \
+	player/subtitle_cue_timeline.moc.cpp \
+	maininterface/subtitle_preset_model.moc.cpp \
+	util/audio_device_model.moc.cpp \
+	util/variables.moc.cpp \
+	util/varchoicemodel.moc.cpp \
+	util/renderer_manager.moc.cpp \
+	util/vlctick.moc.cpp \
+	dialogs/extensions/extensions_manager.moc.cpp \
+	dialogs/extensions/extensions.moc.cpp \
+	widgets/native/customwidgets.moc.cpp \
+	widgets/native/animators.moc.cpp \
+	medialibrary/mlbookmarkmodel.moc.cpp \
+	medialibrary/medialib.moc.cpp \
+	medialibrary/mlhomeactivity.moc.cpp \
+	medialibrary/mlthreadpool.moc.cpp \
+	medialibrary/mlqmltypes.moc.cpp \
+	playlist/playlist_controller.moc.cpp \
+	playlist/playlist_item.moc.cpp
+BUILT_SOURCES += tests/test_native_bookmarks_chapters.moc
+CLEANFILES += tests/test_native_bookmarks_chapters.moc
+test_qt_native_bookmarks_chapters_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_native_bookmarks_chapters_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_native_bookmarks_chapters_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_native_bookmarks_chapters_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_native_bookmarks_chapters
+TESTS += test_qt_native_bookmarks_chapters
+endif
+endif
+
+EXTRA_DIST += tests/test_juxtopposed_subtitle_timeline.py tests/test_page_loader_routes.py
+EXTRA_DIST += tests/native_library/conversion.mk
+EXTRA_DIST += tests/test_music_network_navigation.py tests/run_music_network_navigation.py \
+	tests/test_playlist_single_play.py tests/run_playlist_single_play.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+test_qt_conversion_controller_SOURCES = \
+	tests/vlc_stub_modules.cpp tests/test_conversion_controller.cpp tests/media_player_probe.c tests/network_stream_probe.c \
+	dialogs/conversion_controller.cpp dialogs/conversion_controller.hpp util/soutchain.cpp util/soutchain.hpp
+nodist_test_qt_conversion_controller_SOURCES = \
+	tests/test_conversion_controller.moc dialogs/conversion_controller.moc.cpp
+BUILT_SOURCES += tests/test_conversion_controller.moc
+CLEANFILES += tests/test_conversion_controller.moc
+test_qt_conversion_controller_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_conversion_controller_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_conversion_controller_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_conversion_controller_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_conversion_controller
+TESTS += test_qt_conversion_controller
+
+# Execute exact production key-routing methods with native Qt/VLC dispatch.
+tests/shared_modal_hotkey_production.inc: $(srcdir)/tests/generate_shared_modal_hotkey_test.py $(srcdir)/maininterface/interface_window_handler.cpp $(srcdir)/maininterface/mainctx.cpp
+	$(AM_V_GEN)$(PYTHON3) $(srcdir)/tests/generate_shared_modal_hotkey_test.py --repo-root $(top_srcdir) --output $@
+tests/test_shared_modal_hotkeys.moc: $(srcdir)/tests/test_shared_modal_hotkeys.cpp tests/shared_modal_hotkey_production.inc
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $(srcdir)/tests/test_shared_modal_hotkeys.cpp
+test_qt_shared_modal_hotkeys_SOURCES = tests/vlc_stub_modules.cpp tests/media_player_probe.c tests/test_shared_modal_hotkeys.cpp util/vlchotkeyconverter.cpp util/vlchotkeyconverter.hpp
+nodist_test_qt_shared_modal_hotkeys_SOURCES = tests/test_shared_modal_hotkeys.moc tests/shared_modal_hotkey_production.inc util/vlchotkeyconverter.moc.cpp
+BUILT_SOURCES += tests/shared_modal_hotkey_production.inc tests/test_shared_modal_hotkeys.moc
+CLEANFILES += tests/shared_modal_hotkey_production.inc tests/shared_modal_hotkey_production.inc.json tests/test_shared_modal_hotkeys.moc
+EXTRA_DIST += tests/generate_shared_modal_hotkey_test.py tests/test_juxtopposed_conversion_dialog.py
+test_qt_shared_modal_hotkeys_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir)/src
+test_qt_shared_modal_hotkeys_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_shared_modal_hotkeys_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_shared_modal_hotkeys_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_shared_modal_hotkeys
+TESTS += test_qt_shared_modal_hotkeys
+endif
+endif
+
+# Production General/dialog-host component suites and GNU make remake oracle.
+EXTRA_DIST += tests/juxtopposed_general_preferences_fixture.py \
+    tests/test_juxtopposed_global_settings.py tests/test_juxtopposed_dialogs_host.py \
+    tests/test_qml_dependencies.py tests/fixtures/juxtopposed_global_settings_assets.json \
+    tests/fixtures/qml_dependencies_eager_recipe.inc
+
+# Original Light/Dark volume artwork and production native-binding contract.
+EXTRA_DIST += tests/test_juxtopposed_light_volume.py \
+    tests/fixtures/juxtopposed_light_volume_assets.json \
+    tests/fixtures/juxtopposed_light_volume_reference.png \
+    tests/fixtures/juxtopposed_light_volume_reference.md
+
+# Production backdrop software fallback and shared General/Host setup checks.
+EXTRA_DIST += tests/juxtopposed_backdrop_fixture.py tests/test_juxtopposed_settings_backdrop.py
+
+# Warm list-only QML metadata and preserved stale-include regression.
+EXTRA_DIST += tests/test_qml_module_lists.py tests/fixtures/qml_dependencies_stable_cmp_recipe.inc
+
+# Interface maintained contract, authored assets and historical OFF-skin negative.
+EXTRA_DIST += tests/test_juxtopposed_interface_settings.py \
+    tests/fixtures/juxtopposed_interface_settings_assets.json \
+    tests/fixtures/juxtopposed_interface_v1_obsolete.json \
+    tests/fixtures/juxtopposed_interface_v1_original.py.txt
+
+# Genuine Interface storage/model fixture. Runtime must discover the matching
+# rebuilt Qt plugin options; missing/stale options fail the original assertions.
+if ENABLE_QT
+if HAVE_QT_QTEST
+test_qt_interface_preferences_SOURCES = tests/test_interface_preferences.cpp \
+    tests/interface_preferences_probe.c maininterface/interface_preferences_model.cpp \
+    maininterface/interface_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/checked_preferences_store.hpp
+nodist_test_qt_interface_preferences_SOURCES = tests/test_interface_preferences.moc \
+    maininterface/interface_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_interface_preferences.moc
+CLEANFILES += tests/test_interface_preferences.moc
+tests/test_qt_interface_preferences-test_interface_preferences.$(OBJEXT): tests/test_interface_preferences.moc
+test_qt_interface_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_interface_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_interface_preferences_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_interface_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_interface_preferences
+TESTS += test_qt_interface_preferences
+
+# Real QApplication/static platform imports: opt-in actual desktop gate only.
+test_qt_fullscreen_screen_policy_SOURCES = tests/test_fullscreen_screen_policy.cpp util/fullscreen_screen_policy.hpp
+nodist_test_qt_fullscreen_screen_policy_SOURCES = tests/test_fullscreen_screen_policy.moc
+BUILT_SOURCES += tests/test_fullscreen_screen_policy.moc
+CLEANFILES += tests/test_fullscreen_screen_policy.moc
+tests/test_qt_fullscreen_screen_policy-test_fullscreen_screen_policy.$(OBJEXT): tests/test_fullscreen_screen_policy.moc
+test_qt_fullscreen_screen_policy_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_fullscreen_screen_policy_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_fullscreen_screen_policy_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_fullscreen_screen_policy_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+EXTRA_PROGRAMS = test_qt_fullscreen_screen_policy
+if HAVE_WIN32
+test_qt_interface_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_interface_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_interface_preferences_LDADD += -lntdll
+test_qt_fullscreen_screen_policy_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_fullscreen_screen_policy_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_fullscreen_screen_policy_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_interface_preferences_LDADD += -latomic
+test_qt_fullscreen_screen_policy_LDADD += -latomic
+endif
+endif
+endif
+
+# Actual toolbar FSM with original policy/timer oracle and supplied native boundary.
+EXTRA_DIST += tests/test_interface_toolbar_policy.py tests/tst_InterfaceToolbarPolicy.qml \
+    tests/fixtures/interface_toolbar/MainCtx.qml tests/fixtures/interface_toolbar/Player.qml
+
+# Playback maintained native-shaped contract and exact original asset ledger.
+EXTRA_DIST += tests/test_juxtopposed_playback_settings.py \
+    tests/fixtures/juxtopposed_playback_fields.json tests/fixtures/juxtopposed_playback_assets.json
+
+# Genuine Playback model/save/live-policy fixture. Its declaration-only header
+# is the MOC input; direct Windows .exe targets must order that included output.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_playback_preferences.moc: $(srcdir)/tests/test_playback_preferences.hpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_playback_preferences_SOURCES = tests/test_playback_preferences.cpp \
+    tests/test_playback_preferences.hpp tests/playback_preferences_probe.c \
+    maininterface/playback_preferences_model.cpp maininterface/playback_preferences_model.hpp \
+    util/checked_preferences_store.cpp util/checked_preferences_store.hpp util/playback_seek_policy.hpp
+nodist_test_qt_playback_preferences_SOURCES = tests/test_playback_preferences.moc \
+    maininterface/playback_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_playback_preferences.moc
+CLEANFILES += tests/test_playback_preferences.moc
+tests/test_qt_playback_preferences-test_playback_preferences.$(OBJEXT): tests/test_playback_preferences.moc
+test_qt_playback_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_playback_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_playback_preferences_LDADD = $(QT_QTEST_COMMON_ldadd)
+test_qt_playback_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_playback_preferences
+TESTS += test_qt_playback_preferences
+if HAVE_WIN32
+test_qt_playback_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_playback_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_playback_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_playback_preferences_LDADD += -latomic
+endif
+endif
+endif
+
+# Audio maintained native-shaped UI and strict original artwork ledger.
+EXTRA_DIST += tests/test_juxtopposed_audio_settings.py \
+    tests/fixtures/juxtopposed_audio_fields.json tests/fixtures/juxtopposed_audio_assets.json
+
+# Video maintained native-shaped UI and strict original artwork ledger.
+EXTRA_DIST += tests/test_juxtopposed_video_settings.py \
+    tests/fixtures/juxtopposed_video_fields.json tests/fixtures/juxtopposed_video_assets.json
+
+# Exact frozen Audio/Video/native float fixture bodies; no skipped desired rows.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_audio_preferences.moc: $(srcdir)/tests/test_audio_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_audio_preferences_SOURCES = tests/test_audio_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    maininterface/audio_preferences_model.cpp \
+    maininterface/audio_preferences_model.hpp \
+    tests/general_preferences_probe.c \
+    tests/audio_preferences_pcm_probe.c \
+    util/audio_defaults_policy.hpp \
+    util/audio_windows_devices.cpp \
+    util/audio_windows_devices.hpp \
+    player/audio_equalizer.cpp \
+    player/audio_equalizer.hpp \
+    util/variables.cpp \
+    util/variables.hpp
+nodist_test_qt_audio_preferences_SOURCES = tests/test_audio_preferences.moc \
+    maininterface/audio_preferences_model.moc.cpp \
+    player/audio_equalizer.moc.cpp \
+    util/variables.moc.cpp
+BUILT_SOURCES += tests/test_audio_preferences.moc
+CLEANFILES += tests/test_audio_preferences.moc
+tests/test_qt_audio_preferences-test_audio_preferences.$(OBJEXT): tests/test_audio_preferences.moc
+test_qt_audio_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_audio_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_audio_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_audio_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_audio_preferences
+TESTS += test_qt_audio_preferences
+if HAVE_WIN32
+test_qt_audio_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_audio_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_audio_preferences_LDADD += -lntdll $(LIBCOM) -luuid
+endif
+if HAVE_LIBATOMIC
+test_qt_audio_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_audio_preferences_LDADD += -latomic
+endif
+
+tests/test_video_preferences.moc: $(srcdir)/tests/test_video_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_video_preferences_SOURCES = tests/test_video_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    maininterface/video_preferences_model.cpp \
+    maininterface/video_preferences_model.hpp \
+    tests/video_preferences_probe.c
+nodist_test_qt_video_preferences_SOURCES = tests/test_video_preferences.moc \
+    maininterface/video_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_video_preferences.moc
+CLEANFILES += tests/test_video_preferences.moc
+tests/test_qt_video_preferences-test_video_preferences.$(OBJEXT): tests/test_video_preferences.moc
+test_qt_video_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_video_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_video_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_video_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_video_preferences
+TESTS += test_qt_video_preferences
+if HAVE_WIN32
+test_qt_video_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_video_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_video_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_video_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_video_preferences_LDADD += -latomic
+endif
+
+tests/test_checked_float_preferences.moc: $(srcdir)/tests/test_checked_float_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_checked_float_preferences_SOURCES = tests/test_checked_float_preferences.cpp \
+    util/checked_preferences_store.hpp \
+    tests/general_preferences_probe.c
+nodist_test_qt_checked_float_preferences_SOURCES = tests/test_checked_float_preferences.moc
+BUILT_SOURCES += tests/test_checked_float_preferences.moc
+CLEANFILES += tests/test_checked_float_preferences.moc
+tests/test_qt_checked_float_preferences-test_checked_float_preferences.$(OBJEXT): tests/test_checked_float_preferences.moc
+test_qt_checked_float_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_checked_float_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_checked_float_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_checked_float_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_checked_float_preferences
+TESTS += test_qt_checked_float_preferences
+if HAVE_WIN32
+test_qt_checked_float_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_checked_float_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_checked_float_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_checked_float_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_checked_float_preferences_LDADD += -latomic
+endif
+
+endif
+endif
+
+EXTRA_DIST += tests/generate_owned_audio_fixture.py
+
+EXTRA_DIST += tests/test_juxtopposed_subtitles_settings.py \
+    tests/fixtures/juxtopposed_subtitles_fields.json tests/fixtures/juxtopposed_subtitles_assets.json
+
+# Exact desired native subtitle oracle; actual ordinary production store object.
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_subtitles_preferences.moc: $(srcdir)/tests/test_subtitles_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+test_qt_subtitles_preferences_SOURCES = tests/test_subtitles_preferences.cpp \
+    maininterface/subtitles_preferences_model.cpp maininterface/subtitles_preferences_model.hpp \
+    player/subtitle_appearance.cpp player/subtitle_appearance.hpp \
+    maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+    util/variables.cpp util/variables.hpp tests/subtitles_preferences_probe.c \
+    util/checked_preferences_store.hpp
+nodist_test_qt_subtitles_preferences_SOURCES = tests/test_subtitles_preferences.moc \
+    maininterface/subtitles_preferences_model.moc.cpp player/subtitle_appearance.moc.cpp \
+    maininterface/subtitle_preset_model.moc.cpp util/variables.moc.cpp
+BUILT_SOURCES += tests/test_subtitles_preferences.moc
+CLEANFILES += tests/test_subtitles_preferences.moc
+# Order the object, not a conditional program target: Automake owns its recipe.
+tests/test_qt_subtitles_preferences-test_subtitles_preferences.$(OBJEXT): tests/test_subtitles_preferences.moc
+test_qt_subtitles_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_subtitles_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_subtitles_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_subtitles_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+check_PROGRAMS += test_qt_subtitles_preferences
+TESTS += test_qt_subtitles_preferences
+if HAVE_WIN32
+test_qt_subtitles_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_subtitles_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+test_qt_subtitles_preferences_LDADD += -lntdll
+endif
+if HAVE_LIBATOMIC
+test_qt_subtitles_preferences_CXXFLAGS += -DQT_HAS_LIBATOMIC
+test_qt_subtitles_preferences_LDADD += -latomic
+endif
+endif
+endif
+EXTRA_DIST += tests/generate_subtitles_fixtures.sh
+
+# Library settings component and supplied model contract.
+EXTRA_DIST += tests/test_juxtopposed_library_settings.py tests/juxtopposed_library_preferences_fixture.py \
+    tests/fixtures/juxtopposed_library_fields.json tests/fixtures/juxtopposed_library_assets.json
+
+# Native Library tests compile a private policy bridge and WinMsg probe.
+# No diagnostic exports are added to shipping Core or plugins.
+EXTRA_DIST += tests/test_library_preferences.cpp tests/library_preferences_probe.c \
+    tests/library_fixture_fetcher.c
+
+EXTRA_DIST += tests/test_library_ipc_errors.py tests/library_ipc_receiver_errors.c \
+    tests/library_ipc_sender_errors.c tests/test_library_opening_process.cpp \
+    tests/native_library/prepare.py tests/native_library/run.py tests/native_library/startup.py \
+    tests/native_library/preferences.mk tests/native_library/modules.mk \
+    tests/native_library/process.mk tests/native_library/README.md
+
+EXTRA_DIST += tests/test_juxtopposed_privacy_settings.py tests/juxtopposed_privacy_preferences_fixture.py \
+    tests/test_privacy_preferences.cpp tests/privacy_preferences_probe.c tests/native_library/privacy.mk
+
+EXTRA_DIST += tests/native_library/run_privacy.py
+
+EXTRA_DIST += tests/test_controls_preferences.cpp tests/controls_input_fixture.c \
+    tests/test_juxtopposed_controls_settings.py tests/juxtopposed_controls_preferences_fixture.py \
+    tests/test_video_input_tap_handler.py tests/native_library/controls.mk \
+    tests/native_library/controls-modules.mk tests/native_library/run_controls.py \
+    tests/test_controls_dialogs.cpp tests/native_library/controls-dialogs.mk
+
+EXTRA_DIST += tests/test_network_preferences.cpp tests/native_library/network.mk tests/native_library/run_network.py
+EXTRA_DIST += tests/test_juxtopposed_network_settings.py tests/juxtopposed_network_preferences_fixture.py
+
+# Opt-in owned-window test; none of these files enter the ordinary module.
+EXTRA_DIST += tests/native_ui/network_journey.cpp tests/native_ui/network_journey.mk \
+    tests/native_ui/run_network_journey.py tests/native_ui/README.md
+
+# Owned Windows integration: invoke through the portable-runtime driver.
+EXTRA_DIST += tests/native_library/cache-rescan.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_plugin_cache_rescan
+test_qt_plugin_cache_rescan_SOURCES = tests/test_plugin_cache_rescan.cpp \
+    tests/library_preferences_probe.c util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp \
+    util/winpthreads_shutdown.cpp
+nodist_test_qt_plugin_cache_rescan_SOURCES = tests/test_plugin_cache_rescan.moc util/plugin_cache_rescan.moc.cpp
+BUILT_SOURCES += tests/test_plugin_cache_rescan.moc
+CLEANFILES += tests/test_plugin_cache_rescan.moc
+test_qt_plugin_cache_rescan_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_plugin_cache_rescan_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_plugin_cache_rescan_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_plugin_cache_rescan_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+endif
+endif
+endif
+
+# Owned Performance model integration; invoke through its portable-runtime driver.
+EXTRA_DIST += tests/test_performance_preferences.cpp tests/native_library/performance.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_performance_preferences
+test_qt_performance_preferences_SOURCES = tests/test_performance_preferences.cpp \
+    tests/library_preferences_probe.c maininterface/performance_preferences_model.cpp \
+    maininterface/performance_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/plugin_cache_rescan.cpp util/plugin_cache_rescan.hpp util/winpthreads_shutdown.cpp
+nodist_test_qt_performance_preferences_SOURCES = tests/test_performance_preferences.moc \
+    maininterface/performance_preferences_model.moc.cpp util/plugin_cache_rescan.moc.cpp
+BUILT_SOURCES += tests/test_performance_preferences.moc
+CLEANFILES += tests/test_performance_preferences.moc
+test_qt_performance_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_performance_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_performance_preferences_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_performance_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+endif
+endif
+endif
+
+EXTRA_DIST += tests/test_juxtopposed_performance_settings.py tests/juxtopposed_performance_preferences_fixture.py \
+    tests/native_ui/performance_journey.cpp tests/native_ui/run_performance_journey.py
+
+EXTRA_DIST += tests/native_ui/performance_journey.mk
+
+# Owned Recording model integration; invoke through its isolated runtime driver.
+EXTRA_DIST += tests/test_recording_preferences.cpp tests/native_library/recording.mk
+if ENABLE_QT
+if HAVE_QT_QTEST
+if HAVE_WIN32
+EXTRA_PROGRAMS += test_qt_recording_preferences
+test_qt_recording_preferences_SOURCES = tests/test_recording_preferences.cpp \
+    tests/library_preferences_probe.c maininterface/recording_preferences_model.cpp \
+    maininterface/recording_preferences_model.hpp util/checked_preferences_store.cpp \
+    util/checked_preferences_store.hpp util/cast_discovery_policy.hpp util/winpthreads_shutdown.cpp
+nodist_test_qt_recording_preferences_SOURCES = tests/test_recording_preferences.moc \
+    maininterface/recording_preferences_model.moc.cpp
+BUILT_SOURCES += tests/test_recording_preferences.moc
+CLEANFILES += tests/test_recording_preferences.moc
+test_qt_recording_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_recording_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_recording_preferences_LDADD = $(QT_QTEST_COMMON_ldadd) -lntdll
+test_qt_recording_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--wrap=pthread_key_delete
+
+EXTRA_DIST += tests/test_juxtopposed_recording_settings.py tests/juxtopposed_recording_preferences_fixture.py \
+    tests/native_ui/recording_journey.cpp tests/native_ui/recording_journey.mk tests/native_ui/run_recording_journey.py
+endif
+endif
+endif
+
+EXTRA_DIST += tests/test_juxtopposed_extensions_settings.py \
+    tests/native_ui/extensions_journey.cpp tests/native_ui/extensions_journey.mk tests/native_ui/run_extensions_journey.py
+
+EXTRA_DIST += tests/test_sidebar_pins_store.cpp tests/native_library/sidebar-pins.mk \
+    tests/native_library/run_sidebar_pins_store.py
+
+EXTRA_DIST += tests/test_juxtopposed_sidebar_pins.py \
+    tests/native_ui/sidebar_pins_journey.cpp tests/native_ui/sidebar_pins_journey.mk \
+    tests/native_ui/timeline_thumbnail_journey.cpp \
+    tests/native_library/make_timeline_thumbnail_fixtures.sh \
+    tests/native_library/make_timeline_geometry_fixtures.py \
+    tests/native_library/make_timeline_playback_fixtures.sh \
+    tests/native_library/make_timeline_format_fixtures.py \
+    tests/native_ui/run_sidebar_pins_journey.py tests/native_ui/movable_dialog_journey.hpp \
+    tests/native_ui/navigation_recovery_journey.hpp tests/native_ui/dialog_busy_journey.hpp \
+    tests/native_ui/setup_journey.hpp tests/test_juxtopposed_setup.py
+
+EXTRA_DIST += tests/test_player_profiles_store.cpp tests/test_player_profile_preferences.cpp \
+    tests/test_player_profile_layout.cpp tests/test_player_profiles_model.cpp \
+    tests/test_juxtopposed_player_profiles.py tests/test_juxtopposed_player_customizer.py tests/native_ui/profiles_journey.hpp \
+    tests/native_ui/customizer_journey.hpp tests/native_ui/transport_defaults_journey.hpp \
+    tests/native_ui/favorite_journey.hpp \
+    tests/native_ui/playlist_origin_journey.hpp \
+    tests/native_ui/fullscreen_controls_journey.hpp \
+    tests/test_playlist_source.cpp tests/native_library/playlist-source.mk \
+    tests/test_audio_startup_consumer.cpp tests/native_library/audio-startup.mk \
+    tests/native_library/run_audio_startup.py \
+    tests/test_playback_track_consumers.cpp tests/playback_main_playlist_probe.c \
+    tests/native_library/playback-consumers.mk tests/native_library/run_playback_consumers.py \
+    tests/native_library/player-profiles.mk tests/native_library/profile-preferences.mk \
+    tests/native_library/profile-layout.mk tests/native_library/profile-model.mk
+EXTRA_DIST += tests/test_juxtopposed_queue_find.py
+EXTRA_DIST += tests/test_queue_filter_layout.py
+EXTRA_DIST += tests/test_tracks_popup_input.py
+EXTRA_DIST += tests/test_tracks_cancel_navigation.cpp tests/native_library/tracks-navigation.mk
+EXTRA_DIST += tests/test_native_paused_audio_seek.cpp tests/native_library/paused-audio.mk
+EXTRA_DIST += tests/test_player_seek_timer_point.cpp tests/player_seek_timer_probe.c \
+	tests/generate_player_seek_timer_test.py tests/native_library/seek-timer-point.mk
+EXTRA_DIST += tests/native_library/key-routing.mk
+EXTRA_DIST += util/queue_find_key_scope.hpp
+EXTRA_DIST += tests/test_item_key_event_filter.cpp tests/native_library/item-key-filter.mk
+EXTRA_DIST += util/detached_window_placement.hpp tests/test_detached_window_placement.cpp tests/native_library/detached-placement.mk
+EXTRA_DIST += tests/test_playlist_view_lifetime.py
+EXTRA_DIST += tests/test_playlist_visibility.py
+EXTRA_DIST += tests/test_queue_row_pointer.py
+
+if ENABLE_QT
+if HAVE_QT_QTEST
+tests/test_setup_preferences.moc: $(srcdir)/tests/test_setup_preferences.cpp
+	$(moc_verbose)$(MOC) $(MOC_CPPFLAGS) -o $@ $<
+tests/test_qt_setup_preferences-test_setup_preferences.$(OBJEXT): tests/test_setup_preferences.moc
+test_qt_setup_preferences_SOURCES = tests/vlc_stub_modules.cpp tests/test_setup_preferences.cpp \
+    tests/general_preferences_probe.c maininterface/general_preferences_model.cpp \
+    maininterface/general_preferences_model.hpp util/color_scheme_model.cpp util/color_scheme_model.hpp
+nodist_test_qt_setup_preferences_SOURCES = tests/test_setup_preferences.moc \
+    maininterface/general_preferences_model.moc.cpp util/color_scheme_model.moc.cpp
+BUILT_SOURCES += tests/test_setup_preferences.moc
+CLEANFILES += tests/test_setup_preferences.moc
+test_qt_setup_preferences_CPPFLAGS = $(QT_QTEST_COMMON_cppflags) -I$(top_srcdir) -I$(top_srcdir)/src
+test_qt_setup_preferences_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_setup_preferences_LDADD = util/libqt_plugin_la-checked_preferences_store.lo $(QT_QTEST_COMMON_ldadd)
+test_qt_setup_preferences_LDFLAGS = $(QT_QTEST_COMMON_ldflags) -Wl,--strip-debug
+if HAVE_WIN32
+test_qt_setup_preferences_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_setup_preferences_LDADD += -lntdll
+test_qt_setup_preferences_LDFLAGS += -Wl,--wrap=pthread_key_delete
+endif
+check_PROGRAMS += test_qt_setup_preferences
+TESTS += test_qt_setup_preferences
+endif
+endif
+
+EXTRA_DIST += tests/native_ui/seek_accessibility_journey.cpp tests/native_ui/seek_accessibility_journey.md

@@ -1,0 +1,23 @@
+{
+  "nativeR3FileCount": 2062,
+  "ordinaryR4FileCount": 2062,
+  "finalR5FileCount": 2064,
+  "nativeToOrdinaryProductionDelta": [
+    "modules/gui/qt/maininterface/mainctx.cpp: enable the qualified windowsMediaRole consumer"
+  ],
+  "ordinaryToFinalDelta": [
+    "test/Makefile.am: distribute the COM test and recipe",
+    "test/wasapi-role-native.mk: opt-in reproducible COM test target"
+  ],
+  "productionUnchangedFromOrdinaryR4": true,
+  "sourceCopiesVerified": true,
+  "freezes": [
+    "build-windows/beta-media-role-20261022/source-r4",
+    "build-windows/beta-media-role-20261022/source-r5"
+  ],
+  "preservedFailures": [
+    "R1 integration test compile failed at QStringBuilder return type; corrected to QByteArray.",
+    "R2 observer read a buffered file before normal shutdown. Its old runner killed its child at90s; no saved child exit code. Failed raw output retained. R3 reads complete logs after normal teardown and passes.",
+    "Timeout wrapper now saves the child PID and leaves a child running on observation timeout; no timeout occurred in final runs."
+  ]
+}

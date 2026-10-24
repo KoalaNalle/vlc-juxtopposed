@@ -1,0 +1,52 @@
+{
+  "startedUtc": "2026-10-14T13:32:27.528850+00:00",
+  "passed": true,
+  "package": "build-windows/slice-flac-complete-package",
+  "testExe": "build-windows/core-tests/test_modules_packetizer_flac_eos.exe",
+  "fixtures": "build-windows/flac-native-complete-after-20261014",
+  "expectedCases": [
+    "flac_short_final_frame_and_repeated_drain",
+    "flac_split_native_frames_and_complete_drain",
+    "flac_every_truncated_short_frame_rejected",
+    "flac_bad_crc_flush_then_valid_frame",
+    "flac_flush_discards_partial_lookahead",
+    "flac_truncated_blocksize_guarded_shared_header",
+    "flac_packetizer_native_extra_cleanup"
+  ],
+  "timeoutSeconds": 45,
+  "scope": "Actual loaded FLAC packetizer module using real native-encoded 1/B+1 frame fixtures, 1/2/3/7/17-byte feed boundaries, complete/repeated drain, original packet bytes/PTS, truncated/footer-CRC rejection and flush recovery. Explicit malformed two-byte blocksize header is tested against current shared native source with an inaccessible following page. Separate from full decoder/playback/GUI acceptance and actual system OOM.",
+  "inputHashes": {
+    "build-windows/core-tests/test_modules_packetizer_flac_eos.exe": "3b6ee9c11a445c1a22cab2d4ca18ee882f1d0c2c256aa23771299d343a251b52",
+    "build-windows/slice-flac-complete-package/libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "build-windows/slice-flac-complete-package/libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+    "build-windows/slice-flac-complete-package/plugins/packetizer/libpacketizer_flac_plugin.dll": "c097dbb096b4144a0b12836b7acdc409ab47e6b12d81339dd439c58bad2b025e",
+    "build-windows/flac-native-complete-after-20261014/boundary-one.flac": "4577f714d6f788b6c9bf2b0bf7a32eeb7266f007c16c746161d5bdc62fef8120",
+    "build-windows/flac-native-complete-after-20261014/boundary-B-plus-one.flac": "cfd8c102be1f0a15837fa61e7486584d361c841d7a66d8572184f1dc063fd5ed",
+    "build-windows/flac-native-complete-after-20261014/verification.json": "f1b447c2cfbfd92c8201fc92d2bd78d0f4745b5f51be2f1392394739e4702da3",
+    "build-windows/core-tests/libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "build-windows/core-tests/libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "sourceHashesAtRun": {
+    "test/modules/packetizer/flac_eos.c": "801a7036e30fd142b89692bffa445a7e4d44a5cc61d441bd8bbed36a3e01a003",
+    "modules/packetizer/flac.h": "f35b8777db0a47af806922d7ea744f8e74045086c61af919656dd48cb35ed2d1"
+  },
+  "sourceBuildProof": "Root must retain compilation log/manifest for this executable; current source identities alone do not prove that build.",
+  "ownedPid": 29444,
+  "exitCode": 0,
+  "actualCases": [
+    "flac_short_final_frame_and_repeated_drain",
+    "flac_split_native_frames_and_complete_drain",
+    "flac_every_truncated_short_frame_rejected",
+    "flac_bad_crc_flush_then_valid_frame",
+    "flac_flush_discards_partial_lookahead",
+    "flac_truncated_blocksize_guarded_shared_header",
+    "flac_packetizer_native_extra_cleanup"
+  ],
+  "loadedFlacPacketizer": true,
+  "evidenceHashes": {
+    "stdout.txt": "92d1ac3b2788acdd7d1e5fed37fdfccc6b8f9be0a108225c52e970b1b4546681",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "packetizer-flac-extra.log": "c9c43ee807eb2480440f9faf18a21996e655fb6c3746750ff90e3edeb750809c"
+  },
+  "finishedUtc": "2026-10-14T13:32:28.157450+00:00"
+}

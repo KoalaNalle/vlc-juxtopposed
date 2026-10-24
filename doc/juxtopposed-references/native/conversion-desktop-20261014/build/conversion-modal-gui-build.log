@@ -1,0 +1,143 @@
+make: Entering directory '/build/vlc/win64/modules/gui/qt'
+  GEN      widgets/qml.deps
+  GEN      util/qml.deps
+  GEN      playlist/qml.deps
+  GEN      style/qml.deps
+  GEN      playercontrols/qml.deps
+  GEN      player/qml.deps
+  GEN      network/qml.deps
+  GEN      menus/qml.deps
+  GEN      medialibrary/qml.deps
+  GEN      shaders/shaders.deps
+  GEN      maininterface/qml.deps
+  CXX      libqt_plugin_la-qt.lo
+  CXX      dialogs/libqt_plugin_la-dialogs_provider.lo
+  CXX      dialogs/extended/libqt_plugin_la-extended_panels.lo
+  CXX      dialogs/open/libqt_plugin_la-open.lo
+  CXX      dialogs/open/libqt_plugin_la-open_panels.lo
+  CXX      dialogs/preferences/libqt_plugin_la-preferences.lo
+  CXX      dialogs/preferences/libqt_plugin_la-simple_preferences.lo
+  CXX      dialogs/systray/libqt_plugin_la-systray.lo
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/open/open_panels.cpp:137:2: warning: #warning Qt open_panels should use a more sustainable way to customize FileDialogBox [-Wcpp]
+  137 | #warning Qt open_panels should use a more sustainable way to customize FileDialogBox
+      |  ^~~~~~~
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp: In member function ‘void ExtV4l2::Refresh()’:
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp:640:51: warning: ‘vlc_object_t* vlc_player_GetV4l2Object(vlc_player_t*)’ is deprecated [-Wdeprecated-declarations]
+  640 |     vlc_object_t *p_obj = vlc_player_GetV4l2Object(p_intf->p_player);
+      |                           ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+In file included from /checkout/extras/package/win32/../../../modules/gui/qt/player/input_models.hpp:29,
+                 from /checkout/extras/package/win32/../../../modules/gui/qt/player/player_controller.hpp:36,
+                 from /checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp:51:
+/checkout/extras/package/win32/../../../include/vlc_player.h:989:1: note: declared here
+  989 | vlc_player_GetV4l2Object(vlc_player_t *player) VLC_DEPRECATED;
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp: In member function ‘void ExtV4l2::ValueChange(int)’:
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp:802:51: warning: ‘vlc_object_t* vlc_player_GetV4l2Object(vlc_player_t*)’ is deprecated [-Wdeprecated-declarations]
+  802 |     vlc_object_t *p_obj = vlc_player_GetV4l2Object(p_intf->p_player);
+      |                           ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/checkout/extras/package/win32/../../../include/vlc_player.h:989:1: note: declared here
+  989 | vlc_player_GetV4l2Object(vlc_player_t *player) VLC_DEPRECATED;
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp: In member function ‘virtual bool FilterSliderData::eventFilter(QObject*, QEvent*)’:
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/extended/extended_panels.cpp:914:45: warning: unused parameter ‘watched’ [-Wunused-parameter]
+  914 | bool FilterSliderData::eventFilter(QObject *watched, QEvent *event)
+      |                                    ~~~~~~~~~^~~~~~~
+  CXX      maininterface/libqt_plugin_la-interface_window_handler.lo
+  CXX      maininterface/libqt_plugin_la-mainctx.lo
+  CXX      maininterface/libqt_plugin_la-mainui.lo
+  CXX      medialibrary/libqt_plugin_la-mlplaylistlistmodel.lo
+  CXX      menus/libqt_plugin_la-custom_menus.lo
+  CXX      menus/libqt_plugin_la-qml_menu_wrapper.lo
+  CXX      menus/libqt_plugin_la-menus.lo
+  CXX      widgets/native/libqt_plugin_la-interface_widgets.lo
+  CXX      maininterface/libqt_plugin_la-mainctx_win32.lo
+  MOC      dialogs/dialogs_provider.moc.cpp
+  GEN      shaders/shaders.qrc
+ CACHEGEN  dialogs/dialogs/qml/CustomDialog.cpp
+ CACHEGEN  dialogs/dialogs/qml/JuxtopposedNetworkDialog.cpp
+ CACHEGEN  dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.cpp
+ CACHEGEN  dialogs/dialogs/qml/JuxtopposedConversionDialog.cpp
+ CACHEGEN  dialogs/dialogs/qml/Dialogs.cpp
+ CACHEGEN  dialogs/dialogs/qml/ModalDialog.cpp
+ CACHEGEN  dialogs/dialogs/qml/WindowDialog.cpp
+ CACHEGEN  dialogs/toolbar/qml/EditorDNDDelegate.cpp
+ CACHEGEN  dialogs/toolbar/qml/EditorDNDView.cpp
+ CACHEGEN  dialogs/toolbar/qml/EditorDummyButton.cpp
+ CACHEGEN  dialogs/toolbar/qml/EditorTabButton.cpp
+ CACHEGEN  dialogs/toolbar/qml/ToolbarEditor.cpp
+ CACHEGEN  dialogs/toolbar/qml/ToolbarEditorDialog.cpp
+ CACHEGEN  dialogs/toolbar/qml/ToolbarEditorButtonList.cpp
+  GEN      dialogs/qmldir.qrc
+  GEN      dialogs/qmlcachegen.rsp
+  GEN      shaders/shaders.cpp
+  CXX      dialogs/libqt_plugin_la-dialogs_provider.moc.lo
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-CustomDialog.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-JuxtopposedNetworkDialog.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-JuxtopposedNewPlaylistDialog.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-JuxtopposedConversionDialog.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-Dialogs.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-ModalDialog.o
+  CXX      dialogs/dialogs/qml/libqml_module_dialogs_a-WindowDialog.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-EditorDNDDelegate.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-EditorDNDView.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-EditorDummyButton.o
+/checkout/extras/package/win32/../../../modules/gui/qt/maininterface/mainctx_win32.cpp: In lambda function:
+/checkout/extras/package/win32/../../../modules/gui/qt/maininterface/mainctx_win32.cpp:147:20: warning: cast between incompatible function types from ‘FARPROC’ {aka ‘long long int (*)()’} to ‘GetSystemMetricsForDpiFunc’ {aka ‘int (*)(int, unsigned int)’} [-Wcast-function-type]
+  147 |             return reinterpret_cast<GetSystemMetricsForDpiFunc>(GetProcAddress(user32dll, "GetSystemMetricsForDpi"));
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/checkout/extras/package/win32/../../../modules/gui/qt/maininterface/mainctx_win32.cpp: In lambda function:
+/checkout/extras/package/win32/../../../modules/gui/qt/maininterface/mainctx_win32.cpp:163:20: warning: cast between incompatible function types from ‘FARPROC’ {aka ‘long long int (*)()’} to ‘GetDpiForWindowFunc’ {aka ‘unsigned int (*)(HWND__*)’} [-Wcast-function-type]
+  163 |             return reinterpret_cast<GetDpiForWindowFunc>(GetProcAddress(user32dll, "GetDpiForWindow"));
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-EditorTabButton.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-ToolbarEditor.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-ToolbarEditorDialog.o
+  CXX      dialogs/toolbar/qml/libqml_module_dialogs_a-ToolbarEditorButtonList.o
+  GEN      dialogs/qmlassets.cpp
+ CACHEGEN  dialogs/qmlcache_loader.cpp
+ CACHEGEN  maininterface/qml/MainInterface.cpp
+  GEN      maininterface/qmlassets.cpp
+  CXX      shaders/libqt_plugin_la-shaders.lo
+  CXX      dialogs/libqml_module_dialogs_a-qmlassets.o
+  CXX      dialogs/libqml_module_dialogs_a-qmlcache_loader.o
+  CXX      maininterface/qml/libqml_module_maininterface_a-MainInterface.o
+  CXX      maininterface/libqml_module_maininterface_a-qmlassets.o
+  AR       libqml_module_maininterface.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  AR       libqml_module_dialogs.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  CXXLD    libqt_plugin.la
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_dialogs.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_maininterface.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_medialibrary.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_menus.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_network.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_player.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_playercontrols.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_playlist.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_style.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_util.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_widgets.a is not portable!
+make: Leaving directory '/build/vlc/win64/modules/gui/qt'

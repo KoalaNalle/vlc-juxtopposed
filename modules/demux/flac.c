@@ -368,6 +368,7 @@ static int Demux( demux_t *p_demux )
         p_sys->p_current_block = vlc_stream_Block( p_demux->s, FLAC_PACKET_SIZE );
 
     bool b_eof = (p_sys->p_current_block == NULL);
+    bool emitted = false;
 
     if ( !b_eof )
     {
@@ -381,6 +382,7 @@ static int Demux( demux_t *p_demux )
                             p_sys->b_stream_info ? &p_sys->stream_info : NULL,
                             p_sys->p_current_block ? &p_sys->p_current_block : NULL ) ) )
     {
+        emitted = true;
         /* Only clear on output when packet is accepted as sync #17111 */
         p_sys->b_start = false;
         while( p_block_out )
@@ -405,7 +407,10 @@ static int Demux( demux_t *p_demux )
         break;
     }
 
-    return b_eof ? VLC_DEMUXER_EOF : VLC_DEMUXER_SUCCESS;
+    /* Input EOF can expose several buffered frames, especially when the
+     * last frame is shorter than normal header lookahead. Preserve one
+     * packet per invocation and signal EOF only after packetizer drain. */
+    return b_eof && !emitted ? VLC_DEMUXER_EOF : VLC_DEMUXER_SUCCESS;
 }
 
 /*****************************************************************************

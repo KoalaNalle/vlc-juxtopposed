@@ -39,6 +39,7 @@
 #include "h2frame.h"
 #include "conn.h"
 #include "message.h"
+#include "test_transport.h"
 
 #if defined(PF_UNIX) && !defined(PF_LOCAL)
 #    define PF_LOCAL PF_UNIX
@@ -98,7 +99,7 @@ static void conn_create(void)
     vlc_tls_t *tlsv[2];
     char hello[24];
 
-    if (vlc_tls_SocketPair(PF_LOCAL, 0, tlsv))
+    if (vlc_http_test_socket_pair(tlsv))
         assert(!"socketpair");
 
     external_tls = tlsv[0];

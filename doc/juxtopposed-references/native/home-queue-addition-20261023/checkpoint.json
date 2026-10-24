@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "selectedAdditionWorkflowAccepted": true,
+  "fullQueueAccepted": false,
+  "fullBetaAccepted": false,
+  "date": "2026-10-23",
+  "identities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/gui/libqt_plugin.dll": "f528dd1c5c8cfea210d8f06bd305bb9c75478bc764f407bcc96b69764a256b55",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408"
+  },
+  "sourceInputs": 2103,
+  "artifacts": {
+    "ordinary-process.json": "1f72794acdb2a9475019b77af29a90a1fa9a38f4b6852661e1287e9c2f6e77f9",
+    "ui-observations.json": "d1ab6f348cc0cbe5be2b9242b1102e09b907c09b0328a361194811a4265ced5a",
+    "source-inputs.json": "96f401db5e8ad497403ee7afef586d7ea60b6da372aa352a17006ba1ffa2a604",
+    "ordinary-producer.py": "80e9029b250eb884c17d8d8881cc2432619bbdf47ebb3ff8f9a5b9a1203cff7e",
+    "ordinary-review.json": "c70f99fe117541add049e2ee6be45a76cd32a8d022cdc4678397446f8d0068d0"
+  },
+  "followUps": [
+    "Initially paused seek moves the slider while elapsed remains0 until brief playback; investigate separately. This is not accepted as consistent paused seeking.",
+    "The expanded filter overlaps most of the Add button. The ordinary filtered addition used the exposed lower edge. Retain this as an interaction/layout issue."
+  ]
+}

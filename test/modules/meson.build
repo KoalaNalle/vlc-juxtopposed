@@ -1,4 +1,20 @@
 vlc_tests += {
+    'name': 'test_modules_demux_wav_timing',
+    'sources': files('demux/wav_timing.c'),
+    'suite': ['modules', 'test_modules'],
+    'link_with': [libvlc, libvlccore],
+    'module_depends': ['wav'],
+}
+
+vlc_tests += {
+    'name' : 'test_modules_access_output_file',
+    'sources' : files('access_output/file.c'),
+    'suite' : ['modules', 'test_modules'],
+    'link_with' : [libvlc, libvlccore],
+    'module_depends' : ['access_output_file'],
+}
+
+vlc_tests += {
     'name' : 'test_modules_lua_extension',
     'sources' : files('lua/extension.c'),
     'suite' : ['modules', 'test_modules'],
@@ -71,6 +87,14 @@ vlc_tests += {
         'packetizer/h266_nal.c',
         '../../modules/packetizer/h266_nal.c'
       ),
+    'suite' : ['modules', 'test_modules'],
+    'link_with' : [libvlc, libvlccore],
+    'module_depends' : vlc_plugins_targets.keys()
+}
+
+vlc_tests += {
+    'name' : 'test_modules_packetizer_copy',
+    'sources' : files('packetizer/copy.c'),
     'suite' : ['modules', 'test_modules'],
     'link_with' : [libvlc, libvlccore],
     'module_depends' : vlc_plugins_targets.keys()
@@ -258,3 +282,64 @@ vlc_tests += {
     'link_with' : [libvlc, libvlccore],
     'module_depends' : vlc_plugins_targets.keys()
 }
+
+
+if soxr_dep.found()
+    vlc_tests += {
+        'name': 'test_modules_soxr_timestamps',
+        'sources': files('audio_filter/soxr_timestamps.c'),
+        'suite': ['modules', 'test_modules'],
+        'link_with': [libvlc, libvlccore],
+        'dependencies': [m_lib],
+        'module_depends': ['soxr'],
+    }
+    soxr_native_test_link_args = []
+    soxr_native_test_dependencies = [soxr_dep, m_lib]
+    if host_system == 'windows' and cc.get_id() == 'gcc'
+        soxr_native_test_link_args += ['-static-libgcc', '-no-pthread']
+        soxr_native_test_dependencies += cc.find_library('winpthread', static: true)
+    endif
+    vlc_tests += {
+        'name': 'test_modules_soxr_lifecycle',
+        'sources': files('audio_filter/soxr_lifecycle.c'),
+        'suite': ['modules', 'test_modules'],
+        'link_with': [libvlc, libvlccore],
+        'dependencies': soxr_native_test_dependencies,
+        'link_args': soxr_native_test_link_args,
+    }
+endif
+
+
+flac_native_test_link_args = []
+flac_native_test_dependencies = []
+if host_system == 'windows' and cc.get_id() == 'gcc'
+    flac_native_test_link_args += ['-static-libgcc', '-no-pthread']
+    flac_native_test_dependencies += cc.find_library('winpthread', static: true)
+endif
+vlc_tests += {
+    'name': 'test_modules_packetizer_flac_eos',
+    'sources': files('packetizer/flac_eos.c'),
+    'suite': ['modules', 'test_modules'],
+    'link_with': [libvlc, libvlccore],
+    'module_depends': ['packetizer_flac'],
+    'dependencies': flac_native_test_dependencies,
+    'link_args': flac_native_test_link_args,
+}
+
+# The companion runner creates fresh userdata and installs/removes a real
+# SQLite rejection trigger while this process waits on its control pipe.
+# Build explicitly; running the executable alone is not a default suite test.
+if medialibrary_dep.found()
+    executable('test_modules_medialibrary_history',
+        files('misc/medialibrary_history.c'),
+        build_by_default: false,
+        link_with: [libvlc, libvlccore, vlc_libcompat],
+        include_directories: [vlc_include_dirs, include_directories('../../src')],
+        dependencies: [libvlccore_deps, opengl_dep],
+        c_args: [
+            '-DSRCDIR="@0@"'.format(vlc_src_root + '/test/'),
+            '-DTOP_BUILDDIR="@0@"'.format(vlc_build_root),
+            '-DTOP_SRCDIR="@0@"'.format(vlc_src_root),
+        ],
+        win_subsystem: 'console')
+endif

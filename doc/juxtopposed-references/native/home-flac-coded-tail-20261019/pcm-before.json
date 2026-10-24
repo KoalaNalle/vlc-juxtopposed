@@ -1,0 +1,29 @@
+{
+  "passed": false,
+  "forcedCleanupUsed": false,
+  "sourceSha256": "f78007b806c65daa3ac1cf57ba6f646e843e613e5c819252a6876b4c6a4c041d",
+  "expectedSamples": 480000,
+  "rate": 8000,
+  "channels": 1,
+  "bits": 16,
+  "streamInfoMd5": "abaab7c07fc5dfd93e520384dfc05e9a",
+  "scope": "Decode a checked16-bit FLAC fixture and compare its complete PCM identity.\n\nUses the ordinary launcher, packetizer, decoder, transcode and raw/file modules.\nRequires a known STREAMINFO PCM digest. No Qt, primary-player or all-format claim.\n",
+  "exitCode": 0,
+  "normalExit": true,
+  "decodedSamples": 479232,
+  "decodedMd5": "1233978151901fec21cc4bbd7942e86a",
+  "decodedSha256": "1d0fd3ac73a4fce02a849f44b6c328b4812c608551a00238a1c0940e480ffc13",
+  "sourceUnchanged": true,
+  "protectedRuntimeUnchanged": true,
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/packetizer/libpacketizer_flac_plugin.dll": "c097dbb096b4144a0b12836b7acdc409ab47e6b12d81339dd439c58bad2b025e",
+    "plugins/demux/libflacsys_plugin.dll": "475f3569c22a117dc60ff2bd00579613a97d9671addf3ecf4eceff75a09e1c0b"
+  },
+  "nativeWarnings": [
+    "flac warning: discarding bytes as we're over framesize 12, 24",
+    "main warning: no more input streams for this mux"
+  ],
+  "nativeErrors": [],
+  "runnerSha256": "25bd00459f2cf70f12a7a2331bdb50c5d782129f5c56c15beddeb41f45ed97f2"
+}

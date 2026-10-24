@@ -50,6 +50,7 @@ Widgets.PageLoader {
 
         Widgets.PageExt {
             id: artistPage
+            property alias initialIndex: artistsView.initialIndex
 
             title: qsTr("Artists")
 
@@ -70,6 +71,11 @@ Widgets.PageLoader {
                 enableBeginningFade: root.enableBeginningFade
                 enableEndFade: root.enableEndFade
 
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "all"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
+
                 onArtistAlbumViewRequested: (id, reason) => {
                     History.push([...root.pagePrefix, "albums"], { artistId: id  }, reason)
                 }
@@ -87,8 +93,14 @@ Widgets.PageLoader {
             enableBeginningFade: root.enableBeginningFade
             enableEndFade: root.enableEndFade
 
-            onArtistIdChanged: History.viewProp.artistId = artistId
-            onCurrentAlbumIndexChanged: History.viewProp.initialAlbumIndex = currentAlbumIndex
+            onArtistIdChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "albums"]))
+                    History.viewProp.artistId = artistId
+            }
+            onCurrentAlbumIndexChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "albums"]))
+                    History.viewProp.initialAlbumIndex = currentAlbumIndex
+            }
         }
     }
 }

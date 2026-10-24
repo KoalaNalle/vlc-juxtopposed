@@ -1,0 +1,75 @@
+{
+  "phase": "before",
+  "status": "terminal",
+  "passed": false,
+  "privateGui": true,
+  "privateCore": false,
+  "forcedCleanupUsed": false,
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "e6d6861b0caf3c23fba8b50b04a0680d46b3cfd43d7a08bb9ff15e4b70646c01",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceManifestSha256": "20230ad91ad3d13a68d602ec92f30fc170fd8a580ee1e6deb16731dcf68aaaa5",
+  "sourceCount": 2217,
+  "producerSha256": "c5e521e745bc4be84e5621840552a6c5e31fae0ce172e06e98384549e6a5e5b7",
+  "qaSourceSha256": "2792f2da31a954209e507a6fe250cc38b5f7b793a51f3007ccbb31bb502ca36f",
+  "mediaSha256": "eff8af35a52060a728f89e8b4e75d6f85900077a7c9d0b21f9b13f25ff611a3e",
+  "command": [
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1\\runtime\\vlc.exe",
+    "--intf=qt",
+    "--no-one-instance",
+    "--no-media-library",
+    "--no-crashdump",
+    "--no-qt-privacy-ask",
+    "--no-qt-updates-notif",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--config=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1\\vlcrc",
+    "--file-logging",
+    "--log-verbose=2",
+    "--verbose=2",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-caption-accessibility-20261023\\native-before-r1\\vlc.log",
+    "--no-hw-dec",
+    "--no-sub-autodetect-file",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "pid": 9808,
+  "exitCode": 0,
+  "normalExit": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "native seek observer attaches",
+        "passed": true
+      },
+      {
+        "name": "synthetic media exists",
+        "passed": true
+      },
+      {
+        "name": "native player opens paused synthetic media",
+        "passed": true
+      },
+      {
+        "name": "paused video picture is ready",
+        "passed": false
+      }
+    ],
+    "error": "paused video picture is ready",
+    "fullBetaAccepted": false,
+    "passed": false,
+    "privateFixture": true,
+    "requests": [],
+    "status": "awaiting-owned-window-inspection"
+  },
+  "runtimeUnchanged": true,
+  "sourceInputsUnchanged": true,
+  "mediaUnchanged": true,
+  "diagnostics": []
+}

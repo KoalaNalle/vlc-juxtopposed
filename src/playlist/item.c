@@ -37,6 +37,7 @@ vlc_playlist_item_New(input_item_t *media, uint64_t id)
     vlc_atomic_rc_init(&item->rc);
     item->id = id;
     item->preparser_req = NULL;
+    item->metadata_req = NULL;
     item->media = media;
     input_item_Hold(media);
     return item;
@@ -55,6 +56,8 @@ vlc_playlist_item_Release(vlc_playlist_item_t *item)
     {
         if (item->preparser_req != NULL)
             vlc_preparser_req_Release(item->preparser_req);
+        if (item->metadata_req != NULL)
+            vlc_preparser_req_Release(item->metadata_req);
         input_item_Release(item->media);
         free(item);
     }

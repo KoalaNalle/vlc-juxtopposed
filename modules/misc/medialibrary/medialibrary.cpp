@@ -407,19 +407,28 @@ MediaLibrary* MediaLibrary::create( vlc_medialibrary_module_t* vlc_ml )
     auto mlDir = std::string{ userDir.get() } + "/ml/";
     auto dbPath = mlDir + "ml.db";
     auto mlFolderPath = mlDir + "mlstorage/";
+    const bool historyOnly = var_GetBool(VLC_OBJECT(vlc_ml), "ml-history-only");
+    const bool discoverNetwork = !historyOnly && var_InheritBool(VLC_OBJECT(vlc_ml),
+                                                               "ml-network-discovery");
     medialibrary::SetupConfig cfg;
-    cfg.deviceListers = { { "smb://", std::make_shared<vlc::medialibrary::DeviceLister>(
-                                           VLC_OBJECT(vlc_ml) ) } };
     cfg.fsFactories = {
         std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
-                                    VLC_OBJECT( vlc_ml ), "file://"),
-        std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
-                                    VLC_OBJECT( vlc_ml ), "smb://")
+                                    VLC_OBJECT( vlc_ml ), "file://")
     };
+    if ( discoverNetwork )
+    {
+        cfg.deviceListers = { { "smb://", std::make_shared<vlc::medialibrary::DeviceLister>(
+                                               VLC_OBJECT(vlc_ml) ) } };
+        cfg.fsFactories.push_back(
+            std::make_shared<vlc::medialibrary::SDFileSystemFactory>(
+                                    VLC_OBJECT( vlc_ml ), "smb://") );
+    }
 
-    cfg.parserServices = {
-        std::make_shared<MetadataExtractor>( VLC_OBJECT( vlc_ml ) )
-    };
+#ifdef MEDIALIBRARY_HAS_BACKGROUND_POLICY
+    cfg.enableBackgroundOperations = !historyOnly;
+#endif
+    if (!historyOnly)
+        cfg.parserServices = { std::make_shared<MetadataExtractor>(VLC_OBJECT(vlc_ml)) };
     cfg.logLevel = var_InheritBool( VLC_OBJECT( vlc_ml ), "ml-verbose" ) ?
                         medialibrary::LogLevel::Debug : medialibrary::LogLevel::Warning;
     cfg.logger = std::make_shared<Logger>( VLC_OBJECT( vlc_ml ) );
@@ -430,13 +439,16 @@ MediaLibrary* MediaLibrary::create( vlc_medialibrary_module_t* vlc_ml )
     if ( !ml )
         return nullptr;
 
-    return new MediaLibrary( vlc_ml, ml );
+    return new MediaLibrary(vlc_ml, ml, discoverNetwork, historyOnly);
 }
 
 MediaLibrary::MediaLibrary( vlc_medialibrary_module_t* vlc_ml,
-                            medialibrary::IMediaLibrary* ml )
+                            medialibrary::IMediaLibrary* ml,
+                            bool discoverNetwork, bool historyOnly )
     : m_vlc_ml( vlc_ml )
     , m_ml( ml )
+    , m_discoverNetwork( discoverNetwork )
+    , m_historyOnly(historyOnly)
 {
 }
 
@@ -445,6 +457,8 @@ bool MediaLibrary::Init()
     vlc::threads::mutex_locker lock( m_mutex );
     if( m_initialized )
         return true;
+    if (m_historyInitializationFailed)
+        return false;
 
     auto initStatus = m_ml->initialize( this );
     switch ( initStatus )
@@ -463,6 +477,14 @@ bool MediaLibrary::Init()
             break;
         case medialibrary::InitializeResult::DbCorrupted:
         {
+            if (m_historyOnly)
+            {
+                // A player-locked history operation cannot ask a modal UI
+                // recovery question. Keep the data and report a real error.
+                m_historyInitializationFailed = true;
+                msg_Err(m_vlc_ml, "History database requires recovery with the Library enabled");
+                return false;
+            }
             auto res = vlc_dialog_wait_question(VLC_OBJECT( m_vlc_ml ),
                 VLC_DIALOG_QUESTION_NORMAL, _( "Ignore" ), _( "Recover" ),
                 _( "Recreate" ), _( "Media database corrupted" ),
@@ -484,18 +506,21 @@ bool MediaLibrary::Init()
         }
     }
 
-    try
+    if (!m_historyOnly)
     {
-        m_ml->addThumbnailer( std::make_shared<Thumbnailer>( m_vlc_ml ) );
-    }
-    catch ( const std::runtime_error& ex )
-    {
-        msg_Err( m_vlc_ml, "Failed to provide a thumbnailer module to the "
-                 "medialib: %s", ex.what() );
-        return false;
+        try
+        {
+            m_ml->addThumbnailer(std::make_shared<Thumbnailer>(m_vlc_ml));
+        }
+        catch (const std::runtime_error& ex)
+        {
+            msg_Err(m_vlc_ml, "Failed to provide a thumbnailer module to the medialib: %s", ex.what());
+            return false;
+        }
     }
 
-    m_ml->setDiscoverNetworkEnabled( true );
+    if (!m_historyOnly)
+        m_ml->setDiscoverNetworkEnabled( m_discoverNetwork );
 
     m_initialized = true;
     return true;
@@ -503,6 +528,24 @@ bool MediaLibrary::Init()
 
 int MediaLibrary::Control( int query, va_list args )
 {
+    if (m_historyOnly)
+    {
+        switch (query)
+        {
+            case VLC_ML_CLEAR_HISTORY:
+            case VLC_ML_NEW_EXTERNAL_MEDIA:
+            case VLC_ML_NEW_STREAM:
+            case VLC_ML_MEDIA_SET_TYPE:
+            case VLC_ML_MEDIA_UPDATE_PROGRESS:
+            case VLC_ML_MEDIA_GET_MEDIA_PLAYBACK_STATE:
+            case VLC_ML_MEDIA_SET_MEDIA_PLAYBACK_STATE:
+            case VLC_ML_MEDIA_GET_ALL_MEDIA_PLAYBACK_STATES:
+            case VLC_ML_MEDIA_SET_ALL_MEDIA_PLAYBACK_STATES:
+                break;
+            default:
+                return VLC_EGENERIC;
+        }
+    }
     /*
      * Contrary to Get and List requests, not all Control requests may acquire
      * the priority access safely (without deadlocks) currently: some of them
@@ -526,6 +569,7 @@ int MediaLibrary::Control( int query, va_list args )
         case VLC_ML_SET_FOLDER_PUBLIC:
         case VLC_ML_SET_FOLDER_PRIVATE:
         case VLC_ML_RESUME_BACKGROUND:
+        case VLC_ML_CLEAR_HISTORY:
         case VLC_ML_NEW_EXTERNAL_MEDIA:
         case VLC_ML_NEW_STREAM:
         case VLC_ML_REMOVE_STREAM:
@@ -606,7 +650,8 @@ int MediaLibrary::Control( int query, va_list args )
         case VLC_ML_CLEAR_HISTORY:
         {
             const auto type = static_cast<medialibrary::HistoryType>( va_arg(args, int) );
-            m_ml->clearHistory( type );
+            if ( !m_ml->clearHistory( type ) )
+                return VLC_EGENERIC;
             break;
         }
         case VLC_ML_NEW_EXTERNAL_MEDIA:
@@ -2681,6 +2726,10 @@ static void Close( vlc_object_t* obj )
                               "media from" )
 
 #define ML_VERBOSE _( "Extra verbose media library logs" )
+#define ML_NETWORK_DISCOVERY_TEXT N_( "Enable media library network discovery" )
+#define ML_NETWORK_DISCOVERY_LONGTEXT N_( \
+    "Enable network device discovery by the media library. When disabled, " \
+    "the media library does not start network device discovery." )
 
 vlc_module_begin()
     set_shortname(N_("media library"))
@@ -2689,4 +2738,13 @@ vlc_module_begin()
     set_capability("medialibrary", 100)
     set_callbacks(Open, Close)
     add_bool( "ml-verbose", false, ML_VERBOSE, nullptr )
+    add_bool( "ml-network-discovery", true, ML_NETWORK_DISCOVERY_TEXT,
+              ML_NETWORK_DISCOVERY_LONGTEXT )
+        change_volatile()
+#ifdef MEDIALIBRARY_HAS_BACKGROUND_POLICY
+    add_submodule()
+    set_description(N_("Playback history storage"))
+    set_capability("medialibrary-history", 100)
+    set_callbacks(Open, Close)
+#endif
 vlc_module_end()

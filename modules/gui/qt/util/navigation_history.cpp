@@ -1,6 +1,6 @@
 #include "navigation_history.hpp"
 #include <cassert>
-#include "network/networkmediamodel.hpp"
+#include "network/networktreeitem.hpp"
 #include "medialibrary/mlqmltypes.hpp"
 
 NavigationHistory::NavigationHistory(QObject *parent)
@@ -13,8 +13,22 @@ bool NavigationHistory::isPreviousEmpty()
     return m_history.size() <= 1;
 }
 
+bool NavigationHistory::isNextEmpty() const
+{
+    return m_next.empty();
+}
+
+void NavigationHistory::clearNext()
+{
+    if (m_next.empty())
+        return;
+    m_next.clear();
+    emit nextEmptyChanged(true);
+}
+
 void NavigationHistory::push(QStringList path, const QVariantMap& properties, Qt::FocusReason focusReason)
 {
+    clearNext();
     auto prop = std::make_unique<QQmlPropertyMap>();
     for (auto it =  properties.keyValueBegin(); it != properties.keyValueEnd(); ++it)
         prop->insert((*it).first, (*it).second);
@@ -31,6 +45,7 @@ void NavigationHistory::push(QStringList path, const QVariantMap& properties, Qt
 
 void NavigationHistory::push(QStringList path, Qt::FocusReason focusReason)
 {
+    clearNext();
     m_history.emplace_back(path, std::make_unique<QQmlPropertyMap>());
 
     updateCurrent();
@@ -66,7 +81,7 @@ static bool isNodeValid(const QVariant& value)
     else if (value.canConvert<NetworkTreeItem>() )
     {
         NetworkTreeItem item = value.value<NetworkTreeItem>();
-        if ( ! item.isValid() )
+        if (!item || !item.isValid())
             return false;
 
         return true;
@@ -136,20 +151,45 @@ void NavigationHistory::update(QStringList path, const QVariantMap& properties)
 
 void NavigationHistory::previous(Qt::FocusReason reason)
 {
-    if (m_history.size() == 1)
+    if (m_history.size() <= 1)
         return;
 
+    const bool nextWasEmpty = m_next.empty();
+    m_next.push_back(std::move(m_history.back()));
     m_history.pop_back();
 
-    while (!isNodeValid(*m_history.back().second)) {
+    while (m_history.size() > 1 && !isNodeValid(*m_history.back().second)) {
         m_history.pop_back();
-        if (m_history.size() == 1)
-            break;
     }
 
+    if (nextWasEmpty)
+        emit nextEmptyChanged(false);
     if (m_history.size() == 1)
         emit previousEmptyChanged(true);
 
+    updateCurrent();
+    emit navigate(reason);
+}
+
+void NavigationHistory::next(Qt::FocusReason reason)
+{
+    if (m_next.empty())
+        return;
+    while (!m_next.empty() && !isNodeValid(*m_next.back().second))
+        m_next.pop_back();
+    if (m_next.empty())
+    {
+        emit nextEmptyChanged(true);
+        return;
+    }
+
+    const bool previousWasEmpty = isPreviousEmpty();
+    m_history.push_back(std::move(m_next.back()));
+    m_next.pop_back();
+    if (previousWasEmpty)
+        emit previousEmptyChanged(false);
+    if (m_next.empty())
+        emit nextEmptyChanged(true);
     updateCurrent();
     emit navigate(reason);
 }

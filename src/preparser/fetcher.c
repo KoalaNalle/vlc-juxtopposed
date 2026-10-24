@@ -49,6 +49,7 @@ struct input_fetcher_t {
 
     vlc_mutex_t lock;
     struct vlc_list submitted_tasks; /**< list of struct task */
+    bool closing;
 };
 
 struct task {
@@ -60,6 +61,8 @@ struct task {
     void *userdata;
 
     vlc_interrupt_t interrupt;
+    vlc_timer_t timer;
+    atomic_bool timed_out;
 
     struct vlc_runnable runnable; /**< to be passed to the executor */
     struct vlc_list node; /**< node of input_fetcher_t.submitted_tasks */
@@ -69,9 +72,16 @@ static void RunDownloader(void *);
 static void RunSearchLocal(void *);
 static void RunSearchNetwork(void *);
 
+static void TaskTimeout(void *userdata)
+{
+    struct task *task = userdata;
+    atomic_store(&task->timed_out, true);
+    vlc_interrupt_kill(&task->interrupt);
+}
+
 static struct task *
 TaskNew(input_fetcher_t *fetcher, vlc_executor_t *executor, input_item_t *item,
-        int options,
+        int options, vlc_tick_t deadline,
         const input_fetcher_callbacks_t *cbs, void *userdata)
 {
     struct task *task = malloc(sizeof(*task));
@@ -86,6 +96,15 @@ TaskNew(input_fetcher_t *fetcher, vlc_executor_t *executor, input_item_t *item,
     task->userdata = userdata;
 
     vlc_interrupt_init(&task->interrupt);
+    atomic_init(&task->timed_out, false);
+    if (vlc_timer_create(&task->timer, TaskTimeout, task))
+    {
+        vlc_interrupt_deinit(&task->interrupt);
+        free(task);
+        return NULL;
+    }
+    if (deadline != VLC_TICK_INVALID)
+        vlc_timer_schedule(task->timer, true, deadline, VLC_TIMER_FIRE_ONCE);
 
     input_item_Hold(item);
 
@@ -109,34 +128,72 @@ TaskDelete(struct task *task)
     free(task);
 }
 
-static void
-FetcherAddTask(input_fetcher_t *fetcher, struct task *task)
+static int TaskStatus(struct task *task)
 {
-    vlc_mutex_lock(&fetcher->lock);
-    vlc_list_append(&task->node, &fetcher->submitted_tasks);
-    vlc_mutex_unlock(&fetcher->lock);
+    if (atomic_load(&task->timed_out))
+        return VLC_ETIMEOUT;
+    return atomic_load(&task->interrupt.killed) ? -EINTR : VLC_SUCCESS;
 }
 
-static void
-FetcherRemoveTask(input_fetcher_t *fetcher, struct task *task)
+static void TaskFinish(struct task *task, bool fetched)
 {
+    input_fetcher_t *fetcher = task->fetcher;
+    /* Join the deadline callback before releasing its context. */
+    vlc_timer_destroy(task->timer);
     vlc_mutex_lock(&fetcher->lock);
+    int status = TaskStatus(task);
     vlc_list_remove(&task->node);
+    vlc_mutex_unlock(&fetcher->lock);
+    fetched = fetched && status == VLC_SUCCESS;
+    if (fetched)
+        input_item_SetArtFetched(task->item, true);
+    if (task->cbs && task->cbs->on_art_fetch_ended)
+        task->cbs->on_art_fetch_ended(task->item, status, fetched, task->userdata);
+    TaskDelete(task);
+}
+
+/* The same operation, interrupt and deadline survive every stage. After
+ * submitting the next stage, the old runner must not touch task again. */
+static void TaskNext(struct task *task, vlc_executor_t *executor, void (*run)(void *))
+{
+    input_fetcher_t *fetcher = task->fetcher;
+    vlc_interrupt_set(NULL);
+    vlc_mutex_lock(&fetcher->lock);
+    if (fetcher->closing)
+        vlc_interrupt_kill(&task->interrupt);
+    if (fetcher->closing || TaskStatus(task) != VLC_SUCCESS)
+    {
+        vlc_mutex_unlock(&fetcher->lock);
+        TaskFinish(task, false);
+        return;
+    }
+    task->executor = executor;
+    task->runnable.run = run;
+    vlc_executor_Submit(executor, &task->runnable);
     vlc_mutex_unlock(&fetcher->lock);
 }
 
 static int
 Submit(input_fetcher_t *fetcher, vlc_executor_t *executor, input_item_t *item,
-       int options,
+       int options, vlc_tick_t deadline,
        const input_fetcher_callbacks_t *cbs, void *userdata)
 {
     struct task *task =
-        TaskNew(fetcher, executor, item, options, cbs, userdata);
+        TaskNew(fetcher, executor, item, options, deadline, cbs, userdata);
     if (!task)
         return VLC_ENOMEM;
 
-    FetcherAddTask(fetcher, task);
+    vlc_mutex_lock(&fetcher->lock);
+    if (fetcher->closing)
+    {
+        vlc_mutex_unlock(&fetcher->lock);
+        vlc_timer_destroy(task->timer);
+        TaskDelete(task);
+        return VLC_EGENERIC;
+    }
+    vlc_list_append(&task->node, &fetcher->submitted_tasks);
     vlc_executor_Submit(task->executor, &task->runnable);
+    vlc_mutex_unlock(&fetcher->lock);
 
     return VLC_SUCCESS;
 }
@@ -281,19 +338,10 @@ static int SearchByScope(struct task *task, int scope)
         ! SearchArt( fetcher, item, scope ) )
     {
         AddAlbumCache( fetcher, task->item, false );
-        int ret = Submit(fetcher, fetcher->executor_downloader, item,
-                         task->options, task->cbs, task->userdata);
-        if (ret == VLC_SUCCESS)
-            return VLC_SUCCESS;
+        return VLC_SUCCESS;
     }
 
     return VLC_EGENERIC;
-}
-
-static void NotifyArtFetchEnded(struct task *task, bool fetched)
-{
-    if (task->cbs && task->cbs->on_art_fetch_ended)
-        task->cbs->on_art_fetch_ended(task->item, fetched, task->userdata);
 }
 
 static void RunDownloader(void *userdata)
@@ -306,9 +354,13 @@ static void RunDownloader(void *userdata)
 
     vlc_interrupt_set(&task->interrupt);
 
+    char *psz_arturl = NULL;
+    if (TaskStatus(task) != VLC_SUCCESS)
+        goto out;
+
     ReadAlbumCache( fetcher, task->item );
 
-    char *psz_arturl = input_item_GetArtURL( task->item );
+    psz_arturl = input_item_GetArtURL( task->item );
     if( !psz_arturl )
         goto out;
 
@@ -319,6 +371,11 @@ static void RunDownloader(void *userdata)
         goto out; /* no fetch required */
     }
 
+    /* Local-only lookup must not download a remote URL from embedded metadata
+     * or a cache entry left by an earlier network-enabled request. */
+    if (!(task->options & VLC_PREPARSER_TYPE_FETCHMETA_NET))
+        goto out;
+
     stream_t* source = vlc_stream_NewURL( fetcher->owner, psz_arturl );
 
     if( !source )
@@ -326,17 +383,26 @@ static void RunDownloader(void *userdata)
 
     struct vlc_memstream output_stream;
     vlc_memstream_open( &output_stream );
+    bool complete = true;
 
     for( ;; )
     {
         char buffer[2048];
 
         int read = vlc_stream_Read( source, buffer, sizeof( buffer ) );
-        if( read <= 0 )
+        if (read < 0)
+        {
+            complete = false;
+            break;
+        }
+        if( read == 0 )
             break;
 
         if( (int)vlc_memstream_write( &output_stream, buffer, read ) < read )
+        {
+            complete = false;
             break;
+        }
     }
 
     vlc_stream_Delete( source );
@@ -344,28 +410,27 @@ static void RunDownloader(void *userdata)
     if( vlc_memstream_close( &output_stream ) )
         goto out;
 
-    if( vlc_killed() )
+    if( vlc_killed() || !complete )
     {
         free( output_stream.ptr );
         goto out;
     }
 
-    input_SaveArt( fetcher->owner, task->item, output_stream.ptr,
-                   output_stream.length, NULL );
+    int saved = input_SaveArt(fetcher->owner, task->item, output_stream.ptr,
+                              output_stream.length, NULL);
 
     free( output_stream.ptr );
-    AddAlbumCache( fetcher, task->item, true );
-    fetched = true;
+    if (saved == VLC_SUCCESS)
+    {
+        AddAlbumCache(fetcher, task->item, true);
+        fetched = true;
+    }
 
 out:
     vlc_interrupt_set(NULL);
 
-    if( fetched )
-        input_item_SetArtFetched( task->item, true );
     free( psz_arturl );
-    NotifyArtFetchEnded(task, fetched);
-    FetcherRemoveTask(fetcher, task);
-    TaskDelete(task);
+    TaskFinish(task, fetched);
 }
 
 static void RunSearchLocal(void *userdata)
@@ -377,27 +442,31 @@ static void RunSearchLocal(void *userdata)
 
     vlc_interrupt_set(&task->interrupt);
 
-    if( SearchByScope( task, FETCHER_SCOPE_LOCAL ) == VLC_SUCCESS )
-        goto end; /* done */
+    if (TaskStatus(task) != VLC_SUCCESS)
+        goto end;
+    bool found = SearchByScope(task, FETCHER_SCOPE_LOCAL) == VLC_SUCCESS;
+    if (TaskStatus(task) != VLC_SUCCESS)
+        goto end;
+    if (found)
+    {
+        TaskNext(task, fetcher->executor_downloader, RunDownloader);
+        return;
+    }
 
     if( task->options & VLC_PREPARSER_TYPE_FETCHMETA_NET )
     {
-        int ret = Submit(fetcher, fetcher->executor_network, task->item,
-                         task->options, task->cbs, task->userdata);
-        if (ret != VLC_SUCCESS)
-            NotifyArtFetchEnded(task, false);
+        TaskNext(task, fetcher->executor_network, RunSearchNetwork);
+        return;
     }
     else
     {
         input_item_SetArtNotFound( task->item, true );
-        NotifyArtFetchEnded(task, false);
     }
 
 end:
     vlc_interrupt_set(NULL);
 
-    FetcherRemoveTask(fetcher, task);
-    TaskDelete(task);
+    TaskFinish(task, false);
 }
 
 static void RunSearchNetwork(void *userdata)
@@ -408,17 +477,19 @@ static void RunSearchNetwork(void *userdata)
 
     vlc_interrupt_set(&task->interrupt);
 
-    if( SearchByScope( task, FETCHER_SCOPE_NETWORK ) != VLC_SUCCESS )
+    if (TaskStatus(task) == VLC_SUCCESS
+        && SearchByScope(task, FETCHER_SCOPE_NETWORK) == VLC_SUCCESS)
     {
-        input_item_SetArtNotFound( task->item, true );
-        NotifyArtFetchEnded(task, false);
+        TaskNext(task, task->fetcher->executor_downloader, RunDownloader);
+        return;
     }
+
+    if (TaskStatus(task) == VLC_SUCCESS)
+        input_item_SetArtNotFound(task->item, true);
 
     vlc_interrupt_set(NULL);
 
-    input_fetcher_t *fetcher = task->fetcher;
-    FetcherRemoveTask(fetcher, task);
-    TaskDelete(task);
+    TaskFinish(task, false);
 }
 
 input_fetcher_t* input_fetcher_New( vlc_object_t* owner,
@@ -476,6 +547,7 @@ input_fetcher_t* input_fetcher_New( vlc_object_t* owner,
 
     vlc_mutex_init(&fetcher->lock);
     vlc_list_init(&fetcher->submitted_tasks);
+    fetcher->closing = false;
 
     vlc_dictionary_init( &fetcher->album_cache, 0 );
 
@@ -483,7 +555,7 @@ input_fetcher_t* input_fetcher_New( vlc_object_t* owner,
 }
 
 int input_fetcher_Push(input_fetcher_t* fetcher, input_item_t* item,
-                       int options,
+                       int options, vlc_tick_t deadline,
                        const input_fetcher_callbacks_t *cbs, void *cbs_userdata)
 {
     assert(options & VLC_PREPARSER_TYPE_FETCHMETA_ALL);
@@ -496,33 +568,44 @@ int input_fetcher_Push(input_fetcher_t* fetcher, input_item_t* item,
                              ? fetcher->executor_local
                              : fetcher->executor_network;
 
-    return Submit(fetcher, executor, item, options, cbs, cbs_userdata);
+    return Submit(fetcher, executor, item, options, deadline, cbs, cbs_userdata);
 }
 
-static void
-CancelAllTasks(input_fetcher_t *fetcher)
+void input_fetcher_Cancel(input_fetcher_t *fetcher, void *userdata)
 {
+    struct vlc_list canceled_tasks;
+    vlc_list_init(&canceled_tasks);
     vlc_mutex_lock(&fetcher->lock);
 
     struct task *task;
     vlc_list_foreach(task, &fetcher->submitted_tasks, node)
     {
+        if (userdata != NULL && userdata != task->userdata)
+            continue;
+        vlc_interrupt_kill(&task->interrupt);
         bool canceled = vlc_executor_Cancel(task->executor, &task->runnable);
         if (canceled)
         {
-            NotifyArtFetchEnded(task, false);
             vlc_list_remove(&task->node);
-            TaskDelete(task);
+            vlc_list_append(&task->node, &canceled_tasks);
         }
         /* Otherwise, the task will be finished and destroyed after run() */
     }
 
     vlc_mutex_unlock(&fetcher->lock);
+    while (!vlc_list_is_empty(&canceled_tasks))
+    {
+        task = vlc_list_first_entry_or_null(&canceled_tasks, struct task, node);
+        TaskFinish(task, false);
+    }
 }
 
 void input_fetcher_Delete( input_fetcher_t* fetcher )
 {
-    CancelAllTasks(fetcher);
+    vlc_mutex_lock(&fetcher->lock);
+    fetcher->closing = true;
+    vlc_mutex_unlock(&fetcher->lock);
+    input_fetcher_Cancel(fetcher, NULL);
 
     if (fetcher->executor_local)
         vlc_executor_Delete(fetcher->executor_local);

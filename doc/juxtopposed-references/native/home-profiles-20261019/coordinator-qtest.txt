@@ -1,0 +1,17 @@
+********* Start testing of TestPlayerProfilesModel *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestPlayerProfilesModel::initTestCase()
+PASS   : TestPlayerProfilesModel::initialProfilesDoNotWriteAndBusyIsHonest()
+PASS   : TestPlayerProfilesModel::nativeSettingsAndLayoutFollowIndependentProfiles()
+PASS   : TestPlayerProfilesModel::currentPreferenceEditsCheckpointWithoutInputOrProfileSwitch()
+PASS   : TestPlayerProfilesModel::cancellingAndRejectedNamesPreserveActiveAndSavedProfiles()
+PASS   : TestPlayerProfilesModel::failedLayoutSavePreservesDraftAndCurrentPlayerThenRetries()
+PASS   : TestPlayerProfilesModel::nativeSaveFailureRetainsJournalAndCanRetry()
+PASS   : TestPlayerProfilesModel::nativeSaveFailureCanRestorePreviousWithoutApplyingTarget()
+PASS   : TestPlayerProfilesModel::finishSaveFailureRetainsAppliedTargetAndRestoresExactly()
+PASS   : TestPlayerProfilesModel::staleWindowDoesNotOverwriteAcceptedCatalog()
+PASS   : TestPlayerProfilesModel::corruptSelectedLayoutIsPreservedAndCannotBeUnblocked()
+PASS   : TestPlayerProfilesModel::unfinishedSwitchReopensWithMatchingTargetLayoutAndFinishesInColdProcess()
+PASS   : TestPlayerProfilesModel::cleanupTestCase()
+Totals: 13 passed, 0 failed, 0 skipped, 0 blacklisted, 3690ms
+********* Finished testing of TestPlayerProfilesModel *********

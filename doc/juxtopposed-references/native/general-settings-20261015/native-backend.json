@@ -1,0 +1,59 @@
+{
+  "scope": "Actual General model with loaded ordinary core/file logger; separate injected core variant",
+  "ordinary": {
+    "passed": 29,
+    "failed": 0,
+    "skipped": 1,
+    "exitCode": 0,
+    "terminationConfirmed": true,
+    "cases": [
+      "initTestCase()",
+      "transientThemeSettingsFailureRecovers()",
+      "transientLanguageIniFailureRecovers()",
+      "nativeReadAndSharedLanguageMap()",
+      "strictInvalidInputs()",
+      "liveThemeAndPersistence()",
+      "liveAccentAndLegacyCoexistence()",
+      "languageIsolatedNativeRegistryAndRestart()",
+      "meaningfulDeveloperDiagnosticsAndRestart()",
+      "optionalNotificationsPreserveOtherPreferences()",
+      "updatesReflectBuildCapability()",
+      "unicodeLogPathAndNoTruncation()",
+      "rejectsBadLogPathsWithoutWrites()",
+      "checkedQtStorageFailureDoesNotChangeTheme()",
+      "checkedLanguageStorageFailureAndRollback()",
+      "nativeSaveFailureRestoresInMemory()",
+      "coreSaveDirectoryDestination()",
+      "coreSaveLockedDestination()",
+      "explicitFreshNativeInstanceRestoresSavedChoices()",
+      "injectedNativeSyncAndCloseFailuresPreserveDestination() Build the isolated actual-core fault variant to exercise native fdatasync/fclose failures",
+      "destroyedOptionalDependenciesFailClearly()",
+      "actualNativeFileLoggerDetailLevels(text-level0)",
+      "actualNativeFileLoggerDetailLevels(text-level1)",
+      "actualNativeFileLoggerDetailLevels(text-level2)",
+      "actualNativeFileLoggerDetailLevels(text-level3)",
+      "actualNativeFileLoggerDetailLevels(html-level0)",
+      "actualNativeFileLoggerDetailLevels(html-level1)",
+      "actualNativeFileLoggerDetailLevels(html-level2)",
+      "actualNativeFileLoggerDetailLevels(html-level3)",
+      "cleanupTestCase()"
+    ],
+    "rawQTestSha256": "1403f2c0fbc95d45dd72c224dfc9b5447e4bdd77449acafd476450e35a34b155",
+    "runtimeFiles": {
+      "test_qt_general_preferences.exe": "ba46560e3d90c99591b91ff934018b1b3000130e002a3fa15e167b4ded6cc743",
+      "native_general_log.exe": "4223d6c169d875df23ea8d849792648bf3bb2f871b6631317b93042a38551cfa",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+    }
+  },
+  "separateFaultVariant": {
+    "qtestPasses": 3,
+    "substantiveMethods": 1,
+    "failed": 0,
+    "exitCode": 0,
+    "case": "injectedNativeSyncAndCloseFailuresPreserveDestination",
+    "scope": "Actual core fdatasync/fclose fault injection; never staged into app package",
+    "rawQTestSha256": "74110cabfd1b923f81e8bd5809a3fc59821fd40a07bb2d986e31a9cd33a33ed8"
+  },
+  "nativePickerAndMainCtxProvenByThisFixture": false
+}

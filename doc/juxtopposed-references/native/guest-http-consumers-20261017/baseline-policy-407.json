@@ -1,0 +1,69 @@
+{
+  "passed": false,
+  "cases": {
+    "cli-proxy": {
+      "pid": 18444,
+      "forcedCleanupUsed": false,
+      "exitCode": 0,
+      "normalExit": true,
+      "payloadMatches": false,
+      "received": "origin-payload\n",
+      "accessModules": [
+        "http"
+      ],
+      "ownedPasswordInDebugLog": false
+    },
+    "cli-direct": {
+      "pid": 15528,
+      "forcedCleanupUsed": false,
+      "exitCode": 0,
+      "normalExit": true,
+      "payloadMatches": false,
+      "received": "proxy-no-auth\n",
+      "accessModules": [
+        "http"
+      ],
+      "ownedPasswordInDebugLog": false
+    },
+    "saved-password": {
+      "pid": 10152,
+      "forcedCleanupUsed": false,
+      "exitCode": 0,
+      "normalExit": true,
+      "payloadMatches": true,
+      "received": "proxy-payload\n",
+      "accessModules": [
+        "oldhttp"
+      ],
+      "ownedPasswordInDebugLog": true
+    }
+  },
+  "requests": [
+    {
+      "role": "origin",
+      "path": "/owned-media.bin",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false
+    },
+    {
+      "role": "proxy",
+      "path": "http://127.0.0.1:53120/owned-media.bin",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false
+    },
+    {
+      "role": "proxy",
+      "path": "http://127.0.0.1:53120/owned-media.bin",
+      "proxyAuthorizationPresent": false,
+      "ownedProxyAuthenticated": false
+    },
+    {
+      "role": "proxy",
+      "path": "http://127.0.0.1:53120/owned-media.bin",
+      "proxyAuthorizationPresent": true,
+      "ownedProxyAuthenticated": true
+    }
+  ],
+  "systemProxySettingsUsed": false,
+  "personalCredentialsUsed": false
+}

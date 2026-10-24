@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "expectedFailure": true,
+  "expectedLocalBypassFailure": false,
+  "forcedCleanupUsed": false,
+  "windowsSettingsOwned": true,
+  "realWinHttpPac": true,
+  "nativeCoreEntry": true,
+  "runtimeSha256": {
+    "libvlccore.dll": "218708c12b18fa9e69b9242fd0c0ea38c4ad4f61bf6c9b0798bd7cd8cf91d682",
+    "test_network_proxy.exe": "cbe67fa08c8eb14b5c568a47c115d3bd60e7114a24d4ecb85269000d3887e98d"
+  },
+  "ownedPid": 16544,
+  "exitCode": 1,
+  "elapsedSeconds": 0.4069999999992433,
+  "ownedCoreImportBoundaryConfirmed": false,
+  "checks": [
+    [
+      "ok",
+      "1",
+      "explicit proxy preserved"
+    ],
+    [
+      "ok",
+      "2",
+      "explicit proxy never queries Windows settings"
+    ],
+    [
+      "ok",
+      "3",
+      "separate explicit password composed"
+    ],
+    [
+      "ok",
+      "4",
+      "embedded explicit password retained"
+    ],
+    [
+      "ok",
+      "5",
+      "credential composition does not inspect Windows settings"
+    ],
+    [
+      "not ok",
+      "6",
+      "empty explicit value uses owned Windows proxy"
+    ]
+  ],
+  "normalTermination": true,
+  "pacRequests": []
+}

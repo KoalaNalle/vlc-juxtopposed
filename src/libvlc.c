@@ -54,6 +54,7 @@
 #include <vlc_interface.h>
 
 #include <vlc_actions.h>
+#include <vlc_configuration.h>
 #include <vlc_charset.h>
 #include <vlc_dialog.h>
 #include <vlc_keystore.h>
@@ -92,6 +93,8 @@ libvlc_int_t * libvlc_InternalCreate( void )
 
     priv = libvlc_priv (p_libvlc);
     vlc_mutex_init(&priv->lock);
+    vlc_mutex_init(&priv->history_lock);
+    priv->history_library = NULL;
     priv->interfaces = NULL;
     priv->main_playlist = NULL;
     priv->p_vlm = NULL;
@@ -108,12 +111,20 @@ static void libvlc_AddInterfaces(libvlc_int_t *libvlc, const char *varname)
     if (str == NULL)
         return;
 
-    char *state;
-    char *intf = strtok_r(str, ":", &state);
-
-    while (intf != NULL) {
-        libvlc_InternalAddIntf(libvlc, intf);
-        intf = strtok_r(NULL, ":", &state);
+    while (str != NULL && *str != '\0') {
+        char *name = NULL;
+        config_chain_t *options = NULL;
+        char *next = config_ChainCreate(&name, &options, str);
+        /* The chain parser recognises quoted/nested option blocks. A colon
+         * inside an option value must not become another interface name. */
+        const size_t consumed = strlen(str) - (next ? strlen(next) + 1 : 0);
+        str[consumed] = '\0';
+        if (name != NULL && *name != '\0')
+            libvlc_InternalAddIntf(libvlc, str);
+        free(name);
+        config_ChainDestroy(options);
+        free(str);
+        str = next;
     }
 
     free(str);
@@ -175,7 +186,10 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     if( !var_InheritBool( p_libvlc, "ignore-config" ) )
     {
         if( var_InheritBool( p_libvlc, "reset-config" ) )
+        {
+            config_ResetAll(); /* Mark every default for the merging saver. */
             config_SaveConfigFile( p_libvlc ); /* Save default config */
+        }
         else
             config_LoadConfigFile( p_libvlc );
     }
@@ -370,6 +384,8 @@ void libvlc_InternalCleanup( libvlc_int_t *p_libvlc )
 
     if ( priv->p_media_library )
         libvlc_MlRelease( priv->p_media_library );
+    if (priv->history_library)
+        libvlc_MlRelease(priv->history_library);
 
     if( priv->media_source_provider )
         vlc_media_source_provider_Delete( priv->media_source_provider );

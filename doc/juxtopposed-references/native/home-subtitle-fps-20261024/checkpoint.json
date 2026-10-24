@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-24",
+  "status": "paused-at-owner-request",
+  "fullBetaAccepted": false,
+  "ordinaryFpsWorkflowAccepted": false,
+  "nativeFpsFunctionsAllPass": true,
+  "nativeFpsFunctionCountIncludingSetupCleanup": 11,
+  "oldCoreRenderedComparisonExitCode": 1,
+  "oldCoreReceiptPhaseLabelErratum": "Before receipt inherited phase=after; runtime hashes and exitCode identify the old-Core failure. Original receipt is unmodified.",
+  "sameTestExecutableBeforeAfter": "87e1a0c6a1d42d46489b5e0a96204e3c9053ee4334473d8fe2da156ce5b6399f",
+  "regressions": {
+    "timing-ordinary-r7": {
+      "cases": 11,
+      "allPassed": true,
+      "allNormalExit": true
+    },
+    "regressions-ordinary-r7": {
+      "cases": 24,
+      "allPassed": true,
+      "allNormalExit": true
+    }
+  },
+  "headlessComponentExitCode": 0,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "b62f414569c494ba866089afeae46f6cdc4c4e260d63b6a554d60c4dcfe54561",
+    "plugins/gui/libqt_plugin.dll": "79aef2b55acc95eafcd9c0165162b46c11841787862bba680ee1e0be0a7e0577",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceManifestSha256": "968fe7fa347fb65c2eeba92d02701ac3969fd366a698afadd219bd004ab5cc15",
+  "sourceInputsAndActualCopiesVerifiedAtWrapupBeforeDocUpdates": 2706,
+  "testedSourceSha256": {
+    "src/input/input.c": "32e56d6e6a861358e00608e5d638681824c2ec737c08ca6f3dbc3940c7515bc2",
+    "src/player/player.c": "148696b5f3bd03124e16e63436d22e2786db8f18736e1632de9e518275064ec9",
+    "modules/gui/qt/widgets/qml/JuxtopposedSettingSlider.qml": "a6c30cec38316ba0fa747d9b4257ab112389ada6137e91cdcc25dd4e5ce6e338",
+    "modules/gui/qt/tests/test_player_subtitle_delay.cpp": "f62e174ec205f87d0fe777a86b02f5cb0567553fa05daa829485fb7d494a37a2",
+    "modules/gui/qt/tests/test_juxtopposed_settings.py": "edfa5bffd51d684b1c8164c9ce3dafd0ffc3491d26c1bbb2912ac659766fb262",
+    "modules/gui/qt/tests/vlc_stub_modules.cpp": "7cdd468f76428100cd19912308c4333e8d700f5381978fc2674c72e37bf1efec"
+  },
+  "ordinaryGuiPid": 20864,
+  "ordinaryGuiNormalExit": true,
+  "ordinaryGuiCheckedDiagnostics": [],
+  "forcedCleanupUsed": false,
+  "nextTask": "After native Synchronization dialog has been opened and closed, QML FPS Reset settles at 1 instead of 0. Reproduce and inspect legacy widget bounds/model feedback; suspected cause is not yet established.",
+  "pending": [
+    "Cross-editor Reset and ordinary FPS seek/resume/playing lifecycle",
+    "Visual secondary subtitle timing and estimators",
+    "Remaining 13-category/32-surface beta roadmap",
+    "Windows 10 comparison separately deferred"
+  ],
+  "localWorkspace": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-fps-20261024",
+  "compressedRawArtifacts": {
+    "build-ordinary-r3-output.txt.gz": {
+      "uncompressedSha256": "06415899a716156a250c8ff3388bb65e66e6910e841292ca18b604282daecd9c",
+      "compressedSha256": "ca05059394191378377ae304a8cf485c4b890fd69a944da48a7f094c1dfc95b2"
+    },
+    "native-after-r6/results.xml.gz": {
+      "uncompressedSha256": "f903b6a97b4f9707c6d83feeab0daf4b46786ba57006925bb8da7d32ac60afed",
+      "compressedSha256": "a4169702d97e76806e7f3e196010d648e263cc9f9da5c62bce371912dff01379"
+    },
+    "native-after-r6/stderr.txt.gz": {
+      "uncompressedSha256": "ecf86973ed4655c524c9bc9c29fac2108e4e4e3ff4f984379c3c1e544e50cce1",
+      "compressedSha256": "22ed7af3060a2193dfde31a449b0253672790f01ef5b431c16d694a56cda5d44"
+    },
+    "native-before-r6/results.xml.gz": {
+      "uncompressedSha256": "18091b8d8ca0717861bd1ed805ba4b1f2b4d623aa6b12f70a1e7b7c5bb4cd99c",
+      "compressedSha256": "c5930f20e26c30609715ee25efff1688b72f6d22e2bafdc8b34a3d1bc26dda6d"
+    },
+    "native-before-r6/stderr.txt.gz": {
+      "uncompressedSha256": "c0ffe8bfc118ed7207a918a72b3848f9a6b7e0e8e99edd2f5bb8469726810bc6",
+      "compressedSha256": "75207d56068e8e9d4e94c0b7b0bda12fb8d0acbf7409acb96f075054ac25bd94"
+    },
+    "settings-wrapup-r8/stdout.txt.gz": {
+      "uncompressedSha256": "ad0b3c556ff832f8dec57633d3ae9b7a1807edb835a345f5732c046e27e892c7",
+      "compressedSha256": "4635cab31c4dbce914bd121dbccef2bcc350cb18a2cead859b73f753c34961d0"
+    }
+  }
+}

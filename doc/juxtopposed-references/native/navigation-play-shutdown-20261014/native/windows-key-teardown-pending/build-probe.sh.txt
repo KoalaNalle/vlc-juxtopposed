@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+task_dir=/checkout/build-windows/windows-key-teardown-pending
+mkdir -p "$task_dir/bin"
+compiler=x86_64-w64-mingw32-g++
+"$compiler" -g -O0 -shared -static-libgcc -static-libstdc++ "$task_dir/native_key_probe.cpp" -Wl,-Bstatic -lwinpthread -Wl,-Bdynamic -o "$task_dir/bin/baseline.dll"
+"$compiler" -g -O0 -shared -static-libgcc -static-libstdc++ "$task_dir/native_key_probe.cpp" "$task_dir/winpthreads_shutdown.cpp" -Wl,--wrap=pthread_key_delete -Wl,-Bstatic -lwinpthread -Wl,-Bdynamic -lntdll -o "$task_dir/bin/fixed.dll"
+"$compiler" -g -O0 -static-libgcc -static-libstdc++ "$task_dir/native_key_driver.cpp" -o "$task_dir/bin/driver.exe"

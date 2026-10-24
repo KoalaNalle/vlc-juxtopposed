@@ -62,7 +62,10 @@ bool ItemKeyEventFilter::eventFilter(QObject*, QEvent* event)
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
         m_qmlAccepted = true;
-        QCoreApplication::sendEvent(this, event);
+        // Dispatch to this item's Keys handlers without passing through
+        // QApplication::notify again. A second application dispatch can run
+        // the global shortcut map after the focused control reserved the key.
+        QQuickItem::event(event);
         ret = m_qmlAccepted;
         break;
     default:

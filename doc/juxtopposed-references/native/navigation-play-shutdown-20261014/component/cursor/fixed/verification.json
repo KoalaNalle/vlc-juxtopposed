@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "mode": "fixed",
+  "completed": [
+    "expandedVideoLeafIndex",
+    "pendingInitialResetDoesNotReplayAfterGridSwitch",
+    "countBeforeLoadingSettlesConsumesPendingIndex",
+    "defaultPlaylistLeafZeroIndex",
+    "genuineIdTitleBeforeConstruction",
+    "adapterBackForwardLeafRestoration",
+    "playlistToRealNoIndexHomeContract",
+    "sameParentReloadAndGroupAlias",
+    "explicitChildFalseNewAndReusedParent",
+    "unknownLeafPropertyFailsWithoutDropping",
+    "conditionalNoMlLeaf"
+  ],
+  "failure": null,
+  "messages": [],
+  "allMessages": [
+    "file:////checkout/build-windows/navigation-native-cursor-fixed-20261014/modules/VLC/Widgets/PageLoader.qml:108: Error: Cannot assign to non-existent property \"doesNotExist\"",
+    "unknown initial property doesNotExist of view base"
+  ],
+  "expectedFailures": [
+    {
+      "case": "unknownLeafProperty",
+      "messages": [
+        "file:////checkout/build-windows/navigation-native-cursor-fixed-20261014/modules/VLC/Widgets/PageLoader.qml:108: Error: Cannot assign to non-existent property \"doesNotExist\"",
+        "unknown initial property doesNotExist of view base"
+      ]
+    }
+  ],
+  "sourceSha256": {
+    "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+    "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+    "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+    "modules/gui/qt/maininterface/qml/MainDisplay.qml": "ba2cba36914855e3f88ba1bc70b2292d85ea1d6d56c824f198b5d5fed4e8d50b",
+    "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+    "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "4e9e293a91b6a0d43702d0b569daa2f7be3c9c7730fcfef9b13a281ac1ff1b60",
+    "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+    "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+    "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+    "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+  },
+  "helperSha256": "5d9e3ff486065960c6628143b6aa96860bc9342de39430912de8a1c7d1e283bb",
+  "scope": "Unchanged production PageLoader/StackViewExt/MainViewLoader; exact wrapper alias declarations and nesting registry values extracted into dependency-adapted fixtures. Supplied Python History/Navigation/model/style adapters; real Qt property maps and item-selection model. No actual C++ NavigationHistory, native MediaLibrary wrappers, primary playback or desktop navigation acceptance.",
+  "fullNativeIntegrationAccepted": false,
+  "negativeBaselineReproduced": false
+}

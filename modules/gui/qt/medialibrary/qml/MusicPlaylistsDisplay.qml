@@ -57,10 +57,12 @@ Widgets.PageLoader {
 
         Widgets.PageExt {
             id: playlistPage
+            property alias initialIndex: playlistView.initialIndex
 
             title: qsTr("Playlists")
 
             PlaylistMediaList {
+                id: playlistView
 
                 anchors.fill: parent
 
@@ -78,7 +80,10 @@ Widgets.PageLoader {
                 enableBeginningFade: root.enableBeginningFade
                 enableEndFade: root.enableEndFade
 
-                onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+                onCurrentIndexChanged: {
+                    if (History.exactMatch(History.viewPath, [...root.pagePrefix, "all"]))
+                        History.viewProp.initialIndex = currentIndex
+                }
 
                 onShowList: (model, reason) => {
                     History.push([...root.pagePrefix, "list"], { parentId: model.id, title: model.name }, reason)
@@ -105,7 +110,10 @@ Widgets.PageLoader {
             enableBeginningFade: root.enableBeginningFade
             enableEndFade: root.enableEndFade
 
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "list"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
         }
     }
 }

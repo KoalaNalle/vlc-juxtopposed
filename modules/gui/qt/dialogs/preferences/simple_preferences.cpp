@@ -32,6 +32,7 @@
 #include "maininterface/mainctx.hpp"
 #include "util/accessible_compat_attached.hpp"
 #include "util/color_scheme_model.hpp"
+#include "util/interface_language_map.hpp"
 #include "util/proxycolumnmodel.hpp"
 #include "medialibrary/mlrecentmediamodel.hpp"
 
@@ -79,72 +80,7 @@
 #endif
 #include <vlc_modules.h>
 
-static struct {
-    const char iso[6];
-    const char name[34];
 
-} const language_map[] = {
-    { "auto",  N_("Auto") },
-    { "en",    "American English" },
-    { "ar",    "عربي" },
-    { "bn",    "বাংলা" },
-    { "pt_BR", "Português Brasileiro" },
-    { "en_GB", "British English" },
-    { "el",    "Νέα Ελληνικά" },
-    { "bg",    "български език" },
-    { "ca",    "Català" },
-    { "zh_TW", "正體中文" },
-    { "cs",    "Čeština" },
-    { "cy",    "Cymraeg" },
-    { "da",    "Dansk" },
-    { "nl",    "Nederlands" },
-    { "fi",    "Suomi" },
-    { "et",    "eesti keel" },
-    { "eu",    "Euskara" },
-    { "fr",    "Français" },
-    { "ga",    "Gaeilge" },
-    { "gd",    "Gàidhlig" },
-    { "gl",    "Galego" },
-    { "ka",    "ქართული" },
-    { "de",    "Deutsch" },
-    { "he",    "עברית" },
-    { "hr",    "hrvatski" },
-    { "hu",    "Magyar" },
-    { "hy",    "հայերեն" },
-    { "is",    "íslenska" },
-    { "id",    "Bahasa Indonesia" },
-    { "it",    "Italiano" },
-    { "ja",    "日本語" },
-    { "ko",    "한국어" },
-    { "lt",    "lietuvių" },
-    { "mn",    "Монгол хэл" },
-    { "ms",    "Melayu" },
-    { "nb",    "Bokmål" },
-    { "nn",    "Nynorsk" },
-    { "kk",    "Қазақ тілі" },
-    { "km",    "ភាសាខ្មែរ" },
-    { "ne",    "नेपाली" },
-    { "oc",    "Occitan" },
-    { "fa",    "فارسی" },
-    { "pl",    "Polski" },
-    { "pt_PT", "Português" },
-    { "pa",    "ਪੰਜਾਬੀ" },
-    { "ro",    "Română" },
-    { "ru",    "Русский" },
-    { "zh_CN", "简体中文" },
-    { "si",    "සිංහල" },
-    { "sr",    "српски" },
-    { "sk",    "Slovensky" },
-    { "sl",    "slovenščina" },
-    { "ckb",   "کوردیی سۆرانی" },
-    { "es",    "Español" },
-    { "sv",    "Svenska" },
-    { "te",    "తెలుగు" },
-    { "tr",    "Türkçe" },
-    { "uk",    "украї́нська мо́ва" },
-    { "vi",    "tiếng Việt" },
-    { "wa",    "Walon" }
-};
 
 static int getDefaultAudioVolume(const char *aout)
 {
@@ -703,8 +639,8 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
 #ifndef _WIN32
             ui.langBox->hide();
 #else
-            for( size_t i = 0; i < ARRAY_SIZE( language_map ); i++)
-                ui.langCombo->addItem( qfu( language_map[i].name ), language_map[i].iso );
+            for( size_t i = 0; i < ARRAY_SIZE( interface_language_map ); i++)
+                ui.langCombo->addItem( qfu( interface_language_map[i].name ), interface_language_map[i].iso );
             connect( ui.langCombo, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &SPrefsPanel::langChanged );
 
             HKEY h_key;
@@ -834,6 +770,11 @@ SPrefsPanel::SPrefsPanel( qt_intf_t *_p_intf, QWidget *_parent,
             m_resetters.push_back(std::make_unique<PropertyResetter>( ui.colorSchemeComboBox, "currentIndex" ));
             QObject::connect( ui.colorSchemeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged)
                               , p_intf->p_mi->getColorScheme(), &ColorSchemeModel::setCurrentIndex );
+            QObject::connect( p_intf->p_mi->getColorScheme(), &ColorSchemeModel::currentChanged,
+                              ui.colorSchemeComboBox, [combo = ui.colorSchemeComboBox, scheme = p_intf->p_mi->getColorScheme()] {
+                const QSignalBlocker blocker(combo);
+                combo->setCurrentIndex(scheme->currentIndex());
+            });
 
             const double intfScaleFloatFactor = 100;
             const auto updateIntfUserScaleFactorFromControls =
@@ -1360,7 +1301,7 @@ void SPrefsPanel::changeStyle()
 void SPrefsPanel::langChanged( int i )
 {
     free( lang );
-    lang = strdup( language_map[i].iso );
+    lang = strdup( interface_language_map[i].iso );
 }
 
 void SPrefsPanel::configML()
@@ -1378,9 +1319,9 @@ void SPrefsPanel::configML()
 
 void SPrefsPanel::cleanLang() {
     QVLCRegistry qvReg( HKEY_CURRENT_USER );
+    // Auto/reset owns the language value, not the application's registry tree.
+    // Leave unrelated values and child keys in place, including empty parents.
     qvReg.DeleteValue( "Software\\VideoLAN\\VLC\\", "Lang" );
-    qvReg.DeleteKey( "Software\\VideoLAN\\", "VLC" );
-    qvReg.DeleteKey( "Software\\", "VideoLAN" );
 }
 
 void SPrefsPanel::saveLang() {

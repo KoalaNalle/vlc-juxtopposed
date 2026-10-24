@@ -1,0 +1,68 @@
+from pathlib import Path
+import hashlib
+import json
+import os
+import shutil
+
+root = Path(__file__).resolve().parent
+repo = root.parent
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+previous = root / 'registered-exit-repair-source-freeze-v2-20261014.json'
+old = json.loads(previous.read_text())['files']
+current = {p.relative_to(repo).as_posix(): sha(p)
+           for p in sorted((repo / 'modules/gui/qt').rglob('*'))
+           if p.is_file() and '__pycache__' not in p.parts
+           and p.suffix.lower() not in ('.pyc', '.pyo')}
+changed = {name: {'before': old.get(name), 'after': current.get(name)}
+           for name in sorted(old.keys() | current.keys())
+           if old.get(name) != current.get(name)}
+assert set(changed) == {'modules/gui/qt/Makefile.am', 'modules/gui/qt/Makefile.in'}, changed
+freeze = root / 'registered-exit-repair-source-freeze-final-20261014.json'
+assert not freeze.exists()
+freeze.write_text(json.dumps(dict(
+    scope='Sources after ordinary Automake build. Compared with v2, Makefile.am was corrected before this build; Makefile.in was then regenerated. Earlier failed setup attempts are retained. No final-pre-build manifest is claimed.',
+    previousManifestSha256=sha(previous), transition=changed, files=current), indent=2)+'\n',
+    encoding='utf-8', newline='\n')
+source = root / 'staged-registered-exit-repair-libqt_plugin.dll'
+assert source.is_file()
+qt_hash = sha(source)
+assert qt_hash not in (
+    'ca793b4c45c54ada9ec6c0d00b7ef35ab07391541ec17034bc163eb6ccf84a68',
+    '77c75a94ea6ca990936a580a6ee194d1c67c7b9a05a257bbbb1c256e4f7ef398')
+build_log = root / 'registered-exit-repair-gui-build.log'
+assert 'util/libqt_plugin_la-winpthreads_shutdown.lo' in build_log.read_text()
+package = root / 'slice-music-playlist-package-20261014'
+target = package / 'plugins-registered-exit-repair-20261014'
+assert not target.exists()
+for item in (package / 'plugins-navigation-native-fixed-20261014').rglob('*'):
+    relative = item.relative_to(package / 'plugins-navigation-native-fixed-20261014')
+    destination = target / relative
+    if item.is_dir():
+        destination.mkdir(parents=True, exist_ok=True)
+    elif not item.is_symlink() and item.name != 'plugins.dat':
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        if relative.as_posix() == 'gui/libqt_plugin.dll':
+            shutil.copyfile(source, destination)
+        else:
+            os.link(item, destination)
+assert sha(target / 'gui/libqt_plugin.dll') == qt_hash
+report = dict(scope='Ordinary registered-source incremental Qt build, staged in a fresh plugin directory. Native verification follows separately.',
+              qtSha256=qt_hash, sourceFreezeSha256=sha(freeze), frozenFiles=len(current),
+              builderSha256=sha(root / 'build-registered-exit-repair-20261014.sh'),
+              buildLogSha256=sha(build_log), resourceLogSha256=sha(root / 'registered-exit-repair-resource-build.log'))
+(root / 'registered-exit-repair-package-staging-20261014.json').write_text(
+    json.dumps(report, indent=2)+'\n', encoding='utf-8', newline='\n')
+runner = root / 'check-native-self-quit-registered-20261014.py'
+assert not runner.exists()
+runner.write_text((root / 'check-native-self-quit-wrapped-20261014.py').read_text()
+                  .replace('navigation-native-self-quit-wrapped-20261014', 'navigation-native-self-quit-registered-20261014')
+                  .replace('plugins-windows-key-teardown-20261014', 'plugins-registered-exit-repair-20261014'),
+                  encoding='utf-8', newline='\n')
+launcher = root / 'launch-registered-exit-repair-desktop-20261014.ps1'
+assert not launcher.exists()
+launcher.write_text((root / 'launch-navigation-native-fixed-desktop-20261014.ps1').read_text()
+                    .replace('navigation-native-fixed', 'registered-exit-repair'),
+                    encoding='utf-8', newline='\n')
+print(json.dumps(report))

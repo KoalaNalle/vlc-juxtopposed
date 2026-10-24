@@ -1,0 +1,304 @@
+{
+  "passed": true,
+  "expectedMissingPreference": true,
+  "preferenceScope": "chain",
+  "cases": {
+    "automatic": {
+      "forcedCleanupUsed": false,
+      "pid": 10196,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    },
+    "prefer-flac": {
+      "forcedCleanupUsed": false,
+      "pid": 19064,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    },
+    "prefer-avcodec": {
+      "forcedCleanupUsed": false,
+      "pid": 13768,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": false,
+      "payloadPass": true,
+      "passed": false
+    },
+    "explicit-flac": {
+      "forcedCleanupUsed": false,
+      "pid": 19416,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    },
+    "incompatible-preference": {
+      "forcedCleanupUsed": false,
+      "pid": 16888,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    },
+    "missing-preference": {
+      "forcedCleanupUsed": false,
+      "pid": 4396,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    },
+    "none-preference": {
+      "forcedCleanupUsed": false,
+      "pid": 14940,
+      "exitCode": 0,
+      "normalExit": true,
+      "encoderModules": [
+        "flac",
+        "flac"
+      ],
+      "encodeEofObserved": true,
+      "decode": {
+        "states": [
+          1,
+          2,
+          5,
+          4
+        ],
+        "reasons": [
+          1
+        ],
+        "callbackErrors": [],
+        "drains": 1,
+        "finalState": 4,
+        "audioEncoderModules": [],
+        "audioDecoderModules": [
+          "flac",
+          "flac"
+        ],
+        "eos": true
+      },
+      "decodedFrames": 88200,
+      "exactPcm": true,
+      "flacFormat": {
+        "rate": 44100,
+        "channels": 1,
+        "bits": 16
+      },
+      "selectionMatches": true,
+      "payloadPass": true,
+      "passed": true
+    }
+  },
+  "workerProcess": {
+    "forcedCleanupUsed": false,
+    "pid": 16984,
+    "exitCode": 0,
+    "normalExit": true
+  },
+  "runtimeSha256": {
+    "libvlccore.dll": "6823ce2cbcf963eb63adcc68b46854236bd5da042fd89dc7d85105c33bee3e62",
+    "plugins/stream_out/libstream_out_transcode_plugin.dll": "cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c"
+  }
+}

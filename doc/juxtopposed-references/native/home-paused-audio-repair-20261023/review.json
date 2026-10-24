@@ -1,0 +1,23 @@
+{
+  "selectedPausedAudioSeekAccepted": true,
+  "fullBetaAccepted": false,
+  "rootCause": "The current input has a duration before the first output timer point. Pending seeks previously used the unset output-point duration/live fields. Percentage requests lacked time, and time requests could lack or retain an old position. The private trace verifies missing duration, not the earlier overwrite hypothesis.",
+  "productionChange": "Use current input duration/live status for the pending seek point and reset unavailable position on each time request. Actual output clocks, Qt controller/helper/UI policy and interpolation remain unchanged.",
+  "nativeActualCases": 7,
+  "isolatedPolicyCases": 15,
+  "bookmarksReplayCases": 9,
+  "videoPictureChecks": 6,
+  "ordinary": "Before any first audio play, pointer midpoint shows15s/.5 and Go to Time09s shows9s/.3 while paused. Resume advances and ordinary Pause/Quit work.",
+  "source": "Source-r23 preserves2120 current GUI/Core/producer inputs. Selected Core pre-build copies and original native executable build copies retain separate scopes. The unchanged native audio executable is replayed with the new Core; distribution-only registration differences are explicit.",
+  "preflight": "Before any candidate staging/replay/UI run, the staging helper was corrected to account explicitly for distribution registration. Original helper/manifest are retained and a preflight amendment is saved; no accepted receipt or Core compilation input changed.",
+  "history": "The first private trace link failed C/C++ trace-helper linkage before producing an executable; R21b corrects that diagnostic helper and records normally. Native original3 failures and policy original10 failures remain preserved as failures.",
+  "limits": [
+    "Silent synthetic WAV and one generated color video do not qualify all formats, physical audibility/outputs, live internet service, Windows10, DPI/screen-reader or full design/package acceptance.",
+    "The live/unknown/replacement policy cases use supplied native fields and recording callbacks around the exact production function. They are not real network-stream acceptance.",
+    "Native output time remains its output-clock readback while paused. The pending requested time/position is coherent without changing that clock.",
+    "The near-left pointer observation is approximately zero, not an exact-zero slider proof. Exact-zero native checks are separate. Resume is observed at10s; subsequent Pause is observed at15s. No interaction-latency bound.",
+    "Legacy Go to Time is used as functional evidence; its visual design is not accepted here.",
+    "Two bookmark-replay and one video-replay historical window-close diagnostics are retained and verified at teardown. Ordinary audio and the new native audio/policy suites capture no runtime errors/Qt exceptions. Builds exit0 with retained libtool portability/host-path warnings.",
+    "Ordinary raw passed=false/observationsRequired=true remains unchanged; this review accepts only the observed checks. Earlier hover/performance/Queue receipts retain their earlier binary scopes."
+  ]
+}

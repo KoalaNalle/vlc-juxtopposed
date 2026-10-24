@@ -1,0 +1,699 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "fd7f8af9b480f4e3b1dd8b4df22ae3fe7e58b655d13914b55658f405e6d6346b",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "8be8eff6e4d877f4369a44f0df4424855349b90ec25de8d77a9ce9a0e1ec4115",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "fullscreen-controls-audio-on": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 24364,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 31.328999999997905,
+      "exitCode": 0,
+      "elapsedSeconds": 36.453999999997905,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen journey is confined to the explicitly selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested fullscreen-controls startup option",
+            "passed": true
+          },
+          {
+            "name": "owned media starts through the actual playlist before fullscreen checks",
+            "passed": true
+          },
+          {
+            "name": "primary input pauses before independent window changes",
+            "passed": true
+          },
+          {
+            "name": "native paused clock settles before fullscreen mutation",
+            "passed": true
+          },
+          {
+            "name": "no-write paused clock control is exact",
+            "passed": true
+          },
+          {
+            "name": "actual redesigned playback bar materializes in the windowed player",
+            "passed": true
+          },
+          {
+            "name": "live bar belongs to the actual production Player root",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual Player exposes its existing bottom/title/visibility owners to the private driver",
+            "passed": true
+          },
+          {
+            "name": "actual visibility owner accepts an interaction lock",
+            "passed": true
+          },
+          {
+            "name": "real visibility lock keeps the revealed windowed controls available",
+            "passed": true
+          },
+          {
+            "name": "windowed bottom controls own keyboard focus before fullscreen transition",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen bottom-control visibility follows the saved option",
+            "passed": true
+          },
+          {
+            "name": "hidden fullscreen controls reject input during and after fading",
+            "passed": true
+          },
+          {
+            "name": "title and exit controls remain available under the independent visibility lock",
+            "passed": true
+          },
+          {
+            "name": "actual pointer/keyboard activity cannot override the fullscreen option",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual interaction lock releases normally",
+            "passed": true
+          },
+          {
+            "name": "windowed playback controls return regardless of the fullscreen setting",
+            "passed": true
+          },
+          {
+            "name": "fullscreen policy preserves exact paused input clock rate volume and mute",
+            "passed": true
+          },
+          {
+            "name": "fullscreen exit leaves the owned test window on the selected monitor",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-controls-audio-on",
+        "nativeFullscreenControlsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-fullscreen-controls-20261019/native-fullscreen-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "nativeWarnings": [
+        "flac warning: discarding bytes as we're over framesize 12, 24",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "fullscreen-controls-audio-off": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 3588,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 22.046000000002095,
+      "exitCode": 0,
+      "elapsedSeconds": 31.95300000000134,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen journey is confined to the explicitly selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested fullscreen-controls startup option",
+            "passed": true
+          },
+          {
+            "name": "owned media starts through the actual playlist before fullscreen checks",
+            "passed": true
+          },
+          {
+            "name": "primary input pauses before independent window changes",
+            "passed": true
+          },
+          {
+            "name": "native paused clock settles before fullscreen mutation",
+            "passed": true
+          },
+          {
+            "name": "no-write paused clock control is exact",
+            "passed": true
+          },
+          {
+            "name": "actual redesigned playback bar materializes in the windowed player",
+            "passed": true
+          },
+          {
+            "name": "live bar belongs to the actual production Player root",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual Player exposes its existing bottom/title/visibility owners to the private driver",
+            "passed": true
+          },
+          {
+            "name": "actual visibility owner accepts an interaction lock",
+            "passed": true
+          },
+          {
+            "name": "real visibility lock keeps the revealed windowed controls available",
+            "passed": true
+          },
+          {
+            "name": "windowed bottom controls own keyboard focus before fullscreen transition",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen bottom-control visibility follows the saved option",
+            "passed": true
+          },
+          {
+            "name": "hidden fullscreen controls reject input during and after fading",
+            "passed": true
+          },
+          {
+            "name": "title and exit controls remain available under the independent visibility lock",
+            "passed": true
+          },
+          {
+            "name": "fullscreen hiding returns focused bottom controls to the visible title controls",
+            "passed": true
+          },
+          {
+            "name": "actual pointer/keyboard activity cannot override the fullscreen option",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual interaction lock releases normally",
+            "passed": true
+          },
+          {
+            "name": "windowed playback controls return regardless of the fullscreen setting",
+            "passed": true
+          },
+          {
+            "name": "fullscreen policy preserves exact paused input clock rate volume and mute",
+            "passed": true
+          },
+          {
+            "name": "fullscreen exit leaves the owned test window on the selected monitor",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-controls-audio-off",
+        "nativeFullscreenControlsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-fullscreen-controls-20261019/native-fullscreen-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "nativeWarnings": [
+        "flac warning: discarding bytes as we're over framesize 12, 24",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "fullscreen-controls-video-on": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 29864,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 38.29699999999866,
+      "exitCode": 0,
+      "elapsedSeconds": 49.25,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen journey is confined to the explicitly selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested fullscreen-controls startup option",
+            "passed": true
+          },
+          {
+            "name": "owned media starts through the actual playlist before fullscreen checks",
+            "passed": true
+          },
+          {
+            "name": "primary input pauses before independent window changes",
+            "passed": true
+          },
+          {
+            "name": "native paused clock settles before fullscreen mutation",
+            "passed": true
+          },
+          {
+            "name": "no-write paused clock control is exact",
+            "passed": true
+          },
+          {
+            "name": "actual redesigned playback bar materializes in the windowed player",
+            "passed": true
+          },
+          {
+            "name": "live bar belongs to the actual production Player root",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual Player exposes its existing bottom/title/visibility owners to the private driver",
+            "passed": true
+          },
+          {
+            "name": "normal pointer-reveal signal reaches the actual visibility owner",
+            "passed": true
+          },
+          {
+            "name": "normal reveal makes auto-hidden windowed video controls available",
+            "passed": true
+          },
+          {
+            "name": "actual visibility owner accepts an interaction lock",
+            "passed": true
+          },
+          {
+            "name": "real visibility lock keeps the revealed windowed controls available",
+            "passed": true
+          },
+          {
+            "name": "windowed bottom controls own keyboard focus before fullscreen transition",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen bottom-control visibility follows the saved option",
+            "passed": true
+          },
+          {
+            "name": "hidden fullscreen controls reject input during and after fading",
+            "passed": true
+          },
+          {
+            "name": "title and exit controls remain available under the independent visibility lock",
+            "passed": true
+          },
+          {
+            "name": "actual pointer/keyboard activity cannot override the fullscreen option",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual interaction lock releases normally",
+            "passed": true
+          },
+          {
+            "name": "windowed playback controls return regardless of the fullscreen setting",
+            "passed": true
+          },
+          {
+            "name": "fullscreen policy preserves exact paused input clock rate volume and mute",
+            "passed": true
+          },
+          {
+            "name": "fullscreen exit leaves the owned test window on the selected monitor",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-controls-video-on",
+        "nativeFullscreenControlsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-fullscreen-controls-20261019/native-fullscreen-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "nativeWarnings": [
+        "mp4 warning: elst box found",
+        "mp4 warning: STTS table of 1 entries",
+        "main warning: window size missing"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "fullscreen-controls-video-off": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 18764,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 22.54699999999866,
+      "exitCode": 0,
+      "elapsedSeconds": 28.140999999995984,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "fullscreen journey is confined to the explicitly selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx snapshots the requested fullscreen-controls startup option",
+            "passed": true
+          },
+          {
+            "name": "owned media starts through the actual playlist before fullscreen checks",
+            "passed": true
+          },
+          {
+            "name": "primary input pauses before independent window changes",
+            "passed": true
+          },
+          {
+            "name": "native paused clock settles before fullscreen mutation",
+            "passed": true
+          },
+          {
+            "name": "no-write paused clock control is exact",
+            "passed": true
+          },
+          {
+            "name": "actual redesigned playback bar materializes in the windowed player",
+            "passed": true
+          },
+          {
+            "name": "live bar belongs to the actual production Player root",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual Player exposes its existing bottom/title/visibility owners to the private driver",
+            "passed": true
+          },
+          {
+            "name": "normal pointer-reveal signal reaches the actual visibility owner",
+            "passed": true
+          },
+          {
+            "name": "normal reveal makes auto-hidden windowed video controls available",
+            "passed": true
+          },
+          {
+            "name": "actual visibility owner accepts an interaction lock",
+            "passed": true
+          },
+          {
+            "name": "real visibility lock keeps the revealed windowed controls available",
+            "passed": true
+          },
+          {
+            "name": "windowed bottom controls own keyboard focus before fullscreen transition",
+            "passed": true
+          },
+          {
+            "name": "actual fullscreen bottom-control visibility follows the saved option",
+            "passed": true
+          },
+          {
+            "name": "hidden fullscreen controls reject input during and after fading",
+            "passed": true
+          },
+          {
+            "name": "title and exit controls remain available under the independent visibility lock",
+            "passed": true
+          },
+          {
+            "name": "fullscreen hiding returns focused bottom controls to the visible title controls",
+            "passed": true
+          },
+          {
+            "name": "actual pointer/keyboard activity cannot override the fullscreen option",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual interaction lock releases normally",
+            "passed": true
+          },
+          {
+            "name": "windowed playback controls return regardless of the fullscreen setting",
+            "passed": true
+          },
+          {
+            "name": "fullscreen policy preserves exact paused input clock rate volume and mute",
+            "passed": true
+          },
+          {
+            "name": "fullscreen exit leaves the owned test window on the selected monitor",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "fullscreen-controls-video-off",
+        "nativeFullscreenControlsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-fullscreen-controls-20261019/native-fullscreen-r4/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "nativeWarnings": [
+        "mp4 warning: elst box found",
+        "mp4 warning: STTS table of 1 entries",
+        "main warning: window size missing"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "0edd45b6c6c1c4b8875e0530f871884fe79a809a5e56824306561661711aaef2",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true
+}

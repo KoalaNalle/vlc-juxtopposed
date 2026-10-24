@@ -1,0 +1,20 @@
+make: Entering directory '/build/vlc/win64/modules/gui/qt'
+ cd /checkout/extras/package/win32/../../.. && /bin/bash /checkout/autotools/missing automake-1.16 --foreign modules/gui/qt/Makefile
+ cd ../../.. && /bin/bash ./config.status modules/gui/qt/Makefile depfiles
+config.status: creating modules/gui/qt/Makefile
+config.status: executing depfiles commands
+  GEN      widgets/qml.deps
+  GEN      util/qml.deps
+  GEN      style/qml.deps
+  GEN      playlist/qml.deps
+  GEN      playercontrols/qml.deps
+  GEN      player/qml.deps
+  GEN      network/qml.deps
+  GEN      menus/qml.deps
+  GEN      medialibrary/qml.deps
+  GEN      maininterface/qml.deps
+  GEN      dialogs/qml.deps
+  GEN      shaders/shaders.deps
+make: 'Makefile' is up to date.
+  MOC      tests/test_navigation_history.moc
+make: Leaving directory '/build/vlc/win64/modules/gui/qt'
