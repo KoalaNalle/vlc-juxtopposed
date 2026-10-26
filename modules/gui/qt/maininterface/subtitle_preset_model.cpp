@@ -221,13 +221,32 @@ bool SubtitlePresetModel::canApply() const
         const auto *track = vlc_player_GetTrackAt(m_player, SPU_ES, i);
         if (track->selected) {
             vlc_vout_order order = VLC_VOUT_ORDER_NONE;
-            if (!textTrack(track) || !vlc_player_GetEsIdVout(m_player, track->es_id, &order)
-                || order == VLC_VOUT_ORDER_NONE) return false;
+            // Selection publishes a native role before a cue creates its SPU
+            // output. The style service still validates the real video output.
+            (void)vlc_player_GetEsIdVout(m_player, track->es_id, &order);
+            if (!textTrack(track) || order == VLC_VOUT_ORDER_NONE) return false;
         }
     }
     return true;
 }
 bool SubtitlePresetModel::canSave() const { return canApply() && m_presets.size() < MaximumPresets && m_pendingId.isEmpty(); }
+bool SubtitlePresetModel::hasTrackSelectionPolicy(input_item_t *media) const
+{
+    if (!media || !m_storageValid) return false;
+    if (media != m_media.get() || m_contextGeneration != m_generation.load()) {
+        // Media callbacks can still be queued when another service restores
+        // attachments. Resolve the held target's association, never the last
+        // input's selected/edited cache. The caller holds no player lock.
+        auto uri = vlc::wrap_cptr(input_item_GetURI(media));
+        if (!uri) return false;
+        const auto key = QString::fromLatin1(QCryptographicHash::hash(QByteArray(uri.get()), QCryptographicHash::Sha256).toHex());
+        const auto *preset = find(m_associations.value(key));
+        return preset && !preset->tracks.isEmpty();
+    }
+    const auto *preset = find(m_pendingId.isEmpty() ? m_selectedId : m_pendingId);
+    return preset && !preset->tracks.isEmpty()
+        && (!m_pendingId.isEmpty() || (m_haveApplied && !m_edited));
+}
 QString SubtitlePresetModel::statusText() const
 {
     if (!m_storageValid) return qtr("Saved subtitle presets could not be read. Reset Preferences can clear the damaged data.");
@@ -328,6 +347,15 @@ void SubtitlePresetModel::refreshMedia()
     m_writesSubmitted = false; m_selectedId = m_default.id;
     m_pendingId = m_media && m_storageValid ? m_associations.value(m_mediaKey, m_resetStyleNext ? m_default.id : QString{}) : QString{};
     if (m_storageValid) m_error.clear();
+    if (!m_pendingId.isEmpty()) {
+        const auto requested = m_pendingId;
+        const auto serial = m_requestSerial;
+        QTimer::singleShot(10000, this, [this, generation, requested, serial] {
+            if (generation != m_generation.load() || serial != m_requestSerial || m_pendingId != requested) return;
+            m_pendingId.clear(); m_selectionRequested = false; m_writesSubmitted = false;
+            fail(qtr("The saved subtitle tracks or output are unavailable. Load the missing subtitle files or choose another preset."));
+        });
+    }
 }
 bool SubtitlePresetModel::capture(Preset *result) const
 {
@@ -348,7 +376,8 @@ bool SubtitlePresetModel::capture(Preset *result) const
         TrackPolicy policy; policy.id = QString::fromUtf8(vlc_es_id_GetStrId(track->es_id));
         policy.language = languageCode(QString::fromUtf8(track->fmt.psz_language)); policy.index = i;
         vlc_vout_order order = VLC_VOUT_ORDER_NONE;
-        if (!vlc_player_GetEsIdVout(m_player, track->es_id, &order) || order == VLC_VOUT_ORDER_NONE) return false;
+        (void)vlc_player_GetEsIdVout(m_player, track->es_id, &order);
+        if (order == VLC_VOUT_ORDER_NONE) return false;
         policy.order = order;
         const auto delay = vlc_player_GetEsIdDelay(m_player, track->es_id);
         policy.ownDelay = delay != INT64_MAX; policy.delay = policy.ownDelay ? delay : 0;
@@ -444,6 +473,14 @@ bool SubtitlePresetModel::tryApply()
                 const auto *candidate = vlc_player_GetTrackAt(m_player, SPU_ES, i);
                 if (textTrack(candidate) && QString::fromUtf8(vlc_es_id_GetStrId(candidate->es_id)) == policy.id) { chosen = candidate; break; }
             }
+            // An automatic association is for this exact media. External
+            // tracks can arrive after embedded tracks with the same language;
+            // wait for their IDs instead of silently substituting one. Explicit
+            // application to other media retains language/ordinal fallback.
+            if (!chosen && !explicitRequest) {
+                for (auto *target : targets) vlc_es_id_Release(target);
+                return false;
+            }
             if (!chosen && !policy.language.isEmpty()) for (size_t i = 0; i < count; ++i) {
                 const auto *candidate = vlc_player_GetTrackAt(m_player, SPU_ES, i);
                 if (textTrack(candidate) && languageCode(QString::fromUtf8(candidate->fmt.psz_language)) == policy.language
@@ -477,11 +514,11 @@ bool SubtitlePresetModel::tryApply()
                 }
             }
             selected = selected && selectedCount == static_cast<size_t>(targets.size());
-            bool rolesReady = true, wrongRole = false;
+            bool ordersKnown = true, wrongRole = false;
             for (qsizetype i = 0; i < targets.size(); ++i) {
                 vlc_vout_order order = VLC_VOUT_ORDER_NONE;
-                if (!vlc_player_GetEsIdVout(m_player, targets[i], &order)
-                    || order == VLC_VOUT_ORDER_NONE) rolesReady = false;
+                (void)vlc_player_GetEsIdVout(m_player, targets[i], &order);
+                if (order == VLC_VOUT_ORDER_NONE) ordersKnown = false;
                 else if (order != preset.tracks[i].order) wrongRole = true;
             }
             if (!selected || wrongRole) {
@@ -510,9 +547,11 @@ bool SubtitlePresetModel::tryApply()
                 for (auto *target : targets) vlc_es_id_Release(target);
                 return false;
             }
-            if (!rolesReady) {
-                // Selected decoders can exist before their first vout/cue.
-                // Wait for a real output event without reselection or writes.
+            if (!ordersKnown) {
+                // Wait for native selection metadata without reselection.
+                // A future cue is not a prerequisite: paused playback may
+                // remain before that cue indefinitely. Actual output events
+                // continue to update the native role used by capture/matching.
                 for (auto *target : targets) vlc_es_id_Release(target);
                 return false;
             }

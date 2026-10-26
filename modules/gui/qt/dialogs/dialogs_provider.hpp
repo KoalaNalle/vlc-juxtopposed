@@ -279,6 +279,9 @@ public slots:
     void chooseNewPlaylistThumbnail();
     void chooseConversionSource();
     void chooseConversionDestination();
+    void chooseSubtitleAttachmentFiles();
+    void chooseSubtitleAttachmentFolder();
+    void searchSubtitlesOnline();
 
     void PLOpenDir();
     void PLAppendDir();
@@ -326,6 +329,7 @@ signals:
     void showGlobalSettingsDialog();
     void showNewPlaylistDialog();
     void showConversionDialog();
+    void showSubtitleAttachmentsDialog();
     void showPlayerProfilesDialog(bool create);
     void newPlaylistSaved(MLItemId playlist);
     void qmlDialogVisibleChanged();

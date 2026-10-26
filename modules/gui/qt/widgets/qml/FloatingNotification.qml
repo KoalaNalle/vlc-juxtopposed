@@ -71,7 +71,7 @@ Column {
 
             focus: false
 
-            width: notifText.implicitWidth
+            width: Math.min(notifText.implicitWidth, Math.max(0, root.width))
             height: notifText.implicitHeight
 
             radius: VLCStyle.dp(3, VLCStyle.scale)
@@ -162,11 +162,18 @@ Column {
             SubtitleLabel {
                 id: notifText
 
+                width: parent.width
+                wrapMode: Text.Wrap
+                elide: Text.ElideNone
+
                 padding: VLCStyle.margin_small
 
                 color: theme.fg.primary
 
                 text: delegate.text
+
+                Accessible.role: Accessible.AlertMessage
+                Accessible.name: text
             }
         }
     }

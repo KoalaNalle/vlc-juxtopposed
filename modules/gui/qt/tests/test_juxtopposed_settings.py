@@ -386,6 +386,31 @@ Item {
         for index in range(4):
             switch(index)
             assert view.grabWindow().save(str(args.output_dir / f'settings-{index}-{width}-{scale}.png'))
+        # Open the real naming form at the bottom of the real scrolling page.
+        # The production reveal handler must expose the editor and both actions;
+        # the test does not scroll again after the form opens.
+        preset_selector = accessible(page(), 'subtitlePresetSelector')
+        preset_selector.forceActiveFocus(Qt.TabFocusReason)
+        QTest.qWait(40)
+        click(preset_selector)
+        QTest.qWait(40)
+        click(accessible(view.contentItem(), 'newSubtitlePreset'))
+        QTest.qWait(100)
+        name_editor = accessible(page(), 'subtitlePresetName')
+        assert name_editor.hasActiveFocus()
+        for name in ['subtitlePresetName', 'subtitlePresetCancel', 'subtitlePresetSave']:
+            target = accessible(page(), name)
+            top = target.mapToItem(page(), target.boundingRect().topLeft()).y()
+            assert top >= -.1 and top + target.height() <= page().height() + .1, (
+                name, top, target.height(), page().height(), width, height, scale,
+                [(item.metaObject().className(), item.height(), item.property('contentY'),
+                  item.property('contentHeight')) for item in descendants(page())
+                 if item.property('contentY') is not None],
+                name_editor.parentItem().height())
+        assert view.grabWindow().save(str(args.output_dir / f'preset-naming-visible-{width}-{scale}.png'))
+        click(accessible(page(), 'subtitlePresetCancel'))
+        QTest.qWait(40)
+        assert preset_selector.hasActiveFocus()
     style.factor = 1.; style.changed.emit(); view.resize(400, 600)
     switch(0); switch(3)
     assert view.grabWindow().save(str(args.output_dir / 'subtitle-appearance-top.png'))

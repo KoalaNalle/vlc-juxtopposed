@@ -56,7 +56,12 @@ FocusScope {
 
     // Private
 
-    property bool _controlsUnderVideo: (MainCtx.pinVideoControls
+    // Fixed windowed controls must not cover the video's subtitle area. The
+    // compact redesigned bar has two rows, so an overlay can hide whole cues.
+    property bool _controlsUnderVideo: ((MainCtx.pinVideoControls
+                                        || (controlBar.redesigned
+                                            && (MainCtx.controlAutoHideMode === 0
+                                                || MainCtx.controlAutoHideMode === 1)))
                                         &&
                                         (MainCtx.intfMainWindow.visibility !== Window.FullScreen))
 

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: LGPL-2.1-or-later
-"""Run real Controls input tests in a fresh owned Windows portable runtime."""
+"""Run real Controls input tests in a fresh owned Windows portable runtime.
+
+The bare case exercises window events without Qt or hotkeys, including a
+temporary frontend's input-blocking lease and playback after its teardown.
+Pass the actual .libs/test_controls_input.exe, not a libtool launcher.
+"""
 import argparse
 import ctypes
 import hashlib
@@ -21,7 +26,7 @@ parser.add_argument('--fixture', type=Path, required=True)
 parser.add_argument('--output-dir', type=Path, required=True)
 parser.add_argument('--old-core', type=Path)
 parser.add_argument('--before-click-core', type=Path)
-parser.add_argument('--case', action='append', choices=('chain', 'reverse', 'legacy', 'binding', 'input', 'embedding', 'legacy-disabled'))
+parser.add_argument('--case', action='append', choices=('chain', 'reverse', 'legacy', 'binding', 'input', 'embedding', 'legacy-disabled', 'bare'))
 args = parser.parse_args()
 output = args.output_dir.resolve()
 output.mkdir(parents=True, exist_ok=False)
@@ -114,7 +119,7 @@ try:
         run_case('before-click-core', 'input', 33, 1, click_failure=True)
         shutil.copy2(args.core, runtime / 'libvlccore.dll')
     for name, expected in [('chain', 2), ('reverse', 8), ('legacy', 8), ('binding', 8),
-                           ('embedding', 16), ('legacy-disabled', 14), ('input', 33)]:
+                           ('embedding', 16), ('legacy-disabled', 14), ('input', 33), ('bare', 13)]:
         if args.case and name not in args.case:
             continue
         run_case(name, name, expected)

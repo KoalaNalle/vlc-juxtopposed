@@ -136,6 +136,8 @@ struct vlc_player_input
     /* Appended to keep offsets used by existing private native fixtures stable. */
     uint64_t history_epoch;
     uint64_t position_epoch;
+    /* Under player->lock; a current-input retry, never a saved timestamp. */
+    vlc_tick_t subtitle_refresh_deadline;
 };
 
 struct vlc_player_listener_id

@@ -12,7 +12,7 @@ os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 os.environ['QT_QUICK_BACKEND'] = 'software'
 os.environ['QML_DISABLE_DISK_CACHE'] = '1'
 os.environ['QT_QPA_FONTDIR'] = str(repo / 'modules/gui/qt/pixmaps/juxtopposed')
-from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QPoint, Qt, qInstallMessageHandler
+from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QPoint, Qt, QTimer, qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication, QColor
 from PySide6.QtQuick import QQuickItem, QQuickView
 from PySide6.QtTest import QTest
@@ -37,6 +37,7 @@ class Controller(QObject):
         self._delay = 1500000
         self._status = 'Source cue snapshot with the current subtitle delay.'
         self.seeks, self.reloads, self.shifts = [], 0, []
+        self.queued_seek_completion = False
         self.segments = [{'startTicks': 1000000, 'endTicks': 2000000, 'text': 'First'},
                          {'startTicks': 4000000, 'endTicks': 6000000, 'text': 'Second'},
                          {'startTicks': 4500000, 'endTicks': 7000000, 'text': '<font color="green">Overlap</font>'},
@@ -59,7 +60,18 @@ class Controller(QObject):
     @Slot(int, int, result=bool)
     def seekCue(self, index, revision):
         self.seeks.append((index, revision))
-        return self._available and revision == self._revision and 0 <= index < len(self.segments)
+        accepted = self._available and revision == self._revision and 0 <= index < len(self.segments)
+        if accepted:
+            def complete():
+                self._position = self.segments[index]['startTicks']
+                if self.queued_seek_completion:
+                    self._revision += 1
+                self.changed.emit()
+            if self.queued_seek_completion:
+                QTimer.singleShot(0, complete)
+            else:
+                complete()
+        return accepted
     @Slot()
     def reload(self):
         self.reloads += 1
@@ -112,6 +124,9 @@ assert controller.seeks[-1] == (0, 1) and len(controller.seeks) == 3
 QTest.mouseClick(view, Qt.LeftButton, pos=QPoint(860, 35))
 assert controller.reloads == 1
 assert item('subtitleCueReload').property('enabled')
+controller._position = 5000000
+controller.changed.emit()
+QTest.qWait(20)
 assert view.grabWindow().save(str(args.output_dir / 'subtitle-source-cues-component.png'))
 pixels = view.grabWindow()
 assert pixels.pixelColor(150, 14).name() == '#371f06'
@@ -137,6 +152,39 @@ QTest.mouseClick(view, Qt.LeftButton, pos=QPoint(33, 14))
 assert root.property('windowSpanTicks') == 30000000
 assert root.property('windowStartTicks') == 45000000
 assert controller._position == position_before_navigation
+
+# A real seek changes the following viewport and recreates its cue delegates.
+# Keyboard ownership must survive that refresh instead of reaching player keys.
+saved_segments = controller.segments
+controller.queued_seek_completion = True
+controller.segments = [{'startTicks': 65000000, 'endTicks': 70000000, 'text': 'Following cue'}]
+controller._length, controller._position = 120000000, 60000000
+controller._revision += 1
+controller.changed.emit()
+root.setProperty('followPlayback', True)
+QTest.qWait(30)
+QTest.mouseClick(view, Qt.LeftButton, pos=QPoint(675, 14))
+QTest.qWait(50)
+assert controller._position == 65000000
+assert view.activeFocusItem() is not None and view.activeFocusItem().objectName() == 'subtitleCue0', 'Cue focus was lost when the following viewport refreshed'
+seeks_after_follow = len(controller.seeks)
+start_before_key = root.property('windowStartTicks')
+QTest.keyClick(view, Qt.Key_Right)
+QTest.qWait(30)
+assert root.property('windowStartTicks') == start_before_key + 7500000
+assert controller._position == 65000000 and len(controller.seeks) == seeks_after_follow
+QTest.keyClick(view, Qt.Key_Return)
+QTest.qWait(30)
+assert len(controller.seeks) == seeks_after_follow + 1
+QTest.keyClick(view, Qt.Key_Space)
+QTest.qWait(30)
+assert len(controller.seeks) == seeks_after_follow + 2
+closed = []
+root.closeRequested.connect(lambda: closed.append(True))
+QTest.keyClick(view, Qt.Key_Escape)
+assert closed == [True]
+controller.segments = saved_segments
+controller.queued_seek_completion = False
 controller._length, controller._position = 18000000, 5000000
 controller.changed.emit()
 root.setProperty('followPlayback', True)

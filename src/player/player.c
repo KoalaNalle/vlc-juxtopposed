@@ -243,8 +243,18 @@ vlc_player_mainloop_Thread(void *data)
     {
         /* Wait for an input to stop or close. No while loop here since we want
          * to leave this code path when the player is deleting. */
-        vlc_tick_t deadline = vlc_player_GetAtoBLoopDeadline(player);
+        const vlc_tick_t abloop_deadline = vlc_player_GetAtoBLoopDeadline(player);
+        vlc_tick_t deadline = abloop_deadline;
         bool timeout = false;
+        struct vlc_player_input *refresh_input = player->input;
+        if (refresh_input && refresh_input->subtitle_refresh_deadline != VLC_TICK_INVALID)
+        {
+            vlc_tick_t retry = refresh_input->subtitle_refresh_deadline;
+            if (refresh_input->state == VLC_PLAYER_STATE_PAUSED)
+                retry = __MIN(retry, vlc_tick_now() + VLC_TICK_FROM_MS(20));
+            if (deadline == VLC_TICK_MIN || retry < deadline)
+                deadline = retry;
+        }
         if (vlc_list_is_empty(&player->mainloop.stop_inputs)
          && vlc_list_is_empty(&player->mainloop.joinable_inputs))
         {
@@ -255,8 +265,18 @@ vlc_player_mainloop_Thread(void *data)
                                              &player->lock, deadline) != 0;
         }
 
-        if (timeout && player->input != NULL)
+        if (timeout && player->input != NULL
+         && abloop_deadline != VLC_TICK_MIN && vlc_tick_now() >= abloop_deadline)
             vlc_player_input_HandleAtoBLoop(player->input, true);
+
+        refresh_input = player->input;
+        if (refresh_input && refresh_input->subtitle_refresh_deadline != VLC_TICK_INVALID)
+        {
+            if (vlc_tick_now() >= refresh_input->subtitle_refresh_deadline)
+                refresh_input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+            else if (refresh_input->state == VLC_PLAYER_STATE_PAUSED)
+                vlc_player_input_RefreshPausedSubtitle(refresh_input);
+        }
 
         struct vlc_player_input *input;
         vlc_list_foreach(input, &player->mainloop.stop_inputs, node)
@@ -1358,7 +1378,11 @@ vlc_player_SetPause(vlc_player_t *player, bool pause)
                                       &val);
 
     if (ret == VLC_SUCCESS)
+    {
+        if (!pause)
+            input->subtitle_refresh_deadline = VLC_TICK_INVALID;
         vlc_player_osd_Icon(player, pause ? OSD_PAUSE_ICON : OSD_PLAY_ICON);
+    }
 }
 
 void
@@ -1832,8 +1856,12 @@ vlc_player_SetRecordingEnabled(vlc_player_t *player, bool enable,
                                 INPUT_CONTROL_SET_RECORD_STATE, &param);
 
     if (ret == VLC_SUCCESS)
+    {
+        if (enable)
+            input->subtitle_refresh_deadline = VLC_TICK_INVALID;
         vlc_player_osd_Message(player, enable ?
                                _("Recording") : _("Recording done"));
+    }
 }
 
 int

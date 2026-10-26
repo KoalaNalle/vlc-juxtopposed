@@ -161,6 +161,17 @@ SubtitleCueSource selectedExternalSrtSourceLocked(vlc_player_t *player)
     { source.status = QStringLiteral("Timeline is unavailable for embedded or image subtitles."); return source; }
     vlc_vout_order order = VLC_VOUT_ORDER_NONE;
     auto *vout = vlc_player_GetEsIdVout(player, selected->es_id, &order);
+    if (!vout && order == VLC_VOUT_ORDER_PRIMARY)
+    {
+        // A selected subtitle has an order before its first cue creates an SPU
+        // output. Use the actual primary video's output to inspect its filters
+        // while paused before that cue; never substitute the idle output.
+        const auto *video = vlc_player_GetSelectedTrack(player, VIDEO_ES);
+        vlc_vout_order videoOrder = VLC_VOUT_ORDER_NONE;
+        if (video)
+            vout = vlc_player_GetEsIdVout(player, video->es_id, &videoOrder);
+        if (videoOrder != VLC_VOUT_ORDER_PRIMARY) vout = nullptr;
+    }
     if (!vout || order != VLC_VOUT_ORDER_PRIMARY)
     { source.status = QStringLiteral("Subtitle timeline is waiting for the primary video output."); return source; }
     for (const auto &filter : vlc::qt::filterChainEntries(vout, "sub-filter"))

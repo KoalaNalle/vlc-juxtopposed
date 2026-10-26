@@ -72,12 +72,29 @@ void DelayEstimator::calculateDelay()
     if (m_heardTime.valid() &&
         m_spottedTime.valid())
     {
-        m_delay = m_heardTime - m_spottedTime;
+        // A correction can advance or delay the subtitle. VLCTime subtraction
+        // intentionally rejects negative durations, so preserve the signed
+        // difference of these two valid monotonic timestamps explicitly.
+        m_delay = VLCDuration(m_heardTime.toVLCTick() - m_spottedTime.toVLCTick());
         emit delayChanged();
         m_heardTime = VLCTime();
         m_spottedTime = VLCTime();
         emit spottedTimeChanged();
         emit heardTimeChanged();
+    }
+}
+
+/*Q_INVOKABLE*/ void DelayEstimator::cancel()
+{
+    if (m_heardTime.valid())
+    {
+        m_heardTime = VLCTime();
+        emit heardTimeChanged();
+    }
+    if (m_spottedTime.valid())
+    {
+        m_spottedTime = VLCTime();
+        emit spottedTimeChanged();
     }
 }
 

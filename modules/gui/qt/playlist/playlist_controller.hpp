@@ -133,6 +133,9 @@ public:
     void move(const QVector<PlaylistItem> &, size_t target, ssize_t indexHint);
     void remove(const QVector<PlaylistItem> &, ssize_t indexHint);
     qint64 currentSourcePlaylistId() const;
+    // Snapshot only items loaded from this existing saved-playlist origin.
+    // Used by attachment matching; transient queue row numbers are not IDs.
+    QVariantList sourcePlaylistItems(qint64 id) const;
     void forgetSourcePlaylist(qint64 id);
 
     Q_INVOKABLE void shuffle();

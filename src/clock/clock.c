@@ -727,7 +727,10 @@ static vlc_tick_t vlc_clock_slave_to_system(vlc_clock_t *clock,
         system = vlc_clock_monotonic_to_system(clock, ctx, now, ts, rate);
     }
 
-    return system + (clock->delay - main_clock->delay) * rate;
+    /* Track delays use the same media-time units as their timestamps. Apply
+     * the same conversion as an equivalent timestamp shift; multiplying here
+     * would scale the effective offset by the square of the playback rate. */
+    return system + (clock->delay - main_clock->delay) / rate;
 }
 
 static vlc_tick_t vlc_clock_master_to_system(vlc_clock_t *clock,

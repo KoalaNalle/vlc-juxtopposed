@@ -580,12 +580,22 @@ bool InterfaceWindowHandler::applyKeyEvent(QKeyEvent * event) const
         || ((key == Qt::Key_Space || key == Qt::Key_Return || key == Qt::Key_Enter)
             && !(event->modifiers() & (Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier)));
 
+    const bool subtitleTimelineKey =
+        (event->modifiers() == Qt::NoModifier
+            && (key == Qt::Key_Left || key == Qt::Key_Right
+                || key == Qt::Key_Space || key == Qt::Key_Return
+                || key == Qt::Key_Enter || key == Qt::Key_Escape))
+        || ((event->modifiers() == Qt::NoModifier || event->modifiers() == Qt::ShiftModifier)
+            && (key == Qt::Key_Plus || key == Qt::Key_Equal || key == Qt::Key_Minus))
+        || (event->modifiers() == Qt::ControlModifier && key == Qt::Key_R);
+
     // Popups and sidebar navigation retain their own keys after mouse focus,
     // which does not set visualFocus. Other player shortcuts keep the existing
     // prefer-hotkeys policy.
     for (auto *owner = item; owner; owner = owner->parentItem())
         if (owner->isVisible() && (owner->inherits("QQuickPopupItem")
-            || (navigationKey && owner->property("navigationKeyScope").toBool())))
+            || (navigationKey && owner->property("navigationKeyScope").toBool())
+            || (subtitleTimelineKey && owner->property("subtitleTimelineKeyScope").toBool())))
             return false;
 
     // NOTE: When the item has visual focus we let it handle the key. When the item does not

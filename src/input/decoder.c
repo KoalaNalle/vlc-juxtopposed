@@ -1203,6 +1203,11 @@ static int DecoderWaitUnblock(vlc_input_decoder_t *p_owner, vlc_tick_t date)
     while (p_owner->b_waiting && p_owner->b_has_data && !p_owner->flushing)
         vlc_fifo_WaitCond(p_owner->p_fifo, &p_owner->wait_request);
 
+    /* A rate request can arrive while this decoded block waits for buffering.
+     * Apply it before the block establishes an output clock reference. */
+    if (!p_owner->flushing && p_owner->rate != p_owner->output_rate)
+        Decoder_ChangeOutputRate(p_owner, p_owner->rate);
+
     if (!p_owner->out_started)
     {
         p_owner->out_started = true;
@@ -1549,6 +1554,13 @@ static int ModuleThread_PlayVideo( vlc_input_decoder_t *p_owner, picture_t *p_pi
         msg_Dbg( p_dec, "Received first picture" );
         p_owner->b_first = false;
         p_picture->b_force = true;
+        if (p_owner->b_waiting)
+        {
+            /* A one-picture input has no second picture to acknowledge
+             * buffering through DecoderWaitUnblock(). */
+            p_owner->b_has_data = true;
+            vlc_cond_signal(&p_owner->wait_acknowledge);
+        }
     }
     else
     {
@@ -2045,6 +2057,13 @@ static void *DecoderThread( void *p_data )
             DecoderThread_Flush( p_owner );
 
             vlc_fifo_Lock( p_owner->p_fifo );
+
+            /* The first forced picture can acknowledge buffering without
+             * blocking in DecoderWaitUnblock(). Once its decoder/output flush
+             * has completed, no pre-flush data remains to acknowledge. Wake a
+             * caller that was waiting for that first-picture acknowledgement. */
+            p_owner->b_has_data = false;
+            vlc_cond_signal( &p_owner->wait_acknowledge );
 
             /* Reset flushing after DecoderThread_ProcessInput in case vlc_input_decoder_Flush
              * is called again. This will avoid a second useless flush (but
@@ -3019,7 +3038,9 @@ void vlc_input_decoder_Wait( vlc_input_decoder_t *p_owner )
          * owner */
         if( p_owner->paused )
             break;
-        if( p_owner->b_idle && vlc_fifo_IsEmpty( p_owner->p_fifo ) )
+        /* A queued drain can produce buffered pictures with an empty FIFO. */
+        if( p_owner->b_idle && vlc_fifo_IsEmpty( p_owner->p_fifo )
+         && !p_owner->b_draining )
         {
             msg_Err( &p_owner->dec, "buffer deadlock prevented" );
             break;

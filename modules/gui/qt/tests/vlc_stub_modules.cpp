@@ -219,11 +219,18 @@ bool VLCTestingEnv::init(bool nativePlayerFixture)
     qputenv("VLC_PLUGIN_PATH", plugins);
     qputenv("VLC_LIB_PATH", plugins);
 
-    const char *nativeArgs[] = {"-v", "--ignore-config", "--no-media-library",
-        "--no-auto-preparse", "--vout=dummy", "--aout=dummy", "--text-renderer=freetype",
-        // The dummy sink needs software pictures for subtitle blending.
-        "--no-hw-dec"};
-    libvlc = nativePlayerFixture ? libvlc_new(ARRAY_SIZE(nativeArgs), nativeArgs)
+    const bool nativeD3D11 = qgetenv("VLC_TEST_NATIVE_D3D11") == "1";
+    const bool nativeWasapi = qgetenv("VLC_TEST_NATIVE_WASAPI") == "1";
+    const bool nativeVerbose = nativeD3D11 || qEnvironmentVariableIsSet("VLC_TEST_NATIVE_VERBOSE");
+    const char *nativeArgs[] = {nativeVerbose ? "--verbose=2" : "-v", "--ignore-config", "--no-media-library",
+        "--no-auto-preparse", nativeD3D11 ? "--vout=direct3d11" : "--vout=dummy",
+        nativeWasapi ? "--aout=mmdevice" : "--aout=dummy", "--text-renderer=freetype",
+        // Keep the ordinary dummy fixture in software. The explicit hardware
+        // lane records actual decoder/output modules separately from GUI tests.
+        nativeD3D11 ? "--hw-dec" : "--no-hw-dec",
+        nativeWasapi ? "--mmdevice-backend=wasapi" : nullptr};
+    const int nativeArgCount = ARRAY_SIZE(nativeArgs) - !nativeWasapi;
+    libvlc = nativePlayerFixture ? libvlc_new(nativeArgCount, nativeArgs)
                                 : libvlc_new(test_defaults_nargs, test_defaults_args);
     if (!libvlc)
         return false;

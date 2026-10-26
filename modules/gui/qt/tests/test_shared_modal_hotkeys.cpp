@@ -201,6 +201,37 @@ private slots:
         QVERIFY(dispatched.isEmpty()); QCOMPARE(receiver.presses.size(), 5); QCOMPARE(receiver.releases.size(), 5);
         compositor.focus = nullptr;
     }
+    void mouseFocusedTimelineKeepsOwnKeys_data() {
+        QTest::addColumn<int>("code");
+        QTest::addColumn<int>("modifiers");
+        for (auto code : {Qt::Key_Left, Qt::Key_Right, Qt::Key_Plus,
+                Qt::Key_Equal, Qt::Key_Minus, Qt::Key_Space, Qt::Key_Return,
+                Qt::Key_Enter, Qt::Key_Escape})
+            QTest::newRow(qPrintable(QString::number(code))) << int(code) << int(Qt::NoModifier);
+        QTest::newRow("reload") << int(Qt::Key_R) << int(Qt::ControlModifier);
+        QTest::newRow("shift-plus") << int(Qt::Key_Plus) << int(Qt::ShiftModifier);
+    }
+    void mouseFocusedTimelineKeepsOwnKeys() {
+        QFETCH(int, code); QFETCH(int, modifiers);
+        auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
+        dispatched.clear(); QQuickItem timeline; timeline.setProperty("subtitleTimelineKeyScope", true);
+        KeyReceiver receiver; receiver.setParentItem(&timeline); compositor.focus = &receiver;
+        MainCtx context(interface); InterfaceWindowHandler handler(interface, &context);
+        receiver.installEventFilter(&handler);
+        key(&receiver, QEvent::KeyPress, Qt::Key(code), Qt::KeyboardModifiers(modifiers));
+        key(&receiver, QEvent::KeyRelease, Qt::Key(code), Qt::KeyboardModifiers(modifiers));
+        QVERIFY(dispatched.isEmpty());
+        QCOMPARE(receiver.presses, (QVector<int>{code}));
+        QCOMPARE(receiver.releases, receiver.presses);
+        receiver.presses.clear(); receiver.releases.clear();
+        key(&receiver, QEvent::KeyPress, Qt::Key_F);
+        key(&receiver, QEvent::KeyRelease, Qt::Key_F);
+        key(&receiver, QEvent::KeyPress, Qt::Key_Right, Qt::ControlModifier);
+        key(&receiver, QEvent::KeyRelease, Qt::Key_Right, Qt::ControlModifier);
+        QCOMPARE(dispatched, (QVector<int64_t>{'f', KEY_MODIFIER_CTRL | KEY_RIGHT}));
+        QVERIFY(receiver.presses.isEmpty() && receiver.releases.isEmpty());
+        compositor.focus = nullptr;
+    }
     void mouseFocusedSidebarKeepsNavigationAndContextKeys() {
         auto *provider = Singleton<DialogsProvider>::getInstance(); provider->visible = false;
         dispatched.clear(); QQuickItem sidebar; sidebar.setProperty("navigationKeyScope",true);

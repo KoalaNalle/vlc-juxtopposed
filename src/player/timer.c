@@ -409,7 +409,13 @@ vlc_player_UpdateTimerBestSource(vlc_player_t *player, vlc_es_id_t *es_source,
      * 3/ es_source == NULL (from the input)
      */
     struct vlc_player_timer_source *source = &player->timer.best_source;
-    if (!source->es || es_source_is_master)
+    /* A paused subtitle redraw can invalidate the audio master's clock without
+     * producing another audio buffer. Use a fresh video update in that case;
+     * the master regains priority as soon as it publishes again on resume. */
+    const bool paused_video = player->timer.update_state == UPDATE_STATE_PAUSED
+                           && source->point.system_date == VLC_TICK_INVALID
+                           && es_source && vlc_es_id_GetCat(es_source) == VIDEO_ES;
+    if (!source->es || es_source_is_master || paused_video)
         source->es = es_source;
 
     /* Notify the best source */

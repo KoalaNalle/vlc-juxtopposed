@@ -256,6 +256,9 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     /* some default internal settings */
     var_Create( p_libvlc, "window", VLC_VAR_STRING );
     var_Create( p_libvlc, "vout-cb-type", VLC_VAR_INTEGER );
+    /* Video-window events also run without a Qt/hotkeys interface. Keep the
+     * temporary input gate valid for the instance's entire lifetime. */
+    var_Create( p_libvlc, "intf-input-blocked", VLC_VAR_BOOL );
 
     /* NOTE: Because the playlist and interfaces start before this function
      * returns control to the application (DESIGN BUG!), all these variables

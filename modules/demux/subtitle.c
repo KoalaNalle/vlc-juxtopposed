@@ -758,13 +758,20 @@ static void Close( vlc_object_t *p_this )
     free( p_sys );
 }
 
+static vlc_tick_t SubtitleSourceTime( const subtitle_t *subtitle, double rate )
+{
+    /* Parsers already include VLC_TICK_0. Scale the media-relative duration,
+     * then add the timestamp origin only when emitting the packet. */
+    return (subtitle->i_start - VLC_TICK_0) * rate;
+}
+
 static void
 ResetCurrentIndex( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     for( size_t i = 0; i < p_sys->subtitles.i_count; i++ )
     {
-        if( p_sys->subtitles.p_array[i].i_start * p_sys->f_rate >
+        if( SubtitleSourceTime(&p_sys->subtitles.p_array[i], p_sys->f_rate) >
             p_sys->i_next_demux_date && i > 0 )
             break;
         p_sys->subtitles.i_current = i;
@@ -871,8 +878,8 @@ static int Demux( demux_t *p_demux )
     vlc_tick_t i_barrier = p_sys->i_next_demux_date;
 
     while( p_sys->subtitles.i_current < p_sys->subtitles.i_count &&
-           ( p_sys->subtitles.p_array[p_sys->subtitles.i_current].i_start *
-             p_sys->f_rate ) <= i_barrier )
+           SubtitleSourceTime(&p_sys->subtitles.p_array[p_sys->subtitles.i_current],
+                              p_sys->f_rate) <= i_barrier )
     {
         const subtitle_t *p_subtitle = &p_sys->subtitles.p_array[p_sys->subtitles.i_current];
 
@@ -888,7 +895,7 @@ static int Demux( demux_t *p_demux )
             if( p_block )
             {
                 p_block->i_dts =
-                p_block->i_pts = VLC_TICK_0 + p_subtitle->i_start * p_sys->f_rate;
+                p_block->i_pts = VLC_TICK_0 + SubtitleSourceTime(p_subtitle, p_sys->f_rate);
                 if( p_subtitle->i_stop != VLC_TICK_INVALID && p_subtitle->i_stop >= p_subtitle->i_start )
                     p_block->i_length = (p_subtitle->i_stop - p_subtitle->i_start) * p_sys->f_rate;
 

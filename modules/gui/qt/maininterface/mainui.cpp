@@ -4,6 +4,7 @@
 
 #include "maininterface/navigationmodel.hpp"
 #include "maininterface/subtitle_preset_model.hpp"
+#include "maininterface/subtitle_attachment_model.hpp"
 #include "maininterface/general_preferences_model.hpp"
 #include "maininterface/interface_preferences_model.hpp"
 #include "maininterface/playback_preferences_model.hpp"
@@ -254,6 +255,7 @@ void MainUI::registerQMLTypes()
         qmlRegisterAnonymousType<MainCtxWin32>(uri, versionMajor);
 #endif
         qmlRegisterUncreatableType<SubtitlePresetModel>(uri, versionMajor, versionMinor, "SubtitlePresetModel", "Use MainCtx.subtitlePresets");
+        qmlRegisterUncreatableType<SubtitleAttachmentModel>(uri, versionMajor, versionMinor, "SubtitleAttachmentModel", "Use MainCtx.subtitleAttachments");
         qmlRegisterUncreatableType<GeneralPreferencesModel>(uri, versionMajor, versionMinor, "GeneralPreferencesModel", "Use MainCtx.generalPreferences");
         qmlRegisterUncreatableType<InterfacePreferencesModel>(uri, versionMajor, versionMinor, "InterfacePreferencesModel", "Use MainCtx.interfacePreferences");
         qmlRegisterUncreatableType<PlaybackPreferencesModel>(uri, versionMajor, versionMinor, "PlaybackPreferencesModel", "Use MainCtx.playbackPreferences");

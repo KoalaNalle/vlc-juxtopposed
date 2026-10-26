@@ -3,7 +3,8 @@
 
 Run in an isolated, fully staged Windows runtime. The config JSON contains
 name, media (absolute path), audio (wasapi/dummy/none), video (boolean), and
-optional extraOptions. A normal exit records observations; inspect result.json
+optional extraOptions and expectedSubtitleAtStart for the generated flat-colour
+caption fixture. A normal exit records observations; inspect result.json
 passed separately, allowing the identical probe to record a failing old Core.
 Snapshot files delivered only after resume do not qualify as paused pictures.
 """
@@ -39,6 +40,7 @@ stop = bind('libvlc_media_player_stop_async', C.c_int, C.c_void_p)
 state = bind('libvlc_media_player_get_state', C.c_int, C.c_void_p)
 get_time = bind('libvlc_media_player_get_time', C.c_int64, C.c_void_p)
 vouts = bind('libvlc_media_player_has_vout', C.c_uint, C.c_void_p)
+get_rate = bind('libvlc_media_player_get_rate', C.c_float, C.c_void_p)
 snapshot = bind('libvlc_video_take_snapshot', C.c_int, C.c_void_p, C.c_uint, C.c_char_p, C.c_uint, C.c_uint)
 get_tracks = bind('libvlc_media_player_get_tracklist', C.c_void_p, C.c_void_p, C.c_int, C.c_bool)
 count_tracks = bind('libvlc_media_tracklist_count', C.c_size_t, C.c_void_p)
@@ -64,7 +66,7 @@ player = player_new(instance, None, None); assert player
 media_path = Path(cfg['media'])
 result = dict(config=cfg, passed=False, options=options, producerSha256=digest(Path(__file__)), coreSha256=digest(runtime/'libvlccore.dll'), mediaSha256=digest(media_path), observations=[], teardownComplete=False, assertions={})
 def observe(name):
-    row = dict(step=name, state=state(player), timeUs=get_time(player), vouts=vouts(player), selectedVideoTracks=selected_video_count())
+    row = dict(step=name, state=state(player), timeUs=get_time(player), vouts=vouts(player), selectedVideoTracks=selected_video_count(), rate=get_rate(player))
     result['observations'].append(row); write(result); return row
 media = media_new(str(media_path).encode()); assert media
 media_option(media, b':start-paused'); set_media(player, media); media_release(media)
@@ -80,6 +82,11 @@ try:
         if initial['snapshotAvailableWhilePaused']:
             image = QImage(str(picture))
             initial.update(snapshotSha256=digest(picture), width=image.width(), height=image.height())
+            if 'expectedSubtitleAtStart' in cfg:
+                rgba = image.convertToFormat(QImage.Format_RGBA8888)
+                pixels = bytes(rgba.bits())
+                initial['brightPixels'] = sum(pixels[i] > 160 and pixels[i+1] > 160 and pixels[i+2] > 160
+                                             for i in range(0, len(pixels), 4))
     samples = []
     for i in range(4):
         samples.append(observe('held-paused-'+str(i))); time.sleep(.2)
@@ -92,6 +99,10 @@ try:
     repaused = wait(lambda: state(player)==3 or state(player)==4, 3)
     observe('paused-again-or-ended')
     result['assertions'] = dict(initialPaused=result['initialPauseReached'], expectedVideoSelection=initial['selectedVideoTracks']==int(cfg['video']), initialPicture=bool(initial.get('snapshotAvailableWhilePaused')) if cfg['video'] else initial['selectedVideoTracks']==0, heldPausedClockStable=stable, resumedOrShortMediaEnded=resumed or state(player)==4, advancedOrShortMediaEnded=advanced, repausedOrShortMediaEnded=repaused)
+    if 'expectedSubtitleAtStart' in cfg:
+        bright = initial.get('brightPixels')
+        result['assertions']['initialSubtitlePresence'] = bright is not None and (
+            bright > 1000 if cfg['expectedSubtitleAtStart'] else bright <= 10)
 finally:
     result['stopReturn'] = stop(player)
     result['stopReached'] = wait(lambda: state(player)==4, 10)

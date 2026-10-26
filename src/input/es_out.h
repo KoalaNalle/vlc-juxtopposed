@@ -116,7 +116,16 @@ enum es_out_query_private_e
     ES_OUT_PRIV_SELECT_SOURCE, /* arg1=input_source_t *, arg2=es_format_category_e */
 
     /* Earlier media needed to retain delayed selected subtitle cues on seek. */
-    ES_OUT_PRIV_GET_SUBTITLE_PREROLL /* arg1=vlc_tick_t *, res=cannot fail */
+    ES_OUT_PRIV_GET_SUBTITLE_PREROLL, /* arg1=vlc_tick_t *, res=cannot fail */
+
+    /* Flush displayed/queued subtitles from one associated source only.
+     * This display-level control does not reset the main media clock. */
+    ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, /* arg1=input_source_t * */
+
+    ES_OUT_PRIV_GET_ES_STATE, /* arg1=vlc_es_id_t *, arg2=bool * */
+
+    /* Seek preroll belongs to the demux source containing the delayed cue. */
+    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL /* arg1=input_source_t *, arg2=vlc_tick_t * */
 };
 
 struct vlc_input_es_out;

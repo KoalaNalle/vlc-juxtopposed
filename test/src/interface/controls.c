@@ -107,6 +107,51 @@ static void wheel(libvlc_int_t *root, int *action, int key, int expected,
     check(*action == expected, name);
 }
 
+static void bare_player_input(libvlc_int_t *root, const char *uri)
+{
+    /* No Qt or hotkeys interface owns the temporary input gate in this case.
+     * Exercise real window events before, during and after a frontend lease. */
+    vlc_player_t *player = vlc_player_New(VLC_OBJECT(root), VLC_PLAYER_LOCK_NORMAL);
+    check(player != NULL, "bare embedding player allocated without Qt/hotkeys");
+    input_item_t *media = input_item_New(uri, "Owned bare embedding video");
+    check(media != NULL, "bare embedding media allocated");
+    vlc_player_Lock(player);
+    int result = vlc_player_SetCurrentMedia(player, media);
+    if (result == VLC_SUCCESS) result = vlc_player_Start(player);
+    vlc_player_Unlock(player);
+    check(result == VLC_SUCCESS && wait_state(player, VLC_PLAYER_STATE_PLAYING),
+          "bare embedding video starts");
+    vlc_window_t *window = wait_window(root);
+    check(window != NULL, "bare embedding window decodes frames");
+    vlc_window_ReportMouseMoved(window, 10, 10);
+    check(state(player) == VLC_PLAYER_STATE_PLAYING,
+          "mouse movement without a frontend preserves playback");
+
+    check(var_Create(root, "intf-input-blocked", VLC_VAR_BOOL) == VLC_SUCCESS,
+          "temporary frontend acquires its input gate");
+    var_SetBool(root, "intf-input-blocked", true);
+    click(window);
+    vlc_tick_sleep(VLC_TICK_FROM_MS(300));
+    check(state(player) == VLC_PLAYER_STATE_PLAYING,
+          "temporary frontend block still suppresses video click");
+    var_SetBool(root, "intf-input-blocked", false);
+    var_Destroy(root, "intf-input-blocked");
+    vlc_window_ReportMouseMoved(window, 20, 20);
+    click(window);
+    check(wait_state(player, VLC_PLAYER_STATE_PAUSED),
+          "frontend teardown leaves a valid unblocked pause fallback");
+    click(window);
+    check(wait_state(player, VLC_PLAYER_STATE_PLAYING),
+          "bare embedding click resumes after frontend teardown");
+
+    vlc_player_Lock(player);
+    vlc_player_Stop(player);
+    vlc_player_Unlock(player);
+    check(wait_state(player, VLC_PLAYER_STATE_STOPPED), "bare embedding player stops");
+    input_item_Release(media);
+    vlc_player_Delete(player);
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -116,6 +161,7 @@ int main(int argc, char **argv)
     const bool legacy = !strcmp(argv[1], "legacy");
     const bool binding = !strcmp(argv[1], "binding");
     const bool embedding = !strcmp(argv[1], "embedding");
+    const bool bare = !strcmp(argv[1], "bare");
     const bool disabled = !strcmp(argv[1], "legacy-disabled");
     const char *args[] = {
         "--ignore-config", "--no-media-library", "--no-plugins-cache",
@@ -145,6 +191,14 @@ int main(int argc, char **argv)
     // public command-line option on this VLC revision.
     var_Create(root, "window", VLC_VAR_STRING);
     var_SetString(root, "window", "controls-fixture");
+    if (bare)
+    {
+        bare_player_input(root, argv[2]);
+        libvlc_release(instance);
+        check(true, "bare embedding instance shuts down normally");
+        printf("1..%u\n", checks);
+        return 0;
+    }
     const int hotkeys = libvlc_InternalAddIntf(root, "hotkeys");
     check(hotkeys == VLC_SUCCESS && var_GetInteger(root, "mouse-click-policy-version") == 1,
           "actual hotkeys consumer advertises click policy");

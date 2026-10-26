@@ -179,11 +179,13 @@ vlc_tick_t input_clock_GetSystemDuration(
  * This function allows the set the minimal configuration for the jitter estimation algo.
  */
 void input_clock_SetJitter( input_clock_t *,
-                            vlc_tick_t i_pts_delay, int i_cr_average );
+                            vlc_tick_t i_pts_delay, vlc_tick_t i_tracks_delay,
+                            int i_cr_average );
 
 /**
  * This function returns an estimation of the pts_delay needed to avoid rebufferization.
- * XXX in the current implementation, the pts_delay will never be decreased.
+ * The cache/jitter floor is retained; the current explicit track offset can
+ * decrease independently when the user resets or changes that offset.
  */
 vlc_tick_t input_clock_GetJitter( input_clock_t * );
 

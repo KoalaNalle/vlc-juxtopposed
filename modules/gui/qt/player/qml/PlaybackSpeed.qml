@@ -273,6 +273,8 @@ ColumnLayout {
             delegate: Widgets.RadioButtonExt {
                 required property double modelData
 
+                Navigation.parentItem: root
+
                 Layout.fillWidth: true
 
                 text: modelData

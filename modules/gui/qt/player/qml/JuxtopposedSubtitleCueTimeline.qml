@@ -5,10 +5,13 @@ import QtQuick
 import VLC.Style
 import QtQuick.Controls.Basic as C
 
-Item {
+FocusScope {
     id: root
     objectName: "juxtopposedSubtitleCueTimeline"
+    readonly property bool subtitleTimelineKeyScope: true
     property var controller
+    property int focusedCueIndex: -1
+    onControllerChanged: focusedCueIndex = -1
     property real uiScale: 1
     property url assetBase: "qrc:/juxtopposed/"
     property url previousRangeIcon: assetBase + "timeline-chevron-left.svg"
@@ -115,6 +118,13 @@ Item {
                 color: JuxtopposedPalette.color("#24FFFFFF")
                 radius: root.uiScale
                 activeFocusOnTab: !!modelData.seekable
+                onActiveFocusChanged: if (activeFocus) root.focusedCueIndex = modelData.cueIndex
+                Component.onCompleted: Qt.callLater(() => {
+                    // Native seek completion can replace this viewport's
+                    // delegates. Keep keyboard ownership inside the timeline.
+                    if (root && cue && root.activeFocus && root.focusedCueIndex === cue.modelData.cueIndex)
+                        cue.forceActiveFocus(Qt.OtherFocusReason)
+                })
                 border.width: activeFocus ? root.uiScale : 0
                 border.color: JuxtopposedPalette.color("#D37918")
                 Accessible.role: modelData.seekable ? Accessible.Button : Accessible.StaticText

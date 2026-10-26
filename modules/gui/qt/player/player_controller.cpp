@@ -611,6 +611,25 @@ static void on_player_capabilities_changed(vlc_player_t *, int old_caps, int new
     //FIXME other events?
 }
 
+static void on_player_rate_changed(vlc_player_t *, float, void *data)
+{
+    auto *that = static_cast<PlayerControllerPrivate *>(data);
+    that->callAsync([that] {
+        float rate;
+        {
+            vlc_player_locker lock{that->m_player};
+            rate = vlc_player_GetRate(that->m_player);
+        }
+        // A paused player need not publish a new timer point. Read the current
+        // native rate rather than replaying a queued, possibly superseded edit.
+        if (!qFuzzyCompare(that->m_rate, rate))
+        {
+            that->m_rate = rate;
+            emit that->q_func()->rateChanged(rate);
+        }
+    });
+}
+
 static void on_player_track_list_changed(vlc_player_t *, enum vlc_player_list_action action, const struct vlc_player_track *track, void *data)
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
@@ -1143,6 +1162,7 @@ static void on_player_timer_seek(const struct vlc_player_timer_point *point,
         that->seeking = true;
         that->callAsync([that,point_copy = *point](){
             PlayerController* q = that->q_func();
+            emit q->seekStarted();
 
             const bool wasLive = that->m_player_time.live;
             that->m_player_time = point_copy;
@@ -1195,6 +1215,7 @@ static const struct vlc_player_cbs player_cbs = [] {
     cbs.on_error_changed = on_player_error_changed;
     cbs.on_buffering_changed = on_player_buffering;
     cbs.on_capabilities_changed = on_player_capabilities_changed;
+    cbs.on_rate_changed = on_player_rate_changed;
     cbs.on_track_list_changed = on_player_track_list_changed;
     cbs.on_track_selection_changed = on_player_track_selection_changed;
     cbs.on_track_delay_changed = on_player_track_delay_changed;
@@ -1388,9 +1409,10 @@ void PlayerController::setRate( float new_rate )
         return;
 
     msg_Dbg( d->p_intf, "setRate %f", new_rate);
-    vlc_player_locker lock{ d->m_player };
-    if ( vlc_player_CanChangeRate( d->m_player ) )
     {
+        vlc_player_locker lock{ d->m_player };
+        if (!vlc_player_CanChangeRate(d->m_player))
+            return;
         vlc_player_ChangeRate( d->m_player, new_rate );
 
         // Until the timer notifies the change, we need to still change
@@ -1398,8 +1420,8 @@ void PlayerController::setRate( float new_rate )
         // For position, it is supposed to be interpolated but for rate
         // the new value can be taken as is:
         d->m_rate = new_rate;
-        emit rateChanged(d->m_rate);
     }
+    emit rateChanged(d->m_rate);
 }
 
 void PlayerController::slower()
@@ -1550,8 +1572,10 @@ void PlayerController::setAudioDelay(VLCDuration delay)
 {
     Q_D(PlayerController);
     vlc_player_locker lock{ d->m_player };
+    if (!delay.valid() || !d->m_currentItem || !d->isCurrentItemSynced())
+        return;
     vlc_player_SetAudioDelay( d->m_player, delay.toVLCTick(), VLC_PLAYER_WHENCE_RELATIVE );
-    emit audioDelayChanged(delay);
+    // The native callback publishes the final value after releasing the lock.
 }
 
 void PlayerController::setSubtitleDelay(VLCDuration delay)
@@ -1567,8 +1591,11 @@ void PlayerController::setSubtitleDelay(VLCDuration delay)
 {
     Q_D(PlayerController);
     vlc_player_locker lock{ d->m_player };
+    if (!delay.valid() || !d->m_currentItem || !d->isCurrentItemSynced())
+        return;
     vlc_player_SetSubtitleDelay( d->m_player, delay.toVLCTick(), VLC_PLAYER_WHENCE_RELATIVE);
-    emit subtitleDelayChanged(delay);
+    // A delta is not the resulting delay. Direct observers may also re-lock
+    // the player, so leave notification to the queued native callback.
 }
 
 void PlayerController::setSecondarySubtitleDelay(VLCDuration delay)

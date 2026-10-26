@@ -19,6 +19,7 @@
 #include "ui_notifier.hpp"
 
 #include "maininterface/mainctx.hpp"
+#include "maininterface/subtitle_attachment_model.hpp"
 
 UINotifier::UINotifier(MainCtx *ctx, QObject *parent)
     : QObject {parent}
@@ -29,6 +30,10 @@ UINotifier::UINotifier(MainCtx *ctx, QObject *parent)
 
 void UINotifier::setupNotifications()
 {
+    connect(m_ctx->subtitleAttachments(), &SubtitleAttachmentModel::loadFailed,
+            this, [this](const QString &message) {
+        emit showNotification(SubtitleAttachment, message);
+    });
     connect(m_ctx, &MainCtx::intfScaleFactorChanged, this, [this]()
     {
         const QString scale = QString::number(m_ctx->getIntfScaleFactor() * 100);

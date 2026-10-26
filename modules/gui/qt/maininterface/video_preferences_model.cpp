@@ -224,7 +224,7 @@ void VideoPreferencesModel::refresh()
     for(const auto *size:{"source","640x360","1280x720","1920x1080"})sizes.append(QVariantMap{{QStringLiteral("value"),QString::fromLatin1(size)},{QStringLiteral("name"),strcmp(size,"source")==0?tr("Same as video"):QString::fromLatin1(size)}});
     choices[QStringLiteral("snapshotSize")]=sizes;
     QVariantList chunks;
-    for(const qlonglong size:{-1ll,16ll*1024*1024,50ll*1024*1024,100ll*1024*1024})chunks.append(QVariantMap{{QStringLiteral("value"),size},{QStringLiteral("name"),size<0?tr("Native default (50 MiB per file)"):tr("%1 MiB per file").arg(size/(1024*1024))}});
+    for(const qlonglong size:{-1ll,1ll*1024*1024,16ll*1024*1024,50ll*1024*1024,100ll*1024*1024,512ll*1024*1024})chunks.append(QVariantMap{{QStringLiteral("value"),size},{QStringLiteral("name"),size<0?tr("Native default (50 MiB per file)"):tr("%1 MiB per file").arg(size/(1024*1024))}});
     choices[QStringLiteral("timeShiftBufferSize")]=chunks;
     if(choices!=m_choices){m_choices=choices;emit choicesChanged();}
     if(caps!=m_capabilities){m_capabilities=caps;emit capabilitiesChanged();}

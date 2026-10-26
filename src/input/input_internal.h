@@ -471,6 +471,11 @@ typedef union
         vlc_es_id_t *id;
         vlc_tick_t delay;
     } es_delay;
+    struct
+    {
+        vlc_es_id_t *id;
+        vlc_tick_t time;
+    } subtitle_refresh;
     struct {
         vlc_es_id_t *id;
         unsigned page;
@@ -647,6 +652,7 @@ enum input_control_e
 
     INPUT_CONTROL_SET_VBI_PAGE,
     INPUT_CONTROL_SET_VBI_TRANSPARENCY,
+    INPUT_CONTROL_REFRESH_SUBTITLE,
 };
 
 /* Internal helpers */

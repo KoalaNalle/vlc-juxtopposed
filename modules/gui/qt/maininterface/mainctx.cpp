@@ -36,6 +36,7 @@
 #include "util/fullscreen_screen_policy.hpp"
 #include "mainctx_submodels.hpp"
 #include "subtitle_preset_model.hpp"
+#include "subtitle_attachment_model.hpp"
 #include "general_preferences_model.hpp"
 #include "interface_preferences_model.hpp"
 #include "playback_preferences_model.hpp"
@@ -202,6 +203,22 @@ MainCtx::MainCtx(qt_intf_t *_p_intf)
     settings = getSettings();
     m_subtitlePresets = new SubtitlePresetModel(p_intf->p_player, THEMIM->getSubtitleAppearance(),
         settings, VLC_OBJECT(p_intf), this);
+    const QPointer<PlaylistController> attachmentPlaylist(p_intf->p_mainPlaylistController);
+    m_subtitleAttachments = new SubtitleAttachmentModel(p_intf->p_player, settings,
+        [attachmentPlaylist](bool includeItems) {
+            SubtitleAttachmentModel::Context context;
+            if (!attachmentPlaylist) return context;
+            context.item.reset(attachmentPlaylist->getCurrentItem().inputItem());
+            context.playlistId = attachmentPlaylist->currentSourcePlaylistId();
+            if (includeItems) context.playlistItems = attachmentPlaylist->sourcePlaylistItems(context.playlistId);
+            return context;
+        }, [this](input_item_t *item) {
+            return !m_subtitlePresets || !m_subtitlePresets->hasTrackSelectionPolicy(item);
+        }, this);
+    connect(attachmentPlaylist.data(), &PlaylistController::currentItemChanged,
+            m_subtitleAttachments, &SubtitleAttachmentModel::refresh);
+    connect(attachmentPlaylist.data(), &PlaylistController::currentSourcePlaylistChanged,
+            m_subtitleAttachments, &SubtitleAttachmentModel::refresh);
     m_colorScheme = new ColorSchemeModel(this);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
@@ -553,6 +570,8 @@ MainCtx::~MainCtx()
     m_generalPreferences = nullptr;
     delete m_subtitlePresets;
     m_subtitlePresets = nullptr;
+    delete m_subtitleAttachments;
+    m_subtitleAttachments = nullptr;
 
     if ( !p_intf->preferencesResetPending)
     {
@@ -761,6 +780,7 @@ void MainCtx::reloadPrefs()
     if (m_generalPreferences) m_generalPreferences->reload();
     if (p_intf->preferencesResetPending) m_subtitlePresets->reload();
     else m_subtitlePresets->refreshDefaults();
+    if (p_intf->preferencesResetPending) m_subtitleAttachments->reload();
 }
 
 void MainCtx::onInputChanged( bool hasInput )

@@ -1,0 +1,25 @@
+{
+  "status": "terminal-with-new-playing-failure",
+  "normalExit": true,
+  "exitCode": 0,
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true,
+  "checkedRuntimeDiagnostics": [],
+  "pid": 3052,
+  "fullBetaAccepted": false,
+  "gui": "ecaeab25a8dca90a0b3ad92a8794a2aabf8226f7d327db03f7a984dbebd130d5",
+  "core": "b62f414569c494ba866089afeae46f6cdc4c4e260d63b6a554d60c4dcfe54561",
+  "observations": [
+    "Startup is paused at 23.976 FPS. Explicitly selecting Track 3 displays EXTERNAL FPS FIRST; embedded English was initially selected.",
+    "Seek 0.2 settles at 12 seconds, progress 0.20062988452117111, with the green/black marker and external FIRST cue.",
+    "Ctrl+E opens the native Adjustments and Effects dialog. Synchronization reads 23.976 FPS. A real Windows value write of 50 immediately displays external MIDDLE at the same held video marker and coarse time.",
+    "After closing that native dialog, the QML synchronization panel reads 50. Reset now settles at 0, restoring external FIRST rather than feeding 1 back into the native value.",
+    "Writing 50 in QML and seeking 0.2 displays external MIDDLE and settles at 12 seconds, rather than the old approximately 10-second result. Reset again settles at 0 and immediately restores FIRST.",
+    "Real-unit accessibility write 29.97 receives native float feedback 29.969999313354492. QML Reset restores 0, and reopening native Synchronization displays 0.000 fps.",
+    "One cached native Close index became unavailable. A new screenshot and its visible Close coordinate recovered normally; the failed index was not retried blindly.",
+    "Playback resumes at normal timing from 12 seconds. While it continues, the native FPS editor changes from 0 to 50 near elapsed 28 seconds. The displayed cue remains external MIDDLE at elapsed 28 and in an independent later observation at approximately 33 seconds. With 50 FPS on this 25 FPS fixture, LAST should cover 20-30 seconds and no external cue should remain after 30. The playing consumer has not refreshed the already queued cue. This is a new retained failure, separate from the accepted individual paused Reset observations.",
+    "The finite fixture reaches EOS while the failure is recorded. Native synchronization then displays 0 after its clean path, rather than the old 1. Ctrl+Q closes the owned process normally with exit0 and no checked diagnostics. This is not a direct-playing-Quit acceptance run.",
+    "A screenshot ID was unavailable after the finite video ended and the main window returned to Home. Fresh window selection and state recovered; no obsolete screenshot coordinate was retried."
+  ]
+}

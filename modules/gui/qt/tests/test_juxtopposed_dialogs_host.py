@@ -43,6 +43,7 @@ from juxtopposed_general_preferences_fixture import GeneralPreferences as Genera
 Network=adapter('modules/gui/qt/tests/test_juxtopposed_network_dialog.py','Controller','NetworkAdapter')
 Playlist=adapter('modules/gui/qt/tests/test_juxtopposed_new_playlist.py','Controller','PlaylistAdapter')
 Conversion=adapter('modules/gui/qt/tests/test_juxtopposed_conversion_dialog.py','Controller','ConversionAdapter')
+Attachments=adapter('modules/gui/qt/tests/test_juxtopposed_subtitle_attachments.py','Controller','AttachmentAdapter')
 
 class SetupGeneral(General):
     setupStateChanged=Signal()
@@ -105,8 +106,9 @@ class MainContext(QObject):
     generalPreferences=Property(QObject,lambda s:s.general,constant=True)
     useGlobalShortcuts=Property(bool,lambda s:True,constant=True)
     playerProfiles=Property(QObject,lambda s:s.profiles,constant=True)
+    subtitleAttachments=Property(QObject,lambda s:s.attachments,constant=True)
     def __init__(self):
-        super().__init__(); self.general=SetupGeneral(); self.profiles=Profiles(); self.redesigned=False
+        super().__init__(); self.general=SetupGeneral(); self.profiles=Profiles(); self.attachments=Attachments(); self.redesigned=False
 
 class Provider(QObject):
     changed=Signal()
@@ -116,6 +118,7 @@ class Provider(QObject):
     showNetworkStreamDialog=Signal()
     showNewPlaylistDialog=Signal()
     showConversionDialog=Signal()
+    showSubtitleAttachmentsDialog=Signal()
     showPlayerProfilesDialog=Signal(bool)
     showToolbarEditorDialog=Signal()
     newPlaylistSaved=Signal('QVariant')
@@ -153,6 +156,12 @@ class Provider(QObject):
     def chooseConversionDestination(self): self.calls.append('conversionDestination')
     @Slot()
     def openLegacyTranscodingDialog(self): self.calls.append('allProfiles')
+    @Slot()
+    def chooseSubtitleAttachmentFiles(self): self.calls.append('subtitleFiles')
+    @Slot()
+    def chooseSubtitleAttachmentFolder(self): self.calls.append('subtitleFolder')
+    @Slot()
+    def searchSubtitlesOnline(self): self.calls.append('subtitleOnline')
 
 app=QGuiApplication([])
 provider,ctx=Provider(),MainContext()
@@ -452,6 +461,32 @@ route(1)
 check('ordinary modal routing works after setup',visible()==[False,True,False,False,False,False] and provider.visible)
 close_all()
 
+attachments=item('juxtopposedSubtitleAttachments')
+attachment_transitions=0
+for index in range(len(names)):
+    focus('opener');route(index)
+    provider.showSubtitleAttachmentsDialog.emit();QTest.qWait(40)
+    check(f'attachment entry replaces idle modal {index} through sole owner',
+          attachments.property('visible') and provider.visible and visible()==[False]*len(names) and ctx.attachments._active)
+    route(index)
+    check(f'modal {index} replaces attachments and cancels only its draft',
+          not attachments.property('visible') and not ctx.attachments._active and visible()==[i==index for i in range(len(names))])
+    attachment_transitions+=2
+    close_all()
+focus('opener');provider.showSubtitleAttachmentsDialog.emit();QTest.qWait(40)
+click('subtitleAttachmentChooseFiles');click('subtitleAttachmentFolder')
+check('attachment pickers route through actual provider contract',provider.calls[-2:]==['subtitleFiles','subtitleFolder'])
+before=window.property('transports');focus('subtitleAttachmentClose');QTest.keyClick(window,Qt.Key_Space);QTest.qWait(30)
+check('attachment modal suppresses transport and closes by its real button',
+      window.property('transports')==before and not provider.visible and not ctx.attachments._active)
+focus('opener');route(3);provider.convert.phase(provider.convert.State.Encoding,.5)
+baseline=(provider.convert.resets,provider.convert.cancels,len(ctx.attachments.actions))
+provider.showSubtitleAttachmentsDialog.emit();QTest.qWait(40)
+check('attachment request cannot replace a running conversion or mutate its draft',
+      dialogs[3].property('visible') and not attachments.property('visible')
+      and baseline==(provider.convert.resets,provider.convert.cancels,len(ctx.attachments.actions)))
+provider.convert.phase(provider.convert.State.Idle);close_all()
+
 check('never-cleared QML message ledger is empty before teardown',not messages)
 destroyed=[];engine.destroyed.connect(lambda:destroyed.append(True));engine.deleteLater()
 QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);QTest.qWait(40)
@@ -470,6 +505,7 @@ sources=[FILES/path for path in [
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
+    'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedSubtitleAttachments.qml',
     'modules/gui/qt/dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml',
     'modules/gui/qt/player/qml/JuxtopposedPlaybackBar.qml',
     'modules/gui/qt/player/qml/JuxtopposedVolumeControl.qml',
@@ -479,7 +515,7 @@ sources=[FILES/path for path in [
     'modules/gui/qt/maininterface/mainctx.cpp', 'modules/gui/qt/maininterface/mainctx.hpp',
     'modules/gui/qt/dialogs/dialogs_provider.cpp']]
 for path in sources:identities[str(path.relative_to(REPO))]=hashlib.sha256(path.read_bytes()).hexdigest()
-report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'busyGuards':busy_cases,'popupMovement':movement,'qtMessages':messages,
+report={'checks':checks,'checkCount':len(checks),'backdropSoftwareFallback':backdrop_state,'directedTransitions':transitions,'attachmentTransitions':attachment_transitions,'busyGuards':busy_cases,'popupMovement':movement,'qtMessages':messages,
         'sourceSha256':identities,'scope':'Actual integrated production QML host, General shell/body/palette and five other real dialogs; supplied strict controller contracts. Native C++/OS hotkey/expert/save/reset build execution remains Root gate.'}
 (args.output_dir/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({'checks':len(checks),'directedTransitions':transitions,'busyGuards':busy_cases,'qtMessages':messages}))

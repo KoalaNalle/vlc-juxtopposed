@@ -44,6 +44,7 @@
 #include "util/vlchotkeyconverter.hpp"
 #include "maininterface/mainctx.hpp"
 #include "maininterface/general_preferences_model.hpp"
+#include "maininterface/subtitle_attachment_model.hpp"
 #include "medialibrary/medialib.hpp"
 
 /* The dialogs */
@@ -1284,7 +1285,42 @@ void  DialogsProvider::loadMediaFile( const es_format_category_e category, const
 
 void DialogsProvider::loadSubtitlesFile()
 {
+#ifdef _WIN32
+    if (p_intf->p_mi && !p_intf->b_isDialogProvider && p_intf->p_mi->juxtopposedControls())
+    {
+        auto *item = THEMIM->getInput();
+        char *uri = item ? input_item_GetURI(item) : nullptr;
+        const bool local = uri && QUrl::fromEncoded(uri).isLocalFile();
+        free(uri);
+        if (local) { emit showSubtitleAttachmentsDialog(); return; }
+    }
+#endif
     loadMediaFile( SPU_ES, EXT_FILTER_SUBTITLE, qtr( "Open subtitles..." ) );
+}
+
+void DialogsProvider::chooseSubtitleAttachmentFiles()
+{
+    if (!p_intf->p_mi) return;
+    QPointer<SubtitleAttachmentModel> model = p_intf->p_mi->subtitleAttachments();
+    if (!model || !model->active()) return;
+    const auto files = showSimpleOpen(qtr("Choose subtitle files"), EXT_FILTER_SUBTITLE, model->sourceFolder());
+    if (!model || !model->active() || files.isEmpty()) return;
+    QVariantList urls;
+    for (const auto &file : files) urls.append(QUrl(file));
+    model->addFiles(urls);
+}
+void DialogsProvider::chooseSubtitleAttachmentFolder()
+{
+    if (!p_intf->p_mi) return;
+    QPointer<SubtitleAttachmentModel> model = p_intf->p_mi->subtitleAttachments();
+    if (!model || !model->active()) return;
+    const auto folder = QFileDialog::getExistingDirectoryUrl(nullptr, qtr("Choose subtitle folder"),
+        model->sourceFolder(), QFileDialog::ShowDirsOnly, {QStringLiteral("file")});
+    if (model && model->active() && !folder.isEmpty()) model->setSourceFolder(folder);
+}
+void DialogsProvider::searchSubtitlesOnline()
+{
+    if (!m_qmlDialogVisible && THEMIM) THEMIM->openVLsub();
 }
 
 void DialogsProvider::loadAudioFile()

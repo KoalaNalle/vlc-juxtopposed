@@ -38,6 +38,7 @@ public:
     bool edited() const { return m_edited; }
     bool canSave() const;
     bool canApply() const;
+    bool hasTrackSelectionPolicy(input_item_t *) const;
     bool restoring() const { return !m_pendingId.isEmpty(); }
     QString statusText() const;
     QString error() const { return m_error; }

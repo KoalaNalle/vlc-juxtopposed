@@ -33,6 +33,7 @@ struct NormalTimelineFixture
     std::unique_ptr<SubtitleCueTimeline> timeline;
     std::atomic<vlc_tick_t> requested{VLC_TICK_INVALID};
     std::atomic_uint requests{0}, completions{0};
+    std::atomic_bool seekPending{false};
 
     ~NormalTimelineFixture()
     {
@@ -55,6 +56,7 @@ struct NormalTimelineFixture
     {
         // Native timer callbacks must never call player or QObject APIs.
         auto *self = static_cast<NormalTimelineFixture *>(opaque);
+        self->seekPending.store(point != nullptr);
         if (point)
         {
             self->requested.store(point->ts, std::memory_order_relaxed);
@@ -73,6 +75,20 @@ struct NormalTimelineFixture
         vlc_player_locker lock(player);
         return vlc_player_GetTime(player);
     }
+    bool settledTime(vlc_tick_t &value) const
+    {
+        QElapsedTimer deadline, stable;
+        deadline.start(); stable.start(); value = time();
+        while (deadline.elapsed() < 5000)
+        {
+            QTest::qWait(10);
+            const auto current = time();
+            if (current != value || seekPending.load()) stable.restart();
+            value = current;
+            if (stable.elapsed() >= 250) return true;
+        }
+        return false;
+    }
 };
 
 class TestSubtitleCueTimeline : public QObject
@@ -81,6 +97,8 @@ class TestSubtitleCueTimeline : public QObject
     libvlc_instance_t *m_instance = nullptr;
     libvlc_media_player_t *m_mediaPlayer = nullptr;
     vlc_player_t *m_player = nullptr;
+    vlc_player_timer_id *m_timer = nullptr;
+    std::atomic_bool m_seekPending{false};
     std::unique_ptr<SubtitleCueTimeline> m_timeline;
     QString m_directory;
     QUrl m_subtitle;
@@ -88,6 +106,26 @@ class TestSubtitleCueTimeline : public QObject
     QByteArray m_primaryTrack;
     quintptr m_primaryMedia = 0;
     SubtitleCueCancellation token() { return std::make_shared<std::atomic_bool>(false); }
+    static void onTimerUpdate(const vlc_player_timer_point *, void *) {}
+    static void onTimerSeek(const vlc_player_timer_point *point, void *opaque)
+    {
+        static_cast<TestSubtitleCueTimeline *>(opaque)->m_seekPending.store(point != nullptr);
+    }
+    bool settledPrimaryTime(vlc_tick_t &value)
+    {
+        QElapsedTimer deadline, stable;
+        deadline.start(); stable.start();
+        value = libvlc_media_player_get_time(m_mediaPlayer);
+        while (deadline.elapsed() < 5000)
+        {
+            QTest::qWait(10);
+            const auto current = libvlc_media_player_get_time(m_mediaPlayer);
+            if (current != value || m_seekPending.load()) stable.restart();
+            value = current;
+            if (stable.elapsed() >= 250) return true;
+        }
+        return false;
+    }
     QByteArray selectedId()
     {
         vlc_player_locker lock(m_player);
@@ -207,6 +245,9 @@ private slots:
         QVERIFY(m_mediaPlayer);
         m_player = vlc_test_media_player_core(m_mediaPlayer);
         QVERIFY(m_player);
+        static const vlc_player_timer_cbs timerCallbacks = { &onTimerUpdate, nullptr, &onTimerSeek };
+        m_timer = vlc_player_AddTimer(m_player, VLC_TICK_FROM_MS(10), &timerCallbacks, this);
+        QVERIFY(m_timer);
         m_timeline = std::make_unique<SubtitleCueTimeline>(m_player);
         m_timeline->setEnabled(true);
         const auto video = QDir::toNativeSeparators(QDir(m_directory).filePath("subtitle-style.mp4")).toUtf8();
@@ -235,6 +276,82 @@ private slots:
         QCOMPARE(view[0].toMap()["sourceStartTicks"].toLongLong(), VLC_TICK_FROM_SEC(1));
         QCOMPARE(view[1].toMap()["sourceEndTicks"].toLongLong(), VLC_TICK_FROM_SEC(6));
         m_timeline->refresh();
+        assertPrimaryUnchanged();
+    }
+    void pausedBeforeFirstCueStillHasTimeline()
+    {
+        QVERIFY(m_mediaPlayer);
+        vlc_tick_t originalTime;
+        QVERIFY(settledPrimaryTime(originalTime));
+        const auto video = QUrl::fromLocalFile(qEnvironmentVariable("VLC_TIMELINE_LATE_VIDEO")).toEncoded();
+        QVERIFY2(!video.isEmpty(), "Set VLC_TIMELINE_LATE_VIDEO to the generated 60-second fixture");
+        const auto subtitle = QUrl::fromLocalFile(m_scratch.filePath("late-cue.srt"));
+        QFile file(subtitle.toLocalFile());
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        QVERIFY(file.write("1\n00:00:20,000 --> 00:00:40,000\nLATE TIMELINE CUE\n") > 0);
+        file.close();
+        NormalTimelineFixture fixture;
+        fixture.player = vlc_player_New(vlc_test_media_player_object(m_mediaPlayer), VLC_PLAYER_LOCK_NORMAL);
+        QVERIFY(fixture.player);
+        fixture.timeline = std::make_unique<SubtitleCueTimeline>(fixture.player);
+        fixture.timeline->setEnabled(true);
+        auto *media = input_item_New(video.constData(), nullptr);
+        QVERIFY(media);
+        const auto release = std::unique_ptr<input_item_t, decltype(&input_item_Release)>(media, &input_item_Release);
+        {
+            vlc_player_locker lock(fixture.player);
+            QCOMPARE(vlc_player_SetCurrentMedia(fixture.player, media), VLC_SUCCESS);
+            vlc_player_SetStartPaused(fixture.player, true);
+            QCOMPARE(vlc_player_Start(fixture.player), VLC_SUCCESS);
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(fixture.state(), VLC_PLAYER_STATE_PAUSED, 10000);
+        QVERIFY(fixture.time() < VLC_TICK_FROM_MS(200));
+        static const vlc_player_timer_cbs timerCallbacks = {
+            &NormalTimelineFixture::onUpdate, nullptr, &NormalTimelineFixture::onSeek
+        };
+        fixture.timer = vlc_player_AddTimer(fixture.player, VLC_TICK_FROM_MS(10), &timerCallbacks, &fixture);
+        QVERIFY(fixture.timer);
+        const auto exact = subtitle.toEncoded();
+        {
+            vlc_player_locker lock(fixture.player);
+            QCOMPARE(vlc_player_AddAssociatedMedia(fixture.player, SPU_ES, exact.constData(), true, false, true), VLC_SUCCESS);
+        }
+        const auto waitingForCue = [&] {
+            vlc_player_locker lock(fixture.player);
+            const auto *selected = vlc_player_GetSelectedTrack(fixture.player, SPU_ES);
+            if (!selected) return false;
+            vlc_vout_order order = VLC_VOUT_ORDER_NONE;
+            auto *output = vlc_player_GetEsIdVout(fixture.player, selected->es_id, &order);
+            return !output && order == VLC_VOUT_ORDER_PRIMARY;
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(waitingForCue(), 5000);
+        QTRY_VERIFY2_WITH_TIMEOUT(fixture.timeline->available(), qPrintable(fixture.timeline->status()), 3000);
+        // Selection requests an internal paused redraw. Capture the settled
+        // native clock after that redraw, without Play or a user seek.
+        QTRY_VERIFY_WITH_TIMEOUT(fixture.completions.load() > 0, 5000);
+        vlc_tick_t initialTime;
+        QVERIFY(fixture.settledTime(initialTime));
+        QVERIFY(initialTime < VLC_TICK_FROM_MS(200));
+        QCOMPARE(fixture.timeline->cueCount(), 1);
+        auto segments = fixture.timeline->view(0, VLC_TICK_FROM_SEC(60))["segments"].toList();
+        QCOMPARE(segments.size(), 1);
+        QCOMPARE(segments[0].toMap()["startTicks"].toLongLong(), qint64(20000000));
+        const auto completionsBeforeDelay = fixture.completions.load();
+        QVERIFY(fixture.timeline->setDelayTicks(250001, fixture.timeline->revision()));
+        QTRY_VERIFY(fixture.timeline->available() && fixture.timeline->delayTicks() == 250001);
+        QTRY_VERIFY_WITH_TIMEOUT(fixture.completions.load() > completionsBeforeDelay, 5000);
+        vlc_tick_t afterDelay;
+        QVERIFY(fixture.settledTime(afterDelay));
+        qInfo("Before-cue settled native clock before=%lld after=%lld", initialTime, afterDelay);
+        QCOMPARE(afterDelay, initialTime);
+        const auto revision = fixture.timeline->revision();
+        QVERIFY(fixture.timeline->seekCue(0, revision));
+        QTRY_VERIFY_WITH_TIMEOUT(std::abs(fixture.time() - 20250001) <= VLC_TICK_FROM_MS(50), 5000);
+        QTRY_VERIFY(fixture.timeline->available());
+        QCOMPARE(fixture.state(), VLC_PLAYER_STATE_PAUSED);
+        vlc_tick_t afterTime;
+        QVERIFY(settledPrimaryTime(afterTime));
+        QCOMPARE(afterTime, originalTime);
         assertPrimaryUnchanged();
     }
     void nativeDelayInheritanceOverrideAndFpsGuard()
@@ -332,7 +449,8 @@ private slots:
     void actualNormalLockAndExactMicrosecondSeekRequest()
     {
         QVERIFY(m_mediaPlayer);
-        const auto primaryTime = libvlc_media_player_get_time(m_mediaPlayer);
+        vlc_tick_t primaryTime;
+        QVERIFY(settledPrimaryTime(primaryTime));
         NormalTimelineFixture fixture;
         fixture.player = vlc_player_New(vlc_test_media_player_object(m_mediaPlayer),
                                        VLC_PLAYER_LOCK_NORMAL);
@@ -377,7 +495,8 @@ private slots:
         }
         QTRY_VERIFY_WITH_TIMEOUT(fixture.timeline->available() &&
             fixture.timeline->delayTicks() == 352555, 10000);
-        const auto pausedBeforeShift = fixture.time();
+        vlc_tick_t pausedBeforeShift;
+        QVERIFY(fixture.settledTime(pausedBeforeShift));
         const auto beforeShiftRevision = fixture.timeline->revision();
         // Exercise the timing write with the actual NORMAL lock too. No
         // player lock surrounds the request and the original player is idle.
@@ -385,7 +504,13 @@ private slots:
         QVERIFY(!fixture.timeline->setDelayTicks(352557, beforeShiftRevision));
         QTRY_VERIFY_WITH_TIMEOUT(fixture.timeline->available() &&
             fixture.timeline->delayTicks() == 352556, 10000);
-        QCOMPARE(fixture.time(), pausedBeforeShift);
+        // Native delay feedback precedes the asynchronous held-frame redraw.
+        // Compare the settled clock exactly, retaining the microsecond seek
+        // request assertions below as a separate synchronous contract.
+        QTRY_COMPARE_WITH_TIMEOUT(fixture.time(), pausedBeforeShift, 5000);
+        vlc_tick_t pausedAfterShift;
+        QVERIFY(fixture.settledTime(pausedAfterShift));
+        QCOMPARE(pausedAfterShift, pausedBeforeShift);
         QCOMPARE(fixture.state(), VLC_PLAYER_STATE_PAUSED);
         QVERIFY(fixture.timeline->setDelayTicks(352555, fixture.timeline->revision()));
         QTRY_VERIFY_WITH_TIMEOUT(fixture.timeline->available() &&
@@ -419,15 +544,22 @@ private slots:
             vlc_player_locker lock(fixture.player);
             vlc_player_SetSubtitleDelay(fixture.player, 352556, VLC_PLAYER_WHENCE_ABSOLUTE);
         }
+        // The delay change itself requests a paused redraw. The stale cue
+        // must add no request beyond that legitimate internal refresh.
+        const auto requestsBeforeStale = fixture.requests.load(std::memory_order_acquire);
         QVERIFY(!fixture.timeline->seekCue(1, revision));
-        QCOMPARE(fixture.requests.load(std::memory_order_acquire), 1u);
-        QCOMPARE(libvlc_media_player_get_time(m_mediaPlayer), primaryTime);
+        QCOMPARE(fixture.requests.load(std::memory_order_acquire), requestsBeforeStale);
+        vlc_tick_t afterTime;
+        QVERIFY(settledPrimaryTime(afterTime));
+        QCOMPARE(afterTime, primaryTime);
         assertPrimaryUnchanged();
     }
     void actualGuardedTimingShiftAndRetainedPlayback()
     {
         QTRY_VERIFY_WITH_TIMEOUT(m_timeline->available(), 10000);
-        const auto beforeTime = libvlc_media_player_get_time(m_mediaPlayer);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_seekPending.load(), 5000);
+        vlc_tick_t beforeTime;
+        QVERIFY(settledPrimaryTime(beforeTime));
         const auto revision = m_timeline->revision();
         QVERIFY(m_timeline->setDelayTicks(1852555, revision));
         QVERIFY(!m_timeline->setDelayTicks(1852556, revision));
@@ -474,7 +606,10 @@ private slots:
         QVERIFY(!m_timeline->setDelayTicks(0, beforeDisable));
         m_timeline->setEnabled(true);
         QTRY_VERIFY_WITH_TIMEOUT(m_timeline->available(), 10000);
-        QCOMPARE(libvlc_media_player_get_time(m_mediaPlayer), beforeTime);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_seekPending.load(), 5000);
+        vlc_tick_t afterTime;
+        QVERIFY(settledPrimaryTime(afterTime));
+        QCOMPARE(afterTime, beforeTime);
         assertPrimaryUnchanged();
     }
     void durationEffectsDoNotPretendToBeSourceExpiry()
@@ -603,6 +738,7 @@ private slots:
     void cleanupTestCase()
     {
         m_timeline.reset();
+        if (m_timer) vlc_player_RemoveTimer(m_player, m_timer);
         if (m_mediaPlayer) libvlc_media_player_release(m_mediaPlayer);
         if (m_instance) libvlc_release(m_instance);
     }

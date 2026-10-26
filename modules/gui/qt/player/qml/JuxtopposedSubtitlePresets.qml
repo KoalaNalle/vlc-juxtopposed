@@ -32,13 +32,21 @@ ColumnLayout {
     signal advancedRequested
     signal moveFocusRequested(var current, int direction)
 
+    function revealNamingForm() {
+        if (naming)
+            root.revealRequested(namingForm);
+    }
     function startNaming() {
         if (!controller.canSave)
             return;
         controller.clearError();
         naming = true;
         nameEditor.text = "";
-        Qt.callLater(() => nameEditor.forceActiveFocus(Qt.PopupFocusReason));
+        Qt.callLater(() => {
+            nameEditor.forceActiveFocus(Qt.PopupFocusReason);
+            // Reveal the actions with the editor after the expanded layout settles.
+            root.revealNamingForm();
+        });
     }
     function cancelNaming() {
         naming = false;
@@ -57,6 +65,10 @@ ColumnLayout {
     }
 
     spacing: 8 * uiScale
+    onYChanged: {
+        if (naming)
+            Qt.callLater(revealNamingForm);
+    }
 
     C.Button {
         id: selector
@@ -212,9 +224,19 @@ ColumnLayout {
         }
     }
     ColumnLayout {
+        id: namingForm
+
         Layout.fillWidth: true
         spacing: 8 * root.uiScale
         visible: root.naming
+        onHeightChanged: {
+            if (root.naming)
+                Qt.callLater(root.revealNamingForm);
+        }
+        onYChanged: {
+            if (root.naming)
+                Qt.callLater(root.revealNamingForm);
+        }
 
         C.TextField {
             id: nameEditor

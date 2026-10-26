@@ -39,6 +39,7 @@ class Controller(QObject):
         self._time, self._duration = 0, 0
         self.starts, self.resets, self.cancels, self.source_changes, self.destination_changes = 0, 0, 0, 0, 0
         self.publication_won = False
+        self.next_start_error = ''
     def is_busy(self):
         return self._state in [self.State.Starting, self.State.Encoding, self.State.Validating, self.State.Publishing, self.State.Cancelling]
     def set_source(self, value):
@@ -73,6 +74,13 @@ class Controller(QObject):
     def start(self):
         if self.is_busy(): return False
         self.starts += 1
+        if self.next_start_error:
+            # Local-file validation can fail synchronously, before a worker
+            # starts. This has a different layout/focus order from its result.
+            self._state, self._error = self.State.Failed, self.next_start_error
+            self.next_start_error = ''
+            self.changed.emit()
+            return False
         self._state, self._error, self._output = self.State.Starting, '', QUrl()
         self.changed.emit()
         return True
@@ -253,7 +261,8 @@ click('conversionAllProfiles')
 assert window.property('profileRequests') == 1 and not dialog.property('visible'), 'Native all-profile route lost'
 
 geometry = []
-for width, height, scale in [(1050, 760, 1), (640, 360, 1), (960, 600, 1.5), (1280, 720, 2)]:
+terminal_geometry = []
+for width, height, scale in [(1050, 760, 1), (602, 421, 1), (640, 360, 1), (960, 600, 1.5), (1280, 720, 2)]:
     window.resize(width, height)
     dialog.setProperty('uiScale', scale)
     click('opener')
@@ -282,6 +291,39 @@ for width, height, scale in [(1050, 760, 1), (640, 360, 1), (960, 600, 1.5), (12
                 'footerSceneY', footer.mapToScene(footer.boundingRect().topLeft()).y(), 'assertedFooterTop', footer_top)
             print('QML messages:', messages)
         assert point.y() + obj.height() <= footer_top + .5, ('Focused control clipped by fixed footer', name, width, height, scale, point.y(), footer_top)
+    # A shorter second error previously settled below the fixed footer after
+    # the first reveal. Measure the actual text bounds after each layout, not
+    # just its visible property, including the synchronous validation path.
+    for number, error in enumerate([
+        'The audio could not be converted. Check the source and available codecs.',
+        'Choose a readable local audio file in a supported format.',
+        'Could not create conversion storage in the destination folder. Choose a writable folder and a new filename.',
+    ]):
+        item('conversionSourceBrowse').forceActiveFocus(Qt.TabFocusReason)
+        controller.set_source(source)
+        QTest.qWait(30)
+        if number == 0:
+            click('conversionConvert')
+            controller.finish(controller.State.Failed, error)
+        else:
+            controller.next_start_error = error
+            click('conversionConvert')
+        QTest.qWait(60)
+        assert item('conversionConvert').hasActiveFocus()
+        footer_top = dialog.property('footer').mapToScene(QPointF(0, 0)).y()
+        for name in ['conversionStatus', 'conversionError']:
+            obj = item(name)
+            point = obj.mapToScene(QPointF(0, 0))
+            bounds = {'window': [width, height], 'scale': scale, 'errorCase': number,
+                'item': name, 'top': point.y(), 'bottom': point.y() + obj.height(), 'footerTop': footer_top}
+            terminal_geometry.append(bounds)
+            if point.y() < dialog.property('y') + 50 * scale - .5 or point.y() + obj.height() > footer_top + .5:
+                screenshot('conversion-terminal-clipped-component.png')
+                print('Terminal geometry:', bounds, 'QML messages:', messages)
+            assert obj.property('visible') and point.y() >= dialog.property('y') + 50 * scale - .5, bounds
+            assert point.y() + obj.height() <= footer_top + .5, ('Terminal result clipped', bounds)
+        if width == 602:
+            screenshot(f'conversion-short-error-{number}-component.png')
     geometry.append({'window': [width, height], 'scale': scale, 'dialog': [dialog.property('width'), dialog.property('height')]})
     if width == 640: screenshot('conversion-short-component.png')
     QTest.keyClick(window, Qt.Key_Escape)
@@ -305,7 +347,7 @@ assert not errors, errors
 qmlformat = Path(PySide6.__file__).parent / ('qmlformat.exe' if os.name == 'nt' else 'qmlformat')
 result = subprocess.run([str(qmlformat), '--ignore-settings', str(qml_dir / 'JuxtopposedConversionDialog.qml')], stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=20)
 assert result.returncode == 0, result.stderr
-verification = {'passed': True, 'geometry': geometry, 'messages': messages,
+verification = {'passed': True, 'geometry': geometry, 'terminalGeometry': terminal_geometry, 'messages': messages,
     'starts': controller.starts, 'cancelRequests': controller.cancels,
     'nativePickerDispatch': {'source': window.property('sourceRequests'), 'destination': window.property('destinationRequests'), 'allProfiles': window.property('profileRequests')},
     'sourceQmlSha256': hashlib.sha256((qml_dir / 'JuxtopposedConversionDialog.qml').read_bytes()).hexdigest(),

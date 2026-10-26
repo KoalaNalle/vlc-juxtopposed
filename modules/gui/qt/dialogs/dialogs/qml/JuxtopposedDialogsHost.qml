@@ -27,7 +27,7 @@ Item {
     readonly property int setupDraftTheme: setupLoader.item ? setupLoader.item.draftTheme : 2
     readonly property bool setupVisible: !!setupLoader.item && setupLoader.item.visible
     readonly property bool qmlModalVisible: globalSettingsDialog.visible || networkStreamDialog.visible
-                                             || newPlaylistDialog.visible || conversionDialog.visible || playerProfilesDialog.visible || customizer.visible || setupVisible
+                                             || newPlaylistDialog.visible || conversionDialog.visible || subtitleAttachmentsDialog.visible || playerProfilesDialog.visible || customizer.visible || setupVisible
     signal playlistRequested(var playlist)
     signal playlistSaved()
 
@@ -37,7 +37,7 @@ Item {
     }
     function routeTo(dialog, options) {
         if (dialogsProvider.prefsDialogVisible || setupVisible) return false
-        const dialogs = [globalSettingsDialog, networkStreamDialog, newPlaylistDialog, conversionDialog, playerProfilesDialog, customizer]
+        const dialogs = [globalSettingsDialog, networkStreamDialog, newPlaylistDialog, conversionDialog, subtitleAttachmentsDialog, playerProfilesDialog, customizer]
         // Check every operation before closing any modal. A request must never
         // cancel a running job or partly mutate the dialog state before failing.
         for (const other of dialogs) {
@@ -273,6 +273,18 @@ Item {
         onAllProfilesRequested: root.dialogsProvider.openLegacyTranscodingDialog()
         onFallbackFocusRequested: root.restoreViewFocus()
     }
+    JuxtopposedSubtitleAttachments {
+        id: subtitleAttachmentsDialog
+        parent: root
+        controller: "subtitleAttachments" in root.mainCtx ? root.mainCtx.subtitleAttachments : null
+        uiScale: root.uiScale
+        assetBase: root.assetBase
+        backdropSource: root.backdropSource
+        onFilesRequested: root.dialogsProvider.chooseSubtitleAttachmentFiles()
+        onFolderRequested: root.dialogsProvider.chooseSubtitleAttachmentFolder()
+        onOnlineRequested: root.dialogsProvider.searchSubtitlesOnline()
+        onFallbackFocusRequested: root.restoreViewFocus()
+    }
     Widgets.TextInputFocus {
         id: textInputFocus
         focusItem: root.Window.window?.activeFocusItem ?? null
@@ -341,6 +353,7 @@ Item {
         function onShowNetworkStreamDialog() { root.routeTo(networkStreamDialog) }
         function onShowNewPlaylistDialog() { root.routeTo(newPlaylistDialog) }
         function onShowConversionDialog() { root.routeTo(conversionDialog) }
+        function onShowSubtitleAttachmentsDialog() { root.routeTo(subtitleAttachmentsDialog) }
         function onShowPlayerProfilesDialog(create) { root.routeTo(playerProfilesDialog, create) }
         function onShowToolbarEditorDialog() { if (root.mainCtx.juxtopposedControls) root.routeTo(customizer) }
     }

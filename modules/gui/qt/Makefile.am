@@ -348,6 +348,7 @@ libqt_plugin_la_SOURCES = \
 	player/subtitle_cue_timeline.hpp \
 	player/subtitle_cue_timeline.cpp \
 	maininterface/subtitle_preset_model.cpp maininterface/subtitle_preset_model.hpp \
+	maininterface/subtitle_attachment_model.cpp maininterface/subtitle_attachment_model.hpp \
 	util/filterchain.hpp \
 	player/player_controlbar_model.cpp player/player_controlbar_model.hpp \
 	player/control_list_model.cpp player/control_list_model.hpp \
@@ -584,6 +585,7 @@ nodist_libqt_plugin_la_SOURCES = \
 	player/subtitle_appearance.moc.cpp \
 	player/subtitle_cue_timeline.moc.cpp \
 	maininterface/subtitle_preset_model.moc.cpp \
+	maininterface/subtitle_attachment_model.moc.cpp \
 	player/player_controlbar_model.moc.cpp \
 	player/control_list_model.moc.cpp \
 	player/control_list_filter.moc.cpp \
@@ -1082,6 +1084,10 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/new-playlist-add.svg \
 	pixmaps/juxtopposed/new-playlist-close.svg \
 	pixmaps/juxtopposed/new-playlist-divider.svg \
+	pixmaps/juxtopposed/subtitle-attachment-d74b3.svg \
+	pixmaps/juxtopposed/subtitle-attachment-8abe2.svg \
+	pixmaps/juxtopposed/subtitle-attachment-a8689.svg \
+	pixmaps/juxtopposed/subtitle-attachment-b0920.svg \
 	pixmaps/juxtopposed/settings.svg \
 	pixmaps/juxtopposed/subtitles.svg \
 	pixmaps/juxtopposed/subtitles-light.svg \
@@ -1370,6 +1376,7 @@ libqml_module_dialogs_a_QML = \
 	dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml \
 	dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml \
 	dialogs/dialogs/qml/JuxtopposedConversionDialog.qml \
+	dialogs/dialogs/qml/JuxtopposedSubtitleAttachments.qml \
 	dialogs/dialogs/qml/Dialogs.qml \
 	dialogs/dialogs/qml/ModalDialog.qml \
 	dialogs/dialogs/qml/WindowDialog.qml \
@@ -2486,6 +2493,7 @@ qt_player_controller_test_sources = \
 	player/subtitle_cue_data.cpp \
 	player/subtitle_cue_timeline.cpp \
 	maininterface/subtitle_preset_model.cpp \
+	maininterface/subtitle_attachment_model.cpp \
 	util/audio_device_model.cpp \
 	util/variables.cpp \
 	util/varchoicemodel.cpp \
@@ -2507,6 +2515,7 @@ qt_player_controller_test_sources = \
 	player/subtitle_cue_data.hpp \
 	player/subtitle_cue_timeline.hpp \
 	maininterface/subtitle_preset_model.hpp \
+	maininterface/subtitle_attachment_model.hpp \
 	util/audio_device_model.hpp \
 	util/variables.hpp \
 	util/varchoicemodel.hpp \
@@ -2528,6 +2537,7 @@ qt_player_controller_test_moc_sources = \
 	player/subtitle_appearance.moc.cpp \
 	player/subtitle_cue_timeline.moc.cpp \
 	maininterface/subtitle_preset_model.moc.cpp \
+	maininterface/subtitle_attachment_model.moc.cpp \
 	util/audio_device_model.moc.cpp \
 	util/variables.moc.cpp \
 	util/varchoicemodel.moc.cpp \
@@ -2537,8 +2547,10 @@ qt_player_controller_test_moc_sources = \
 	dialogs/extensions/extensions.moc.cpp \
 	widgets/native/customwidgets.moc.cpp \
 	widgets/native/animators.moc.cpp
-test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_sources) tests/test_player_subtitle_delay.cpp
-nodist_test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_moc_sources) tests/test_player_subtitle_delay.moc
+test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_sources) tests/test_player_subtitle_delay.cpp \
+	player/delay_estimator.cpp player/delay_estimator.hpp
+nodist_test_qt_player_subtitle_delay_SOURCES = $(qt_player_controller_test_moc_sources) tests/test_player_subtitle_delay.moc \
+	player/delay_estimator.moc.cpp
 BUILT_SOURCES += tests/test_player_subtitle_delay.moc
 CLEANFILES += tests/test_player_subtitle_delay.moc
 test_qt_player_subtitle_delay_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
@@ -2590,6 +2602,7 @@ TESTS += test_qt_subtitle_presets
 endif
 endif
 EXTRA_DIST += tests/test_juxtopposed_subtitle_presets.py
+EXTRA_DIST += tests/test_juxtopposed_subtitle_attachments.py
 
 if ENABLE_QT
 if HAVE_QT_QTEST

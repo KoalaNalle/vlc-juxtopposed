@@ -1,0 +1,416 @@
+{
+  "status": "paused-by-user",
+  "pausedUtc": "2026-10-25T19:07:50Z",
+  "fullBetaAccepted": false,
+  "ordinaryCurrentTupleAccepted": false,
+  "sourceBaseCommit": "5b3eb021c026b4fa595bfec36e1ff0975c3f7bfd",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "9edcbb104e359ff4a0b7ff98b1a2643f2beb3a2f86a784a7115fdbbbb7689586",
+    "plugins/gui/libqt_plugin.dll": "ecaeab25a8dca90a0b3ad92a8794a2aabf8226f7d327db03f7a984dbebd130d5",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceGuardBeforeCheckpointDocumentation": {
+    "sourceInputsUnchanged": true,
+    "actualSourceCopiesUnchanged": true,
+    "sourceInputCount": 2755,
+    "controlsInputsUnchanged": true
+  },
+  "sourceChanges": {
+    "src/libvlc.c": {
+      "beforeSha256": "a2c3bfb54e0f92f96a701561bcdcf91af003f91c9b94c0165b3eef13eae9cb04",
+      "afterSha256": "b5026def8e4b5eb72bae5b0ba1d94e7905c6d99be7435794fce0c488ae2eec0c"
+    },
+    "src/input/input.c": {
+      "beforeSha256": "32e56d6e6a861358e00608e5d638681824c2ec737c08ca6f3dbc3940c7515bc2",
+      "afterSha256": "714117d720fe0bef49712a2a1bce27d8cae0ad46087fe96e8feb85621627f9fc"
+    },
+    "src/input/es_out.c": {
+      "beforeSha256": "52c5ad89d2af4fda4408b85aaac8d56f84d6b9f648091a7dd4056ef36d3f7635",
+      "afterSha256": "8a48a354868c373b9f9bafd273ca3103615495b08f70cf9169530ce9f7888a05"
+    },
+    "src/input/es_out.h": {
+      "beforeSha256": "f4c132ca328ce4e58475aa09456548048217bdfcf210a49216c3617c9f6fec11",
+      "afterSha256": "04f88cc5cf31042e7aceff664ce2b0b3462d4021e15dffae5d2ddf5d952e6a11"
+    },
+    "modules/audio_output/wasapi.c": {
+      "beforeSha256": "6458bd76ddc9ae20b72db25291e53458102396b3d5ddca126831b25360ce933e",
+      "afterSha256": "af4b980c05451724b19a89824311144d121ecd654b6bd1f458a50814749a64c0"
+    },
+    "modules/gui/qt/dialogs/extended/extended_panels.cpp": {
+      "beforeSha256": "1924311c755cf079be64884b0530fd8cc5c9999121fc335623250d92ea6a66f4",
+      "afterSha256": "6727e194859d257125a5a3646ae163e55d72d4b2b168a8452b2ee825b63c4cbd"
+    },
+    "modules/gui/qt/tests/test_player_subtitle_delay.cpp": {
+      "beforeSha256": "f62e174ec205f87d0fe777a86b02f5cb0567553fa05daa829485fb7d494a37a2",
+      "afterSha256": "43e22f5bcc2403d522d08bb20a1af8fd93759dfd803bc8054ee5c2cd53b73761"
+    },
+    "test/src/interface/controls.c": {
+      "beforeSha256": "89736aed60f9e17db4e2e3d58bad1d14ab7f4b229044cd299eb4b9c05cba2be4",
+      "afterSha256": "1177bcdf5c0f47930290f9b5c4339e545a4546aba2bc842120f3f0fe29390e23"
+    },
+    "test/libvlc/native_controls.py": {
+      "beforeSha256": "0eff6498a0f74737afa2fc2c006bb029b751873c6094c6b3c868805b91b0c056",
+      "afterSha256": "3fe55877cad4f3c0737ee3faaad41e186e607b0b7d49051b8f0880760fe05e58"
+    }
+  },
+  "artifacts": [
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/verification.json",
+      "artifact": "native-playing-before-r7/verification.json",
+      "sourceSha256": "ce85b0e669caa3143dfaf9d6efe770d1f787caca0a20c01991fed59006ef594a",
+      "artifactSha256": "ce85b0e669caa3143dfaf9d6efe770d1f787caca0a20c01991fed59006ef594a"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/results.xml",
+      "artifact": "native-playing-before-r7/results.xml.gz",
+      "sourceSha256": "4b74a07bf569fefba6f89d4c384f43bd9c30b38572fc8e7a351c767045a8ae1a",
+      "artifactSha256": "21a5faa150f34ef158968ab1d4ba70775430e926ffcde78f2cf7cf020f4874d9"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r7/verification.json",
+      "artifact": "native-final-r7/verification.json",
+      "sourceSha256": "ce9a95cc9c809221ffcd4ddeae6855a20b4d6a595c60645248cfd8b1845122a4",
+      "artifactSha256": "ce9a95cc9c809221ffcd4ddeae6855a20b4d6a595c60645248cfd8b1845122a4"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r7/results.xml",
+      "artifact": "native-final-r7/results.xml.gz",
+      "sourceSha256": "d3069d4e52440c7b7f9bf43338d07ebdf85f47877af9ff920625e652b442336d",
+      "artifactSha256": "267da97f39ea30533b535f8b75d1bfa280926996e9c66316be3f59c6edb51928"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r12/verification.json",
+      "artifact": "native-final-r12/verification.json",
+      "sourceSha256": "5006ef76ed056e5c5eca9aff3582d8ca272048de7cd7aabf4320fa3f21c62245",
+      "artifactSha256": "5006ef76ed056e5c5eca9aff3582d8ca272048de7cd7aabf4320fa3f21c62245"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r12/results.xml",
+      "artifact": "native-final-r12/results.xml.gz",
+      "sourceSha256": "e49f02d9fe9089c4df9d9aada6eb9398b7cc53048a7e23f09771c8b559a9f5d6",
+      "artifactSha256": "493e815a25e09d291c749865b1454fc271fab46f81588c406ec626bdb90eeff3"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/verification.json",
+      "artifact": "native-final-r15/verification.json",
+      "sourceSha256": "f12c8294e8cc2749fe7b6a54d8a65edbccd6909c81a847a43bc9f6d1385973af",
+      "artifactSha256": "f12c8294e8cc2749fe7b6a54d8a65edbccd6909c81a847a43bc9f6d1385973af"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/results.xml",
+      "artifact": "native-final-r15/results.xml.gz",
+      "sourceSha256": "3345c6f6bf42971e419c03bc1c65256444dcd2a43e53c59440c1c25957a78bce",
+      "artifactSha256": "321697475e514db3ef70d4f53bab0c508e2b263dd7305b9e2569f38b5b98f37a"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-before-r13/verification.json",
+      "artifact": "bare-input-before-r13/verification.json",
+      "sourceSha256": "a23db11ee2a4dd1bb8b063c5c644b65970ae641598524e2b9c80158b5a913d56",
+      "artifactSha256": "a23db11ee2a4dd1bb8b063c5c644b65970ae641598524e2b9c80158b5a913d56"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-before-r13/stdout.txt",
+      "artifact": "bare-input-before-r13/stdout.txt.gz",
+      "sourceSha256": "42b634120cf0d505301ead7ff1b37de698562ce165cb3bb2fc52c4267c7e0506",
+      "artifactSha256": "bd669f79971a1fb9bea9647856a97c957b4abd04381234fbba22e49b4518d6a4"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-after-r13/verification.json",
+      "artifact": "bare-input-after-r13/verification.json",
+      "sourceSha256": "8b399cc52e71730e03f95257241bef292287c502ad617c144cd01c35fe95246b",
+      "artifactSha256": "8b399cc52e71730e03f95257241bef292287c502ad617c144cd01c35fe95246b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-after-r13/stdout.txt",
+      "artifact": "bare-input-after-r13/stdout.txt.gz",
+      "sourceSha256": "1b867cdcaa33f4b38326062be08d9776a70426db1af029f0d0539034f37edd23",
+      "artifactSha256": "f5b0a18f6b3e0d346714c7935610352a91be0aee146d21848f4fc0b6579ed2cc"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-final-r15/verification.json",
+      "artifact": "bare-input-final-r15/verification.json",
+      "sourceSha256": "16910bac0d0057f8475f22040b1458f3af1a3b8aa08efb0b71946cba0df2f104",
+      "artifactSha256": "16910bac0d0057f8475f22040b1458f3af1a3b8aa08efb0b71946cba0df2f104"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/bare-input-final-r15/stdout.txt",
+      "artifact": "bare-input-final-r15/stdout.txt.gz",
+      "sourceSha256": "1b867cdcaa33f4b38326062be08d9776a70426db1af029f0d0539034f37edd23",
+      "artifactSha256": "f5b0a18f6b3e0d346714c7935610352a91be0aee146d21848f4fc0b6579ed2cc"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/input-click-before-r11/process.json",
+      "artifact": "input-click-before-r11/process.json",
+      "sourceSha256": "bb3e47b856271c19e1f5023cdfc6b98481bea32366bfc514b36830345961f36b",
+      "artifactSha256": "bb3e47b856271c19e1f5023cdfc6b98481bea32366bfc514b36830345961f36b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/input-click-after-r12/process.json",
+      "artifact": "input-click-after-r12/process.json",
+      "sourceSha256": "bf5236d8878824b8289b84dd40aaa4e76a7590c44a17deed7e20d68066c4561b",
+      "artifactSha256": "bf5236d8878824b8289b84dd40aaa4e76a7590c44a17deed7e20d68066c4561b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/timing-ordinary-r7/processes.json",
+      "artifact": "timing-ordinary-r7/processes.json.gz",
+      "sourceSha256": "a7d98d083f029e4fb709a15d4c44158998544cc317597c2c2f2609743d09647a",
+      "artifactSha256": "88d56c6c9f155b1f0da61947baf36d7ffdd5fec5841e1fa32ca231923f648a1f"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/timing-ordinary-r10/processes.json",
+      "artifact": "timing-ordinary-r10/processes.json.gz",
+      "sourceSha256": "c2695f6b9f31c7a910b88649562fd9051c6138c8d0e820216ac3673392b06afb",
+      "artifactSha256": "e9ac16d898cf2a8e327f5dd8d6528be504b2afa69a1faeac9a1c3ab4d10d7cee"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/regressions-ordinary-r7/processes.json",
+      "artifact": "regressions-ordinary-r7/processes.json.gz",
+      "sourceSha256": "77dedb19b0f2d516b00fb7315ef0a32405ea4c35bfdca7a397f31d34b9a6b2b7",
+      "artifactSha256": "965ed82e94f2a95519366ebf4959ef0d41ddadb42e6380e1cd59e3dc2c9bdeb8"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/timing-ordinary-r12/processes.json",
+      "artifact": "timing-ordinary-r12/processes.json.gz",
+      "sourceSha256": "cf69c450952b9f0fb15011da6612ed6da0588b5ad201a0c095af4000b2559c15",
+      "artifactSha256": "9aa5f5807e736029956ef7ab11c1931b943d6544da91bf25754db39e605b33bd"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/regressions-ordinary-r12/processes.json",
+      "artifact": "regressions-ordinary-r12/processes.json.gz",
+      "sourceSha256": "59adc59eba83052cf911e8c11a406240ac584720d8326bd66530228db5ac88d5",
+      "artifactSha256": "f2cefcc37fc29bbde6406c3518d606f46d75d5ee291ecef737e9a7632ec80f5b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/timing-ordinary-r15/processes.json",
+      "artifact": "timing-ordinary-r15/processes.json.gz",
+      "sourceSha256": "dab245a3b4c09e047dbd7ad7dfcc73d5199b1e16ce4356735f4dbb8171f0bfba",
+      "artifactSha256": "0a62cf10c2f6ad5ac45425401d1d8a8314fe592a368e6399a90789cfa821f142"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/regressions-ordinary-r15/processes.json",
+      "artifact": "regressions-ordinary-r15/processes.json.gz",
+      "sourceSha256": "a2b2453830e4328a794e022e1440d385fb3f78eb17e007171f77bbe1f9eb796c",
+      "artifactSha256": "0f0469b5abaf4a9fcfb8fe85ca266276f1ad2575af31006ecb65424557779af6"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/single-picture-repeats-r18/verification.json",
+      "artifact": "single-picture-repeats-r18/verification.json.gz",
+      "sourceSha256": "e0a4d0946ac081ab24c1edfe2437eebaa81593f69dda59b2988bf58c5a32634a",
+      "artifactSha256": "bcedcd14cbf13d6b5b129f91a06fb7836a3bd13d6ddfaf002a9ffe2c229b9e6f"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/wasapi-startup-r15/verification.json",
+      "artifact": "wasapi-startup-r15/verification.json.gz",
+      "sourceSha256": "0a690754f608c2c731e631ac1a9d39e8db78d19867407a89ad21ced7e7f042e2",
+      "artifactSha256": "99d7fad7a95e184ff9542d50c97df03cf3e2e4703582fd263f972d12c3483ad2"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/ui-r1/verification.json",
+      "artifact": "ui-r1/verification.json.gz",
+      "sourceSha256": "cf21c1c3dcd4175cbcb7e97040ad025306e54e57601f3eebd5eb3572eb145d24",
+      "artifactSha256": "f00c011d16c4f2c15aedc57042922133abb9f52919bdb8c51d8d9cab4aa7c729"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/ui-observations-r1.json",
+      "artifact": "ui-observations-r1.json",
+      "sourceSha256": "28797b2e7fca227a39e2751f4236924f2f976e8b6196c425bccbac9344ef53df",
+      "artifactSha256": "28797b2e7fca227a39e2751f4236924f2f976e8b6196c425bccbac9344ef53df"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/controls-inputs-r15.json",
+      "artifact": "controls-inputs-r15.json",
+      "sourceSha256": "a2d4502d181021bb0f9b214e687eab4368dabfb240fb7c930aecd777352ef080",
+      "artifactSha256": "a2d4502d181021bb0f9b214e687eab4368dabfb240fb7c930aecd777352ef080"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/diagnostic-attempts.json",
+      "artifact": "diagnostic-attempts.json",
+      "sourceSha256": "41b35ba5323fa12c5baf69401ea94e3ec9fe851c33a837d08cc5ee37de8839e2",
+      "artifactSha256": "41b35ba5323fa12c5baf69401ea94e3ec9fe851c33a837d08cc5ee37de8839e2"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/cold-stress-summary.json",
+      "artifact": "cold-stress-summary.json",
+      "sourceSha256": "cd54ca34828461d36204ca74d137021f88202d9c078e2dc75509a18be1994d59",
+      "artifactSha256": "cd54ca34828461d36204ca74d137021f88202d9c078e2dc75509a18be1994d59"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/inputs-r15.json",
+      "artifact": "inputs-r15.json.gz",
+      "sourceSha256": "4c919022f5a15e5a64bf746ed219a19520056a3a105dbc7eb905c07260737b85",
+      "artifactSha256": "eccb93079bb507d1fe85f713a164aa1fc4bee404435086b114fb7d5296266a0d"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-core-r4.log",
+      "artifact": "build-core-r4.log.gz",
+      "sourceSha256": "2acf683f31e46b23884d715686027eb4b37b975970e4b4e5b13e80e6367bcf63",
+      "artifactSha256": "368240b2bd85df7b1c6cebb77bc34db7752518c1f57da389dcca030df05d4b4d"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-core-r12.log",
+      "artifact": "build-core-r12.log.gz",
+      "sourceSha256": "f4284b2bd96bab5fad9302ce578c3f09c71c5c3fe622bdbb472f763ae8730a67",
+      "artifactSha256": "8ab42bafddf0bf972a6e825d85f39a09ee0504f3d8800faa71ee27e97341ebc0"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-wasapi-r15.log",
+      "artifact": "build-wasapi-r15.log.gz",
+      "sourceSha256": "ec545d210e55feec1d8250aa59d1477cb20c5020b3bbfef7eae64c117c63e170",
+      "artifactSha256": "9d3b940771735c73f34e4790262a4111dd6e6ce38d623d3dcc1f5461d8606e7d"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-controls-r12.log",
+      "artifact": "build-controls-r12.log.gz",
+      "sourceSha256": "aebdaf2f3afded87b96b45195fa1e16cfb64e0e71e4d532bf5e9124bc242bb6e",
+      "artifactSha256": "26e603abf12cf9ed23941c6200572afc13a794d20dc4e8c88c85a226cb85f46a"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-native-r7.log",
+      "artifact": "build-native-r7.log.gz",
+      "sourceSha256": "f4f7ccf78713ded46d78d0814ec30d05ee7e53dc614971d035a448eda38943df",
+      "artifactSha256": "e81264e48262cea997f778ffca9cb71e872a7e218e3170a76de3fd59cbd41eb8"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-ordinary-r1.log",
+      "artifact": "build-ordinary-r1.log.gz",
+      "sourceSha256": "1f8d580506dbb2ec995b5545bfb30edddd59a5850a1c4203ecd46a245fc1d7a3",
+      "artifactSha256": "aef1a480270996fa9c6d0007f2f65af6f974b9db56faa4a4f48c17c909908182"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/snapshots/playing-50.000-12119828.png",
+      "artifact": "native-playing-before-r7/snapshots/playing-50.000-12119828.png",
+      "sourceSha256": "9fbaeddf9b89db3df7af96b2a1f8f689b012adca389aa8f0ae277bab3c5cbf63",
+      "artifactSha256": "9fbaeddf9b89db3df7af96b2a1f8f689b012adca389aa8f0ae277bab3c5cbf63"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/snapshots/playing-eof-0-33095933.png",
+      "artifact": "native-playing-before-r7/snapshots/playing-eof-0-33095933.png",
+      "sourceSha256": "b3591a1847410d8c43fc87e0306bc168138f3193de9bf03e094c360e88044938",
+      "artifactSha256": "b3591a1847410d8c43fc87e0306bc168138f3193de9bf03e094c360e88044938"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/snapshots/playing-eof-0-33973013.png",
+      "artifact": "native-playing-before-r7/snapshots/playing-eof-0-33973013.png",
+      "sourceSha256": "bbd80470b98520a66396d32778ffaf6793c39d1dc61e0ed9a715d5dedbec91cc",
+      "artifactSha256": "bbd80470b98520a66396d32778ffaf6793c39d1dc61e0ed9a715d5dedbec91cc"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-playing-before-r7/snapshots/playing-eof-reference.png",
+      "artifact": "native-playing-before-r7/snapshots/playing-eof-reference.png",
+      "sourceSha256": "f19f4736aec07bf1edc2d0762ba64669d2f693df85abac91e55ae88e69065a6b",
+      "artifactSha256": "f19f4736aec07bf1edc2d0762ba64669d2f693df85abac91e55ae88e69065a6b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/snapshots/playing-50.000-12120873.png",
+      "artifact": "native-final-r15/snapshots/playing-50.000-12120873.png",
+      "sourceSha256": "57c5314901aeb58d9dcd0090662f93a9a6146c24e5c031f29e361ef811d2875b",
+      "artifactSha256": "57c5314901aeb58d9dcd0090662f93a9a6146c24e5c031f29e361ef811d2875b"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/snapshots/playing-eof-0-33092770.png",
+      "artifact": "native-final-r15/snapshots/playing-eof-0-33092770.png",
+      "sourceSha256": "612c455cedcba0fdb80b9d73bec1145e0044dada3c934f5df9e7f2075c7aa116",
+      "artifactSha256": "612c455cedcba0fdb80b9d73bec1145e0044dada3c934f5df9e7f2075c7aa116"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/snapshots/playing-eof-0-33916333.png",
+      "artifact": "native-final-r15/snapshots/playing-eof-0-33916333.png",
+      "sourceSha256": "6259f5d4d1969363f87c30b9245ee923336b81ba3cfaf46edd4dfa3889d29d82",
+      "artifactSha256": "6259f5d4d1969363f87c30b9245ee923336b81ba3cfaf46edd4dfa3889d29d82"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/native-final-r15/snapshots/playing-eof-reference.png",
+      "artifact": "native-final-r15/snapshots/playing-eof-reference.png",
+      "sourceSha256": "cc77764dbc6b95212f4a8476009e6843c4412d267871937a599f6e8db9bce5cd",
+      "artifactSha256": "cc77764dbc6b95212f4a8476009e6843c4412d267871937a599f6e8db9bce5cd"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-native-r15.py",
+      "artifact": "producers/run-native-r15.py",
+      "sourceSha256": "8098adec0ac8b4bf87ac35506ad7383b80a1b432b31e64c62d7e9bb1823412f9",
+      "artifactSha256": "8098adec0ac8b4bf87ac35506ad7383b80a1b432b31e64c62d7e9bb1823412f9"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-bare-input-r15.py",
+      "artifact": "producers/run-bare-input-r15.py",
+      "sourceSha256": "4b06efa077d6f565d2e9d6760b74e912c0137fec7ef3bd792550fb5190bea15c",
+      "artifactSha256": "4b06efa077d6f565d2e9d6760b74e912c0137fec7ef3bd792550fb5190bea15c"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-timing-r15.py",
+      "artifact": "producers/run-timing-r15.py",
+      "sourceSha256": "fe6a601f32575694cd60ab2a5b95181c6874a589e4ca8e3d98ab77bcc624b1b8",
+      "artifactSha256": "fe6a601f32575694cd60ab2a5b95181c6874a589e4ca8e3d98ab77bcc624b1b8"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-regressions-r15.py",
+      "artifact": "producers/run-regressions-r15.py",
+      "sourceSha256": "20143c84e343aa12230c542be85e9bf9ea67f13845442b158d10738b1d925e12",
+      "artifactSha256": "20143c84e343aa12230c542be85e9bf9ea67f13845442b158d10738b1d925e12"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-wasapi-startup-r15.py",
+      "artifact": "producers/run-wasapi-startup-r15.py",
+      "sourceSha256": "5a410c3722394e43ea23f77a8ba7d6463a631855630565af08c427f8a2b7cfda",
+      "artifactSha256": "5a410c3722394e43ea23f77a8ba7d6463a631855630565af08c427f8a2b7cfda"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/run-single-picture-r18.py",
+      "artifact": "producers/run-single-picture-r18.py",
+      "sourceSha256": "ecf99b349688b48a8f17861dbbca45418d59c75aeab8d9c586cfed35e6547b64",
+      "artifactSha256": "ecf99b349688b48a8f17861dbbca45418d59c75aeab8d9c586cfed35e6547b64"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-core-r12.sh",
+      "artifact": "producers/build-core-r12.sh",
+      "sourceSha256": "7db3ce2ad0973e3803bd25b84629d2134ac366cc62e6fe6dd0b8a550d86a4bf6",
+      "artifactSha256": "7db3ce2ad0973e3803bd25b84629d2134ac366cc62e6fe6dd0b8a550d86a4bf6"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-wasapi-r15.sh",
+      "artifact": "producers/build-wasapi-r15.sh",
+      "sourceSha256": "e34435178821780c51530e02641a98895cf4199f39a923bb7be8d84b627ce400",
+      "artifactSha256": "e34435178821780c51530e02641a98895cf4199f39a923bb7be8d84b627ce400"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-controls-r12.sh",
+      "artifact": "producers/build-controls-r12.sh",
+      "sourceSha256": "392f789430313a948b84fa554bc1001ef5f05103bcea314cca3efef85a318ed2",
+      "artifactSha256": "392f789430313a948b84fa554bc1001ef5f05103bcea314cca3efef85a318ed2"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/build-ordinary-r1.sh",
+      "artifact": "producers/build-ordinary-r1.sh",
+      "sourceSha256": "1ac6e8eda7b6fc82ffed84b33d5c64eae63d6c3cb8d1851a926b62791d7c1f74",
+      "artifactSha256": "1ac6e8eda7b6fc82ffed84b33d5c64eae63d6c3cb8d1851a926b62791d7c1f74"
+    },
+    {
+      "source": "build-windows/beta-subtitle-sync-20261025/freeze-next.py",
+      "artifact": "producers/freeze-next.py",
+      "sourceSha256": "77d30aa0e95853726ab8bed0d115a08d8fcfdea151064ac56f893d992278b7e2",
+      "artifactSha256": "77d30aa0e95853726ab8bed0d115a08d8fcfdea151064ac56f893d992278b7e2"
+    }
+  ],
+  "results": {
+    "nativeSubtitleFunctionsPassed": 12,
+    "bareInputChecksPassed": 13,
+    "currentTimingCasesPassed": 11,
+    "currentStartupCasesPassed": 8,
+    "currentStartupSinglePictureFailed": true,
+    "repeatedSinglePicturePasses": 0,
+    "repeatedSinglePictureCases": 4,
+    "repeatedWasapiStartupsCompleted": 3,
+    "repeatedWasapiFourthInterrupted": true,
+    "remainingSubtitleTrackGroupNotStarted": true
+  },
+  "processCleanup": {
+    "ownedJobsRemaining": false,
+    "interruptUsed": true,
+    "interruptedNativeTeardownConfirmed": false,
+    "detail": "Ctrl+C stopped the active batch at the user pause. Process inventory then found no owned workers. Case 04 has an unfinished native teardown receipt; no normal exit is claimed."
+  },
+  "nextAction": "Investigate single-picture paused EOF/first-frame/drain ordering before accepting startup. Refresh source inventory after checkpoint documentation, complete interrupted audio and remaining subtitle/track checks, then stage a fresh ordinary GUI for FPS/default/restart and secondary timing."
+}

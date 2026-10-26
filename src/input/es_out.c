@@ -901,13 +901,6 @@ static int EsOutDrain(es_out_sys_t *p_sys)
     if( p_sys->p_pgrm == NULL ) /* Nothing to drain, assume es_out is empty */
         return VLC_SUCCESS;
 
-    if( p_sys->b_buffering )
-    {
-        EsOutDecodersStopBuffering(p_sys, true);
-        if( p_sys->b_buffering )
-            return VLC_EGENERIC;
-    }
-
     if( !p_sys->b_draining )
     {
         es_out_id_t *id;
@@ -915,6 +908,15 @@ static int EsOutDrain(es_out_sys_t *p_sys)
             if (id->p_dec != NULL)
                 EsOutDrainDecoder(p_sys, id, false);
         p_sys->b_draining = true;
+    }
+
+    /* A short input may retain its first picture inside the codec. Request
+     * that picture before waiting for decoder buffering to complete. */
+    if( p_sys->b_buffering )
+    {
+        EsOutDecodersStopBuffering(p_sys, true);
+        if( p_sys->b_buffering )
+            return VLC_EGENERIC;
     }
 
     return VLC_SUCCESS;
@@ -1829,12 +1831,13 @@ static es_out_pgrm_t *EsOutProgramAdd(es_out_sys_t *p_sys, input_source_t *sourc
 
     if( EsOutIsPaused(p_sys) )
         input_clock_ChangePause( p_pgrm->p_input_clock, true, p_sys->i_pause_date );
-    const vlc_tick_t pts_delay = p_sys->i_pts_delay + p_sys->i_pts_jitter
-                               + p_sys->i_tracks_pts_delay;
-    input_clock_SetJitter( p_pgrm->p_input_clock, pts_delay, p_sys->i_cr_average );
+    const vlc_tick_t pts_delay = p_sys->i_pts_delay + p_sys->i_pts_jitter;
+    input_clock_SetJitter(p_pgrm->p_input_clock, pts_delay,
+                          p_sys->i_tracks_pts_delay, p_sys->i_cr_average);
 
     vlc_clock_main_Lock(p_pgrm->clocks.main);
-    vlc_clock_main_SetInputDejitter(p_pgrm->clocks.main, pts_delay );
+    vlc_clock_main_SetInputDejitter(p_pgrm->clocks.main,
+                                   pts_delay + p_sys->i_tracks_pts_delay);
 
     /* In case of low delay: don't use any output dejitter. This may result on
      * some audio/video glitches when starting, but low-delay is more important
@@ -3527,13 +3530,15 @@ static void EsOutSetJitter(es_out_sys_t *p_sys, vlc_tick_t i_pts_delay,
     if (!b_change_clock)
         return;
 
-    i_pts_delay += i_pts_jitter + i_tracks_pts_delay;
+    i_pts_delay += i_pts_jitter;
     es_out_pgrm_t *pgrm;
     vlc_list_foreach(pgrm, &p_sys->programs, node)
     {
-        input_clock_SetJitter(pgrm->p_input_clock, i_pts_delay, i_cr_average);
+        input_clock_SetJitter(pgrm->p_input_clock, i_pts_delay,
+                              i_tracks_pts_delay, i_cr_average);
         vlc_clock_main_Lock(pgrm->clocks.main);
-        vlc_clock_main_SetInputDejitter(pgrm->clocks.main, i_pts_delay);
+        vlc_clock_main_SetInputDejitter(pgrm->clocks.main,
+                                       i_pts_delay + i_tracks_pts_delay);
         vlc_clock_main_Unlock(pgrm->clocks.main);
     }
 }
@@ -4255,14 +4260,38 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
         EsOutSetEsDelay(p_sys, es, delay);
         return VLC_SUCCESS;
     }
-    case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
+    case ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES:
     {
+        input_source_t *requested = va_arg(args, input_source_t *);
+        if (!requested || !requested->b_slave_sub)
+            return VLC_EGENERIC;
+
+        es_out_id_t *es;
+        foreach_es_then_es_slaves(es)
+            if (es->id.source == requested && es->fmt.i_cat == SPU_ES && es->p_dec)
+                vlc_input_decoder_Flush(es->p_dec);
+        return VLC_SUCCESS;
+    }
+    case ES_OUT_PRIV_GET_ES_STATE:
+    {
+        vlc_es_id_t *id = va_arg(args, vlc_es_id_t *);
+        es_out_id_t *es = vlc_es_id_get_out(id);
+        bool *selected = va_arg(args, bool *);
+        *selected = !es->b_terminated && EsIsSelected(es);
+        return VLC_SUCCESS;
+    }
+    case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
+    case ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL:
+    {
+        const input_source_t *requested = query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL
+                                       ? va_arg(args, input_source_t *) : NULL;
         vlc_tick_t *delay = va_arg(args, vlc_tick_t *);
         *delay = 0;
         es_out_id_t *es;
         foreach_es_then_es_slaves(es)
         {
-            if (es->fmt.i_cat != SPU_ES || !es->p_dec)
+            if (es->fmt.i_cat != SPU_ES || !es->p_dec
+             || (requested && es->id.source != requested))
                 continue;
             const vlc_tick_t selected_delay = es->delay != VLC_TICK_MAX
                                            ? es->delay : p_sys->i_spu_delay;

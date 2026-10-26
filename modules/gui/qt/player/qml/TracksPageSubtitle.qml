@@ -31,6 +31,21 @@ import VLC.Widgets as Widgets
 TracksPage {
     id: root
 
+    // A pair of real-time marks belongs to one continuous media timeline.
+    // Cancellation must not apply a zero per-track delay or change inheritance.
+    Connections {
+        target: Player
+        function onInputChanged() { root.cancelPendingMarks() }
+        function onRateChanged() { root.cancelPendingMarks() }
+        function onSeekStarted() { root.cancelPendingMarks() }
+        function onPlayingStateChanged() { root.cancelPendingMarks() }
+    }
+
+    function cancelPendingMarks() {
+        delayEstimatorPrimary.cancel()
+        delayEstimatorSecondary.cancel()
+    }
+
     // Functions
 
     function textFromValueA(value, locale) {
@@ -78,7 +93,8 @@ TracksPage {
                 id: delayEstimatorPrimary
 
                 onDelayChanged: {
-                    Player.addSubtitleDelay(delayEstimatorPrimary.delay)
+                    // Marks measure wall time; native track offsets use media time.
+                    Player.addSubtitleDelay(delayEstimatorPrimary.delay.scale(Player.rate))
                 }
             }
 
@@ -169,6 +185,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: voiceHeardA
+                    Navigation.parentItem: root
 
                     iconTxt: VLCIcons.check
                     text: qsTr("Voice Heard")
@@ -183,6 +200,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: textSeenA
+                    Navigation.parentItem: root
 
                     iconTxt: VLCIcons.check
                     text: qsTr("Text Seen")
@@ -209,7 +227,7 @@ TracksPage {
                 id: delayEstimatorSecondary
 
                 onDelayChanged: {
-                    Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay)
+                    Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay.scale(Player.rate))
                 }
             }
 
@@ -298,6 +316,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: voiceHeardB
+                    Navigation.parentItem: root
 
                     text: qsTr("Voice Heard")
                     iconTxt: VLCIcons.check
@@ -312,6 +331,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: textSeenB
+                    Navigation.parentItem: root
 
                     text: qsTr("Text Seen")
                     iconTxt: VLCIcons.check

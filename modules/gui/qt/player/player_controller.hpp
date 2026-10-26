@@ -490,6 +490,7 @@ signals:
     void lengthChanged( VLCDuration );
     void positionUpdated( double , VLCTime, VLCDuration );
     void seekRequested( double pos ); //not exposed through Q_PROPERTY
+    void seekStarted(); // native seek, including requests from other interfaces
 
     void seekableChanged( bool );
     void rewindableChanged( bool );

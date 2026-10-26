@@ -103,6 +103,17 @@ JuxtopposedMovableDialog {
         revealTarget = item
         Qt.callLater(() => { if (root.visible && item.activeFocus) root.reveal(item) })
     }
+    function revealFocusedResult() {
+        if (!visible) return
+        // The error can wrap after changed() first reveals the status. Once
+        // focus is on Convert/Done, keep the settled result above the footer.
+        // Focusing a form control instead keeps that control in view.
+        if (convertButton.activeFocus && controller && !busy
+                && controller.state !== ConversionController.Idle)
+            reveal(statusArea)
+        else if (revealTarget && revealTarget.activeFocus)
+            reveal(revealTarget)
+    }
     onClosed: {
         if (focusReturnItem && focusReturnItem.visible && focusReturnItem.enabled)
             focusReturnItem.forceActiveFocus(Qt.PopupFocusReason)
@@ -119,8 +130,8 @@ JuxtopposedMovableDialog {
             } else if (!root.busy && root.controller.state !== ConversionController.Idle) {
                 Qt.callLater(() => {
                     if (!root.visible || root.busy) return
-                    root.reveal(statusArea)
                     convertButton.forceActiveFocus(Qt.OtherFocusReason)
+                    root.revealFocusedResult()
                 })
             }
         }
@@ -128,13 +139,12 @@ JuxtopposedMovableDialog {
     Connections {
         target: formScroll.contentItem
         function onContentHeightChanged() {
-            // Wrapping at a new scale can finish after the first focus event.
-            // Reveal the same focused control again using the settled layout.
-            Qt.callLater(() => {
-                if (root.visible && root.revealTarget && root.revealTarget.activeFocus)
-                    root.reveal(root.revealTarget)
-            })
+            Qt.callLater(root.revealFocusedResult)
         }
+    }
+    Connections {
+        target: statusArea
+        function onHeightChanged() { Qt.callLater(root.revealFocusedResult) }
     }
     Shortcut { sequence: "Escape"; enabled: root.visible; onActivated: root.requestClose() }
     Shortcut { sequence: "Ctrl+Return"; enabled: root.visible && !root.busy && !root.completed && root.hasFiles; onActivated: root.submit() }

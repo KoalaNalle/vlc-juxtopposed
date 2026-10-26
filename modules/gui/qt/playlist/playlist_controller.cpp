@@ -437,6 +437,22 @@ qint64 PlaylistController::currentSourcePlaylistId() const
     return item ? d->m_sourcePlaylists.value(vlc_playlist_item_GetId(item), 0) : 0;
 }
 
+QVariantList PlaylistController::sourcePlaylistItems(qint64 id) const
+{
+    QVariantList result;
+    if (id <= 0) return result;
+    Q_D(const PlaylistController);
+    vlc_playlist_locker lock(d->m_playlist);
+    for (size_t n = 0; n < vlc_playlist_Count(d->m_playlist); ++n) {
+        auto *item = vlc_playlist_Get(d->m_playlist, n);
+        if (d->m_sourcePlaylists.value(vlc_playlist_item_GetId(item), 0) != id) continue;
+        const PlaylistItem value(item);
+        result.append(QVariantMap{{QStringLiteral("url"), value.getUrl()},
+                                 {QStringLiteral("title"), value.getTitle()}});
+    }
+    return result;
+}
+
 void PlaylistController::rememberSourcePlaylists(size_t first, const QVector<Media> &media)
 {
     Q_D(PlaylistController);

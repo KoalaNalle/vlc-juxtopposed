@@ -36,6 +36,7 @@ Q_MOC_INCLUDE( "util/csdbuttonmodel.hpp" )
 Q_MOC_INCLUDE( "playlist/playlist_controller.hpp" )
 Q_MOC_INCLUDE( "maininterface/mainctx_submodels.hpp" )
 Q_MOC_INCLUDE( "maininterface/subtitle_preset_model.hpp" )
+Q_MOC_INCLUDE( "maininterface/subtitle_attachment_model.hpp" )
 Q_MOC_INCLUDE( "maininterface/videosurface.hpp" )
 Q_MOC_INCLUDE( "medialibrary/medialib.hpp" )
 Q_MOC_INCLUDE( "medialibrary/mlcurrentmedia.hpp" )
@@ -65,6 +66,7 @@ struct vlc_window;
 class VideoSurfaceProvider;
 class ControlbarProfileModel;
 class SubtitlePresetModel;
+class SubtitleAttachmentModel;
 class SearchCtx;
 class SortCtx;
 class VLCSystray;
@@ -137,6 +139,7 @@ class MainCtx : public QObject
     Q_OBJECT
 
     Q_PROPERTY(SubtitlePresetModel* subtitlePresets READ subtitlePresets CONSTANT FINAL)
+    Q_PROPERTY(SubtitleAttachmentModel* subtitleAttachments READ subtitleAttachments CONSTANT FINAL)
     Q_PROPERTY(double playerPlaylistWidth READ getPlayerPlaylistWidth WRITE setPlayerPlaylistWidth NOTIFY playerPlaylistWidthChanged FINAL)
     Q_PROPERTY(SidePanelCtx* playqueuePanel READ getPlayqueuePanel CONSTANT FINAL)
     Q_PROPERTY(SidePanelCtx* navigationPanel READ getNavigationPanel CONSTANT FINAL)
@@ -238,6 +241,7 @@ public:
 public:
     /* Getters */
     SubtitlePresetModel* subtitlePresets() const { return m_subtitlePresets; }
+    SubtitleAttachmentModel* subtitleAttachments() const { return m_subtitleAttachments; }
     inline qt_intf_t* getIntf() const { return p_intf; }
     inline vlc_preparser_t *getNetworkPreparser() const { return m_network_preparser; };
     bool smoothScroll() const { return m_smoothScroll; }
@@ -527,6 +531,7 @@ protected:
     /* */
     QSettings           *settings = nullptr;
     SubtitlePresetModel *m_subtitlePresets = nullptr;
+    SubtitleAttachmentModel *m_subtitleAttachments = nullptr;
 
     std::unique_ptr<VLCSystray> m_systray;
 
