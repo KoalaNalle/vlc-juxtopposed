@@ -218,6 +218,10 @@ private slots:
                 &TestPlayerSubtitleDelay::observeAfterUnlock, Qt::DirectConnection);
         connect(m_controller.get(), &PlayerController::secondarySubtitleDelayChanged, this,
                 &TestPlayerSubtitleDelay::observeAfterUnlock, Qt::DirectConnection);
+        connect(m_controller.get(), &PlayerController::secondarySubtitleSelectionChanged, this,
+                [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        connect(m_controller.get(), &PlayerController::subtitleSelectionChanged, this,
+                [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
         m_presets = std::make_unique<SubtitlePresetModel>(m_player, m_controller->getSubtitleAppearance(),
                 m_settings.get(), VLC_OBJECT(m_environment->intf));
         const auto uri = QUrl::fromLocalFile(m_fixture).toEncoded();
@@ -922,10 +926,15 @@ private slots:
             for (const auto *change : {"qt-seek", "native-seek", "qt-rate", "native-rate", "native-resume", "native-pause"})
                 QTest::newRow(qPrintable(QString::fromLatin1(page)+QLatin1Char('-')+QString::fromLatin1(change)))
                     << (QByteArray(page)=="subtitle") << QString::fromLatin1(change);
+        for (const auto *change : {"native-all-unselect", "native-secondary-unselect"})
+            QTest::newRow(qPrintable(QStringLiteral("subtitle-")+QString::fromLatin1(change)))
+                << true << QString::fromLatin1(change);
     }
     void timingContextCancellation()
     {
         QFETCH(bool, subtitle); QFETCH(QString, change);
+        const bool roleChange=change==QStringLiteral("native-all-unselect")
+                           || change==QStringLiteral("native-secondary-unselect");
         const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
         QVERIFY2(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty(),
                  "Supply frozen production synchronization QML pages");
@@ -979,7 +988,16 @@ private slots:
         const auto input=m_controller->getInput();
         const auto selected=roles(); const auto savedCategory=category();
         const auto savedOwn=own(m_second.get());
-        if (change==QStringLiteral("qt-seek")) m_controller->jumpToPos(.25);
+        QSignalSpy seeks(m_controller.get(), &PlayerController::seekStarted);
+        if (change==QStringLiteral("native-all-unselect")) {
+            vlc_player_locker lock{m_player};
+            vlc_player_UnselectTrackCategory(m_player, SPU_ES);
+        }
+        else if (change==QStringLiteral("native-secondary-unselect")) {
+            vlc_player_locker lock{m_player};
+            vlc_player_UnselectEsId(m_player, selected.second);
+        }
+        else if (change==QStringLiteral("qt-seek")) m_controller->jumpToPos(.25);
         else if (change==QStringLiteral("qt-rate")) m_controller->setRate(1.5f);
         else {
             vlc_player_locker lock{m_player};
@@ -996,13 +1014,28 @@ private slots:
         }
         QVERIFY(audioChanges.isEmpty() && primaryChanges.isEmpty() && secondaryChanges.isEmpty());
         QCOMPARE(m_controller->getInput(), input);
-        QCOMPARE(roles(), selected); QCOMPARE(category(), savedCategory);
+        if (change==QStringLiteral("native-all-unselect")) {
+            QTRY_VERIFY(roles()==qMakePair(static_cast<vlc_es_id_t *>(nullptr), static_cast<vlc_es_id_t *>(nullptr)));
+            QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
+        }
+        else if (change==QStringLiteral("native-secondary-unselect")) {
+            QTRY_VERIFY(roles()==qMakePair(selected.first, static_cast<vlc_es_id_t *>(nullptr)));
+            QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
+        }
+        else QCOMPARE(roles(), selected);
+        if (roleChange) QVERIFY(seeks.isEmpty()); // Selection alone cancels the marks.
+        QCOMPARE(category(), savedCategory);
         QCOMPARE(own(m_second.get()), savedOwn);
         // The same hook/estimator objects survive the native event. Teardown
         // cannot account for cancellation and must not apply a zero override.
         QVERIFY(root);
         { vlc_player_locker lock{m_player}; vlc_player_Pause(m_player); }
         QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
+        if (roleChange) {
+            QCOMPARE(select(selected.first, selected.second), 2u);
+            QTRY_VERIFY(roles()==selected);
+            QTRY_VERIFY(m_controller->hasSecondarySubtitle());
+        }
     }
     void incrementalSelectionKeepsSecondaryTimingReachable()
     {
@@ -1013,6 +1046,13 @@ private slots:
         QCOMPARE(setOwn(m_second.get(), INT64_MAX), VLC_SUCCESS);
         QCOMPARE(select(m_first.get()), 1u);
         QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
+        const auto primaryDelay=own(m_first.get());
+        m_controller->setSecondarySubtitleDelay(VLCDuration(75000));
+        m_controller->addSecondarySubtitleDelay(VLCDuration(75000));
+        QCOMPARE(own(m_first.get()), primaryDelay);
+        QCOMPARE(category(), vlc_tick_t(0));
+        QSignalSpy availability(m_controller.get(), &PlayerController::secondarySubtitleSelectionChanged);
         {
             vlc_player_locker lock{m_player};
             QCOMPARE(vlc_player_SelectEsId(m_player, m_second.get(),
@@ -1026,6 +1066,8 @@ private slots:
         };
         QTRY_VERIFY_WITH_TIMEOUT(bothOutputs(), 5000);
         QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
+        QTRY_VERIFY(m_controller->hasSecondarySubtitle());
+        QVERIFY(!availability.isEmpty());
         m_controller->setSecondarySubtitleDelay(VLCDuration(1200000));
         QCOMPARE(own(m_second.get()), vlc_tick_t(1200000));
         QCOMPARE(own(m_first.get()), vlc_tick_t(INT64_MAX));
@@ -1149,6 +1191,7 @@ private slots:
         input_item_Release(replacement);
         QCOMPARE(changed, VLC_SUCCESS);
         QTRY_COMPARE_WITH_TIMEOUT(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_STOPPED, 10000);
+        QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
         QTRY_COMPARE(m_controller->getSecondarySubtitleDelayMS(), 0);
         QTRY_COMPARE(m_controller->getSubtitleDelayMS(), 0);
         QCOMPARE(roles(), qMakePair(static_cast<vlc_es_id_t *>(nullptr), static_cast<vlc_es_id_t *>(nullptr)));

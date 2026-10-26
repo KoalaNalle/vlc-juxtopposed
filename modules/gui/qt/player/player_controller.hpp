@@ -178,6 +178,7 @@ public:
     Q_PROPERTY(TrackListModel* videoTracks READ getVideoTracks CONSTANT FINAL)
     Q_PROPERTY(TrackListModel* audioTracks READ getAudioTracks CONSTANT FINAL)
     Q_PROPERTY(TrackListModel* subtitleTracks READ getSubtitleTracks CONSTANT FINAL)
+    Q_PROPERTY(bool hasSecondarySubtitle READ hasSecondarySubtitle NOTIFY secondarySubtitleSelectionChanged FINAL)
 
     Q_PROPERTY(VLCDuration audioDelay READ getAudioDelay WRITE setAudioDelay NOTIFY audioDelayChanged FINAL)
     Q_PROPERTY(VLCDuration subtitleDelay READ getSubtitleDelay WRITE setSubtitleDelay NOTIFY subtitleDelayChanged FINAL)
@@ -382,6 +383,7 @@ public slots:
     Q_INVOKABLE void addAudioDelay( VLCDuration );
     VLCDuration getSubtitleDelay() const;
     VLCDuration getSecondarySubtitleDelay() const;
+    bool hasSecondarySubtitle() const;
     void setSubtitleDelay( VLCDuration );
     Q_INVOKABLE void addSubtitleDelay( VLCDuration );
     void setSecondarySubtitleDelay( VLCDuration );
@@ -504,6 +506,8 @@ signals:
     void audioDelayChanged(VLCDuration);
     void subtitleDelayChanged(VLCDuration);
     void secondarySubtitleDelayChanged(VLCDuration);
+    void secondarySubtitleSelectionChanged();
+    void subtitleSelectionChanged();
     void subtitleFPSChanged(float);
 
     //title/chapters/menu

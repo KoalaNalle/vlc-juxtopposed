@@ -113,6 +113,23 @@ keeps dual-caption image bands repeatable. See the frozen
 for fixture generation and producer examples; it does not qualify initial paused
 caption display or every fragment/index layout.
 
+`test/src/player/timer_cache.c` compiles the production timer implementation
+directly to check video timestamps before frame-rate metadata becomes available.
+From the configured Windows test build directory, add
+`-f <repo>/test/player-timer-cache-native.mk` and use the target
+`owned-player-timer-cache` with a fresh absolute `TIMER_CACHE_OUT` directory.
+The support library is linked statically with the configured compiler's existing
+stack protection enabled. Stage the executable beside the runtime DLLs.
+
+Its sixteen cases cover four rates, paused/playing dates and listener presence.
+They check timestamp retention and withholding frame-number callbacks until a
+known rate arrives. This is a source-level component check with an opaque local
+source token, separate from actual decoder/track/output integration. Do not put
+the test executable into an ordinary package. The
+[selection/clock checkpoint](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md)
+retains failing previous-source cases, passing fixed-source cases and independent
+ordinary first-frame selection/Reset exports.
+
 Run meaningful affected checks once; repeat or broaden for a changed dependency,
 new failure or unresolved coverage question. Final-package validation is a separate
 consolidated run on the actual ordinary candidate, not the sum of all old passes.

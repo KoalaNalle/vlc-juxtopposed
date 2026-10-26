@@ -342,6 +342,8 @@ void PlayerControllerPrivate::RefreshSubtitleDelays()
     }
     if (!(previousCategory == m_subtitleDelay))
         emit q->subtitleDelayChanged(q->getSubtitleDelay());
+    if (previousId != m_secondarySpuEsId)
+        emit q->secondarySubtitleSelectionChanged();
     if (previousId != m_secondarySpuEsId || !(previousRaw == m_secondarySubtitleDelay)
         || !(previousSecondary == q->getSecondarySubtitleDelay()))
         emit q->secondarySubtitleDelayChanged(q->getSecondarySubtitleDelay());
@@ -677,6 +679,9 @@ static void on_player_track_selection_changed(vlc_player_t *, vlc_es_id_t * unse
             that->UpdateTrackSelection( selectedPtr.get(), true );
         that->RefreshSubtitleDelays();
         that->m_subtitleAppearance.refresh();
+        if ((unselectedPtr && vlc_es_id_GetCat(unselectedPtr.get()) == SPU_ES)
+         || (selectedPtr && vlc_es_id_GetCat(selectedPtr.get()) == SPU_ES))
+            emit that->q_func()->subtitleSelectionChanged();
     });
 }
 
@@ -2454,6 +2459,11 @@ VLCDuration PlayerController::getSecondarySubtitleDelay() const
     if (!d->m_secondarySpuEsId)
         return VLCDuration(0);
     return d->m_secondarySubtitleDelay.valid() ? d->m_secondarySubtitleDelay : d->m_subtitleDelay;
+}
+bool PlayerController::hasSecondarySubtitle() const
+{
+    Q_D(const PlayerController);
+    return d->m_secondarySpuEsId != nullptr;
 }
 PRIMITIVETYPE_GETTER(bool, isSeekable, m_capabilities & VLC_PLAYER_CAP_SEEK)
 PRIMITIVETYPE_GETTER(bool, isRewindable, m_capabilities & VLC_PLAYER_CAP_REWIND)

@@ -268,7 +268,7 @@ T.Popup {
 
                     Layout.fillWidth: true
                     decimals: 3
-                    enabled: Player.isStarted && Player.subtitleTracks.count > 0
+                    enabled: Player.isStarted && Player.hasSecondarySubtitle
                     from: -10
                     sliderVisible: false
                     title: qsTr("Secondary subtitle delay")

@@ -79,6 +79,7 @@ journeys stay open unless their specific later receipt establishes them.
 | Audio On/Off | Saving Off preserves current/same-player next audio; a new player can decode video with no selected audio. |
 | Saved audio delay | Current offset stays unchanged; the next input/reopen uses the saved delay, with matching help rather than an unnecessary restart warning. |
 | Current subtitle FPS | Native 0 means normal external-subtitle timing. Native held/playing/EOF retiming and ordinary cross-editor Reset, fractional feedback, next source and cold saved-default restart have scoped evidence. The latest role/estimator tuple and remaining combinations are identified in STATUS. |
+| Secondary subtitle timing | Actual secondary selection gates both current delay editors. Unselection cancels unfinished marks; an unavailable secondary setter preserves the primary. The opening-frame clock/selection repair has separate native and ordinary evidence; broader media/preset/package journeys remain distinct. |
 
 Retain signed microseconds, inactive style/duration values, unknown lengths and
 category inheritance. Ordinary Save must not replay unrelated presets or clear
@@ -126,6 +127,7 @@ behavior in short windows without leaking input to playback.
 - [MP4 edit-list frame preservation, inherited delays and open fragmented seeking](../juxtopposed-references/native/home-mp4-held-frame-20261026/README.md).
 - [Fragment seek/cue restoration, final native matrix and remaining initial paused-caption observation](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
 - [Initial paused caption repair, ordinary before/after exports and affected regressions](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md).
+- [Secondary availability, selection cancellation and first-frame video clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md).
 
 Each receipt retains its own source/runtime/platform limits and failures. Use
 [BUILD](BUILD.md) to stage and test the changed consumer; use BETA's final gates

@@ -39,6 +39,8 @@ TracksPage {
         function onRateChanged() { root.cancelPendingMarks() }
         function onSeekStarted() { root.cancelPendingMarks() }
         function onPlayingStateChanged() { root.cancelPendingMarks() }
+        function onSubtitleSelectionChanged() { root.cancelPendingMarks() }
+        function onSecondarySubtitleSelectionChanged() { root.cancelPendingMarks() }
     }
 
     function cancelPendingMarks() {
@@ -222,6 +224,7 @@ TracksPage {
 
             Accessible.role: Accessible.Grouping
             Accessible.name: qsTr("Secondary subtitle delay")
+            enabled: Player.hasSecondarySubtitle
 
             DelayEstimator {
                 id: delayEstimatorSecondary

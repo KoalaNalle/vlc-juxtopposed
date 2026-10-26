@@ -486,15 +486,16 @@ vlc_player_UpdateTimerSmpteSource(vlc_player_t *player, vlc_es_id_t *es_source,
                                            frame_rate_base);
         }
 
-        if (source->smpte.frame_rate != 0)
-        {
-            vlc_player_UpdateTimerSource(player, source, point->rate, point->ts,
-                                         system_date);
+        /* A held video timestamp is useful before its frame rate is known,
+         * including for an exact paused subtitle refresh. Only frame-number
+         * notifications require the rate metadata. */
+        vlc_player_UpdateTimerSource(player, source, point->rate, point->ts,
+                                     system_date);
 
-            if (!vlc_list_is_empty(&source->listeners))
-                vlc_player_SendSmpteTimerSourceUpdates(player, source,
-                                                       &source->point);
-        }
+        if (source->smpte.frame_rate != 0
+         && !vlc_list_is_empty(&source->listeners))
+            vlc_player_SendSmpteTimerSourceUpdates(player, source,
+                                                   &source->point);
     }
 }
 
