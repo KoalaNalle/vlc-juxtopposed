@@ -125,6 +125,7 @@ behavior in short windows without leaking input to playback.
 - [Estimator speed, same-object pause cancellation and ordinary saved-default restart](../juxtopposed-references/native/home-estimator-speed-defaults-20261026/README.md).
 - [MP4 edit-list frame preservation, inherited delays and open fragmented seeking](../juxtopposed-references/native/home-mp4-held-frame-20261026/README.md).
 - [Fragment seek/cue restoration, final native matrix and remaining initial paused-caption observation](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
+- [Initial paused caption repair, ordinary before/after exports and affected regressions](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md).
 
 Each receipt retains its own source/runtime/platform limits and failures. Use
 [BUILD](BUILD.md) to stage and test the changed consumer; use BETA's final gates

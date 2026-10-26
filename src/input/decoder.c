@@ -2104,7 +2104,12 @@ static void *DecoderThread( void *p_data )
             continue;
         }
 
-        if( p_owner->paused && p_owner->frames_countdown == 0
+        /* Subtitle packets can already be buffered behind an opening empty
+         * cue when the first video picture pauses. Decode that existing FIFO
+         * while its output clock stays paused, as after a paused seek. The
+         * empty-FIFO path below requests more input only for video. */
+        if( p_owner->paused && p_owner->cat != SPU_ES
+         && p_owner->frames_countdown == 0
          && !DecoderNeedsPausedPicture(p_owner) )
         {   /* Wait for resumption from pause */
             p_owner->b_idle = true;

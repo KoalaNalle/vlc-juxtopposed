@@ -1,26 +1,28 @@
 # Current status
 
-Updated 26 October 2026. Beta work is **active**, with the desktop available.
+Updated 27 October 2026. Beta work is **active**, with the desktop available.
 Checkpoint and stop owned jobs by **27 October 2026, 08:00 Helsinki** (06:00 UTC).
 The user authorized a tested nightly commit/push. Beta gates remain open;
 release publication is not authorized.
 
 ## Selected checkpoint
 
-- Implementation checkpoint: `32160081114d5918835eb985e0dd2d1cd48bdc3b` on
-  `juxtopposed-playback-bar`. The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `ccf72399`, GUI `4d754f60`, MP4 `df15e8ed`, subtitle demux
+- Shared nightly baseline: implementation `32160081`, documentation `86d8a7ff`
+  on `juxtopposed-playback-bar`. The new cold-caption repair has passed its
+  affected checks. The four unrelated audio experiments remain untouched.
+- Selected tuple: Core `0ab943f0`, GUI `4d754f60`, MP4 `df15e8ed`, subtitle demux
   `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`. Ordinary development runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-fragment-r243/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-cold-fixed-r252/runtime`.
   Its isolated test profile is not a release package.
-- Latest evidence: [fragment seek and caption restoration](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
+- Latest evidence: [initial paused caption](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md)
+  and [fragment seek/caption restoration](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
   Companion receipts cover [edit-list held frames](../juxtopposed-references/native/home-mp4-held-frame-20261026/README.md),
   [estimator speed/defaults](../juxtopposed-references/native/home-estimator-speed-defaults-20261026/README.md),
   [rate/buffering](../juxtopposed-references/native/home-subtitle-rate-buffering-20261026/README.md),
   [clock/source refill](../juxtopposed-references/native/home-subtitle-clock-refill-20261026/README.md)
   and [snapshot/display](../juxtopposed-references/native/home-snapshot-display-20261026/README.md).
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r245.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r253.json` predates this documentation checkpoint; freeze
   fresh inputs before the next build or guarded test.
 
 ## What passed
@@ -41,16 +43,21 @@ release publication is not authorized.
   Final fragment seek/+5s/Reset exports are pixel-identical frame799; playback
   reaches LAST. Ordinary processes exit0/602 modules/zero diagnostics with guards.
   These distinct scopes do not establish a final matched package.
+- Core252 consumes already buffered subtitle packets while paused. Matched
+  ordinary cold exports change from zero to1488 caption pixels at frame0;
+  held/resume/normal exit pass. Thirteen startup controls, both31-function
+  software/hardware suites, WASAPI delay rows and twelve MP4 cases pass. The
+  software before-control already passed; it is not a negative reproduction.
 
 ## Next action and open questions
 
-1. Finish the documentation checkpoint and push the authorized nightly. Continue
-   the beta afterward; a push does not end this session.
-2. Investigate the initial paused fragmented-MP4 caption. App captures lack it
-   before any seek on both prior r233 and r240; English is selected. Seeking
-   restores it. Obtain native cold exports before assigning a decoder/display
-   cause. Broader sparse-cue seek cost and other fragment/index layouts are open.
-3. Finish the older ordinary cue-preset replay and no-secondary disabled state,
+1. The nightly push is complete and remote head verified. Continue the beta;
+   this checkpoint does not end the active session.
+2. Initial paused fragmented-MP4 captions are repaired on Core252. The former
+   RGB equality assertion remains failed; this pair proves marker and caption
+   presence, not pixel-identical video. Broader sparse-cue seek cost and other
+   fragment/index/live layouts remain open.
+3. Finish no-secondary disabled state and the older ordinary cue-preset replay,
    then continue W2/W3 consumers, interaction, design/accessibility and OS DPI in
    [BETA](BETA.md) and [SETTINGS](SETTINGS.md).
 4. Secondary-screen fullscreen idle capture still loses captions with hidden
