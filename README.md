@@ -13,9 +13,11 @@ VLC itself is developed by the VLC authors and VideoLAN; their authorship and
 software licenses remain in effect. See [AUTHORS](AUTHORS), [COPYING](COPYING),
 and [COPYING.LIB](COPYING.LIB).
 
-See the [Windows implementation notes, previews and independent review workflow](doc/juxtopposed-redesign.md)
-for the current scope and the remaining native build checks.
-To continue on another computer, start with [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md).
+Start with the [project guide](doc/juxtopposed/README.md) for development and
+resume/pause instructions. The [beta roadmap](doc/juxtopposed/BETA.md) defines
+the full scope and readiness gates; [current status](doc/juxtopposed/STATUS.md)
+records the checkpoint and next action. Build and settings references are linked
+from the guide. Superseded plans and migration records are archived there.
 
 ---
 
