@@ -7,16 +7,17 @@ The user authorized tested nightly commits/pushes; release publication is separa
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`. Current source identities are frozen in the
-  [customizer receipt](../juxtopposed-references/native/home-customizer-routes-20261027/README.md).
+  [recording receipt](../juxtopposed-references/native/home-recording-start-20261027/README.md).
   The four unrelated audio experiments remain untouched.
 - Selected tuple: Core `fdfcfcd5`, ordinary GUI `19ab9d95`, library `13ccdc36`,
-  MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`.
+  MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`,
+  recording `930205b1`.
   Ordinary runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-customizer-library-fixed-r311/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-record-fixed-r323/runtime`.
   Its isolated profile is not a release package. GUI301/Core265 remains recoverable
   at `ui-controls-shortcuts-cold-r302/runtime`; earlier music runtimes are retained.
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r313.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r323.json` predates this documentation checkpoint; freeze
   fresh inputs before another guarded test. All owned tests have exited normally.
 
 ## What passed
@@ -71,31 +72,35 @@ The user authorized tested nightly commits/pushes; release publication is separa
   exiting0/602modules/zero errors/all guards. Snapshot Add/Save and additional
   paused transport, bookmark/favorite/sidebar/settings/PiP tiles have scoped
   GUI301 evidence. See the customizer receipt for the retained before failures.
+- Sparse subtitle packets no longer advance the audio/video recording start.
+  Eleven direct-production calculation cases pass (three fail before). The fixed
+  ordinary recording decodes about19.5seconds of aligned AV; three native outputs
+  also decode aligned AV. App exits0/602modules/zero errors/all guards. Compressed
+  recording still waits for a usable keyframe; no frame-exact start is claimed.
+  Original missing-video/misalignment controls remain in the recording receipt.
 
 ## Next action and open questions
 
-1. Investigate recording before accepting that tile: one ordinary MP4 has no
-   decoded video; another29.7-second recording has only25video frames/1second
-   beside about10.9seconds audio. Longer desktop and five native API recordings
-   decode AV, but do not establish complete duration/alignment. No recording
-   production change or causal claim yet. Preserve original outputs on disk.
-2. Continue W2 with remaining customizer tile/native consumers and current-tuple
+1. Continue W2 with remaining customizer metadata/playlist-origin tiles, native
+   consumers and current-tuple journeys. Preserve earlier tested layout/draft/
+   failure work and the scoped recording fix; other formats/recording policies
+   and subtitle overlap remain distinct. Shortcut global
    journeys, preserving earlier tested layout/draft/failure work. Shortcut global
    keys/full action coverage remains open. Traditional Simple Preferences opened
    on the other monitor; its Hotkeys category was not reached because Computer
    Use rejected a target outside the owner's bounds. Do not claim that table's
    ordinary acceptance. Rapid overlapping library queries and every category's
    native Default-sort policy remain separate from successive navigation checks.
-3. Finish remaining category journeys and
+2. Finish remaining category journeys and
    W3 interaction/design/accessibility/Windows DPI in [BETA](BETA.md) and
    [SETTINGS](SETTINGS.md). Disc metadata is visible; independent Disc sorting
    has no native consumer and is disabled. All six beta gates remain open.
-4. Secondary-screen fullscreen idle capture loses captions with hidden controls;
+3. Secondary-screen fullscreen idle capture loses captions with hidden controls;
    older Core204 reproduces it before snapshots. Physical display versus capture,
    overlap, orientation/HDR and OS-DPI remain unqualified.
-5. Sparse/long-cue seek cost, other MP4 index layouts and live behavior remain
+4. Sparse/long-cue seek cost, other MP4 index layouts and live behavior remain
    open. The earlier cold RGB assertion remains failed; only its later exact
    dual-caption before/Reset pair has pixel-equality evidence.
-6. Online subtitle search/download needs implementation and an owner API
+5. Online subtitle search/download needs implementation and an owner API
    application decision. Windows10 AUDIOSES and physical endpoint/device-loss/
    receiver/casting checks retain explicit external deferrals.

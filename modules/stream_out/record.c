@@ -409,6 +409,63 @@ static vlc_tick_t BlockTick( const block_t *p_block )
         return p_block->i_pts;
 }
 
+static vlc_tick_t OutputStartDate( const sout_stream_sys_t *p_sys )
+{
+    /* Sparse subtitle packets can be queued far ahead of playback. Align A/V
+     * using A/V streams only; retain the legacy rule for subtitle-only output. */
+    bool b_has_av = false;
+    for( int i = 0; i < p_sys->i_id; i++ )
+    {
+        const sout_stream_id_sys_t *id = p_sys->id[i];
+        if( id->id && id->p_first &&
+            ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
+        {
+            b_has_av = true;
+            break;
+        }
+    }
+
+    /* Compute highest timestamp of first I over the relevant streams. */
+    vlc_tick_t i_dts_start = 0;
+    vlc_tick_t i_highest_head_dts = 0;
+    for( int i = 0; i < p_sys->i_id; i++ )
+    {
+        sout_stream_id_sys_t *id = p_sys->id[i];
+
+        if( !id->id || !id->p_first )
+            continue;
+
+        if( b_has_av && id->fmt.i_cat != AUDIO_ES && id->fmt.i_cat != VIDEO_ES )
+            continue;
+
+        const block_t *p_block = id->p_first;
+        vlc_tick_t i_dts = BlockTick( p_block );
+
+        if( i_dts > i_highest_head_dts &&
+           ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
+        {
+            i_highest_head_dts = i_dts;
+        }
+
+        for( ; p_block != NULL; p_block = p_block->p_next )
+        {
+            if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
+            {
+                i_dts = BlockTick( p_block );
+                break;
+            }
+        }
+
+        if( i_dts > i_dts_start )
+            i_dts_start = i_dts;
+    }
+
+    if( i_dts_start == 0 )
+        i_dts_start = i_highest_head_dts;
+
+    return i_dts_start;
+}
+
 static void OutputStart( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -539,40 +596,7 @@ static void OutputStart( sout_stream_t *p_stream )
         return;
     }
 
-    /* Compute highest timestamp of first I over all streams */
-    p_sys->i_dts_start = 0;
-    vlc_tick_t i_highest_head_dts = 0;
-    for( int i = 0; i < p_sys->i_id; i++ )
-    {
-        sout_stream_id_sys_t *id = p_sys->id[i];
-
-        if( !id->id || !id->p_first )
-            continue;
-
-        const block_t *p_block = id->p_first;
-        vlc_tick_t i_dts = BlockTick( p_block );
-
-        if( i_dts > i_highest_head_dts &&
-           ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
-        {
-            i_highest_head_dts = i_dts;
-        }
-
-        for( ; p_block != NULL; p_block = p_block->p_next )
-        {
-            if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
-            {
-                i_dts = BlockTick( p_block );
-                break;
-            }
-        }
-
-        if( i_dts > p_sys->i_dts_start )
-            p_sys->i_dts_start = i_dts;
-    }
-
-    if( p_sys->i_dts_start == 0 )
-        p_sys->i_dts_start = i_highest_head_dts;
+    p_sys->i_dts_start = OutputStartDate( p_sys );
 
     sout_stream_id_sys_t *p_cand;
     vlc_tick_t canddts;

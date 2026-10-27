@@ -739,3 +739,5 @@ EXTRA_DIST += libvlc/native_paused_subtitle_tracks.py \
     libvlc/generate_paused_subtitle_tracks.sh libvlc/native_paused_subtitle_tracks.md \
     libvlc/native_paused_subtitle_delay.py libvlc/native_paused_subtitle_delay.md \
     libvlc/native_player_callback_layout.c
+
+EXTRA_DIST += record-start-native.mk modules/stream_out/record_start.c

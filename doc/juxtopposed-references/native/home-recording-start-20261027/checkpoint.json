@@ -1,0 +1,397 @@
+{
+  "status": "passed-scoped-sparse-subtitle-recording-start-repair",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "19ab9d955dca75009e354065803f10375c0232bb63e5331b129eb792c7463ef1",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "sourceSha256": {
+    "modules/stream_out/record.c": "f42a70d8c5a54bbb27a98669cc0debeec30614d9afd93417c9a93c36466c66c6",
+    "test/modules/stream_out/record_start.c": "41d4e5ea1597b84b328200160b7e1b5dff6adc2333bb40f9fd33aa58d67be9e0",
+    "test/record-start-native.mk": "9e64ba47f5c067d4d2ed667fd0565b75152fbe78e948661ffa73964db49160a2"
+  },
+  "nativeBefore": {
+    "checks": 11,
+    "failed": 3,
+    "expectedExit": 1
+  },
+  "nativeFixed": {
+    "checks": 11,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "observations": [
+    "Timestamp-only diagnostic module: the sparse subtitle packet at19999001 sets the old common start, ahead of the first retained video I-frame at9920001. That I-frame and the next at19920001 are discarded; video waits until29920001. The26-second native recording has no decoded video. The47.7-second desktop recording decodes but its video starts about9.91seconds after audio.",
+    "Production OutputStartDate now computes the common start from accepted buffered audio/video streams when present. Sparse subtitles cannot advance it. Subtitle-only output retains the previous rule. Remaining OutputStart/OutputSend behavior is unchanged.",
+    "Direct production calculation:8pass/3expectedfail before,11pass after. Cases cover sparse subtitles with AV/audio/multiplevideo, later audio alignment, subtitle-only, audio-only, missing DTS/PTS fallback, absent keyframes, rejected/empty streams and an empty recording.",
+    "Ordinary GUI311/Core265/record322: arm paused0, Play, stop recording after28.3wallseconds while primary continues, then normal Quit. Independent FFmpeg decoding yields487video frames/19.48seconds and914audio frames/19.498667seconds. Stream starts differ0.021146seconds. App exits0/602modules/zero errors/all guards.",
+    "Three actual public-API native recordings (clean, paused precise seek sequence, seek with subtitles disabled) stop normally and decode aligned AV. Each26-second recording yields431video frames/17.24seconds; audio/video starts differ0.021146seconds and durations differ0.002667seconds. Native outputs use dummy/software devices and do not replace ordinary desktop evidence."
+  ],
+  "limits": [
+    "Compressed passthrough still starts at a usable keyframe, so this long-GOP fixture omits its initial seconds. This change repairs subtitle-driven extra loss/misalignment; it does not promise frame-exact recording from the clicked time, subtitle overlap reconstruction, every codec/container or final-package acceptance.",
+    "The initial native calculation test build needed MODULE_STRING and a module-name definition; r318/r319 compilation/link failures remain local with their nonzero saved results. The later cross-libtool host-path warnings are retained locally; independently staged Windows executables run successfully. No failed build is promoted to a test pass.",
+    "Diagnostic module08d00995 is timestamp-only instrumentation and is not the selected ordinary module930205b1. The GUI and Core stay unchanged by this recording build. Before/after outputs and full logs remain ignored locally; only owned captures, reports, source identities and sanitized timestamp lines are retained here.",
+    "Full recording preferences, all media formats, accessibility/DPI, physical devices and consolidated final-package replay remain separate beta requirements. Only generated owned media was used. Security/privacy choices were unchanged."
+  ],
+  "artifacts": [
+    {
+      "path": "native-record-start-before-r321/verification.json.gz",
+      "sha256": "0ccb90c99021a0b4b099bd22b456701d849ee7526f526c04249d6be282d2183f",
+      "rawSha256": "08ac0d1acf0fb1ff68aad1be7c09a7927549784588da33b6f2b2b71c975cd3b1"
+    },
+    {
+      "path": "native-record-start-before-r321/stdout.txt.gz",
+      "sha256": "4d79f8977ee085962f97de4aae1bf8e145519824c5268752ec3acd1ed8badc0f",
+      "rawSha256": "4a0770e55e893d25a73fe6d5a29018d093dca25db6d10a1e035861e17ddac023"
+    },
+    {
+      "path": "native-record-start-fixed-r322/verification.json.gz",
+      "sha256": "c6c705e8e6ed42a1a859c528423f6f7b482738c5581572a410295791e9ea655f",
+      "rawSha256": "564ed94eaa6f8da33d18ac072c08229bcc10f4000f9ed8ad006f33366cd2c849"
+    },
+    {
+      "path": "native-record-start-fixed-r322/stdout.txt.gz",
+      "sha256": "77a1b443c9d0e98a46e0b63f8abe01acb9b7a52a3581c1b8a1c191e0548bab3f",
+      "rawSha256": "329a489b3ec918b7d205f0150b40342ad12ec3048f9e39c7b4a0e8a58d967d72"
+    },
+    {
+      "path": "native-record-trace-r317/verification.json.gz",
+      "sha256": "36e950939f8b251e36c850c26f8e4cc97134923805bef5b07546ea354fceddf5",
+      "rawSha256": "5c3d79aa9081871b71cfde5ca92c088bc5ec199d815764f92fe98d8db31c0adc"
+    },
+    {
+      "path": "native-record-trace-r317/clean/probe.json.gz",
+      "sha256": "8efd2b34328b7bbaf74d701d39a286de4127b63916b5e6a25297b7a3e9c6d13c",
+      "rawSha256": "ba2595bb67cc04daacabaddaf4d6a674135e985e426a6b748fa7a2e4c1d6824f"
+    },
+    {
+      "path": "native-record-fixed-r323/verification.json.gz",
+      "sha256": "d4c28328943030b653e22fe60c8bd0e514ac8acc73d824b347926328910d03cb",
+      "rawSha256": "3c51a91ea7d8ff7a042dbf71e684072f787e6cda8c6b4b808f29e5169f6542dd"
+    },
+    {
+      "path": "native-record-fixed-r323/clean/probe.json.gz",
+      "sha256": "c46c3d412bfa78f3d73fd63ecec241e0982814b399c74f21b73153116b731606",
+      "rawSha256": "d99df7d41504d6be113dce4d59a14e3c64e3798004638c2a3bc7d8a567528a1b"
+    },
+    {
+      "path": "native-record-fixed-r323/seek/probe.json.gz",
+      "sha256": "52b4490fa7c5a6b9059ce86f4e64d315e9201ae3ed34cbcf957928eb43634faf",
+      "rawSha256": "df411c3c0f5b67ae597156a05a14ba7a2f43a54a4b08053a28d4637b83b77534"
+    },
+    {
+      "path": "native-record-fixed-r323/seek-no-sub/probe.json.gz",
+      "sha256": "e8ed602ee4da45560759df1cd60a447d1d621c404ce3a40aecd7fbc1b4639743",
+      "rawSha256": "ceadda9bfb7ec85a3c163a10b1854c1343b9d41f9ef269b706dd2b033948acea"
+    },
+    {
+      "path": "ui-record-trace-r317/verification.json.gz",
+      "sha256": "8fbf22d6d7120a869e885fbdd4e25d01b6a24621fab8db1ff29bc08f64ecae45",
+      "rawSha256": "da36a56714f1431ffc73e9cd9197cf1960cbce30d49a77ed1eac6d9bb7f3bbbd"
+    },
+    {
+      "path": "ui-record-trace-r317/producer.py.gz",
+      "sha256": "55102d441d3bf46c848623f3119e36be71fc65263db964bbb95f49b29d20be5f",
+      "rawSha256": "f437e4ac1f6081057fd89f1b91cbd2b1ce7a81ed9ca1df220a9072da65fbedc4"
+    },
+    {
+      "path": "ui-record-trace-r317/launch.json.gz",
+      "sha256": "b3f43772c86920a493aab7f57590caef99a18e7a7e3658b0bbf037e00e4c3d94",
+      "rawSha256": "632b7964663c10202435241f0b5d82ea512e12a118d2a4c337076377a7d014af"
+    },
+    {
+      "path": "ui-record-trace-r317/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-record-trace-r317/layout-fixture.json.gz",
+      "sha256": "caefb4e3c9b5157aaf9f5e0eed781b65bcf5adcbaa5ead049713c435f966009f",
+      "rawSha256": "584e0f0ecd3473c26eb3b3988521d628b3c199cf70a8a27bd5faf50d609cb8b1"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/01-fresh-paused-0.png.gz",
+      "sha256": "4c7e4c1daf12010955718298d10e33372790b204cfaebea700abc76c16eb531a",
+      "rawSha256": "c18b064ca239485a3b7261e155588d4f460719e30cba236aa258774d11f00491"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/01-fresh-paused-1.png.gz",
+      "sha256": "1a73d0ee274f769a96d6edfbf435dc8dfba2e33e53c52a0a45b279829be66a5b",
+      "rawSha256": "b8535a0167dedcbf206cd45e2353ddbba205f1f65dc7c5c89740c36be4b50827"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/01-fresh-paused.json.gz",
+      "sha256": "a2d4def62091633580798dd8dc171e098da4b4826eabd516a74756db4ccb7f64",
+      "rawSha256": "a6aa4413d8656197fbf3fa31a07b331b7e205ca28fecb430c7a0c19e5a072889"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/02-record-armed-0.png.gz",
+      "sha256": "93df7b7687d19eb30ecd062d8f4013c790dad118cbd490327e73c819b347dc10",
+      "rawSha256": "95bfa8b4c520fedce6069cb0dfa607f229d7d754b0bf188a521fbfa8e383a17b"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/02-record-armed-1.png.gz",
+      "sha256": "8447afd5652b685e5ff50d93ecd90b675a881dafe081cca62f394efc718d061f",
+      "rawSha256": "de5b41771ea48cc2c0cd616a95511b88f73323f73459ca6fd4f82284681a3437"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/02-record-armed.json.gz",
+      "sha256": "81de9d110bb95f11e8a00dc1b68c879c4d45357025f9042485f111a16090eff4",
+      "rawSha256": "292d9ff278917d34fb3526e4a3ece4686fe00239b19c549a2af082a8d61d813a"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/03-playing-record-0.png.gz",
+      "sha256": "6d807ad11aa8f800f637de4025f505d6ace25440c50ab278eb8d4c4ff9f5dd37",
+      "rawSha256": "7c5294d21b2d7250889ac80ffbb83c01c18b10190978c59f91102ed5a96a9de5"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/03-playing-record.json.gz",
+      "sha256": "797d7d23224d61f36eed7ab43f461d8cef12e3ec32697d68b48de27f5c2c50ee",
+      "rawSha256": "4e7e47d10f838ef3fb9983de56a257b850c50d28b78d0f48ba5a9363e557c77b"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/04-record-stopped-0.png.gz",
+      "sha256": "d5d56a12fd9f4a3cdcbb070552ce2e63c6906e66e6acdf62c8bc4b97bfc1291e",
+      "rawSha256": "dd58a20dd513c0713a82e607702228893e554c285f5467713aa10b82a358e9fa"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/04-record-stopped-1.png.gz",
+      "sha256": "709d3b8f9b8050dd6ee856ee486adb73a1d50300b337534e5249843f09a87760",
+      "rawSha256": "1558a3a092f71ffdecc643968debc72b8b19cb8b399aea602f402d3f86bfd6ed"
+    },
+    {
+      "path": "ui-record-trace-r317/observations/04-record-stopped.json.gz",
+      "sha256": "2897abcf1448229f4b0d5b68842f58fd3391e647d4c34d0f87728325dd36d983",
+      "rawSha256": "146b5ebf78907baa43a936e4ecdb6ebc50a24fe5c17594b335ab1efadb60dde9"
+    },
+    {
+      "path": "ui-record-fixed-r323/verification.json.gz",
+      "sha256": "755ae171e1a9e78a2f55cbebd8ee443758be13e2a212040f58cf2690c032d85b",
+      "rawSha256": "992b5846a715768c671777036bbe0beb9fbee559ee4a88c29d62d52cfe1950b2"
+    },
+    {
+      "path": "ui-record-fixed-r323/producer.py.gz",
+      "sha256": "b5a76cb7deebe1652dcfec712b0855ef2322d13e9fa35f9fa3720d99ac602386",
+      "rawSha256": "927e2315d078f66f9fe4ca2c0b1ca4a8085c6414277d0d2c6519ab237f27c35c"
+    },
+    {
+      "path": "ui-record-fixed-r323/launch.json.gz",
+      "sha256": "e3e6b0471c2875593268182d82e92e1486567e42956463f801403e7714f884eb",
+      "rawSha256": "bac5bca2a2f2f478366003b403e80b0f170c5037a3747daad6905af5b1fe693b"
+    },
+    {
+      "path": "ui-record-fixed-r323/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-record-fixed-r323/layout-fixture.json.gz",
+      "sha256": "caefb4e3c9b5157aaf9f5e0eed781b65bcf5adcbaa5ead049713c435f966009f",
+      "rawSha256": "584e0f0ecd3473c26eb3b3988521d628b3c199cf70a8a27bd5faf50d609cb8b1"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/01-fixed-fresh-paused-0.png.gz",
+      "sha256": "0b180f79abde65d1130b98f3335ee78ffd95bd07eae283944a0438be77045f70",
+      "rawSha256": "9848cee7a9390972bdc6853065730391e0bad00b3fb967d63f7f24db53c83322"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/01-fixed-fresh-paused-1.png.gz",
+      "sha256": "1a73d0ee274f769a96d6edfbf435dc8dfba2e33e53c52a0a45b279829be66a5b",
+      "rawSha256": "b8535a0167dedcbf206cd45e2353ddbba205f1f65dc7c5c89740c36be4b50827"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/01-fixed-fresh-paused.json.gz",
+      "sha256": "d61910d4df30228cee0fc1d26643aaf80827dfe0f07020ae67061269ca998266",
+      "rawSha256": "00b9a0f6b2bb995ca953c93b95491c9074c574fbf53dfeb67baee09e8cae9f8c"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/02-fixed-record-armed-0.png.gz",
+      "sha256": "84189ba1c9123d5e6801060613d973377e41e772a50a22abe8b1554dce5ddea6",
+      "rawSha256": "5d31d2031303156cf7d9cb78363aa3576eb0c1b7166e2df096bd047b808937be"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/02-fixed-record-armed-1.png.gz",
+      "sha256": "95e616cf728f2d17d25759f52584f129150956c381a7683a3c7db7efeef4db2e",
+      "rawSha256": "7c1281e15933500597073971fd94d73c6a6b666bf01965e89f2b5ec0230b9ef1"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/02-fixed-record-armed.json.gz",
+      "sha256": "1123bc5bb86d31a1c54cac0daa170641b4a35a25e392ac6cc9430cf1a25c4681",
+      "rawSha256": "5b6de84cc4436830589b808938f89a9ffaec4b4425ef52ee753d4e1e717942a1"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/03-fixed-record-playing-0.png.gz",
+      "sha256": "c88b7303ec07170dacdf97adb25a5425c2c530729c6f525d5eef7a2ed0891dee",
+      "rawSha256": "fa0634775cbb3d05f8fa3864b6f49327c137e54386fd99fec5af8e9b13b4adc1"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/03-fixed-record-playing.json.gz",
+      "sha256": "b0ecfcd68781353a730df193cd42c2d88e38bfcd2954d932ded0979c0a2f66fa",
+      "rawSha256": "b09c17be5493c2be0cd5b58a47666ac865be8b7715bf5e6d7c7ac94ad88ec899"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/04-fixed-record-stopped-0.png.gz",
+      "sha256": "ca56d7e4243d4ba931979058f3062e798d832d75f70c20c19d550df61120eeab",
+      "rawSha256": "1e278c6d462fc271b75fe28db27f5cb5b7f0ddf99623492155fd6333b9c7331d"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/04-fixed-record-stopped-1.png.gz",
+      "sha256": "fa82420afd91c583f1a853c68dfac65cc3f611077408aea8a8a3bec74676bf80",
+      "rawSha256": "c01308d8d9228196e5085397e8941bad84f286985553c3f08e1bf22d131378a0"
+    },
+    {
+      "path": "ui-record-fixed-r323/observations/04-fixed-record-stopped.json.gz",
+      "sha256": "c461377a6e089e06143c1d4a1ee5fce9b61cfbecc8a791c19bbd972ac9bbf112",
+      "rawSha256": "845cb49a582face65c325c54cf2d313b3818632013f0fb6f4936dd5bd45fba86"
+    },
+    {
+      "path": "inputs-r317.json.gz",
+      "sha256": "57d42a7fd8fa3c1d53c7c31be662357d39f9cd9130c5dd1c46f99aaf5fff7a23",
+      "rawSha256": "266188e6f19d24c58ca6dc8fd7b42b91ff488ef67637666dbb293614faa70f04"
+    },
+    {
+      "path": "inputs-r320.json.gz",
+      "sha256": "584b0008f9175fbb9fd83da2ddb51724ca5f67a785c99074e72fec490d27fd0b",
+      "rawSha256": "6d5e37f171445b4aff74ca1a7a719dd24606bd92477ab8f6ea1d69bc82fb46c4"
+    },
+    {
+      "path": "inputs-r321.json.gz",
+      "sha256": "fca5a0e171adc3dc5e3825e3641c06a1b1f574c7a6d3accf2e005036b4974bd1",
+      "rawSha256": "eab1dbe519ed1b17cd8524ef7fcfc85ce1ceacf54aee6a9c4ba812c6b73dc612"
+    },
+    {
+      "path": "inputs-r322.json.gz",
+      "sha256": "d8de13ea866d3f1aad3262aabc12352bc6bab104ad176cd8a160f52cbe049777",
+      "rawSha256": "b5fb8de461beb43d18fb7eefed7486b6c37e3b667f2fd50730fb9fd09e01745c"
+    },
+    {
+      "path": "inputs-r323.json.gz",
+      "sha256": "8bead4b84ce434c30a0309a80d203d39ed1e5ad6a95a121d287cc8dba6871ddb",
+      "rawSha256": "9bfce3a2d1e0f83517029514dc7992e2c0322c2b7064e38570463f74d6c2f32a"
+    },
+    {
+      "path": "prepare-record-trace-r316.py.gz",
+      "sha256": "9c22e63239f1389fd5346c9ff9b05d3155e20cf964e472043800d4e9848eb3c6",
+      "rawSha256": "88cfd75cdfca90de45c989f53865f8bf9b17a4795e4b04c2fa206ed11687a0cb"
+    },
+    {
+      "path": "record-trace-r316.c.gz",
+      "sha256": "0e4ed9a0ec9a87b71d2486bdb97d6fb24c8bc34acf66f81238f12cb1a1711c12",
+      "rawSha256": "da4a21ea6eb7ba5e959beff7685b1769dcd0d0c8456143c36054fd33a0c24c2d"
+    },
+    {
+      "path": "record-trace-r316.mk.gz",
+      "sha256": "40750190c33ed258752e7e0b4175d25bd44a32cb5fb29beee9dedf0441b790c6",
+      "rawSha256": "dbbf8974b68b57d543bda0e88e4584da421be20fb8bb5bcbc94fd29e141be0f9"
+    },
+    {
+      "path": "build-record-trace-r316.sh.gz",
+      "sha256": "a79f1cd9ade0a5fc99631b4dcc66311d5a680d64ea18a6c16774ea33af8e0ee4",
+      "rawSha256": "a789527996e3a0fb618afd938838d4210b368a2d9b06c777d274d2746bdc6bfa"
+    },
+    {
+      "path": "record-native-trace-r317.py.gz",
+      "sha256": "4ef3a189c456de2be38af801786c7d1e28c90dcdf2a26e8aa679eea14382e07a",
+      "rawSha256": "30065b3449bf41e0669285e77282565c58a2d3544e1675c8136aef759e11dfa4"
+    },
+    {
+      "path": "run-record-native-trace-r317.py.gz",
+      "sha256": "0c057a80e0bb36853e01d08f8c2a6978aab38fa6b64484161788ed9568840e80",
+      "rawSha256": "d6530af2f5f75513593d99fd09946d1224922f2cb89bca3228b9b15ea6724be6"
+    },
+    {
+      "path": "run-ui-record-trace-r317.py.gz",
+      "sha256": "55102d441d3bf46c848623f3119e36be71fc65263db964bbb95f49b29d20be5f",
+      "rawSha256": "f437e4ac1f6081057fd89f1b91cbd2b1ce7a81ed9ca1df220a9072da65fbedc4"
+    },
+    {
+      "path": "freeze-record-start-r318.py.gz",
+      "sha256": "b481d47a5a405a8e271d6baa341319c79cff75cae745fe9d126a3028b0622295",
+      "rawSha256": "2481fce03983013eca2b4b5de112eede291ff39e76089fc55860cf0b4401e833"
+    },
+    {
+      "path": "build-record-start-r318.sh.gz",
+      "sha256": "724eec09b86e4971e9395f503b5306d32b8a563cb017d78c72a4344fe98c4eac",
+      "rawSha256": "93b1aff9a26e892dec99a4963d4893e3a2d3f196c6dbcd3225cb84f1c6f9d717"
+    },
+    {
+      "path": "build-record-start-r318-exit.txt.gz",
+      "sha256": "74df5495009f54e7e3817c813c44887d5300010d57ff5cff9359a3e112a55f01",
+      "rawSha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "path": "build-record-start-r319.sh.gz",
+      "sha256": "f0ca3ed520b8447b04823b8b54c18b4621b12a05c9420f2d48b0d6f70197a059",
+      "rawSha256": "87c01ca82ee50b88620bfa6252d60490ee66e283a9351b74f1233dcbef834db3"
+    },
+    {
+      "path": "build-record-start-r319-exit.txt.gz",
+      "sha256": "74df5495009f54e7e3817c813c44887d5300010d57ff5cff9359a3e112a55f01",
+      "rawSha256": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3"
+    },
+    {
+      "path": "build-record-start-r320.sh.gz",
+      "sha256": "2c96089e299c778e583f6310b729898a1f87b97e15beca1d10d580853b17e639",
+      "rawSha256": "c17e48767276267df901225edfd5a380e05e7a3fe19f41dc73846a7bc7a60df3"
+    },
+    {
+      "path": "build-record-start-r320-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "run-record-unit-r321.py.gz",
+      "sha256": "6384be143cc096577fe626f2d1f9c38f199944fd560fa4efbed017d425d24228",
+      "rawSha256": "779d5ee9accf4a3fcc66f23e0470803d40c1a9e9038a72adc2895b291394595d"
+    },
+    {
+      "path": "record-start-r322.mk.gz",
+      "sha256": "127f9b23e9c2824215aa95943efcd724acc93b903fdcee71562b1e8dd7cd532b",
+      "rawSha256": "b5493e4f85f57f0e9bede53b3a46d7f65feb4db72a979f7fd6f67cc354bf5f41"
+    },
+    {
+      "path": "build-record-start-r322.sh.gz",
+      "sha256": "7961fad0b6bc94cf3fe498d699cfe5e148974016e8928f83fb66e4f060c298bc",
+      "rawSha256": "54cb8e4910f6e3baabfa786ba456e7721646553f3e0de178ab06a8e1633adc0e"
+    },
+    {
+      "path": "build-record-start-r322-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "run-record-native-fixed-r323.py.gz",
+      "sha256": "2634b8d95f4843ece8b48055d06acc64004af37e1594a984fe3350518156c516",
+      "rawSha256": "2eecfd96cf05d5f04c9dc0b8a711900d5c1a080060981db70142480df21f68b4"
+    },
+    {
+      "path": "run-ui-record-fixed-r323.py.gz",
+      "sha256": "b5a76cb7deebe1652dcfec712b0855ef2322d13e9fa35f9fa3720d99ac602386",
+      "rawSha256": "927e2315d078f66f9fe4ca2c0b1ca4a8085c6414277d0d2c6519ab237f27c35c"
+    },
+    {
+      "path": "inspect-recordings-r325.py.gz",
+      "sha256": "a64bc7d1dde79d23610bb24ac20fca04567b6e0342ab464979f27860b234c911",
+      "rawSha256": "4a47522470812ac9f699ce493de045ecc8e7cbbfb8537be5cb87f18756ea278b"
+    },
+    {
+      "path": "recording-comparison-r325.json.gz",
+      "sha256": "5212a2fd6d5d81e87d79937d5b943ed27fe13497eb950dcf045c20b5fbff661f",
+      "rawSha256": "9a1d4011036a2186b430282f4d7004abb95e14b23162b0a4ef76e4a7787d3d90"
+    },
+    {
+      "path": "write-record-start-receipt-r326.py.gz",
+      "sha256": "573715a38d581c11ce8d74d95d926e83fd715fba992050f27fb6bee602c07200",
+      "rawSha256": "51305151ba64a630cc8283608337de285d08429d7c41eeec77a2229f53bc3deb"
+    }
+  ]
+}

@@ -118,6 +118,14 @@ directly to check video timestamps before frame-rate metadata becomes available.
 From the configured Windows test build directory, add
 `-f <repo>/test/player-timer-cache-native.mk` and use the target
 `owned-player-timer-cache` with a fresh absolute `TIMER_CACHE_OUT` directory.
+
+`test/modules/stream_out/record_start.c` compiles the production recording module
+to test its buffered start-time calculation. From the configured test build
+directory, add `-f <repo>/test/record-start-native.mk`, set a fresh absolute
+`RECORD_START_OUT` and build `owned-record-start`. It checks sparse subtitles,
+audio/video alignment and subtitle-only fallback. It does not record media;
+the separate [recording receipt](../juxtopposed-references/native/home-recording-start-20261027/README.md)
+contains actual native/ordinary output decoding and stream-timing comparisons.
 The support library is linked statically with the configured compiler's existing
 stack protection enabled. Stage the executable beside the runtime DLLs.
 
