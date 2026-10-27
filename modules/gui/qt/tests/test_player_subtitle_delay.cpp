@@ -665,6 +665,84 @@ private slots:
                  "The selected external primary must retime from FIRST to MIDDLE");
     }
 
+    // Shared associated-subtitle FPS applies to both external sources.
+    // Run alone in a fresh process to exercise the first live change.
+    void firstPlayingFpsChangeRetimesBothExternalSources()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        QVERIFY2(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image, int top, int bottom) {
+            QByteArray result;
+            for (int y = image.height() * top / 4; y < image.height() * bottom / 4; ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        const auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i)
+            { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        int attempt = 0;
+        QImage middle;
+        seek(VLC_TICK_FROM_SEC(24));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            middle = captureNativeFrame(QString("both-external-middle-%1").arg(attempt++));
+            return !middle.isNull() && frameMarker(middle) == 600u
+                && mask(middle, 1, 3).count(char(1)) > 100
+                && mask(middle, 3, 4).count(char(1)) > 100;
+        }()), 10000);
+        const auto upperMiddle = mask(middle, 1, 3), lowerMiddle = mask(middle, 3, 4);
+        QImage first;
+        seek(VLC_TICK_FROM_SEC(12));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            first = captureNativeFrame(QString("both-external-first-%1").arg(attempt++));
+            return !first.isNull() && frameMarker(first) == 300u
+                && mask(first, 1, 3).count(char(1)) > 100
+                && mask(first, 3, 4).count(char(1)) > 100
+                && !matches(mask(first, 1, 3), upperMiddle)
+                && !matches(mask(first, 3, 4), lowerMiddle);
+        }()), 10000);
+        const auto upperFirst = mask(first, 1, 3), lowerFirst = mask(first, 3, 4);
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(14));
+        const auto beforeTime = time();
+        const auto before = captureNativeFrame("both-external-playing-before");
+        QVERIFY(!before.isNull());
+        QVERIFY(matches(mask(before, 1, 3), upperFirst));
+        QVERIFY(matches(mask(before, 3, 4), lowerFirst));
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("both-external-playing-after");
+        const auto afterTime = time();
+        QVERIFY(!after.isNull());
+        QVERIFY(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 400u);
+        QVERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        QVERIFY2(matches(mask(after, 1, 3), upperMiddle), "External secondary cue must retime");
+        QVERIFY2(matches(mask(after, 3, 4), lowerMiddle), "External primary cue must retime");
+    }
+
     void firstFpsChangeRetimesDelayedPlayingCaption_data()
     {
         QTest::addColumn<int>("delayMs");

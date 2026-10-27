@@ -182,6 +182,15 @@ normally with its recorded guards intact; test executable SHA-256 is
 This covers one external-plus-embedded case, not two independently added
 external sources or other subtitle formats.
 
+`fps_both_external_candidate2_r1` covers two selected external SRT sources
+during the first playing 0-to-50 FPS change. Each initially displays its own
+FIRST cue and then matches its own MIDDLE reference; selected roles and the
+advancing video frame/clock remain correct. The process exits normally with
+recorded guards intact; test executable SHA-256 is
+`dc39966262ac26337a0d78c184851c0d20411dc31fedd705796afca4de5a2d60`.
+Both sources have the same cue timing and no per-track delay; other timings,
+delays and formats still need separate evidence.
+
 This is still limited native evidence, not general acceptance. If a subtitle
 source refuses the preroll seek, the code warns and continues best-effort;
 it may still lose an earlier delayed cue. Nonseekable sources, overlapping or
