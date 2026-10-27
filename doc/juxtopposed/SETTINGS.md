@@ -84,6 +84,8 @@ journeys stay open unless their specific later receipt establishes them.
 | Artist / genre details | One selected artist opens details without starting playback in both grid and table; explicit Play and multi-selection playback remain separate. Redesigned artist details share history/search/sort/view; traditional details keep their custom header. Native album identity is preserved across equal display titles. Scoped GUI290/native-query evidence does not close all category or package gates. |
 | Library search / sort feedback | Search belongs to its session history entry and restores before selection; fresh entries start empty and Clear remains cleared. Traditional popup initialization preserves restored text. Songs marks its actual native title fallback and selecting that criterion toggles the order; the explicit sort persists across restart, while query text does not. GUI293 ordinary evidence covers artist/detail/folder routes, not every category or native Default-sort policy. |
 | Keyboard shortcuts | Checked Save/Reset persists mappings for the next player; current startup mappings remain active until restart. GUI301 ordinary checks cover conflict Cancel, save-failure draft/retry, reopened mapping, actual Play/Pause replacement after restart, movable editor and cold default restoration. Per-row hints repair the blank unfiltered list; native geometry fails before and all15 dialog cases pass after. Global keys/full action coverage, traditional Simple Preferences Hotkeys navigation and accessibility/DPI/package checks remain separate. |
+| Music source keys / metadata | Mouse-selected source rows own Enter/Space/navigation on GUI329. Ordinary source changes update filename, artist, folder and artwork; native playlist origin and literal live rename preserve the paused clock. Native routing passes28/0/0. Component scale checks are distinct from OS-DPI and final-package acceptance. |
+| Passthrough recording start | Sparse subtitle packets cannot advance the audio/video start past usable video keyframes. Subtitle-only output keeps its prior rule. Eleven direct-production cases and aligned ordinary/native recorded-file decoding pass for the owned MP4 fixture. Keyframe waiting, other codecs/containers and subtitle-overlap reconstruction remain separate. |
 
 Retain signed microseconds, inactive style/duration values, unknown lengths and
 category inheritance. Ordinary Save must not replay unrelated presets or clear
@@ -94,6 +96,9 @@ behavior in short windows without leaking input to playback.
 ## Evidence entry points
 
 - [Shortcut table repair, conflict/save recovery, restart and Reset](../juxtopposed-references/native/home-controls-shortcuts-20261027/README.md).
+- [First toolbar route and native Quit repair](../juxtopposed-references/native/home-customizer-routes-20261027/README.md).
+- [Sparse-subtitle recording-start repair and decoded AV alignment](../juxtopposed-references/native/home-recording-start-20261027/README.md).
+- [Music source activation, native metadata and movable rename popup](../juxtopposed-references/native/home-music-metadata-keys-20261027/README.md).
 - [Ordinary multi-artist selection and successive detail changes](../juxtopposed-references/native/home-music-selection-20261027/README.md).
 - [Library search history, native sort feedback and cold/traditional replay](../juxtopposed-references/native/home-library-history-20261027/README.md).
 - [Music detail navigation, playback independence and native album/artist/genre queries](../juxtopposed-references/native/home-music-details-20261027/README.md).

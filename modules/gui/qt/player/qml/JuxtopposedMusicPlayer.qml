@@ -12,6 +12,8 @@ import VLC.MainInterface as MainInterface
 
 FocusScope {
     id: root
+    // Mouse-focused source rows and buttons own their navigation/activation keys.
+    readonly property bool navigationKeyScope: true
     property real uiScale: 1
     property url assetBase: "qrc:/juxtopposed/"
     property url artwork
