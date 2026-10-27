@@ -173,7 +173,14 @@ passes: this is a paused two-role regression check, not a playing-failure
 negative control. Both processes exit normally with recorded guards intact;
 test executable SHA-256 is
 `f63a9a04b98024377ee031a610920f58194551b3e9177497eec8c817f4e86b49`.
-Playing isolation and two independently added external sources remain open.
+`fps_playing_isolation_candidate2_r1` additionally passes a fresh-process
+playing check: with both cues visible, the external primary changes from FIRST
+to MIDDLE while the embedded secondary region and role identities remain the
+same and the main clock and decoded frame advance normally. The process exits
+normally with its recorded guards intact; test executable SHA-256 is
+`9ddebda2e0950c562bb4bbe165d6872369d3697b08372b5c20923b12e1181b21`.
+This covers one external-plus-embedded case, not two independently added
+external sources or other subtitle formats.
 
 This is still limited native evidence, not general acceptance. If a subtitle
 source refuses the preroll seek, the code warns and continues best-effort;
@@ -187,6 +194,13 @@ but rejects its time seek. Setting the earlier deadline before the rate change
 may let the text demux reset its cue index for preroll without seeking; this is
 an untested approach. Confirm both controls and boundary behavior using a fresh
 playing snapshot test with the filter actually loaded before adopting it.
+The filter setting is inherited by both the master and associated sources:
+a global `noseek` fixture must start from zero and wait for the target time
+instead of seeking the video to build references. Set the filter before input
+creation, confirm that it loaded and that the source-time request is refused,
+and use separately captured unfiltered cue references. Include near-boundary
+cases because `SET_NEXT_DEMUX_TIME` and `SET_TIME` use different tick-origin
+conventions in the text demux.
 
 Before accepting a guard change, verify startup with a saved nonzero FPS, newly
 added and selected subtitle sources, and that the change causes no audio/video

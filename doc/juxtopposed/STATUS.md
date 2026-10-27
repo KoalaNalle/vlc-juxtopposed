@@ -44,12 +44,13 @@ to their identified binaries.
    negative control displays both old and new cues without a seek. A zero-sentinel
    first flush candidate passed that focused test but failed a +5 s delay case.
    A second experimental candidate refills from source-specific preroll and
-   passes both cases, -5 s, a +10 s cue-change case, paused external/embedded
-   source isolation and existing held-frame and playing/EOF native regressions.
+   passes both cases, -5 s, a +10 s cue-change case, paused and playing
+   external/embedded source isolation and existing held-frame and playing/EOF
+   native regressions.
    Wider testing is still required before
    acceptance. Verify saved-FPS startup, added sources,
-   per-track/overlapping cues, nonseekable-source behavior, recording and playing
-   source isolation. Then continue W1 defaults/restart,
+   per-track/overlapping cues, nonseekable-source behavior, recording and multiple
+   external-source isolation. Then continue W1 defaults/restart,
    formats and secondary-monitor capture.
 2. Check the audio timing revision against track changes, per-track overrides,
    and seek notification ordering; reproduce before changing behavior. Verify r7
