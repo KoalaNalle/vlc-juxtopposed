@@ -8,7 +8,7 @@ installation, rebuild or desktop test merely by being read.
 
 | Item | Recorded home location/version |
 | --- | --- |
-| Authoritative source | `C:\Modding\vlc-juxtopposed`, branch `juxtopposed-playback-bar` |
+| Authoritative source | `C:\Modding\vlc-juxtopposed`; active branch and fallback in STATUS |
 | WSL build distro | `VLC-Juxtopposed-Home-20261018` |
 | Linux build root | `/root/vlc-juxtopposed-build`; configured VLC in `win64` |
 | Source as seen by WSL | `/mnt/c/Modding/vlc-juxtopposed` |
@@ -43,6 +43,15 @@ The successful incremental FPS build is documented by
 and [dependency records](../juxtopposed-references/native/home-subtitle-fps-20261024/ordinary-dependencies/).
 It builds the regular Core and ordinary Qt object list. Its old-Core precondition
 and one-use outputs make it an example to adapt, not a command to rerun unchanged.
+
+After a large upstream update, inspect imported object dependency files before
+trusting an incremental build. The 27 October integration found old `.o`/`.lo`
+files whose `.Plo` files contained only `# dummy`; changed public headers therefore
+did not rebuild them. An obsolete `video_format_IsSameChroma` import broke linking.
+Under the build lock, the owned stale objects were quarantined with verified
+hashes, then rebuilt. Fresh objects had real dependency lists. Preserve this
+quarantine and the tested fallback; do not reuse those stale objects or repeat
+the old quarantine helper against a later build without a fresh inventory.
 
 For a genuinely fresh environment, inspect [INSTALL](../../INSTALL) and the
 repository's [Windows build script](../../extras/package/win32/build.sh). It
