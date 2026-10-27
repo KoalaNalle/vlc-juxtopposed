@@ -1,7 +1,7 @@
 # Current status
 
 Updated 27 October 2026. The desktop is available and beta work is continuing.
-The tested recording/subtitle source is `ac762a8bbb`.
+The tested recording-error source is `9bc894ae8e`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
@@ -9,40 +9,38 @@ The beta remains unfinished; all six readiness gates remain open.
 - Branch: `juxtopposed-playback-bar`.
 - Ordinary GUI441 `3f6170f7`, Windows-hotkeys452 `28e53fd1`,
   Core265 `fdfcfcd5`, library282 `13ccdc36`,
-  recording464 `9f4a3f03`, MP4 mux464 `42e53a5e`,
+  recording476 `fb4e9c06`, MP4 mux464 `42e53a5e`,
   MP4 demux240 `df15e8ed`, subtitle130 `11f2b78e`,
   WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/runtime`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-record-error-fixed-r478/runtime`.
   This is an isolated tested runtime, not a release package. Earlier tested
-  GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
+  GUI418/388/357/349/344/337/329/311 tuples remain recoverable. The test profile
+  has one preseeded audio Record tile; helpers requiring the native default
+  catalogue can use the isolated `ui-music-appearance-cold-r425` profile seed.
 - All owned desktop/native tests are closed. Freeze fresh inputs before the
-  next guarded job; current docs postdate `inputs-r472.json`. The four unrelated
+  next guarded job; current docs postdate `inputs-r476.json`. The four unrelated
   audio experiments stay untouched. No firewall rules or security/privacy settings
   changed; the read-only firewall inventory remains available.
 
 ## Latest verified work
 
-[Audio-only recording/retry](../juxtopposed-references/native/home-recording-audio-retry-20261027/README.md):
-two WAV, two Ogg-FLAC and two MP3 recordings decode completely; paused arming/holding,
-normal exits and all native guards pass. Exact sample counts are retained, with up
-to278ms difference from the observed playback-clock span; exact onset/tail is not
-accepted. A file-as-folder output fails without stopping playback; valid retry in
-the same native player decodes and preserves the marker. Ordinary error feedback
-remains unqualified, including the log's unhelpful No error suffix.
+[Recording error feedback](../juxtopposed-references/native/home-recording-error-feedback-20261027/README.md):
+failed output-open now produces a visible alert and retained destination guidance.
+Public API before/after receives zero/one error callbacks. Native and ordinary
+same-player recovery decode; the ordinary retry contains22.2seconds of generated
+PCM. Markers, native config and profiles stay unchanged; normal exits/602plugins/
+all guards pass. The three expected failure log lines are separated from zero
+unexpected diagnostics. The toast's Show Details click remains unqualified because
+its five-second timeout can expire during automation; Ctrl+M / Errors is verified.
 
-[Recording subtitle overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md):
-finite buffered captions now survive the selected A/V keyframe. MP4 shutdown text
-conversion and final subtitle edit duration are repaired. All22 direct production
-checks pass. Native MP4/mov_text and Matroska/SRT recordings decode aligned AV and
-both exact caption intervals; the ordinary Record-control journey retains all
-three captions and decodes811video frames. Exit0/602/no checked errors/all guards;
-native config and player profiles stay identical. Before/intermediate failures
-and the baseline mux inventory limitation are retained. Unknown/already-consumed
-captions, other formats, live behavior and full package acceptance remain open.
+[Subtitle-overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md)
+and [audio-format](../juxtopposed-references/native/home-recording-audio-retry-20261027/README.md)
+receipts retain their record464 scope:22direct checks, decoded MP4/Matroska captions,
+ordinary811-frame recording and six WAV/Ogg-FLAC/MP3 outputs. Exact onset/tail,
+already-consumed/indefinite captions and broader combinations remain open.
 
 [Windows key translation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md)
-retains ten native functions/seventeen pass incidents and ordinary Finnish-layout
-play/pause evidence. Startup layout is used until restart.
+retains scoped native/ordinary evidence; startup layout is used until restart.
 [Registration feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md)
 retains its earlier module432 two-player/restart tuple; exact-binary scopes stay separate.
 
@@ -55,14 +53,11 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Check the ordinary recording destination-failure feedback and recovery. Native
-   WAV/FLAC/MP3 repeated recording and destination retry now have scoped evidence.
-   Continue remaining formats/settings afterwards. Finite buffered subtitle overlap has
-   scoped native/ordinary evidence. The setup
-   tour uses local bindings, so failed global mappings do not alter its hints.
-   Keep W3's live System-theme change and native UIA/screen-reader focus open. UIA reports
-   stayed stale even when Enter activated the correct cover. Cover view remains
-   a documented functional adaptation rather than a complete visual acceptance.
+1. Qualify the error notice's Show Details pointer/keyboard/focus path and timeout
+   behavior; the first attempt did not establish opening. Continue remaining
+   formats/settings afterwards. Mid-write failures remain separate from output-open
+   failure. Keep live System-theme changes, native UIA/screen-reader focus and
+   actual Windows DPI open. Cover view remains a documented functional adaptation.
 2. Continue W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): remaining settings,
    remaining shortcut actions/layouts, rapid queries, recording formats,
    appearance, accessibility and Windows DPI. HDR stays truthfully disabled;
