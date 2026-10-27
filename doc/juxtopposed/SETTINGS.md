@@ -73,7 +73,7 @@ journeys stay open unless their specific later receipt establishes them.
 | Start playback | Off starts paused. Saving On preserves the current paused item and affects the next input. |
 | Saved default speed | Editing the default preserves the current and same-player next rate; a new player uses the new default, with truthful restart feedback. |
 | Repeat / shuffle / stop after each | Native finite-input repeat/wrap, random policy with complete nonduplicated traversal, and stopping before the next queue item have bounded tests. |
-| Finish action | Native queue completion/manual Stop sends the owner's Quit notification under that policy; desktop process closure still needs its own journey. |
+| Finish action | Native queue completion/manual Stop sends the owner's Quit notification. GUI357 ordinary Save preserves paused0, Quit VLC survives restart, and real final-item completion/manual Stop close the matching process normally. Clearing Quit to Stop leaves the same app open on Home. Stop after each item is disabled under Quit and available after clearing it. Broader repeat/shuffle/source combinations and final-package acceptance stay separate. |
 | Time-shift folder/chunk | Next-input constructor consumes saved values; current paused clock is preserved. Native fallback is TEMP/50 MiB. An owned continuous HTTP/raw-PCM source verifies actual writes, 1/2 MiB rollover, buffered sample continuation and cleanup. Ordinary picker Cancel, accented/spaced path, 1 MiB save, cold restore and reopened directory pass separately; other live formats remain open. |
 | Preferred audio language | Current and same-player next selection are preserved after a saved default edit; a new player with automatic track policy uses the new language. |
 | Audio On/Off | Saving Off preserves current/same-player next audio; a new player can decode video with no selected audio. |
@@ -156,3 +156,5 @@ to decide category and package readiness.
 - [Global Play/Pause isolation and traditional Hotkeys navigation](../juxtopposed-references/native/home-global-shortcuts-20261027/README.md).
 - [Music sidebar states, keyboard handoff and audio/video transitions](../juxtopposed-references/native/home-music-sidebar-20261027/README.md).
 - [Compact music defaults, preserved alternative layouts and ordinary themes](../juxtopposed-references/native/home-music-toolbar-20261027/README.md).
+- [Ordinary finish-action Save, natural completion, Stop and restart](../juxtopposed-references/native/home-finish-action-20261027/README.md).
+- [Open music navigation failure and Home history policy observation](../juxtopposed-references/native/home-home-navigation-review-20261027/README.md).

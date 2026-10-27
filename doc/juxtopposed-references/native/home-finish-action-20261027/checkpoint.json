@@ -1,0 +1,375 @@
+{
+  "status": "passed-ordinary-playback-finish-action",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "caa02e28c3cddf45c1778dd5111274ecfe78c19de0438dc257da39d87ea756e2",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "selectedConfigValues": {
+    "ui-finish-eof-r366": {
+      "config-before.txt": {
+        "play-and-exit": null,
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      },
+      "config-after.txt": {
+        "play-and-exit": "1",
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      }
+    },
+    "ui-finish-manual-r367": {
+      "config-before.txt": {
+        "play-and-exit": "1",
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      },
+      "config-after.txt": {
+        "play-and-exit": "1",
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      }
+    },
+    "ui-finish-stop-policy-r368": {
+      "config-before.txt": {
+        "play-and-exit": "1",
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      },
+      "config-after.txt": {
+        "play-and-exit": "0",
+        "play-and-stop": null,
+        "loop": null,
+        "repeat": null,
+        "random": null
+      }
+    }
+  },
+  "sanitizedLogEvidence": {
+    "ui-finish-eof-r366": [
+      {
+        "line": 334,
+        "text": "main debug: EOF reached"
+      },
+      {
+        "line": 1588,
+        "text": "main debug: EOF reached"
+      },
+      {
+        "line": 1644,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 1647,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 1665,
+        "text": "qt debug: requesting exit..."
+      }
+    ],
+    "ui-finish-manual-r367": [
+      {
+        "line": 334,
+        "text": "main debug: EOF reached"
+      },
+      {
+        "line": 397,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 399,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 407,
+        "text": "qt debug: requesting exit..."
+      }
+    ],
+    "ui-finish-stop-policy-r368": [
+      {
+        "line": 334,
+        "text": "main debug: EOF reached"
+      },
+      {
+        "line": 406,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 407,
+        "text": "main debug: exiting"
+      },
+      {
+        "line": 413,
+        "text": "qt debug: requesting exit..."
+      }
+    ]
+  },
+  "sourceSha256": {
+    "modules/gui/qt/maininterface/playback_preferences_model.cpp": "bf9069f851406bf8bde4a8d7ee1f35d07b131c939c144692e2f780c41585477c"
+  },
+  "observations": [
+    "On GUI357, ordinary Playback Preferences saves Quit VLC while the first audio item remains paused at exact progress0. Stop after each item becomes disabled under the Quit policy.",
+    "Next starts the final queued video. After a paused seek near56seconds and Play, the video reaches natural queue completion and VLC exits normally without a Quit/Stop/close action. The observer action and bounded EOF/Qt exit log lines have separate scopes.",
+    "A fresh process restores Quit VLC from the saved native configuration. With the first queued audio item paused at0, the native Stop shortcut S closes VLC normally. A subsequent screenshot request finds no target; the matching process exits0, not a capture-only disappearance.",
+    "A separate copied-profile run changes Quit VLC back to Stop without moving the paused input. Stop after each item becomes available again. The same S shortcut returns to Home and leaves the app open; there are zero Qt exit requests before the later explicit Ctrl+Q cleanup.",
+    "All three ordinary runs exit0/602modules/zero checked errors/all source/runtime/fixture/producer/cache guards. The first file omits play-and-exit and the UI shows Stop; saving writes1. The next run retains1; clearing writes the commented default0. Null entries in the selected-file-values summary mean absent, not a measured native value. No production change was needed for this workflow."
+  ],
+  "limits": [
+    "This qualifies the two implemented finish choices, current paused save, cold persistence, final-item completion and manual Stop on this generated local audio/video tuple. Repeat/shuffle/stop-after-each interactions, all source types and final-package acceptance retain their separate gates.",
+    "A demux EOF log line alone does not prove queue completion: local audio can read ahead while paused. The natural-completion and manual-Stop observations/action timing distinguish those paths.",
+    "Immediate seek/frame/accessibility snapshots can precede settled output. The final near-tail paused position corrects slightly as native timing settles; no exact paused-tail seek or bounded transition latency is claimed.",
+    "Only VLC application behavior was exercised. No machine sleep/shutdown, security/privacy choice, dependency or user media was changed. Raw configuration/database/media/logs remain ignored locally."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-finish-eof-r366/verification.json.gz",
+      "sha256": "bbbb96658135d813f2ac5f5df13cc7de6136f5e00b6b284594d6e72f23b3776a",
+      "rawSha256": "fa1c012c029e2ddbcd8863933276f578ae77df82ba3dea143fa216cbcc5103ff"
+    },
+    {
+      "path": "ui-finish-eof-r366/producer.py.gz",
+      "sha256": "148e39a1571dbbfed0b9c8d6eb8e997c2ef006c1b0c0cc974f8403abc3e84da2",
+      "rawSha256": "8794ff5dd5fb045abfe2f254ebd45ecc989ded9d97d08ba46ca2ce53108b838a"
+    },
+    {
+      "path": "ui-finish-eof-r366/launch.json.gz",
+      "sha256": "a1ee58c8e3faf5a2b1fa38758c5a5ec854f26db3f6f11682fc3b92f234300873",
+      "rawSha256": "268c7ec0c78081e9d7a1e5cc1170c74dd4e1a7692dd2cbc9014e99c1579ce680"
+    },
+    {
+      "path": "ui-finish-eof-r366/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-finish-eof-r366/layout-fixture.json.gz",
+      "sha256": "01d9bb0fbbe86369562e1968464277e62528bb4aa1cb9e01bedf24b301ea3165",
+      "rawSha256": "d7341fe8050821e77ebab429a28c6ba3db6c591bbd0bf0cf98614725ddd5b5e8"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/01-playback-before-finish-save-0.png.gz",
+      "sha256": "5c35164a8ce8574c4c72d686606a6e71bf24c7e13a7838fbafbd6c1110613580",
+      "rawSha256": "16f359f756ab2d231ace4652af2ee091dfe436a0911baa279d75e4e3d1514881"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/01-playback-before-finish-save.json.gz",
+      "sha256": "d615e267618a4a23952887010e38d9e8dae95c74090ab68cbac1c95368102887",
+      "rawSha256": "f6bd78e66afb2c30245ab5fbeabb3b1908d0ae430bfc9ac34a6235f1b54a4d18"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/02-finish-quit-saved-paused0-0.png.gz",
+      "sha256": "b855b208ad02ebcdaca327d99faeb900a19553c64c1b8eefda0e9e9f5303b8a2",
+      "rawSha256": "6e65116cabf7d4586aa2dea901d80e99fd5c6b8ae17e2c74143d017e7f51c2cd"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/02-finish-quit-saved-paused0.json.gz",
+      "sha256": "117cc957a5b0e2e0095094a8cb4186e8dd60c3c09a3594afa0fdbf7ebbf03f95",
+      "rawSha256": "9488713e958c600781926d2de8a25e23e030cbef7cb2b51d15296b7b4d003ee4"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/03-after-finish-save-held0.json.gz",
+      "sha256": "20381782aa558eee185b0da070b016710d99edfaf3a6d52f8bd329f6ae44c321",
+      "rawSha256": "cff09fd27139422d999a575aea77a9350addd5a3dc10feafbcb29f6f53b57c29"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/04-last-video-paused-before-tail-seek-0.png.gz",
+      "sha256": "b588420500c096e21a9eb12cd1729896052e473822e45ffedb6feb4f0db2bf97",
+      "rawSha256": "6d937f69ca93efd14fcd560d77bcbe2945a7abf7a25cf4365e4f1d7012caf4c3"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/04-last-video-paused-before-tail-seek.json.gz",
+      "sha256": "0ab42362a3ade853f24f049db0bc56ad4bd1f8205bfa8792862319ee01572ecc",
+      "rawSha256": "93c9b8b7fe1c3ca7b164682caecdbd2a409a6e9889a5e12dd0712b9f47fe4c41"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/05-last-item-paused-tail-settled-0.png.gz",
+      "sha256": "73da5f892b5e091b3da150f70aa567475dcc1772672f6ba34975b511a03914c2",
+      "rawSha256": "c0ccc0ee562f74a2b7bdbea745d99a0a9e281e910d66c64728733200dd759027"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/05-last-item-paused-tail-settled-1.png.gz",
+      "sha256": "b3ce79420b185e7425a9f5c4ddc1620c04cab0a91fb941e819310d3501a3b9df",
+      "rawSha256": "002d085619eb5e7dfff9eb4b56a7d667ace1e8a5a500658abb81afe56392df9a"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/05-last-item-paused-tail-settled.json.gz",
+      "sha256": "1ed2a597657f721647f9884f047180fd5c009943de61bc8f29a37727df163ecc",
+      "rawSha256": "a8d62ce325525641a6ee62f74ce2e5e6f0be9240927b082d82d353975a25b42d"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/06-playing-final-tail-0.png.gz",
+      "sha256": "2618743d0cbfcb53e470d5eb9467926e65f97c0981444bae9dc7d764ba885ccf",
+      "rawSha256": "bf90158f659837146bf7eec0b2749f7d245b5681eda900c8ce13ee88b1440d90"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/06-playing-final-tail.json.gz",
+      "sha256": "a7f3a6f1e340b45720491f53b9efa5d7c5960cac4d05066cade384637068ccf5",
+      "rawSha256": "3f6c5a75cee5dcb1a4ad3b0c24a409ffd89fee77e1de0a4b5bf8732f4b0ccf79"
+    },
+    {
+      "path": "ui-finish-eof-r366/observations/completion-action.json.gz",
+      "sha256": "b9793086459bd13ad8bdaa8cd6d77a035bce74b53dc3b1ccd2b96fdd6576d17a",
+      "rawSha256": "f503b29418cb2699c76867ea3fe70c9fe5512b009f303560175f9304ecf4a7ac"
+    },
+    {
+      "path": "ui-finish-manual-r367/verification.json.gz",
+      "sha256": "e77f16a0d3fe40c2f3b3c0faef3df7e7826f1112348ae1124bd6765ec586f079",
+      "rawSha256": "cef1211758820a71d3fb72d6744178122de7aff368e475d1da22afff9bd28aa1"
+    },
+    {
+      "path": "ui-finish-manual-r367/producer.py.gz",
+      "sha256": "148e39a1571dbbfed0b9c8d6eb8e997c2ef006c1b0c0cc974f8403abc3e84da2",
+      "rawSha256": "8794ff5dd5fb045abfe2f254ebd45ecc989ded9d97d08ba46ca2ce53108b838a"
+    },
+    {
+      "path": "ui-finish-manual-r367/launch.json.gz",
+      "sha256": "be68ff231d0592342b629a0e727f8dbbb3ee3865af78b1ecd0bab6a62a5b8e45",
+      "rawSha256": "d82615358cc3ac51ab7002f92bab1eb7432309de68b1210de9282d1ce76e2ef1"
+    },
+    {
+      "path": "ui-finish-manual-r367/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-finish-manual-r367/layout-fixture.json.gz",
+      "sha256": "9f516c8770549c0f7dcbe6123891492a58d0a144ce7686ea8c523954d0733935",
+      "rawSha256": "d9c988abdbaf065bba36f4156b006b0dc8312ee1a0f76637fb0d006b26dee3b6"
+    },
+    {
+      "path": "ui-finish-manual-r367/observations/01-cold-restored-quit-policy-0.png.gz",
+      "sha256": "96d39b56df5ca2d8ecdf0b9f13e6b31de7e6bf16e884e5a8023965b2719413cf",
+      "rawSha256": "30ea6346f74dc8a9edd9799d9136552a69b8b2a5afd5a5092871f3c7074f1bad"
+    },
+    {
+      "path": "ui-finish-manual-r367/observations/01-cold-restored-quit-policy.json.gz",
+      "sha256": "c75abec493f7376b6ee91d76ea9277b2af40f1c9d2acc9f5117df3fa09acb263",
+      "rawSha256": "2ee4e869b1a3335076a42bc0019e38aa82278d4798796e87e963b2905cb7db3a"
+    },
+    {
+      "path": "ui-finish-manual-r367/observations/02-paused-first-before-native-stop-0.png.gz",
+      "sha256": "fb5a43efcb225f2aba0b08b336acdc73afaaba31ae99404851ffdb4e4cc70baa",
+      "rawSha256": "08d2681c2d7264b8fc3947040a0904d353204f7d3f2a95332565cba2b9667eca"
+    },
+    {
+      "path": "ui-finish-manual-r367/observations/02-paused-first-before-native-stop.json.gz",
+      "sha256": "36c02f40acb0a6f0e296decf936d404d910d90daabd35258b7df663cd8636220",
+      "rawSha256": "4d8d776ed0a1dd6f2385e4d6d064894fca652d41c7b34fe79cae93b71efc2b5c"
+    },
+    {
+      "path": "ui-finish-manual-r367/observations/stop-action.json.gz",
+      "sha256": "50450194efe7e7d55263adbf0d46c82e53ec680a0f5449f1cc60617dc47cfe71",
+      "rawSha256": "4fbfcca966aaf15d31a569e1e460e2e6cb3e84f83d5f0273a36dd10ede7ab700"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/verification.json.gz",
+      "sha256": "a7a2d784bb936d8cdc6d92f1156d6e8ed5579bb20562b44f865f80c13c4d48f1",
+      "rawSha256": "4aff1e3432288c69c02e0a516e4d7ff4520885b42b814ddead2ceffae1481a69"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/producer.py.gz",
+      "sha256": "148e39a1571dbbfed0b9c8d6eb8e997c2ef006c1b0c0cc974f8403abc3e84da2",
+      "rawSha256": "8794ff5dd5fb045abfe2f254ebd45ecc989ded9d97d08ba46ca2ce53108b838a"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/launch.json.gz",
+      "sha256": "d1b4d832680555c647780692dba0d6fccec2ad4bdbb781a22ba8b51c117d37a4",
+      "rawSha256": "3bc0498893160760085a0d6824fa53d7e7e1d5d76150abf589589d6b8e911f7a"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/layout-fixture.json.gz",
+      "sha256": "9f516c8770549c0f7dcbe6123891492a58d0a144ce7686ea8c523954d0733935",
+      "rawSha256": "d9c988abdbaf065bba36f4156b006b0dc8312ee1a0f76637fb0d006b26dee3b6"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/01-cold-quit-before-clear.json.gz",
+      "sha256": "ffb1a7e192c0cb1e57715ec080016aef3c124f15394e340a03298070de9b0812",
+      "rawSha256": "2864a3f623434ef98d38224592d9c0253d7733dc2f1b3ee7dd7dc2f8ed20e683"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/02-stop-saved-paused0-0.png.gz",
+      "sha256": "f9b7aacd810a1cbace73b381e85285348bfe85b69612b0cdcc4aa83bac9b65e8",
+      "rawSha256": "a87f653c35b6881f2474c40e52a29a35358ccfdb1fccc893477e463099844a9b"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/02-stop-saved-paused0.json.gz",
+      "sha256": "4531a82215221a01b45abc8280644959067846b33b10a2a97fd76357ad940e88",
+      "rawSha256": "dcedccf1698645472b0e2bd3483dfa3854142a7e0398f36984dd0069ec63af02"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/03-stop-policy-before-stop-key.json.gz",
+      "sha256": "14234017b14241863d90bf173c4bcb124e0a273053156881db486e39301578ba",
+      "rawSha256": "73b6aabc19926978ea28b0d8082ed27c1bd41a110e5369869cb2b999fb292da0"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/04-stop-policy-keeps-app-open-home-0.png.gz",
+      "sha256": "878996159514025ad78b51fe8da2bb555bb983f1c0435fc81d0751336ff85482",
+      "rawSha256": "323c097c1002d28cf7d2e2b729c4b4ccac8daf3927f24430a8f66f127eefeaa4"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/04-stop-policy-keeps-app-open-home.json.gz",
+      "sha256": "d134f13fb9b7d9c21b5184bca1053cb003366fdd139f66780d8fa8f48024c25c",
+      "rawSha256": "3b027187c62e31c075aa99bc730c4323e1223d3039438e636da7f2f764c777f4"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/close-action.json.gz",
+      "sha256": "59c8480ffe11690bb375e180129d8d8b01c9e9b546d664508cde1ec5e4d6187e",
+      "rawSha256": "29f6d58be73763f011693de4936533ece1be65a93ca4fbe0ebee349b31135de7"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/stop-action.json.gz",
+      "sha256": "23d29869ebec8c27a0237ab5f2ca10f027772b34f17867cf0d343b6dabff5f4f",
+      "rawSha256": "fb404b13bbaf66e40a710230cc75eeacf2eaaaa635dea830bff7b4d3cd216f6e"
+    },
+    {
+      "path": "prepare-finish-action-r366.py.gz",
+      "sha256": "d4adaf51947a5d7c816f3cd53df52432370c94f9b14f4ffafc629b5259cd6cb1",
+      "rawSha256": "ce8881ad41e27f836a4e17d8fbf1fc57ecb51f236b56b7ef5f9a67929cf41737"
+    },
+    {
+      "path": "run-ui-finish-action-r366.py.gz",
+      "sha256": "148e39a1571dbbfed0b9c8d6eb8e997c2ef006c1b0c0cc974f8403abc3e84da2",
+      "rawSha256": "8794ff5dd5fb045abfe2f254ebd45ecc989ded9d97d08ba46ca2ce53108b838a"
+    },
+    {
+      "path": "freeze-music-toolbar-r360.py.gz",
+      "sha256": "c6493b5426cef14563cb0cc0c4e95e5748a499980a8ad61beaf79d6a41532723",
+      "rawSha256": "00c860a465441f6ca05a8f8ace9caa953a595a5df717381e58a889d50b4d2e59"
+    },
+    {
+      "path": "inputs-r366.json.gz",
+      "sha256": "cf4e159416703f45f5c43d1413ff36e6c6d9edaffaee31f139ad791d18b484c4",
+      "rawSha256": "63d1747d463d7088e6b13397cb4c925f78ada1cbea7e1e941b45c32be68636c4"
+    },
+    {
+      "path": "write-finish-action-receipt-r369.py.gz",
+      "sha256": "3d9eadfb3c0da63071ad7c46754913a6f2102755b940ebcd99b30ec7eaced39d",
+      "rawSha256": "940b152704f319b030a02807cc8710feddf17a9799b4b652f924068b723e3067"
+    }
+  ]
+}
