@@ -2288,6 +2288,8 @@ test_qt_csd_button_model_LDFLAGS += -Wl,--wrap=pthread_key_delete
 # qmake adds platform plugin libraries to QT_LIBS for static Qt builds.
 # Keep the offscreen plugin before the Qt libraries it depends on.
 test_qt_csd_button_model_LDADD = $(if $(filter %qwindows %qwindows.a,$(QT_LIBS)),-lqoffscreen) $(QT_QTEST_COMMON_ldadd) -lntdll
+# Automake cannot infer file prerequisites through the conditional library flag.
+test_qt_csd_button_model_DEPENDENCIES = $(LIBVLCCORE) $(LIBVLC) $(filter %.a %.la %.obj,$(QT_LIBS) $(LIBS_qt) $(QT_QTEST_LIBS))
 else
 test_qt_csd_button_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 endif
