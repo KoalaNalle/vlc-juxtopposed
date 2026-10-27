@@ -160,12 +160,12 @@ for redesigned, library in [(False, False), (False, True), (True, False), (True,
     for index in range(6):
         expression(primary, f'menuSelected({index})')
     expected = 'simple,multi,directory,disc,network,capture,clipboard'
-    assert expression(root, 'DialogsProvider.calls.join(",")') == expected
+    assert dialogs.actions == expected.split(',')
     if folder and folder.isVisible():
         assert primary.x() + primary.width() <= folder.x()
         QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, folder.mapToScene(folder.boundingRect().center()).toPoint())
         expected += ',addFolder'
-        assert expression(root, 'DialogsProvider.calls.join(",")') == expected
+        assert dialogs.actions == expected.split(',')
     cases.append(dict(redesigned=redesigned, library=library, folderVisible=bool(folder and folder.isVisible()), calls=expected.split(',')))
 view.close()
 assert not messages, messages

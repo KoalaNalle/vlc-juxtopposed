@@ -1,104 +1,85 @@
 # Current status
 
-Updated 27 October 2026. The desktop is available and beta work is continuing.
-The working alpha is integrated into `master`; it is not a published release.
-The tested recording-error source is `9bc894ae8e`.
-The beta remains unfinished; all six readiness gates remain open.
+Updated 27 October 2026. The separate upstream integration is rebuilt and tested.
+All owned desktop/native jobs are closed. The beta remains unfinished; all six
+readiness gates remain open. No release, push or merge into master was performed
+for this integration task.
 
 ## Selected checkpoint
 
-- Branch: `master`; PR #1 merged at `00133b4afc`. The old development branch
-  remains available as a historical reference.
-- Ordinary GUI441 `3f6170f7`, Windows-hotkeys452 `28e53fd1`,
-  Core265 `fdfcfcd5`, library282 `13ccdc36`,
-  recording476 `fb4e9c06`, MP4 mux464 `42e53a5e`,
-  MP4 demux240 `df15e8ed`, subtitle130 `11f2b78e`,
-  WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-record-error-fixed-r478/runtime`.
-  This is an isolated tested runtime, not a release package. Earlier tested
-  GUI418/388/357/349/344/337/329/311 tuples remain recoverable. The test profile
-  has one preseeded audio Record tile; helpers requiring the native default
-  catalogue can use the isolated `ui-music-appearance-cold-r425` profile seed.
-- All owned desktop/native tests are closed. Freeze fresh inputs before the
-  next guarded job; current docs postdate `inputs-r476.json`. The four unrelated
-  audio experiments stay untouched. No firewall rules or security/privacy settings
-  changed; the read-only firewall inventory remains available.
+- Branch: `codex/upstream-20261027`. Upstream `874d229c18` is merged at
+  `06c97dc786`; the toolbar policy repair is `c7cdbdb5d7`.
+- Selected ordinary runtime:
+  `build-windows/upstream-integration-20261027/runtime-r2`.
+  It is a fresh complete debug install from production source `c7cdbdb5d7`,
+  without private native hooks. Later branch changes concern tests, build
+  declarations, CI and docs. Full binary identities are in the linked receipt.
+- Fallback: `master` and `codex/alpha-fallback-20261027` remain `0694227ab8`.
+  The older tested runtime is
+  `build-windows/beta-single-frame-20261025-night/ui-record-error-fixed-r478/runtime`.
+  All 532 fallback file hashes match their pre-integration manifest.
+- The established WSL distro and compatible contrib cache remain in use. No
+  dependencies, firewall rules or security/privacy settings changed. Human VLC
+  settings and generated fixtures are unchanged. The four unrelated experiments
+  remain untouched. Freeze fresh producers before the next job.
 
 ## Latest verified work
 
-[Alpha integration and CI repair](../juxtopposed-references/ci/alpha-ci-upstream-20261027/README.md):
-the repaired PR head and `master` merge both pass all30Windows and four Linux
-commands. Two SVG distribution entries and the secondary-subtitle settings
-fixture are fixed. PR/master checks stay enabled; duplicate feature-push runs
-are removed and superseded runs are cancelled. These component/build-rule checks
-do not close graphical acceptance or any beta gate.
+[Upstream integration receipt](../juxtopposed-references/native/home-upstream-integration-20261027/README.md)
+records four conflict resolutions, the silent duplicate-transition repair,
+source/binary identities, failures and accepted results. The full native build
+and install pass after quarantining stale imported objects with dummy dependency
+lists. The old objects remain recoverable in WSL; see BUILD before reuse.
 
-[Recording error feedback](../juxtopposed-references/native/home-recording-error-feedback-20261027/README.md):
-failed output-open now produces a visible alert and retained destination guidance.
-Public API before/after receives zero/one error callbacks. Native and ordinary
-same-player recovery decode; the ordinary retry contains22.2seconds of generated
-PCM. Markers, native config and profiles stay unchanged; normal exits/602plugins/
-all guards pass. The three expected failure log lines are separated from zero
-unexpected diagnostics. The toast's Show Details click remains unqualified because
-its five-second timeout can expire during automation; Ctrl+M / Errors is verified.
-A second screenshot-only attempt (`ui-record-details-r481`) also ran out of time
-before opening Details; it is inconclusive. It closed normally with all guards
-passing and no unexpected diagnostics.
+Combined local evidence covers 31 Windows and four Linux workflow commands,
+49 toolbar cases, four no-library Home variants and five tooltip cases. Native
+checks pass 32 MMDevice checks, 16 real WASAPI lifecycle cycles/eight missing-device
+fallbacks, 22 recording-start checks and 11 CSD model QtTest cases. Actual recording,
+RGB paused seek, MP4/B-frame MP4 and dual-subtitle Matroska playback pass with
+normal release. These are local results; this branch has no new GitHub CI run.
 
-[Subtitle-overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md)
-and [audio-format](../juxtopposed-references/native/home-recording-audio-retry-20261027/README.md)
-receipts retain their record464 scope:22direct checks, decoded MP4/Matroska captions,
-ordinary811-frame recording and six WAV/Ogg-FLAC/MP3 outputs. Exact onset/tail,
-already-consumed/indefinite captions and broader combinations remain open.
+Ordinary redesigned and traditional players open/play/pause/seek generated media
+and close normally with all guards passing. Redesigned fullscreen idle hide,
+pointer exit/control retention and maximize/restore are observed. Traditional
+Home's six native split-menu entries, picker and Ctrl+Q pass. The redesigned
+Close callback emits one reviewed `window closed` diagnostic; its initial strict
+observer failure is retained. Redesigned keyboard shortcuts remain unqualified
+in this run. Persisted redesigned image comparison is also missing because the
+capture helper only saved PNGs while the tool supplied JPEGs; saved accessibility
+observations remain, and traditional JPEG captures were retained.
 
-[Windows key translation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md)
-retains scoped native/ordinary evidence; startup layout is used until restart.
-[Registration feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md)
-retains its earlier module432 two-player/restart tuple; exact-binary scopes stay separate.
-
-[Source-header](../juxtopposed-references/native/home-music-source-header-20261027/README.md),
-[Source appearance](../juxtopposed-references/native/home-music-source-appearance-20261027/README.md),
-[navigation](../juxtopposed-references/native/home-music-navigation-20261027/README.md),
-[toolbar](../juxtopposed-references/native/home-music-toolbar-20261027/README.md)
-and other receipts retain their earlier scopes. Full visual scores, screen-reader/
-actual Windows DPI, all pin variants and final-package acceptance remain open.
+[Earlier recording-error work](../juxtopposed-references/native/home-recording-error-feedback-20261027/README.md)
+and other dated receipts retain their exact earlier binary scopes. The old
+[alpha CI receipt](../juxtopposed-references/ci/alpha-ci-upstream-20261027/README.md)
+records the already-merged PR and green master checks; it does not qualify the
+new integration branch. No beta gate is closed by these scoped results.
 
 ## Continue here
 
-1. Qualify the error notice's Show Details pointer/keyboard/focus path and timeout
-   behavior; the first attempt did not establish opening. Continue remaining
-   formats/settings afterwards. Mid-write failures remain separate from output-open
-   failure. Keep live System-theme changes, native UIA/screen-reader focus and
-   actual Windows DPI open. Cover view remains a documented functional adaptation.
-2. Continue W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): remaining settings,
-   remaining shortcut actions/layouts, rapid queries, recording formats,
-   appearance, accessibility and Windows DPI. HDR stays truthfully disabled;
-   unsupported independent Disc sort stays disabled.
-3. W1's secondary-fullscreen caption capture issue also occurs on older Core204;
-   physical output versus capture remains unqualified. The earlier cold RGB
-   assertion stays failed; only the later dual-caption Reset pair matches.
-   Sparse/long-cue cost, per-track combinations, other MP4 indexes and live
-   behavior remain open.
-4. Online subtitle search/download needs implementation and the owner API decision.
-   Windows10/audio endpoints/receiver/casting retain explicit external deferrals.
-   Finish integrated regression, independent review and clean-package/delivery
-   gates after the remaining behavior/design work.
-5. The owner authorizes test-related firewall rules with a cleanup journal.
-   Preserve Private/LocalSubnet scope and enabled protections. The read-only
-   `build-windows/firewall-ledger-20261027/` inventory records58project-program
-   rules and the earlier backup location; this session added/changed no rules.
-   Log exact before/after identities and undo steps for any future rule mutation.
+1. Review the integration receipt and qualify redesigned keyboard actions and
+   persisted fullscreen/window captures on the selected runtime. Keep master
+   and the old runtime as fallback until an integration merge is authorized.
+2. Return to W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): the error notice's
+   Show Details pointer/keyboard/focus/timeout path, remaining settings and
+   shortcuts, recording formats and mid-write failures, appearance, accessibility
+   and actual Windows DPI. Live System-theme changes remain open. Cover view is
+   a documented functional adaptation. HDR/unsupported independent Disc sort stay
+   truthfully disabled.
+3. W1's older secondary-fullscreen caption capture issue remains separate from
+   this primary-caption pass. Physical output versus capture, sparse/long-cue
+   cost, per-track combinations, MP4 indexes and live behavior remain open.
+4. Online subtitle search/download needs implementation and the owner API
+   decision. Windows10/audio endpoints/receiver/casting remain external deferrals.
+   Integrated regression, independent review and clean-package/delivery gates
+   follow the remaining behavior/design work. No Windows10 compatibility claim.
+5. The owner authorizes test firewall rules with an exact cleanup journal; none
+   were changed here. Preserve Private/LocalSubnet scope and enabled protections.
+   The ignored `build-windows/firewall-ledger-20261027/` inventory and earlier
+   backups remain available; refresh executable identities before future changes.
 
 ## Saved question
 
-Upstream was fetched, not merged: `874d229c18` adds195commits/237changed files
-from common base `1176b56bde`, with35overlapping files and four textual conflicts.
-The receipt records the read-only merge preview. Recommend a separate integration
-branch and native rebuild/regression before final beta validation; the Windows
-audio conflict overlaps our own teardown repair. The owner requested assessment,
-so applying the upstream update remains a separate decision.
-
 Should Continue Watching retain all recent videos or only unfinished items?
-The native query includes a fixture that reached EOF; the owned database has
-position0.995987,duration-1,play_count0. This is a policy observation. A resume-only
-policy needs native count/order/search/events qualified before limiting.
+The earlier owned database includes an EOF fixture with position0.995987,
+duration-1,play_count0. A resume-only policy needs native count/order/search/events
+qualified before limiting. No policy change was made during integration.
