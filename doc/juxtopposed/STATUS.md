@@ -44,8 +44,9 @@ to their identified binaries.
    negative control displays both old and new cues without a seek. A zero-sentinel
    first flush candidate passed that focused test but failed a +5 s delay case.
    A second experimental candidate refills from source-specific preroll and
-   passes both cases plus -5 s and a +10 s cue-change case. Wider testing is
-   still required before acceptance. Verify saved-FPS startup, added sources,
+   passes both cases, -5 s, a +10 s cue-change case and existing held-frame
+   and playing/EOF native regressions. Wider testing is still required before
+   acceptance. Verify saved-FPS startup, added sources,
    per-track/overlapping cues, nonseekable-source behavior, recording and source
    isolation. Then continue W1 defaults/restart,
    formats and secondary-monitor capture.

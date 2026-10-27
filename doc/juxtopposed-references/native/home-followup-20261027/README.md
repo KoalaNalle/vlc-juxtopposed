@@ -154,6 +154,16 @@ The expanded test executable SHA-256 is
 `01c52235fd1d80b8b30b835cda57ca9a120bf1e74ad2626d04f2cf68a73ea288`;
 results are in the `fps_extra_candidate2_*_r1` and
 `fps_extra_baseline_change_r1` run directories under `beta-follow-20261027`.
+The same test executable and candidate also pass the existing held-frame FPS
+and playing/EOF-revival regressions in `fps_regression_candidate2_held_r1` and
+`fps_regression_candidate2_playing_r1`: captions and clock/frame assertions
+pass at the tested rates, with normal exit and intact recorded guards.
+`fps_roles_candidate2_own_r1` and `fps_roles_candidate2_inherited_r1` also
+pass the existing two-role delay checks with normal exit and intact guards.
+One later capture shows an external and an embedded cue together; the initial
+reference had not yet rendered both, so this does not prove the embedded cue
+was preserved across the rate change. A stronger test must wait for both cues
+before comparing the embedded region across the edit.
 
 This is still limited native evidence, not general acceptance. If a subtitle
 source refuses the preroll seek, the code warns and continues best-effort;
@@ -161,6 +171,12 @@ it may still lose an earlier delayed cue. Nonseekable sources, overlapping or
 short cues, multiple per-track delays, other formats, saved settings, newly
 added sources, EOF, ordinary playback and stream-output interactions remain
 open. These results do not qualify a final package.
+
+For a possible follow-up, `noseek` forwards the subtitle demux deadline control
+but rejects its time seek. Setting the earlier deadline before the rate change
+may let the text demux reset its cue index for preroll without seeking; this is
+an untested approach. Confirm both controls and boundary behavior using a fresh
+playing snapshot test with the filter actually loaded before adopting it.
 
 Before accepting a guard change, verify startup with a saved nonzero FPS, newly
 added and selected subtitle sources, and that the change causes no audio/video
