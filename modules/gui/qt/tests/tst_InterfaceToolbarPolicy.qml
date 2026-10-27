@@ -73,12 +73,28 @@ TestCase {
         fsm.timeout(); compare(fsm.isVisible, false)
         MainCtx.hasEmbededVideo = true
         fsm.updateVideoEmbed()
+        compare(fsm.isVisible, false)
         fsm.mouseMove(); compare(fsm.isVisible, true)
         fsm.timeout(); compare(fsm.isVisible, false)
         MainCtx.hasEmbededVideo = false
         fsm.updateVideoEmbed()
+        compare(fsm.isVisible, false)
         fsm.mouseMove(); compare(fsm.isVisible, true)
         fsm.timeout(); compare(fsm.isVisible, false)
+    }
+    function test_legacyVideoToAudioRevealsControls_data() {
+        return [{tag:"ordinary", interactive:false}, {tag:"interactive", interactive:true}]
+    }
+    function test_legacyVideoToAudioRevealsControls(row) {
+        MainCtx.controlAutoHideMode = -1
+        MainCtx.hasEmbededVideo = true
+        Player.isInteractive = row.interactive
+        const fsm = make()
+        fsm.timeout(); compare(fsm.isVisible, false)
+        MainCtx.hasEmbededVideo = false
+        fsm.updateVideoEmbed()
+        compare(fsm.isVisible, true)
+        fsm.timeout(); compare(fsm.isVisible, true)
     }
     function test_hiddenHoverLock_data() {
         return [{tag:"controlsAllowed", allowed:true}, {tag:"controlsDisabled", allowed:false}]
