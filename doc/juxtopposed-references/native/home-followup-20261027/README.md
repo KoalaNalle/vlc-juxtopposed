@@ -165,6 +165,16 @@ reference had not yet rendered both, so this does not prove the embedded cue
 was preserved across the rate change. A stronger test must wait for both cues
 before comparing the embedded region across the edit.
 
+The follow-up `fps_isolation_candidate2_r1` test does wait for both the
+external primary and embedded secondary cues while paused. After changing FPS,
+it observes the external cue retime while the embedded caption region, frame,
+clock and selected roles remain unchanged. `fps_isolation_baseline_r1` also
+passes: this is a paused two-role regression check, not a playing-failure
+negative control. Both processes exit normally with recorded guards intact;
+test executable SHA-256 is
+`f63a9a04b98024377ee031a610920f58194551b3e9177497eec8c817f4e86b49`.
+Playing isolation and two independently added external sources remain open.
+
 This is still limited native evidence, not general acceptance. If a subtitle
 source refuses the preroll seek, the code warns and continues best-effort;
 it may still lose an earlier delayed cue. Nonseekable sources, overlapping or
