@@ -1,25 +1,32 @@
 # Current status
 
 Updated27 October2026. The desktop is available and beta work is continuing.
-The tested music source-header nightly source is `d80fb40b3a`.
+The tested source-placeholder follow-up source is `e39da9c7ee`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`.
-- Ordinary GUI418 `02f7a39c`, Core265 `fdfcfcd5`, library282 `13ccdc36`,
+- Ordinary GUI423 `42c18ca0`, Core265 `fdfcfcd5`, library282 `13ccdc36`,
   recording322 `930205b1`, MP4r240 `df15e8ed`, subtitle130 `11f2b78e`,
   WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-source-r419/runtime`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-appearance-cold-r425/runtime`.
   This is an isolated tested runtime, not a release package. Earlier tested
-  GUI388/357/349/344/337/329/311 tuples remain recoverable.
+  GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
 - All owned desktop/native tests are closed. The read-only firewall inventory
   also finished. Freeze fresh inputs before the next guarded job; current docs
-  postdate `inputs-r418.json`. The four unrelated audio experiments stay untouched.
+  postdate `inputs-r423.json`. The four unrelated audio experiments stay untouched.
 
 ## Latest verified work
 
-[Music source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md):
+[Source appearance follow-up](../juxtopposed-references/native/home-music-source-appearance-20261027/README.md):
+the placeholder is readable in native Dark/Light/current-System modes and the
+ancestor menus follow Light. Search/clear preserve pause; System selection survives
+normal restart. Only the isolated theme key changes; player profiles stay identical.
+Both runs exit0/602/no checked errors/all guards. Live OS theme propagation remains
+open: Settings exposed no targetable window; five OS appearance values stay unchanged.
+
+[GUI418 source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md):
 native per-player folder history, real breadcrumbs, current-track folder and a
 separate file-manager action now drive the header. List/cover views reuse shared
 components. The title badge follows the actual folder or queue and reopens the
@@ -36,11 +43,11 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Continue W3 music-header appearance/focus: the source-search placeholder is
-   hard to read in Dark mode; check its contrast and Light/System menu variants.
-   Native UIA focused-element reports remained stale even when Enter started the
-   correct selected cover. Keep screen-reader acceptance open and investigate
-   the accessible focus path. Cover view is a documented functional adaptation.
+1. Inspect the remaining global-shortcut registration/conflict feedback in W2;
+   distinguish saved mappings from successful Windows registration. Keep W3's
+   live System-theme change and native UIA/screen-reader focus open. UIA reports
+   stayed stale even when Enter activated the correct cover. Cover view remains
+   a documented functional adaptation rather than a complete visual acceptance.
 2. Continue W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): remaining settings,
    shortcuts/conflict feedback, rapid queries, recording formats/subtitle overlap,
    appearance, accessibility and Windows DPI. HDR stays truthfully disabled;
