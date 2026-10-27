@@ -37,6 +37,7 @@
 #include <vlc_block.h>
 #include <vlc_sout.h>
 #include <vlc_fs.h>
+#include <vlc_dialog.h>
 #include <assert.h>
 
 /*****************************************************************************
@@ -620,6 +621,11 @@ static void OutputStart( sout_stream_t *p_stream )
     if( OutputNew( p_stream, psz_muxer, p_sys->psz_prefix, psz_extension ) < 0 )
     {
         msg_Err( p_stream, "failed to open output");
+        vlc_dialog_display_error(p_stream, _("Recording failed"),
+            _("VLC could not create the recording file at:\n%s\n\n"
+              "Check that the recording folder exists and is writable, and that "
+              "the drive has free space. Then try recording again."),
+            p_sys->psz_prefix);
         return;
     }
 
