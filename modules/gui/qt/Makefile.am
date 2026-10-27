@@ -2281,12 +2281,13 @@ BUILT_SOURCES += tests/test_qt_csd_button_model.moc
 CLEANFILES += tests/test_qt_csd_button_model.moc
 test_qt_csd_button_model_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
 test_qt_csd_button_model_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
-test_qt_csd_button_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_qt_csd_button_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 if HAVE_WIN32
 test_qt_csd_button_model_SOURCES += util/winpthreads_shutdown.cpp
 test_qt_csd_button_model_LDFLAGS += -Wl,--wrap=pthread_key_delete
-test_qt_csd_button_model_LDADD += -lqoffscreen -lntdll
+test_qt_csd_button_model_LDADD = -lqoffscreen $(QT_QTEST_COMMON_ldadd) -lntdll
+else
+test_qt_csd_button_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 endif
 
 

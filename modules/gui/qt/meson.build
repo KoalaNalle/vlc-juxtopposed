@@ -2104,7 +2104,7 @@ if qt6_dep.found()
             'include_directories' : qt_include_dir,
             'link_with': [libvlccore, libvlc],
             'link_args': csd_button_test_link_args,
-            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, csd_button_test_deps]
+            'dependencies': [csd_button_test_deps, qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
         vlc_tests += {
