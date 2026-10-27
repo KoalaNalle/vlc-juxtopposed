@@ -81,6 +81,7 @@ journeys stay open unless their specific later receipt establishes them.
 | Current subtitle FPS | Native 0 means normal external-subtitle timing. Native held/playing/EOF retiming and ordinary cross-editor Reset, fractional feedback, next source and cold saved-default restart have scoped evidence. The latest role/estimator tuple and remaining combinations are identified in STATUS. |
 | Secondary subtitle timing | Actual secondary selection gates both current delay editors. Unselection cancels unfinished marks; an unavailable secondary setter preserves the primary. The opening-frame clock/selection repair has separate native and ordinary evidence; broader media/preset/package journeys remain distinct. |
 | Music folder / Track order | Songs uses indexed audio-containing folders with an All songs fallback. Folder queries exclude video. Track uses native media TrackId ordering (album/track groups); the existing artist/album track-count criterion remains separate. Disc is metadata only; unsupported independent Disc sorting is disabled. Scoped query, command-lifetime and ordinary cold/keyboard checks do not complete all library categories or design/DPI gates. |
+| Artist / genre details | One selected artist opens details without starting playback in both grid and table; explicit Play and multi-selection playback remain separate. Redesigned artist details share history/search/sort/view; traditional details keep their custom header. Native album identity is preserved across equal display titles. Scoped GUI290/native-query evidence does not close all category or package gates. |
 
 Retain signed microseconds, inactive style/duration values, unknown lengths and
 category inheritance. Ordinary Save must not replay unrelated presets or clear
@@ -90,6 +91,7 @@ behavior in short windows without leaking input to playback.
 
 ## Evidence entry points
 
+- [Music detail navigation, playback independence and native album/artist/genre queries](../juxtopposed-references/native/home-music-details-20261027/README.md).
 - [Native Playback/Audio consumers](../juxtopposed-references/native/home-playback-consumers-20261019/README.md)
   and [settings activation](../juxtopposed-references/native/home-settings-activation-20261019/README.md).
 - [Audio device/startup activation](../juxtopposed-references/native/home-audio-device-activation-20261019/README.md),

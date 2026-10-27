@@ -100,6 +100,7 @@ FocusScope {
 
     required property SearchCtx search
     required property SortCtx sort
+    property alias sortMenu: sortMenuAlbums
 
     SortMenuAlbums {
         id: sortMenuAlbums
@@ -228,7 +229,8 @@ FocusScope {
                     }
 
                     Navigation.parentItem: root
-                    Navigation.downItem: pinnedMusicAlbumSectionLoader
+                    Navigation.downItem: MainCtx.juxtopposedControls && !pinnedMusicAlbumSectionLoader.active
+                                         ? root._currentView : pinnedMusicAlbumSectionLoader
                 }
 
                 Loader {
@@ -386,33 +388,44 @@ FocusScope {
 
                         Navigation.parentItem: root
                         Navigation.upItem: artistBanner
-                        Navigation.downItem: viewHeader
+                        Navigation.downItem: MainCtx.juxtopposedControls ? root._currentView : viewHeader
                     }
                 }
 
-                Widgets.PageExt.DefaultPageHeader {
+                Loader {
                     id: viewHeader
+                    active: !MainCtx.juxtopposedControls
+                    visible: active
+                    enabled: active
+                    focus: active
+                    height: item?.implicitHeight ?? 0
 
                     anchors {
                         left: parent.left
                         right: parent.right
                     }
 
-                    text: qsTr("Albums")
-
-                    sortMenu: sortMenuAlbums
-
-                    search: root.search
-                    sort: root.sort
-
-                    leftPadding: root._contentLeftMargin
-                    rightPadding: root._contentRightMargin
-                    topPadding: VLCStyle.layoutTitle_top_padding
-
                     Navigation.parentItem: root
                     Navigation.upItem: artistBanner
                     Navigation.downAction: function() {
                         root.setCurrentItemFocus(Qt.TabFocusReason)
+                    }
+
+                    // Do not leave a hidden SearchBox binding or menu listener
+                    // attached to the redesigned page's shared contexts.
+                    sourceComponent: Widgets.PageExt.DefaultPageHeader {
+                        text: qsTr("Albums")
+                        sortMenu: sortMenuAlbums
+                        search: root.search
+                        sort: root.sort
+                        leftPadding: root._contentLeftMargin
+                        rightPadding: root._contentRightMargin
+                        topPadding: VLCStyle.layoutTitle_top_padding
+                        Navigation.parentItem: root
+                        Navigation.upItem: artistBanner
+                        Navigation.downAction: function() {
+                            root.setCurrentItemFocus(Qt.TabFocusReason)
+                        }
                     }
                 }
             }

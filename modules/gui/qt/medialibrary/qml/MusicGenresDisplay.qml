@@ -91,6 +91,11 @@ Widgets.PageLoader {
             property alias parentId: albumsView.parentId
 
             title: qsTr("Genres - %1").arg(genreName)
+            libraryBreadcrumbs: [
+                {text: qsTr("Music"), uri: ["music"]},
+                {text: qsTr("Genres"), uri: ["music", "genres"]},
+                {text: genreName || qsTr("Genre"), uri: albumGenrePage.pagePrefix}
+            ]
 
             /* List View */
             MusicAlbums {

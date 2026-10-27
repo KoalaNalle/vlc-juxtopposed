@@ -43,6 +43,7 @@ T.Page {
     property var libraryModel: _firstChild?.model ?? null
     property int libraryItemCount: libraryModel?.count ?? _firstChild?.count ?? -1
     property var libraryBreadcrumbs: null
+    property bool libraryHeaderEnabled: true
 
     property var sortModel: _firstChild?.sortModel ?? null
 
@@ -124,6 +125,9 @@ T.Page {
     }
 
     header: Loader {
+        active: root.libraryHeaderEnabled
+        enabled: active
+        visible: active
         height: item?.implicitHeight ?? 0
         sourceComponent: MainCtx.juxtopposedControls ? juxtopposedHeader : traditionalHeader
         Navigation.parentItem: root

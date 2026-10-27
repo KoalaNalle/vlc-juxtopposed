@@ -15,6 +15,8 @@ extern "C" vlc_medialibrary_t *vlc_test_stream_library(libvlc_instance_t *);
 using MediaList = std::unique_ptr<vlc_ml_media_list_t, decltype(&vlc_ml_media_list_release)>;
 using FolderList = std::unique_ptr<vlc_ml_folder_list_t, decltype(&vlc_ml_folder_list_release)>;
 using ArtistList = std::unique_ptr<vlc_ml_artist_list_t, decltype(&vlc_ml_artist_list_release)>;
+using AlbumList = std::unique_ptr<vlc_ml_album_list_t, decltype(&vlc_ml_album_list_release)>;
+using GenreList = std::unique_ptr<vlc_ml_genre_list_t, decltype(&vlc_ml_genre_list_release)>;
 
 class TestMusicLibraryQueries : public QObject
 {
@@ -113,6 +115,101 @@ private slots:
             if (artist.i_nb_tracks>0) ++tagged;
         }
         QCOMPARE(tagged,unsigned(3));
+    }
+    void albumIdentityAndTypedTracks()
+    {
+        auto params = vlc_ml_query_params_create();
+        params.i_sort = VLC_ML_SORTING_ALPHA;
+        AlbumList albums(vlc_ml_list_albums(m_library, &params), vlc_ml_album_list_release);
+        QVERIFY(albums); QCOMPARE(albums->i_nb_items, size_t(4));
+        QStringList eveningTracks;
+        int64_t eveningArtist = 0, previousEvening = 0;
+        unsigned evenings = 0, mornings = 0;
+        for (size_t i = 0; i < albums->i_nb_items; ++i)
+        {
+            const auto &album = albums->p_items[i];
+            const auto title = QString::fromUtf8(album.psz_title);
+            auto tracksQuery = vlc_ml_query_params_create();
+            tracksQuery.i_sort = VLC_ML_SORTING_MEDIA_TRACKNUMBER;
+            MediaList tracks(vlc_ml_list_audio_of(m_library, &tracksQuery,
+                VLC_ML_PARENT_ALBUM, album.i_id), vlc_ml_media_list_release);
+            QVERIFY(tracks);
+            QCOMPARE(tracks->i_nb_items, size_t(album.i_nb_tracks));
+            QCOMPARE(vlc_ml_count_audio_of(m_library, nullptr, VLC_ML_PARENT_ALBUM, album.i_id), tracks->i_nb_items);
+            for (size_t j = 0; j < tracks->i_nb_items; ++j)
+                QCOMPARE(tracks->p_items[j].i_type, VLC_ML_MEDIA_TYPE_AUDIO);
+            if (title == QStringLiteral("Morning Album"))
+            {
+                ++mornings;
+                QCOMPARE(titles(tracks.get()), (QStringList{QStringLiteral("First light"), QStringLiteral("Second light")}));
+                tracksQuery.psz_pattern = "Second";
+                QCOMPARE(vlc_ml_count_audio_of(m_library, &tracksQuery, VLC_ML_PARENT_ALBUM, album.i_id), size_t(1));
+            }
+            else if (title == QStringLiteral("Evening Album"))
+            {
+                ++evenings;
+                QCOMPARE(tracks->i_nb_items, size_t(1));
+                QVERIFY(album.i_id != previousEvening);
+                if (eveningArtist) QCOMPARE(album.i_artist_id, eveningArtist);
+                eveningArtist = album.i_artist_id; previousEvening = album.i_id;
+                QCOMPARE(album.i_year, unsigned(0));
+                QCOMPARE(album.i_nb_discs, uint32_t(1));
+                eveningTracks.append(titles(tracks.get()));
+            }
+        }
+        QCOMPARE(mornings, unsigned(1)); QCOMPARE(evenings, unsigned(2));
+        eveningTracks.sort();
+        QCOMPARE(eveningTracks, (QStringList{
+            QStringLiteral("A long title for checking truncation and focus in the redesigned music library"),
+            QStringLiteral("Nested song")}));
+        // No year/multi-disc tags: the native library deliberately preserves
+        // different containing-folder identities, even for equal album/artist.
+    }
+    void artistGenreDrilldown()
+    {
+        auto params = vlc_ml_query_params_create(); params.i_sort = VLC_ML_SORTING_ALPHA;
+        ArtistList artists(vlc_ml_list_artists(m_library, &params, true), vlc_ml_artist_list_release);
+        QVERIFY(artists);
+        unsigned matched = 0;
+        for (size_t i = 0; i < artists->i_nb_items; ++i)
+        {
+            const auto &artist = artists->p_items[i];
+            const auto name = QString::fromUtf8(artist.psz_name);
+            if (name != QStringLiteral("Fixture Artist") && name != QStringLiteral("Another Artist")
+                && name != QStringLiteral("Ärtist")) continue;
+            ++matched;
+            const size_t trackCount = name == QStringLiteral("Ärtist") ? 1 : 2;
+            const size_t albumCount = name == QStringLiteral("Another Artist") ? 2 : 1;
+            QCOMPARE(vlc_ml_count_audio_of(m_library, nullptr, VLC_ML_PARENT_ARTIST, artist.i_id), trackCount);
+            AlbumList albums(vlc_ml_list_albums_of(m_library, &params, VLC_ML_PARENT_ARTIST, artist.i_id), vlc_ml_album_list_release);
+            QVERIFY(albums); QCOMPARE(albums->i_nb_items, albumCount);
+            if (name == QStringLiteral("Another Artist"))
+            {
+                auto search = vlc_ml_query_params_create(); search.psz_pattern = "Nested";
+                MediaList tracks(vlc_ml_list_audio_of(m_library, &search, VLC_ML_PARENT_ARTIST,
+                    artist.i_id), vlc_ml_media_list_release);
+                QVERIFY(tracks); QCOMPARE(titles(tracks.get()), QStringList{QStringLiteral("Nested song")});
+            }
+        }
+        QCOMPARE(matched, unsigned(3));
+        GenreList genres(vlc_ml_list_genres(m_library, &params), vlc_ml_genre_list_release);
+        QVERIFY(genres); QCOMPARE(genres->i_nb_items, size_t(2));
+        for (size_t i = 0; i < genres->i_nb_items; ++i)
+        {
+            const auto &genre = genres->p_items[i];
+            const auto name = QString::fromUtf8(genre.psz_name);
+            QVERIFY(name == QStringLiteral("Ambient") || name == QStringLiteral("Electronic"));
+            const size_t count = name == QStringLiteral("Ambient") ? 3 : 2;
+            QCOMPARE(genre.i_nb_tracks, count);
+            QCOMPARE(vlc_ml_count_audio_of(m_library, nullptr, VLC_ML_PARENT_GENRE, genre.i_id), count);
+            AlbumList albums(vlc_ml_list_albums_of(m_library, &params, VLC_ML_PARENT_GENRE, genre.i_id), vlc_ml_album_list_release);
+            QVERIFY(albums); QCOMPARE(albums->i_nb_items, size_t(2));
+            auto page = params; page.i_offset = 1; page.i_nbResults = 1;
+            MediaList tracks(vlc_ml_list_audio_of(m_library, &page, VLC_ML_PARENT_GENRE,
+                genre.i_id), vlc_ml_media_list_release);
+            QVERIFY(tracks); QCOMPARE(tracks->i_nb_items, size_t(1));
+            QCOMPARE(tracks->p_items[0].i_type, VLC_ML_MEDIA_TYPE_AUDIO);
+        }
     }
     void cleanupTestCase()
     {
