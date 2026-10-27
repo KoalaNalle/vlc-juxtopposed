@@ -117,3 +117,9 @@ The unchanged `sidebar-videos-7c4e4.svg` and `sidebar-music-61ad2.svg` exports
 come from Videos (71:857) and Songs (71:851), respectively. Their approved
 focused-read contexts, reference renders and exact hashes are recorded in
 `doc/juxtopposed-references/figma/sidebar-icons-20261018/`.
+
+The unchanged24px `music-{songs,albums,artists,genres,add}-*.svg` originals come
+from music sidebar component858:5001, retrieved with Figma MCP on27October2026.
+The folder slot in4767:23606 reuses the byte-identical existing
+`controls-settings-cf6e1.svg`. Songs, Albums and Folder retain the original
+horizontal reflection in their wrappers; the vector files are unchanged.

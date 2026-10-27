@@ -91,6 +91,8 @@ QVariant MLVideoFoldersModel::itemRoleData(const MLItem * item, const int role) 
         case FOLDER_DURATION:
             return QVariant::fromValue(folder->getDuration());
         case FOLDER_COUNT:
+            return QVariant::fromValue(mediaType() == VLC_ML_MEDIA_TYPE_AUDIO
+                                      ? folder->getAudioCount() : folder->getVideoCount());
         case FOLDER_NB_VIDEOS:
             return QVariant::fromValue(folder->getVideoCount());
         default:
@@ -127,6 +129,12 @@ void MLVideoFoldersModel::onVlcMlEvent(const MLEvent & event) /* override */
         }
         case VLC_ML_EVENT_FOLDER_UPDATED:
         {
+            // An update can add/remove the last audio item, changing membership.
+            if (mediaType() == VLC_ML_MEDIA_TYPE_AUDIO)
+            {
+                emit resetRequested();
+                return;
+            }
             MLItemId itemId(event.modification.i_entity_id, VLC_ML_PARENT_FOLDER);
             updateItemInCache(itemId);
             return;
@@ -147,7 +155,7 @@ void MLVideoFoldersModel::onVlcMlEvent(const MLEvent & event) /* override */
 // Loader
 size_t MLVideoFoldersModel::Loader::count(vlc_medialibrary_t * ml, const vlc_ml_query_params_t* queryParams) const /* override */
 {
-    return vlc_ml_count_folders_by_type(ml, queryParams, VLC_ML_MEDIA_TYPE_VIDEO);
+    return vlc_ml_count_folders_by_type(ml, queryParams, m_type);
 }
 
 std::vector<std::unique_ptr<MLItem>>
@@ -155,7 +163,7 @@ MLVideoFoldersModel::Loader::load(vlc_medialibrary_t * ml,
                                   const vlc_ml_query_params_t* queryParams) const /* override */
 {
     ml_unique_ptr<vlc_ml_folder_list_t> list(vlc_ml_list_folders_by_type(ml, queryParams,
-                                                                         VLC_ML_MEDIA_TYPE_VIDEO));
+                                                                         m_type));
 
     if (list == nullptr)
         return {};
@@ -175,7 +183,7 @@ MLVideoFoldersModel::Loader::loadItemById(vlc_medialibrary_t* ml, MLItemId itemI
 {
     assert(itemId.type == VLC_ML_PARENT_FOLDER);
     ml_unique_ptr<vlc_ml_folder_t> folder(vlc_ml_get_folder(ml, itemId.id));
-    if (!folder)
+    if (!folder || (m_type == VLC_ML_MEDIA_TYPE_AUDIO && folder->i_nb_audio == 0))
         return nullptr;
     return std::make_unique<MLFolder>(folder.get());
 }

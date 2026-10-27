@@ -42,6 +42,7 @@ T.Page {
     // Pages with a wrapper around their view can expose the actual model here.
     property var libraryModel: _firstChild?.model ?? null
     property int libraryItemCount: libraryModel?.count ?? _firstChild?.count ?? -1
+    property var libraryBreadcrumbs: null
 
     property var sortModel: _firstChild?.sortModel ?? null
 
@@ -154,6 +155,8 @@ T.Page {
             Navigation.parentItem: root.header
             Keys.onPressed: event => Navigation.defaultKeyAction(event)
             breadcrumbs: {
+                if (root.libraryBreadcrumbs)
+                    return root.libraryBreadcrumbs
                 const section = root.pagePrefix[0]
                 const labels = {video: qsTr("Videos"), music: qsTr("Music"), playlists: qsTr("Playlists"),
                                 network: qsTr("Network"), home: qsTr("Home"), recent: qsTr("Recent")}

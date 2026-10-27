@@ -130,6 +130,24 @@ the test executable into an ordinary package. The
 retains failing previous-source cases, passing fixed-source cases and independent
 ordinary first-frame selection/Reset exports.
 
+The opt-in Qt sidecars `tests/native_library/music-queries.mk` and
+`tests/native_library/ml-play-request.mk` build real media-library query and
+production model/service command-lifetime checks. From the configured Qt build
+directory add the selected sidecar after `-f Makefile`, then use
+`music-queries-native MUSIC_QUERIES_OUT=<fresh absolute folder>` or
+`ml-play-request-native ML_REQUEST_OUT=<fresh absolute folder>`.
+Copy the real executable from that output's `.libs/` directory, not the small
+libtool launcher in its parent. Stage it beside the identified runtime DLLs and
+regenerate the plugin cache after replacing the library plugin.
+
+Both need an isolated empty `VLC_USERDATA_PATH` and `VLC_MUSIC_FIXTURE_DIR`
+pointing to the generated five-tagged-audio/one-video fixture. The query check
+also supports `VLC_MUSIC_OLD_TRACK_CRITERION=1` as the intentional preceding
+mapping control; its expected failure is separate from a positive run.
+The [music receipt](../juxtopposed-references/native/home-music-library-20261027/README.md)
+retains exact producers, fixture generation, Qt reports and ordinary evidence.
+These executables and profiles do not belong in the ordinary package.
+
 Run meaningful affected checks once; repeat or broaden for a changed dependency,
 new failure or unresolved coverage question. Final-package validation is a separate
 consolidated run on the actual ordinary candidate, not the sum of all old passes.

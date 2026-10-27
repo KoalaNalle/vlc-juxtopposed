@@ -440,6 +440,8 @@ typedef enum vlc_ml_sorting_criteria_t
     VLC_ML_SORTING_ALBUM,
     VLC_ML_SORTING_FILENAME,
     VLC_ML_SORTING_TRACKNUMBER,
+    /* Media track order; TRACKNUMBER above is the collection's track count. */
+    VLC_ML_SORTING_MEDIA_TRACKNUMBER,
 } vlc_ml_sorting_criteria_t;
 
 /**

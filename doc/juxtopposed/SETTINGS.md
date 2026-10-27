@@ -80,6 +80,7 @@ journeys stay open unless their specific later receipt establishes them.
 | Saved audio delay | Current offset stays unchanged; the next input/reopen uses the saved delay, with matching help rather than an unnecessary restart warning. |
 | Current subtitle FPS | Native 0 means normal external-subtitle timing. Native held/playing/EOF retiming and ordinary cross-editor Reset, fractional feedback, next source and cold saved-default restart have scoped evidence. The latest role/estimator tuple and remaining combinations are identified in STATUS. |
 | Secondary subtitle timing | Actual secondary selection gates both current delay editors. Unselection cancels unfinished marks; an unavailable secondary setter preserves the primary. The opening-frame clock/selection repair has separate native and ordinary evidence; broader media/preset/package journeys remain distinct. |
+| Music folder / Track order | Songs uses indexed audio-containing folders with an All songs fallback. Folder queries exclude video. Track uses native media TrackId ordering (album/track groups); the existing artist/album track-count criterion remains separate. Disc is metadata only; unsupported independent Disc sorting is disabled. Scoped query, command-lifetime and ordinary cold/keyboard checks do not complete all library categories or design/DPI gates. |
 
 Retain signed microseconds, inactive style/duration values, unknown lengths and
 category inheritance. Ordinary Save must not replay unrelated presets or clear
@@ -128,6 +129,9 @@ behavior in short windows without leaking input to playback.
 - [Fragment seek/cue restoration, final native matrix and remaining initial paused-caption observation](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
 - [Initial paused caption repair, ordinary before/after exports and affected regressions](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md).
 - [Secondary availability, selection cancellation and first-frame video clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md).
+- [Ordinary late-cue FPS Reset, preset/default, file return and cold restart](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md).
+
+- [Music folder queries, native Track sort, keyboard Play lifetime and ordinary cold/traditional routes](../juxtopposed-references/native/home-music-library-20261027/README.md).
 
 Each receipt retains its own source/runtime/platform limits and failures. Use
 [BUILD](BUILD.md) to stage and test the changed consumer; use BETA's final gates

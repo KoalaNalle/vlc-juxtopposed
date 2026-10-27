@@ -10,7 +10,7 @@ os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 os.environ['QT_QUICK_BACKEND'] = 'software'
 os.environ['QML_DISABLE_DISK_CACHE'] = '1'
 os.environ['QT_QPA_FONTDIR'] = str(repo / 'modules/gui/qt/pixmaps/juxtopposed')
-from PySide6.QtCore import Qt, QUrl, QPoint, qInstallMessageHandler
+from PySide6.QtCore import Qt, QUrl, QPoint, QModelIndex, QAbstractListModel, qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication, QFontDatabase
 from PySide6.QtQml import QQmlExpression, qmlContext
 from PySide6.QtQuick import QQuickView
@@ -190,6 +190,63 @@ for width, height, scale in [(380, 300, 1), (200, 100, 1), (570, 450, 1.5), (760
     category_view.resize(width, height)
     QTest.qWait(30)
     assert category_view.grabWindow().save(str(args.output_dir / f'categories-{width}-{scale}.png'))
+
+# Exercise a role-based, asynchronously resetting model as used by the actual
+# folder adapter. An array-only check misses missing model/modelData bindings.
+class FolderModel(QAbstractListModel):
+    def __init__(self):
+        super().__init__()
+        self.rows = [{'id': 17, 'title': 'My Songs'}, {'id': 23, 'title': 'Näive Songs'}]
+    def roleNames(self):
+        return {int(Qt.UserRole) + 1: b'id', int(Qt.UserRole) + 2: b'title'}
+    def rowCount(self, parent=QModelIndex()):
+        return 0 if parent.isValid() else len(self.rows)
+    def data(self, index, role):
+        if not index.isValid(): return None
+        return self.rows[index.row()].get('id' if role == int(Qt.UserRole) + 1 else 'title')
+    def clear(self):
+        self.beginResetModel(); self.rows = []; self.endResetModel()
+
+folders = FolderModel()
+folder_view, folder_root = load('JuxtopposedCategoryList.qml', {
+    'routes': folders, 'accessibleName': 'Song folders', 'fallbackIconSource': 'controls-settings-cf6e1.svg',
+    'fallbackIconMirrored': True, 'allSongsVisible': True, 'addAvailable': False,
+    'emptyText': 'No matching song folders',
+}, 337, 110)
+entries = QSignalSpy(folder_root.entryRequested)
+all_songs = QSignalSpy(folder_root.allSongsRequested)
+expression(folder_view, folder_root, 'setCurrentItemFocus(Qt.TabFocusReason)')
+assert find(folder_root, 'musicCategory0').hasActiveFocus()
+assert find(folder_root, 'musicCategory0').property('label') == 'My Songs'
+QTest.keyClick(folder_view, Qt.Key_Return)
+assert entries.count() == 1
+entry = entries.at(0)[0]
+entry_id = entry.property('id')
+assert (entry_id.toInt() if hasattr(entry_id, 'toInt') else entry_id) == 17
+QTest.keyClick(folder_view, Qt.Key_Down)
+assert find(folder_root, 'musicCategory1').hasActiveFocus()
+QTest.keyClick(folder_view, Qt.Key_Down)
+assert find(folder_root, 'musicAllSongs').hasActiveFocus()
+QTest.keyClick(folder_view, Qt.Key_Return)
+assert all_songs.count() == 1
+viewport = find(folder_root, 'musicCategoryViewport')
+last = find(folder_root, 'musicAllSongs')
+assert 0 <= last.y() - viewport.property('contentY') <= viewport.height() - last.height() + 1
+folders.clear(); QTest.qWait(30)
+expression(folder_view, folder_root, 'setCurrentItemFocus(Qt.TabFocusReason)')
+assert find(folder_root, 'musicAllSongs').hasActiveFocus()
+assert folder_view.grabWindow().save(str(args.output_dir / 'song-folders-empty.png'))
+
+# Original static asset slots have their24px roots,32px wrappers and reflection.
+categories.setProperty('uiScale', 1); category_view.resize(380, 300); QTest.qWait(30)
+for key, mirrored in [('tracks', True), ('albums', True), ('artists', False), ('genres', False)]:
+    button = find(categories, 'musicCategory' + key)
+    art = find(button, 'musicCategoryArtwork')
+    assert art.width() == art.height() == 24
+    assert art.property('mirror') is mirrored
+    assert art.property('source').isLocalFile()
+    assert expression(category_view, art, 'status === Image.Ready')
+    assert art.x() == art.y() == 4
 assert not messages, messages
 print('Passed: header/history/search focus, row selection/activation/drag/current state, music category destinations and scaled layouts.')
 print('Actual native library adapters and whole-app visual acceptance remain separate gates.')

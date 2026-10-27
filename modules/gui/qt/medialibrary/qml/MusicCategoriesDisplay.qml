@@ -14,6 +14,7 @@ import VLC.Util
 Widgets.PageExt {
     id: root
     title: qsTr("Music")
+    background: Rectangle { color: JuxtopposedPalette.color("#0E0E0E") }
     libraryItemCount: categories.routes.length
     // Match the other music pages' shared shell contract.
     property int displayMarginBeginning: 0
@@ -27,18 +28,18 @@ Widgets.PageExt {
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.leftMargin: 28 * uiScale
-        anchors.topMargin: 28 * uiScale
-        width: Math.min(380 * uiScale, Math.max(0, parent.width - 56 * uiScale))
+        anchors.leftMargin: 20 * uiScale
+        anchors.topMargin: 8 * uiScale
+        width: Math.min(337 * uiScale, Math.max(0, parent.width - 40 * uiScale))
         uiScale: VLCStyle.dp(1, VLCStyle.scale)
         iconFontFamily: VLCIcons.fontFamily
         addIcon: VLCIcons.add
         addAvailable: MainCtx.mediaLibraryAvailable
         routes: [
-            {key: "tracks", text: qsTr("Songs"), icon: VLCIcons.topbar_music, uri: ["music", "tracks"]},
-            {key: "albums", text: qsTr("Albums"), icon: VLCIcons.album_cover, uri: ["music", "albums"]},
-            {key: "artists", text: qsTr("Artists"), icon: VLCIcons.topbar_music, uri: ["music", "artists"]},
-            {key: "genres", text: qsTr("Genres"), icon: VLCIcons.visualization, uri: ["music", "genres"]}
+            {key: "tracks", text: qsTr("Songs"), iconSource: "music-songs-018cc.svg", iconMirrored: true, uri: ["music", "tracks"]},
+            {key: "albums", text: qsTr("Albums"), iconSource: "music-albums-beb21.svg", iconMirrored: true, uri: ["music", "albums"]},
+            {key: "artists", text: qsTr("Artists"), iconSource: "music-artists-7bb62.svg", uri: ["music", "artists"]},
+            {key: "genres", text: qsTr("Genres"), iconSource: "music-genres-66b4e.svg", uri: ["music", "genres"]}
         ]
         Navigation.parentItem: root
         Navigation.upItem: root.header

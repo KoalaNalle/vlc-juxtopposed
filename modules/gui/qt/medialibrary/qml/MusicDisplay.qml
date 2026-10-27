@@ -51,7 +51,8 @@ Widgets.PageLoader {
         }, {
             displayText: qsTr("Tracks"),
             name: "tracks" ,
-            url: "qrc:///qt/qml/VLC/MediaLibrary/MusicTracksDisplay.qml"
+            nested: true,
+            url: "qrc:///qt/qml/VLC/MediaLibrary/MusicSongsDisplay.qml"
         }, {
             displayText: qsTr("Genres"),
             name: "genres" ,

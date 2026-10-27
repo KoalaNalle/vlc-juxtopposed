@@ -1798,6 +1798,8 @@ medialibrary::SortingCriteria MediaLibrary::sortingCriteria(int sort)
             return medialibrary::SortingCriteria::Filename;
         case VLC_ML_SORTING_TRACKNUMBER:
             return medialibrary::SortingCriteria::TrackNumber;
+        case VLC_ML_SORTING_MEDIA_TRACKNUMBER:
+            return medialibrary::SortingCriteria::TrackId;
         default:
             vlc_assert_unreachable();
     }

@@ -885,6 +885,11 @@ ui_%.h: %.ui
 # Resources
 
 libqt_plugin_la_RES = \
+	pixmaps/juxtopposed/music-songs-018cc.svg \
+	pixmaps/juxtopposed/music-albums-beb21.svg \
+	pixmaps/juxtopposed/music-artists-7bb62.svg \
+	pixmaps/juxtopposed/music-genres-66b4e.svg \
+	pixmaps/juxtopposed/music-add-97a9d.svg \
 	pixmaps/juxtopposed/ATTRIBUTION.md \
 	pixmaps/juxtopposed/sidebar-home-inactive-27471.svg \
 	pixmaps/juxtopposed/sidebar-home-504e1.svg \
@@ -1448,6 +1453,8 @@ libqml_module_medialibrary_a_QML = \
 	medialibrary/qml/MusicAllArtists.qml \
 	medialibrary/qml/MusicArtistsDisplay.qml \
 	medialibrary/qml/MusicDisplay.qml \
+	medialibrary/qml/MusicSongsDisplay.qml \
+	medialibrary/qml/MusicFoldersDisplay.qml \
 	medialibrary/qml/MusicCategoriesDisplay.qml \
 	medialibrary/qml/MusicGenres.qml \
 	medialibrary/qml/MusicGenresDisplay.qml \
@@ -2319,6 +2326,8 @@ test_qt_audio_waveform_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_qt_audio_waveform
 TESTS += test_qt_audio_waveform
 
+EXTRA_DIST += tests/test_music_library_queries.cpp tests/native_library/music-queries.mk
+
 test_qt_home_activity_SOURCES = \
 	tests/test_home_activity.cpp tests/network_stream_probe.c \
 	medialibrary/mlhomeactivitydata.cpp medialibrary/mlhomeactivitydata.hpp medialibrary/mlqmltypes.hpp \
@@ -3184,3 +3193,4 @@ endif
 endif
 
 EXTRA_DIST += tests/native_ui/seek_accessibility_journey.cpp tests/native_ui/seek_accessibility_journey.md
+EXTRA_DIST += tests/test_ml_play_request.cpp tests/native_library/ml-play-request.mk

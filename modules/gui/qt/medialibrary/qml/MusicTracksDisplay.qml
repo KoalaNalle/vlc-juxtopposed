@@ -26,7 +26,17 @@ import VLC.Widgets as Widgets
 Widgets.PageExt {
     id: root
 
-    title: MainCtx.juxtopposedControls ? qsTr("Songs") : qsTr("Tracks")
+    property string folderTitle: ""
+    property alias parentId: tracklistdisplay_id.parentId
+    title: folderTitle || (MainCtx.juxtopposedControls ? qsTr("Songs") : qsTr("Tracks"))
+    libraryBreadcrumbs: folderTitle ? [
+        {text: qsTr("Music"), uri: ["music"]},
+        {text: qsTr("Songs"), uri: ["music", "tracks"]},
+        {text: folderTitle, uri: root.pagePrefix}
+    ] : null
+    background: Rectangle {
+        color: MainCtx.juxtopposedControls ? JuxtopposedPalette.color("#0E0E0E") : "transparent"
+    }
 
     hasGridListMode: MainCtx.juxtopposedControls
     isSearchable: tracklistdisplay_id.isSearchable
@@ -35,14 +45,17 @@ Widgets.PageExt {
     property alias selectionModel: tracklistdisplay_id.selectionModel
     libraryModel: model
 
-    property var sortModel: [
+    sortModel: [
         { text: qsTr("Title"),    criteria: "title"},
         { text: qsTr("Album"),    criteria: "album_title" },
         { text: qsTr("Artist"),   criteria: "main_artist" },
         { text: qsTr("Duration"), criteria: "duration" },
-        { text: qsTr("Track"),    criteria: "track_number" },
-        { text: qsTr("Disc"),     criteria: "disc_number" }
+        { text: qsTr("Track"),    criteria: "track_number" }
     ]
+    Component.onCompleted: {
+        if (!sortModel.some(entry => entry.criteria === sort.criteria))
+            sort.criteria = "title"
+    }
 
     function setCurrentItemFocus(reason) {
         if (compactSongs.visible)

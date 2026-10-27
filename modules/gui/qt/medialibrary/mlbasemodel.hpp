@@ -215,7 +215,9 @@ public:
 
 
     //ML specific operations
-    quint64 loadItemsTask(size_t offset, const QVector<int> &indexes, MLBaseModel::ItemCallback cb);
+    // View reads belong to the loader; an explicit command may outlive the view.
+    quint64 loadItemsTask(size_t offset, const QVector<int> &indexes,
+                         MLBaseModel::ItemCallback cb, const QObject *owner = nullptr);
     size_t loadItemByIdTask(MLItemId itemId, std::function<void (size_t, ItemType&&)> cb) const;
 
 protected:
