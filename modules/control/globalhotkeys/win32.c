@@ -25,12 +25,15 @@
 #endif
 
 #include <ctype.h>
+#include <inttypes.h>
 
 #define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
 #include <vlc_actions.h>
+#include <vlc_memstream.h>
+#include <vlc_vector.h>
 
 #include <windows.h>
 
@@ -69,7 +72,59 @@ struct intf_sys_t
     HWND hotkeyWindow;
     vlc_mutex_t lock;
     vlc_sem_t wait;
+    struct VLC_VECTOR(ATOM) registered;
 };
+
+struct hotkey_error
+{
+    vlc_action_id_t action;
+    uint_fast32_t key;
+    DWORD code;
+    bool unsupported;
+};
+struct hotkey_report
+{
+    size_t failed, count;
+    struct hotkey_error errors[32];
+};
+
+static void RecordFailure(struct hotkey_report *report, vlc_action_id_t action,
+                          uint_fast32_t key, DWORD code, bool unsupported)
+{
+    report->failed++;
+    if (report->count < ARRAY_SIZE(report->errors))
+        report->errors[report->count++] = (struct hotkey_error){action, key, code, unsupported};
+}
+
+/* Transient, per-instance results. They describe the running module, not newly
+ * saved mappings. Retain the last result until this libvlc instance is deleted. */
+static void PublishStatus(intf_thread_t *intf, const char *state,
+                          const struct hotkey_report *report)
+{
+    libvlc_int_t *root = vlc_object_instance(intf);
+    if (var_GetAddress(root, "global-hotkeys-owner") != intf) return;
+    intf_sys_t *sys = intf->p_sys;
+    struct vlc_memstream stream;
+    vlc_memstream_open(&stream);
+    vlc_memstream_printf(&stream,
+        "{\"version\":1,\"state\":\"%s\",\"registered\":%zu,\"failed\":%zu,\"omitted\":%zu,\"errors\":[",
+        state, sys->registered.size, report->failed, report->failed - report->count);
+    for (size_t i = 0; i < report->count; ++i)
+    {
+        const struct hotkey_error *error = &report->errors[i];
+        vlc_memstream_printf(&stream,
+            "%s{\"action\":%u,\"key\":%" PRIuFAST32 ",\"code\":%lu,\"unsupported\":%s}",
+            i ? "," : "", (unsigned)error->action, error->key,
+            (unsigned long)error->code, error->unsupported ? "true" : "false");
+    }
+    vlc_memstream_puts(&stream, "]}");
+    if (vlc_memstream_close(&stream) == 0)
+    {
+        var_SetString(root, "global-hotkeys-status", stream.ptr);
+        free(stream.ptr);
+    }
+    else var_SetString(root, "global-hotkeys-status", "{\"version\":1,\"state\":\"unavailable\"}");
+}
 
 /*****************************************************************************
  * Open: initialize interface
@@ -83,11 +138,31 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     p_intf->p_sys = p_sys;
+    libvlc_int_t *root = vlc_object_instance(p_intf);
+    if (var_Type(root, "global-hotkeys-owner") == 0
+        && var_Create(root, "global-hotkeys-owner", VLC_VAR_ADDRESS) != VLC_SUCCESS)
+        return VLC_ENOMEM;
+    if (var_Type(root, "global-hotkeys-status") == 0
+        && var_Create(root, "global-hotkeys-status", VLC_VAR_STRING) != VLC_SUCCESS)
+        return VLC_ENOMEM;
+    if (var_Type(root, "global-hotkeys-owner") != VLC_VAR_ADDRESS
+        || var_Type(root, "global-hotkeys-status") != VLC_VAR_STRING
+        || var_GetAddress(root, "global-hotkeys-owner") != NULL)
+        return VLC_EGENERIC;
+    var_SetAddress(root, "global-hotkeys-owner", p_intf);
+    p_sys->hotkeyWindow = NULL;
+    vlc_vector_init(&p_sys->registered);
+    PublishStatus(p_intf, "starting", &(struct hotkey_report){0});
     vlc_mutex_init( &p_sys->lock );
     vlc_sem_init( &p_sys->wait, 0 );
 
     if( vlc_clone( &p_sys->thread, Thread, p_intf ) )
+    {
+        PublishStatus(p_intf, "failed", &(struct hotkey_report){0});
+        var_SetAddress(root, "global-hotkeys-owner", NULL);
+        vlc_vector_destroy(&p_sys->registered);
         return VLC_ENOMEM;
+    }
 
     vlc_sem_wait( &p_sys->wait );
     vlc_mutex_lock( &p_sys->lock );
@@ -95,7 +170,10 @@ static int Open( vlc_object_t *p_this )
     vlc_mutex_unlock( &p_sys->lock );
 
     if( fail )
+    {
         vlc_join( p_sys->thread, NULL );
+        var_SetAddress(root, "global-hotkeys-owner", NULL);
+    }
 
     return fail ? VLC_ENOMEM : VLC_SUCCESS;
 }
@@ -115,6 +193,7 @@ static void Close( vlc_object_t *p_this )
     vlc_mutex_unlock( &p_sys->lock );
 
     vlc_join( p_sys->thread, NULL );
+    var_SetAddress(vlc_object_instance(p_intf), "global-hotkeys-owner", NULL);
 }
 
 /*****************************************************************************
@@ -128,6 +207,7 @@ static void *Thread( void *p_data )
 
     intf_thread_t *p_intf = p_data;
     intf_sys_t *p_sys = p_intf->p_sys;
+    struct hotkey_report report = {0};
 
     /* Window which receives Hotkeys */
     p_sys->hotkeyWindow =
@@ -142,10 +222,14 @@ static void *Thread( void *p_data )
                 NULL,                              /* no menu in this window */
                 GetModuleHandle(NULL),    /* handle of this program instance */
                 NULL );                                 /* sent to WM_CREATE */
-    vlc_sem_post( &p_sys->wait );
-
     if( p_sys->hotkeyWindow == NULL )
+    {
+        PublishStatus(p_intf, "failed", &report);
+        vlc_vector_destroy(&p_sys->registered);
+        vlc_sem_post(&p_sys->wait);
         return NULL;
+    }
+    vlc_sem_post( &p_sys->wait );
 
     SetWindowLongPtr( p_sys->hotkeyWindow, GWLP_WNDPROC,
             (LONG_PTR)WMHOTKEYPROC );
@@ -156,12 +240,23 @@ static void *Thread( void *p_data )
     for( const char* const* ppsz_keys = vlc_actions_get_key_names( p_intf );
          *ppsz_keys != NULL; ppsz_keys++ )
     {
+        char action_name[44];
+        const int length = snprintf(action_name, sizeof(action_name), "key-%s", *ppsz_keys);
+        const vlc_action_id_t action = length >= 0 && (size_t)length < sizeof(action_name)
+            ? vlc_actions_get_id(action_name) : ACTIONID_NONE;
         uint_fast32_t *p_keys;
         size_t i_nb_keys = vlc_actions_get_keycodes( p_intf, *ppsz_keys, true,
                                                      &p_keys );
         for( size_t i = 0; i < i_nb_keys; ++i )
         {
             uint_fast32_t i_key = p_keys[i];
+            /* The legacy mapping does not represent these modifiers. Never
+             * register their unmodified counterpart as if it were equivalent. */
+            if (i_key & (KEY_MODIFIER_META | KEY_MODIFIER_COMMAND))
+            {
+                RecordFailure(&report, action, i_key, ERROR_NOT_SUPPORTED, true);
+                continue;
+            }
             UINT i_keyMod = 0;
             if( i_key & KEY_MODIFIER_SHIFT ) i_keyMod |= MOD_SHIFT;
             if( i_key & KEY_MODIFIER_ALT ) i_keyMod |= MOD_ALT;
@@ -228,34 +323,57 @@ static void *Thread( void *p_data )
                     i_vk = toupper( (uint8_t)(i_key & ~KEY_MODIFIER) );
                     break;
             }
-            if( !i_vk ) continue;
+            if( !i_vk || (i_key & ~KEY_MODIFIER) == KEY_F12 )
+            {
+                RecordFailure(&report, action, i_key, ERROR_NOT_SUPPORTED, true);
+                continue;
+            }
 
 #undef HANDLE
 #undef HANDLE2
 
             ATOM atom = GlobalAddAtomA( *ppsz_keys );
-            if( !atom ) continue;
+            if( !atom )
+            {
+                RecordFailure(&report, action, i_key, GetLastError(), false);
+                continue;
+            }
+            if (!vlc_vector_push(&p_sys->registered, atom))
+            {
+                GlobalDeleteAtom(atom);
+                RecordFailure(&report, action, i_key, ERROR_NOT_ENOUGH_MEMORY, false);
+                continue;
+            }
 
             if( !RegisterHotKey( p_sys->hotkeyWindow, atom, i_keyMod, i_vk ) )
+            {
+                const DWORD error = GetLastError();
+                p_sys->registered.size--;
                 GlobalDeleteAtom( atom );
+                RecordFailure(&report, action, i_key, error, false);
+            }
         }
         free( p_keys );
     }
+    PublishStatus(p_intf, report.failed ? p_sys->registered.size ? "partial" : "failed"
+                  : p_sys->registered.size ? "active" : "inactive", &report);
 
     /* Main message loop */
     while( GetMessage( &message, NULL, 0, 0 ) )
         DispatchMessage( &message );
 
     /* Unregistering of Hotkeys */
-    for( const char* const* ppsz_keys = vlc_actions_get_key_names( p_intf );
-         *ppsz_keys != NULL; ppsz_keys++ )
+    for (size_t i = 0; i < p_sys->registered.size; ++i)
     {
-        ATOM atom = GlobalFindAtomA( *ppsz_keys );
-        if( !atom ) continue;
-
-        if( UnregisterHotKey( p_sys->hotkeyWindow, atom ) )
-            GlobalDeleteAtom( atom );
+        const ATOM atom = p_sys->registered.data[i];
+        UnregisterHotKey(p_sys->hotkeyWindow, atom);
+        // Balance every successful GlobalAddAtom, including multiple bindings
+        // of one action. Never release a different instance's atom reference.
+        GlobalDeleteAtom(atom);
     }
+    p_sys->registered.size = 0;
+    PublishStatus(p_intf, "stopped", &report);
+    vlc_vector_destroy(&p_sys->registered);
 
     /* close window */
     vlc_mutex_lock( &p_sys->lock );

@@ -22,16 +22,29 @@ QDialog *openControlsShortcutEditor(ControlsPreferencesModel *model, QWindow *ow
     dialog->resize(780, 560);
     dialog->setMinimumSize(400, 300);
     auto *layout = new QGridLayout(dialog);
+    const QPointer<ControlsPreferencesModel> lifetime(model);
     auto *selector = new KeySelectorControl(dialog);
     selector->setParent(dialog);
     selector->insertInto(layout);
     auto *status = new QLabel(QObject::tr("Double click a shortcut to change it. Changes apply after restarting VLC."), dialog);
     status->setObjectName(QStringLiteral("shortcutEditorStatus"));
     status->setWordWrap(true);
-    layout->addWidget(status, 4, 0, 1, 4);
+    auto *registration = new QLabel(dialog);
+    registration->setObjectName(QStringLiteral("shortcutGlobalRegistrationStatus"));
+    registration->setTextFormat(Qt::PlainText);
+    registration->setWordWrap(true);
+    const auto updateRegistration = [registration, lifetime] {
+        const auto text = lifetime ? lifetime->globalShortcutStatus() : QString{};
+        registration->setText(text.section(QLatin1Char('\n'), 0, 2));
+        registration->setAccessibleDescription(text);
+        registration->setVisible(!text.isEmpty());
+    };
+    updateRegistration();
+    QObject::connect(model, &ControlsPreferencesModel::valuesChanged, dialog, updateRegistration);
+    layout->addWidget(registration, 4, 0, 1, 4);
+    layout->addWidget(status, 5, 0, 1, 4);
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Save | QDialogButtonBox::Cancel, dialog);
-    layout->addWidget(buttons, 5, 0, 1, 4);
-    const QPointer<ControlsPreferencesModel> lifetime(model);
+    layout->addWidget(buttons, 6, 0, 1, 4);
     QObject::connect(buttons, &QDialogButtonBox::accepted, dialog, [dialog, selector, status, lifetime] {
         if (!lifetime) { dialog->reject(); return; }
         if (!lifetime->applyShortcuts(selector->requestedValues())) {

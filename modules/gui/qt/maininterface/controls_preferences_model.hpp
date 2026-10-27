@@ -2,6 +2,7 @@
 #pragma once
 #include <QObject>
 #include <QVariantMap>
+#include <QHash>
 #include <functional>
 struct qt_intf_t;
 
@@ -20,6 +21,8 @@ class ControlsPreferencesModel final : public QObject
     Q_PROPERTY(bool remoteSetupActive READ remoteSetupActive NOTIFY remoteSetupActiveChanged FINAL)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged FINAL)
     Q_PROPERTY(QVariantMap activeShortcuts READ activeShortcuts CONSTANT FINAL)
+    Q_PROPERTY(QString globalShortcutStatus READ globalShortcutStatus NOTIFY valuesChanged FINAL)
+    Q_PROPERTY(bool globalShortcutWarning READ globalShortcutWarning NOTIFY valuesChanged FINAL)
 public:
     struct Consumers {
         bool mousePolicy = false;
@@ -50,6 +53,8 @@ public:
     void remoteSetupClosed();
     QVariantMap shortcutValues() const;
     QVariantMap activeShortcuts() const;
+    QString globalShortcutStatus() const { return m_globalShortcutStatus; }
+    bool globalShortcutWarning() const { return m_globalShortcutWarning; }
 signals:
     void valuesChanged();
     void lastErrorChanged();
@@ -65,9 +70,13 @@ private:
     void setStatus(const QString &);
     void refresh();
     QVariantMap restartSnapshot() const;
+    QPair<QString, bool> globalShortcutFeedback() const;
     qt_intf_t *m_intf;
     Consumers m_consumers;
     QVariantMap m_values, m_capabilities, m_choices, m_defaults, m_startup;
     QString m_error, m_status;
+    QHash<int, QString> m_globalShortcutLabels;
+    QString m_globalShortcutStatus;
+    bool m_globalShortcutWarning = false;
     bool m_restart = false, m_editorActive = false, m_remoteSetupActive = false;
 };

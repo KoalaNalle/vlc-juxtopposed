@@ -156,6 +156,19 @@ assert item('controlsScrollWheel').property('currentIndex')==-1
 assert 'Custom' in item('controlsScrollWheel').property('displayText')
 select('controlsScrollWheel',1);assert model.state['scrollWheel']==0
 done('Unavailable consumers and unknown saved enum values remain explicit without selecting an optimistic default')
+requests_before_feedback=len(model.requests)
+model._global_status='Global shortcuts in this player: 1 active, 1 unavailable.\nPlay/Pause: Ctrl+Alt+Shift+F9 is already used by another app or VLC player.'
+model._global_warning=True;model.valuesChanged.emit();QTest.qWait(30)
+focus('globalSettingsSearch');text('global shortcuts');QTest.qWait(30)
+assert item('globalCategorycontrols').isVisible()
+assert item('controlsGlobalShortcutStatus').isVisible() and 'already used' in item('controlsGlobalShortcutStatus').property('text')
+assert item('controlsEditShortcuts').isVisible()
+assert not item('controlsSingleRow').isVisible()
+assert len(model.requests)==requests_before_feedback, 'Runtime registration feedback must not save or replay settings'
+assert window.grabWindow().save(str(results/'global-shortcut-feedback.png'))
+model._global_status='';model._global_warning=False;model.valuesChanged.emit()
+QTest.keyClick(window,Qt.Key_A,Qt.ControlModifier);QTest.keyClick(window,Qt.Key_Backspace);QTest.qWait(30)
+done('Global shortcut availability is searchable read-only feedback, separate from saved mappings')
 focus('globalSettingsSearch');text('same wheel');QTest.qWait(30)
 assert item('controlsLinkWheelRow').isVisible()
 assert not item('controlsSingleRow').isVisible()
@@ -187,7 +200,7 @@ assert window.grabWindow().save(str(results/'04-controls-light-scale150.png'))
 done('Normal, narrow, Light and scaled components retain shared settings layout and intrinsic artwork geometry')
 errors=[m for m in messages if any(x in m for x in ['ReferenceError','TypeError','is not a type','Unable to assign','Cannot assign','Cannot load','Required property'])]
 assert not errors,errors
-assert len(checks)==8
+assert len(checks)==9
 (results/'verification.json').write_text(json.dumps(dict(passed=True,checks=checks,checkCount=len(checks),qmlMessages=messages,desktopDpiAccepted=False,nativeConsumersAccepted=False),indent=2)+'\n',encoding='utf-8',newline='\n')
 print('PASS:',len(checks),'Controls QML groups',flush=True)
 window.close();engine.deleteLater();QCoreApplication.sendPostedEvents(None,QEvent.DeferredDelete);app.processEvents()

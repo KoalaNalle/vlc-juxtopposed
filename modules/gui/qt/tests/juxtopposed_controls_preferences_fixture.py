@@ -15,6 +15,7 @@ class ControlsPreferences(QObject):
         super().__init__(); self.state = deepcopy(SEED); self.requests = []; self.reloads = 0
         self.reject = False; self._busy = False; self._error = ''; self._status = ''
         self._restart = False; self.editor = ''; self.unsupported = set()
+        self._global_status = ''; self._global_warning = False
         self.independent = {k:v for k,v in SEED.items() if k in self.wheel_pairs}
     wheel_pairs = dict(remoteScrollWheel='scrollWheel', remoteHorizontalScroll='horizontalScroll', remoteReverseScroll='reverseScroll')
     values = Property('QVariantMap', lambda s: deepcopy(s.state), notify=valuesChanged)
@@ -26,6 +27,8 @@ class ControlsPreferences(QObject):
     status = Property(str, lambda s:s._status, notify=statusChanged)
     busy = Property(bool, lambda s:s._busy, notify=busyChanged)
     restartRequired = Property(bool, lambda s:s._restart, notify=valuesChanged)
+    globalShortcutStatus = Property(str, lambda s:s._global_status, notify=valuesChanged)
+    globalShortcutWarning = Property(bool, lambda s:s._global_warning, notify=valuesChanged)
     @Slot()
     def reload(self): self.reloads += 1
     @Slot(str, 'QVariant', result=bool)

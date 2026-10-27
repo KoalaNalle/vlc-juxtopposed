@@ -12,6 +12,8 @@
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QTemporaryDir>
 #include <QTest>
 #include <memory>
@@ -92,6 +94,60 @@ private slots:
         QVERIFY(!model->setValue("webRemoteEnabled", true));
         QVERIFY(!QFile::exists(config));
         QVERIFY(model->capabilities().value("veryShortSkip").toBool());
+    }
+    void globalShortcutReportsDoNotReplaySavedMappings()
+    {
+        auto *root = vlc_test_library_object(instance);
+        var_Create(root, "global-hotkeys-status", VLC_VAR_STRING);
+        const auto publish = [this, root](const QJsonObject &report) {
+            const auto data = QJsonDocument(report).toJson(QJsonDocument::Compact);
+            var_SetString(root, "global-hotkeys-status", data.constData());
+            model->reload();
+        };
+        QJsonObject report{{"version", 1}, {"state", "starting"}};
+        publish(report);
+        QVERIFY(model->globalShortcutStatus().contains("starting"));
+        QVERIFY(!model->globalShortcutWarning());
+        QVERIFY(!QFile::exists(config));
+        report = {{"version", 1}, {"state", "active"}, {"registered", 2},
+                  {"failed", 0}, {"omitted", 0}, {"errors", QJsonArray{}}};
+        publish(report);
+        QVERIFY(model->globalShortcutStatus().contains("2 global shortcuts"));
+        QVERIFY(!model->globalShortcutWarning());
+        const QJsonObject error{{"action", int(ACTIONID_PLAY_PAUSE)},
+            {"key", qint64(vlc_str2keycode("Ctrl+Alt+Shift+F9"))},
+            {"code", 1409}, {"unsupported", false}};
+        report = {{"version", 1}, {"state", "partial"}, {"registered", 1},
+                  {"failed", 1}, {"omitted", 0}, {"errors", QJsonArray{error}}};
+        publish(report);
+        QVERIFY(model->globalShortcutWarning());
+        QVERIFY(model->globalShortcutStatus().contains("already used"));
+        QVERIFY(model->globalShortcutStatus().contains("F9"));
+        const auto runtimeStatus = model->globalShortcutStatus();
+        const auto active = model->activeShortcuts();
+        auto changes = model->shortcutValues();
+        changes["global-key-play-pause"] = QStringLiteral("Ctrl+Alt+Shift+F10");
+        QVERIFY(model->applyShortcuts(changes));
+        QVERIFY(model->restartRequired());
+        QCOMPARE(model->globalShortcutStatus(), runtimeStatus);
+        QCOMPARE(model->activeShortcuts(), active);
+        const auto saved = bytes(config);
+        auto unsupported = error; unsupported["unsupported"] = true;
+        unsupported["code"] = 50;
+        report["state"] = QStringLiteral("failed"); report["registered"] = 0;
+        report["errors"] = QJsonArray{unsupported}; publish(report);
+        QVERIFY(model->globalShortcutStatus().contains("unavailable as a global shortcut"));
+        QCOMPARE(bytes(config), saved);
+        QJsonArray many;
+        for (int i = 0; i < 7; ++i) many.append(error);
+        report["failed"] = 7; report["errors"] = many; publish(report);
+        QVERIFY(model->globalShortcutStatus().contains("2 more global shortcuts"));
+        report["version"] = 2; publish(report);
+        QVERIFY(model->globalShortcutStatus().contains("status is unavailable"));
+        QVERIFY(!model->globalShortcutWarning());
+        var_SetString(root, "global-hotkeys-status", "not-json"); model->reload();
+        QVERIFY(model->globalShortcutStatus().contains("status is unavailable"));
+        QCOMPARE(bytes(config), saved);
     }
     void typedValidationPreservesStateAndDisk()
     {

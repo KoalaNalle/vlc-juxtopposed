@@ -12,6 +12,8 @@
 #include <QSet>
 #include <QCryptographicHash>
 #include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 #include <QTimer>
 #include <QUrl>
 #include <cmath>
@@ -124,6 +126,8 @@ ControlsPreferencesModel::ControlsPreferencesModel(qt_intf_t *intf, Consumers co
         if (config[i].i_type != CONFIG_ITEM_KEY) continue;
         m_defaults.insert(QString::fromUtf8(config[i].psz_name),
             QString::fromUtf8(config[i].orig.psz ? config[i].orig.psz : ""));
+        if (QByteArray(config[i].psz_name).startsWith("global-key-") && config[i].psz_text)
+            m_globalShortcutLabels.insert(int(vlc_actions_get_id(config[i].psz_name + 7)), qtr(config[i].psz_text));
     }
     module_config_free(config);
     for (const auto &option : options)
@@ -134,7 +138,7 @@ ControlsPreferencesModel::ControlsPreferencesModel(qt_intf_t *intf, Consumers co
     auto *serviceTimer = new QTimer(this);
     serviceTimer->setInterval(1000);
     connect(serviceTimer, &QTimer::timeout, this, [this] {
-        if (m_consumers.remotePolicy) refresh();
+        if (m_intf) refresh();
     });
     serviceTimer->start();
 }
@@ -174,6 +178,65 @@ QVariantMap ControlsPreferencesModel::restartSnapshot() const
     result.insert(QStringLiteral("@remote"), QCryptographicHash::hash(
         QJsonDocument::fromVariant(remote).toJson(QJsonDocument::Compact), QCryptographicHash::Sha256));
     return result;
+}
+QPair<QString, bool> ControlsPreferencesModel::globalShortcutFeedback() const
+{
+    if (!m_intf) return {};
+    const auto unavailable = qMakePair(tr("Global shortcut status is unavailable in this player."), false);
+    auto *root = vlc_object_instance(m_intf);
+    if (var_Type(root, "global-hotkeys-status") != VLC_VAR_STRING) {
+        for (auto it = m_startup.cbegin(); it != m_startup.cend(); ++it)
+            if (it.key().startsWith(QStringLiteral("global-key-")) && !it.value().toString().isEmpty()) return unavailable;
+        return {};
+    }
+    char *raw = var_GetString(root, "global-hotkeys-status");
+    const QByteArray bytes(raw ? raw : ""); free(raw);
+    if (bytes.size() > 16384) return unavailable;
+    const auto document = QJsonDocument::fromJson(bytes);
+    if (!document.isObject()) return unavailable;
+    const auto report = document.object();
+    if (report.value(QStringLiteral("version")).toInt() != 1) return unavailable;
+    const auto state = report.value(QStringLiteral("state")).toString();
+    if (state == QStringLiteral("starting")) return {tr("Global shortcuts are starting…"), false};
+    if (state == QStringLiteral("stopped")) return {tr("Global shortcuts are not active in this player."), true};
+    const int registered = report.value(QStringLiteral("registered")).toInt(-1);
+    const int failed = report.value(QStringLiteral("failed")).toInt(-1);
+    const int omitted = report.value(QStringLiteral("omitted")).toInt(-1);
+    const auto errors = report.value(QStringLiteral("errors")).toArray();
+    if (registered < 0 || failed < 0 || registered > 1000000 || failed > 1000000
+        || omitted < 0 || errors.size() > 32 || errors.size() + omitted != failed) return unavailable;
+    if (state == QStringLiteral("inactive") && registered == 0 && failed == 0) return {};
+    if (state == QStringLiteral("active") && registered > 0 && failed == 0)
+        return {registered == 1 ? tr("1 global shortcut is active in this player.")
+            : tr("%1 global shortcuts are active in this player.").arg(registered), false};
+    if (state != QStringLiteral("partial") && state != QStringLiteral("failed")) return unavailable;
+    if ((state == QStringLiteral("partial")) != (registered > 0)) return unavailable;
+    QStringList lines{failed == 0 ? tr("Global shortcuts could not start in this player.")
+        : tr("Global shortcuts in this player: %1 active, %2 unavailable.").arg(registered).arg(failed)};
+    int shown = 0;
+    for (const auto &value : errors) {
+        if (!value.isObject()) return unavailable;
+        const auto error = value.toObject();
+        const int action = error.value(QStringLiteral("action")).toInt(-1);
+        const auto key = error.value(QStringLiteral("key")).toInteger(-1);
+        const auto code = error.value(QStringLiteral("code")).toInteger(-1);
+        if (action < 0 || key <= 0 || key > UINT32_MAX || code < 0 || code > UINT32_MAX
+            || !error.value(QStringLiteral("unsupported")).isBool()) return unavailable;
+        if (shown >= 5) continue;
+        const auto name = m_globalShortcutLabels.value(action, tr("Global shortcut"));
+        char *nativeKey = vlc_keycode2str(uint_fast32_t(key), true);
+        const auto label = QString::fromUtf8(nativeKey ? nativeKey : ""); free(nativeKey);
+        if (label.isEmpty()) return unavailable;
+        if (error.value(QStringLiteral("unsupported")).toBool())
+            lines << tr("%1: %2 is unavailable as a global shortcut.").arg(name, label);
+        else if (code == 1409) // Windows ERROR_HOTKEY_ALREADY_REGISTERED.
+            lines << tr("%1: %2 is already used by another app or VLC player.").arg(name, label);
+        else lines << tr("Could not activate %1: %2.").arg(name, label);
+        ++shown;
+    }
+    if (failed > shown) lines << tr("%1 more global shortcuts are unavailable.").arg(failed - shown);
+    lines << tr("Edit the unavailable shortcuts or close the app using them, then restart VLC.");
+    return {lines.join(QLatin1Char('\n')), true};
 }
 void ControlsPreferencesModel::refresh()
 {
@@ -223,7 +286,10 @@ void ControlsPreferencesModel::refresh()
     caps[QStringLiteral("webRemoteEnabled")] = remote;
     caps[QStringLiteral("remotePort")] = remote;
     const bool restart = restartSnapshot() != m_startup;
-    if (m_values == values && m_capabilities == caps && m_restart == restart) return;
+    const auto global = globalShortcutFeedback();
+    if (m_values == values && m_capabilities == caps && m_restart == restart
+        && m_globalShortcutStatus == global.first && m_globalShortcutWarning == global.second) return;
+    m_globalShortcutStatus = global.first; m_globalShortcutWarning = global.second;
     m_restart = restart;
     m_values = std::move(values); m_capabilities = std::move(caps);
     emit valuesChanged();

@@ -3040,6 +3040,7 @@ EXTRA_DIST += tests/test_juxtopposed_privacy_settings.py tests/juxtopposed_priva
 EXTRA_DIST += tests/native_library/run_privacy.py
 
 EXTRA_DIST += tests/test_controls_preferences.cpp tests/controls_input_fixture.c \
+    tests/test_global_hotkey_registration.cpp tests/native_library/global-hotkeys.mk \
     tests/test_juxtopposed_controls_settings.py tests/juxtopposed_controls_preferences_fixture.py \
     tests/test_video_input_tap_handler.py tests/native_library/controls.mk \
     tests/native_library/controls-modules.mk tests/native_library/run_controls.py \

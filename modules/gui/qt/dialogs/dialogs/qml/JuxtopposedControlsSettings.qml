@@ -122,11 +122,19 @@ FocusScope {
         SettingLabel { objectName: "controlsRestart"; width: parent.width; text: qsTr("Restart VLC to apply changed keyboard, mouse-wheel or web-service settings."); visible: root.service && root.service.restartRequired; Accessible.name: text }
         Column {
             width: parent.width
-            visible: root.sectionMatches([qsTr("Keyboard Shortcuts"), qsTr("Defaults"), qsTr("Edit Keyboard Shortcuts"), qsTr("Reset all shortcuts")])
+            visible: root.sectionMatches([qsTr("Keyboard Shortcuts"), qsTr("Global Shortcuts"), qsTr("Defaults"), qsTr("Edit Keyboard Shortcuts"), qsTr("Reset all shortcuts")])
             SectionHeading { text: qsTr("Keyboard Shortcuts") }
+            SettingLabel {
+                objectName: "controlsGlobalShortcutStatus"
+                width: parent.width
+                text: root.service ? root.service.globalShortcutStatus : ""
+                visible: text.length > 0
+                color: root.service && root.service.globalShortcutWarning ? root.tone("#D98779") : root.tone("#969696")
+                Accessible.name: text
+            }
             SettingRow {
                 id: shortcutsRow; objectName: "controlsShortcutsRow"; title: root.values.shortcutsPreset || qsTr("Defaults"); controlHeight: 32 * root.uiScale
-                visible: root.matches(qsTr("Keyboard Shortcuts")) || root.matches(qsTr("Defaults")) || root.matches(qsTr("Edit Keyboard Shortcuts"))
+                visible: root.matches(qsTr("Keyboard Shortcuts")) || root.matches(qsTr("Global Shortcuts")) || root.matches(qsTr("Defaults")) || root.matches(qsTr("Edit Keyboard Shortcuts"))
                 SettingButton { id: editShortcuts; objectName: "controlsEditShortcuts"; anchors.fill: parent; text: qsTr("Edit Keyboard Shortcuts"); enabled: root.editable("editShortcuts"); onClicked: root.action("editShortcuts", "editShortcuts"); Accessible.description: qsTr("Edit local and global shortcuts, then restart VLC to apply them.") }
             }
             SettingRow {
