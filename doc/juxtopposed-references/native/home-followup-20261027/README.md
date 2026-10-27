@@ -102,15 +102,71 @@ first and did not cover the untouched sentinel. The r6 desktop verifier records
 normal exit 0, unchanged guards and no diagnostics; a clean exit is not a pass
 for the observed timing mismatch.
 
-A proposed focused native reproduction lives in the ignored scratch file
-`build-windows/beta-follow-20261027/proposed-first-fps-playing-native-test.cpp.txt`.
-It proposes a fresh process, untouched zero FPS and first 0-to-50 change during
-playback without a main-player seek. It is a test proposal, not executed proof
-or a verified fix. Next, use a fresh native process with the default FPS
-untouched, capture reference cues at 12 and 24 seconds before setting 50 FPS,
-then play and change the rate without seeking. Before accepting any guard
-change, also verify startup with a saved nonzero FPS, a newly added subtitle
-source, and that the change causes no audio/video seek.
+The focused native negative control `fps-fresh-negative-r1` now reproduces the
+first live change against the untouched r7 core, in a fresh process using
+Direct3D11 snapshots and generated media. FPS initially reported 0; after the
+first change to 50 without a player seek, both the old FIRST cue and the new
+MIDDLE cue appeared together. The main clock advanced from 12.105 to 12.890 s
+and the decoded frame remained in the expected interval. Setup and cleanup
+passed, the intended caption assertion failed, and the recorded source, test,
+fixture, runtime and producer guards were unchanged. The test executable hash
+was `58701525fa47380a57b57b78537859745431a83e947fd516c3ad0b07ca7a1751`.
+This supports the flush hypothesis but does not prove a candidate fix.
+
+The source-only flush candidate rebuilt as core SHA-256
+`f52731a0b55b55b1576179710a85bfa58b5265da794783162e86f0af9380bb52`.
+With the same executable, fixtures and r7 runtime otherwise unchanged,
+`fps-fresh-candidate-r1` passes that first-change assertion: the MIDDLE cue
+matches, the old FIRST cue is absent, and the clock advanced from 12.112 to
+12.881 s without a seek. Setup and cleanup pass, the process exits normally,
+and recorded fixture/runtime/producer guards remain intact. This is one scoped
+native red/green result; startup, delays, source isolation, ordinary UI and
+the final package are not qualified by it. The verbose test log contains media
+and decoder warnings and a window-closed error during teardown; those diagnostics
+are not evidence of a clean ordinary desktop run.
+
+The candidate is not acceptable yet: in `fps_extra_candidate_positive_r1`, a
+fresh process with a +5 s subtitle delay showed no cue after the first live FPS
+change at about 12 s, although the expected FIRST cue was visible in the
+baseline run. The test's caption assertion fails while the clock advances and
+the recorded guards and cleanup pass. Since FIRST is expected both before and
+after this particular change, the baseline pass alone does not test replacement;
+the candidate's missing cue is nevertheless an observable regression. The
+rate-change refill must also account for delayed cues.
+
+The candidate passed a separate -5 s case that fails on the baseline, with a
+matching MIDDLE caption. A pre-set player FPS of 50 before input creation also
+showed the expected retimed cue on both baseline and candidate. This emulates
+an inherited player value and is not a saved-settings restart test. These
+fresh-process runs recorded normal test teardown and intact guards.
+
+A second experimental core, SHA-256
+`ad3e761ae4cc1b0473e96b2b3f21ca5cb9418940dcbd5b3f3bb330e0f6db8016`,
+refills the affected subtitle source from its positive-delay preroll after
+changing rate. `fps-fresh-candidate-r2` passes the first-change test and
+`fps_extra_candidate2_positive_r1` passes the +5 s case which failed with the
+first candidate. Further fresh-process tests with this candidate pass -5 s,
+and a +10 s delay at 24 s where the correct cue changes from FIRST to MIDDLE;
+the latter case fails on the baseline. A pre-set player FPS of 50 before input
+creation also passes. The processes record normal cleanup and intact guards.
+The pre-set value is not proof of saved-settings persistence or restart.
+The expanded test executable SHA-256 is
+`01c52235fd1d80b8b30b835cda57ca9a120bf1e74ad2626d04f2cf68a73ea288`;
+results are in the `fps_extra_candidate2_*_r1` and
+`fps_extra_baseline_change_r1` run directories under `beta-follow-20261027`.
+
+This is still limited native evidence, not general acceptance. If a subtitle
+source refuses the preroll seek, the code warns and continues best-effort;
+it may still lose an earlier delayed cue. Nonseekable sources, overlapping or
+short cues, multiple per-track delays, other formats, saved settings, newly
+added sources, EOF, ordinary playback and stream-output interactions remain
+open. These results do not qualify a final package.
+
+Before accepting a guard change, verify startup with a saved nonzero FPS, newly
+added and selected subtitle sources, and that the change causes no audio/video
+seek. Source inspection also suggests that refilling after a rate change may
+start too late for a positively delayed cue; reproduce or disprove this with
+positive and negative delays, including per-track delays.
 
 In `ui-cue-focus-r6`, the corrected desktop captures show repeated Enter on
 the focused subtitle-timeline Zoom In control changing the visible range from

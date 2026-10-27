@@ -40,12 +40,15 @@ to their identified binaries.
 
 ## Continue here
 
-1. Repair the reproduced first live default-to-50 FPS change: old subtitle cues
-   remain visible without a seek. A zero-sentinel flush guard is the leading
-   hypothesis, not yet a proven fix. The proposed fresh-process native negative
-   control is `build-windows/beta-follow-20261027/proposed-first-fps-playing-native-test.cpp.txt`;
-   verify startup with saved FPS and newly added subtitle sources before changing
-   the guard. Then continue W1 defaults/restart, formats and secondary-monitor capture.
+1. Repair the reproduced first live default-to-50 FPS change: the fresh native
+   negative control displays both old and new cues without a seek. A zero-sentinel
+   first flush candidate passed that focused test but failed a +5 s delay case.
+   A second experimental candidate refills from source-specific preroll and
+   passes both cases plus -5 s and a +10 s cue-change case. Wider testing is
+   still required before acceptance. Verify saved-FPS startup, added sources,
+   per-track/overlapping cues, nonseekable-source behavior, recording and source
+   isolation. Then continue W1 defaults/restart,
+   formats and secondary-monitor capture.
 2. Check the audio timing revision against track changes, per-track overrides,
    and seek notification ordering; reproduce before changing behavior. Verify r7
    on actual playback and both audio endpoints where available.

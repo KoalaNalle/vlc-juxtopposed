@@ -3246,11 +3246,24 @@ static void SlaveDemux( input_thread_t *p_input )
                 float new_rate = priv->slave_subs_rate;
                 if (demux_Control(in->p_demux, DEMUX_SET_RATE, &new_rate) == VLC_SUCCESS)
                 {
+                    vlc_tick_t preroll = 0;
+                    es_out_PrivControl(priv->p_es_out_display,
+                                       ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+                                       in, &preroll);
+                    /* The cue still visible after a positive delay can begin
+                     * before the subtitle demux's current position.  Refill
+                     * from the same source-relative boundary used by a seek. */
+                    if (preroll > 0 &&
+                        demux_Control(in->p_demux, DEMUX_SET_TIME,
+                                      __MAX(i_time - preroll, 0), true)
+                            != VLC_SUCCESS)
+                        msg_Warn(p_input, "subtitle rate change could not seek for delay preroll");
                     /* The demux resends the current cue at its new timestamps.
                      * Drop this source's old cues without seeking the player. */
-                    if (in->sub_rate != 0)
-                        es_out_PrivControl(priv->p_es_out_display,
-                                           ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
+                    /* A zero tracked rate also represents the default timing,
+                     * which may already have queued or displayed cues. */
+                    es_out_PrivControl(priv->p_es_out_display,
+                                       ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
                     in->b_eof = false;
                 }
             }
