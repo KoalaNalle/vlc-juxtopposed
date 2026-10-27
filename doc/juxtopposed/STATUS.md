@@ -1,12 +1,14 @@
 # Current status
 
 Updated 27 October 2026. The desktop is available and beta work is continuing.
+The working alpha is integrated into `master`; it is not a published release.
 The tested recording-error source is `9bc894ae8e`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
 
-- Branch: `juxtopposed-playback-bar`.
+- Branch: `master`; PR #1 merged at `00133b4afc`. The old development branch
+  remains available as a historical reference.
 - Ordinary GUI441 `3f6170f7`, Windows-hotkeys452 `28e53fd1`,
   Core265 `fdfcfcd5`, library282 `13ccdc36`,
   recording476 `fb4e9c06`, MP4 mux464 `42e53a5e`,
@@ -24,6 +26,13 @@ The beta remains unfinished; all six readiness gates remain open.
 
 ## Latest verified work
 
+[Alpha integration and CI repair](../juxtopposed-references/ci/alpha-ci-upstream-20261027/README.md):
+the repaired PR head and `master` merge both pass all30Windows and four Linux
+commands. Two SVG distribution entries and the secondary-subtitle settings
+fixture are fixed. PR/master checks stay enabled; duplicate feature-push runs
+are removed and superseded runs are cancelled. These component/build-rule checks
+do not close graphical acceptance or any beta gate.
+
 [Recording error feedback](../juxtopposed-references/native/home-recording-error-feedback-20261027/README.md):
 failed output-open now produces a visible alert and retained destination guidance.
 Public API before/after receives zero/one error callbacks. Native and ordinary
@@ -32,6 +41,9 @@ PCM. Markers, native config and profiles stay unchanged; normal exits/602plugins
 all guards pass. The three expected failure log lines are separated from zero
 unexpected diagnostics. The toast's Show Details click remains unqualified because
 its five-second timeout can expire during automation; Ctrl+M / Errors is verified.
+A second screenshot-only attempt (`ui-record-details-r481`) also ran out of time
+before opening Details; it is inconclusive. It closed normally with all guards
+passing and no unexpected diagnostics.
 
 [Subtitle-overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md)
 and [audio-format](../juxtopposed-references/native/home-recording-audio-retry-20261027/README.md)
@@ -78,6 +90,13 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
    Log exact before/after identities and undo steps for any future rule mutation.
 
 ## Saved question
+
+Upstream was fetched, not merged: `874d229c18` adds195commits/237changed files
+from common base `1176b56bde`, with35overlapping files and four textual conflicts.
+The receipt records the read-only merge preview. Recommend a separate integration
+branch and native rebuild/regression before final beta validation; the Windows
+audio conflict overlaps our own teardown repair. The owner requested assessment,
+so applying the upstream update remains a separate decision.
 
 Should Continue Watching retain all recent videos or only unfinished items?
 The native query includes a fixture that reached EOF; the owned database has
