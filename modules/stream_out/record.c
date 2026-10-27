@@ -409,6 +409,33 @@ static vlc_tick_t BlockTick( const block_t *p_block )
         return p_block->i_pts;
 }
 
+static bool BlockAtStart( const sout_stream_id_sys_t *id, block_t *block,
+                          vlc_tick_t start )
+{
+    const vlc_tick_t tick = BlockTick(block);
+    if (tick == VLC_TICK_INVALID)
+        return false;
+    if (tick >= start)
+        return true;
+    if (id->fmt.i_cat != SPU_ES || block->i_length <= 0)
+        return false;
+
+    /* A finite subtitle can remain visible across the selected A/V keyframe.
+     * Keep only that remaining interval. Unsigned subtraction avoids overflow
+     * for unusable timestamp spans; the duration bounds the eventual delta. */
+    const uint64_t elapsed = (uint64_t)start - (uint64_t)tick;
+    if (elapsed >= (uint64_t)block->i_length)
+        return false;
+    const vlc_tick_t delta = elapsed;
+    if (block->i_pts != VLC_TICK_INVALID && block->i_pts > INT64_MAX - delta)
+        return false;
+    block->i_length -= delta;
+    block->i_dts = start;
+    if (block->i_pts != VLC_TICK_INVALID)
+        block->i_pts += delta;
+    return true;
+}
+
 static vlc_tick_t OutputStartDate( const sout_stream_sys_t *p_sys )
 {
     /* Sparse subtitle packets can be queued far ahead of playback. Align A/V
@@ -645,7 +672,7 @@ static void OutputStart( sout_stream_t *p_stream )
                 p_cand->pp_last = &p_cand->p_first;
             p_block->p_next = NULL;
 
-            if( BlockTick( p_block ) >= p_sys->i_dts_start )
+            if( BlockAtStart( p_cand, p_block, p_sys->i_dts_start ) )
                 OutputSend( p_stream, p_cand, p_block );
             else
                 block_Release( p_block );
