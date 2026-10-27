@@ -6,21 +6,29 @@ Tested nightly commits/pushes are authorized; release publication is separate.
 
 ## Selected checkpoint
 
-- Branch: `juxtopposed-playback-bar`. Latest accepted ordinary GUI349 is
-  `987539e3`; Core `fdfcfcd5`, library `13ccdc36`, recording `930205b1`,
+- Branch: `juxtopposed-playback-bar`. Latest accepted ordinary GUI357 is
+  `caa02e28`; Core `fdfcfcd5`, library `13ccdc36`, recording `930205b1`,
   MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-sidebar-fixed-r349/runtime`.
-  This is an isolated test runtime, not a release package. GUI344/337/329/311
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-toolbar-fixed-r360/runtime`.
+  This is an isolated test runtime, not a release package. GUI349/344/337/329/311
   remain recoverable in the same work root. Exact identities are in the
-  [music sidebar receipt](../juxtopposed-references/native/home-music-sidebar-20261027/README.md).
+  [music toolbar receipt](../juxtopposed-references/native/home-music-toolbar-20261027/README.md).
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  `inputs-r349.json` predates this documentation checkpoint; freeze fresh inputs
+  `inputs-r360.json` predates this documentation checkpoint; freeze fresh inputs
   before another guarded run. All owned tests have exited normally. The four
   unrelated audio experiments remain untouched.
 
 ## Latest verified work
 
-- Music sidebar open/closed states now follow Figma's paired frames. The title
+- [Compact music toolbar](../juxtopposed-references/native/home-music-toolbar-20261027/README.md):
+  fresh/reset defaults follow the54px reference and real15-second controls.
+  Twelve native cases, four component groups and25customizer checks pass;
+  paused pointer/Return/Space seeks, small/maximized/fullscreen, native track/queue,
+  audio/video, cold layout, preserved alternative and theme/cold-theme journeys pass.
+  Existing saved layouts stay intact. System selection is distinct from Windows
+  theme-change propagation; full visual/OS-DPI/accessibility/package gates remain open.
+- [Music sidebar](../juxtopposed-references/native/home-music-sidebar-20261027/README.md)
+  open/closed states now follow Figma's paired frames. The title
   button toggles the inline music panel; video retains its drawer. Component
   before/fixed evidence, small/maximized native states, exact paused retention,
   closed Space and reopened Down/Enter, plus audio/video transitions pass.
@@ -52,10 +60,11 @@ Tested nightly commits/pushes are authorized; release publication is separate.
 
 ## Next action and open questions
 
-1. Continue W3 interaction/design and W2 native consumers/current-category journeys
-   in [BETA](BETA.md) and [SETTINGS](SETTINGS.md). Qualify canonical music layout,
-   theme, focus/accessibility, actual Windows DPI/monitor states and other categories'
-   native defaults. Component scale simulations are not OS-DPI evidence.
+1. Next: qualify ordinary Playback Finish action / Quit VLC at real queue completion
+   and manual Stop, including paused-save independence. Then continue W3/W2 in
+   [BETA](BETA.md) and [SETTINGS](SETTINGS.md): music source/title-bar context and
+   navigation assets, full visual/focus/accessibility, actual Windows DPI/monitor
+   states and other categories' native defaults. Component scales are not OS-DPI.
 2. Full shortcut actions/conflict feedback, ordinary rapid queries, remaining
    recording formats/policies/subtitle overlap and native HDR remain open. HDR
    stays truthfully disabled; Disc metadata is visible with unsupported sort disabled.

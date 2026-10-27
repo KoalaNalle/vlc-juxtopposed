@@ -24,7 +24,10 @@ private slots:
         auto *video = layout.video(); auto *audio = layout.audio();
         QVERIFY(video); QVERIFY(audio); QVERIFY(video != audio); QVERIFY(layout.draftVideo() != video);
         QCOMPARE(video->left()->getControls(),QVector<int>({C::PREVIOUS_BUTTON,C::PLAY_BUTTON,C::NEXT_BUTTON}));
-        QCOMPARE(video->right()->rowCount(),5); QVERIFY(!layout.videoTimelineAbove()); QVERIFY(layout.audioTimelineAbove());
+        QCOMPARE(video->right()->rowCount(),5); QVERIFY(!layout.videoTimelineAbove()); QVERIFY(!layout.audioTimelineAbove());
+        QCOMPARE(audio->left()->getControls(),QVector<int>({C::PREVIOUS_BUTTON,C::JUXTO_BACKWARD_15,C::PLAY_BUTTON,C::JUXTO_FORWARD_15,C::NEXT_BUTTON}));
+        QCOMPARE(audio->center()->rowCount(),0);
+        QCOMPARE(audio->right()->getControls(),QVector<int>({C::VOLUME,C::JUXTO_AUDIO_TRACKS,C::PLAYLIST_BUTTON}));
         QVERIFY(layout.apply(PlayerProfileLayout::defaults(),error)); QCOMPARE(layout.video(),video); QCOMPARE(layout.audio(),audio);
         QVERIFY(!video->dirty()); QVERIFY(!audio->dirty());
     }
@@ -125,6 +128,24 @@ private slots:
         }
         QVERIFY(layout.tileInfo(255).isEmpty());
         QCOMPARE(layout.tileInfo(C::JUXTO_FOLDER_NAME).value(QStringLiteral("key")).toString(),QStringLiteral("folder"));
+        QCOMPARE(layout.tileInfo(C::JUXTO_BACKWARD_15).value(QStringLiteral("kind")).toString(),QStringLiteral("skip15"));
+        QVERIFY(layout.tileInfo(C::JUXTO_BACKWARD_15).value(QStringLiteral("backward")).toBool());
+        QVERIFY(!layout.tileInfo(C::JUXTO_FORWARD_15).value(QStringLiteral("backward")).toBool());
+    }
+    void savedAlternativeAudioLayoutRemainsUnchanged() {
+        auto saved=PlayerProfileLayout::defaults();
+        saved[QStringLiteral("audio")]=QVariantMap{
+            {QStringLiteral("columns"),QVariantList{
+                QVariantList{C::JUXTO_THUMBNAIL,C::JUXTO_FILE_NAME,C::JUXTO_ARTIST_NAME},
+                QVariantList{C::RANDOM_BUTTON,C::PREVIOUS_BUTTON,C::PLAY_BUTTON,C::NEXT_BUTTON,C::LOOP_BUTTON},
+                QVariantList{C::VOLUME,C::JUXTO_AUDIO_TRACKS,C::EXTENDED_BUTTON,C::PLAYLIST_BUTTON}}},
+            {QStringLiteral("timelineAbove"),true}};
+        PlayerProfileLayout layout; QString error;
+        QVERIFY(layout.apply(saved,error)); QCOMPARE(layout.snapshot(),saved);
+        QVERIFY(layout.audioTimelineAbove());
+        layout.beginEdit(); QCOMPARE(layout.draftSnapshot(),saved);
+        layout.resetDraft(); QCOMPARE(layout.draftSnapshot(),PlayerProfileLayout::defaults());
+        QCOMPARE(layout.snapshot(),saved); layout.cancelEdit(); QCOMPARE(layout.snapshot(),saved);
     }
 };
 QTEST_MAIN(TestPlayerProfileLayout)

@@ -231,11 +231,35 @@ Item {
                                 }
                                 Text {
                                     anchors.centerIn: parent
-                                    visible: text.length > 0
+                                    visible: text.length > 0 && tile.info.kind !== "skip15"
                                     text: tile.status.glyph ?? ""
                                     font.family: tile.status.fontFamily ?? inter.name
                                     font.pixelSize: 22 * root.uiScale
                                     color: root.appearance.color("#969696")
+                                }
+                                Item {
+                                    visible: tile.info.kind === "skip15"
+                                    anchors.centerIn: parent
+                                    width: 24; height: 24
+                                    scale: root.uiScale
+                                    Item {
+                                        width: 24; height: 24
+                                        transform: Scale { origin.x: 12; xScale: tile.info.backward ? -1 : 1 }
+                                        Image {
+                                            objectName: "juxtopposedSkip15Arrow"
+                                            x: 3.25; y: 3.25
+                                            width: 19.5002; height: 7.50015
+                                            source: root.assetBase + "skip-15-arrow.svg"
+                                        }
+                                    }
+                                    Text {
+                                        x: 6; y: 9
+                                        text: "15"
+                                        font.family: inter.name
+                                        font.pixelSize: 10
+                                        font.weight: Font.Medium
+                                        color: root.appearance.color("#8F8F8F")
+                                    }
                                 }
                             }
                             onClicked: root.activated(tile.tileId, button)

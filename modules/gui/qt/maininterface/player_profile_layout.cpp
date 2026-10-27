@@ -85,6 +85,7 @@ QVariantMap PlayerProfileLayout::tileInfo(int id) const
     case C::PLAY_BUTTON: kind = QStringLiteral("play"); break;
     case C::PREVIOUS_BUTTON: kind = QStringLiteral("previous"); break;
     case C::NEXT_BUTTON: kind = QStringLiteral("next"); break;
+    case C::JUXTO_FORWARD_15: case C::JUXTO_BACKWARD_15: kind = QStringLiteral("skip15"); break;
     case C::LANG_BUTTON: kind = QStringLiteral("subtitles"); break;
     case C::JUXTO_AUDIO_TRACKS: kind = QStringLiteral("audio"); break;
     case C::EXTENDED_BUTTON: kind = QStringLiteral("settings"); break;
@@ -99,6 +100,8 @@ QVariantMap PlayerProfileLayout::tileInfo(int id) const
     case C::JUXTO_PLAYLIST_NAME: kind = QStringLiteral("metadata"); key = QStringLiteral("playlist"); break;
     }
     result.insert(QStringLiteral("kind"),kind);
+    if (kind == QStringLiteral("skip15"))
+        result.insert(QStringLiteral("backward"),id == C::JUXTO_BACKWARD_15);
     if (!key.isEmpty()) result.insert(QStringLiteral("key"),key);
     // Cached exports do not contain the customizer's individual icon artwork.
     // Reuse VLC's existing font for a functional adaptation; keep that fidelity
@@ -151,9 +154,8 @@ QVariantMap PlayerProfileLayout::defaults()
     return {{QStringLiteral("version"), 1},
         {QStringLiteral("video"), player({C::PREVIOUS_BUTTON,C::PLAY_BUTTON,C::NEXT_BUTTON}, {},
             {C::VOLUME,C::JUXTO_AUDIO_TRACKS,C::LANG_BUTTON,C::EXTENDED_BUTTON,C::PLAYLIST_BUTTON}, false)},
-        {QStringLiteral("audio"), player({C::JUXTO_THUMBNAIL,C::JUXTO_FILE_NAME,C::JUXTO_ARTIST_NAME},
-            {C::RANDOM_BUTTON,C::PREVIOUS_BUTTON,C::PLAY_BUTTON,C::NEXT_BUTTON,C::LOOP_BUTTON},
-            {C::VOLUME,C::JUXTO_AUDIO_TRACKS,C::EXTENDED_BUTTON,C::PLAYLIST_BUTTON}, true)}};
+        {QStringLiteral("audio"), player({C::PREVIOUS_BUTTON,C::JUXTO_BACKWARD_15,C::PLAY_BUTTON,C::JUXTO_FORWARD_15,C::NEXT_BUTTON}, {},
+            {C::VOLUME,C::JUXTO_AUDIO_TRACKS,C::PLAYLIST_BUTTON}, false)}};
 }
 bool PlayerProfileLayout::validate(const QVariantMap &snapshot, QString &error)
 {
@@ -256,6 +258,9 @@ bool PlayerProfileLayout::setTimelineAbove(int player, bool above)
 void PlayerProfileLayout::resetDraft()
 {
     if (!m_editing) return;
-    load(m_draft,defaults()); m_draftVideoAbove = false; m_draftAudioAbove = true;
+    const auto value = defaults();
+    load(m_draft,value);
+    m_draftVideoAbove = value.value(QStringLiteral("video")).toMap().value(QStringLiteral("timelineAbove")).toBool();
+    m_draftAudioAbove = value.value(QStringLiteral("audio")).toMap().value(QStringLiteral("timelineAbove")).toBool();
     setError({}); emit draftChanged();
 }

@@ -66,7 +66,7 @@ private:
     void setError(const QString &);
     ControlbarProfile m_active, m_draft;
     bool m_editing = false;
-    bool m_videoAbove = false, m_audioAbove = true;
-    bool m_draftVideoAbove = false, m_draftAudioAbove = true;
+    bool m_videoAbove = false, m_audioAbove = false;
+    bool m_draftVideoAbove = false, m_draftAudioAbove = false;
     QString m_error;
 };
