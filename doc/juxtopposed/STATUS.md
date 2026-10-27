@@ -1,7 +1,7 @@
 # Current status
 
 Updated 27 October 2026. The desktop is available and beta work is continuing.
-The tested Windows key-translation source is `546eecd8e1`.
+The tested recording/subtitle source is `ac762a8bbb`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
@@ -9,42 +9,36 @@ The beta remains unfinished; all six readiness gates remain open.
 - Branch: `juxtopposed-playback-bar`.
 - Ordinary GUI441 `3f6170f7`, Windows-hotkeys452 `28e53fd1`,
   Core265 `fdfcfcd5`, library282 `13ccdc36`,
-  recording322 `930205b1`, MP4r240 `df15e8ed`, subtitle130 `11f2b78e`,
+  recording464 `9f4a3f03`, MP4 mux464 `42e53a5e`,
+  MP4 demux240 `df15e8ed`, subtitle130 `11f2b78e`,
   WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-global-punctuation-r458/runtime`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/runtime`.
   This is an isolated tested runtime, not a release package. Earlier tested
   GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
 - All owned desktop/native tests are closed. Freeze fresh inputs before the
-  next guarded job; current docs postdate `inputs-r456.json`. The four unrelated
+  next guarded job; current docs postdate `inputs-r466.json`. The four unrelated
   audio experiments stay untouched. No firewall rules or security/privacy settings
   changed; the read-only firewall inventory remains available.
 
 ## Latest verified work
 
-[Windows key translation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md):
-the legacy byte fallback's two false-success cases reproduce before. Layout-aware
-punctuation/modifiers, Unicode nontruncation and explicit extended-key mappings
-pass ten native functions/seventeen pass incidents with no skips. An ordinary
-Finnish-layout semicolon key starts/pauses playback, with matching Controls/editor
-feedback and an exactly held clock across inspection. Exit0/602/no checked errors/
-all guards; native config and player profiles stay identical. The preliminary
-OS-owned Tab fixture outcome remains preserved. Startup layout is used until restart.
+[Recording subtitle overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md):
+finite buffered captions now survive the selected A/V keyframe. MP4 shutdown text
+conversion and final subtitle edit duration are repaired. All22 direct production
+checks pass. Native MP4/mov_text and Matroska/SRT recordings decode aligned AV and
+both exact caption intervals; the ordinary Record-control journey retains all
+three captions and decodes811video frames. Exit0/602/no checked errors/all guards;
+native config and player profiles stay identical. Before/intermediate failures
+and the baseline mux inventory limitation are retained. Unknown/already-consumed
+captions, other formats, live behavior and full package acceptance remain open.
 
+[Windows key translation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md)
+retains ten native functions/seventeen pass incidents and ordinary Finnish-layout
+play/pause evidence. Startup layout is used until restart.
 [Registration feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md)
-retains its earlier module432 tuple: native/component checks, two-player collision,
-actual delivery, saved-versus-running feedback and cold replacement activation.
-The new module does not silently inherit that exact-binary ordinary result.
+retains its earlier module432 two-player/restart tuple; exact-binary scopes stay separate.
 
-[GUI418 source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md):
-native per-player folder history, real breadcrumbs, current-track folder and a
-separate file-manager action now drive the header. List/cover views reuse shared
-components. The title badge follows the actual folder or queue and reopens the
-inline source panel. Nine native test functions, maintained component negatives/
-positives, title-strip checks and ordinary compact/wide/paused/playing journeys
-pass. The final run exits0/602plugins/zero checked errors/all ending guards.
-Ten paused observations retain the exact position across panel, queue, search
-and Home/return actions. Preliminary alias/layout/menu defects stay preserved.
-
+[Source-header](../juxtopposed-references/native/home-music-source-header-20261027/README.md),
 [Source appearance](../juxtopposed-references/native/home-music-source-appearance-20261027/README.md),
 [navigation](../juxtopposed-references/native/home-music-navigation-20261027/README.md),
 [toolbar](../juxtopposed-references/native/home-music-toolbar-20261027/README.md)
@@ -53,14 +47,15 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Continue W2's recording-format/subtitle-overlap and remaining settings journeys;
-   key translation and registration feedback now have scoped evidence. The setup
+1. Continue W2's remaining recording formats, beginning with audio-only WAV/FLAC/
+   MP3, and remaining settings journeys. Finite buffered subtitle overlap now has
+   scoped native/ordinary evidence. The setup
    tour uses local bindings, so failed global mappings do not alter its hints.
    Keep W3's live System-theme change and native UIA/screen-reader focus open. UIA reports
    stayed stale even when Enter activated the correct cover. Cover view remains
    a documented functional adaptation rather than a complete visual acceptance.
 2. Continue W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): remaining settings,
-   shortcuts/conflict feedback, rapid queries, recording formats/subtitle overlap,
+   remaining shortcut actions/layouts, rapid queries, recording formats,
    appearance, accessibility and Windows DPI. HDR stays truthfully disabled;
    unsupported independent Disc sort stays disabled.
 3. W1's secondary-fullscreen caption capture issue also occurs on older Core204;
