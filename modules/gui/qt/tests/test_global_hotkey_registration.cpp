@@ -132,6 +132,95 @@ private slots:
         for (const auto &value : report(player).value("errors").toArray())
             QVERIFY(value.toObject().value("unsupported").toBool());
     }
+    void punctuationUsesTheCurrentWindowsLayout()
+    {
+        // Occupy the actual Windows semicolon chord. A character-byte fallback
+        // instead registers an unrelated virtual key and misses this collision.
+        const SHORT mapping = VkKeyScanExW(L';', GetKeyboardLayout(0));
+        QVERIFY2(mapping != -1 && !(HIBYTE(mapping) & ~7), "The current layout must represent semicolon.");
+        const UINT modifiers = MOD_CONTROL | MOD_ALT | MOD_SHIFT;
+        struct Reservation {
+            bool owned = false;
+            ~Reservation() { if (owned) UnregisterHotKey(nullptr, 0x4010); }
+        } reservation;
+        reservation.owned = RegisterHotKey(nullptr, 0x4010, modifiers, LOBYTE(mapping));
+        QVERIFY2(reservation.owned, "Could not reserve the fixture's actual punctuation chord.");
+        const auto player = open("Ctrl+Alt+Shift+;"); QVERIFY(player >= 0);
+        QTRY_VERIFY_WITH_TIMEOUT(state(player) != QStringLiteral("starting"), 3000);
+        QCOMPARE(state(player), QStringLiteral("failed"));
+        QCOMPARE(report(player).value("registered").toInt(), 0);
+        const auto error = report(player).value("errors").toArray().first().toObject();
+        QCOMPARE(error.value("code").toInt(), int(ERROR_HOTKEY_ALREADY_REGISTERED));
+        QVERIFY(!error.value("unsupported").toBool());
+    }
+    void supplementaryCharactersCannotRegisterTheirLowByte()
+    {
+        // U+10441 is valid Unicode but cannot name one Windows WCHAR key.
+        // Its low byte is ASCII A, which the old fallback registered instead.
+        const auto player = open(QByteArray("Ctrl+Alt+Shift+\xF0\x90\x91\x81"));
+        QVERIFY(player >= 0);
+        QTRY_VERIFY_WITH_TIMEOUT(state(player) != QStringLiteral("starting"), 3000);
+        QCOMPARE(state(player), QStringLiteral("failed"));
+        QCOMPARE(report(player).value("registered").toInt(), 0);
+        const auto error = report(player).value("errors").toArray().first().toObject();
+        QVERIFY(error.value("unsupported").toBool());
+        QCOMPARE(error.value("key").toInteger(), qint64(KEY_MODIFIER_CTRL | KEY_MODIFIER_ALT | KEY_MODIFIER_SHIFT | 0x10441));
+    }
+    void punctuationIncludesRequiredLayoutModifiers()
+    {
+        const SHORT mapping = VkKeyScanExW(L';', GetKeyboardLayout(0));
+        QVERIFY(mapping != -1 && !(HIBYTE(mapping) & ~7));
+        UINT modifiers = MOD_CONTROL | MOD_ALT;
+        if (HIBYTE(mapping) & 1) modifiers |= MOD_SHIFT;
+        struct Reservation {
+            bool owned = false;
+            ~Reservation() { if (owned) UnregisterHotKey(nullptr, 0x4012); }
+        } reservation;
+        reservation.owned = RegisterHotKey(nullptr, 0x4012, modifiers, LOBYTE(mapping));
+        const DWORD reservationError = reservation.owned ? ERROR_SUCCESS : GetLastError();
+        QVERIFY(reservation.owned || reservationError == ERROR_HOTKEY_ALREADY_REGISTERED);
+        const auto player = open("Ctrl+Alt+;"); QVERIFY(player >= 0);
+        QTRY_VERIFY_WITH_TIMEOUT(state(player) != QStringLiteral("starting"), 3000);
+        QCOMPARE(state(player), QStringLiteral("failed"));
+        const auto error = report(player).value("errors").toArray().first().toObject();
+        QCOMPARE(error.value("code").toInt(), int(ERROR_HOTKEY_ALREADY_REGISTERED));
+        QVERIFY(!error.value("unsupported").toBool());
+    }
+    void extendedKeysUseTheirWindowsVirtualKeys_data()
+    {
+        QTest::addColumn<QByteArray>("name");
+        QTest::addColumn<quint32>("virtualKey");
+        QTest::newRow("Tab") << QByteArray("Tab") << quint32(VK_TAB);
+        QTest::newRow("Backspace") << QByteArray("Backspace") << quint32(VK_BACK);
+        QTest::newRow("F13") << QByteArray("F13") << quint32(VK_F13);
+        QTest::newRow("F24") << QByteArray("F24") << quint32(VK_F24);
+        QTest::newRow("Browser Refresh") << QByteArray("Browser Refresh") << quint32(VK_BROWSER_REFRESH);
+        QTest::newRow("Volume Mute") << QByteArray("Volume Mute") << quint32(VK_VOLUME_MUTE);
+        QTest::newRow("Menu") << QByteArray("Menu") << quint32(VK_APPS);
+        QTest::newRow("Pause") << QByteArray("Pause") << quint32(VK_PAUSE);
+    }
+    void extendedKeysUseTheirWindowsVirtualKeys()
+    {
+        QFETCH(QByteArray, name); QFETCH(quint32, virtualKey);
+        struct Reservation {
+            bool owned = false;
+            ~Reservation() { if (owned) UnregisterHotKey(nullptr, 0x4011); }
+        } reservation;
+        reservation.owned = RegisterHotKey(nullptr, 0x4011, MOD_CONTROL | MOD_ALT | MOD_SHIFT, virtualKey);
+        const DWORD reservationError = reservation.owned ? ERROR_SUCCESS : GetLastError();
+        // Windows may already own a chord (notably Ctrl+Alt+Shift+Tab).
+        // That is still a real same-chord collision for the module to report.
+        QVERIFY2(reservation.owned || reservationError == ERROR_HOTKEY_ALREADY_REGISTERED,
+                 "Could not establish the fixture's actual extended-key collision.");
+        const auto player = open("Ctrl+Alt+Shift+" + name); QVERIFY(player >= 0);
+        QTRY_VERIFY_WITH_TIMEOUT(state(player) != QStringLiteral("starting"), 3000);
+        QCOMPARE(state(player), QStringLiteral("failed"));
+        QCOMPARE(report(player).value("registered").toInt(), 0);
+        const auto error = report(player).value("errors").toArray().first().toObject();
+        QCOMPARE(error.value("code").toInt(), int(ERROR_HOTKEY_ALREADY_REGISTERED));
+        QVERIFY(!error.value("unsupported").toBool());
+        close(player);
+    }
 public:
     ~TestGlobalHotkeyRegistration() override { closeAll(); }
 };

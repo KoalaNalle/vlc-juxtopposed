@@ -24,7 +24,6 @@
 # include "config.h"
 #endif
 
-#include <ctype.h>
 #include <inttypes.h>
 
 #define VLC_MODULE_LICENSE VLC_LICENSE_GPL_2_PLUS
@@ -236,6 +235,8 @@ static void *Thread( void *p_data )
     SetWindowLongPtr( p_sys->hotkeyWindow, GWLP_USERDATA,
             (LONG_PTR)p_intf );
 
+    /* Bind characters using this registration thread's startup keyboard layout. */
+    const HKL keyboard_layout = GetKeyboardLayout(0);
     /* Registering of Hotkeys */
     for( const char* const* ppsz_keys = vlc_actions_get_key_names( p_intf );
          *ppsz_keys != NULL; ppsz_keys++ )
@@ -292,6 +293,8 @@ static void *Thread( void *p_data )
                 HANDLE( UP );
                 HANDLE( DOWN );
                 HANDLE( SPACE );
+                HANDLE( TAB );
+                HANDLE2( BACKSPACE, BACK );
                 HANDLE2( ESC, ESCAPE );
                 HANDLE2( ENTER, RETURN );
                 HANDLE( F1 );
@@ -312,6 +315,17 @@ static void *Thread( void *p_data )
                 HANDLE( END );
                 HANDLE( INSERT );
                 HANDLE( DELETE );
+                HANDLE2( MENU, APPS );
+                HANDLE2( PRINT, SNAPSHOT );
+                HANDLE( PAUSE );
+                HANDLE( BROWSER_BACK );
+                HANDLE( BROWSER_FORWARD );
+                HANDLE( BROWSER_REFRESH );
+                HANDLE( BROWSER_STOP );
+                HANDLE( BROWSER_SEARCH );
+                HANDLE( BROWSER_FAVORITES );
+                HANDLE( BROWSER_HOME );
+                HANDLE( VOLUME_MUTE );
                 HANDLE( VOLUME_DOWN );
                 HANDLE( VOLUME_UP );
                 HANDLE( MEDIA_PLAY_PAUSE );
@@ -320,8 +334,30 @@ static void *Thread( void *p_data )
                 HANDLE( MEDIA_NEXT_TRACK );
 
                 default:
-                    i_vk = toupper( (uint8_t)(i_key & ~KEY_MODIFIER) );
+                {
+                    uint_fast32_t key = i_key & ~KEY_MODIFIER;
+                    if (key >= KEY_F(13) && key <= KEY_F(24)
+                        && (key - KEY_F(13)) % 0x10000 == 0)
+                        i_vk = VK_F13 + (key - KEY_F(13)) / 0x10000;
+                    else if (key >= 0x20 && key <= 0xFFFF
+                             && (key < 0xD800 || key > 0xDFFF))
+                    {
+                        /* VLC's key converter uses lowercase letters with an
+                         * independent Shift modifier. Preserve the old ASCII
+                         * case-insensitive binding while translating punctuation
+                         * and other representable characters without truncation. */
+                        if (key >= 'A' && key <= 'Z') key += 'a' - 'A';
+                        const SHORT mapping = VkKeyScanExW((WCHAR)key, keyboard_layout);
+                        if (mapping != -1 && !(HIBYTE(mapping) & ~7))
+                        {
+                            i_vk = LOBYTE(mapping);
+                            if (HIBYTE(mapping) & 1) i_keyMod |= MOD_SHIFT;
+                            if (HIBYTE(mapping) & 2) i_keyMod |= MOD_CONTROL;
+                            if (HIBYTE(mapping) & 4) i_keyMod |= MOD_ALT;
+                        }
+                    }
                     break;
+                }
             }
             if( !i_vk || (i_key & ~KEY_MODIFIER) == KEY_F12 )
             {
