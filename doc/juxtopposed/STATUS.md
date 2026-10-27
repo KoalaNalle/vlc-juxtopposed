@@ -1,30 +1,36 @@
 # Current status
 
-Updated27 October2026. The desktop is available and beta work is continuing.
-The tested source-placeholder follow-up source is `e39da9c7ee`.
+Updated 27 October 2026. The desktop is available and beta work is continuing.
+The tested global-shortcut feedback source is `a6cd73445c`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`.
-- Ordinary GUI423 `42c18ca0`, Core265 `fdfcfcd5`, library282 `13ccdc36`,
+- Ordinary GUI441 `3f6170f7`, Windows-hotkeys432 `33c21ffe`,
+  Core265 `fdfcfcd5`, library282 `13ccdc36`,
   recording322 `930205b1`, MP4r240 `df15e8ed`, subtitle130 `11f2b78e`,
   WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-appearance-cold-r425/runtime`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-global-hotkeys-cold-r447/runtime`.
   This is an isolated tested runtime, not a release package. Earlier tested
   GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
-- All owned desktop/native tests are closed. The read-only firewall inventory
-  also finished. Freeze fresh inputs before the next guarded job; current docs
-  postdate `inputs-r423.json`. The four unrelated audio experiments stay untouched.
+- All owned desktop/native tests are closed. Freeze fresh inputs before the
+  next guarded job; current docs postdate `inputs-r444.json`. The four unrelated
+  audio experiments stay untouched. No firewall rules or security/privacy settings
+  changed; the read-only firewall inventory remains available.
 
 ## Latest verified work
 
-[Source appearance follow-up](../juxtopposed-references/native/home-music-source-appearance-20261027/README.md):
-the placeholder is readable in native Dark/Light/current-System modes and the
-ancestor menus follow Light. Search/clear preserve pause; System selection survives
-normal restart. Only the isolated theme key changes; player profiles stay identical.
-Both runs exit0/602/no checked errors/all guards. Live OS theme propagation remains
-open: Settings exposed no targetable window; five OS appearance values stay unchanged.
+[Global shortcut feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md):
+Controls and the native editor distinguish successful Windows registration from
+saved mappings. Six real-module functions, twenty native model functions and nine
+component groups pass. Ordinary two-player checks prove both global keys reach the
+owning player while the focused conflicting player stays paused. Saving F10 keeps
+the current failures until restart; cold restart shows one active key and real
+play/pause. All three final ordinary runs exit0/602/no checked errors/all guards.
+Only the saved shortcut key changes; player profiles remain identical. Preliminary
+startup-race, atom-skip and short-fixture EOF outcomes stay preserved. Full actions,
+legacy key mapping, focus/DPI and package acceptance remain open.
 
 [GUI418 source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md):
 native per-player folder history, real breadcrumbs, current-track folder and a
@@ -36,15 +42,16 @@ pass. The final run exits0/602plugins/zero checked errors/all ending guards.
 Ten paused observations retain the exact position across panel, queue, search
 and Home/return actions. Preliminary alias/layout/menu defects stay preserved.
 
-The [navigation](../juxtopposed-references/native/home-music-navigation-20261027/README.md),
+[Source appearance](../juxtopposed-references/native/home-music-source-appearance-20261027/README.md),
+[navigation](../juxtopposed-references/native/home-music-navigation-20261027/README.md),
 [toolbar](../juxtopposed-references/native/home-music-toolbar-20261027/README.md)
 and other receipts retain their earlier scopes. Full visual scores, screen-reader/
 actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Inspect the remaining global-shortcut registration/conflict feedback in W2;
-   distinguish saved mappings from successful Windows registration. Keep W3's
+1. Audit remaining Windows global-key mappings and shortcut hints/actions in W2;
+   registration feedback now has scoped ordinary evidence. Keep W3's
    live System-theme change and native UIA/screen-reader focus open. UIA reports
    stayed stale even when Enter activated the correct cover. Cover view remains
    a documented functional adaptation rather than a complete visual acceptance.
