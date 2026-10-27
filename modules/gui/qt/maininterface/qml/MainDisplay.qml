@@ -86,7 +86,8 @@ FocusScope {
                 MainPlaylistController.stop()
         }
 
-        if (History.previousEmpty) {
+        // A valid first route still has no previous entry.
+        if (History.viewPath.length === 0) {
             History.update(["home"])
         }
         loadCurrentHistoryView(Qt.OtherFocusReason)

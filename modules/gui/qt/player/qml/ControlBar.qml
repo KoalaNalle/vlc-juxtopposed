@@ -280,7 +280,7 @@ T.Pane {
                 case ControlListModel.JUXTO_PICTURE_IN_PICTURE: MainCtx.playerView = false; break
                 case ControlListModel.JUXTO_ZOOM: settingsReturnItem = item; playbackSettings.showSettings(1,4); break
                 case ControlListModel.JUXTO_RIGHT_SIDEBAR: MainCtx.playqueuePanel.visible = !MainCtx.playqueuePanel.visible; break
-                case ControlListModel.QUIT_BUTTON: MainCtx.close(); break
+                case ControlListModel.QUIT_BUTTON: DialogsProvider.quit(); break
                 case ControlListModel.JUXTO_VLC_SETTINGS: DialogsProvider.prefsDialog(); break
                 case ControlListModel.JUXTO_GO_HOME: History.push(["home"], {}, Qt.TabFocusReason); MainCtx.playerView = false; break
                 case ControlListModel.INFO_BUTTON: DialogsProvider.mediaInfoDialog(); break
