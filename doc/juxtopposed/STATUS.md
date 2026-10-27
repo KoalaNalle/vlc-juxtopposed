@@ -7,16 +7,16 @@ The user authorized tested nightly commits/pushes; release publication is separa
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`. Current source identities are frozen in the
-  [music detail receipt](../juxtopposed-references/native/home-music-details-20261027/README.md).
+  [library history receipt](../juxtopposed-references/native/home-library-history-20261027/README.md).
   The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `fdfcfcd5`, ordinary GUI `1a0c6c19`, library `13ccdc36`,
+- Selected tuple: Core `fdfcfcd5`, ordinary GUI `4dfe9fb9`, library `13ccdc36`,
   MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`.
   Ordinary runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-music-details-fixed-r290/runtime`.
-  Its isolated profile is not a release package. GUI286/Core265 remains recoverable
-  at `ui-music-play-r286/runtime`; GUI260/Core265 at `ui-selection-fixed-r265/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-library-history-fixed-r294/runtime`.
+  Its isolated profile is not a release package. GUI290/Core265 remains recoverable
+  at `ui-music-details-fixed-r290/runtime`; GUI286 at `ui-music-play-r286/runtime`.
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r290.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r294.json` predates this documentation checkpoint; freeze
   fresh inputs before another guarded test. All owned tests have exited normally.
 
 ## What passed
@@ -42,6 +42,12 @@ The user authorized tested nightly commits/pushes; release publication is separa
 - The two Evening Album entries are distinct native containing-folder identities
   without year/multi-disc matching evidence. Native queries and a read-only
   generated database/source check support preserving both; no grouping policy changed.
+- Library search now follows its session Back/Forward entry, restoring before
+  selection, with independent detail filters and persisted Clear. Traditional
+  popup initialization preserves the restored query. Songs marks its actual
+  native Alphabetic fallback and toggles order; cold order persists with a fresh
+  query. Three GUI293 apps exit0/602modules/zero errors/all guards. The staging
+  helper copies only link-limit failures; accepted runtime identities stay intact.
 - Prior subtitle/Core results remain scoped to their recorded tuples:
   [late-cue preset replay](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md),
   [selection and first-frame clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
@@ -51,10 +57,10 @@ The user authorized tested nightly commits/pushes; release publication is separa
 
 ## Next action and open questions
 
-1. Continue S13 with initial empty sort-criteria feedback and search-history
-   semantics; then the next applicable W2 customizer/shortcut/library workflow.
-   Multi-selection artist Play and rapid in-flight artist changes still need
-   ordinary coverage. Banner buttons were activated with Space; an earlier Return
+1. Continue W2 with multi-selection artist Play and rapid artist changes, then
+   customizer/shortcut workflows. S13 history and Songs fallback have scoped
+   evidence; every category and native Default-sort policy remain separate.
+   Banner buttons were activated with Space; an earlier Return
    attempt did not enqueue, and its misleading observation filename is qualified.
 2. Finish remaining category journeys and
    W3 interaction/design/accessibility/Windows DPI in [BETA](BETA.md) and

@@ -64,14 +64,26 @@ NavigableRow {
         height: VLCStyle.bannerButton_height
         buttonWidth: VLCStyle.bannerButton_width
 
-        Binding {
-            target: root.search
-            property: "pattern"
-            value: searchBox.searchPattern
+        property bool _searchInitialized: false
+
+        Component.onCompleted: {
+            textField.text = root.search.pattern
+            _searchInitialized = true
+            if (root.search.pattern.length > 0)
+                popup.open()
+        }
+
+        onSearchPatternChanged: {
+            if (_searchInitialized && root.search.pattern !== searchPattern)
+                root.search.pattern = searchPattern
         }
 
         Connections {
             target: root.search
+            function onPatternChanged() {
+                if (searchBox.textField.text !== root.search.pattern)
+                    searchBox.textField.text = root.search.pattern
+            }
             function onAskShow() {
                 searchBox.expandAndFocus()
             }

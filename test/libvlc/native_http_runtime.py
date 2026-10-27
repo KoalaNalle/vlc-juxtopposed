@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LGPL-2.1-or-later
 """Shared staging and bounded process execution for owned Windows HTTP tests."""
 from pathlib import Path
-import ctypes, hashlib, os, subprocess
+import ctypes, errno, hashlib, os, shutil, subprocess
 
 
 def stage_runtime(source, destination):
@@ -11,6 +11,7 @@ def stage_runtime(source, destination):
     assert source.drive.upper() == destination.drive.upper(), 'Use one volume for immutable runtime hard links'
     assert (source / 'vlc.exe').is_file() and (source / 'libvlccore.dll').is_file()
     destination.mkdir()
+    staged = dict(hardLinkedFiles=0, copiedLinkLimitFiles=0)
     for path in source.rglob('*'):
         relative = path.relative_to(source)
         if relative.parts[0] == 'portable' or path.name == 'plugins.dat':
@@ -19,8 +20,18 @@ def stage_runtime(source, destination):
         if path.is_dir():
             target.mkdir(exist_ok=True)
         elif path.is_file():
-            os.link(path, target)
+            try:
+                os.link(path, target)
+                staged['hardLinkedFiles'] += 1
+            except OSError as error:
+                # Retained test runtimes can exhaust NTFS's per-file link count.
+                # Keep the source immutable; do not mask other staging failures.
+                if error.errno != errno.EMLINK and getattr(error, 'winerror', None) != 1142:
+                    raise
+                shutil.copy2(path, target)
+                staged['copiedLinkLimitFiles'] += 1
     (destination / 'portable').mkdir()
+    return staged
 
 
 def environment(runtime, output):

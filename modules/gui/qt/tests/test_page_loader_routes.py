@@ -15,7 +15,7 @@ os.environ['QSG_RHI_BACKEND'] = 'software'
 os.environ['QT_QUICK_BACKEND'] = 'software'
 from PySide6.QtCore import QObject, Property, Signal, Slot, Qt, QAbstractListModel, QModelIndex, QItemSelectionModel, qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import (QQmlApplicationEngine, QQmlPropertyMap, QJSValue,
+from PySide6.QtQml import (QQmlApplicationEngine, QQmlExpression, qmlContext, QQmlPropertyMap, QJSValue,
     QmlAttached, qmlRegisterType, qmlRegisterUncreatableType, qmlRegisterSingletonInstance)
 
 parser = argparse.ArgumentParser(description=__doc__)
@@ -93,6 +93,17 @@ class ContextAdapter(QObject):
     def setCursor(self, item, cursor): pass
     @Slot(QObject)
     def unsetCursor(self, item): pass
+    @Property(bool, constant=True)
+    def juxtopposedControls(self): return True
+    @Property(bool)
+    def hasGridListMode(self): return False
+    @hasGridListMode.setter
+    def hasGridListMode(self, value): pass
+    @Slot(str, 'QVariant', result='QVariant')
+    def settingValue(self, key, fallback): return fallback
+    @Slot(str, 'QVariant')
+    def setSettingValue(self, key, value):
+        assert key.startswith(('sortCriteria/', 'sortOrder/')), key
 
 class NavigationProperties(QObject):
     changed = Signal()
@@ -105,6 +116,9 @@ class NavigationProperties(QObject):
     def cancelAction(self): return self._cancel
     @cancelAction.setter
     def cancelAction(self, value): self._cancel = value; self.changed.emit()
+    upItem = Property(QObject, lambda self: None, lambda self, item: None)
+    downAction = Property(QJSValue, lambda self: QJSValue(), lambda self, value: None)
+    navigable = Property(bool, lambda self: True, lambda self, value: None)
 
 @QmlAttached(NavigationProperties)
 class NavigationAdapter(QObject):
@@ -136,11 +150,36 @@ qmlRegisterUncreatableType(NavigationAdapter, 'VLC.Util', 1, 0, 'Navigation', 'A
 qmlRegisterType(BaseModelAdapter, 'VLC.Util', 1, 0, 'BaseModel')
 modules = output / 'modules'
 widgets, interface, util, style = [modules / 'VLC' / name for name in ['Widgets', 'MainInterface', 'Util', 'Style']]
-write(widgets / 'qmldir', 'module VLC.Widgets\nPageLoader 1.0 PageLoader.qml\nStackViewExt 1.0 StackViewExt.qml\nProgressIndicator 1.0 ProgressIndicator.qml\n')
+write(widgets / 'qmldir', 'module VLC.Widgets\nPageLoader 1.0 PageLoader.qml\nPageExt 1.0 PageExt.qml\nStackViewExt 1.0 StackViewExt.qml\nProgressIndicator 1.0 ProgressIndicator.qml\nJuxtopposedLibraryHeader 1.0 JuxtopposedLibraryHeader.qml\nGridSortFilterControls 1.0 GridSortFilterControls.qml\nSubtitleLabel 1.0 SubtitleLabel.qml\n')
 save_source('modules/gui/qt/widgets/qml/PageLoader.qml', widgets / 'PageLoader.qml')
+save_source('modules/gui/qt/widgets/qml/PageExt.qml', widgets / 'PageExt.qml')
 save_source('modules/gui/qt/widgets/qml/StackViewExt.qml', widgets / 'StackViewExt.qml')
 write(widgets / 'ProgressIndicator.qml', 'import QtQuick\nItem { property string text: "" }\n')
-write(interface / 'qmldir', 'module VLC.MainInterface\nMainViewLoader 1.0 MainViewLoader.qml\n')
+write(widgets / 'SubtitleLabel.qml', 'import QtQuick\nText {}\n')
+write(widgets / 'GridSortFilterControls.qml', '''import QtQuick
+Item { property var sortMenu; property var search; property var sort }
+''')
+write(widgets / 'JuxtopposedLibraryHeader.qml', '''import QtQuick
+Item {
+    property real uiScale; property string iconFontFamily; property string backIcon
+    property string viewIcon; property string searchIcon; property string moreIcon
+    property bool canGoBack; property bool canGoForward; property bool sortAvailable
+    property bool searchAvailable; property bool viewAvailable; property string searchPattern
+    property int itemCount; property bool countAvailable; property var breadcrumbs
+    signal backRequested(); signal forwardRequested(); signal breadcrumbRequested(var uri)
+    signal viewRequested(); signal searchRequested(string pattern); signal contentFocusRequested()
+    signal sortRequested(var position); signal moreRequested(var position)
+    function setCurrentItemFocus(reason) {}
+    function showSearch() {}
+}
+''')
+write(interface / 'qmldir', 'module VLC.MainInterface\nMainViewLoader 1.0 MainViewLoader.qml\nSearchCtx 1.0 SearchCtx.qml\nSortCtx 1.0 SortCtx.qml\n')
+write(interface / 'SearchCtx.qml', 'import QtQuick\nQtObject { property string pattern: ""; property bool available: false; signal askShow() }\n')
+write(interface / 'SortCtx.qml', 'import QtQuick\nQtObject { property string criteria: ""; property int order: Qt.DescendingOrder; property var model: []; property bool available: false }\n')
+menus = modules / 'VLC' / 'Menus'
+write(menus / 'qmldir', 'module VLC.Menus\nSortMenu 1.0 SortMenu.qml\nQmlGlobalMenu 1.0 QmlGlobalMenu.qml\n')
+write(menus / 'SortMenu.qml', 'import QtQuick\nQtObject { property var ctx; signal selected(int index); function popup(position, above, model) {} }\n')
+write(menus / 'QmlGlobalMenu.qml', 'import QtQuick\nQtObject { property var ctx; function popup(position) {} }\n')
 save_source('modules/gui/qt/maininterface/qml/MainViewLoader.qml', interface / 'MainViewLoader.qml')
 write(util / 'qmldir', 'module VLC.Util\nsingleton Helpers 1.0 Helpers.qml\nListSelectionModel 1.0 ListSelectionModel.qml\n')
 write(util / 'Helpers.qml', 'pragma Singleton\nimport QtQuick\nQtObject { function isArray(value) { return Array.isArray(value) } function enforceFocus(item, reason) { item.forceActiveFocus(reason) } }\n')
@@ -168,6 +207,22 @@ def alias(name, child):
     return matches[0].strip() if matches else ''
 
 fixtures = output / 'fixtures'
+write(fixtures / 'HistoryLeaf.qml', '''import QtQuick
+import VLC.Widgets as Widgets
+Widgets.PageExt {
+    libraryHeaderEnabled: false
+    isSearchable: true
+    property string routeRole: "history-leaf"
+    property string constructionPattern: "uncompleted"
+    property int initialIndex: -1
+    sortModel: [{text: "Alphabetic", criteria: "title"}, {text: "Duration", criteria: "duration"}]
+    libraryModel: QtObject { property string sortCriteria: "title" }
+    Component.onCompleted: constructionPattern = search.pattern
+    function chooseSort(index) { selectLibrarySort(index) }
+    function setCurrentItemFocus(reason) {}
+}
+''')
+write(fixtures / 'HistoryNested.qml', 'import VLC.Widgets as Widgets\nWidgets.PageLoader { pageModel: [{name: "all", default: true, url: "HistoryLeaf.qml"}] }\n')
 leaf = '''import QtQuick
 import QtQuick.Templates as T
 import VLC.MainInterface
@@ -248,6 +303,7 @@ Window {
             {name: "home", nested: HOME, url: MainCtx.mediaLibraryAvailable ? "HomeNested.qml" : "NoMlHome.qml"},
             {name: "video", nested: VIDEO, url: "VideoNested.qml"},
             {name: "playlists", nested: PLAYLISTS, url: "PlaylistNested.qml"},
+            {name: "library", nested: true, url: "HistoryNested.qml"},
             {name: "failing", nested: true, url: "Failing.qml"}
         ]
     }
@@ -273,6 +329,11 @@ def loaded(role):
     item = window.property('leafItem'); assert item and item.property('routeRole') == role
     return item
 def navigate(path, props=None): history.push(path, props); settle()
+def evaluate(item, code):
+    expression = QQmlExpression(qmlContext(item), item, code)
+    value, _ = expression.evaluate()
+    assert not expression.hasError(), expression.error().toString()
+    return value.toVariant() if hasattr(value, 'toVariant') else value
 failed = None
 try:
     assert len(engine.rootObjects()) == 1, messages
@@ -339,6 +400,60 @@ try:
     navigate(['home']); loaded('home-no-ml')
     assert history.viewPath == ['home']
     completed.append('conditionalNoMlLeaf')
+    navigate(['library'])
+    item = loaded('history-leaf')
+    assert history.viewPath == ['library', 'all']
+    assert item.property('constructionPattern') == ''
+    item.setProperty('historySearchPattern', 'Fixture')
+    settle()
+    first_entry = history.viewProp
+    assert first_entry.value('historySearchPattern') == 'Fixture'
+    first_entry.insert('initialIndex', 0)
+    completed.append('defaultLeafSearchStoredInItsHistoryEntry')
+
+    # The old page remains alive when History changes its current property map,
+    # before navigate loads the replacement. Its signal must not write there.
+    outgoing_item = item
+    def outgoing_change(): outgoing_item.setProperty('historySearchPattern', 'outgoing')
+    history.changed.connect(outgoing_change)
+    history.push(['library', 'all'])
+    history.changed.disconnect(outgoing_change)
+    item = loaded('history-leaf')
+    assert item.property('constructionPattern') == ''
+    assert not history.viewProp.contains('historySearchPattern')
+    assert first_entry.value('historySearchPattern') == 'Fixture'
+    completed.append('sameRouteNewEntryIgnoresOutgoingPageChanges')
+
+    item.setProperty('historySearchPattern', 'Second')
+    settle()
+    second_entry = history.viewProp
+    history.previous()
+    item = loaded('history-leaf')
+    assert item.property('constructionPattern') == 'Fixture'
+    assert item.property('historySearchPattern') == 'Fixture'
+    assert item.property('initialIndex') == 0
+    history.next()
+    item = loaded('history-leaf')
+    assert item.property('constructionPattern') == 'Second'
+    item.setProperty('historySearchPattern', '')
+    settle()
+    assert second_entry.value('historySearchPattern') == ''
+    history.previous(); loaded('history-leaf')
+    history.next(); item = loaded('history-leaf')
+    assert item.property('constructionPattern') == ''
+    completed.append('backForwardRestoresBeforeCompletionAndClearRemainsCleared')
+
+    assert evaluate(item, 'sort.criteria') == ''
+    assert item.property('librarySortCriteria') == 'title'
+    evaluate(item, 'chooseSort(0)')
+    assert evaluate(item, 'sort.criteria') == 'title' and evaluate(item, 'sort.order') == Qt.AscendingOrder.value
+    evaluate(item, 'chooseSort(0)')
+    assert evaluate(item, 'sort.order') == Qt.DescendingOrder.value
+    evaluate(item, 'chooseSort(1)')
+    assert evaluate(item, 'sort.criteria') == 'duration' and evaluate(item, 'sort.order') == Qt.AscendingOrder.value
+    evaluate(item, 'sort.criteria = ""; libraryModel.sortCriteria = "insertion"')
+    assert item.property('librarySortCriteria') == 'insertion'
+    completed.append('sortReflectsNativeFallbackAndTogglesWithoutInventingGlobalDefault')
     assert not messages, messages
 except Exception:
     failed = traceback.format_exc()
@@ -347,7 +462,7 @@ finally:
         failure=failed, messages=messages, allMessages=all_messages,
         expectedFailures=expected_failures, sourceSha256=sources,
         helperSha256=digest(Path(__file__).read_bytes()),
-        scope='Unchanged production PageLoader/StackViewExt/MainViewLoader; exact wrapper alias declarations and nesting registry values extracted into dependency-adapted fixtures. Supplied Python History/Navigation/model/style adapters; real Qt property maps and item-selection model. No actual C++ NavigationHistory, native MediaLibrary wrappers, primary playback or desktop navigation acceptance.',
+        scope='Unchanged production PageLoader/StackViewExt/MainViewLoader/PageExt; exact wrapper alias declarations and nesting registry values extracted into dependency-adapted fixtures. Supplied History/Navigation/model/style/search/sort/header/menu adapters; real Qt property maps and item-selection model. Header rendering and traditional SearchBox are not covered here. No actual C++ NavigationHistory, native MediaLibrary wrappers, primary playback or desktop navigation acceptance.',
         fullNativeIntegrationAccepted=False)
     record['negativeBaselineReproduced'] = bool(args.mode == 'baseline' and failed and any('initialIndex' in text for text in messages))
     (output / 'verification.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8', newline='\n')

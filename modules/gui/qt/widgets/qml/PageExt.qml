@@ -59,6 +59,29 @@ T.Page {
     readonly property SearchCtx search: _searchCtx
     readonly property SortCtx sort: _sortCtx
 
+    // Leaf properties are restored by PageLoader before the view is completed,
+    // so filtering precedes restoration of its row/selection index.
+    property alias historySearchPattern: _searchCtx.pattern
+    property var _searchHistoryEntry: null
+    property bool _searchHistoryReady: false
+
+    Component.onCompleted: {
+        _searchHistoryEntry = History.viewProp
+        _searchHistoryReady = true
+    }
+
+    onHistorySearchPatternChanged: {
+        // An outgoing page can still emit changes while the next entry loads,
+        // including another entry with the same route. Never update that entry.
+        if (_searchHistoryReady && _searchHistoryEntry === History.viewProp
+                && History.exactMatch(History.viewPath, root.pagePrefix))
+            _searchHistoryEntry.historySearchPattern = historySearchPattern
+    }
+
+    // Some views use an explicit native fallback while the saved key is empty.
+    // Reflect that model's criterion rather than guessing a default for all views.
+    readonly property string librarySortCriteria: sort.criteria || libraryModel?.sortCriteria || ""
+
 
     SearchCtx {
         id: _searchCtx
@@ -181,8 +204,8 @@ T.Page {
             onContentFocusRequested: root.focusContent()
             onSortRequested: position => {
                 const model = root.sort.model.map(entry => ({text: entry.text,
-                    checked: entry.criteria === root.sort.criteria,
-                    order: entry.criteria === root.sort.criteria ? root.sort.order : undefined}))
+                    checked: entry.criteria === root.librarySortCriteria,
+                    order: entry.criteria === root.librarySortCriteria ? root.sort.order : undefined}))
                 const menu = root.sortMenu ?? librarySortMenu
                 menu.popup(position, false, model)
             }
@@ -208,12 +231,12 @@ T.Page {
         if (!MainCtx.juxtopposedControls || index < 0 || index >= root.sort.model.length)
             return
         const criteria = root.sort.model[index].criteria
-        if (root.sort.criteria === criteria)
+        if (root.librarySortCriteria === criteria)
             root.sort.order = root.sort.order === Qt.AscendingOrder ? Qt.DescendingOrder : Qt.AscendingOrder
         else {
-            root.sort.criteria = criteria
             root.sort.order = Qt.AscendingOrder
         }
+        root.sort.criteria = criteria
     }
 
     Component {
