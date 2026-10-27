@@ -2088,8 +2088,8 @@ if qt6_dep.found()
         endif
         if host_system == 'windows' and cpp.compiles(qt_static_check, dependencies: qt6_dep,
                 name: 'CSD test uses static Qt')
-            csd_qt_libdir = qt6_dep.get_variable(pkgconfig: 'libdir', configtool: '-query QT_INSTALL_LIBS')
-            csd_button_test_deps += cpp.find_library('qoffscreen', dirs: csd_qt_libdir, static: true)
+            csd_qt_plugindir = qt6_dep.get_variable(pkgconfig: 'plugindir', configtool: '-query QT_INSTALL_PLUGINS')
+            csd_button_test_deps += cpp.find_library('qoffscreen', dirs: csd_qt_plugindir / 'platforms', static: true)
         endif
         vlc_tests += {
             'name': 'test_qt_csd_button_model',

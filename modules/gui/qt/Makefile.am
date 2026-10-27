@@ -2285,7 +2285,8 @@ test_qt_csd_button_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 if HAVE_WIN32
 test_qt_csd_button_model_SOURCES += util/winpthreads_shutdown.cpp
 test_qt_csd_button_model_LDFLAGS += -Wl,--wrap=pthread_key_delete
-test_qt_csd_button_model_LDADD = -lqoffscreen $(QT_QTEST_COMMON_ldadd) -lntdll
+# The explicit plugin import is compiled only for static Qt builds.
+test_qt_csd_button_model_LDADD = $(if $(filter -DQT_STATIC,$(QT_CFLAGS) $(CXXFLAGS_qt)),-lqoffscreen) $(QT_QTEST_COMMON_ldadd) -lntdll
 else
 test_qt_csd_button_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 endif
