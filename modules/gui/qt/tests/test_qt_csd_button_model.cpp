@@ -1,6 +1,13 @@
 #include <QTest>
 #include <QGuiApplication>
 #include <QQuickItem>
+#include <QtPlugin>
+#ifdef Q_OS_WIN
+# include <stdlib.h>
+#endif
+#if defined(QT_STATIC) && defined(Q_OS_WIN)
+Q_IMPORT_PLUGIN(QOffscreenIntegrationPlugin)
+#endif
 
 #include "util/csdbuttonmodel.hpp"
 #include "maininterface/mainctx.hpp"
@@ -200,6 +207,9 @@ private:
 
 int main(int argc, char **argv)
 {
+#ifdef Q_OS_WIN
+    _set_error_mode(_OUT_TO_STDERR);
+#endif
     // CI has no desktop (cf. qml_test.cpp); an externally provided platform
     // (e.g. "windows" when running the built test on Windows) is respected
     if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM"))
