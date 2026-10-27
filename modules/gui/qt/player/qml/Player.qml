@@ -377,6 +377,12 @@ FocusScope {
                 property real topPadding: playerSpecializationLoader.topPadding
                 property real bottomPadding: playerSpecializationLoader.bottomPadding
                 readonly property bool musicPresentationActive: musicView.active
+                readonly property string musicSourceTitle: musicView.item?.folderMode
+                    ? Player.musicFolder.name : qsTr("Play Queue")
+                function showMusicSource() {
+                    rootPlayer.juxtopposedMusicSidebarVisible = true
+                    musicView.item?.setCurrentItemFocus(Qt.ShortcutFocusReason)
+                }
 
                 Rectangle {
                     anchors.fill: parent
@@ -460,6 +466,9 @@ FocusScope {
                         folderAvailable: Player.musicFolder.available
                         sidebarVisible: rootPlayer.juxtopposedMusicSidebarVisible
                         folderName: Player.musicFolder.name
+                        folderBreadcrumbs: Player.musicFolder.breadcrumbs
+                        canGoBack: Player.musicFolder.canGoBack
+                        canGoForward: Player.musicFolder.canGoForward
                         sourceModel: folderMode ? Player.musicFolder : audioQueue
                         itemCount: folderMode ? Player.musicFolder.count : audioQueue.count
                         currentIndex: folderMode ? Player.musicFolder.currentIndex : audioQueue.currentIndex
@@ -489,6 +498,10 @@ FocusScope {
                         }
                         onAddRequested: DialogsProvider.simpleOpenDialog(false)
                         onBackRequested: MainCtx.playerView = false
+                        onFolderBackRequested: Player.musicFolder.goBack()
+                        onFolderForwardRequested: Player.musicFolder.goForward()
+                        onFolderBrowseRequested: uri => Player.musicFolder.browseFolder(uri)
+                        onSourceFolderRequested: Player.musicFolder.browseSourceFolder()
                         onFolderOpenRequested: Qt.openUrlExternally(Player.musicFolder.folderUrl)
                         onRefreshRequested: Player.musicFolder.refresh()
                         onSearchRequested: pattern => Player.musicFolder.searchPattern = pattern
@@ -1114,6 +1127,10 @@ FocusScope {
         playlistVisible: playlistVisibility.isPlaylistVisible
         navigationVisible: rootPlayer._musicPresentationActive
             ? rootPlayer.juxtopposedMusicSidebarVisible : rootPlayer.juxtopposedNavigationVisible
+        sourceTitleOverride: rootPlayer._musicPresentationActive
+            ? playerSpecializationLoader.item.musicSourceTitle : ""
+        sourceFocusesPlayer: rootPlayer._musicPresentationActive
+        onSourceContextRequested: playerSpecializationLoader.item?.showMusicSource()
 
         plListView: {
             if (playlistpopup.active)

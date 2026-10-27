@@ -141,6 +141,10 @@ click(item('juxtopposedStripmaximize'));assert expr('MainCtx.maximizeCalls')==2
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert not item('juxtopposedStripclose').isVisible()
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert item('juxtopposedStripclose').isVisible() and expr('MainCtx.fullscreenCalls')==2
 root.setProperty('playerContext',True);spy=QSignalSpy(root.navigationRequested);click(item('juxtopposedStripnavigation'));assert spy.count()==1
+root.setProperty('sourceTitle','My Songs');assert root.property('sourceDescription')=='Return to My Songs'
+source_spy=QSignalSpy(root.sourceRequested);click(item('juxtopposedStripsourceFolder'));assert source_spy.count()==1
+root.setProperty('sourceDescription','Show My Songs');assert item('juxtopposedStripsourceFolder').property('description')=='Show My Songs'
+click(item('juxtopposedStripsourceFolder'));assert source_spy.count()==2
 close=item('juxtopposedStripclose');home=item('juxtopposedStriplogo')
 QTest.mouseMove(view,QPoint(view.width()//2,view.height()//2));close.forceActiveFocus(Qt.TabFocusReason);QTest.qWait(650)
 def visible_help():return [obj.objectName() for obj in root.findChildren(QObject) if obj.objectName().startswith('juxtopposedStripTooltip') and obj.property('visible')]

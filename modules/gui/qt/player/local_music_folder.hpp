@@ -9,6 +9,7 @@
 #include <QAbstractListModel>
 #include <QThreadPool>
 #include <QUrl>
+#include <QVariantList>
 #include <atomic>
 #include <memory>
 struct vlc_playlist;
@@ -26,6 +27,10 @@ class LocalMusicFolderModel : public QAbstractListModel
     Q_PROPERTY(QString error READ error NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString name READ name NOTIFY stateChanged FINAL)
     Q_PROPERTY(QUrl folderUrl READ folderUrl NOTIFY stateChanged FINAL)
+    Q_PROPERTY(QUrl sourceFolderUrl READ sourceFolderUrl NOTIFY stateChanged FINAL)
+    Q_PROPERTY(QVariantList breadcrumbs READ breadcrumbs NOTIFY stateChanged FINAL)
+    Q_PROPERTY(bool canGoBack READ canGoBack NOTIFY stateChanged FINAL)
+    Q_PROPERTY(bool canGoForward READ canGoForward NOTIFY stateChanged FINAL)
     Q_PROPERTY(int count READ rowCount NOTIFY stateChanged FINAL)
     Q_PROPERTY(int currentIndex READ currentIndex NOTIFY stateChanged FINAL)
     Q_PROPERTY(QString searchPattern READ searchPattern WRITE setSearchPattern NOTIFY stateChanged FINAL)
@@ -41,14 +46,22 @@ public:
     bool enabled() const { return m_enabled; }
     bool available() const { return !m_folder.isEmpty(); }
     bool busy() const { return m_busy; }
-    QString error() const { return m_error; }
+    QString error() const { return m_navigationError.isEmpty() ? m_error : m_navigationError; }
     QString name() const;
     QUrl folderUrl() const { return QUrl::fromLocalFile(m_folder); }
+    QUrl sourceFolderUrl() const { return QUrl::fromLocalFile(m_sourceFolder); }
+    QVariantList breadcrumbs() const;
+    bool canGoBack() const { return available() && m_historyIndex > 0; }
+    bool canGoForward() const { return available() && m_historyIndex >= 0 && m_historyIndex + 1 < m_history.size(); }
     int currentIndex() const;
     QString searchPattern() const { return m_search; }
     bool sortAscending() const { return m_ascending; }
     Q_INVOKABLE bool addAndPlay(int row);
     Q_INVOKABLE void refresh();
+    Q_INVOKABLE bool browseFolder(const QUrl &);
+    Q_INVOKABLE bool browseSourceFolder();
+    Q_INVOKABLE bool goBack();
+    Q_INVOKABLE bool goForward();
 public slots:
     void setSourceUrl(const QUrl &);
     void setEnabled(bool);
@@ -60,6 +73,9 @@ private:
     struct Entry { QUrl url; QString title; QString artist; QUrl artwork; SharedInputItem item; };
     using Cancellation = std::shared_ptr<std::atomic_bool>;
     void restart();
+    void clearFolder();
+    void loadFolder(const QString &);
+    bool visitFolder(const QUrl &, int historyIndex = -1);
     void rebuildView();
     void filterView();
     void replaceEntries(QVector<Entry>);
@@ -67,7 +83,9 @@ private:
     vlc_object_t *m_parent;
     vlc_playlist_t *m_playlist;
     QUrl m_source;
-    QString m_folder, m_search, m_error;
+    QString m_folder, m_sourceFolder, m_search, m_error, m_navigationError;
+    QStringList m_history;
+    qsizetype m_historyIndex = -1;
     bool m_enabled = false, m_busy = false, m_ascending = true;
     quint64 m_generation = 0;
     QVector<Entry> m_entries;

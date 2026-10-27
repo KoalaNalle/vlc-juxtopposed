@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QFileInfo>
 #include <QTemporaryDir>
 #include <QTest>
 #include <cmath>
@@ -95,6 +96,8 @@ private slots:
         QVERIFY(ignored.open(QIODevice::WriteOnly)); ignored.write("not media"); ignored.close();
         QVERIFY(QDir(m_directory.path()).mkdir("nested"));
         QVERIFY(QFile::copy(m_first.toLocalFile(), m_directory.filePath("nested/hidden.wav")));
+        QVERIFY(QDir(m_directory.path()).mkdir("alternative"));
+        QVERIFY(QFile::copy(m_second.toLocalFile(), m_directory.filePath("alternative/other.wav")));
         const char *args[] = {"--ignore-config", "--no-media-library", "--no-auto-preparse",
             "--aout=amem,none", "--no-video", "--verbose=2", "--file-logging", "--logfile=music-folder-native.log"};
         m_instance = libvlc_new(ARRAY_SIZE(args), args);
@@ -137,6 +140,106 @@ private slots:
         QCOMPARE(m_model->currentIndex(), 0);
         m_model->setSortAscending(true);
         QCOMPARE(url(0), m_first);
+    }
+    void folderNavigationAndHistoryStayIndependent()
+    {
+        const auto root = QUrl::fromLocalFile(m_directory.path());
+        const auto nested = QUrl::fromLocalFile(m_directory.filePath("nested"));
+        const auto alternative = QUrl::fromLocalFile(m_directory.filePath("alternative"));
+        const auto source = m_model->sourceUrl();
+        const auto count = queueCount();
+        const auto buffers = m_buffers.load();
+        QVERIFY(!m_model->canGoBack());
+        QVERIFY(!m_model->canGoForward());
+        QCOMPARE(m_model->sourceFolderUrl(), root);
+        const auto crumbs = m_model->breadcrumbs();
+        QVERIFY(!crumbs.isEmpty());
+        QCOMPARE(crumbs.last().toMap().value("uri").toUrl(), root);
+        QCOMPARE(crumbs.last().toMap().value("text").toString(), QFileInfo(m_directory.path()).fileName());
+        for (const auto &crumb : crumbs)
+            QVERIFY(crumb.toMap().value("uri").toUrl().isLocalFile());
+
+        QVERIFY(m_model->browseFolder(nested));
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), nested);
+        QCOMPARE(m_model->sourceFolderUrl(), root);
+        QCOMPARE(m_model->sourceUrl(), source);
+        QCOMPARE(m_model->rowCount(), 1);
+        QCOMPARE(m_model->currentIndex(), -1);
+        QVERIFY(m_model->canGoBack());
+        QVERIFY(!m_model->canGoForward());
+        QCOMPARE(m_model->breadcrumbs().last().toMap().value("text").toString(), "nested");
+        QVERIFY(m_model->goBack());
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), root);
+        QCOMPARE(m_model->rowCount(), 3);
+        QVERIFY(m_model->canGoForward());
+        // A rejected location keeps both the current list and the forward route.
+        m_model->refresh();
+        QVERIFY(!m_model->browseFolder(QUrl::fromLocalFile(m_directory.filePath("missing"))));
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), root);
+        QCOMPARE(m_model->rowCount(), 3);
+        QVERIFY(m_model->canGoForward());
+        QVERIFY(m_model->error().contains("folder"));
+        QVERIFY(!m_model->browseFolder(QUrl("https://example.invalid/folder/")));
+        QCOMPARE(m_model->folderUrl(), root);
+        QVERIFY(m_model->goForward());
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QVERIFY(m_model->error().isEmpty());
+        QCOMPARE(m_model->folderUrl(), nested);
+        QVERIFY(m_model->goBack());
+        QVERIFY(m_model->browseFolder(alternative));
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QVERIFY(!m_model->canGoForward());
+        QCOMPARE(m_model->folderUrl(), alternative);
+        QCOMPARE(m_model->rowCount(), 1);
+        QVERIFY(m_model->browseSourceFolder());
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), root);
+
+        // Browsing stays put when another track in the same origin is selected.
+        QVERIFY(m_model->browseFolder(nested));
+        m_model->setSourceUrl(m_first);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), nested);
+        QCOMPARE(m_model->sourceFolderUrl(), root);
+        QCOMPARE(m_model->currentIndex(), -1);
+        QVERIFY(m_model->browseSourceFolder());
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->currentIndex(), find(m_first));
+        m_model->setSourceUrl(source);
+        QCOMPARE(queueCount(), count);
+        QCOMPARE(m_buffers.load(), buffers);
+
+        m_model->setEnabled(false);
+        QVERIFY(!m_model->available());
+        QVERIFY(m_model->breadcrumbs().isEmpty());
+        QVERIFY(!m_model->canGoBack() && !m_model->canGoForward());
+        QVERIFY(!m_model->browseFolder(nested));
+        m_model->setEnabled(true);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), root);
+        QVERIFY(!m_model->canGoBack() && !m_model->canGoForward());
+    }
+    void rapidFolderAndSourceChangesKeepOnlyTheCurrentList()
+    {
+        const auto root = QUrl::fromLocalFile(m_directory.path());
+        const auto nested = QUrl::fromLocalFile(m_directory.filePath("nested"));
+        QVERIFY(m_model->browseFolder(nested));
+        m_model->refresh();
+        QVERIFY(m_model->browseFolder(root));
+        m_model->setSourceUrl(QUrl::fromLocalFile(m_directory.filePath("nested/hidden.wav")));
+        m_model->setSourceUrl(m_second);
+        QTRY_VERIFY_WITH_TIMEOUT(!m_model->busy(), 15000);
+        QCOMPARE(m_model->folderUrl(), root);
+        QCOMPARE(m_model->sourceFolderUrl(), root);
+        QCOMPARE(m_model->rowCount(), 3);
+        QCOMPARE(m_model->currentIndex(), find(m_second));
+        for (int row = 0; row < m_model->rowCount(); ++row)
+            QCOMPARE(QFileInfo(url(row).toLocalFile()).absolutePath(), m_directory.path());
+        QCOMPARE(queueCount(), size_t(0));
+        QCOMPARE(m_buffers.load(), 0u);
     }
     void actualQueuePlaybackAndReuse()
     {

@@ -79,6 +79,9 @@ FocusScope{
     signal togglePlaylistVisibility()
     signal requestLockUnlockAutoHide(bool lock)
     signal backRequested()
+    signal sourceContextRequested()
+    property string sourceTitleOverride: ""
+    property bool sourceFocusesPlayer: false
     signal homeRequested()
     signal toggleNavigationVisibility()
     property bool navigationVisible: false
@@ -227,10 +230,14 @@ FocusScope{
         playerContext: true
         navigationVisible: root.navigationVisible
         mediaTitle: root.title
-        sourceTitle: ({home: qsTr("Home"), video: qsTr("Videos"), music: qsTr("Music"), network: qsTr("Network"), playlists: qsTr("Playlists"), recent: qsTr("Recent")})[History.viewPath[0]] || qsTr("Home")
+        sourceTitle: root.sourceTitleOverride || ({home: qsTr("Home"), video: qsTr("Videos"), music: qsTr("Music"), network: qsTr("Network"), playlists: qsTr("Playlists"), recent: qsTr("Recent")})[History.viewPath[0]] || qsTr("Home")
+        sourceDescription: root.sourceFocusesPlayer ? qsTr("Show %1").arg(sourceTitle) : qsTr("Return to %1").arg(sourceTitle)
         showWindowControls: root.showCSD
         onHomeRequested: root.homeRequested()
-        onSourceRequested: root.backRequested()
+        onSourceRequested: {
+            if (root.sourceFocusesPlayer) root.sourceContextRequested()
+            else root.backRequested()
+        }
         onNavigationRequested: root.toggleNavigationVisibility()
         onLockAutoHide: locked => root.requestLockUnlockAutoHide(locked)
         Navigation.parentItem: root

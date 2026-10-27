@@ -1084,6 +1084,10 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/queue-repeat.svg \
 	pixmaps/juxtopposed/queue-shuffle.svg \
 	pixmaps/juxtopposed/queue-sort.svg \
+	pixmaps/juxtopposed/music-source-back-785d7.svg \
+	pixmaps/juxtopposed/music-source-forward-a7541.svg \
+	pixmaps/juxtopposed/music-source-external-6dd1e.svg \
+	pixmaps/juxtopposed/music-source-view-fcd8d.svg \
 	pixmaps/juxtopposed/queue-tab-active.svg \
 	pixmaps/juxtopposed/queue-tab-inactive.svg \
 	pixmaps/juxtopposed/new-playlist-add.svg \

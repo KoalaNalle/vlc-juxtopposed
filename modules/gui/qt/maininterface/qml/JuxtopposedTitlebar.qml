@@ -18,6 +18,7 @@ FocusScope {
     property bool showWindowControls: MainCtx.clientSideDecoration && MainCtx.intfMainWindow.visibility !== Window.FullScreen
     property bool navigationVisible: false
     property string sourceTitle: qsTr("Home")
+    property string sourceDescription: qsTr("Return to %1").arg(sourceTitle)
     property string mediaTitle: ""
     property Item _hoveredHelpButton: null
     readonly property string displayedTitle: mediaTitle || qsTr("VLC Media Player")
@@ -198,7 +199,7 @@ FocusScope {
                 }
             }
             StripButton {
-                id: source; key: "sourceFolder"; description: qsTr("Return to %1").arg(root.sourceTitle)
+                id: source; key: "sourceFolder"; description: root.sourceDescription
                 visible: root.playerContext && root.width >= 520 * root.uiScale
                 artworkFrameSize: 28
                 width: Math.min(150 * root.uiScale, 36 * root.uiScale + sourceLabel.implicitWidth)

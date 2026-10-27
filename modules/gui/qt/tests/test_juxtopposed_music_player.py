@@ -9,6 +9,7 @@ import re
 import shutil
 import tempfile
 from pathlib import Path
+from xml.etree import ElementTree
 
 repo = Path(__file__).resolve().parents[4]
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
@@ -79,13 +80,27 @@ def click(view, item):
 # Copy the actual QML modules; no replacement implementation for artwork/rows/nav.
 with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     path = Path(directory)
+    # Use the compiled resource aliases, including aliases that differ from the
+    # physical filenames. Direct disk lookup would conceal a missing qrc asset.
+    # FontLoader can keep a Windows font handle until process exit, so leave this
+    # generated resource mirror with the other ignored verification outputs.
+    assets = args.output_dir.resolve() / 'resource-aliases'
+    assets.mkdir()
+    for resource in ElementTree.parse(repo / 'modules/gui/qt/assets.qrc').getroot().findall('qresource'):
+        if resource.get('prefix') != '/juxtopposed': continue
+        for asset in resource.findall('file'):
+            destination = assets / asset.get('alias', asset.text)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(repo / 'modules/gui/qt' / asset.text, destination)
+    asset_base = QUrl.fromLocalFile(str(assets) + '/')
     for module, sources in {'Widgets': ['ImageExt', 'JuxtopposedMediaRow'],
+                            'MediaLibrary': ['JuxtopposedHomeCard'],
                             'MainInterface': ['JuxtopposedNavigation']}.items():
         target = path / 'VLC' / module
         target.mkdir(parents=True)
         entries = ['module VLC.' + module]
         for name in sources:
-            original = repo / 'modules/gui/qt' / ('widgets' if module == 'Widgets' else 'maininterface') / 'qml' / (name + '.qml')
+            original = repo / 'modules/gui/qt' / {'Widgets': 'widgets', 'MediaLibrary': 'medialibrary', 'MainInterface': 'maininterface'}[module] / 'qml' / (name + '.qml')
             shutil.copyfile(original, target / original.name)
             entries.append(name + ' 1.0 ' + original.name)
         (target / 'qmldir').write_text('\n'.join(entries) + '\n', encoding='utf-8', newline='\n')
@@ -110,6 +125,10 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
             dict(title='Generated second track', artist='', artwork=QUrl(), url=QUrl('file:///second.wav')),
             dict(title='Generated third track', artist='Different artist', artwork=QUrl(), url=QUrl('file:///third.wav'))]
     model = MediaModel(rows)
+    breadcrumbs = [dict(text='C:/', uri=QUrl('file:///C:/')),
+                   dict(text='Fixture', uri=QUrl('file:///C:/Fixture')),
+                   dict(text='Songs', uri=QUrl('file:///C:/Fixture/Songs')),
+                   dict(text='Generated source folder', uri=QUrl('file:///C:/Fixture/Songs/Generated'))]
     view = QQuickView()
     view.setColor(QColor('#000000'))
     view.engine().addImportPath(str(path))
@@ -117,6 +136,7 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     view.setInitialProperties(dict(assetBase=asset_base, artwork=cover, fallbackArtwork=cover,
         sourceModel=model, itemCount=3, currentIndex=0, folderAvailable=True,
         folderName='Generated source folder', title='Generated first track', artist='Fixture artist',
+        folderBreadcrumbs=breadcrumbs,
         iconFontFamily=QFontDatabase.applicationFontFamilies(font_id)[0],
         backIcon=icon('back'), moreIcon=icon('more'), addIcon=icon('add'),
         searchIcon=icon('search'), preferencesIcon=icon('settings'),
@@ -130,9 +150,14 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     assert root is not None
     assert root.property('railWidth') == 50, 'Music rail must retain the original 50px width'
     assert find(root, 'musicSourcePanel').width() == 377, 'Wide source panel must complete the original 427px sidebar'
+    assert find(root, 'musicForward'), 'The source header needs independent folder Forward navigation'
     activation = QSignalSpy(root.activationRequested)
     add = QSignalSpy(root.addRequested)
     back = QSignalSpy(root.backRequested)
+    folder_back = QSignalSpy(root.folderBackRequested)
+    folder_forward = QSignalSpy(root.folderForwardRequested)
+    folder_browse = QSignalSpy(root.folderBrowseRequested)
+    external = QSignalSpy(root.folderOpenRequested)
     search = QSignalSpy(root.searchRequested)
     sort = QSignalSpy(root.sortRequested)
     controls = QSignalSpy(root.controlsFocusRequested)
@@ -150,7 +175,47 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     click(view, find(root, 'musicAdd'))
     assert add.count() == 1
     click(view, find(root, 'musicBack'))
-    assert back.count() == 1
+    click(view, find(root, 'musicForward'))
+    assert folder_back.count() == 0 and folder_forward.count() == 0, 'Unavailable folder history stays disabled'
+    root.setProperty('canGoBack', True)
+    root.setProperty('canGoForward', True)
+    click(view, find(root, 'musicBack'))
+    click(view, find(root, 'musicForward'))
+    assert folder_back.count() == 1 and folder_forward.count() == 1 and back.count() == 0
+    click(view, find(root, 'musicParentFolder'))
+    assert folder_browse.count() == 1 and folder_browse.at(0)[0] == QUrl('file:///C:/Fixture/Songs')
+    def change_breadcrumbs(uri):
+        # Native navigation updates this model synchronously inside the action.
+        # The selected menu delegate can disappear before Qt's default dismissal.
+        root.setProperty('folderBreadcrumbs', [breadcrumbs[0]])
+    root.folderBrowseRequested.connect(change_breadcrumbs)
+    click(view, find(root, 'musicAncestors'))
+    QTest.qWait(30)
+    QTest.keyClick(view, Qt.Key_Down)
+    QTest.keyClick(view, Qt.Key_Return)
+    assert folder_browse.count() == 2 and folder_browse.at(1)[0] == QUrl('file:///C:/'), (folder_browse.count(), expression(root, 'ancestorMenu.currentIndex'), expression(root, 'ancestorMenu.activeFocus'))
+    assert not expression(root, 'ancestorMenu.visible'), 'Ancestor selection must close before its model replaces the selected delegate'
+    root.folderBrowseRequested.disconnect(change_breadcrumbs)
+    root.setProperty('folderBreadcrumbs', breadcrumbs)
+    assert expression(root, 'ancestorMenu.palette.window.toString()') == '#161616'
+    assert expression(root, 'sourceAncestors.palette.window.toString()') == '#161616'
+    click(view, find(root, 'musicExternalFolder'))
+    assert external.count() == 1
+    activation_before_view = activation.count()
+    click(view, find(root, 'musicViewToggle'))
+    QTest.qWait(40)
+    assert root.property('gridMode') and activation.count() == activation_before_view
+    card = find(root, 'musicSourceCard1')
+    click(view, card)
+    assert activation.count() == activation_before_view, 'Cover selection must not start playback'
+    QTest.keyClick(view, Qt.Key_Return)
+    assert activation.count() == activation_before_view + 1 and activation.at(activation.count() - 1)[0] == 1
+    QTest.keyClick(view, Qt.Key_Space)
+    assert activation.count() == activation_before_view + 2
+    assert view.grabWindow().save(str(args.output_dir / 'music-source-covers.png'))
+    click(view, find(root, 'musicViewToggle'))
+    QTest.qWait(40)
+    assert not root.property('gridMode') and find(root, 'musicSourceRow1').hasActiveFocus(), 'View switching preserves selection'
     click(view, find(root, 'musicFolderSort'))
     assert sort.count() == 1
     click(view, find(root, 'musicSearchToggle'))
@@ -160,6 +225,8 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     assert search.count() == 1 and search.at(0)[0] == 'a'
     QTest.keyClick(view, Qt.Key_Escape)
     assert search.at(search.count() - 1)[0] == ''
+    QTest.keyClick(view, Qt.Key_Escape)
+    assert back.count() == 1, 'Escape still returns to the library'
     root.setProperty('currentIndex', 2)
     root.setProperty('title', 'Updated title')
     root.setProperty('artist', 'Updated artist')
@@ -169,6 +236,8 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     root.setProperty('displayFolder', False)
     assert not root.property('folderMode')
     assert not find(root, 'musicFolderSort').isVisible()
+    assert not find(root, 'musicExternalFolder').isEnabled()
+    assert not find(root, 'musicBack').isEnabled() and not find(root, 'musicForward').isEnabled()
     root.setProperty('displayFolder', True)
     root.setProperty('busy', True)
     QTest.qWait(20)
@@ -226,6 +295,18 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
         if width == 2048:
             assert abs(frame_position.x() + frame.width() / 2 - width / 2) < 1
             assert 780 < frame.width() < 800
+        heading_buttons = [find(root, name) for name in ['musicBack', 'musicForward', 'musicSourceName', 'musicExternalFolder']]
+        for button in heading_buttons:
+            assert button.width() > 0
+            point = button.mapToScene(QPointF(0, 0))
+            assert point.x() >= panel.x() and point.x() + button.width() <= panel.x() + panel.width() + .1, 'Header must fit the source panel'
+        if panel.width() < 300 * scale:
+            assert find(root, 'musicSourceName').width() >= 56 * scale, 'Compact headers must leave a readable folder caption'
+            click(view, find(root, 'musicSourceName'))
+            assert expression(root, 'sourceMenu.visible'), 'The compact folder caption must expose source options'
+            assert expression(root, 'sourceAncestors.count') == 3
+            QTest.keyClick(view, Qt.Key_Escape)
+            assert not expression(root, 'sourceMenu.visible')
         filename = f'music-{width}-{height}-{scale}.png'
         assert view.grabWindow().save(str(args.output_dir / filename))
         results.append(dict(width=width, height=height, scale=scale,
@@ -241,9 +322,10 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     assert not messages, messages
     (args.output_dir / 'music-player-verification.json').write_text(json.dumps(dict(
         component='JuxtopposedMusicPlayer', layouts=results,
+        resourceAliasesVerified=True,
         nativeFilesystemMetadataAndPlayback=False, nativeRhiBlurAndRounding=False), indent=2) + '\n', encoding='utf-8', newline='\n')
     view.close()
     view.setSource(QUrl())
     app.processEvents()
-print('Passed: source list selection/keyboard activation, current-track metadata, Add/back/search/sort, queue fallback, loading/error/empty states and scaled square-cover geometry.')
+print('Passed: independent folder history/breadcrumb/external actions, list/cover selection and keyboard activation, current-track metadata, Add/Escape/search/sort, queue fallback, loading/error/empty states and scaled geometry.')
 print('Native source-folder discovery/metadata/playback, RHI blur/rounding and whole-app acceptance remain separate gates.')

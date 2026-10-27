@@ -15,6 +15,16 @@
 #include <vector>
 
 namespace {
+QString localDirectory(const QUrl &url, bool sourceFile)
+{
+    const auto path = url.toLocalFile();
+    const QFileInfo info(path);
+    if (!url.isLocalFile() || !url.host().isEmpty() || !url.userInfo().isEmpty()
+        || url.hasQuery() || url.hasFragment() || !info.isAbsolute()
+        || path.startsWith("//") || path.startsWith("\\\\") || !info.isReadable()
+        || (sourceFile ? !info.isFile() : !info.isDir())) return {};
+    return QDir::cleanPath(sourceFile ? info.absolutePath() : info.absoluteFilePath());
+}
 QString meta(input_item_t *item, vlc_meta_type_t type)
 {
     char *value = input_item_GetMeta(item, type);
@@ -78,13 +88,28 @@ int LocalMusicFolderModel::currentIndex() const
         if (m_entries[m_view[i]].url == m_source) return i;
     return -1;
 }
+QVariantList LocalMusicFolderModel::breadcrumbs() const
+{
+    QVariantList result;
+    for (QString path = m_folder; !path.isEmpty();)
+    {
+        const QFileInfo info(path);
+        const auto title = info.fileName().isEmpty() ? QDir::toNativeSeparators(path) : info.fileName();
+        result.prepend(QVariantMap{{QStringLiteral("text"), title},
+                                   {QStringLiteral("uri"), QUrl::fromLocalFile(path)}});
+        const auto parent = QDir::cleanPath(info.dir().absolutePath());
+        if (parent == path) break;
+        path = parent;
+    }
+    return result;
+}
 void LocalMusicFolderModel::setSourceUrl(const QUrl &source)
 {
     if (m_source == source) return;
     m_source = source;
-    // Switching tracks in the same folder retains its metadata and search state.
-    if (m_enabled && source.isLocalFile() && source.host().isEmpty()
-        && !m_folder.isEmpty() && QFileInfo(source.toLocalFile()).absolutePath() == m_folder)
+    // A track change within the same source keeps the user's browsing position.
+    const auto sourceFolder = localDirectory(source, true);
+    if (m_enabled && !sourceFolder.isEmpty() && sourceFolder == m_sourceFolder)
         emit stateChanged();
     else restart();
 }
@@ -135,31 +160,100 @@ void LocalMusicFolderModel::filterView()
         return m_ascending ? order < 0 : order > 0;
     });
 }
-void LocalMusicFolderModel::refresh() { restart(); }
+bool LocalMusicFolderModel::visitFolder(const QUrl &url, int historyIndex)
+{
+    const auto folder = localDirectory(url, false);
+    if (!m_enabled || m_sourceFolder.isEmpty() || folder.isEmpty())
+    {
+        m_navigationError = tr("The folder is unavailable or cannot be read.");
+        emit stateChanged();
+        return false;
+    }
+    m_navigationError.clear();
+    if (folder == m_folder) { emit stateChanged(); return true; }
+    if (historyIndex >= 0) m_historyIndex = historyIndex;
+    else
+    {
+        m_history.erase(m_history.begin() + m_historyIndex + 1, m_history.end());
+        m_history.append(folder);
+        // Browsing history is bounded per player and is never written to settings.
+        if (m_history.size() > 64) m_history.removeFirst();
+        m_historyIndex = m_history.size() - 1;
+    }
+    loadFolder(folder);
+    return true;
+}
+bool LocalMusicFolderModel::browseFolder(const QUrl &url) { return visitFolder(url); }
+bool LocalMusicFolderModel::browseSourceFolder()
+{
+    return visitFolder(QUrl::fromLocalFile(m_sourceFolder));
+}
+bool LocalMusicFolderModel::goBack()
+{
+    return canGoBack() && visitFolder(QUrl::fromLocalFile(m_history[m_historyIndex - 1]), m_historyIndex - 1);
+}
+bool LocalMusicFolderModel::goForward()
+{
+    return canGoForward() && visitFolder(QUrl::fromLocalFile(m_history[m_historyIndex + 1]), m_historyIndex + 1);
+}
+void LocalMusicFolderModel::refresh()
+{
+    if (!m_enabled || m_sourceFolder.isEmpty() || localDirectory(m_source, true) != m_sourceFolder)
+    {
+        restart();
+        return;
+    }
+    const auto folder = localDirectory(QUrl::fromLocalFile(m_folder), false);
+    if (folder.isEmpty())
+    {
+        m_navigationError = tr("The folder is unavailable or cannot be read.");
+        emit stateChanged();
+        return;
+    }
+    loadFolder(folder);
+}
+void LocalMusicFolderModel::clearFolder()
+{
+    ++m_generation;
+    if (m_cancel) *m_cancel = true;
+    m_pool.clear();
+    m_folder.clear();
+    m_sourceFolder.clear();
+    m_history.clear();
+    m_historyIndex = -1;
+    m_error.clear();
+    m_navigationError.clear();
+    m_busy = false;
+    replaceEntries({});
+}
 void LocalMusicFolderModel::restart()
+{
+    const auto sourceFolder = m_enabled ? localDirectory(m_source, true) : QString{};
+    if (sourceFolder.isEmpty())
+    {
+        clearFolder();
+        if (m_enabled && !m_source.isEmpty())
+        {
+            m_error = tr("A readable local audio file is needed to browse its source folder.");
+            emit stateChanged();
+        }
+        return;
+    }
+    m_sourceFolder = sourceFolder;
+    visitFolder(QUrl::fromLocalFile(sourceFolder));
+}
+void LocalMusicFolderModel::loadFolder(const QString &folder)
 {
     const auto generation = ++m_generation;
     if (m_cancel) *m_cancel = true;
     m_pool.clear();
-    m_folder.clear();
+    m_folder = folder;
     m_error.clear();
-    m_busy = false;
-    replaceEntries({});
-    if (!m_enabled || m_source.isEmpty()) return;
-    const QFileInfo source(m_source.toLocalFile());
-    if (!m_source.isLocalFile() || !m_source.host().isEmpty()
-        || m_source.toLocalFile().startsWith("//") || m_source.toLocalFile().startsWith("\\\\")
-        || !source.isFile() || !source.isReadable())
-    {
-        m_error = tr("A readable local audio file is needed to browse its source folder.");
-        emit stateChanged();
-        return;
-    }
-    m_folder = source.absolutePath();
+    m_navigationError.clear();
     m_busy = true;
+    replaceEntries({});
     m_cancel = std::make_shared<std::atomic_bool>(false);
     const auto cancel = m_cancel;
-    const auto folder = m_folder;
     emit stateChanged();
     m_pool.start([this, folder, generation, cancel] { scan(folder, generation, cancel); });
 }
@@ -264,6 +358,7 @@ void LocalMusicFolderModel::scan(const QString &folder, quint64 generation,
 bool LocalMusicFolderModel::addAndPlay(int row)
 {
     if (!m_playlist || row < 0 || row >= m_view.size()) return false;
+    m_navigationError.clear();
     const auto entry = m_entries[m_view[row]];
     const QFileInfo file(entry.url.toLocalFile());
     if (!file.isFile() || !file.isReadable())
