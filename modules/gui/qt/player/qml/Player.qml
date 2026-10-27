@@ -445,6 +445,7 @@ FocusScope {
                     active: controlBar.redesigned && Player.videoTracks.count === 0
                             && !audioFocusScope.lyricsLayoutActive
                     sourceComponent: JuxtopposedMusicPlayer {
+                        id: musicPresentation
                         uiScale: VLCStyle.dp(1, VLCStyle.scale)
                         iconFontFamily: VLCIcons.fontFamily
                         backIcon: VLCIcons.back
@@ -470,16 +471,18 @@ FocusScope {
                         lyricsEnabled: MainCtx.lyricsMode
                         libraryAvailable: MainCtx.mediaLibraryAvailable
                         libraryBusy: MainCtx.mediaLibraryAvailable && !MainCtx.mediaLibrary.idle
-                        navigationRoutes: [
-                            {key: "video", text: qsTr("Videos"), icon: VLCIcons.topbar_video,
-                             uri: ["video", "all"], enabled: MainCtx.mediaLibraryAvailable},
-                            {key: "music", text: qsTr("Music"), icon: VLCIcons.topbar_music,
-                             uri: ["music"], enabled: MainCtx.mediaLibraryAvailable},
-                            {key: "network", text: qsTr("Network"), icon: VLCIcons.topbar_network,
-                             uri: ["network"], enabled: true},
-                            {key: "playlists", text: qsTr("Playlists"), icon: VLCIcons.playlist,
-                             uri: ["playlists"], enabled: MainCtx.mediaLibraryAvailable}
-                        ]
+                        navigationComponent: Component {
+                            JuxtopposedNavigationPane {
+                                activeSurface: MainCtx.playerView && rootPlayer._musicPresentationActive
+                                // Player artwork is neutral, separate from library selection.
+                                activeRoute: ""
+                                routes: playerNavigation.routes.map(entry => Object.assign({}, entry,
+                                    entry.key === "music" ? {artwork: "music-navigation-music-8b7f6.svg", mirror: true}
+                                    : {}))
+                                onRouteRequested: (route, reason) => musicPresentation.routeRequested(route, reason)
+                                onContentFocusRequested: reason => musicPresentation.setCurrentItemFocus(reason)
+                            }
+                        }
                         onActivationRequested: row => {
                             if (folderMode) Player.musicFolder.addAndPlay(row)
                             else MainPlaylistController.goTo(row, true)
@@ -493,7 +496,7 @@ FocusScope {
                         onLyricsRequested: MainCtx.lyricsMode = !MainCtx.lyricsMode
                         onPreferencesRequested: DialogsProvider.prefsDialog()
                         onRouteRequested: (route, reason) => {
-                            History.push(route, {}, reason)
+                            if (!History.exactMatch(History.viewPath, route)) History.push(route, {}, reason)
                             MainCtx.playerView = false
                         }
                         onControlsFocusRequested: reason => {
@@ -1436,7 +1439,7 @@ FocusScope {
         width: implicitWidth
         expanded: true
         visible: controlBar.redesigned && !rootPlayer._musicPresentationActive && rootPlayer.juxtopposedNavigationVisible
-        activeSurface: MainCtx.playerView
+        activeSurface: MainCtx.playerView && !rootPlayer._musicPresentationActive
         Navigation.parentItem: rootPlayer
         Navigation.upItem: topBar
         onRouteRequested: (uri, reason) => {

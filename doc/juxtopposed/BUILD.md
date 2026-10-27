@@ -66,13 +66,32 @@ unmatched prebuilt contribs to repair a working incremental setup by guesswork.
   Verify the executable and instance-handoff policy target the intended test app.
 - Check current permission to use the desktop. Use the Computer Use skill for
   native input, fresh window observations and normal closure of owned test apps.
-  Do not acknowledge security/privacy choices or change protection to remove
-  test friction. Record a pending human action and continue independent work.
+  Security/privacy choices follow the current user's express authorization and
+  applicable tool policy. Preserve the agreed network scope and enabled Firewall/
+  Defender protections. If a tool requires a human action, record it and continue
+  independent work.
 - Preserve raw private logs locally. Publish generated fixtures, scoped reports,
   hashes and useful sanitized excerpts/captures. Record child exit results;
   a launcher exiting 0 does not prove its VLC child passed or exited normally.
 - Bind results to the exact source/runtime/fixture tuple. Distinguish deliberate
   negative controls and fixture warnings from accepted ordinary-flow behavior.
+
+### Firewall rule journal
+
+For authorized development rules, keep exact executable paths, Private-network
+TCP/UDP access restricted to LocalSubnet, Public/Domain inbound blocks and blocked
+edge traversal. Keep the firewall and Defender enabled. Record every created,
+changed or removed rule's exact name, purpose, program, before/after settings,
+verification and removal/restoration steps in an ignored firewall ledger before
+changing it. Preserve original prompt-rule states when replacing their behavior.
+
+The read-only home inventory is under
+`build-windows/firewall-ledger-20261027/`; it creates no rules. The earlier helper
+and original-state backup are `build-windows/configure-vlc-firewall.ps1` and
+`build-windows/firewall-setup-20261014/`. Those historical executable inventories
+must be reviewed and refreshed before Apply or Undo; never run an old helper
+blindly. Archive the journals/backups with cold build evidence before removing
+build outputs, so project rules can be identified and safely cleaned up later.
 
 ## Component and native checks
 

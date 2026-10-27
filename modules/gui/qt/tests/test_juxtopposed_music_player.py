@@ -17,7 +17,7 @@ os.environ['QML_DISABLE_DISK_CACHE'] = '1'
 os.environ['QT_QPA_FONTDIR'] = str(repo / 'modules/gui/qt/pixmaps/juxtopposed')
 from PySide6.QtCore import QAbstractListModel, QModelIndex, QPointF, Qt, QUrl, qInstallMessageHandler
 from PySide6.QtGui import QColor, QFontDatabase, QGuiApplication, QImage, QPainter
-from PySide6.QtQml import QQmlExpression, qmlContext
+from PySide6.QtQml import QQmlComponent, QQmlExpression, qmlContext
 from PySide6.QtQuick import QQuickView
 from PySide6.QtTest import QSignalSpy, QTest
 
@@ -128,6 +128,8 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     QTest.qWait(150)
     root = view.rootObject()
     assert root is not None
+    assert root.property('railWidth') == 50, 'Music rail must retain the original 50px width'
+    assert find(root, 'musicSourcePanel').width() == 377, 'Wide source panel must complete the original 427px sidebar'
     activation = QSignalSpy(root.activationRequested)
     add = QSignalSpy(root.addRequested)
     back = QSignalSpy(root.backRequested)
@@ -190,6 +192,23 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     assert find(root, 'musicSourcePanel').isVisible()
     assert find(root, 'musicSourceRow2').hasActiveFocus()
     assert activation.count() == activation_before_hide
+    # The native app supplies its existing service-backed navigation pane.
+    # Check the presentation seam without substituting a native pin service.
+    original_navigation = root.property('navigationComponent')
+    injected_navigation = QQmlComponent(view.engine())
+    injected_navigation.setData(b'import QtQuick\nRectangle { objectName: "injectedMusicNavigation" }', QUrl())
+    assert not injected_navigation.errors(), [e.toString() for e in injected_navigation.errors()]
+    assert root.setProperty('navigationComponent', injected_navigation)
+    QTest.qWait(30)
+    injected = find(root, 'injectedMusicNavigation')
+    assert injected.width() == 50 and injected.height() == root.height()
+    root.setProperty('sidebarVisible', False)
+    QTest.qWait(20)
+    assert not injected.isVisible()
+    root.setProperty('sidebarVisible', True)
+    root.setProperty('navigationComponent', original_navigation)
+    QTest.qWait(30)
+    assert find(root, 'juxtopposedNavigation').isVisible()
     results = []
     for width, height, scale in [(2048, 1056, 1), (1100, 620, 1), (640, 420, 1), (1440, 900, 1.5), (1280, 840, 2)]:
         root.setProperty('uiScale', scale)

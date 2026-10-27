@@ -39,15 +39,16 @@ FocusScope {
     property string searchIcon: ""
     property string preferencesIcon: ""
     property var navigationRoutes: []
+    property Component navigationComponent: defaultNavigation
     property bool libraryAvailable: true
     property bool libraryBusy: false
     property bool lyricsAvailable: false
     property bool lyricsEnabled: false
     readonly property bool editingOrMenuActive: searchField.activeFocus || sourceMenu.visible
     readonly property bool artworkReady: coverImage.status === Image.Ready
-    readonly property real railWidth: 46 * uiScale
+    readonly property real railWidth: 50 * uiScale
     readonly property bool compact: width < 1280 * uiScale
-    readonly property real sourcePanelWidth: Math.min((compact ? 250 : 380) * uiScale,
+    readonly property real sourcePanelWidth: Math.min((compact ? 250 : 377) * uiScale,
                                                      Math.max(180 * uiScale, width * .36))
     readonly property Item artworkTextureProvider: coverImage.status === Image.Ready
                                                    ? coverImage.sourceTextureProviderItem
@@ -102,24 +103,31 @@ FocusScope {
     }
     Keys.onEscapePressed: backRequested()
 
-    MainInterface.JuxtopposedNavigation {
+    Loader {
         id: navigation
         visible: root.sidebarVisible
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         width: root.railWidth
-        uiScale: root.uiScale
-        assetBase: root.assetBase
-        iconFontFamily: root.iconFontFamily
-        activeRoute: "music"
-        routes: root.navigationRoutes
-        preferencesIcon: root.preferencesIcon
-        libraryAvailable: root.libraryAvailable
-        libraryBusy: root.libraryBusy
-        onRouteRequested: (route, reason) => root.routeRequested(route, reason)
-        onPreferencesRequested: root.preferencesRequested()
-        onContentFocusRequested: reason => root.setCurrentItemFocus(reason)
+        focus: true
+        sourceComponent: root.navigationComponent
+    }
+    Component {
+        id: defaultNavigation
+        MainInterface.JuxtopposedNavigation {
+            uiScale: root.uiScale
+            assetBase: root.assetBase
+            iconFontFamily: root.iconFontFamily
+            activeRoute: "music"
+            routes: root.navigationRoutes
+            preferencesIcon: root.preferencesIcon
+            libraryAvailable: root.libraryAvailable
+            libraryBusy: root.libraryBusy
+            onRouteRequested: (route, reason) => root.routeRequested(route, reason)
+            onPreferencesRequested: root.preferencesRequested()
+            onContentFocusRequested: reason => root.setCurrentItemFocus(reason)
+        }
     }
 
     Rectangle {
