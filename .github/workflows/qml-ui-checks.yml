@@ -8,6 +8,8 @@ on:
       - 'share/lua/meta/art/**'
       - '.github/workflows/qml-ui-checks.yml'
   push:
+    branches:
+      - master
     paths:
       - 'modules/gui/qt/**'
       - 'src/text/filesystem.c'
@@ -17,6 +19,10 @@ on:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   playback-ui:

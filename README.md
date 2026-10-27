@@ -5,6 +5,10 @@ The VLC user interface redesign featured in this fork was created by
 **All credit for the redesign and its original visual assets belongs to Juxtopposed.**
 This fork is an independent implementation in progress of their design.
 
+**Development stage: alpha.** The redesigned interface is working on Windows 11,
+but features, visual coverage and beta validation remain incomplete. This label
+does not mark a published release or a completed design vertical slice.
+
 - [Watch “I Redesigned VLC After 25 Years”](https://youtu.be/ERFeOgqk324)
 - [Original VLC Redesign on Figma](https://www.figma.com/community/file/1691465999134370980/vlc-redesign)
 - The original design is shared under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

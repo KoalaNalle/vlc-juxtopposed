@@ -1072,6 +1072,8 @@ libqt_plugin_la_RES = \
 	pixmaps/juxtopposed/pause.svg \
 	pixmaps/juxtopposed/play.svg \
 	pixmaps/juxtopposed/previous.svg \
+	pixmaps/juxtopposed/skip-15-arrow.svg \
+	pixmaps/juxtopposed/music-navigation-music-8b7f6.svg \
 	pixmaps/juxtopposed/queue.svg \
 	pixmaps/juxtopposed/queue-light.svg \
 	pixmaps/juxtopposed/queue-add.svg \

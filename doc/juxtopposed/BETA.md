@@ -14,6 +14,7 @@ platform/hardware behavior and reference gaps.
 
 | Release | Agreed scope |
 | --- | --- |
+| Alpha (current development stage) | Working implementation with incomplete features and graphical acceptance; no claim that the full design vertical slice or beta gates are complete. |
 | Beta | Confirmed Juxtopposed design and stability, including the native work needed to make its actions real. |
 | V1.0 | Broader vanilla VLC parity, including the disc/ISO/Explorer/AutoPlay placement discussion with the designer. |
 | V1.5 | Possible additions such as YouTube/Twitch integrations; these are ideas, not beta commitments. |

@@ -118,14 +118,14 @@ class Tracks(QObject):
     def count(self): return 2
 tracks = Tracks()
 choices = {name: Choices() for name in ['zoom', 'aspectRatio', 'crop', 'deinterlace', 'deinterlaceMode', 'audioStereoMode', 'audioMixMode']}
-fields = dict(isStarted=bool, hasVideoOutput=bool, ratechangable=bool, rate=float,
+fields = dict(isStarted=bool, hasVideoOutput=bool, hasSecondarySubtitle=bool, ratechangable=bool, rate=float,
               audioDelayMS=int, subtitleDelayMS=int, secondarySubtitleDelayMS=int, subtitleFPS=float,
               equalizer=QObject, videoTransform=QObject, subtitleAppearance=QObject, audioTracks=QObject, subtitleTracks=QObject, videoTracks=QObject)
 fields.update({name: QObject for name in choices})
 player_notification = Signal()
 Player = type('Player', (State,), dict(changed=player_notification,
     **{name: state_property(name, kind, player_notification) for name, kind in fields.items()}))
-player = Player(dict(isStarted=True, hasVideoOutput=True, ratechangable=True, rate=1.,
+player = Player(dict(isStarted=True, hasVideoOutput=True, hasSecondarySubtitle=False, ratechangable=True, rate=1.,
                     audioDelayMS=0, subtitleDelayMS=0, secondarySubtitleDelayMS=0, subtitleFPS=0.,
                     equalizer=eq, videoTransform=transform, subtitleAppearance=appearance, audioTracks=tracks, subtitleTracks=tracks, videoTracks=tracks, **choices))
 class Dialogs(QObject):
@@ -317,6 +317,21 @@ Item {
     assert fps_editor.property('text') == '50.000 fps' and player.writes == before_fps_refresh
     accessible(page(), 'Subtitle track delay').valueRequested.emit(0.250)
     assert player.writes[-1] == ('subtitleDelayMS', 250)
+    # A second available track does not mean it is selected as secondary.
+    secondary_delay = accessible(page(), 'Secondary subtitle delay')
+    assert not secondary_delay.isEnabled()
+    before_secondary_refresh = list(player.writes)
+    player.engine('hasSecondarySubtitle', True)
+    player.engine('secondarySubtitleDelayMS', -500)
+    QTest.qWait(20)
+    assert secondary_delay.isEnabled() and secondary_delay.property('value') == -0.5
+    assert player.writes == before_secondary_refresh
+    secondary_delay.valueRequested.emit(0.375)
+    assert player.writes[-1] == ('secondarySubtitleDelayMS', 375)
+    assert player.subtitleDelayMS == 250, 'Secondary delay changed the primary delay'
+    player.engine('hasSecondarySubtitle', False)
+    QTest.qWait(20)
+    assert not secondary_delay.isEnabled()
     assert not appearance.writes
     duration = accessible(page(), 'Subtitle duration factor')
     appearance.engine('durationFactor', 2.5)
