@@ -185,6 +185,16 @@ Run meaningful affected checks once; repeat or broaden for a changed dependency,
 new failure or unresolved coverage question. Final-package validation is a separate
 consolidated run on the actual ordinary candidate, not the sum of all old passes.
 
+The maintained `test_qt_local_music_folder.exe` target covers native local metadata,
+folder browsing/history, queue independence/playback and worker teardown. Copy its
+actual Windows PE from the Qt build directory's `.libs/`, rather than the small
+libtool launcher in the parent directory. The music component test mirrors
+`assets.qrc` aliases into its ignored output directory; direct physical filenames
+can hide a resource-name mismatch. Keep that mirror outside temporary cleanup
+because Windows FontLoader can retain a font handle until process exit. The
+[source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md)
+binds these checks to the tested ordinary GUI and records their distinct scopes.
+
 ## Storage and source map
 
 Keep active source and build work on C: and respect the owner's under-80% SSD
