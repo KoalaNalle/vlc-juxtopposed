@@ -48,6 +48,8 @@ MainViewLoader {
     property alias searchPattern: albumModelId.searchPattern
     property alias sortOrder: albumModelId.sortOrder
     property alias sortCriteria: albumModelId.sortCriteria
+    // The native collection query uses Alpha for its Default criterion.
+    readonly property string libraryDefaultSortCriteria: "title"
 
     isSearchable: true
     model: albumModelId

@@ -1,0 +1,495 @@
+{
+  "status": "passed-scoped-native-query-races-and-collection-sort-feedback",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "b5e5bd29ec04bb37c7a968574e9db92f896732674674337b63a8c023a3e1bb47",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "sourceSha256": {
+    "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+    "modules/gui/qt/widgets/qml/PageExt.qml": "f27a2a59cf5504e7fae3dfa160cdf3525b667fc3d3322c81562a84c64a6fd670",
+    "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+    "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+    "modules/gui/qt/maininterface/qml/MainDisplay.qml": "15fbda4b083e0e09f9cb6dc7191b65ca24a61465740305b82c7d96c917ccc0f8",
+    "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+    "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "9abbd09cf4a3bd6aff3ef5e2d5bd1b196d0712e0c08d4c3d49df424811ebcd04",
+    "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+    "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+    "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+    "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+  },
+  "restoredSortValues": {
+    "sortCriteria/music/albums": "title",
+    "sortOrder/music/albums": "0",
+    "sortCriteria/music/artists/all": "nb_tracks",
+    "sortOrder/music/artists/all": "0",
+    "sortCriteria/music/genres/all": "name",
+    "sortOrder/music/genres/all": "0"
+  },
+  "observations": [
+    "Production MLBaseModel/MediaLib cache tests force two prior row loads to remain in flight while a third current result completes. Search, parent and sort-order A-B-A resets each retain the current three row IDs after both old tasks finish, with no stale count/data signals. Nine native cases pass including the existing selected-Play, read-cancel, offset/order/origin and shutdown cases.",
+    "The race fixture supplies bounded row operations backed by real generated media identities and uses the actual production cache/service/thread machinery. It is not a native SQL timing test, an ordinary desktop rapid-input claim or a guarantee about arbitrary platform scheduling.",
+    "Ordinary GUI337 reproduces the unmarked Albums sort menu when the saved criterion is empty; the visible native result is descending alphabetical. Native bundled Album/Artist/Genre source treats DEFAULT as ALPHA. The exact local source hashes/excerpts are retained as policy analysis, separate from runtime provenance.",
+    "Actual native DEFAULT and ALPHA return identical ordered entity IDs for Albums, Artists and Genres in ascending and descending directions. Fourteen native query cases pass. The artist comparison uses the all-artists API flag; the ordinary three-artist model exercises its album-artist route separately.",
+    "PageExt now accepts an explicit child-declared native default solely for sort feedback. Albums declares title, Artists/Genres name. Saved explicit criteria and model-provided criteria take precedence; no default is guessed for other categories or detail types. The component test fails the new semantic check before, then passes16 groups after with no unexpected messages.",
+    "Ordinary GUI344 marks Alphabetic for all three empty-criterion collections. Selecting the active criterion reverses Albums and Genres; choosing Tracks Count overrides Artists alphabetical feedback and reorders the1/2/2-song fixture. The main chaptered input stays paused at zero.",
+    "Normal restart copies the saved three collection criteria/orders unchanged; ordinary GUI344 restores Artists Tracks Count and the matching1/2/2 order. The exact saved values are included without publishing raw configs.",
+    "All three ordinary runs exit0/602modules/zero checked errors/all source/runtime/fixture/producer/cache guards. Both native suites exit0 with complete reports and all guards. The native report format emits its existing xunitxml deprecation notice; no checked native error/QWARN is present. Cross-host libtool warnings remain in ignored build logs; builds exit0 and the actual Windows executables run."
+  ],
+  "limits": [
+    "Only the three verified music collection defaults are declared. Artist-track/detail, video/group/playlist and other category default policies remain separate. Older GUI337 baseline and GUI344 ordinary evidence have distinct scopes.",
+    "The first cold Artists capture still shows the outgoing category page; the settled capture confirms the destination and saved order. No bounded navigation latency is claimed. Component dependency adapters and owned/generated media do not establish full design, accessibility, Windows DPI, physical audio or clean-package acceptance.",
+    "Raw logs/configs/databases, media and binaries remain ignored locally. No dependencies or security/privacy settings changed; no forced cleanup was used."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-sort-categories-r342/verification.json.gz",
+      "sha256": "bb526d18da13492cb6149963886b1b5303e008aa5193cb94e5da6db02fce4304",
+      "rawSha256": "439bca4502f7ab5fdb9b04250ea1c7c44fcd5f6e59560364ebabcde172ac20f7"
+    },
+    {
+      "path": "ui-sort-categories-r342/producer.py.gz",
+      "sha256": "469198ba19a11677e9b25823932e9a9d3daa0cbd9e14e1a5894ca128d987c2d3",
+      "rawSha256": "53ec80adbc093df2029cbb80708018cd196e6f17d1614c502ae7659d37931e8e"
+    },
+    {
+      "path": "ui-sort-categories-r342/launch.json.gz",
+      "sha256": "36038770fdbbc203ee80964bf7d0c6ef4228dc2548bdf00a2be13fb663968a78",
+      "rawSha256": "f44ffa3849c4576ff38851bf8269a6cf0a02599a4112154f5a2ec1e4431cdb5e"
+    },
+    {
+      "path": "ui-sort-categories-r342/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/01-category-sort-start-0.png.gz",
+      "sha256": "5bad207d96bd91875a319b1b9adf177e5e9a05bb6575e4b42f198b961834047c",
+      "rawSha256": "741cb5bd31e3765dcdc0cfdc9a77dda3dc9a0860a521315bb003d750682790dd"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/01-category-sort-start.json.gz",
+      "sha256": "1f04ce9c37b2924d240bfbcf0863d7130622ba714c044e72fbdac099749edf6a",
+      "rawSha256": "20733916df772069470191c9ea919c216ab90a7a3aa883fd53d8833c3a3813d5"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/02-home-category-landing-0.png.gz",
+      "sha256": "a630c80aefd94dfc03e8481b0fcbd8b9d3d81b1eedecbfcd5dc3a6cd18bc8fe0",
+      "rawSha256": "24e5ef5c951e36ebcc53366f405519f0a84cc7361469b99114ee8a075dbdcfec"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/02-home-category-landing.json.gz",
+      "sha256": "e3bf06d9a9fd9ffbc86f2ee2ca681136d534b90d38eb0744e6dc6a274728dc91",
+      "rawSha256": "f5a1f205a51089fad059de04ee643fc79ae319e81b4e7e37a8a08b9521c075b0"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/03-music-category-landing-0.png.gz",
+      "sha256": "2320b941bec9657ffa68edc7ab57567b7cb5de78ffa8744956f1e76c4d24c689",
+      "rawSha256": "1cd35c76a101df89a0cf096c45538540d84b832f98d3b31301d44b8b57dcf119"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/03-music-category-landing.json.gz",
+      "sha256": "21c27b60fbe45330e65b23d21bc8b0a14f09104aefb6a8915260d117aecddab5",
+      "rawSha256": "f887abb1103c8c2f1c816dc1953855ebda291ef0bf38c1e043bf4ddafc327e93"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/04-song-folders-default-order-0.png.gz",
+      "sha256": "0d4c37c794d8e2b9632107b16d7dff8cfd883ca108f2d40a825c396b71e3c0c6",
+      "rawSha256": "aa9f34d826090719ed2eaf29437bba255ef66078af55d478b3123ce77aad60e7"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/04-song-folders-default-order.json.gz",
+      "sha256": "8b624fee410b6676afb04022ea86c897caafc4db0c02dd4841bddb51cdfce2db",
+      "rawSha256": "1a6a1f264834b01f0509b044aad1b182ede9713eed47ce764815a1561ba67579"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/05-song-folders-sort-fallback-feedback-0.png.gz",
+      "sha256": "6c6f82c5b333c711d1cfebccbd90b378c5a495d2c2ac6a5e21a6159c4034dae1",
+      "rawSha256": "dca25e7a563cb4a4f54aa6adaf550e62aa7f5c6e8266a1f7a4c7e0832233158f"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/05-song-folders-sort-fallback-feedback-1.png.gz",
+      "sha256": "3d6ad269e1718ad28698f2aa30b8132b7c09061f4d009636c21002563f6ccc92",
+      "rawSha256": "8a35582d8a2ef8027a9dcd4f1f11ee8ebc275266ac62d09b4da3c236d95bb7e0"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/05-song-folders-sort-fallback-feedback.json.gz",
+      "sha256": "f4825b73ffd34fa478507d9449b5d7106a5d1abd3e46b3d8b20602a4330c5d26",
+      "rawSha256": "4f4b3b5c23b53009ca5c5a38550cbf884366ba9e9b91fb486db3772fd9465d6b"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/06-song-folders-alphabetic-toggle-0.png.gz",
+      "sha256": "43a06a15ae6474112fdc7a8470144de9e34df054830c407edd61759e8232bb8e",
+      "rawSha256": "1b9853f7333f6fb217dc0215032cf824bf716a7ea3a11661d69431e0bc524f41"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/06-song-folders-alphabetic-toggle-1.png.gz",
+      "sha256": "ce8220e5728b28750d072c363bcd840734df0bfff2625092c526524e804156c8",
+      "rawSha256": "ea5639526cc900f337a1dc379f4cd83ad2756db4a968bf7cd92aaf104ddb5814"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/06-song-folders-alphabetic-toggle.json.gz",
+      "sha256": "298bd3686ba7eaf9b52f6ad52e6064966c169b92f6478ebada2b4a755bab6acb",
+      "rawSha256": "70b41afc49479217737abc2bc3168a991975d0eb337a980300c7d05781dffb15"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/07-albums-current-category-0.png.gz",
+      "sha256": "906ac5955e76e85206bef8a1e67585f28c76b890a34e2c9272c051c4a0d5d85e",
+      "rawSha256": "34eb04090475ece2144cda5bf07901e47cc360efa94467a129a376f13e04e963"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/07-albums-current-category.json.gz",
+      "sha256": "d51ee4dd8027014d36d20dbe742950043f50e9fa179c92392485acfb5d4fc3aa",
+      "rawSha256": "b75215bdd08d08af9d5e798debd25a043a4461c08e25e7193c8c06886376311f"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/08-albums-settled-0.png.gz",
+      "sha256": "fdb6c278ca3d81f585f03f2d959dd4e1d0d9dd90c42ec578aa00f974d64f090b",
+      "rawSha256": "6def377302433c2d852cc9a0cbe28ba6645172ebb6b369bc1d4014d66f3c40e9"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/08-albums-settled.json.gz",
+      "sha256": "07f9b516107a990735edc6bb32c0b8b43238411f3da678f73ae9ace5ba082bba",
+      "rawSha256": "fb71febd9768deace11515fd1c02df519ce640d4661a0d5b25ec50921166bdfb"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/09-album-sort-current-feedback-0.png.gz",
+      "sha256": "c74636a7beeea1b48231e7e141369fab3a7aff774cde235bc34e022bc240d723",
+      "rawSha256": "93e03b3160c8385b39eb41c3bf18cea8ba9d983d48299e83035c99857635cdc3"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/09-album-sort-current-feedback-1.png.gz",
+      "sha256": "57ebeeb32208a5ae5ecc3c945dc777e12c8a0c26a0b663785894229db7112c45",
+      "rawSha256": "4f98a0f067009afdbe52e9f24221059d10adf3cb20ba962a61b4e183e3769a62"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/09-album-sort-current-feedback.json.gz",
+      "sha256": "708b2af76a2d4434b335a0b9a306dbc595fc2b85d7de2421a0acb02bbe2a26eb",
+      "rawSha256": "6806e1ac18a063fe1f21b0a0614f12d51f8bf09b6f447895c5a5dae5ff29d051"
+    },
+    {
+      "path": "ui-sort-categories-r342/observations/10-album-sort-cancel.json.gz",
+      "sha256": "1e6f140a336a247aed6c72ecf8159b35f1eb5b2b017756bf54f4e2331de74a0f",
+      "rawSha256": "e94669b7eba2b987b48d55bb1b7b499067a2c53eef483055808aa91645d10f5d"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/verification.json.gz",
+      "sha256": "1f680ee389c0063fc300e3c15db0e3cc3656999c8994fd8e38a153b341120ec7",
+      "rawSha256": "5ce136298de7052bda89602aeb114269f683c7c668026ccbacb3fb7cb836f869"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/producer.py.gz",
+      "sha256": "2d2c15145a05373c77a1d8da7aabf92663ce939e4caa660ae57c33cd4a26af7e",
+      "rawSha256": "95ca25d019d2781263600c3c879da1a617b582f219edd2f05c7db5dc7458684b"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/launch.json.gz",
+      "sha256": "1473dd82bf107aa8f959ee5c297925fdc24b9fed56dcea20db0e1d004beb67c9",
+      "rawSha256": "672c2c070459479676ded9fd09faa4a5e91b32cbae150108eaf1ac2ef5462efa"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/01-fixed-initial-paused-0.png.gz",
+      "sha256": "3bab6ecb4df255c33be34f5f965a281cf366a2950b8ce1e6b6934980515019a8",
+      "rawSha256": "ccbf26cdfeb8dbaf70fa16ba55803c7252df644d1a7947b726eba8415a7b7966"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/01-fixed-initial-paused.json.gz",
+      "sha256": "7473d8b5826fa5deabad748be92851e3a401d0b36aa43aba019f0df003fc2892",
+      "rawSha256": "7e6ace2039738c9a29d4085b379ec8870318ab2332a8d91c3d5149863fa736df"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/02-albums-native-default-marked-0.png.gz",
+      "sha256": "9e0a3c6d7864162ffdbabfe8ed0cd1c23cc125c8f83fb0615c5ce86114338c88",
+      "rawSha256": "03b41b54e76a1287d641a93709e036119770995c003518d4df86f7242f1c4e34"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/02-albums-native-default-marked-1.png.gz",
+      "sha256": "1e1b1ec4998a906a77f04922ca42519fd9a1700e072073b413cad396c2e3e0d0",
+      "rawSha256": "3bdefc8a8fc7ce2579b1e04fe1637b005ce04086bee6e8dcbedbf60703ade8a5"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/02-albums-native-default-marked.json.gz",
+      "sha256": "835b208e4f314fc6c34b833e0d182ac49c8caa5b4b6ed8cef210c2d1102cb973",
+      "rawSha256": "1fef548452a6d16b624f48fa45c095788e6e7782c7f09e4d0d7260767cbd8529"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/03-albums-alphabetic-toggled-ascending-0.png.gz",
+      "sha256": "3b6c063110dc9bf22bec77f6461f785827013e55bb93d0a3bb7864cd1776ea1c",
+      "rawSha256": "b0dfa077e65e3b90b304a168ce9a20601269c31d04892d5595730e6c2f584009"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/03-albums-alphabetic-toggled-ascending-1.png.gz",
+      "sha256": "ce8220e5728b28750d072c363bcd840734df0bfff2625092c526524e804156c8",
+      "rawSha256": "ea5639526cc900f337a1dc379f4cd83ad2756db4a968bf7cd92aaf104ddb5814"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/03-albums-alphabetic-toggled-ascending.json.gz",
+      "sha256": "0e85d03f4b55fcea5f8d916d7d9e4922f886ef7b4cbe55001aa60a959924986e",
+      "rawSha256": "a60767ce35b2aceb757c4ba4f931bc222c57a077a37e07925a213c30ebf1866e"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/04-artists-native-default-marked-0.png.gz",
+      "sha256": "08209fe3aba6122ff85fd0f2929dcb966336732abee36b7fe3e86b72f3216c06",
+      "rawSha256": "f5ce762b43407a2b552574a7fe454e789065872f80928f91544a504990815115"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/04-artists-native-default-marked-1.png.gz",
+      "sha256": "e70d1ce6869fdf62d42db94b9767aa36f655b2719e57bd92e8fdc146c4f43a1b",
+      "rawSha256": "410810dc81524e230bcc856df1c2753c35c8dffbdfab64645293ff5f48743799"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/04-artists-native-default-marked.json.gz",
+      "sha256": "3b82a39132477427cad8d1549aaf28b114d801cbf3db3534fd564c9b601830ee",
+      "rawSha256": "08350071a2d1e66e33394a2db4eac6dfb144f35fe1ad3359ee75e3bb399be500"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/05-artists-explicit-track-count-0.png.gz",
+      "sha256": "d77e65e1ce7b940ae90f9487497a28c92eb25c46fddc1c643eb164537f7e5c5e",
+      "rawSha256": "3eb75f00e16a8a6c7357f64000a756abdfb3290b8b507bbecdd3ffab3861f3bc"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/05-artists-explicit-track-count-1.png.gz",
+      "sha256": "ce8220e5728b28750d072c363bcd840734df0bfff2625092c526524e804156c8",
+      "rawSha256": "ea5639526cc900f337a1dc379f4cd83ad2756db4a968bf7cd92aaf104ddb5814"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/05-artists-explicit-track-count.json.gz",
+      "sha256": "d5a767cbadd0243f01bfc0b25993513333be5ec507762176e67feb25a5b4b665",
+      "rawSha256": "d17fe094d7b3020a65409640c6d07f857d256f5793cdbb17db818e998b16cb0b"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/06-artists-explicit-choice-takes-precedence-0.png.gz",
+      "sha256": "3370efc27881bf1cc3d97a853fb03bec6f042db608316e12d179c670316daef3",
+      "rawSha256": "6a495fe923013b3cec69f217374e3d94d21be92b24e36adb4eef8810c87f799c"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/06-artists-explicit-choice-takes-precedence-1.png.gz",
+      "sha256": "5c40837ec7584694ddf3ff4c06b2beb05562e84feca3da67c8e562af3f166f47",
+      "rawSha256": "d948ae1ed785eba762f3e9d4170c2505dcb664c28bdaec9a74c2e200dbcbe18c"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/06-artists-explicit-choice-takes-precedence.json.gz",
+      "sha256": "b182e1e6eb12c3d590426587f882b47156092b1dba3cf80ff6c549e353af76ed",
+      "rawSha256": "1dcafcfb20ce60ae1422ae60e79def269de98813d2989a294bd176d3e70fa935"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/07-genres-native-default-marked-0.png.gz",
+      "sha256": "208b9da4d2d1aa32564b2c342ab0ab2e89840a385dde50085ae46d0aea47a8f5",
+      "rawSha256": "798ea60f9a83d7d1f0d57e5b88b1287d1d6023faf7b804138e1076d9d3e8e370"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/07-genres-native-default-marked-1.png.gz",
+      "sha256": "c7e091de9f54bdee427f65199e403defb894c58d912332c94f43c25ff0f880a3",
+      "rawSha256": "985e8e9fd5b6a8167bc952f0e9aa3d5d5e67a6254f096cb64080d9f6c0ffd28e"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/07-genres-native-default-marked.json.gz",
+      "sha256": "bc4b6243c58ac408ce17e3dd073caa6ca9931a2f7f57eb7164d717bf1dd8ebca",
+      "rawSha256": "2a46dad82b497d0c4c147c513cc718df76b37973f2491151ba7d9a9b8065a203"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/08-genres-alphabetic-toggle-0.png.gz",
+      "sha256": "3a0cf8743c3c694db4bd3bb24ba8e6eb50ed6a86a9298aa0b6d0b3f2397b6fcd",
+      "rawSha256": "fe8d32e2d02169ae196c78c479375e77ab9245fdd8d07978fd37ddff12c99575"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/08-genres-alphabetic-toggle-1.png.gz",
+      "sha256": "ce8220e5728b28750d072c363bcd840734df0bfff2625092c526524e804156c8",
+      "rawSha256": "ea5639526cc900f337a1dc379f4cd83ad2756db4a968bf7cd92aaf104ddb5814"
+    },
+    {
+      "path": "ui-collection-sort-fixed-r344/observations/08-genres-alphabetic-toggle.json.gz",
+      "sha256": "1bd70f54c494805daf4b28a51f610b33696e15d49c3bab18618cad5c13edcdd5",
+      "rawSha256": "868ec55e70742c76927fa79619e0f8ad8f071850b22f387e673cdec1ab46d36d"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/verification.json.gz",
+      "sha256": "c41ca7632e9c1982f4e931dc0cb21ca8f9e5bb690ba540c4e4af8e486894ae58",
+      "rawSha256": "40318fb3b88766b5409f79f41d32aa9be65fe0c27100e69f436d93e333b14559"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/producer.py.gz",
+      "sha256": "2d2c15145a05373c77a1d8da7aabf92663ce939e4caa660ae57c33cd4a26af7e",
+      "rawSha256": "95ca25d019d2781263600c3c879da1a617b582f219edd2f05c7db5dc7458684b"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/launch.json.gz",
+      "sha256": "6c22a41a3148d12a17da726dc5e5e93b3882cbf371e2bf961cb887c525d836d2",
+      "rawSha256": "7f6f4c6458dcb568503b11307c8ac8e7085ff0505c817389a5ab6d3b153108ee"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/01-cold-source-held-0.png.gz",
+      "sha256": "03d59204f97ebb0571cf3ef9b687c39478fdde9508b540d6c00177e03119edc1",
+      "rawSha256": "868adde9cf8762db58567a7f3a98b85b6f84dfe2415b53de31c0bdcdf14d551a"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/01-cold-source-held.json.gz",
+      "sha256": "d092fa356faf866dba55164f2adcc9ceacd371a2914bd80324a303fd679070b5",
+      "rawSha256": "c03f23e6008247eaad5e06592f19902b13a0d8e8a89dcf01bfc29eaf70813947"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/02-cold-artists-count-order-restored-0.png.gz",
+      "sha256": "686822a0cb3102bbf645c05c1a54079109d6adafba8f0e0b28f522bafaa2b845",
+      "rawSha256": "d93f928763cbc60d295deeb8bea74a60fa52df64ec2c9a28c1ec73242e43a532"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/02-cold-artists-count-order-restored.json.gz",
+      "sha256": "8c514df962086901e345f574c518e78d9f2c258e632859af73e79d1149ec77e8",
+      "rawSha256": "f07713009e12559d7cfd770c77adfa3958774e9dcbc31c53feda967106075914"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/03-cold-artists-settled-0.png.gz",
+      "sha256": "c25277651a8f9d986033c870327c89dbb375ff0b280a9c719057b44a67c8a5c1",
+      "rawSha256": "898345293b0e7db9427eac8a77d9b94c642c897660f952d291f2116fa551546d"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/03-cold-artists-settled.json.gz",
+      "sha256": "c2bac73e88501a9b8316d5a840873dca04e95acb53b2938666081373a4baa28c",
+      "rawSha256": "1ebfc3bff25b723d558f6c8e96c03f81dd0b250046d8d1c153cb9ea21c3614b4"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/04-cold-explicit-artists-selection-restored-0.png.gz",
+      "sha256": "ba1e4dad73c216fd750fc04af75f050022114f5f64394a23e1b4d1339ddc5e05",
+      "rawSha256": "59fabd74c3be1ebc37eedaec73f6795743d61a12f86e61d9ff99f0c0e06468bf"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/04-cold-explicit-artists-selection-restored-1.png.gz",
+      "sha256": "683a5631de7755ea143541e9a0465494b51f1de0a1f0b651cf9bf96b48da91d9",
+      "rawSha256": "b09d729867229fc113b360e41773267115e08e0d69b4ff89cdad5ac6fb7391cf"
+    },
+    {
+      "path": "ui-collection-sort-cold-r345/observations/04-cold-explicit-artists-selection-restored.json.gz",
+      "sha256": "9cc464fc36368c49756be1f66a571af610a574152e3b6a084d257542bf2ebd7e",
+      "rawSha256": "993be63d31d5a77a468a1ca06e48767acde2fcdfc968af047d7a4d337e9c6935"
+    },
+    {
+      "path": "ml-query-races-r342/verification.json.gz",
+      "sha256": "6fcf2bcca61b87d67c8596b68abd540c4b3ac9fb5223ac0bba1668984962719f",
+      "rawSha256": "ca03a5d55af8d1cb397ef13139f8596f04c4c53b727e40d4ab6424f6c404c4ca"
+    },
+    {
+      "path": "ml-query-races-r342/producer.py.gz",
+      "sha256": "722b8a5d7f459abd1c80b674c3c645a250896d96603d4be4216d17b107969bd1",
+      "rawSha256": "744b06d40cf5568b0025a5addb5d4adf07f5ab2cb1c6a15f098e41f8c5b0fcb2"
+    },
+    {
+      "path": "ml-query-races-r342/results.xml.gz",
+      "sha256": "4b51d47bab8ebd537017418ae236e2b54c891c16146a3c2bf57b26958a414ce7",
+      "rawSha256": "c409cbcd49b65d94dc56d70c4c8516b532c68c9dd130788a417822e59ff1f5fc"
+    },
+    {
+      "path": "native-collection-sort-r344/verification.json.gz",
+      "sha256": "19dfe86984dd61ffc79883c1f686c990549fdc86af197905eb31fc09820976a6",
+      "rawSha256": "889be777db64ab91fb531dbf8cf9bae53dab6bed3ede71e52f02e2a88cedf9ea"
+    },
+    {
+      "path": "native-collection-sort-r344/producer.py.gz",
+      "sha256": "6b69d1ff3afa1263ec36e9dff5128b4599789463bcec37b3da6c0a060ed0b4ca",
+      "rawSha256": "77d4f2812a851165056d5ffb4ef0eecaded1ebe6304d745807b00696fd5ce3a5"
+    },
+    {
+      "path": "native-collection-sort-r344/results.xml.gz",
+      "sha256": "656949cf39f7683e618c807f0f6a1aab445515c1fe911f2baeb6b110020f2c36",
+      "rawSha256": "206ee8cd50f88fcd937f10597a73fd145f14ddae012525e5acf65cfcff763b5c"
+    },
+    {
+      "path": "component-collection-sort-before-r343/verification.json.gz",
+      "sha256": "90f5afcc55d1d72f12d22d19792ce0499d0e3729142c40e174390b77a1ce250f",
+      "rawSha256": "c68d539d34c24ede5e143b2c891ec192713030632f00fda01010697331782e80"
+    },
+    {
+      "path": "component-collection-sort-fixed-r344/verification.json.gz",
+      "sha256": "2211e4bcea582e9e1771bc8ba4dc19e33099e2248b4344cf0034752fcd73f04e",
+      "rawSha256": "10e29b06c92349c5cac624799458af558dfdfee3d87100a988a55179ed258213"
+    },
+    {
+      "path": "inputs-r342.json.gz",
+      "sha256": "35b96e23c3b2cb1786ae6273455df9558fec7c8535ed67ee2fb3143eb9713d44",
+      "rawSha256": "c2171fdf20afdc1911d1d6cbc5f4903eeaa47d9f617b8c1c256b54d3b87951d8"
+    },
+    {
+      "path": "inputs-r344.json.gz",
+      "sha256": "39e8dd7bb35dde0f86bd4a0bc2f97fcd7740ae92a8ee6ac007b7175457d12642",
+      "rawSha256": "3b02fec677c009d8510601aaf6de046ee891da591114027633ecccf661365a29"
+    },
+    {
+      "path": "collection-native-policy-r344.json.gz",
+      "sha256": "8904073655e41b53334c30ffc06fcee6ca617a6554f8c284f104ba92f05ad2f4",
+      "rawSha256": "79e7a01b4e188e56197b446bafd1fabb25a0ea0261e414aaa3642c5eabde6369"
+    },
+    {
+      "path": "prepare-query-races-r342.py.gz",
+      "sha256": "18010ca4280e2218fdd6a36e591ccd9103aab86f9fa7b364fa28b01221d53ef2",
+      "rawSha256": "30ae3877c140844904a1f8298cdd095f6b1e59ed97ec1f55209c7a2db509fd27"
+    },
+    {
+      "path": "build-query-races-r342.sh.gz",
+      "sha256": "318b271fa0f3ac7b983fcd55193f67cce2a333c7a17a86907e43324a7dcf5f46",
+      "rawSha256": "78d0075a8e5e9b28c84331af8c8ba17b1dab82cd5cd338a6c57734e24ea00b50"
+    },
+    {
+      "path": "build-query-races-r342-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "run-ml-query-races-r342.py.gz",
+      "sha256": "722b8a5d7f459abd1c80b674c3c645a250896d96603d4be4216d17b107969bd1",
+      "rawSha256": "744b06d40cf5568b0025a5addb5d4adf07f5ab2cb1c6a15f098e41f8c5b0fcb2"
+    },
+    {
+      "path": "prepare-collection-sort-r344.py.gz",
+      "sha256": "b3cde756d1774021ad6455924d5b049ae1d6917c49dc78d4d43f37df89c52d3d",
+      "rawSha256": "1922de02162ddbd7f991cd4fbebdee547143bb6a94adbe806b099f66471cfb0e"
+    },
+    {
+      "path": "build-collection-sort-r344.sh.gz",
+      "sha256": "b50e620e6801895b091481b301db247441a9acf262af8a38fbe83e772c870d24",
+      "rawSha256": "ec17c63a1ffc5de8657cbae7fba65dbf58e5b8ae9f296604c4314b6d3f742452"
+    },
+    {
+      "path": "build-collection-sort-r344-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "freeze-collection-sort-r344.py.gz",
+      "sha256": "e0c1069f512b34a59b678b6b8a7022aad08485b863c43d3d8fa62a53a64a1f58",
+      "rawSha256": "139c12ba230c13aa21ef347c2ae98d05a848e1dfd5d89703ff9ddca5cd59b0a6"
+    },
+    {
+      "path": "run-ui-collection-sort-r344.py.gz",
+      "sha256": "2d2c15145a05373c77a1d8da7aabf92663ce939e4caa660ae57c33cd4a26af7e",
+      "rawSha256": "95ca25d019d2781263600c3c879da1a617b582f219edd2f05c7db5dc7458684b"
+    },
+    {
+      "path": "run-native-collection-sort-r344.py.gz",
+      "sha256": "6b69d1ff3afa1263ec36e9dff5128b4599789463bcec37b3da6c0a060ed0b4ca",
+      "rawSha256": "77d4f2812a851165056d5ffb4ef0eecaded1ebe6304d745807b00696fd5ce3a5"
+    },
+    {
+      "path": "write-collection-sort-receipt-r346.py.gz",
+      "sha256": "4a348c9386651db23b4d011c613dd5917be11b312a58886316f25d214eab6444",
+      "rawSha256": "5b03c950e890161b1e279db47ba695f3543af5efec43c9fba5850360ab60718f"
+    }
+  ]
+}

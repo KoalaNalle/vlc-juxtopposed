@@ -47,6 +47,7 @@ MainViewLoader {
     property alias searchPattern: genreModel.searchPattern
     property alias sortOrder: genreModel.sortOrder
     property alias sortCriteria: genreModel.sortCriteria
+    readonly property string libraryDefaultSortCriteria: "name"
 
     // FIXME: remove this
     property var _currentView: currentItem

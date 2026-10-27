@@ -10,6 +10,7 @@
 #include <QUrl>
 #include <QTest>
 #include <memory>
+#include <vector>
 
 extern "C" vlc_medialibrary_t *vlc_test_stream_library(libvlc_instance_t *);
 using MediaList = std::unique_ptr<vlc_ml_media_list_t, decltype(&vlc_ml_media_list_release)>;
@@ -210,6 +211,39 @@ private slots:
             QVERIFY(tracks); QCOMPARE(tracks->i_nb_items, size_t(1));
             QCOMPARE(tracks->p_items[0].i_type, VLC_ML_MEDIA_TYPE_AUDIO);
         }
+    }
+    void collectionDefaultMatchesAlphabetic_data()
+    {
+        QTest::addColumn<QString>("collection");
+        QTest::addColumn<bool>("descending");
+        for (const auto &name : {QStringLiteral("albums"), QStringLiteral("artists"), QStringLiteral("genres")})
+            for (bool descending : {false, true})
+                QTest::newRow(qPrintable(name + (descending ? QStringLiteral("-descending") : QStringLiteral("-ascending"))))
+                    << name << descending;
+    }
+    void collectionDefaultMatchesAlphabetic()
+    {
+        QFETCH(QString, collection);
+        QFETCH(bool, descending);
+        auto query = vlc_ml_query_params_create(); query.b_desc = descending;
+        auto ids = [&](vlc_ml_sorting_criteria_t criterion) {
+            query.i_sort = criterion;
+            std::vector<int64_t> result;
+            if (collection == QStringLiteral("albums")) {
+                AlbumList rows(vlc_ml_list_albums(m_library, &query), vlc_ml_album_list_release);
+                if (rows) for (size_t i = 0; i < rows->i_nb_items; ++i) result.push_back(rows->p_items[i].i_id);
+            } else if (collection == QStringLiteral("artists")) {
+                ArtistList rows(vlc_ml_list_artists(m_library, &query, true), vlc_ml_artist_list_release);
+                if (rows) for (size_t i = 0; i < rows->i_nb_items; ++i) result.push_back(rows->p_items[i].i_id);
+            } else {
+                GenreList rows(vlc_ml_list_genres(m_library, &query), vlc_ml_genre_list_release);
+                if (rows) for (size_t i = 0; i < rows->i_nb_items; ++i) result.push_back(rows->p_items[i].i_id);
+            }
+            return result;
+        };
+        const auto nativeDefault = ids(VLC_ML_SORTING_DEFAULT);
+        QVERIFY(!nativeDefault.empty());
+        QCOMPARE(nativeDefault, ids(VLC_ML_SORTING_ALPHA));
     }
     void cleanupTestCase()
     {

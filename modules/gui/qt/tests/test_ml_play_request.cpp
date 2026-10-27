@@ -9,6 +9,7 @@
 #include <vlc_playlist.h>
 #include <QDir>
 #include <QSemaphore>
+#include <QSignalSpy>
 #include <QTest>
 #include <QUrl>
 
@@ -168,6 +169,67 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(called, 3000);
         QCOMPARE(ids, (std::vector<int64_t>{0, 0, m_rows[2].id}));
         QCOMPARE(source->operation->queries, (std::vector<std::pair<unsigned, unsigned>>{{2, 2}}));
+    }
+    void lateViewQueriesCannotReplaceCurrentRows_data()
+    {
+        QTest::addColumn<QString>("change");
+        QTest::newRow("search-A-B-A") << QStringLiteral("search");
+        QTest::newRow("parent-A-B-A") << QStringLiteral("parent");
+        QTest::newRow("sort-A-B-A") << QStringLiteral("sort");
+    }
+    void lateViewQueriesCannotReplaceCurrentRows()
+    {
+        QFETCH(QString, change);
+        auto source = model();
+        auto first = source->operation;
+        first->rows = {m_rows[0]};
+        first->delay = true;
+        source->componentComplete();
+        const bool firstEntered = first->entered.tryAcquire(1, 5000);
+
+        auto middle = std::make_shared<RequestRows>(*source,
+            std::vector<MLItemId>{m_rows[1], m_rows[2]});
+        middle->delay = true;
+        source->operation = middle;
+        if (change == QStringLiteral("search"))
+            source->setSearchPattern(QStringLiteral("B"));
+        else if (change == QStringLiteral("parent"))
+            source->setParentId({2, VLC_ML_PARENT_ARTIST});
+        else
+            source->setSortOrder(Qt::DescendingOrder);
+        const bool middleEntered = middle->entered.tryAcquire(1, 5000);
+
+        // The current result must win even if both abandoned requests finish later.
+        source->operation = std::make_shared<RequestRows>(*source,
+            std::vector<MLItemId>{m_rows[4], m_rows[3], m_rows[0]});
+        if (change == QStringLiteral("search"))
+            source->setSearchPattern({});
+        else if (change == QStringLiteral("parent"))
+            source->setParentId({});
+        else
+            source->setSortOrder(Qt::AscendingOrder);
+        QTRY_COMPARE_WITH_TIMEOUT(source->getLoadedCount(), unsigned(3), 5000);
+        auto currentIds = [&] {
+            std::vector<int64_t> result;
+            for (int i = 0; i < source->rowCount(); ++i)
+                result.push_back(source->data(source->index(i), Qt::UserRole).value<MLItemId>().id);
+            return result;
+        };
+        const std::vector<int64_t> expected{m_rows[4].id, m_rows[3].id, m_rows[0].id};
+        QCOMPARE(currentIds(), expected);
+        QSignalSpy sizeChanges(source.get(), &BaseModel::countChanged);
+        QSignalSpy dataChanges(source.get(), &BaseModel::dataChanged);
+        std::weak_ptr<RequestRows> firstFinished = first, middleFinished = middle;
+        middle->release.release();
+        first->release.release();
+        first.reset(); middle.reset();
+        QTRY_VERIFY_WITH_TIMEOUT(firstFinished.expired() && middleFinished.expired(), 5000);
+        QCOMPARE(currentIds(), expected);
+        QCOMPARE(source->getCount(), unsigned(3));
+        QCOMPARE(sizeChanges.count(), qsizetype(0));
+        QCOMPARE(dataChanges.count(), qsizetype(0));
+        QVERIFY(firstEntered);
+        QVERIFY(middleEntered);
     }
     void serviceShutdownCancelsPendingPlay()
     {

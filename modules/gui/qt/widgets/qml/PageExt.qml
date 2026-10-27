@@ -80,7 +80,8 @@ T.Page {
 
     // Some views use an explicit native fallback while the saved key is empty.
     // Reflect that model's criterion rather than guessing a default for all views.
-    readonly property string librarySortCriteria: sort.criteria || libraryModel?.sortCriteria || ""
+    property string libraryDefaultSortCriteria: _firstChild?.libraryDefaultSortCriteria ?? ""
+    readonly property string librarySortCriteria: sort.criteria || libraryModel?.sortCriteria || libraryDefaultSortCriteria
 
 
     SearchCtx {

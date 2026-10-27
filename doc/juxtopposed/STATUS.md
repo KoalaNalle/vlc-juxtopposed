@@ -7,16 +7,16 @@ The user authorized tested nightly commits/pushes; release publication is separa
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`. Exact source/binary identities are in the
-  [chapter/tooltip receipt](../juxtopposed-references/native/home-chapter-tooltip-20261027/README.md).
+  [library defaults/query receipt](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md).
   The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `fdfcfcd5`, ordinary GUI `56592664`, library `13ccdc36`,
+- Selected tuple: Core `fdfcfcd5`, ordinary GUI `b5e5bd29`, library `13ccdc36`,
   MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`,
   recording `930205b1`. Ordinary isolated runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-tooltip-fixed-r337/runtime`.
-  This is not a release package. GUI329 and GUI311 runtimes remain recoverable
-  at `ui-music-keys-fixed-r330/runtime` and `ui-record-fixed-r323/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-collection-sort-fixed-r344/runtime`.
+  This is not a release package. GUI337, GUI329 and GUI311 remain recoverable
+  at `ui-tooltip-fixed-r337/runtime`, `ui-music-keys-fixed-r330/runtime` and `ui-record-fixed-r323/runtime`.
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r337.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r344.json` predates this documentation checkpoint; freeze
   fresh inputs before another guarded test. All owned tests have exited normally.
 
 ## Verified progress and scope
@@ -58,6 +58,18 @@ The user authorized tested nightly commits/pushes; release publication is separa
   preserve literal tags; three layout failures before become five passes after.
   GUI337 verifies rendered text/edge placement and exits0/602modules/zero errors/
   all guards. The chapter receipt qualifies EOF, setup failures and stale captures.
+- Two saved global Play/Pause combinations work from a separate foreground app.
+  B leaves A's paused position exact and keeps its shortcut after A exits.
+  Traditional Simple Preferences Hotkeys is reached by keyboard and cancels with
+  the player clock held. Both ordinary apps exit0/602modules/zero checked errors/
+  all original guards. [Global shortcut receipt](../juxtopposed-references/native/home-global-shortcuts-20261027/README.md)
+  retains the failed accessibility click and stale/occluded capture limitations.
+- Native model/service checks pass9 cases, including three forced overlapping
+  search/parent/sort-order queries with late abandoned results. Albums, Artists
+  and Genres now mark verified native defaults;14 native query cases,16 component
+  groups and ordinary GUI344/restart checks pass. Explicit sort choices persist.
+  [Library defaults/query receipt](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md)
+  keeps the supplied-row race fixture distinct from native SQL/desktop timing.
 - Prior subtitle/Core evidence remains scoped:
   [late-cue replay](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md),
   [selection/first-frame clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
@@ -66,14 +78,14 @@ The user authorized tested nightly commits/pushes; release publication is separa
 
 ## Next action and open questions
 
-1. Continue W2 with global shortcut registration/action checks, remaining native
+1. Continue W3 interaction/design checks and W2 remaining native
    consumers and current-tuple category workflows. Preserve earlier layout/draft/
    failure evidence. HDR is truthfully disabled pending a native consumer.
    Other recording formats/policies and subtitle overlap remain distinct.
-2. Shortcut global keys/full actions, traditional Simple Preferences Hotkeys
-   navigation, rapid overlapping library queries and every category's native
-   Default-sort policy remain open. The traditional dialog opened, but its
-   Hotkeys category was not reached because the target lay outside owner bounds.
+2. Shortcut full actions and same-chord registration feedback, ordinary rapid
+   overlapping library queries and every category's native Default-sort policy
+   remain open. Two distinct Play/Pause global mappings and traditional Hotkeys
+   keyboard navigation now have scoped evidence; they do not close all shortcuts.
 3. Continue W3 design, focus/accessibility, theme, Windows OS-DPI and monitor work
    in [BETA](BETA.md) and [SETTINGS](SETTINGS.md). Simulated component scale is
    not OS-DPI proof. Disc metadata is visible; unsupported Disc sort is disabled.

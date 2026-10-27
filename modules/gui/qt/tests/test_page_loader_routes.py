@@ -217,6 +217,7 @@ Widgets.PageExt {
     property int initialIndex: -1
     sortModel: [{text: "Alphabetic", criteria: "title"}, {text: "Duration", criteria: "duration"}]
     libraryModel: QtObject { property string sortCriteria: "title" }
+    Item { property string libraryDefaultSortCriteria: "title" }
     Component.onCompleted: constructionPattern = search.pattern
     function chooseSort(index) { selectLibrarySort(index) }
     function setCurrentItemFocus(reason) {}
@@ -454,6 +455,15 @@ try:
     evaluate(item, 'sort.criteria = ""; libraryModel.sortCriteria = "insertion"')
     assert item.property('librarySortCriteria') == 'insertion'
     completed.append('sortReflectsNativeFallbackAndTogglesWithoutInventingGlobalDefault')
+    evaluate(item, 'libraryModel.sortCriteria = ""')
+    assert item.property('librarySortCriteria') == 'title', 'Declared collection default must be visible when the saved/native key is empty'
+    evaluate(item, 'chooseSort(0)')
+    assert evaluate(item, 'sort.criteria') == 'title' and evaluate(item, 'sort.order') == Qt.DescendingOrder.value
+    evaluate(item, 'chooseSort(1)')
+    assert item.property('librarySortCriteria') == 'duration' and evaluate(item, 'sort.order') == Qt.AscendingOrder.value
+    evaluate(item, 'sort.criteria = ""; _firstChild.libraryDefaultSortCriteria = ""')
+    assert item.property('librarySortCriteria') == ''
+    completed.append('declaredCollectionDefaultReflectsNativePolicyAndExplicitChoiceWins')
     assert not messages, messages
 except Exception:
     failed = traceback.format_exc()

@@ -48,6 +48,7 @@ MainViewLoader {
     property alias searchPattern: artistModel.searchPattern
     property alias sortOrder: artistModel.sortOrder
     property alias sortCriteria: artistModel.sortCriteria
+    readonly property string libraryDefaultSortCriteria: "name"
 
     signal artistAlbumViewRequested(var id, int reason)
 
