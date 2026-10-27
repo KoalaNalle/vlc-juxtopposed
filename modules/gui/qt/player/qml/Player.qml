@@ -457,6 +457,7 @@ FocusScope {
                         title: Player.title
                         artist: Player.artist
                         folderAvailable: Player.musicFolder.available
+                        sidebarVisible: rootPlayer.juxtopposedMusicSidebarVisible
                         folderName: Player.musicFolder.name
                         sourceModel: folderMode ? Player.musicFolder : audioQueue
                         itemCount: folderMode ? Player.musicFolder.count : audioQueue.count
@@ -1069,6 +1070,8 @@ FocusScope {
     }
 
     property bool juxtopposedNavigationVisible: false
+    property bool juxtopposedMusicSidebarVisible: true
+    readonly property bool _musicPresentationActive: playerSpecializationLoader.item?.musicPresentationActive ?? false
 
     TopBar {
         id: topBar
@@ -1106,7 +1109,8 @@ FocusScope {
         showCSD: MainCtx.clientSideDecoration && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
         showToolbar: MainCtx.hasToolbarMenu && (MainCtx.intfMainWindow.visibility !== Window.FullScreen)
         playlistVisible: playlistVisibility.isPlaylistVisible
-        navigationVisible: rootPlayer.juxtopposedNavigationVisible
+        navigationVisible: rootPlayer._musicPresentationActive
+            ? rootPlayer.juxtopposedMusicSidebarVisible : rootPlayer.juxtopposedNavigationVisible
 
         plListView: {
             if (playlistpopup.active)
@@ -1142,7 +1146,14 @@ FocusScope {
             rootPlayer.lockUnlockAutoHide(lock)
         }
 
-        onToggleNavigationVisibility: rootPlayer.juxtopposedNavigationVisible = !rootPlayer.juxtopposedNavigationVisible
+        onToggleNavigationVisibility: {
+            if (rootPlayer._musicPresentationActive) {
+                rootPlayer.juxtopposedNavigationVisible = false
+                rootPlayer.juxtopposedMusicSidebarVisible = !rootPlayer.juxtopposedMusicSidebarVisible
+            } else {
+                rootPlayer.juxtopposedNavigationVisible = !rootPlayer.juxtopposedNavigationVisible
+            }
+        }
         onHomeRequested: {
             rootPlayer.juxtopposedNavigationVisible = false
             History.push(["home"], {}, Qt.TabFocusReason)
@@ -1413,7 +1424,7 @@ FocusScope {
         z: 2
         anchors.top: topBar.bottom; anchors.bottom: controlBar.top
         anchors.left: parent.left; anchors.right: parent.right
-        visible: controlBar.redesigned && rootPlayer.juxtopposedNavigationVisible
+        visible: controlBar.redesigned && !rootPlayer._musicPresentationActive && rootPlayer.juxtopposedNavigationVisible
         color: "#66000000"
         MouseArea { anchors.fill: parent; onClicked: rootPlayer.juxtopposedNavigationVisible = false }
     }
@@ -1424,7 +1435,7 @@ FocusScope {
         anchors.bottom: controlBar.top
         width: implicitWidth
         expanded: true
-        visible: controlBar.redesigned && rootPlayer.juxtopposedNavigationVisible
+        visible: controlBar.redesigned && !rootPlayer._musicPresentationActive && rootPlayer.juxtopposedNavigationVisible
         activeSurface: MainCtx.playerView
         Navigation.parentItem: rootPlayer
         Navigation.upItem: topBar

@@ -1,99 +1,71 @@
 # Current status
 
-Updated 27 October 2026. Beta work is **active**, with the desktop available.
-Checkpoint and stop owned jobs by **27 October 2026, 08:00 Helsinki** (06:00 UTC).
-The user authorized tested nightly commits/pushes; release publication is separate.
+Updated 27 October 2026. Beta work is **active**, desktop available.
+Checkpoint and stop owned jobs by **08:00 Helsinki today** (06:00 UTC).
+Tested nightly commits/pushes are authorized; release publication is separate.
 
 ## Selected checkpoint
 
-- Branch: `juxtopposed-playback-bar`. Exact source/binary identities are in the
-  [library defaults/query receipt](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md).
-  The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `fdfcfcd5`, ordinary GUI `b5e5bd29`, library `13ccdc36`,
-  MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`,
-  recording `930205b1`. Ordinary isolated runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-collection-sort-fixed-r344/runtime`.
-  This is not a release package. GUI337, GUI329 and GUI311 remain recoverable
-  at `ui-tooltip-fixed-r337/runtime`, `ui-music-keys-fixed-r330/runtime` and `ui-record-fixed-r323/runtime`.
+- Branch: `juxtopposed-playback-bar`. Latest accepted ordinary GUI349 is
+  `987539e3`; Core `fdfcfcd5`, library `13ccdc36`, recording `930205b1`,
+  MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-music-sidebar-fixed-r349/runtime`.
+  This is an isolated test runtime, not a release package. GUI344/337/329/311
+  remain recoverable in the same work root. Exact identities are in the
+  [music sidebar receipt](../juxtopposed-references/native/home-music-sidebar-20261027/README.md).
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r344.json` predates this documentation checkpoint; freeze
-  fresh inputs before another guarded test. All owned tests have exited normally.
+  `inputs-r349.json` predates this documentation checkpoint; freeze fresh inputs
+  before another guarded run. All owned tests have exited normally. The four
+  unrelated audio experiments remain untouched.
 
-## Verified progress and scope
+## Latest verified work
 
-- Songs uses native indexed audio folders/All songs, original category artwork
-  and native TrackId sorting. Native Play survives source-model removal.
-  [Library receipt](../juxtopposed-references/native/home-music-library-20261027/README.md)
-  separates six Play-lifetime cases, queries and ordinary cold/traditional routes.
-- Artist headers, genre breadcrumbs, missing-year album text and table Enter
-  are repaired. Eight native query functions and scoped desktop journeys pass.
-  [Details receipt](../juxtopposed-references/native/home-music-details-20261027/README.md).
-  Equal Evening Album titles have distinct native containing-folder identities;
-  no unsupported grouping/deduplication policy changed.
-- Library Back/Forward restores independent filters; Clear and cold native sort
-  persist. [History receipt](../juxtopposed-references/native/home-library-history-20261027/README.md).
-  [Multi-selection](../juxtopposed-references/native/home-music-selection-20261027/README.md)
-  verifies exact appended tracks and held input; successive navigation is not
-  proof of overlapping in-flight queries.
-- Shortcut rows are visible; conflict Cancel, failed-save retry, saved reopen,
-  restart mapping, movable editor and Reset have native/ordinary evidence.
-  [Shortcut receipt](../juxtopposed-references/native/home-controls-shortcuts-20261027/README.md).
-  Intentional configuration errors and strict producer failures remain explicit.
-- First Playlists and Quit tiles are repaired; ten callback cases, fifteen
-  PageLoader groups and ordinary GUI311 route/Quit checks pass. Snapshot Add/Save
-  and additional toolbar consumers have scoped evidence.
-  [Customizer receipt](../juxtopposed-references/native/home-customizer-routes-20261027/README.md).
-- Sparse subtitles no longer delay A/V recording. Eleven calculation cases pass
-  (three fail before); actual ordinary/native files decode aligned AV. Passthrough
-  still waits for a usable keyframe; no frame-exact start is claimed.
-  [Recording receipt](../juxtopposed-references/native/home-recording-start-20261027/README.md).
-- Mouse-selected music rows now own Enter/Space/navigation. GUI329 verifies real
-  source changes, artwork/artist/Unicode metadata, native playlist origin and live
-  literal rename with a held clock. The rename popup moves by its title bar.
-  Native routing passes28/0/0; the music component suite passes. The accepted app
-  exits0/602modules/zero errors/all guards. The earlier metadata source-guard
-  failure remains retained; relevant journeys were repeated on GUI329.
-- Genuine0/20/40-second chapters pass native and ordinary paused/playing seeks,
-  literal names and plain-source clearing/restoration. Pointing tooltips now
-  preserve literal tags; three layout failures before become five passes after.
-  GUI337 verifies rendered text/edge placement and exits0/602modules/zero errors/
-  all guards. The chapter receipt qualifies EOF, setup failures and stale captures.
-- Two saved global Play/Pause combinations work from a separate foreground app.
-  B leaves A's paused position exact and keeps its shortcut after A exits.
-  Traditional Simple Preferences Hotkeys is reached by keyboard and cancels with
-  the player clock held. Both ordinary apps exit0/602modules/zero checked errors/
-  all original guards. [Global shortcut receipt](../juxtopposed-references/native/home-global-shortcuts-20261027/README.md)
-  retains the failed accessibility click and stale/occluded capture limitations.
-- Native model/service checks pass9 cases, including three forced overlapping
-  search/parent/sort-order queries with late abandoned results. Albums, Artists
-  and Genres now mark verified native defaults;14 native query cases,16 component
-  groups and ordinary GUI344/restart checks pass. Explicit sort choices persist.
-  [Library defaults/query receipt](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md)
-  keeps the supplied-row race fixture distinct from native SQL/desktop timing.
-- Prior subtitle/Core evidence remains scoped:
-  [late-cue replay](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md),
-  [selection/first-frame clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
-  [initial paused caption](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md)
+- Music sidebar open/closed states now follow Figma's paired frames. The title
+  button toggles the inline music panel; video retains its drawer. Component
+  before/fixed evidence, small/maximized native states, exact paused retention,
+  closed Space and reopened Down/Enter, plus audio/video transitions pass.
+  The customizer fixture's two-row bar does not establish canonical sizing or a
+  whole-player visual score. Both apps exit0/602modules/zero checked errors/all guards.
+- [Library defaults/query receipt](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md):
+  Albums/Artists/Genres mark verified native defaults; explicit choices persist.
+  Fourteen native query cases, sixteen component groups and ordinary/restart
+  journeys pass. Nine model/service cases include three forced overlapping late
+  results; supplied row operations are distinct from SQL/desktop timing.
+- [Global shortcuts](../juxtopposed-references/native/home-global-shortcuts-20261027/README.md):
+  two distinct Play/Pause mappings work from another app; B holds A's exact
+  paused position and survives A's exit. Traditional Hotkeys keyboard navigation
+  and Cancel pass. Full actions and same-chord registration feedback remain open.
+- Earlier scoped repairs/evidence remain valid for their recorded tuples:
+  [music library](../juxtopposed-references/native/home-music-library-20261027/README.md),
+  [details](../juxtopposed-references/native/home-music-details-20261027/README.md),
+  [history](../juxtopposed-references/native/home-library-history-20261027/README.md),
+  [selection](../juxtopposed-references/native/home-music-selection-20261027/README.md),
+  [music keys/metadata](../juxtopposed-references/native/home-music-metadata-keys-20261027/README.md),
+  [shortcuts](../juxtopposed-references/native/home-controls-shortcuts-20261027/README.md),
+  [toolbar routes/Quit](../juxtopposed-references/native/home-customizer-routes-20261027/README.md),
+  [recording start](../juxtopposed-references/native/home-recording-start-20261027/README.md),
+  [chapters/tooltips](../juxtopposed-references/native/home-chapter-tooltip-20261027/README.md),
+  [subtitle clock/selection](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
+  [late cues](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md)
   and [fragment seeking](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
+  Equal Evening Album names retain genuine distinct native folder identities.
 
 ## Next action and open questions
 
-1. Continue W3 interaction/design checks and W2 remaining native
-   consumers and current-tuple category workflows. Preserve earlier layout/draft/
-   failure evidence. HDR is truthfully disabled pending a native consumer.
-   Other recording formats/policies and subtitle overlap remain distinct.
-2. Shortcut full actions and same-chord registration feedback, ordinary rapid
-   overlapping library queries and every category's native Default-sort policy
-   remain open. Two distinct Play/Pause global mappings and traditional Hotkeys
-   keyboard navigation now have scoped evidence; they do not close all shortcuts.
-3. Continue W3 design, focus/accessibility, theme, Windows OS-DPI and monitor work
-   in [BETA](BETA.md) and [SETTINGS](SETTINGS.md). Simulated component scale is
-   not OS-DPI proof. Disc metadata is visible; unsupported Disc sort is disabled.
-   All six beta gates remain open, including consolidated final-package replay.
-4. Secondary-screen fullscreen idle capture loses captions on older Core204 too;
-   physical display versus capture remains unqualified. Sparse/long-cue seek
-   cost, other MP4 indexes and live behavior remain open. The earlier cold RGB
-   assertion stays failed; only the later exact dual-caption Reset pair matches.
-5. Online subtitle search/download needs implementation and an owner API
+1. Continue W3 interaction/design and W2 native consumers/current-category journeys
+   in [BETA](BETA.md) and [SETTINGS](SETTINGS.md). Qualify canonical music layout,
+   theme, focus/accessibility, actual Windows DPI/monitor states and other categories'
+   native defaults. Component scale simulations are not OS-DPI evidence.
+2. Full shortcut actions/conflict feedback, ordinary rapid queries, remaining
+   recording formats/policies/subtitle overlap and native HDR remain open. HDR
+   stays truthfully disabled; Disc metadata is visible with unsupported sort disabled.
+3. Secondary-screen fullscreen idle capture also loses captions on older Core204;
+   physical display versus capture is unqualified. Sparse/long-cue seek cost,
+   other MP4 indexes and live behavior remain open. The earlier cold RGB assertion
+   stays failed; only the later exact dual-caption Reset pair matches.
+4. Online subtitle search/download needs implementation and an owner API
    application decision. Windows10 AUDIOSES and physical endpoint/device-loss/
    receiver/casting checks retain explicit external deferrals.
+5. All six beta gates remain open, including independent final review and a clean,
+   matched ordinary package with consolidated regression/design evidence. A work
+   session or component pass does not complete the beta objective.

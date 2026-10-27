@@ -25,6 +25,7 @@ FocusScope {
     property int currentIndex: -1
     property bool folderAvailable: false
     property bool displayFolder: true
+    property bool sidebarVisible: true
     readonly property bool folderMode: folderAvailable && displayFolder
     property string folderName: ""
     property bool busy: false
@@ -68,9 +69,21 @@ FocusScope {
     signal lyricsRequested()
 
     Accessible.name: qsTr("Music player")
-    Component.onCompleted: setCurrentItemFocus(Qt.OtherFocusReason)
+    property bool _completed: false
+    Component.onCompleted: {
+        _completed = true
+        setCurrentItemFocus(Qt.OtherFocusReason)
+    }
+    onSidebarVisibleChanged: {
+        if (_completed)
+            setCurrentItemFocus(Qt.OtherFocusReason)
+    }
     FontLoader { id: inter; source: root.assetBase + "InterVariable.ttf" }
     function setCurrentItemFocus(reason) {
+        if (!sidebarVisible) {
+            controlsFocusRequested(reason)
+            return
+        }
         if (tracks.count > 0) {
             tracks.currentIndex = root.currentIndex >= 0 ? root.currentIndex : 0
             tracks.forceActiveFocus(reason)
@@ -91,6 +104,7 @@ FocusScope {
 
     MainInterface.JuxtopposedNavigation {
         id: navigation
+        visible: root.sidebarVisible
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -111,6 +125,7 @@ FocusScope {
     Rectangle {
         id: sourcePanel
         objectName: "musicSourcePanel"
+        visible: root.sidebarVisible
         anchors.left: navigation.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
@@ -406,7 +421,7 @@ FocusScope {
     }
     Item {
         id: artworkPane
-        anchors.left: sourcePanel.right
+        anchors.left: root.sidebarVisible ? sourcePanel.right : parent.left
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom

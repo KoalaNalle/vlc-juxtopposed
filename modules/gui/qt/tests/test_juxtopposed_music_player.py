@@ -175,6 +175,21 @@ with tempfile.TemporaryDirectory(prefix='music-scene-') as directory:
     root.setProperty('error', 'The selected file is no longer readable.')
     assert find(root, 'musicSourceStatus').property('text') == 'The selected file is no longer readable.'
     root.setProperty('error', '')
+    activation_before_hide = activation.count()
+    controls_before_hide = controls.count()
+    root.setProperty('sidebarVisible', False)
+    QTest.qWait(30)
+    assert not find(root, 'musicSourcePanel').isVisible(), 'Closed music sidebar must hide the source panel'
+    assert controls.count() == controls_before_hide + 1, 'Hiding the focused source panel must return focus to player controls'
+    assert root.property('currentIndex') == 2 and activation.count() == activation_before_hide
+    frame = find(root, 'musicCoverFrame')
+    frame_position = frame.mapToScene(QPointF(0, 0))
+    assert abs(frame_position.x() + frame.width() / 2 - root.width() / 2) < 1
+    root.setProperty('sidebarVisible', True)
+    QTest.qWait(30)
+    assert find(root, 'musicSourcePanel').isVisible()
+    assert find(root, 'musicSourceRow2').hasActiveFocus()
+    assert activation.count() == activation_before_hide
     results = []
     for width, height, scale in [(2048, 1056, 1), (1100, 620, 1), (640, 420, 1), (1440, 900, 1.5), (1280, 840, 2)]:
         root.setProperty('uiScale', scale)
