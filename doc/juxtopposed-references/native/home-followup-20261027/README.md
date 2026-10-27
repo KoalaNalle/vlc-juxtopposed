@@ -188,6 +188,8 @@ FIRST cue and then matches its own MIDDLE reference; selected roles and the
 advancing video frame/clock remain correct. The process exits normally with
 recorded guards intact; test executable SHA-256 is
 `dc39966262ac26337a0d78c184851c0d20411dc31fedd705796afca4de5a2d60`.
+The unchanged baseline `fps_both_external_baseline_r1` fails the intended
+secondary-cue assertion with normal setup and cleanup and intact guards.
 Both sources have the same cue timing and no per-track delay; other timings,
 delays and formats still need separate evidence.
 
