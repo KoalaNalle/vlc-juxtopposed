@@ -1416,7 +1416,9 @@ void KeySelectorControl::finish()
     table->resizeColumnToContents( ACTION_COL );
     table->resizeColumnToContents( HOTKEY_COL );
 
-    table->setUniformRowHeights( true );
+    // Key edits can change individual row fonts. Keep per-row size hints:
+    // enabling uniform heights before this widget is shown can cache a zero
+    // first-row height and leave the entire shortcut list invisible.
 
     connect( table, &QTreeWidget::itemActivated,
              this, QOverload<QTreeWidgetItem *, int>::of(&KeySelectorControl::selectKey) );

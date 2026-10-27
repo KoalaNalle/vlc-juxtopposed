@@ -7,16 +7,16 @@ The user authorized tested nightly commits/pushes; release publication is separa
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`. Current source identities are frozen in the
-  [library history receipt](../juxtopposed-references/native/home-library-history-20261027/README.md).
+  [shortcut receipt](../juxtopposed-references/native/home-controls-shortcuts-20261027/README.md).
   The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `fdfcfcd5`, ordinary GUI `4dfe9fb9`, library `13ccdc36`,
+- Selected tuple: Core `fdfcfcd5`, ordinary GUI `ec90154f`, library `13ccdc36`,
   MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`.
   Ordinary runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-library-history-fixed-r294/runtime`.
-  Its isolated profile is not a release package. GUI290/Core265 remains recoverable
-  at `ui-music-details-fixed-r290/runtime`; GUI286 at `ui-music-play-r286/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-controls-shortcuts-cold-r302/runtime`.
+  Its isolated profile is not a release package. GUI293/Core265 remains recoverable
+  at `ui-library-history-fixed-r294/runtime`; earlier music runtimes are retained.
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r294.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r302.json` predates this documentation checkpoint; freeze
   fresh inputs before another guarded test. All owned tests have exited normally.
 
 ## What passed
@@ -48,20 +48,33 @@ The user authorized tested nightly commits/pushes; release publication is separa
   native Alphabetic fallback and toggles order; cold order persists with a fresh
   query. Three GUI293 apps exit0/602modules/zero errors/all guards. The staging
   helper copies only link-limit failures; accepted runtime identities stay intact.
+- Table/grid multi-artist Play appends the exact four tracks and starts the first
+  new item. Successive artist detail changes preserve the held input/queue and
+  show the correct tracks. GUI293 exits0/zero errors/all guards; this does not
+  prove overlapping in-flight requests. See the
+  [selection receipt](../juxtopposed-references/native/home-music-selection-20261027/README.md).
+- The blank unfiltered shortcut table is repaired on GUI301. Native row geometry
+  fails before (14pass/1fail) and passes after (15pass/0fail). Ordinary conflict
+  Cancel, failed-save draft/retry, saved reopen, restart mapping, movable popup,
+  Reset and cold traditional Space playback pass. All four apps exit0/all guards;
+  the intentional failure run retains its one expected configuration error and
+  strict runner assertion. Three ordinary runs have zero error diagnostics.
 - Prior subtitle/Core results remain scoped to their recorded tuples:
   [late-cue preset replay](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md),
   [selection and first-frame clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
   [initial paused caption](../juxtopposed-references/native/home-cold-paused-caption-20261027/README.md)
   and [fragment seeking](../juxtopposed-references/native/home-fragmented-mp4-20261026/README.md).
-  This music-only GUI change does not supply a consolidated final-package replay.
+  These scoped GUI checks do not supply a consolidated final-package replay.
 
 ## Next action and open questions
 
-1. Continue W2 with multi-selection artist Play and rapid artist changes, then
-   customizer/shortcut workflows. S13 history and Songs fallback have scoped
-   evidence; every category and native Default-sort policy remain separate.
-   Banner buttons were activated with Space; an earlier Return
-   attempt did not enqueue, and its misleading observation filename is qualified.
+1. Continue W2 with remaining customizer tile/native consumers and current-tuple
+   journeys, preserving earlier tested layout/draft/failure work. Shortcut global
+   keys/full action coverage remains open. Traditional Simple Preferences opened
+   on the other monitor; its Hotkeys category was not reached because Computer
+   Use rejected a target outside the owner's bounds. Do not claim that table's
+   ordinary acceptance. Rapid overlapping library queries and every category's
+   native Default-sort policy remain separate from successive navigation checks.
 2. Finish remaining category journeys and
    W3 interaction/design/accessibility/Windows DPI in [BETA](BETA.md) and
    [SETTINGS](SETTINGS.md). Disc metadata is visible; independent Disc sorting

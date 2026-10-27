@@ -109,6 +109,23 @@ private slots:
         QVERIFY(!model->busy()); QVERIFY(!QFile::exists(config));
         QVERIFY(model->shortcutValues().value(QStringLiteral("key-play-pause")) != QStringLiteral("Ctrl+Alt+F12"));
     }
+    void initialShortcutRowsAreReachable()
+    {
+        openShortcuts();
+        auto *table = dialog->findChild<QTreeWidget *>(); QVERIFY(table);
+        QVERIFY(table->topLevelItemCount() > 20);
+        auto *first = table->topLevelItem(0); QVERIFY(first);
+        QTRY_VERIFY(table->isVisible());
+        QTRY_VERIFY(table->visualItemRect(first).height() > 8);
+        const auto rect = table->visualItemRect(first);
+        QVERIFY(table->viewport()->rect().intersects(rect));
+        QCOMPARE(table->itemAt(rect.center()), first);
+        QTest::mouseClick(table->viewport(), Qt::LeftButton, Qt::NoModifier, rect.center());
+        QCOMPARE(table->currentItem(), first);
+        QCOMPARE(dialog->findChild<QLineEdit *>()->text(), QString{});
+        click(QDialogButtonBox::Cancel);
+        QTRY_VERIFY(!model->busy());
+    }
     void scopedSaveAndReopen()
     {
         config_PutInt("short-jump-size", 23);
