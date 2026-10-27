@@ -477,6 +477,7 @@ FocusScope {
             visible: false
             text: root.searchPattern
             placeholderText: qsTr("Search source folder")
+            placeholderTextColor: JuxtopposedPalette.placeholderColor("#969696")
             selectByMouse: true
             Accessible.name: qsTr("Search source folder")
             font.family: inter.name
