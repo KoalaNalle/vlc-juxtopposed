@@ -81,6 +81,24 @@ bool PlayerControllerPrivate::isCurrentItemSynced()
     return m_currentItem.get() == vlc_player_GetCurrentMedia( m_player );
 }
 
+void PlayerControllerPrivate::refreshAudioTimingContextLocked()
+{
+    const auto category = vlc_player_GetAudioDelay(m_player);
+    const auto *track = vlc_player_GetSelectedTrack(m_player, AUDIO_ES);
+    const auto own = track ? vlc_player_GetEsIdDelay(m_player, track->es_id) : INT64_MAX;
+    const auto rate = vlc_player_GetRate(m_player);
+    const auto state = vlc_player_GetState(m_player);
+    if ((m_observedAudioCategoryDelay && *m_observedAudioCategoryDelay != category)
+        || (m_observedAudioTrackDelay && *m_observedAudioTrackDelay != own)
+        || (m_observedAudioTimingRate && *m_observedAudioTimingRate != rate)
+        || (m_observedAudioTimingState && *m_observedAudioTimingState != state))
+        ++m_audioTimingRevision;
+    m_observedAudioCategoryDelay = category;
+    m_observedAudioTrackDelay = own;
+    m_observedAudioTimingRate = rate;
+    m_observedAudioTimingState = state;
+}
+
 
 void PlayerControllerPrivate::UpdateName(input_item_t* media)
 {
@@ -386,6 +404,11 @@ extern "C" {
 static  void on_player_current_media_changed(vlc_player_t *, input_item_t *new_media, void *data)
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
+    ++that->m_audioTimingRevision;
+    that->m_observedAudioCategoryDelay.reset();
+    that->m_observedAudioTrackDelay.reset();
+    that->m_observedAudioTimingRate.reset();
+    that->m_observedAudioTimingState.reset();
     msg_Dbg( that->p_intf, "on_player_current_media_changed");
 
     if (!new_media)
@@ -462,6 +485,14 @@ static void on_player_state_changed(vlc_player_t *, enum vlc_player_state state,
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
     msg_Dbg( that->p_intf, "on_player_state_changed");
+
+    const bool timingChanged = that->m_observedAudioTimingState
+        && *that->m_observedAudioTimingState != state;
+    if (timingChanged)
+        ++that->m_audioTimingRevision;
+    that->m_observedAudioTimingState = state;
+    if (timingChanged)
+        that->callAsync([that] { emit that->q_func()->audioTimingContextChanged(); });
 
     that->callAsync([that,state] () {
         PlayerController* q = that->q_func();
@@ -613,9 +644,16 @@ static void on_player_capabilities_changed(vlc_player_t *, int old_caps, int new
     //FIXME other events?
 }
 
-static void on_player_rate_changed(vlc_player_t *, float, void *data)
+static void on_player_rate_changed(vlc_player_t *, float new_rate, void *data)
 {
     auto *that = static_cast<PlayerControllerPrivate *>(data);
+    const bool timingChanged = that->m_observedAudioTimingRate
+        && *that->m_observedAudioTimingRate != new_rate;
+    if (timingChanged)
+        ++that->m_audioTimingRevision;
+    that->m_observedAudioTimingRate = new_rate;
+    if (timingChanged)
+        that->callAsync([that] { emit that->q_func()->audioTimingContextChanged(); });
     that->callAsync([that] {
         float rate;
         {
@@ -667,6 +705,13 @@ static void on_player_track_list_changed(vlc_player_t *, enum vlc_player_list_ac
 static void on_player_track_selection_changed(vlc_player_t *, vlc_es_id_t * unselected, vlc_es_id_t *selected, void *data)
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
+    if (unselected != selected
+        && ((unselected && vlc_es_id_GetCat(unselected) == AUDIO_ES)
+            || (selected && vlc_es_id_GetCat(selected) == AUDIO_ES)))
+    {
+        ++that->m_audioTimingRevision;
+        that->m_observedAudioTrackDelay.reset();
+    }
     msg_Dbg( that->p_intf, "on_player_track_selection_changed");
 
     SharedEsId unselectedPtr = SharedEsId(unselected);
@@ -682,6 +727,9 @@ static void on_player_track_selection_changed(vlc_player_t *, vlc_es_id_t * unse
         if ((unselectedPtr && vlc_es_id_GetCat(unselectedPtr.get()) == SPU_ES)
          || (selectedPtr && vlc_es_id_GetCat(selectedPtr.get()) == SPU_ES))
             emit that->q_func()->subtitleSelectionChanged();
+        if ((unselectedPtr && vlc_es_id_GetCat(unselectedPtr.get()) == AUDIO_ES)
+         || (selectedPtr && vlc_es_id_GetCat(selectedPtr.get()) == AUDIO_ES))
+            emit that->q_func()->audioSelectionChanged();
     });
 }
 
@@ -836,6 +884,12 @@ static void on_player_category_delay_changed(vlc_player_t *,
 {
     PlayerControllerPrivate* that = static_cast<PlayerControllerPrivate*>(data);
     msg_Dbg( that->p_intf, "on_player_category_delay_changed: %d", cat );
+    if (cat == AUDIO_ES)
+    {
+        if (that->m_observedAudioCategoryDelay && *that->m_observedAudioCategoryDelay != new_delay)
+            ++that->m_audioTimingRevision;
+        that->m_observedAudioCategoryDelay = new_delay;
+    }
     that->callAsync([that,cat,new_delay] (){
         switch (cat)
         {
@@ -853,14 +907,23 @@ static void on_player_category_delay_changed(vlc_player_t *,
     });
 }
 
-static void on_player_track_delay_changed(vlc_player_t *,
-                                vlc_es_id_t *es_id, vlc_tick_t,
+static void on_player_track_delay_changed(vlc_player_t *player,
+                                vlc_es_id_t *es_id, vlc_tick_t new_delay,
                                 void *data)
 {
-    if (vlc_es_id_GetCat(es_id) != SPU_ES)
-        return;
     auto *that = static_cast<PlayerControllerPrivate *>(data);
-    that->callAsync([that] { that->RefreshSubtitleDelays(); });
+    if (vlc_es_id_GetCat(es_id) == SPU_ES)
+        that->callAsync([that] { that->RefreshSubtitleDelays(); });
+    else if (vlc_es_id_GetCat(es_id) == AUDIO_ES)
+    {
+        const auto *selected = vlc_player_GetSelectedTrack(player, AUDIO_ES);
+        if (!selected || selected->es_id != es_id)
+            return;
+        if (that->m_observedAudioTrackDelay && *that->m_observedAudioTrackDelay != new_delay)
+            ++that->m_audioTimingRevision;
+        that->m_observedAudioTrackDelay = new_delay;
+        that->callAsync([that] { emit that->q_func()->audioTimingContextChanged(); });
+    }
 }
 
 static void on_player_associated_subs_fps_changed(vlc_player_t *, float subs_fps, void *data)
@@ -1581,6 +1644,55 @@ void PlayerController::setAudioDelay(VLCDuration delay)
         return;
     vlc_player_SetAudioDelay( d->m_player, delay.toVLCTick(), VLC_PLAYER_WHENCE_RELATIVE );
     // The native callback publishes the final value after releasing the lock.
+}
+
+QString PlayerController::beginAudioTiming()
+{
+    Q_D(PlayerController);
+    vlc_player_locker lock{d->m_player};
+    if (!d->m_currentItem || !d->isCurrentItemSynced())
+        return {};
+    d->refreshAudioTimingContextLocked();
+    return QString::number(d->m_audioTimingRevision);
+}
+
+bool PlayerController::isAudioTimingCurrent(const QString &token)
+{
+    Q_D(PlayerController);
+    vlc_player_locker lock{d->m_player};
+    bool ok = false;
+    const auto revision = token.toULongLong(&ok);
+    if (!ok || !d->m_currentItem || !d->isCurrentItemSynced())
+        return false;
+    d->refreshAudioTimingContextLocked();
+    return revision == d->m_audioTimingRevision;
+}
+
+bool PlayerController::addAudioTimingIfCurrent(VLCDuration wallDelay, const QString &token)
+{
+    Q_D(PlayerController);
+    vlc_player_locker lock{d->m_player};
+    bool ok = false;
+    const auto revision = token.toULongLong(&ok);
+    if (!ok || !wallDelay.valid() || !d->m_currentItem || !d->isCurrentItemSynced())
+        return false;
+    d->refreshAudioTimingContextLocked();
+    if (revision != d->m_audioTimingRevision)
+        return false;
+    // The GUI rate may lag the native event; scale under the same lock used
+    // for the revision check and the resulting category update.
+    const long double scaled = static_cast<long double>(wallDelay.toVLCTick())
+        * static_cast<long double>(vlc_player_GetRate(d->m_player));
+    if (!std::isfinite(scaled) || scaled >= static_cast<long double>(INT64_MAX)
+        || scaled <= static_cast<long double>(INT64_MIN))
+        return false;
+    const auto current = vlc_player_GetAudioDelay(d->m_player);
+    const auto delta = static_cast<vlc_tick_t>(scaled);
+    if ((delta > 0 && current > INT64_MAX - delta)
+        || (delta < 0 && current < INT64_MIN - delta))
+        return false;
+    return vlc_player_SetCategoryDelay(d->m_player, AUDIO_ES, delta,
+                                       VLC_PLAYER_WHENCE_RELATIVE) == VLC_SUCCESS;
 }
 
 void PlayerController::setSubtitleDelay(VLCDuration delay)

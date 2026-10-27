@@ -73,6 +73,8 @@ public:
     int interpolateTime(vlc_tick_t system_now);
     void resetTimer(bool hasInput);
     bool isCurrentItemSynced();
+    // All audio timing revision state is protected by the native player lock.
+    void refreshAudioTimingContextLocked();
 
     // Lazily reads m_syltRaw (the raw sylt-data buffer captured during
     // UpdateMeta) into a list of TimedText entries. The cache is
@@ -143,6 +145,11 @@ public:
     ::vlc::vlc_shared_data_ptr<vlc_es_id_t, &vlc_es_id_Hold, &vlc_es_id_Release> m_secondarySpuEsId;
 
     VLCDuration  m_audioDelay;
+    quint64 m_audioTimingRevision = 0;
+    std::optional<vlc_tick_t> m_observedAudioCategoryDelay;
+    std::optional<vlc_tick_t> m_observedAudioTrackDelay;
+    std::optional<float> m_observedAudioTimingRate;
+    std::optional<enum vlc_player_state> m_observedAudioTimingState;
     VLCDuration  m_subtitleDelay;
     // Invalid means inherit category delay; never store INT64_MAX as a duration.
     VLCDuration  m_secondarySubtitleDelay;

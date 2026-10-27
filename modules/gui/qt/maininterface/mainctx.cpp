@@ -1163,6 +1163,11 @@ void MainCtx::toggleInterfaceFullScreen()
     emit setInterfaceFullScreen( m_windowVisibility != QWindow::FullScreen );
 }
 
+bool MainCtx::interfaceFullscreenHeld() const
+{
+    return vlc::qt::isWindowFullscreenHeld(intfMainWindow(), WindowStateHolder::INTERFACE);
+}
+
 void MainCtx::emitBoss()
 {
     emit askBoss();

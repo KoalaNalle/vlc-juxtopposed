@@ -23,6 +23,11 @@ using FullscreenScreenStatePtr = QSharedPointer<FullscreenScreenState>;
 Q_DECLARE_METATYPE(vlc::qt::FullscreenScreenStatePtr)
 
 namespace vlc::qt {
+inline bool isWindowFullscreenHeld(const QWindow *window, unsigned source)
+{
+    return window && (window->property("__windowFullScreen").toUInt() & source) != 0;
+}
+
 inline bool holdWindowFullscreen(QWindow *window, unsigned source, bool hold,
                                  int screenIndex = -1)
 {

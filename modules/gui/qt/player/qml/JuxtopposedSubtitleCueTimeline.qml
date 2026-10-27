@@ -11,7 +11,12 @@ FocusScope {
     readonly property bool subtitleTimelineKeyScope: true
     property var controller
     property int focusedCueIndex: -1
+    readonly property url focusedCueSource: controller ? controller.source : ""
+    readonly property string focusedCueTrackId: controller ? controller.trackId : ""
     onControllerChanged: focusedCueIndex = -1
+    onFocusedCueSourceChanged: focusedCueIndex = -1
+    onFocusedCueTrackIdChanged: focusedCueIndex = -1
+    onActiveFocusChanged: if (!activeFocus) focusedCueIndex = -1
     property real uiScale: 1
     property url assetBase: "qrc:/juxtopposed/"
     property url previousRangeIcon: assetBase + "timeline-chevron-left.svg"
@@ -310,6 +315,9 @@ FocusScope {
         height: 24 * root.uiScale
         padding: 0
         activeFocusOnTab: true
+        onActiveFocusChanged: if (activeFocus) root.focusedCueIndex = -1
+        Keys.onReturnPressed: event => { if (enabled) clicked(); event.accepted = true }
+        Keys.onEnterPressed: event => { if (enabled) clicked(); event.accepted = true }
         Accessible.name: description
         C.ToolTip.visible: hovered || visualFocus
         C.ToolTip.text: description
@@ -343,6 +351,9 @@ FocusScope {
         height: 24 * root.uiScale
         visible: root.showStatus
         enabled: !!root.controller && !root.controller.loading && root.controller.source.toString().length > 0
+        onActiveFocusChanged: if (activeFocus) root.focusedCueIndex = -1
+        Keys.onReturnPressed: event => { if (enabled) clicked(); event.accepted = true }
+        Keys.onEnterPressed: event => { if (enabled) clicked(); event.accepted = true }
         text: qsTr("Reload")
         font.family: inter.name
         font.pixelSize: 11 * root.uiScale

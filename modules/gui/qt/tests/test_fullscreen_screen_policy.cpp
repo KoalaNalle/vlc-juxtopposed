@@ -39,6 +39,32 @@ private slots:
         QCOMPARE(window.screen(), anchor());
         QCOMPARE(window.geometry(), initial);
     }
+    void releasingVideoFirstPreservesInterfaceHold() {
+        QVERIFY(anchor());
+        QVERIFY(!vlc::qt::isWindowFullscreenHeld(nullptr, Interface));
+        QWindow window; window.setScreen(anchor());
+        const auto initial = QRect(anchor()->availableGeometry().topLeft() + QPoint(25,25), QSize(320,240));
+        window.setGeometry(initial);
+        QVERIFY(vlc::qt::holdWindowFullscreen(&window, Interface, true));
+        QVERIFY(vlc::qt::isWindowFullscreenHeld(&window, Interface));
+        QVERIFY(!vlc::qt::isWindowFullscreenHeld(&window, Video));
+        QVERIFY(vlc::qt::holdWindowFullscreen(&window, Video, true));
+        QVERIFY(vlc::qt::isWindowFullscreenHeld(&window, Video));
+        QCOMPARE(window.property("__windowFullScreen").toUInt(), Interface | Video);
+        // The player title strip now releases the VIDEO owner first. That must
+        // not clear an independently acquired interface/F11 fullscreen hold.
+        QVERIFY(vlc::qt::holdWindowFullscreen(&window, Video, false));
+        QVERIFY(vlc::qt::isWindowFullscreenHeld(&window, Interface));
+        QVERIFY(!vlc::qt::isWindowFullscreenHeld(&window, Video));
+        QCOMPARE(window.property("__windowFullScreen").toUInt(), Interface);
+        QVERIFY(window.windowStates() & Qt::WindowFullScreen);
+        QVERIFY(!vlc::qt::holdWindowFullscreen(&window, Interface, false));
+        QVERIFY(!vlc::qt::isWindowFullscreenHeld(&window, Interface));
+        QCOMPARE(window.property("__windowFullScreen").toUInt(), 0u);
+        QVERIFY(!(window.windowStates() & Qt::WindowFullScreen));
+        QCOMPARE(window.screen(), anchor());
+        QCOMPARE(window.geometry(), initial);
+    }
     void sharedTargetAndFinalReleaseRestore() {
         const auto screens = QGuiApplication::screens();
         if (screens.size() < 2) QSKIP("Two genuine connected QScreens are required");

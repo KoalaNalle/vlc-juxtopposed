@@ -864,7 +864,7 @@ private slots:
                                          : QStringLiteral("TracksPageSubtitle.qml")));
         QVERIFY(source.open(QIODevice::ReadOnly));
         const QString text = QString::fromUtf8(source.readAll());
-        const QString method = audio ? QStringLiteral("addAudioDelay")
+        const QString method = audio ? QStringLiteral("addAudioTimingIfCurrent")
             : secondary ? QStringLiteral("addSecondarySubtitleDelay") : QStringLiteral("addSubtitleDelay");
         const QRegularExpression call(QStringLiteral("Player\\.%1\\([^\\r\\n]+").arg(method));
         const auto match = call.match(text);
@@ -887,9 +887,16 @@ private slots:
         engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
         for (const auto *id : {"delayEstimator", "delayEstimatorPrimary", "delayEstimatorSecondary"})
             engine.rootContext()->setContextProperty(QString::fromLatin1(id), &estimator);
+        auto handler = match.captured();
+        if (audio) {
+            const auto token = m_controller->beginAudioTiming();
+            QVERIFY(!token.isEmpty());
+            engine.rootContext()->setContextProperty(QStringLiteral("testToken"), token);
+            handler.replace(QStringLiteral(", token)"), QStringLiteral(", testToken)"));
+        }
         QQmlComponent component(&engine);
         component.setData(QByteArrayLiteral("import QtQml\nQtObject { property QtObject hook: Connections { target: delayEstimator; function onDelayChanged() { ")
-            + match.captured().toUtf8() + QByteArrayLiteral(" } } }"),
+            + handler.toUtf8() + QByteArrayLiteral(" } } }"),
             QUrl(QStringLiteral("file:///timing-rate-native.qml")));
         QScopedPointer<QObject> root(component.create());
         QVERIFY2(root, qPrintable(component.errorString()));
@@ -929,12 +936,17 @@ private slots:
         for (const auto *change : {"native-all-unselect", "native-secondary-unselect"})
             QTest::newRow(qPrintable(QStringLiteral("subtitle-")+QString::fromLatin1(change)))
                 << true << QString::fromLatin1(change);
+        for (const auto *change : {"native-audio-unselect", "native-audio-select"})
+            QTest::newRow(qPrintable(QStringLiteral("audio-")+QString::fromLatin1(change)))
+                << false << QString::fromLatin1(change);
     }
     void timingContextCancellation()
     {
         QFETCH(bool, subtitle); QFETCH(QString, change);
         const bool roleChange=change==QStringLiteral("native-all-unselect")
                            || change==QStringLiteral("native-secondary-unselect");
+        const bool audioSelectionChange=change==QStringLiteral("native-audio-unselect")
+                                     || change==QStringLiteral("native-audio-select");
         const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
         QVERIFY2(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty(),
                  "Supply frozen production synchronization QML pages");
@@ -959,6 +971,27 @@ private slots:
             ? PlayerController::PLAYING_STATE_PLAYING : PlayerController::PLAYING_STATE_PAUSED);
         m_controller->setTime(VLCTime(VLC_TICK_FROM_SEC(3)));
         QTRY_VERIFY(qAbs(m_controller->getTime().toVLCTick()-VLC_TICK_FROM_SEC(3)) <= VLC_TICK_FROM_MS(100));
+        HeldEs audioId;
+        auto selectedAudio = [this] {
+            vlc_player_locker lock{m_player};
+            const auto *track = vlc_player_GetSelectedTrack(m_player, AUDIO_ES);
+            return track ? track->es_id : nullptr;
+        };
+        if (audioSelectionChange) {
+            {
+                vlc_player_locker lock{m_player};
+                QVERIFY(vlc_player_GetTrackCount(m_player, AUDIO_ES) > 0);
+                audioId.reset(vlc_player_GetTrackAt(m_player, AUDIO_ES, 0)->es_id);
+                vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
+            }
+            QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+            if (change == QStringLiteral("native-audio-select")) {
+                vlc_player_locker lock{m_player};
+                vlc_player_UnselectEsId(m_player, audioId.get());
+            }
+            if (change == QStringLiteral("native-audio-select"))
+                QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == nullptr, 5000);
+        }
         QTest::qWait(100); // drain the setup seek before marking a new pair
         DelayEstimator audio, primary, secondary;
         QSignalSpy audioChanges(&audio, &DelayEstimator::delayChanged);
@@ -970,7 +1003,9 @@ private slots:
         engine.rootContext()->setContextProperty(QStringLiteral("delayEstimatorPrimary"), &primary);
         engine.rootContext()->setContextProperty(QStringLiteral("delayEstimatorSecondary"), &secondary);
         QQmlComponent component(&engine);
-        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property QtObject hook: ")
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; ")
+            +(subtitle ? QByteArray() : QByteArrayLiteral("property string audioTimingToken: \"\"; "))
+            + QByteArrayLiteral("property QtObject hook: ")
             +connections+'\n'+helpers+'\n'+'}', QUrl(QStringLiteral("file:///timing-context-native.qml")));
         QScopedPointer<QObject> root(component.create());
         QVERIFY2(root, qPrintable(component.errorString()));
@@ -978,17 +1013,28 @@ private slots:
             QCOMPARE(QThread::currentThread(), m_controller->thread());
             (void)m_controller->getInput(); // rate observers may re-lock too
         }, Qt::DirectConnection);
+        connect(m_controller.get(), &PlayerController::audioSelectionChanged, root.data(), [this] {
+            QCOMPARE(QThread::currentThread(), m_controller->thread());
+            (void)m_controller->getInput(); // selection notification must follow the native unlock
+        }, Qt::DirectConnection);
         auto marked=[&] { return subtitle ? primary.isHeardTimeMarked() || secondary.isSpottedTimeMarked()
                                           : audio.isHeardTimeMarked(); };
         if (subtitle) { primary.markHeardTime(); secondary.markSpottedTime(); }
-        else audio.markHeardTime();
+        else {
+            QVariant prepared;
+            QVERIFY(QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, prepared)));
+            QVERIFY(prepared.toBool());
+            audio.markHeardTime();
+        }
         QVERIFY(marked());
         QTest::qWait(50);
         QVERIFY(marked()); // no delayed setup event may cancel this pair
         const auto input=m_controller->getInput();
         const auto selected=roles(); const auto savedCategory=category();
         const auto savedOwn=own(m_second.get());
+        const auto savedAudioDelay=m_controller->getAudioDelay().toVLCTick();
         QSignalSpy seeks(m_controller.get(), &PlayerController::seekStarted);
+        QSignalSpy audioSelections(m_controller.get(), &PlayerController::audioSelectionChanged);
         if (change==QStringLiteral("native-all-unselect")) {
             vlc_player_locker lock{m_player};
             vlc_player_UnselectTrackCategory(m_player, SPU_ES);
@@ -996,6 +1042,13 @@ private slots:
         else if (change==QStringLiteral("native-secondary-unselect")) {
             vlc_player_locker lock{m_player};
             vlc_player_UnselectEsId(m_player, selected.second);
+        }
+        else if (audioSelectionChange) {
+            vlc_player_locker lock{m_player};
+            if (change == QStringLiteral("native-audio-unselect"))
+                vlc_player_UnselectEsId(m_player, audioId.get());
+            else
+                vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
         }
         else if (change==QStringLiteral("qt-seek")) m_controller->jumpToPos(.25);
         else if (change==QStringLiteral("qt-rate")) m_controller->setRate(1.5f);
@@ -1013,6 +1066,11 @@ private slots:
             QTRY_VERIFY(qAbs(m_controller->getTime().toVLCTick()-requested) <= VLC_TICK_FROM_MS(100));
         }
         QVERIFY(audioChanges.isEmpty() && primaryChanges.isEmpty() && secondaryChanges.isEmpty());
+        if (audioSelectionChange) {
+            QTRY_VERIFY(!audioSelections.isEmpty());
+            QTRY_VERIFY(selectedAudio() == (change == QStringLiteral("native-audio-select") ? audioId.get() : nullptr));
+            QCOMPARE(m_controller->getAudioDelay().toVLCTick(), savedAudioDelay);
+        }
         QCOMPARE(m_controller->getInput(), input);
         if (change==QStringLiteral("native-all-unselect")) {
             QTRY_VERIFY(roles()==qMakePair(static_cast<vlc_es_id_t *>(nullptr), static_cast<vlc_es_id_t *>(nullptr)));
@@ -1023,7 +1081,7 @@ private slots:
             QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
         }
         else QCOMPARE(roles(), selected);
-        if (roleChange) QVERIFY(seeks.isEmpty()); // Selection alone cancels the marks.
+        if (roleChange || audioSelectionChange) QVERIFY(seeks.isEmpty()); // Selection alone cancels the marks.
         QCOMPARE(category(), savedCategory);
         QCOMPARE(own(m_second.get()), savedOwn);
         // The same hook/estimator objects survive the native event. Teardown
@@ -1036,6 +1094,266 @@ private slots:
             QTRY_VERIFY(roles()==selected);
             QTRY_VERIFY(m_controller->hasSecondarySubtitle());
         }
+        if (audioSelectionChange && change == QStringLiteral("native-audio-unselect")) {
+            { vlc_player_locker lock{m_player}; vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE); }
+            QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+        }
+    }
+    void audioTimingRevisionGuardsNativeChanges()
+    {
+        // Execute the production cancellation hook with a native NORMAL-lock
+        // player. The first mark and the native setter deliberately run before
+        // any queued GUI notification is delivered.
+        const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
+        QVERIFY(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty());
+        QFile source(pages.filePath(QStringLiteral("TracksPageAudio.qml")));
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        const auto text = source.readAll();
+        const auto start = text.indexOf("    Connections {");
+        const auto close = text.indexOf("\n    }", start);
+        const auto end = text.indexOf("    // Functions", close);
+        QVERIFY(start >= 0 && close > start && end > close);
+        const auto connections = text.mid(start, close + 6 - start);
+        const auto helpers = text.mid(close + 6, end - close - 6);
+        HeldEs audioId;
+        {
+            vlc_player_locker lock{m_player};
+            QVERIFY(vlc_player_GetTrackCount(m_player, AUDIO_ES) > 0);
+            audioId.reset(vlc_player_GetTrackAt(m_player, AUDIO_ES, 0)->es_id);
+            vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
+        }
+        auto selectedAudio = [this] {
+            vlc_player_locker lock{m_player};
+            const auto *track = vlc_player_GetSelectedTrack(m_player, AUDIO_ES);
+            return track ? track->es_id : nullptr;
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+        auto audioCategory = [this] {
+            vlc_player_locker lock{m_player};
+            return vlc_player_GetAudioDelay(m_player);
+        };
+        auto setAudioCategory = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player};
+            return vlc_player_SetCategoryDelay(m_player, AUDIO_ES, value, VLC_PLAYER_WHENCE_ABSOLUTE);
+        };
+        const auto savedCategory = audioCategory();
+        const auto savedOwn = own(audioId.get());
+        m_controller->setRate(1.f);
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QCOMPARE(setOwn(audioId.get(), INT64_MAX), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS);
+        QTest::qWait(100); // drain setup events before the first observation
+
+        DelayEstimator estimator;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
+        engine.rootContext()->setContextProperty(QStringLiteral("delayEstimator"), &estimator);
+        QQmlComponent component(&engine);
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property string audioTimingToken: \"\"; property QtObject hook: ")
+            + connections + '\n' + helpers + '\n' + '}', QUrl(QStringLiteral("file:///audio-revision-native.qml")));
+        QScopedPointer<QObject> root(component.create());
+        QVERIFY2(root, qPrintable(component.errorString()));
+        const auto audioObserver = connect(m_controller.get(), &PlayerController::audioDelayChanged,
+            this, &TestPlayerSubtitleDelay::observeAfterUnlock, Qt::DirectConnection);
+        const auto ownObserver = connect(m_controller.get(), &PlayerController::audioTimingContextChanged,
+            this, [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        QSignalSpy changes(m_controller.get(), &PlayerController::audioDelayChanged);
+        auto prepare = [&] {
+            QVariant result;
+            return QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, result))
+                && result.toBool();
+        };
+        QVERIFY(prepare());
+        estimator.markHeardTime();
+        const auto first = root->property("audioTimingToken").toString();
+        QVERIFY(!first.isEmpty());
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS); // no-op emits a native event
+        QVERIFY(m_controller->isAudioTimingCurrent(first));
+        QTRY_VERIFY(!changes.isEmpty());
+        QVERIFY(estimator.isHeardTimeMarked());
+
+        // Returning to the old numeric value must not revive the old mark.
+        QCOMPARE(setAudioCategory(173000), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS);
+        QVERIFY(!m_controller->isAudioTimingCurrent(first));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(50000), first));
+        QCOMPARE(audioCategory(), vlc_tick_t(123000));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        // The estimator's own previous write queues a notification. A new
+        // mark acquired before its delivery must survive that old event.
+        const auto beforeWrite = m_controller->beginAudioTiming();
+        const auto previousChanges = changes.size();
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(50000), beforeWrite));
+        QVERIFY(prepare());
+        estimator.markHeardTime();
+        const auto fresh = root->property("audioTimingToken").toString();
+        QVERIFY(m_controller->isAudioTimingCurrent(fresh));
+        QTRY_VERIFY(changes.size() > previousChanges);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(fresh));
+
+        // A selected track override invalidates a mark, while its same-value
+        // notification does not; guarded category changes preserve the override.
+        QCOMPARE(setOwn(audioId.get(), 400000), VLC_SUCCESS);
+        QVERIFY(!m_controller->isAudioTimingCurrent(fresh));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+        const auto overrideToken = m_controller->beginAudioTiming();
+        QCOMPARE(setOwn(audioId.get(), 400000), VLC_SUCCESS);
+        QVERIFY(m_controller->isAudioTimingCurrent(overrideToken));
+        const auto previousCategory = audioCategory();
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(25000), overrideToken));
+        QCOMPARE(audioCategory(), previousCategory + vlc_tick_t(25000));
+        QCOMPARE(own(audioId.get()), vlc_tick_t(400000));
+        QTest::qWait(100); // both direct observers re-lock after queued delivery
+        disconnect(audioObserver);
+        disconnect(ownObserver);
+        QCOMPARE(setOwn(audioId.get(), savedOwn), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(savedCategory), VLC_SUCCESS);
+    }
+    void audioTimingRevisionGuardsRateAndState()
+    {
+        const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
+        QVERIFY(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty());
+        QFile source(pages.filePath(QStringLiteral("TracksPageAudio.qml")));
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        const auto text = source.readAll();
+        const auto start = text.indexOf("    Connections {");
+        const auto close = text.indexOf("\n    }", start);
+        const auto end = text.indexOf("    // Functions", close);
+        QVERIFY(start >= 0 && close > start && end > close);
+        const auto connections = text.mid(start, close + 6 - start);
+        const auto helpers = text.mid(close + 6, end - close - 6);
+
+        auto requestRate = [this](float rate) {
+            vlc_player_locker lock{m_player};
+            vlc_player_ChangeRate(m_player, rate);
+        };
+        auto requestPause = [this](bool paused) {
+            vlc_player_locker lock{m_player};
+            if (paused) vlc_player_Pause(m_player);
+            else vlc_player_Resume(m_player);
+        };
+        // Do not pump the Qt event queue here: wait for actual native input
+        // transitions while their GUI notifications deliberately remain queued.
+        auto waitRate = [this](float expected) {
+            QElapsedTimer timer; timer.start();
+            while (timer.elapsed() < 5000) {
+                { vlc_player_locker lock{m_player};
+                  if (qFuzzyCompare(vlc_player_GetRate(m_player), expected)) return true; }
+                QThread::msleep(10);
+            }
+            return false;
+        };
+        auto waitState = [this](vlc_player_state expected) {
+            QElapsedTimer timer; timer.start();
+            while (timer.elapsed() < 5000) {
+                { vlc_player_locker lock{m_player};
+                  if (vlc_player_GetState(m_player) == expected) return true; }
+                QThread::msleep(10);
+            }
+            return false;
+        };
+        requestRate(1.f);
+        requestPause(true);
+        QVERIFY(waitRate(1.f));
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
+        QTest::qWait(100); // setup events are not part of the experiments
+
+        DelayEstimator estimator;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
+        engine.rootContext()->setContextProperty(QStringLiteral("delayEstimator"), &estimator);
+        QQmlComponent component(&engine);
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property string audioTimingToken: \"\"; property QtObject hook: ")
+            + connections + '\n' + helpers + '\n' + '}', QUrl(QStringLiteral("file:///audio-rate-state-native.qml")));
+        QScopedPointer<QObject> root(component.create());
+        QVERIFY2(root, qPrintable(component.errorString()));
+        const auto rateObserver = connect(m_controller.get(), &PlayerController::rateChanged,
+            this, [this](float) { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        const auto stateObserver = connect(m_controller.get(), &PlayerController::playingStateChanged,
+            this, [this](PlayerController::PlayingState) { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        const auto contextObserver = connect(m_controller.get(), &PlayerController::audioTimingContextChanged,
+            this, [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        QSignalSpy contexts(m_controller.get(), &PlayerController::audioTimingContextChanged);
+        auto mark = [&] {
+            QVariant result;
+            if (!QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, result)) || !result.toBool())
+                return false;
+            estimator.markHeardTime();
+            return estimator.isHeardTimeMarked();
+        };
+        auto token = [&] { return root->property("audioTimingToken").toString(); };
+        auto nativeDelay = [this] {
+            vlc_player_locker lock{m_player};
+            return vlc_player_GetAudioDelay(m_player);
+        };
+        const auto savedDelay = nativeDelay();
+
+        QVERIFY(mark());
+        const auto originalRateToken = token();
+        requestRate(1.f); // same value may still emit a native callback
+        QTest::qWait(100);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(originalRateToken));
+        requestRate(1.5f);
+        QVERIFY(waitRate(1.5f));
+        requestRate(1.f);
+        QVERIFY(waitRate(1.f));
+        QVERIFY(!m_controller->isAudioTimingCurrent(originalRateToken));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(100000), originalRateToken));
+        QCOMPARE(nativeDelay(), savedDelay);
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        requestRate(1.5f);
+        QVERIFY(waitRate(1.5f));
+        const auto previousContexts = contexts.size();
+        QVERIFY(mark()); // newer than the queued rate notification
+        const auto freshRateToken = token();
+        QTRY_VERIFY(contexts.size() > previousContexts);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(freshRateToken));
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(100000), freshRateToken));
+        QCOMPARE(nativeDelay(), savedDelay + vlc_tick_t(150000)); // native 1.5x rate
+        QVERIFY(QMetaObject::invokeMethod(root.data(), "cancelAudioTiming"));
+        requestRate(1.f);
+        QVERIFY(waitRate(1.f));
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QTest::qWait(100);
+
+        QVERIFY(mark());
+        const auto originalStateToken = token();
+        requestPause(true); // already paused: no context change
+        QTest::qWait(100);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(originalStateToken));
+        requestPause(false);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PLAYING));
+        requestPause(true);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        QVERIFY(!m_controller->isAudioTimingCurrent(originalStateToken));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(100000), originalStateToken));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        requestPause(false);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PLAYING));
+        const auto previousStateContexts = contexts.size();
+        QVERIFY(mark()); // newer than the queued resume notification
+        const auto freshStateToken = token();
+        QTRY_VERIFY(contexts.size() > previousStateContexts);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(freshStateToken));
+        QVERIFY(QMetaObject::invokeMethod(root.data(), "cancelAudioTiming"));
+        requestPause(true);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_SetCategoryDelay(m_player, AUDIO_ES, savedDelay, VLC_PLAYER_WHENCE_ABSOLUTE), VLC_SUCCESS); }
+        QTest::qWait(100);
+        disconnect(rateObserver);
+        disconnect(stateObserver);
+        disconnect(contextObserver);
     }
     void incrementalSelectionKeepsSecondaryTimingReachable()
     {

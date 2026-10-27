@@ -35,6 +35,8 @@ class Controller(QObject):
         self._available, self._loading, self._dense = True, False, False
         self._position, self._length, self._revision = 5000000, 18000000, 1
         self._delay = 1500000
+        self._source = QUrl('file:///supplied-cues.srt')
+        self._track_id = 'supplied-track-a'
         self._status = 'Source cue snapshot with the current subtitle delay.'
         self.seeks, self.reloads, self.shifts = [], 0, []
         self.queued_seek_completion = False
@@ -49,7 +51,8 @@ class Controller(QObject):
     revision = Property(int, lambda s: s._revision, notify=changed)
     delayTicks = Property('qlonglong', lambda s: s._delay, notify=changed)
     status = Property(str, lambda s: s._status, notify=changed)
-    source = Property(QUrl, lambda s: QUrl('file:///supplied-cues.srt'), notify=changed)
+    source = Property(QUrl, lambda s: s._source, notify=changed)
+    trackId = Property(str, lambda s: s._track_id, notify=changed)
     @Slot('qlonglong', 'qlonglong', result='QVariantMap')
     def view(self, start, end):
         return {'segments': [] if self._dense else [
@@ -179,6 +182,97 @@ assert len(controller.seeks) == seeks_after_follow + 1
 QTest.keyClick(view, Qt.Key_Space)
 QTest.qWait(30)
 assert len(controller.seeks) == seeks_after_follow + 2
+# A cue can be recreated while the user has deliberately moved focus to a
+# timeline control.  A later native refresh must not steal that focus back.
+zoom_button = item('subtitleZoomIn')
+zoom_button.forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert view.activeFocusItem() == zoom_button
+controller._revision += 1
+controller.changed.emit()
+QTest.qWait(30)
+assert view.activeFocusItem() == zoom_button, 'Cue refresh stole focus from the timeline zoom control'
+span_before_return = root.property('windowSpanTicks')
+start_before_return = root.property('windowStartTicks')
+QTest.keyClick(view, Qt.Key_Return)
+QTest.qWait(20)
+assert root.property('windowSpanTicks') == span_before_return / 2, 'Return did not activate Zoom In'
+assert view.activeFocusItem() == zoom_button
+QTest.keyClick(view, Qt.Key_Enter)
+QTest.qWait(20)
+assert root.property('windowSpanTicks') == span_before_return / 4
+QTest.keyClick(view, Qt.Key_Space)
+QTest.qWait(20)
+assert root.property('windowSpanTicks') == span_before_return / 8
+assert view.activeFocusItem() == zoom_button
+root.setProperty('windowSpanTicks', span_before_return)
+root.setProperty('manualWindowStartTicks', start_before_return)
+QTest.qWait(20)
+# Reload itself changes the cue revision; it must stay keyboard-focused too.
+item('subtitleCue0').forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+reload_button = item('subtitleCueReload')
+reload_button.forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert view.activeFocusItem() == reload_button
+reloads_before_key = controller.reloads
+QTest.keyClick(view, Qt.Key_Enter)
+QTest.qWait(30)
+assert controller.reloads == reloads_before_key + 1
+assert view.activeFocusItem() == reload_button, 'Reload moved focus back to a refreshed cue'
+QTest.keyClick(view, Qt.Key_Return)
+QTest.qWait(30)
+assert controller.reloads == reloads_before_key + 2
+assert view.activeFocusItem() == reload_button
+QTest.keyClick(view, Qt.Key_Space)
+QTest.qWait(30)
+assert controller.reloads == reloads_before_key + 3
+assert view.activeFocusItem() == reload_button
+# Reusing cue index zero in a different subtitle file does not make it the
+# previously focused cue: don't transfer an old source's selection to it.
+item('subtitleCue0').forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert root.property('focusedCueIndex') == 0
+old_source = controller._source
+controller._source = QUrl('file:///another-supplied-cues.srt')
+controller._revision += 1
+controller.changed.emit()
+QTest.qWait(30)
+assert root.property('focusedCueIndex') == -1, 'Focus from the old subtitle source was transferred to the new file'
+assert view.activeFocusItem() != item('subtitleCue0'), 'New source cue retained old keyboard focus'
+controller._source = old_source
+controller.changed.emit()
+QTest.qWait(20)
+# The same file can be associated with a different selected track.  Its index
+# alone is not a safe identity for restoring focus across that selection.
+item('subtitleCue0').forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert root.property('focusedCueIndex') == 0
+controller._track_id = 'supplied-track-b'
+controller._revision += 1
+controller.changed.emit()
+QTest.qWait(30)
+assert root.property('focusedCueIndex') == -1, 'Focus was transferred across different selected tracks'
+assert view.activeFocusItem() != item('subtitleCue0'), 'New track cue retained old keyboard focus'
+# Leaving the entire timeline invalidates the remembered cue.  A later refresh
+# must not revive a cue selected before focus moved to another surface.
+item('subtitleCue0').forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert root.property('focusedCueIndex') == 0
+outside = QQuickItem(view.contentItem())
+outside.setObjectName('outsideTimeline')
+outside.forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
+assert view.activeFocusItem() == outside
+assert root.property('focusedCueIndex') == -1
+controller._revision += 1
+controller.changed.emit()
+QTest.qWait(30)
+assert view.activeFocusItem() == outside
+outside.setParentItem(None)
+outside.deleteLater()
+zoom_button.forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
 closed = []
 root.closeRequested.connect(lambda: closed.append(True))
 QTest.keyClick(view, Qt.Key_Escape)

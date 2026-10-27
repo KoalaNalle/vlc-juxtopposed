@@ -9,7 +9,7 @@ from PySide6.QtQml import QmlAttached,qmlRegisterType,QQmlExpression,qmlContext
 from PySide6.QtQuick import QQuickView
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtTest import QSignalSpy,QTest
-parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--qml-file',type=Path);args=parser.parse_args();args.output_dir.mkdir(exist_ok=False)
+parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--output-dir',type=Path,required=True);parser.add_argument('--qml-file',type=Path);parser.add_argument('--shortcut-qml',type=Path);args=parser.parse_args();args.output_dir.mkdir(exist_ok=False)
 r=Path(__file__).resolve().parents[4];messages=[]
 def message_handler(kind,ctx,message):
  messages.append(message)
@@ -76,12 +76,34 @@ QtObject {
  property int maximizeCalls: 0
  property int closeCalls: 0
  property int fullscreenCalls: 0
+ property bool hasEmbededVideo: false
+ property bool juxtopposedControls: true
+ property bool playerView: false
+ property bool useGlobalShortcuts: true
+ property bool mediaLibraryAvailable: false
+ property bool interfaceFullscreen: false
+ property bool videoFullscreen: false
  property QtObject intfMainWindow: QtObject { property int visibility: Window.Windowed; property int width: 1920; property int height: 1080 }
  property QtObject minimumButton: QtObject { property int type: 0; property rect rect; property bool showHovered: false; property bool externalPressed: false; function click() {ctx.minimizeCalls++} }
  property QtObject maximumButton: QtObject { property int type: 1; property rect rect; property bool showHovered: false; property bool externalPressed: false; function click() {ctx.maximizeCalls++; ctx.intfMainWindow.visibility=ctx.intfMainWindow.visibility===Window.Maximized?Window.Windowed:Window.Maximized} }
  property QtObject closeButton: QtObject { property int type: 2; property rect rect; property bool showHovered: false; property bool externalPressed: false; function click() {ctx.closeCalls++} }
  property QtObject csdButtonModel: QtObject { property var windowCSDButtons: [ctx.minimumButton,ctx.maximumButton,ctx.closeButton] }
- function toggleInterfaceFullScreen() { fullscreenCalls++; intfMainWindow.visibility=intfMainWindow.visibility===Window.FullScreen?Window.Windowed:Window.FullScreen }
+ function updateFullscreen() { intfMainWindow.visibility=(interfaceFullscreen || videoFullscreen)?Window.FullScreen:Window.Windowed }
+ function interfaceFullscreenHeld() { return interfaceFullscreen }
+ function toggleInterfaceFullScreen() { fullscreenCalls++; interfaceFullscreen=intfMainWindow.visibility!==Window.FullScreen; updateFullscreen() }
+}''')
+write('Dialogs','qmldir','module VLC.Dialogs\nsingleton DialogsProvider 1.0 DialogsProvider.qml\n')
+write('Dialogs','DialogsProvider.qml','pragma Singleton\nimport QtQml\nQtObject { property bool qmlDialogVisible: false; property bool qmlInputFocused: false }')
+write('Player','qmldir','module VLC.Player\nsingleton Player 1.0 Player.qml\n')
+write('Player','Player.qml','''pragma Singleton
+import QtQml
+import VLC.MainInterface
+QtObject {
+ property bool hasVideoOutput: false
+ property bool fullscreen: false
+ property int toggleCalls: 0
+ function setFullscreen(value) { fullscreen=value; MainCtx.videoFullscreen=MainCtx.hasEmbededVideo && value; MainCtx.updateFullscreen() }
+ function toggleFullscreen() { toggleCalls++; setFullscreen(!fullscreen) }
 }''')
 assets=m/'assets';assets.mkdir();qrc=ElementTree.parse(r/'modules/gui/qt/assets.qrc').getroot()
 for resource in qrc.findall('qresource'):
@@ -91,6 +113,9 @@ for resource in qrc.findall('qresource'):
   if alias=='InterVariable.ttf':font_url=QUrl.fromLocalFile(str(r/'modules/gui/qt'/file.text)).toString()
   if alias.startswith('titlebar-'):shutil.copyfile(r/'modules/gui/qt'/file.text,assets/alias)
 source=(args.qml_file or r/'modules/gui/qt/maininterface/qml/JuxtopposedTitlebar.qml').read_text().replace('qrc:/juxtopposed/InterVariable.ttf',font_url).replace('qrc:/juxtopposed/',QUrl.fromLocalFile(str(assets)+'/').toString())
+# Supply the Player singleton to the negative-control baseline as well, so its
+# failure is the lost fullscreen routing rather than a missing fixture import.
+if 'import VLC.Player' not in source:source='import VLC.Player\n'+source
 under=m/'TitlebarUnderTest.qml';under.write_text(source,encoding='utf-8')
 print('titlebar phase: load actual component',flush=True)
 view=QQuickView();view.engine().addImportPath(str(m));view.setResizeMode(QQuickView.SizeRootObjectToView);view.setSource(QUrl.fromLocalFile(str(under)))
@@ -141,6 +166,47 @@ click(item('juxtopposedStripmaximize'));assert expr('MainCtx.maximizeCalls')==2
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert not item('juxtopposedStripclose').isVisible()
 click(item('juxtopposedStripfullscreen'));QTest.qWait(30);assert item('juxtopposedStripclose').isVisible() and expr('MainCtx.fullscreenCalls')==2
 root.setProperty('playerContext',True);spy=QSignalSpy(root.navigationRequested);click(item('juxtopposedStripnavigation'));assert spy.count()==1
+fullscreen=item('juxtopposedStripfullscreen')
+# For embedded video, the strip and VLC's F/Escape actions must share the video
+# fullscreen holder. Simulate the native player boundary, keeping the separate
+# interface holder observable so the two possible exit paths cannot mask a leak.
+expr('MainCtx.hasEmbededVideo=true; Player.hasVideoOutput=true')
+click(fullscreen);assert expr('Player.fullscreen && !MainCtx.interfaceFullscreen')
+assert fullscreen.property('description')=='Leave fullscreen'
+expr('Player.setFullscreen(false)');assert expr('MainCtx.intfMainWindow.visibility === Window.Windowed')
+assert fullscreen.property('description')=='Fullscreen'
+expr('Player.toggleFullscreen()');assert expr('Player.fullscreen')
+click(fullscreen);assert expr('!Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+# F11 remains an interface action. Its active hold is released by the strip,
+# rather than accidentally starting a second video fullscreen hold.
+expr('MainCtx.toggleInterfaceFullScreen()');assert expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && !Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+# If both independent owners are active, releasing one must not discard the
+# other. A subsequent strip action can release the remaining interface hold.
+expr('MainCtx.toggleInterfaceFullScreen(); Player.toggleFullscreen()')
+click(fullscreen);assert expr('MainCtx.interfaceFullscreen && !Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.FullScreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+# Audio and detached-video player contexts keep the existing interface action.
+expr('MainCtx.hasEmbededVideo=false')
+click(fullscreen);assert expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && !Player.fullscreen')
+expr('MainCtx.hasEmbededVideo=true; Player.hasVideoOutput=false')
+click(fullscreen);assert expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && !Player.fullscreen')
+# The Home strip still controls the interface even if a video is present.
+root.setProperty('playerContext',False)
+expr('MainCtx.hasEmbededVideo=true; Player.hasVideoOutput=true')
+click(fullscreen);assert expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && !Player.fullscreen')
+# When Home is shown while embedded video owns fullscreen, its visible exit
+# must release that video owner. If both owners exist, Home releases its own
+# interface owner first and leaves the independent video owner intact.
+expr('Player.toggleFullscreen()');assert expr('Player.fullscreen && !MainCtx.interfaceFullscreen')
+click(fullscreen);assert expr('!Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+expr('MainCtx.toggleInterfaceFullScreen(); Player.toggleFullscreen()')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.FullScreen')
+click(fullscreen);assert expr('!MainCtx.interfaceFullscreen && !Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+root.setProperty('playerContext',True)
 root.setProperty('sourceTitle','My Songs');assert root.property('sourceDescription')=='Return to My Songs'
 source_spy=QSignalSpy(root.sourceRequested);click(item('juxtopposedStripsourceFolder'));assert source_spy.count()==1
 root.setProperty('sourceDescription','Show My Songs');assert item('juxtopposedStripsourceFolder').property('description')=='Show My Songs'
@@ -154,6 +220,87 @@ assert close.hasActiveFocus(), 'Hover must not steal keyboard focus'
 assert visible_help()==['juxtopposedStripTooltiplogo'],visible_help()
 QTest.mouseMove(view,QPoint(view.width()//2,view.height()//2));QTest.qWait(650)
 assert visible_help()==['juxtopposedStripTooltipclose'],visible_help()
-view.close();app.processEvents();bad=[message for message in messages if any(term in message for term in ['Error','Cannot','Unable','Binding loop','is not a type','Invalid'])];assert not bad,bad
-(args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,geometryCases=checks,tooltipHoverPriority=True,keyboardTooltipResumes=True,controllerSeamsOnly=True,nativeWindowAcceptance=False,messages=messages),indent=2)+'\n')
+view.close();app.processEvents()
+
+# Exercise the real global shortcut component alongside the real title strip;
+# only the player, dialog and native window holder boundaries are supplied.
+shutil.copyfile(args.shortcut_qml or r/'modules/gui/qt/menus/qml/GlobalShortcuts.qml',m/'GlobalShortcutsUnderTest.qml')
+shutil.copyfile(r/'modules/gui/qt/menus/qml/ShortcutExt.qml',m/'ShortcutExt.qml')
+(m/'FullscreenShortcutFixture.qml').write_text('''import QtQuick
+import QtQuick.Window
+import VLC.MainInterface
+import VLC.Player
+import VLC.Dialogs
+Item {
+ width: 900; height: 60
+ GlobalShortcutsUnderTest {}
+ TitlebarUnderTest { objectName: "fullscreenTestTitlebar"; width: parent.width; playerContext: true }
+}''',encoding='utf-8')
+shortcut_view=QQuickView();shortcut_view.engine().addImportPath(str(m));shortcut_view.setSource(QUrl.fromLocalFile(str(m/'FullscreenShortcutFixture.qml')))
+assert not shortcut_view.errors(),[error.toString() for error in shortcut_view.errors()]
+shortcut_view.show();shortcut_view.requestActivate();QTest.qWait(100)
+shortcut_root=shortcut_view.rootObject();assert shortcut_root
+shortcut_strip=shortcut_root.findChild(QObject,'fullscreenTestTitlebar');assert shortcut_strip
+shortcut_button=shortcut_strip.findChild(QObject,'juxtopposedStripfullscreen');assert shortcut_button
+def shortcut_expr(code):
+ e=QQmlExpression(qmlContext(shortcut_root),shortcut_root,code);value,_=e.evaluate();assert not e.hasError(),e.error().toString();return value
+def f11():QTest.keyClick(shortcut_view,Qt.Key_F11);QTest.qWait(30)
+def strip_click():QTest.mouseClick(shortcut_view,Qt.LeftButton,Qt.NoModifier,shortcut_button.mapToScene(shortcut_button.boundingRect().center()).toPoint());QTest.qWait(30)
+shortcut_expr('MainCtx.playerView=true; MainCtx.hasEmbededVideo=true; Player.hasVideoOutput=true')
+# Reproduced defect: F11 entry must use the same VIDEO route that native
+# leave-fullscreen actions release. The latter is simulated at this boundary.
+f11();assert shortcut_expr('Player.fullscreen && !MainCtx.interfaceFullscreen'), 'active embedded F11 must acquire VIDEO, not INTERFACE'
+shortcut_expr('Player.setFullscreen(false)')
+assert shortcut_expr('MainCtx.intfMainWindow.visibility === Window.Windowed')
+# Entry via F11 and exit via strip, then the inverse route.
+f11();strip_click();assert shortcut_expr('!Player.fullscreen && !MainCtx.interfaceFullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+strip_click();assert shortcut_expr('Player.fullscreen && !MainCtx.interfaceFullscreen')
+before=shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')
+f11();assert shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')==before+1
+assert shortcut_expr('!Player.fullscreen && !MainCtx.interfaceFullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+# Home entered while VIDEO is held should allow F11 to release VIDEO.
+f11();shortcut_expr('MainCtx.playerView=false')
+f11();assert shortcut_expr('!Player.fullscreen && !MainCtx.interfaceFullscreen')
+# The visible Home strip also releases F11-acquired VIDEO on return home.
+shortcut_expr('MainCtx.playerView=true');f11()
+shortcut_expr('MainCtx.playerView=false');shortcut_strip.setProperty('playerContext',False)
+strip_click();assert shortcut_expr('!Player.fullscreen && !MainCtx.interfaceFullscreen')
+shortcut_strip.setProperty('playerContext',True)
+# Windowed Home with video in the background preserves INTERFACE semantics.
+f11();assert shortcut_expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen')
+# A pre-existing INTERFACE hold must be released first, without creating VIDEO.
+f11();shortcut_expr('MainCtx.playerView=true')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen && !Player.fullscreen')
+# Both holders: release the independent INTERFACE owner, then VIDEO.
+shortcut_expr('MainCtx.toggleInterfaceFullScreen(); Player.toggleFullscreen()')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen && Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.FullScreen')
+f11();assert shortcut_expr('!Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+# Normal Home/audio and detached-video paths keep their interface action.
+shortcut_expr('MainCtx.hasEmbededVideo=false; Player.hasVideoOutput=false')
+f11();assert shortcut_expr('MainCtx.interfaceFullscreen && !Player.fullscreen')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen')
+shortcut_expr('Player.hasVideoOutput=true; Player.setFullscreen(true)')
+f11();assert shortcut_expr('MainCtx.interfaceFullscreen && Player.fullscreen')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen && Player.fullscreen')
+shortcut_expr('Player.setFullscreen(false)')
+# Traditional controls retain their existing interface shortcut policy.
+shortcut_expr('MainCtx.juxtopposedControls=false; MainCtx.hasEmbededVideo=true; Player.setFullscreen(true)')
+f11();assert shortcut_expr('!MainCtx.interfaceFullscreen && Player.fullscreen')
+shortcut_expr('Player.setFullscreen(false)')
+# Shared modals, text input and the global-shortcuts switch still own F11.
+shortcut_expr('MainCtx.juxtopposedControls=true; Player.setFullscreen(true); DialogsProvider.qmlDialogVisible=true')
+before=shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')
+f11();assert shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')==before
+assert shortcut_expr('Player.fullscreen')
+shortcut_expr('DialogsProvider.qmlDialogVisible=false; DialogsProvider.qmlInputFocused=true')
+f11();assert shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')==before
+assert shortcut_expr('Player.fullscreen')
+shortcut_expr('DialogsProvider.qmlInputFocused=false; MainCtx.useGlobalShortcuts=false')
+f11();assert shortcut_expr('MainCtx.fullscreenCalls + Player.toggleCalls')==before
+assert shortcut_expr('Player.fullscreen')
+shortcut_expr('MainCtx.useGlobalShortcuts=true')
+f11();assert shortcut_expr('!Player.fullscreen && MainCtx.intfMainWindow.visibility === Window.Windowed')
+shortcut_view.close();app.processEvents();bad=[message for message in messages if any(term in message for term in ['Error','Cannot','Unable','Binding loop','is not a type','Invalid'])];assert not bad,bad
+(args.output_dir/'verification.json').write_text(json.dumps(dict(passed=True,geometryCases=checks,tooltipHoverPriority=True,keyboardTooltipResumes=True,fullscreenHolderRouting=True,globalF11Routing=True,controllerSeamsOnly=True,nativeWindowAcceptance=False,messages=messages),indent=2)+'\n')
 print('Original title-strip12 geometry cases plus focus/controller-seam checks pass; native window actions remain separate.')

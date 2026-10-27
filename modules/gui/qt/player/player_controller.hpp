@@ -381,6 +381,9 @@ public slots:
     VLCDuration getAudioDelay() const;
     void setAudioDelay( VLCDuration );
     Q_INVOKABLE void addAudioDelay( VLCDuration );
+    Q_INVOKABLE QString beginAudioTiming();
+    Q_INVOKABLE bool isAudioTimingCurrent(const QString &token);
+    Q_INVOKABLE bool addAudioTimingIfCurrent(VLCDuration wallDelay, const QString &token);
     VLCDuration getSubtitleDelay() const;
     VLCDuration getSecondarySubtitleDelay() const;
     bool hasSecondarySubtitle() const;
@@ -504,6 +507,8 @@ signals:
 
     //tracks
     void audioDelayChanged(VLCDuration);
+    void audioSelectionChanged();
+    void audioTimingContextChanged();
     void subtitleDelayChanged(VLCDuration);
     void secondarySubtitleDelayChanged(VLCDuration);
     void secondarySubtitleSelectionChanged();
