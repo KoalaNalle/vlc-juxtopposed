@@ -16,11 +16,19 @@ The beta remains unfinished; all six readiness gates remain open.
   This is an isolated tested runtime, not a release package. Earlier tested
   GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
 - All owned desktop/native tests are closed. Freeze fresh inputs before the
-  next guarded job; current docs postdate `inputs-r466.json`. The four unrelated
+  next guarded job; current docs postdate `inputs-r472.json`. The four unrelated
   audio experiments stay untouched. No firewall rules or security/privacy settings
   changed; the read-only firewall inventory remains available.
 
 ## Latest verified work
+
+[Audio-only recording/retry](../juxtopposed-references/native/home-recording-audio-retry-20261027/README.md):
+two WAV, two Ogg-FLAC and two MP3 recordings decode completely; paused arming/holding,
+normal exits and all native guards pass. Exact sample counts are retained, with up
+to278ms difference from the observed playback-clock span; exact onset/tail is not
+accepted. A file-as-folder output fails without stopping playback; valid retry in
+the same native player decodes and preserves the marker. Ordinary error feedback
+remains unqualified, including the log's unhelpful No error suffix.
 
 [Recording subtitle overlap](../juxtopposed-references/native/home-recording-subtitle-overlap-20261027/README.md):
 finite buffered captions now survive the selected A/V keyframe. MP4 shutdown text
@@ -47,8 +55,9 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Continue W2's remaining recording formats, beginning with audio-only WAV/FLAC/
-   MP3, and remaining settings journeys. Finite buffered subtitle overlap now has
+1. Check the ordinary recording destination-failure feedback and recovery. Native
+   WAV/FLAC/MP3 repeated recording and destination retry now have scoped evidence.
+   Continue remaining formats/settings afterwards. Finite buffered subtitle overlap has
    scoped native/ordinary evidence. The setup
    tour uses local bindings, so failed global mappings do not alter its hints.
    Keep W3's live System-theme change and native UIA/screen-reader focus open. UIA reports
