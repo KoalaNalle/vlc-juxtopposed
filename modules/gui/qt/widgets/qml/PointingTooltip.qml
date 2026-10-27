@@ -24,6 +24,7 @@ ToolTipExt {
     id: pointingTooltip
 
     margins: 0
+    textFormat: Text.PlainText
     padding: VLCStyle.margin_xxsmall
     radius: VLCStyle.dp(6, VLCStyle.scale)
 

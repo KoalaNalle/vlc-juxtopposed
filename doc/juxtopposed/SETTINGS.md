@@ -99,6 +99,7 @@ behavior in short windows without leaking input to playback.
 - [First toolbar route and native Quit repair](../juxtopposed-references/native/home-customizer-routes-20261027/README.md).
 - [Sparse-subtitle recording-start repair and decoded AV alignment](../juxtopposed-references/native/home-recording-start-20261027/README.md).
 - [Music source activation, native metadata and movable rename popup](../juxtopposed-references/native/home-music-metadata-keys-20261027/README.md).
+- [Native chapter journeys and literal pointing-tooltip repair](../juxtopposed-references/native/home-chapter-tooltip-20261027/README.md).
 - [Ordinary multi-artist selection and successive detail changes](../juxtopposed-references/native/home-music-selection-20261027/README.md).
 - [Library search history, native sort feedback and cold/traditional replay](../juxtopposed-references/native/home-library-history-20261027/README.md).
 - [Music detail navigation, playback independence and native album/artist/genre queries](../juxtopposed-references/native/home-music-details-20261027/README.md).

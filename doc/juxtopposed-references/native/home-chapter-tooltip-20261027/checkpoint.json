@@ -1,0 +1,458 @@
+{
+  "status": "passed-scoped-chapter-workflows-and-literal-pointing-tooltip-repair",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "56592664b62da4d77bde790b6c3d2fb82b414fbd9f5e42821d6699fbf9c35bf1",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "sourceSha256": {
+    "modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+    "modules/gui/qt/widgets/qml/ToolTipExt.qml": "a80f39b3bcaf37b858a0d03eff8e6b064f774e3bd09f51889bb0448a3a9a4ee1",
+    "modules/gui/qt/widgets/qml/PointingTooltip.qml": "82aa8054b401d4620f6017ed6d6b17da2fe54bdd3f57fcd9012d53df355d47fa"
+  },
+  "observations": [
+    "The generated60-second MP4 adds three native chapters at0/20/40seconds to the owned video/audio/subtitle fixture. Native C API descriptions retain the literal Unicode name; selected chapters2/1/0 report40/20/0seconds plus the established1microsecond clock origin while remaining paused. Release reaches stopped4; all guards pass.",
+    "Ordinary GUI329: Chapters tile opens the genuine list; offsets0/20/40and literal Middle <b>\u00e4\u00f6</b> display correctly. Double-click seeks the blue20-second frame, mouse-select/Return seeks green40, and mouse-select/Space seeks red0 while paused. Playing selection retains playback and the clock advances.",
+    "The playing run reaches EOF before the later Pause action and automatically advances to plain Show.S01E02. Its chapter rows clear and the tile disables. Pause settles on the plain source; Previous starts chaptered playback and restores all three rows. No manual Next click, bounded seek latency or preserved pause across Previous is claimed.",
+    "A timeline click exposes the old tooltip formatting defect: its accessibility string contains literal tags, but the screenshot renders Middle \u00e4\u00f6 with bold formatting. ToolTipExt now exposes its text-format alias; PointingTooltip selects PlainText. Other ToolTipExt defaults are retained.",
+    "Actual production tooltip Qt text layout compared with independent literal Text: two pass/three expected failures before, five pass after, no messages. This checks tags, br-looking text, entities, ordinary text and empty text; supplied style/MainCtx dependencies do not establish ordinary popup placement.",
+    "Ordinary GUI337 renders the complete literal chapter name in its timeline tooltip. Zero/ending tooltips appear inside the window near timeline edges; paused seeking produces the expected red/blue frames and selected captions. An immediate near-end capture still has the preceding red frame; the later settled capture shows the blue ending frame and last cue. No latency bound or initial-frame pass is inferred from the stale capture.",
+    "Both completed ordinary journeys exit0/602modules/zero error diagnostics/all guards, including the new chapter fixture. The early r333 launcher exits1 for a missing final chapter-fixture result key after a normal app exit; the corrected r334 run includes and passes that check. The first tooltip component attempt retains its font-directory setup warning; the same semantic failures are reproduced cleanly after selecting the existing Inter font."
+  ],
+  "limits": [
+    "Chapter behavior on earlier GUI329 and the targeted tooltip replay on GUI337 have distinct scopes. The native C API probe does not render a window. Broad format/AT/DPI/theme/touch and final-package acceptance remain open.",
+    "The expected fixture video cycles red/green/blue every10seconds; a57-second frame is blue. Chapter starts at0/20/40 deliberately map to red/blue/green. Raw generated media, binaries, logs/configs and databases remain ignored locally.",
+    "All tests use generated owned media and isolated profiles. No dependencies were installed, no security/privacy settings changed, and no forced cleanup was used."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-chapters-r334/verification.json.gz",
+      "sha256": "cfa998eff3f2f96d6a25188a231d8d873ff5e65cb1503cd6f9ada0fcd20b2b06",
+      "rawSha256": "056393bffd495b7aed920e2141e60fe87456e0b622e97173bb9ee3ab5faf0bf0"
+    },
+    {
+      "path": "ui-chapters-r334/producer.py.gz",
+      "sha256": "dd5f0536ac85ae0081636077232f73e4c7141b481970e0e860b65d4f17c89bae",
+      "rawSha256": "3dead252901030b45a6d6b87fa7f9739f78b16879029dbba1b4fc31878fe893e"
+    },
+    {
+      "path": "ui-chapters-r334/launch.json.gz",
+      "sha256": "5ba344083dc73056717513ed577e881535664ff26a10a79f3927952d857998cb",
+      "rawSha256": "df26ba29ebee4078eabbc084d04ac7b39ab6b51e43670c33538fe716617aec20"
+    },
+    {
+      "path": "ui-chapters-r334/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-chapters-r334/layout-fixture.json.gz",
+      "sha256": "abb4ee0aae4d86f3ec009a18d2fb22c798b4cb3876e1b770d28625bba769f9fb",
+      "rawSha256": "cfb7356ecae24421279be61177d5ca634666080669dea782393ad78ace147739"
+    },
+    {
+      "path": "ui-chapters-r334/observations/01-three-chapter-tile-available-0.png.gz",
+      "sha256": "aed94e292ff40d2c11190a6a9506001e23766dfaf47128052887b9c250478762",
+      "rawSha256": "a107536e3bcccfa2607117f9aa0aac96bce5431af923a781a483eff29e1ec8fd"
+    },
+    {
+      "path": "ui-chapters-r334/observations/01-three-chapter-tile-available.json.gz",
+      "sha256": "24117fb2936197471f47f6d419bc134f98a80b29c6e439d65b88194fc8fca18b",
+      "rawSha256": "3f39813a3fa1adabfcfe71edf011e639e5737ed78534d63fc28ebdf389a72e8a"
+    },
+    {
+      "path": "ui-chapters-r334/observations/02-chapters-tile-native-panel-0.png.gz",
+      "sha256": "8a888b196c0b26e5db40f02e8d9da8114effb04dcaf084510a4257bb2b22fa68",
+      "rawSha256": "57478b5c5e6fd604938fab5a37c240ac5d9f1a6706c3219e828f95733d005f2b"
+    },
+    {
+      "path": "ui-chapters-r334/observations/02-chapters-tile-native-panel.json.gz",
+      "sha256": "145abafb09f4cd7cd2a59880a54dc99c482bad26cfee317ddf4f2e53396cbd09",
+      "rawSha256": "04bece3d2254276b02305af60207891ba470ee704a58cbb438ccd4ca15c6ce2c"
+    },
+    {
+      "path": "ui-chapters-r334/observations/03-native-chapter-times-and-literal-names-0.png.gz",
+      "sha256": "e6e7090c70ecea00157b1204ee2e04d6b96cbfe4825b9359b2722ddfc61c7174",
+      "rawSha256": "7aac4a5fbac214a81b1fed798ee1086cd8d8252942fc1c7172f86e154496ae4e"
+    },
+    {
+      "path": "ui-chapters-r334/observations/03-native-chapter-times-and-literal-names-1.png.gz",
+      "sha256": "43bc7c52452adb805668aaf07bfd720cdf7808e7210b2fc3869527be9c950c56",
+      "rawSha256": "e7f7c9957f54132b17c0fef9876b1c714e5f6a70149fdd34e61a9b233eab2e25"
+    },
+    {
+      "path": "ui-chapters-r334/observations/03-native-chapter-times-and-literal-names.json.gz",
+      "sha256": "67580543fadbb21cdfb4f9a8578759ad4b0ad6625fa9cf5e9923287c9cad515f",
+      "rawSha256": "34e54f5c03468a9e26b2455502e70e18f6342cd54e775cf6b1c89d374cb5579b"
+    },
+    {
+      "path": "ui-chapters-r334/observations/04-middle-double-click-request-0.png.gz",
+      "sha256": "427c77927e27c5a4b0da8569961865e6629baf8cf37a8430f4c2485323ccbf72",
+      "rawSha256": "f25937c43a10c9ec4712071badd4682c2c1965c23056a438ada7c3144a582631"
+    },
+    {
+      "path": "ui-chapters-r334/observations/04-middle-double-click-request.json.gz",
+      "sha256": "430e0088d60fc64df00672f020a935fe4e8746bb37e8b15690b3b0a7d4e27890",
+      "rawSha256": "bb3c8c1e5b2f82c5fa12ab19b7c5a1fca2747f0ec8031ba2863788879dbe466a"
+    },
+    {
+      "path": "ui-chapters-r334/observations/05-ending-selected-middle-still-held-0.png.gz",
+      "sha256": "941695907abd4807735db51cdb426277b7850362f104bef49d21c2edc17b4142",
+      "rawSha256": "d35e76d110de3d46c3b2af651c1f99ab23bc7d63aa41dbcbe8b5bce6296fd6ce"
+    },
+    {
+      "path": "ui-chapters-r334/observations/05-ending-selected-middle-still-held.json.gz",
+      "sha256": "3066b759bbaa8a260ba13c99823328bb448302de88ea52cfbbbbbe5afece21ad",
+      "rawSha256": "62e7f341de63219942ae088e63cb184f0e78967d18456e3105789058c4b7d2a2"
+    },
+    {
+      "path": "ui-chapters-r334/observations/06-ending-enter-seeks-paused-0.png.gz",
+      "sha256": "81f1ed3993d58d0e4dbae4c63afd855e18e3f19933fbeb60a0e9b67b0bfd2877",
+      "rawSha256": "90bad6f07c4ade0363d006ee671bf456bd6c4e98109b8bb285e5dd808c123024"
+    },
+    {
+      "path": "ui-chapters-r334/observations/06-ending-enter-seeks-paused.json.gz",
+      "sha256": "430a0353e5218c7c3b828d827a11e1d773ed33e333a49254916e5d5cc44af9b8",
+      "rawSha256": "0af5439972f17a311efbbc5d8226e2fbe02a19d602d12fa2d7825d825dd26532"
+    },
+    {
+      "path": "ui-chapters-r334/observations/07-opening-selected-ending-held-0.png.gz",
+      "sha256": "9bbd2d5686011b3553191325df722ebe3b7262385e8578357fafb9e93de15eb8",
+      "rawSha256": "fc57038388bd1033cc6a2890620b6b9c880642f0f2f693b66469d877fb69ec96"
+    },
+    {
+      "path": "ui-chapters-r334/observations/07-opening-selected-ending-held.json.gz",
+      "sha256": "97ace121a15f70f5224aec32304fdc2c54b2079bc1bf76a845644958505a5c37",
+      "rawSha256": "5b717820014d81e423bdf0b50f0cb36a75473cc87bb3153ac3ebdfac6394a96d"
+    },
+    {
+      "path": "ui-chapters-r334/observations/08-opening-space-zero-paused-0.png.gz",
+      "sha256": "4ef8ef65e9edb3d6341ac96610dd3f2af47d24fc8d08635fd25a66a00193dd7d",
+      "rawSha256": "ad3a9a7c82b93842774478a7e53f630210efe34b3c66fabd28ea5f9e3f5b92c0"
+    },
+    {
+      "path": "ui-chapters-r334/observations/08-opening-space-zero-paused.json.gz",
+      "sha256": "7934d3189364478b017e1d7f9870d5d70930a8ea732f5e4daf3f21ce21b09211",
+      "rawSha256": "3171203632425b12eb8f5163b0c5da965c792d74fd3675565afb6d87ca1f9b4e"
+    },
+    {
+      "path": "ui-chapters-r334/observations/09-chapter-source-resumed.json.gz",
+      "sha256": "da4d55d2b26f6eb7b3d22893cb2c1607904a9d58acef3d8dd958439e9dc2063c",
+      "rawSha256": "484077273cc956e798695d894ab00e026bfa4b65d4bdd430aca63b8fb2901dfd"
+    },
+    {
+      "path": "ui-chapters-r334/observations/10-playing-chapter-change-0.png.gz",
+      "sha256": "e057d0d2029b5b7423a451d5a47f74134de82ddb087d2d0b3b8a7d22c7e024d9",
+      "rawSha256": "e4e145dfcc9b99d8c684f096fabf26279629e1a0b5bdd41e939da0dea39bf956"
+    },
+    {
+      "path": "ui-chapters-r334/observations/10-playing-chapter-change.json.gz",
+      "sha256": "5cb41f8c8f9c3dc74ca771baa2b4880e0a666c67987f5ab01c704e08d8a6a070",
+      "rawSha256": "94ef86d294715c946d08ac39984a1f76f3fd830f97d8348ab58fb11c530982ba"
+    },
+    {
+      "path": "ui-chapters-r334/observations/11-playing-chapter-clock-advances-0.png.gz",
+      "sha256": "7d5948c00d4291cdee7bccbf85ee82dd6ae1089cd4494a40e5d114924cd35c3a",
+      "rawSha256": "12a27ba857d2c20bf38eeb6a7dcf75be6c72d39290bc8287fed421bac4803fa1"
+    },
+    {
+      "path": "ui-chapters-r334/observations/11-playing-chapter-clock-advances.json.gz",
+      "sha256": "2384590d981a4faa0a2e50dfdb66ee65973a4729c9c7021e6fc3fa0c0d23713c",
+      "rawSha256": "5712ba152820825182d39f967bca97e6e1d5457d7db25bf0c2702f5cbc0e033b"
+    },
+    {
+      "path": "ui-chapters-r334/observations/12-after-playing-pause-or-eof-state-0.png.gz",
+      "sha256": "76829b5459b6a817120b03f2061c313d3942083eee5bc152632f956a5493f878",
+      "rawSha256": "5cf3c10da985b7a8f281375047019b02c33a7784ff880c9d8d972b40ffe7c4bb"
+    },
+    {
+      "path": "ui-chapters-r334/observations/12-after-playing-pause-or-eof-state.json.gz",
+      "sha256": "c2074a528399a5b045405e53e7153599752ead016e46050a1a7f1dd0f79abf0d",
+      "rawSha256": "b629c211c12efdcdd64bc9e0e42537ef6d8ef2d36fc8d99f6be39201c21e0048"
+    },
+    {
+      "path": "ui-chapters-r334/observations/13-plain-source-empty-chapters-paused-0.png.gz",
+      "sha256": "bfcc0026590476cb2eceb02eeeeb653dd5c639b52b7f4cd595522b1bf907424b",
+      "rawSha256": "5aef0ccc1933a30803e6c9d6acceb3decbc9fbfc45f90249db5f6809f451f490"
+    },
+    {
+      "path": "ui-chapters-r334/observations/13-plain-source-empty-chapters-paused-1.png.gz",
+      "sha256": "111308ac06b491b9989bf656cbecb8a9fdd9e696c9a6c579b888f2726dca6ca2",
+      "rawSha256": "00045bc2cbfc0ef45188e952188ac4752fc8e39b1c4666085a4d2b961428e557"
+    },
+    {
+      "path": "ui-chapters-r334/observations/13-plain-source-empty-chapters-paused.json.gz",
+      "sha256": "57f615f69382a787e63ca47203a3811f505efa03bdf1da0c6d7ab87349aabf8d",
+      "rawSha256": "353fbd4b6769dc522e7cd9ff645e392a45b15fdbfc0f24a58cc4aec3effb961e"
+    },
+    {
+      "path": "ui-chapters-r334/observations/14-returned-chapters-restored-0.png.gz",
+      "sha256": "6ef44af319487c80d321cbae0d52de0ac45e8d2d13fa81551bd0435f16c20752",
+      "rawSha256": "c2fc115fc9f480262402d35ce776b619b646346ff5031d0d2f4bf287de0a0389"
+    },
+    {
+      "path": "ui-chapters-r334/observations/14-returned-chapters-restored-1.png.gz",
+      "sha256": "6049fed69c3d97c089274cd7790e438cae3adef63650f051067eb86902bda0d8",
+      "rawSha256": "c785fdce1eb014f372604eeb777c551817e15ed1756c8e380bcd98cde401cacc"
+    },
+    {
+      "path": "ui-chapters-r334/observations/14-returned-chapters-restored.json.gz",
+      "sha256": "21cfc8b8984740564211321919c68acb4075e3c7584730c44fb1604c9f6bdde7",
+      "rawSha256": "d59592e2e9979b7dbd43966f08fdd791e0014940b13f9c1fab36d12c94b15ff4"
+    },
+    {
+      "path": "ui-chapters-r334/observations/15-native-timeline-chapter-hover-request-0.png.gz",
+      "sha256": "59727133dd9554d48bbbcfae6035208fda8743b9dd868430597407bb78648eb5",
+      "rawSha256": "2ebe9428bdd29a716ecb29fbfaa715f6849a699e550cd135572f332216c7f29e"
+    },
+    {
+      "path": "ui-chapters-r334/observations/15-native-timeline-chapter-hover-request-1.png.gz",
+      "sha256": "a8337c52962c7ff77551ac382bac7d89b8d091eaf1e9505fe3d23bc74c8efaa9",
+      "rawSha256": "2acff59d0f9d6ff7f52aef9581bd422c9ded433cd05979d2ea3517994c0839db"
+    },
+    {
+      "path": "ui-chapters-r334/observations/15-native-timeline-chapter-hover-request.json.gz",
+      "sha256": "b7f92345c6ea349c6ce290a4dba690f500dde122b822c3e5dfa9edcc440f5305",
+      "rawSha256": "e6050021f74c01979343b3960aa4136ee9af6f6cc39b4cbe109a41e0887c4655"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/verification.json.gz",
+      "sha256": "af6539758013c0e71d217caa16955ff0519634eb6a9bb7873b00fbae3b1a4e1b",
+      "rawSha256": "24c2294ad6ce01f776f04046d0fc6076f98b7dad3d3533301e41fe24edadcb15"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/producer.py.gz",
+      "sha256": "469198ba19a11677e9b25823932e9a9d3daa0cbd9e14e1a5894ca128d987c2d3",
+      "rawSha256": "53ec80adbc093df2029cbb80708018cd196e6f17d1614c502ae7659d37931e8e"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/launch.json.gz",
+      "sha256": "b165686b342a1f9b66cd7e99a2a8aed4d09200b925d8e6b8dc84478ff28e50db",
+      "rawSha256": "adb656da634ff96a4cf1eaa3f8aeb5ed5961a702f615ecba48fb519a81dcb485"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/layout-fixture.json.gz",
+      "sha256": "abb4ee0aae4d86f3ec009a18d2fb22c798b4cb3876e1b770d28625bba769f9fb",
+      "rawSha256": "cfb7356ecae24421279be61177d5ca634666080669dea782393ad78ace147739"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/01-fixed-tooltip-chapter-source-0.png.gz",
+      "sha256": "f02c1fed78b09210f5519d072bf3f887a0243979e1056dc3c28ca083a6646709",
+      "rawSha256": "48b87f49da010311a7c1b660a19882b3451da8a0cf7a605f519be226f40d9682"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/01-fixed-tooltip-chapter-source.json.gz",
+      "sha256": "1e10316cf504a11b4b9e092a349e9d39bb86de79db43e5964cbb5a80d6fe7aef",
+      "rawSha256": "d00914c77f3f88819007e807f2a63bc9d007e1016b6d6b85671fca84de3a4668"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/02-fixed-literal-chapter-tooltip-0.png.gz",
+      "sha256": "256d66ccf437c30778f7791575fb76d43fc133785bbe71c833399591983d7d6f",
+      "rawSha256": "a15529e6e815a75f0a7b515469d226258747c1ae3f33c7d86c04308633ecbdeb"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/02-fixed-literal-chapter-tooltip-1.png.gz",
+      "sha256": "872f28faba76646ca4ea3162615f4da4cdd3f92608d022fc74780a9d4b8c3ca7",
+      "rawSha256": "c786461e064ff51523ba40cac93caebfd56071e1de27f7eb739abf136dcf01d0"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/02-fixed-literal-chapter-tooltip.json.gz",
+      "sha256": "0af2564c7955b9d40c1c3641c3f3c87114e94bd1c7f507219cdff1e55a020fc7",
+      "rawSha256": "198b5a329fe078bdd1ac967dd1acf684bf99c370983b06e4bbedc72e611b5893"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/03-fixed-zero-chapter-tooltip-left-edge-0.png.gz",
+      "sha256": "9a8c08941286d733cce2fcaabd390be18f65c5d9f6b4b2fe0d77267100924a67",
+      "rawSha256": "67f4400fbc0ded568e3ba207002977f93ddc0adf43a2246e0acd23055ad9a703"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/03-fixed-zero-chapter-tooltip-left-edge-1.png.gz",
+      "sha256": "8801b7e00eee558aa26f6699c1c9cd73afba110dc93c8eb02ac9c933aa27a6b8",
+      "rawSha256": "c834bdc1c8da7abc704b891b862902de0d0e052c2f47c0e602e3077fd3aae986"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/03-fixed-zero-chapter-tooltip-left-edge.json.gz",
+      "sha256": "3d88e4f55b9e278ebc6fe007a2ecd4a1ec86843ef042eff28084b0c020132209",
+      "rawSha256": "e414c276ae2ea73f6ae39fe72ff1a1aba1341204171ff388ba2417718f2f5fa7"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/04-fixed-ending-tooltip-right-edge-0.png.gz",
+      "sha256": "536b56a9faa88b31ed7581055d2b5922a4edbea3cd37bf71f316ab3f75aa8402",
+      "rawSha256": "7e654067fe540cce5f04a0b124cfdaec1dc487f479301b04a471b544a8398191"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/04-fixed-ending-tooltip-right-edge-1.png.gz",
+      "sha256": "bf223318d61a5b2742b9cf4601809871c38217795d9c00cd9891bf9b6af28590",
+      "rawSha256": "6054a6a01b905d90be9f53d4a4376994b49d23fbfa57c96f05f590ebea9ed3fd"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/04-fixed-ending-tooltip-right-edge.json.gz",
+      "sha256": "da1c0524accf7ee18ce38d6c1e72fd8fd6d1da313b7f892f6896a5080246144e",
+      "rawSha256": "2400289a9d1bbed35d723b47dc7365ea3bdcad7dd19be1027fd323bbdfff8380"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/05-settled-ending-tooltip-and-frame-0.png.gz",
+      "sha256": "9d4f9a31ff5acea0658b39e00db069fb1de83994c48b03afdfa9b46f0ed4a824",
+      "rawSha256": "a2e2944b17b064a896bb7e1e285cf9b8349b7ce57c6fae3f0e0a22b2fec651e7"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/05-settled-ending-tooltip-and-frame-1.png.gz",
+      "sha256": "f35a20e1ea76e37b2fdfef36cdbb05e1177c551d9826bd373075169fef4e85d1",
+      "rawSha256": "caa93256d835be0483975fbb0731f676d09eb44e4164b6e726a0ff59dba7e8b0"
+    },
+    {
+      "path": "ui-tooltip-fixed-r337/observations/05-settled-ending-tooltip-and-frame.json.gz",
+      "sha256": "401dd2811f98f4ec9fba779c5316cd3500168b0f048eb2d0a2f2f29fc9f6ca64",
+      "rawSha256": "81efbcfb5776f2c4f87b606d19dca09d5f6100b440bc7f20fb31734666982531"
+    },
+    {
+      "path": "ui-chapters-r333/verification.json.gz",
+      "sha256": "e146ec40b5834422c1e7175fbd1e91bc3ca77ced5bbe8e4c7e7f0748ebd94c5e",
+      "rawSha256": "f83c4c4cb21d12879da5883b7bb548a8c7d6032e75dc5f63f1f3ee6a59d386f8"
+    },
+    {
+      "path": "ui-chapters-r333/producer.py.gz",
+      "sha256": "e9186ba302cf863563e46e2ea636f5b50075bda5edd722c0267de09c28cffc45",
+      "rawSha256": "a1156e8675f3162be39c3d2050a4f7a511d735b5e4ffcc50770d132309d78d61"
+    },
+    {
+      "path": "ui-chapters-r333/launch.json.gz",
+      "sha256": "267409a7d2726caf33c87593d91404307e3b70e9445a56bf0cd82715c764ede2",
+      "rawSha256": "89f66d2260eba14c267c0b2ba4500b15deefa96ff0e3e8f2826a680d9a650795"
+    },
+    {
+      "path": "ui-chapters-r333/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-chapters-r333/layout-fixture.json.gz",
+      "sha256": "abb4ee0aae4d86f3ec009a18d2fb22c798b4cb3876e1b770d28625bba769f9fb",
+      "rawSha256": "cfb7356ecae24421279be61177d5ca634666080669dea782393ad78ace147739"
+    },
+    {
+      "path": "ui-chapters-r333/observations/01-three-chapter-source-paused-0.png.gz",
+      "sha256": "aed94e292ff40d2c11190a6a9506001e23766dfaf47128052887b9c250478762",
+      "rawSha256": "a107536e3bcccfa2607117f9aa0aac96bce5431af923a781a483eff29e1ec8fd"
+    },
+    {
+      "path": "ui-chapters-r333/observations/01-three-chapter-source-paused.json.gz",
+      "sha256": "ac8e0d83cb950b3e58140e25e5296240d2f70ca0672d4749650faaef2c5d724b",
+      "rawSha256": "9755808d98851998bff6046c7d670fd53f97fb5f493cdc9e2e54f34029e9bcc7"
+    },
+    {
+      "path": "native-chapters-r333/verification.json.gz",
+      "sha256": "2f7243089fbfdfe061dcd3eab8c63830f5f4f8db23dfd2654e3b34ec7b42cd41",
+      "rawSha256": "1b4374f6ac02dbe3ae5367b7f6722781b2b8be63576a5efe5c1d34e5cc0c1063"
+    },
+    {
+      "path": "native-chapters-r333/chapters/probe.json.gz",
+      "sha256": "3de9c87b51e3a948eef34cf1b3fa9bc4adb70d17472f61ac943dc51b5d58890b",
+      "rawSha256": "0a63b06b29e9284a7f2b272b51cba67c4ac96b3b09f50b411c8c4da1024e94b0"
+    },
+    {
+      "path": "component-tooltip-before-r335/verification.json.gz",
+      "sha256": "77729f363d530723936e1e55d53016045ee03fd3a646adc98ab3f612e8c8e7ca",
+      "rawSha256": "430b255615df70d842a7ce59edfd35bdd13fc49a01ba4bae9081383c7a0e14eb"
+    },
+    {
+      "path": "component-tooltip-before-r336/verification.json.gz",
+      "sha256": "9439bd5b190a07ef7cbebb9c505cf48a82c28a5634618685dcc92c20caed33b3",
+      "rawSha256": "83000f67388b515f9963acef0b30e479ae6155e8c1707aa25a839b94414e8ef1"
+    },
+    {
+      "path": "component-tooltip-fixed-r337/verification.json.gz",
+      "sha256": "bc853b39fe653d792939c3bb93b8d923cf33dd5ef60a45f698e84e9f01f0174e",
+      "rawSha256": "a86a10d1693d1e71e114bde3e208a7bf5dc3e01b5f9989ea010f74cac11d9cfe"
+    },
+    {
+      "path": "chapter-media-r332/chapters.ffmeta.gz",
+      "sha256": "85c12e2b18974adc27cce66d9f51f03e1dba09c66540f63c21fe7cc5b0288ebd",
+      "rawSha256": "11b37db62f997cfd0c538204da5bb1a6c0d4029ed2d67223ba078ceb226573f2"
+    },
+    {
+      "path": "chapter-media-r332/manifest.json.gz",
+      "sha256": "e0c17570ab28612024a06896bb6957594d4e08f744b13aee768390a481698dca",
+      "rawSha256": "031d97607645f8916026b99b552054e7804bd3ae349709ddcd75cfcf4390e462"
+    },
+    {
+      "path": "prepare-chapter-fixture-r332.py.gz",
+      "sha256": "6a4401e97667fea15d36ab66b62f83119ce4f612485fad2dbe32a1d2bce4c863",
+      "rawSha256": "3db5210c3f7a7cb72d788ec4e8d6aa683b4e87b1ce67e2ba0327349a30c58e86"
+    },
+    {
+      "path": "chapter-worker-r333.py.gz",
+      "sha256": "7626b2eece085306519c55abd831b2ad298018384bad7c79a71c414d492e3bc0",
+      "rawSha256": "686362c5d9830cc1d857bfbbd81fcef10c528cf1b6c3f3117a3f3ecb5899d6ad"
+    },
+    {
+      "path": "run-native-chapters-r333.py.gz",
+      "sha256": "7efddbe71250e246bd039db253ac824563070a293e4efc1417d94d7ce296d8c6",
+      "rawSha256": "b3d04d047a8e7561df143c59378c2e2d006c4f9a6d4cba196e37a83e98033ce9"
+    },
+    {
+      "path": "run-ui-chapters-r333.py.gz",
+      "sha256": "e9186ba302cf863563e46e2ea636f5b50075bda5edd722c0267de09c28cffc45",
+      "rawSha256": "a1156e8675f3162be39c3d2050a4f7a511d735b5e4ffcc50770d132309d78d61"
+    },
+    {
+      "path": "run-ui-chapters-r334.py.gz",
+      "sha256": "dd5f0536ac85ae0081636077232f73e4c7141b481970e0e860b65d4f17c89bae",
+      "rawSha256": "3dead252901030b45a6d6b87fa7f9739f78b16879029dbba1b4fc31878fe893e"
+    },
+    {
+      "path": "run-ui-tooltip-r337.py.gz",
+      "sha256": "469198ba19a11677e9b25823932e9a9d3daa0cbd9e14e1a5894ca128d987c2d3",
+      "rawSha256": "53ec80adbc093df2029cbb80708018cd196e6f17d1614c502ae7659d37931e8e"
+    },
+    {
+      "path": "freeze-tooltip-r337.py.gz",
+      "sha256": "d0a5fb150c9f19c20c636d773172bc9286359bbb77adb2c2c376d6689969334f",
+      "rawSha256": "9b6fb9f313a61418a023ed16cfaf502e473363d50e7932f7b1d7658288dd6d77"
+    },
+    {
+      "path": "build-tooltip-r337.sh.gz",
+      "sha256": "b5141779bd25cb453610ec36b177a631b64f221b0c255e4c53a23d457f7415f0",
+      "rawSha256": "1cc6b385d385857d8b4e1c7ffaa822e6fd73ffbcb3908c8aa29df3e5fff51908"
+    },
+    {
+      "path": "build-customizer-r337-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "inputs-r333.json.gz",
+      "sha256": "6a621418d46226870c20d00ea7cf0bfb778564c5f7eb5af7c82d069bc29fc4f0",
+      "rawSha256": "9d901fb7f4e553f72538ec2e5969fbd90ee76f83164fa0c501327ecf543d0ef6"
+    },
+    {
+      "path": "inputs-r334.json.gz",
+      "sha256": "8f639718369331ae5bf6cf760b2df3f1945ef43173f3e2db37f7207cd7025edc",
+      "rawSha256": "ad49b6e94708fc34adad23a9514b9d91cab4fc2d3a06fe864a3194ca9372cd1b"
+    },
+    {
+      "path": "inputs-r337.json.gz",
+      "sha256": "f6742932e4e431f4475a0daa2ed73cf1b4d66890d16618e2787a58abca69f98f",
+      "rawSha256": "001937937ae4bf89f5f165854d6c648c14d63af3fd217571c998ef91767bc3e2"
+    },
+    {
+      "path": "write-chapter-tooltip-receipt-r338.py.gz",
+      "sha256": "b618d586dc3b9a85e5f091842e51addfd94897882d1e321e436153efaa8fdcc8",
+      "rawSha256": "6d58f6bb432b318fcaf835839f3448573b1565e44b0670589d371ee8fa1fb4bc"
+    }
+  ]
+}

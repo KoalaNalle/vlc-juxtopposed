@@ -7,16 +7,16 @@ The user authorized tested nightly commits/pushes; release publication is separa
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`. Exact source/binary identities are in the
-  [music metadata/key receipt](../juxtopposed-references/native/home-music-metadata-keys-20261027/README.md).
+  [chapter/tooltip receipt](../juxtopposed-references/native/home-chapter-tooltip-20261027/README.md).
   The four unrelated audio experiments remain untouched.
-- Selected tuple: Core `fdfcfcd5`, ordinary GUI `587be5ae`, library `13ccdc36`,
+- Selected tuple: Core `fdfcfcd5`, ordinary GUI `56592664`, library `13ccdc36`,
   MP4 `df15e8ed`, subtitle demux `11f2b78e`, WASAPI `e5560794`, MKV `f46d8d15`,
   recording `930205b1`. Ordinary isolated runtime:
-  `build-windows/beta-single-frame-20261025-night/ui-music-keys-fixed-r330/runtime`.
-  This is not a release package. GUI311 and GUI301 runtimes remain recoverable
-  at `ui-record-fixed-r323/runtime` and `ui-controls-shortcuts-cold-r302/runtime`.
+  `build-windows/beta-single-frame-20261025-night/ui-tooltip-fixed-r337/runtime`.
+  This is not a release package. GUI329 and GUI311 runtimes remain recoverable
+  at `ui-music-keys-fixed-r330/runtime` and `ui-record-fixed-r323/runtime`.
 - Active outputs: `build-windows/beta-single-frame-20261025-night`.
-  Inventory `inputs-r330.json` predates this documentation checkpoint; freeze
+  Inventory `inputs-r337.json` predates this documentation checkpoint; freeze
   fresh inputs before another guarded test. All owned tests have exited normally.
 
 ## Verified progress and scope
@@ -53,6 +53,11 @@ The user authorized tested nightly commits/pushes; release publication is separa
   Native routing passes28/0/0; the music component suite passes. The accepted app
   exits0/602modules/zero errors/all guards. The earlier metadata source-guard
   failure remains retained; relevant journeys were repeated on GUI329.
+- Genuine0/20/40-second chapters pass native and ordinary paused/playing seeks,
+  literal names and plain-source clearing/restoration. Pointing tooltips now
+  preserve literal tags; three layout failures before become five passes after.
+  GUI337 verifies rendered text/edge placement and exits0/602modules/zero errors/
+  all guards. The chapter receipt qualifies EOF, setup failures and stale captures.
 - Prior subtitle/Core evidence remains scoped:
   [late-cue replay](../juxtopposed-references/native/home-late-preset-replay-20261027/README.md),
   [selection/first-frame clock](../juxtopposed-references/native/home-subtitle-selection-clock-20261027/README.md),
@@ -61,7 +66,7 @@ The user authorized tested nightly commits/pushes; release publication is separa
 
 ## Next action and open questions
 
-1. Continue W2 with genuine chapter-media toolbar/panel journeys, remaining native
+1. Continue W2 with global shortcut registration/action checks, remaining native
    consumers and current-tuple category workflows. Preserve earlier layout/draft/
    failure evidence. HDR is truthfully disabled pending a native consumer.
    Other recording formats/policies and subtitle overlap remain distinct.

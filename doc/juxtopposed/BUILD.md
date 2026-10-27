@@ -126,6 +126,12 @@ directory, add `-f <repo>/test/record-start-native.mk`, set a fresh absolute
 audio/video alignment and subtitle-only fallback. It does not record media;
 the separate [recording receipt](../juxtopposed-references/native/home-recording-start-20261027/README.md)
 contains actual native/ordinary output decoding and stream-timing comparisons.
+
+`modules/gui/qt/tests/test_pointing_tooltip_text.py` takes `--repo-root`, a fresh
+`--output-dir` and `--mode fixed`. It loads the actual tooltip QML and compares
+its shaped text layout with an independent literal Qt Text item. The baseline
+mode requires the exact expected old formatting failures. Style/MainCtx are
+supplied dependencies; ordinary popup placement and OS-DPI remain separate.
 The support library is linked statically with the configured compiler's existing
 stack protection enabled. Stage the executable beside the runtime DLLs.
 
