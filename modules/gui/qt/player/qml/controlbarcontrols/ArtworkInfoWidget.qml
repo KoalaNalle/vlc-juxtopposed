@@ -276,9 +276,9 @@ T.AbstractButton {
                         " -- / -- "
                     else {
                         const length = Player.length
-                        return Player.time.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0) +
+                        return Player.displayTime.formatHMS(length.isSubSecond() ? VLCTick.SubSecondFormattedAsMS : 0) +
                                 " / " +
-                                length.formatHMS()
+                                (Player.live ? qsTr("LIVE") : length.formatHMS())
                     }
                 }
                 color: theme.fg.secondary

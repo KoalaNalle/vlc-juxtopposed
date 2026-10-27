@@ -34,6 +34,7 @@
 #include <vlc_meta.h>
 #include <vlc_url.h>
 #include <vlc_modules.h>
+#include <vlc_interrupt.h>
 #include <vlc_strings.h>
 #include "input_internal.h"
 
@@ -99,10 +100,16 @@ static int demux_Probe(void *func, bool forced, va_list ap)
     int (*probe)(vlc_object_t *) = func;
     demux_t *demux = va_arg(ap, demux_t *);
 
+    /* Cancellation ends format detection, rather than trying unrelated formats. */
+    if (vlc_killed())
+        return VLC_ETIMEOUT;
+
     /* Restore input stream offset (in case previous probed demux failed to
      * to do so). */
     if (vlc_stream_Tell(demux->s) != 0 && vlc_stream_Seek(demux->s, 0))
     {
+        if (vlc_killed())
+            return VLC_ETIMEOUT;
         msg_Err(demux, "seek failure before probing");
         return VLC_EGENERIC;
     }
@@ -111,7 +118,11 @@ static int demux_Probe(void *func, bool forced, va_list ap)
 
     int ret = probe(VLC_OBJECT(demux));
     if (ret)
+    {
         vlc_objres_clear(VLC_OBJECT(demux));
+        if (vlc_killed())
+            return VLC_ETIMEOUT;
+    }
     return ret;
 }
 
@@ -647,6 +658,7 @@ int demux_vaControlHelper( stream_t *s,
         case DEMUX_SET_ES_LIST:
         case DEMUX_GET_ATTACHMENTS:
         case DEMUX_CAN_RECORD:
+        case DEMUX_CAN_CONTROL_RATE:
         case DEMUX_TEST_AND_CLEAR_FLAGS:
         case DEMUX_GET_TITLE:
         case DEMUX_GET_SEEKPOINT:

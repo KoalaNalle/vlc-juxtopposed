@@ -18,6 +18,7 @@
 
 import QtQuick
 import QtQuick.Templates as T
+import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
 import QtQml.Models
 import QtQuick.Window
@@ -37,6 +38,7 @@ T.ToolBar {
     AccessibleCompat.id: "localTopbar"
 
     property bool useAcrylic: true
+    readonly property bool redesigned: Qt.platform.os === "windows" && MainCtx.juxtopposedControls
 
     // For now, used for d&d functionality
     // Not strictly necessary to set
@@ -44,13 +46,13 @@ T.ToolBar {
 
     property bool _showCSD: MainCtx.clientSideDecoration
         && !(MainCtx.intfMainWindow.visibility === Window.FullScreen)
-        && !MainCtx.hasToolbarMenu
+        && (!MainCtx.hasToolbarMenu || redesigned)
 
     //whether the navigation pannel is actually visible or not
     property alias navigationVisible: navigationVisibilty.checked
     property alias playqueueVisible: playlistBtn.checked
 
-    property alias navigationButton: navigationVisibilty
+    readonly property Item navigationButton: redesigned ? sharedStrip.menuButton : navigationVisibilty
 
     signal toggleNavigationVisibility()
     signal togglePlayqueueVisibility()
@@ -67,19 +69,36 @@ T.ToolBar {
     }
 
     background:  Widgets.AcrylicBackground {
+        visible: !root.redesigned
         enabled: root.useAcrylic
         tintColor: theme.bg.primary
     }
 
     contentItem: Item {
 
-        implicitHeight: VLCStyle.globalToolbar_height
+        implicitHeight: root.redesigned ? sharedStrip.implicitHeight : VLCStyle.globalToolbar_height
         implicitWidth: navigationButtons.implicitWidth
                      + playqueueButtonsTop.implicitWidth
                      + VLCStyle.margin_xsmall * 2
 
+        JuxtopposedTitlebar {
+            id: sharedStrip
+            visible: root.redesigned
+            anchors.fill: parent
+            navigationVisible: root.navigationVisible
+            useAcrylic: root.useAcrylic
+            showWindowControls: root._showCSD
+            onNavigationRequested: root.toggleNavigationVisibility()
+            onHomeRequested: {
+                if (!History.exactMatch(History.viewPath, ["home"]))
+                    History.push(["home"], {}, Qt.TabFocusReason)
+            }
+            Navigation.parentItem: root
+            Navigation.downItem: root.Navigation.downItem
+        }
         Item {
             id: navigationButtons
+            visible: !root.redesigned
 
             implicitWidth: navigationButtonsRow.implicitWidth
 
@@ -146,18 +165,41 @@ T.ToolBar {
                     Navigation.rightItem: playlistBtn
                 }
 
-                Widgets.BannerCone {
+                C.ToolButton {
                     id: logo
-
-                    sourceSize.width: VLCStyle.bannerButton_height
-                    sourceSize.height: VLCStyle.bannerButton_height
-                    color: theme.accent
+                    width: VLCStyle.bannerButton_height
+                    height: VLCStyle.bannerButton_height
+                    padding: 0
+                    focusPolicy: MainCtx.juxtopposedControls ? Qt.StrongFocus : Qt.NoFocus
+                    Accessible.name: qsTr("Home")
+                    AccessibleCompat.id: "libraryHomeButton"
+                    onClicked: {
+                        if (!History.exactMatch(History.viewPath, ["home"]))
+                            History.push(["home"], logo.focusReason)
+                    }
+                    C.ToolTip.visible: hovered || visualFocus
+                    C.ToolTip.text: qsTr("Home")
+                    background: Rectangle {
+                        color: "transparent"
+                        border.width: logo.visualFocus ? VLCStyle.focus_border : 0
+                        border.color: theme.accent
+                        radius: VLCStyle.button_radius
+                    }
+                    contentItem: Widgets.BannerCone {
+                        sourceSize.width: VLCStyle.bannerButton_height
+                        sourceSize.height: VLCStyle.bannerButton_height
+                        color: theme.accent
+                    }
+                    Navigation.parentItem: navigationButtons
+                    Navigation.leftItem: historyBack
+                    Navigation.rightItem: playlistBtn
                 }
             }
         }
 
         Item {
             id: playqueueButtonsTop
+            visible: !root.redesigned
 
             implicitWidth: playqueueButtonsTopRow.implicitWidth
 
@@ -223,7 +265,7 @@ T.ToolBar {
             z: -1
 
             anchors.fill: parent
-            active: root._showCSD
+            active: root._showCSD && !root.redesigned
             sourceComponent: Widgets.CSDTitlebarTapNDrapHandler {
             }
         }
@@ -240,7 +282,7 @@ T.ToolBar {
         }
 
         height: VLCStyle.globalToolbar_height
-        active: root._showCSD
+        active: root._showCSD && !root.redesigned
         source: VLCStyle.palette.hasCSDImage
                   ? "qrc:///qt/qml/VLC/Widgets/CSDThemeButtonSet.qml"
                   : "qrc:///qt/qml/VLC/Widgets/CSDWindowButtonSet.qml"

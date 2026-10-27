@@ -1,0 +1,36 @@
+{
+  "expectedNegativeVerified": true,
+  "originalCounts": {
+    "passed": 8,
+    "failed": 1,
+    "skipped": 0
+  },
+  "originalFailure": [
+    "actualThreeChapterMetadataAndSelection"
+  ],
+  "originalReceiptUnmodified": true,
+  "originalReceiptPassed": false,
+  "originalReceiptExpectedNegativeVerified": false,
+  "explanation": "The original runner rejected every error-labelled log line, including two historical headless close-notify messages. This separate review verifies the one expected validity failure and each close message immediately before instance exit. The final runner retains and separately classifies these exact teardown diagnostics.",
+  "originalShutdownContext": [
+    {
+      "log": "bookmarks-chapters-native-1.log",
+      "closeNotifyAtTeardown": true
+    },
+    {
+      "log": "bookmarks-chapters-native-2.log",
+      "closeNotifyAtTeardown": true
+    }
+  ],
+  "finalNativePassed": true,
+  "finalCounts": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0
+  },
+  "finalExpectedShutdownDiagnostics": [
+    "main error: window closed",
+    "main error: window closed"
+  ],
+  "unexpectedDiagnostics": []
+}

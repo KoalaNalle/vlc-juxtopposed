@@ -1,0 +1,520 @@
+const assetPathPrefix = "https://www.figma.com/api/mcp/asset/5beb3fda-a2b7-49e5-bc0a-ee64b481bc1a";
+const imgFrame1 = `${assetPathPrefix}/1b0f7.svg`;
+const imgFrame = `${assetPathPrefix}/a7541.svg`;
+const imgFrame2 = `${assetPathPrefix}/785d7.svg`;
+const imgFrame3 = `${assetPathPrefix}/97863.svg`;
+const imgPlayer = `${assetPathPrefix}/68212.png`;
+const imgFrame28 = `${assetPathPrefix}/cd549.png`;
+const imgFrame29 = `${assetPathPrefix}/2a11c.png`;
+const imgFrame30 = `${assetPathPrefix}/e6e94.png`;
+const imgFrame31 = `${assetPathPrefix}/31841.png`;
+const imgFrame32 = `${assetPathPrefix}/c5dd0.png`;
+const imgFrame33 = `${assetPathPrefix}/2aa0e.png`;
+const imgFrame34 = `${assetPathPrefix}/fa543.png`;
+const imgFrame35 = `${assetPathPrefix}/aefac.png`;
+const imgFrame4 = `${assetPathPrefix}/29ba5.svg`;
+const imgFrame49 = `${assetPathPrefix}/d7959.svg`;
+const imgFrame5 = `${assetPathPrefix}/928df.svg`;
+const imgFrame6 = `${assetPathPrefix}/dccb1.svg`;
+const imgFrame7 = `${assetPathPrefix}/d41b8.svg`;
+const imgFrame8 = `${assetPathPrefix}/9c2da.svg`;
+const imgFrame9 = `${assetPathPrefix}/504e1.svg`;
+const imgFrame10 = `${assetPathPrefix}/6db55.svg`;
+const imgFrame11 = `${assetPathPrefix}/c9326.svg`;
+const imgFrame12 = `${assetPathPrefix}/50e8b.svg`;
+const imgFrame13 = `${assetPathPrefix}/bfdda.svg`;
+const imgFrame14 = `${assetPathPrefix}/c1afe.svg`;
+const imgFrame15 = `${assetPathPrefix}/80d5a.svg`;
+const imgFrame50 = `${assetPathPrefix}/54fdc.svg`;
+const imgVector = `${assetPathPrefix}/2d6fc.svg`;
+const imgFrame16 = `${assetPathPrefix}/36d3d.svg`;
+
+type IconProps = {
+  className?: string;
+  direction?: "default" | "right" | "left";
+  eq?: "default";
+  name?: "settings" | "chevron" | "arrow";
+  state?: "default";
+  twoTone?: "no";
+  value?: "default";
+};
+
+function Icon({ className, direction = "default", eq = "default", name = "settings", state = "default", twoTone = "no", value = "default" }: IconProps) {
+  const isArrowAndLeftAndDefaultAndNo = name === "arrow" && direction === "left" && eq === "default" && twoTone === "no";
+  const isArrowAndRightAndDefaultAndNo = name === "arrow" && direction === "right" && eq === "default" && twoTone === "no";
+  const isChevronAndRightAndDefaultAndNo = name === "chevron" && direction === "right" && eq === "default" && twoTone === "no";
+  const isDefaultAndNoAndIsArrowAndRightOrArrowAndLeftOrChevronAndRight = eq === "default" && twoTone === "no" && ((name === "arrow" && direction === "right") || (name === "arrow" && direction === "left") || (name === "chevron" && direction === "right"));
+  return (
+    <div className={className || "content-stretch flex items-center justify-center relative"} id={isChevronAndRightAndDefaultAndNo ? "node-71_875" : isArrowAndLeftAndDefaultAndNo ? "node-71_890" : isArrowAndRightAndDefaultAndNo ? "node-71_887" : "node-42_355"}>
+      <div className={`relative shrink-0 ${isDefaultAndNoAndIsArrowAndRightOrArrowAndLeftOrChevronAndRight ? "flex items-center justify-center" : "size-[24px]"}`} id={isChevronAndRightAndDefaultAndNo ? "node-71_876" : isArrowAndLeftAndDefaultAndNo ? "node-71_891" : isArrowAndRightAndDefaultAndNo ? "node-71_888" : "node-44_413"}>
+        {isDefaultAndNoAndIsArrowAndRightOrArrowAndLeftOrChevronAndRight && (
+          <div className="-scale-y-100 flex-none rotate-180">
+            <div className="relative size-[24px]" data-name="Frame">
+              <img alt="" className="absolute block inset-0 max-w-none size-full" src={isChevronAndRightAndDefaultAndNo ? imgFrame3 : isArrowAndLeftAndDefaultAndNo ? imgFrame2 : imgFrame} />
+            </div>
+          </div>
+        )}
+        {name === "settings" && direction === "default" && eq === "default" && twoTone === "no" && <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame1} />}
+      </div>
+    </div>
+  );
+}
+
+export default function Player() {
+  return (
+    <div className="content-stretch flex flex-col items-start relative size-full" data-node-id="6261:15078" data-name="Player">
+      <div aria-hidden className="absolute inset-0 pointer-events-none">
+        <div className="absolute bg-[#303030] inset-0" />
+        <img alt="" className="absolute max-w-none object-cover size-full" src={imgPlayer} />
+      </div>
+      <div className="content-stretch flex flex-col h-[1080px] items-start relative shrink-0 w-full" data-node-id="6261:15079">
+        <div className="backdrop-blur-[25px] bg-[rgba(25,25,25,0.95)] content-stretch flex h-[40px] items-center justify-between max-w-[1920px] overflow-clip p-[6px] relative shrink-0 w-full" data-node-id="6261:15080">
+          <div className="content-stretch flex gap-[7px] items-center relative shrink-0 w-[300px]" data-node-id="6261:15081">
+            <div className="content-stretch flex items-center justify-center px-[7px] py-[2px] relative shrink-0" data-node-id="6261:15082">
+              <div className="content-stretch flex items-center justify-center relative shrink-0 size-[24px]" data-node-id="6261:15083" data-name="Icon">
+                <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15083;51:798">
+                  <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame4} />
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex items-center relative shrink-0" data-node-id="6261:15084">
+              <div className="content-stretch flex items-center relative shrink-0" data-node-id="6261:15085">
+                <div className="content-stretch flex items-center justify-center p-[2px] relative shrink-0" data-node-id="6261:15086" data-name="Icon">
+                  <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15086;247:419">
+                    <div className="-scale-y-100 flex-none rotate-180">
+                      <div className="relative size-[24px]" data-name="Frame">
+                        <div className="-translate-x-1/2 -translate-y-1/2 absolute left-1/2 size-[18px] top-1/2" data-node-id="I6261:15086;247:420">
+                          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame49} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15087">
+            VLC Media Player
+          </p>
+          <div className="content-stretch flex items-center justify-end relative shrink-0 w-[300px]" data-node-id="6261:15088">
+            <div className="content-stretch flex items-center justify-center px-[6px] relative shrink-0" data-node-id="6261:15089" data-name="Icon">
+              <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15089;48:47">
+                <div className="-scale-y-100 flex-none rotate-180">
+                  <div className="relative size-[24px]" data-name="Frame">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame5} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex items-center justify-center px-[6px] relative shrink-0" data-node-id="6261:15090" data-name="Icon">
+              <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15090;48:52">
+                <div className="-scale-y-100 flex-none rotate-180">
+                  <div className="relative size-[24px]" data-name="Frame">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame6} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex items-center justify-center px-[6px] relative shrink-0" data-node-id="6261:15091" data-name="Icon">
+              <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15091;48:55">
+                <div className="-scale-y-100 flex-none rotate-180">
+                  <div className="relative size-[24px]" data-name="Frame">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame7} />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex items-center justify-center px-[6px] relative shrink-0" data-node-id="6261:15092" data-name="Icon">
+              <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15092;45:41">
+                <div className="-scale-y-100 flex-none rotate-180">
+                  <div className="relative size-[24px]" data-name="Frame">
+                    <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame8} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="content-stretch flex flex-[1_0_0] items-start min-h-px relative w-[1920px]" data-node-id="6261:15093" data-name="sidebar">
+          <div className="bg-[#0e0e0e] content-stretch flex flex-col h-full items-start overflow-clip p-[8px] relative shrink-0 w-[217px]" data-node-id="6261:15094">
+            <div className="bg-[#191919] content-stretch flex flex-[1_0_0] flex-col gap-[14px] items-start min-h-px px-[16px] py-[12px] relative rounded-[6px] w-full" data-node-id="6261:15095">
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15096">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15097" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15097;177:88" data-name="Icon">
+                    <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15097;177:88;87:1027">
+                      <div className="-scale-y-100 flex-none rotate-180">
+                        <div className="relative size-[24px]" data-name="Frame">
+                          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame9} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#c6c6c6] text-[14px] whitespace-nowrap" data-node-id="6261:15098">
+                  Home
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15099">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0" data-node-id="6261:15100" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15100;177:88" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15100;177:88;44:413">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame1} />
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15101">
+                  Videos
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15102">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15103" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15103;177:88" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15103;177:88;44:413">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame1} />
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] w-[40px]" data-node-id="6261:15104">
+                  Music
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15105">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15106" data-name="Icon Wrapper">
+                  <div className="content-stretch flex flex-col items-center justify-center relative shrink-0 size-[24px]" data-node-id="I6261:15106;177:88" data-name="Icon">
+                    <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15106;177:88;70:834">
+                      <div className="-scale-y-100 flex-none rotate-180">
+                        <div className="relative size-[24px]" data-name="Frame">
+                          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame10} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15107">
+                  Network
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15108">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15109" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15109;177:88" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15109;177:88;42:362" data-name="Frame">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame11} />
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15110">
+                  Playlists
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15111">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15112" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15112;177:88" data-name="Icon">
+                    <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15112;177:88;2154:9700">
+                      <div className="-scale-y-100 flex-none rotate-180">
+                        <div className="relative size-[24px]" data-name="Frame">
+                          <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame12} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15113">
+                  Recent
+                </p>
+              </div>
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-node-id="6261:15114">
+                <div className="content-stretch flex items-center justify-center p-[4px] relative rounded-[4px] shrink-0 w-[30px]" data-node-id="6261:15115" data-name="Icon Wrapper">
+                  <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="I6261:15115;177:88" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15115;177:88;463:551">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame13} />
+                    </div>
+                  </div>
+                </div>
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#8f8f8f] text-[14px] whitespace-nowrap" data-node-id="6261:15116">
+                  Add item
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-[#0e0e0e] content-stretch flex flex-[1_0_0] flex-col gap-[17px] h-full items-center min-w-px overflow-clip p-[20px] relative" data-node-id="6261:15117">
+            <div className="content-stretch flex gap-[20px] items-center relative shrink-0 w-full" data-node-id="6261:15118">
+              <div className="content-stretch flex flex-[1_0_0] gap-[10px] items-center min-w-px relative" data-node-id="6261:15119">
+                <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-node-id="6261:15120">
+                  <Icon className="content-stretch flex items-center justify-center relative shrink-0" direction="left" name="arrow" />
+                  <Icon className="content-stretch flex items-center justify-center opacity-30 relative shrink-0" direction="right" name="arrow" />
+                </div>
+                <div className="content-stretch flex flex-[1_0_0] items-center min-w-px relative" data-node-id="6261:15123">
+                  <div className="[word-break:break-word] flex flex-col font-['Inter:Regular'] font-normal justify-center leading-[0] not-italic relative shrink-0 text-[#8f8f8f] text-[16px] whitespace-nowrap" data-node-id="6261:15124">
+                    <p className="leading-[normal]">Home</p>
+                  </div>
+                </div>
+              </div>
+              <div className="content-stretch flex gap-[20px] items-center justify-end relative shrink-0" data-node-id="6261:15131">
+                <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#6b6b6b] text-[14px] whitespace-nowrap" data-node-id="6261:15132">
+                  110 items
+                </p>
+                <div className="content-stretch flex gap-[20px] items-center justify-end relative shrink-0" data-node-id="6261:15133">
+                  <button className="content-stretch cursor-pointer flex items-center justify-center relative shrink-0" data-node-id="6261:15134" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15134;463:565">
+                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame14} />
+                    </div>
+                  </button>
+                  <button className="content-stretch cursor-pointer flex items-center justify-center relative shrink-0" data-node-id="6261:15135" data-name="Icon">
+                    <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15135;2107:6524">
+                      <div className="absolute border-[#6b6b6b] border-[1.5px] border-solid h-[8px] left-px rounded-[2px] top-[3px] w-[10px]" data-node-id="I6261:15135;2107:6527" />
+                      <div className="absolute border-[#6b6b6b] border-[1.5px] border-solid h-[8px] left-px rounded-[2px] top-[13px] w-[10px]" data-node-id="I6261:15135;2107:6529" />
+                      <div className="absolute border-[#6b6b6b] border-[1.5px] border-solid h-[8px] left-[13px] rounded-[2px] top-[3px] w-[10px]" data-node-id="I6261:15135;2107:6528" />
+                      <div className="absolute border-[#6b6b6b] border-[1.5px] border-solid h-[8px] left-[13px] rounded-[2px] top-[13px] w-[10px]" data-node-id="I6261:15135;2107:6530" />
+                    </div>
+                  </button>
+                  <div className="bg-[#151515] content-stretch flex gap-[10px] items-center overflow-clip px-[8px] py-[5px] relative rounded-[6px] shrink-0 w-[325px]" data-node-id="6261:15136">
+                    <div className="content-stretch flex items-center justify-center relative shrink-0" data-node-id="6261:15137" data-name="Icon">
+                      <div className="relative shrink-0 size-[24px]" data-node-id="I6261:15137;856:2148">
+                        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame15} />
+                      </div>
+                    </div>
+                    <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#404040] text-[14px] whitespace-nowrap" data-node-id="6261:15138">
+                      Search
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex items-center justify-end relative shrink-0" data-node-id="6261:15139">
+                  <button className="content-stretch cursor-pointer flex items-center justify-center relative shrink-0" data-node-id="6261:15141" data-name="Icon">
+                    <div className="flex items-center justify-center relative shrink-0" data-node-id="I6261:15141;247:419">
+                      <div className="-scale-y-100 flex-none rotate-180">
+                        <div className="relative size-[24px]" data-name="Frame">
+                          <div className="-translate-x-1/2 -translate-y-1/2 absolute left-1/2 size-[18px] top-1/2" data-node-id="I6261:15141;247:420">
+                            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame50} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="h-0 relative shrink-0 w-full" data-node-id="6261:15143" data-name="Vector">
+              <div className="absolute inset-[-0.5px_0]">
+                <img alt="" className="block max-w-none size-full" src={imgVector} />
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col items-start py-[20px] relative shrink-0 w-full" data-node-id="6261:15142">
+              <div className="content-stretch flex gap-[5px] items-center relative shrink-0 w-full" data-node-id="6261:15651">
+                <div className="[word-break:break-word] flex flex-col font-['Inter:Regular'] font-normal justify-center leading-[0] not-italic relative shrink-0 text-[#969696] text-[20px] whitespace-nowrap" data-node-id="6261:15648">
+                  <p className="leading-[normal]">Continue Watching</p>
+                </div>
+                <Icon className="content-stretch flex items-center justify-center relative shrink-0" direction="right" name="chevron" />
+              </div>
+              <div className="content-start flex flex-wrap gap-[40px_20px] items-start py-[20px] relative shrink-0 w-full" data-node-id="6272:13818">
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0 w-[316px]" data-node-id="6272:13852">
+                  <div className="aspect-[160/90] overflow-clip relative rounded-[12px] shrink-0 w-full" data-node-id="6272:13853">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame28} />
+                      <div className="absolute bg-[rgba(0,0,0,0.2)] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame29} />
+                    </div>
+                    <div className="absolute bg-[#d37918] bottom-[-0.25px] h-[4px] left-0 w-[26px]" data-node-id="6272:13854" />
+                  </div>
+                  <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6272:13855">
+                    The_Wand_S01E05.mp4
+                  </p>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0 w-[316px]" data-node-id="6272:13856">
+                  <div className="aspect-[160/90] overflow-clip relative rounded-[12px] shrink-0 w-full" data-node-id="6272:13857">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame30} />
+                      <div className="absolute bg-[rgba(0,0,0,0.2)] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame31} />
+                    </div>
+                    <div className="absolute bg-[#d37918] bottom-[-0.25px] h-[4px] left-0 w-[9px]" data-node-id="6272:13858" />
+                  </div>
+                  <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6272:13859">
+                    The_Wand_S01E06.mp4
+                  </p>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0 w-[316px]" data-node-id="6272:13860">
+                  <div className="aspect-[160/90] overflow-clip relative rounded-[12px] shrink-0 w-full" data-node-id="6272:13861">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame32} />
+                      <div className="absolute bg-[rgba(0,0,0,0.2)] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame33} />
+                    </div>
+                    <div className="absolute bg-[#d37918] bottom-[-0.25px] h-[4px] left-0 w-[9px]" data-node-id="6272:13862" />
+                  </div>
+                  <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6272:13863">
+                    The_Wand_S01E07.mp4
+                  </p>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0 w-[316px]" data-node-id="6272:13864">
+                  <div className="aspect-[160/90] overflow-clip relative rounded-[12px] shrink-0 w-full" data-node-id="6272:13865" style={{ backgroundImage: "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 100%), linear-gradient(90deg, rgb(23, 23, 23) 0%, rgb(23, 23, 23) 100%)" }}>
+                    <div className="absolute bg-[#d37918] bottom-[-0.25px] h-[4px] left-0 w-[13px]" data-node-id="6272:13866" />
+                  </div>
+                  <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6272:13867">
+                    DON’T BLINK.mp4
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col items-start py-[20px] relative shrink-0 w-full" data-node-id="6272:13893">
+              <div className="content-stretch flex gap-[5px] items-center relative shrink-0 w-full" data-node-id="6272:13894">
+                <div className="[word-break:break-word] flex flex-col font-['Inter:Regular'] font-normal justify-center leading-[0] not-italic relative shrink-0 text-[#969696] text-[20px] whitespace-nowrap" data-node-id="6272:13895">
+                  <p className="leading-[normal]">Listen Again</p>
+                </div>
+                <Icon className="content-stretch flex items-center justify-center relative shrink-0" direction="right" name="chevron" />
+              </div>
+              <div className="content-start flex flex-wrap gap-[40px_20px] items-start py-[20px] relative shrink-0 w-full" data-node-id="6272:13897">
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6272:13898">
+                  <div className="relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6272:13899">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame34} />
+                    </div>
+                  </div>
+                  <div className="[word-break:break-word] content-stretch flex flex-col font-['Inter:Regular'] font-normal gap-[10px] items-start leading-[normal] not-italic relative shrink-0 text-[16px] whitespace-nowrap" data-node-id="6272:13917">
+                    <p className="relative shrink-0 text-[#969696]" data-node-id="6272:13901">
+                      untangle
+                    </p>
+                    <p className="relative shrink-0 text-[#6b6b6b]" data-node-id="6272:13916">
+                      juxtopposed
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:13921">
+                  <div className="relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:13922">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame35} />
+                    </div>
+                  </div>
+                  <div className="[word-break:break-word] content-stretch flex flex-col font-['Inter:Regular'] font-normal gap-[10px] items-start leading-[normal] not-italic relative shrink-0 text-[16px] whitespace-nowrap" data-node-id="6284:13923">
+                    <p className="relative shrink-0 text-[#969696]" data-node-id="6284:13924">
+                      moonlight
+                    </p>
+                    <p className="relative shrink-0 text-[#6b6b6b]" data-node-id="6284:13925">
+                      juxtopposed
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:13926">
+                  <div className="relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:13927">
+                    <div aria-hidden className="absolute inset-0 pointer-events-none rounded-[12px]">
+                      <div className="absolute bg-[#171717] inset-0 rounded-[12px]" />
+                      <img alt="" className="absolute max-w-none object-cover rounded-[12px] size-full" src={imgFrame35} />
+                    </div>
+                  </div>
+                  <div className="[word-break:break-word] content-stretch flex flex-col font-['Inter:Regular'] font-normal gap-[10px] items-start leading-[normal] not-italic relative shrink-0 text-[16px] whitespace-nowrap" data-node-id="6284:13928">
+                    <p className="relative shrink-0 text-[#969696]" data-node-id="6284:13929">
+                      black bird
+                    </p>
+                    <p className="relative shrink-0 text-[#6b6b6b]" data-node-id="6284:13930">
+                      juxtopposed
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="content-stretch flex flex-col items-start py-[20px] relative shrink-0 w-full" data-node-id="6284:13936">
+              <div className="content-stretch flex gap-[5px] items-center relative shrink-0 w-full" data-node-id="6284:13937">
+                <div className="[word-break:break-word] flex flex-col font-['Inter:Regular'] font-normal justify-center leading-[0] not-italic relative shrink-0 text-[#969696] text-[20px] whitespace-nowrap" data-node-id="6284:13938">
+                  <p className="leading-[normal]">Frequently Visited Folders</p>
+                </div>
+                <Icon className="content-stretch flex items-center justify-center relative shrink-0" direction="right" name="chevron" />
+              </div>
+              <div className="content-start flex flex-wrap gap-[40px_20px] items-start py-[20px] relative shrink-0 w-full" data-node-id="6284:13940">
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:13980">
+                  <div className="bg-[#1e1e1e] overflow-clip relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:13981">
+                    <div className="-translate-x-1/2 -translate-y-1/2 absolute content-stretch flex items-center justify-center left-1/2 top-[calc(50%+0.25px)]" data-node-id="6284:13982" data-name="Icon">
+                      <div className="flex items-center justify-center relative shrink-0" data-node-id="I6284:13982;51:809">
+                        <div className="-scale-y-100 flex-none rotate-180">
+                          <div className="relative size-[48px]" data-name="Frame">
+                            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame16} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="content-stretch flex flex-col items-start relative shrink-0" data-node-id="6284:13983">
+                    <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6284:13984">
+                      Shows
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:13988">
+                  <div className="bg-[#1e1e1e] overflow-clip relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:13989">
+                    <div className="-translate-x-1/2 -translate-y-1/2 absolute content-stretch flex items-center justify-center left-1/2 top-[calc(50%+0.25px)]" data-node-id="6284:13990" data-name="Icon">
+                      <div className="flex items-center justify-center relative shrink-0" data-node-id="I6284:13990;51:809">
+                        <div className="-scale-y-100 flex-none rotate-180">
+                          <div className="relative size-[48px]" data-name="Frame">
+                            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame16} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="content-stretch flex flex-col items-start relative shrink-0" data-node-id="6284:13991">
+                    <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6284:13992">
+                      Shows
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:13996">
+                  <div className="bg-[#1e1e1e] overflow-clip relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:13997">
+                    <div className="-translate-x-1/2 -translate-y-1/2 absolute content-stretch flex items-center justify-center left-1/2 top-[calc(50%+0.25px)]" data-node-id="6284:13998" data-name="Icon">
+                      <div className="flex items-center justify-center relative shrink-0" data-node-id="I6284:13998;51:809">
+                        <div className="-scale-y-100 flex-none rotate-180">
+                          <div className="relative size-[48px]" data-name="Frame">
+                            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame16} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="content-stretch flex flex-col items-start relative shrink-0" data-node-id="6284:13999">
+                    <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6284:14000">
+                      Shows
+                    </p>
+                  </div>
+                </div>
+                <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0" data-node-id="6284:14004">
+                  <div className="bg-[#1e1e1e] overflow-clip relative rounded-[12px] shrink-0 size-[200px]" data-node-id="6284:14005">
+                    <div className="-translate-x-1/2 -translate-y-1/2 absolute content-stretch flex items-center justify-center left-1/2 top-[calc(50%+0.25px)]" data-node-id="6284:14006" data-name="Icon">
+                      <div className="flex items-center justify-center relative shrink-0" data-node-id="I6284:14006;51:809">
+                        <div className="-scale-y-100 flex-none rotate-180">
+                          <div className="relative size-[48px]" data-name="Frame">
+                            <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgFrame16} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="content-stretch flex flex-col items-start relative shrink-0" data-node-id="6284:14007">
+                    <p className="[word-break:break-word] font-['Inter:Regular'] font-normal leading-[normal] not-italic relative shrink-0 text-[#969696] text-[16px] whitespace-nowrap" data-node-id="6284:14008">
+                      Shows
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+SUPER CRITICAL: The generated React+Tailwind code MUST be converted to match the target project's technology stack and styling system.
+1. Analyze the target codebase to identify: technology stack, styling approach, component patterns, and design tokens
+2. Convert React syntax to the target framework/library
+3. Transform all Tailwind classes to the target styling system while preserving exact visual design
+4. Follow the project's existing patterns and conventions
+DO NOT install any Tailwind as a dependency unless the user instructs you to do so.
+
+
+Node ids have been added to the code as data attributes, e.g. `data-node-id="1:2"`.
+
+These styles are contained in the design: Dark/Accent/Logo: #D37918, Dark/FG/A2: #8F8F8F, Dark/BG/A3 Transparent: #191919, bg blur: Effect(type: BACKGROUND_BLUR, radius: 50), Dark/Accent/Main: #D37918, Dark/FG/2: #C6C6C6, Dark/BG/A4: #191919, Dark/BG/B1: #0E0E0E, Dark/FG/A3: #6B6B6B, Dark/FG/A4: #404040, Dark/BG/A5: #151515, Dark/Divider/Dim: #222222, Dark/FG/A1: #969696.
+
+The generated code contains image and SVG URL constants, e.g. const image = `${assetPathPrefix}/<asset file name>`, where assetPathPrefix is declared once at the top of the code and every asset URL interpolates it. These URLs are temporary download sources and expire after 7 days. Download each asset into the project with curl -L, then replace its URL in the generated code with a reference to the downloaded asset. Never use the temporary URLs as runtime image sources.

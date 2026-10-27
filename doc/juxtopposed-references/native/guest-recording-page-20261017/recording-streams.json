@@ -1,0 +1,261 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "nativeWindowAccepted": false,
+  "runtimeSha256": {
+    "libvlccore.dll": "15544aec341c67d7dba56a62241c056a11f3fa9adf86e62d0b714d816b3a6d43",
+    "plugins/codec/libx264_plugin.dll": "692651bcfe2a5ddf3db2e9297c52d3b9e5f688399ffd37077fa1db08df5c9f62",
+    "plugins/demux/libmkv_plugin.dll": "469751a13e8547291bbfc3bcc28e59cf0bebd7e8f6354c5bb00dfeb7c7cd359b"
+  },
+  "cases": {
+    "record-native-0": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 18036,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 17860,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1,
+      "backendObserved": true,
+      "h264Decoded": true,
+      "bytes": 4720,
+      "sha256": "6ac3a0273404a8f8ad58784d37bc517d78fd6d56d9adffbff07b0c5c55102561",
+      "container": ".mp4",
+      "passed": true
+    },
+    "record-native-1": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 17968,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 18500,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1,
+      "backendObserved": true,
+      "h264Decoded": true,
+      "bytes": 7896,
+      "sha256": "c0f9bd94851e389b736b5da124c68f5f5e9393c63f5aa3e3978a8998181904ca",
+      "container": ".ts",
+      "passed": true
+    },
+    "all": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 4684,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 17,
+          "codec": "S_TEXT/UTF8"
+        },
+        {
+          "type": 1,
+          "codec": "V_MPEG4/ISO/AVC"
+        },
+        {
+          "type": 2,
+          "codec": "A_DTS"
+        }
+      ],
+      "expectedTrackTypes": [
+        1,
+        2,
+        17
+      ],
+      "subtitlePacketPresent": true,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "no-audio": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 13272,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 17,
+          "codec": "S_TEXT/UTF8"
+        },
+        {
+          "type": 1,
+          "codec": "V_MPEG4/ISO/AVC"
+        }
+      ],
+      "expectedTrackTypes": [
+        1,
+        17
+      ],
+      "subtitlePacketPresent": true,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "no-video": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 5508,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 17,
+          "codec": "S_TEXT/UTF8"
+        },
+        {
+          "type": 2,
+          "codec": "A_DTS"
+        }
+      ],
+      "expectedTrackTypes": [
+        2,
+        17
+      ],
+      "subtitlePacketPresent": true,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "no-subtitles": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 16984,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 1,
+          "codec": "V_MPEG4/ISO/AVC"
+        },
+        {
+          "type": 2,
+          "codec": "A_DTS"
+        }
+      ],
+      "expectedTrackTypes": [
+        1,
+        2
+      ],
+      "subtitlePacketPresent": false,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "subtitles-only": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 4448,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 17,
+          "codec": "S_TEXT/UTF8"
+        }
+      ],
+      "expectedTrackTypes": [
+        17
+      ],
+      "subtitlePacketPresent": true,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "audio-only": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 19336,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 2,
+          "codec": "A_DTS"
+        }
+      ],
+      "expectedTrackTypes": [
+        2
+      ],
+      "subtitlePacketPresent": false,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "video-only": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 13356,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 1,
+          "codec": "V_MPEG4/ISO/AVC"
+        }
+      ],
+      "expectedTrackTypes": [
+        1
+      ],
+      "subtitlePacketPresent": false,
+      "sourceStatUnchanged": true,
+      "passed": true
+    },
+    "explicit-options-override-defaults": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 10560,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "tracks": [
+        {
+          "type": 17,
+          "codec": "S_TEXT/UTF8"
+        },
+        {
+          "type": 1,
+          "codec": "V_MPEG4/ISO/AVC"
+        },
+        {
+          "type": 2,
+          "codec": "A_DTS"
+        }
+      ],
+      "expectedTrackTypes": [
+        1,
+        2,
+        17
+      ],
+      "subtitlePacketPresent": true,
+      "sourceStatUnchanged": true,
+      "passed": true
+    }
+  },
+  "fixture": {
+    "process": {
+      "forcedCleanupUsed": false,
+      "pid": 5004,
+      "exitCode": 0,
+      "normalExit": true
+    },
+    "sha256": "885f97ed52122902b980e524c362be40c829b1e8d5a26a3651f14cf801a6df87",
+    "synthetic": true
+  },
+  "mediaPathsLogsAndStreamOutputsPrivate": true,
+  "sourceRuntimeUnchanged": true
+}

@@ -28,6 +28,9 @@
 #include <vlc_hash.h>
 #include <vlc_fs.h>
 #include <vlc_preparser.h>
+#include <vlc_url.h>
+
+#include <vector>
 
 EmbeddedThumbnail::EmbeddedThumbnail( input_attachment_t* a, vlc_fourcc_t fcc )
     : m_attachment( vlc_input_attachment_Hold( a ) )
@@ -86,8 +89,44 @@ std::string EmbeddedThumbnail::extension() const
     }
 }
 
+static std::shared_ptr<EmbeddedThumbnail> cachedThumbnail(input_item_t *item)
+{
+    if (!input_item_IsArtFetched(item))
+        return nullptr;
+    const auto url = vlc::wrap_cptr(input_item_GetArtURL(item));
+    if (url == nullptr)
+        return nullptr;
+    const auto path = vlc::wrap_cptr(vlc_uri2path(url.get()));
+    if (path == nullptr)
+        return nullptr;
+
+    const auto file = vlc::wrap_cptr(vlc_fopen(path.get(), "rb"), &fclose);
+    struct stat st;
+    // Only transfer complete, bounded local image files. The fetcher already
+    // handled the network policy and download deadline; do not open URLs here.
+    if (file == nullptr || fstat(fileno(file.get()), &st) != 0
+        || !S_ISREG(st.st_mode) || st.st_size < 8
+        || st.st_size > 20 * 1024 * 1024)
+        return nullptr;
+    std::vector<unsigned char> bytes(static_cast<size_t>(st.st_size));
+    if (fread(bytes.data(), bytes.size(), 1, file.get()) != 1)
+        return nullptr;
+    const bool png = memcmp(bytes.data(), "\x89PNG\r\n\x1a\n", 8) == 0;
+    const bool jpeg = bytes[0] == 0xff && bytes[1] == 0xd8 && bytes[2] == 0xff;
+    if (!png && !jpeg)
+        return nullptr;
+    const auto attachment = vlc::wrap_cptr(vlc_input_attachment_New(
+        "", png ? "image/png" : "image/jpeg", "", bytes.data(), bytes.size()),
+        &vlc_input_attachment_Release);
+    if (attachment == nullptr)
+        return nullptr;
+    return std::make_shared<EmbeddedThumbnail>(attachment.get(),
+        png ? VLC_CODEC_PNG : VLC_CODEC_JPEG);
+}
+
 MetadataExtractor::MetadataExtractor( vlc_object_t* parent )
     : m_currentCtx( nullptr )
+    , m_network(var_InheritBool(parent, "metadata-network-access"))
     , m_parser(parent, {
         .types = VLC_PREPARSER_TYPE_PARSE | VLC_PREPARSER_OPTION_SUBITEMS,
         .max_parser_threads = 1,
@@ -98,6 +137,16 @@ MetadataExtractor::MetadataExtractor( vlc_object_t* parent )
 #else
         .external_process = true,
 #endif
+    })
+    , m_fetcher(parent, {
+        .types = VLC_PREPARSER_TYPE_FETCHMETA_ALL,
+        .max_parser_threads = 1,
+        .max_thumbnailer_threads = 0,
+        // Real cover services can require several HTTPS redirects. File
+        // extraction remains separate; allow that optional chain to finish.
+        .timeout = VLC_TICK_FROM_SEC(10),
+        // Enrich the populated copy; the external protocol only carries a URI.
+        .external_process = false,
     })
 {
 }
@@ -182,19 +231,8 @@ void MetadataExtractor::onParserEnded(vlc_preparser_req *req, int status, void *
     auto* ctx = static_cast<ParseContext*>( data );
 
     vlc::threads::mutex_locker lock( ctx->mde->m_mutex );
-    if (status == VLC_SUCCESS) {
-        if (ctx->item.fileType() == medialibrary::IFile::Type::Playlist
-                && ctx->item.nbLinkedItems() == 0) {
-            ctx->status =  medialibrary::parser::Status::Fatal;
-        } else {
-            ctx->mde->populateItem(ctx->item, vlc_preparser_req_GetItem(req));
-            ctx->status = medialibrary::parser::Status::Success;
-        }
-    } else {
-        ctx->status = medialibrary::parser::Status::Fatal;
-    }
+    ctx->result = status;
     ctx->done = true;
-    ctx->mde->m_currentCtx = nullptr;
     ctx->mde->m_cond.broadcast();
     vlc_preparser_req_Release(req);
 }
@@ -239,45 +277,67 @@ medialibrary::parser::Status MetadataExtractor::run( medialibrary::parser::IItem
     if (inputItem == nullptr)
         return medialibrary::parser::Status::Fatal;
 
-    {
-        vlc::threads::mutex_locker lock( m_mutex );
-        m_currentCtx = &ctx;
-
-        int options = VLC_PREPARSER_TYPE_PARSE | VLC_PREPARSER_OPTION_SUBITEMS;
-
-        static const struct vlc_preparser_cbs cbs = {
-            .on_ended = onParserEnded,
-            .on_subtree_added = onParserSubtreeAdded,
-            .on_attachments_added = onAttachmentsAdded,
-        };
-
-        vlc_preparser_t *preparser = m_parser.instance();
-        if (preparser == nullptr) {
-            return medialibrary::parser::Status::Fatal;
+    vlc::threads::mutex_locker lock(m_mutex);
+    if (m_stopping)
+        return medialibrary::parser::Status::Fatal;
+    m_currentCtx = &ctx;
+    const auto phase = [&](vlc_preparser_t *parser, input_item_t *media,
+                           int options, const vlc_preparser_cbs *callbacks) {
+        if (parser == nullptr)
+            return false;
+        ctx.done = false;
+        ctx.result = VLC_EGENERIC;
+        auto *request = vlc_preparser_req_NewParse(parser, media, options, callbacks, &ctx);
+        if (request == nullptr)
+            return false;
+        if (vlc_preparser_Submit(parser, request) != VLC_SUCCESS) {
+            vlc_preparser_req_Release(request);
+            return false;
         }
-
-        vlc_preparser_req *req =
-            vlc_preparser_req_NewParse(preparser, inputItem.get(), options,
-                                       &cbs, &ctx);
-        if (req == nullptr)
-        {
-            m_currentCtx = nullptr;
-            return medialibrary::parser::Status::Fatal;
-        }
-
-        if (vlc_preparser_Submit(preparser, req) != VLC_SUCCESS)
-        {
-            vlc_preparser_req_Release(req);
-            m_currentCtx = nullptr;
-            return medialibrary::parser::Status::Fatal;
-        }
-
-        while (ctx.done == false)
+        while (!ctx.done)
             m_cond.wait(m_mutex);
-        m_currentCtx = nullptr;
+        return ctx.result == VLC_SUCCESS;
+    };
+    static const vlc_preparser_cbs parseCallbacks = {
+        .on_ended = onParserEnded,
+        .on_subtree_added = onParserSubtreeAdded,
+        .on_attachments_added = onAttachmentsAdded,
+    };
+    static const vlc_preparser_cbs fetchCallbacks = {
+        .on_ended = onParserEnded,
+        .on_subtree_added = nullptr,
+        .on_attachments_added = nullptr,
+    };
+    const bool parsed = phase(m_parser.instance(), inputItem.get(),
+        VLC_PREPARSER_TYPE_PARSE | VLC_PREPARSER_OPTION_SUBITEMS, &parseCallbacks);
+    auto enriched = vlc::wrap_cptr(static_cast<input_item_t *>(nullptr), &input_item_Release);
+    bool fetched = false;
+    if (parsed && !m_stopping) {
+        enriched.reset(input_item_Copy(inputItem.get()));
+        if (enriched != nullptr)
+            fetched = phase(m_fetcher.instance(), enriched.get(),
+                VLC_PREPARSER_TYPE_FETCHMETA_LOCAL
+                    | (m_network ? VLC_PREPARSER_TYPE_FETCHMETA_NET : 0), &fetchCallbacks);
     }
-
-    return ctx.status;
+    auto status = medialibrary::parser::Status::Fatal;
+    if (parsed && !m_stopping
+        && (item.fileType() != medialibrary::IFile::Type::Playlist || item.nbLinkedItems() != 0)) {
+        // Optional failure leaves embedded metadata and tracks intact. Populate
+        // once so retries/enrichment cannot duplicate the parsed track list.
+        populateItem(item, fetched ? enriched.get() : inputItem.get());
+        // The library's artwork analyzer consumes thumbnail objects rather
+        // than ArtworkUrl. Preserve embedded covers, then offer a fetched
+        // local image through the same save/hash interface.
+        if (fetched && item.embeddedThumbnails().empty()) {
+            auto thumbnail = cachedThumbnail(enriched.get());
+            if (thumbnail != nullptr)
+                item.addEmbeddedThumbnail(std::move(thumbnail));
+        }
+        status = medialibrary::parser::Status::Success;
+    }
+    m_currentCtx = nullptr;
+    m_cond.broadcast();
+    return status;
 }
 
 const char* MetadataExtractor::name() const
@@ -301,22 +361,28 @@ void MetadataExtractor::onFlushing()
 
 void MetadataExtractor::onRestarted()
 {
+    vlc::threads::mutex_locker lock(m_mutex);
+    m_stopping = false;
 }
 
 void MetadataExtractor::stop()
 {
-    vlc_preparser_t *preparser = m_parser.get();
-    if (preparser == nullptr) {
-        return;
+    vlc_preparser_t *parser, *fetcher;
+    {
+        vlc::threads::mutex_locker lock(m_mutex);
+        m_stopping = true;
+        parser = m_parser.get();
+        fetcher = m_fetcher.get();
     }
 
     /* vlc_preparser_Cancel can call the callback from this thread so the mutex
      * must be unlock */
-    vlc_preparser_Cancel(preparser, nullptr);
+    if (parser != nullptr)
+        vlc_preparser_Cancel(parser, nullptr);
+    if (fetcher != nullptr)
+        vlc_preparser_Cancel(fetcher, nullptr);
 
     vlc::threads::mutex_locker lock(m_mutex);
-    if (m_currentCtx != nullptr) {
-        while (m_currentCtx != nullptr && m_currentCtx->done == false)
-            m_cond.wait(m_mutex);
-    }
+    while (m_currentCtx != nullptr)
+        m_cond.wait(m_mutex);
 }

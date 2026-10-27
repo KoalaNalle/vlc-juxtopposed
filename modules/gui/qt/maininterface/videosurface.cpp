@@ -82,6 +82,12 @@ void VideoSurfaceProvider::onMouseReleased(int vlcButton)
         vlc_window_ReportMouseReleased(m_voutWindow, vlcButton);
 }
 
+void VideoSurfaceProvider::onMouseCancelled()
+{
+    if (m_voutWindow)
+        vlc_window_ReportMouseCancelled(m_voutWindow);
+}
+
 void VideoSurfaceProvider::onMouseDoubleClick(int vlcButton)
 {
     if (m_voutWindow)
@@ -152,6 +158,7 @@ void VideoSurface::mousePressEvent(QMouseEvent* event)
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
+        m_pressedButtons |= event->button();
         emit mousePressed(vlc_button);
         event->accept();
     }
@@ -164,11 +171,20 @@ void VideoSurface::mouseReleaseEvent(QMouseEvent* event)
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
+        m_pressedButtons &= ~event->button();
         emit mouseReleased(vlc_button);
         event->accept();
     }
     else
         event->ignore();
+}
+
+void VideoSurface::mouseUngrabEvent()
+{
+    if (m_pressedButtons != Qt::NoButton && m_provider)
+        m_provider->onMouseCancelled();
+    m_pressedButtons = Qt::NoButton;
+    ViewBlockingRectangle::mouseUngrabEvent();
 }
 
 void VideoSurface::mouseMoveEvent(QMouseEvent* event)
@@ -202,6 +218,7 @@ void VideoSurface::mouseDoubleClickEvent(QMouseEvent* event)
     int vlc_button = qtMouseButton2VLC( event->button() );
     if( vlc_button >= 0 )
     {
+        m_pressedButtons |= event->button();
         emit mouseDblClicked(vlc_button);
         event->accept();
     }

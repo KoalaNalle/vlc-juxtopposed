@@ -1,0 +1,104 @@
+{
+  "scope": "Actual production QML with strict supplied state, plus actual GNU make remake; no native substitution",
+  "generalGroups": [
+    "Open and reload without writes; modal transport guard and natural 1048x865 geometry",
+    "All 20 unchanged asset identities; all 24 actual General image instances and 18 unique visible exports have exact natural dimensions and slot geometry",
+    "Dark/Light/System actual native enum mapping and radio arrow-key focus",
+    "Nine real swatch choices; unknown custom color retained without load-time coercion; wraparound arrow selection",
+    "Keyboard dropdown dispatch uses exact language codes and legal log-detail integers; legacy custom detail remains unselected",
+    "Boolean toggles dispatch strict booleans; logger-dependent controls disable; native picker method and restart feedback dispatch",
+    "Literal log-file text commit; failed text/dropdown writes restore native current values and show error; unavailable updater disabled",
+    "Modal forward/backward focus boundary wraps; ordinary close restores opener; reopen reloads and preserves supplied native values",
+    "Search filters genuine available settings/categories, no-results state, supplied real-page contract and exact active Interface icon; no fake category fallback",
+    "Actual focused controls remain in bounds and reveal inside scrolling viewport at natural, narrow, 150% and 200% layouts; natural SVG geometry retained",
+    "Injected light/accent palette updates rendered colors; unavailable native object disables real controls without writes or Qt errors",
+    "Advanced closes then dispatches intentional expert preference action exactly once; Escape closes and restores focus"
+  ],
+  "hostChecks": [
+    "initial host: no modal, no native text input, one genuine General service",
+    "real opener activates the shared Global route; Search sets actual TextInputFocus",
+    "repeat Settings request focuses existing Search and does not reload/reset the open service",
+    "pending Interface category remains disabled rather than loading General or a fake service",
+    "all 12 directed modal transitions keep exactly one visible dialog and the shared guard",
+    "all 9 busy cross-modal requests preserve the current operation without cancel/reset",
+    "actual ShortcutExt transport suppressed while Global Search owns the window focus",
+    "nontext focus inside Global retains modal suppression without a false editing flag",
+    "Escape closes Global, clears one shared modal guard, and restores the original opener",
+    "outside editable text still uses the real window focus guard after the modal closes",
+    "read-only text is not treated as an editor by the original helper",
+    "transport resumes through the unchanged ShortcutExt when modal and editing guards clear",
+    "actual Log-file TextInput also updates the shared native input-focus flag",
+    "hidden opener returns focus to the current view fallback",
+    "destroyed opener also returns focus safely to the current view fallback",
+    "real Advanced button closes Global then invokes the explicit native entry once",
+    "all QML entries refuse to overlay the open native Preferences dialog",
+    "normal Settings can reopen after native Preferences closes and reloads current values",
+    "existing file/profile picker routes still call their actual provider API names",
+    "actual playlist completion forwards its selected playlist and closes its modal",
+    "saved-playlist refresh notification survives host extraction",
+    "same General provider drives a live shared accent on the actual mounted shell",
+    "never-cleared QML message ledger is empty before teardown",
+    "actual engine destruction completes without new binding/provider errors"
+  ],
+  "hostTransitions": 12,
+  "hostBusyGuards": 9,
+  "qtMessages": [],
+  "defaultInvocationPassed": true,
+  "existing19WorkflowCommandsPreserved": true,
+  "newWindowsWorkflowCommandCount": 21,
+  "make": {
+    "version": "GNU Make 4.3",
+    "passed": true,
+    "cases": [
+      {
+        "mode": "historical-eager",
+        "makeRun": true,
+        "exitCode": 2,
+        "desiredOracle": true,
+        "resourceAliases": [
+          "Old.qml",
+          "New.qml",
+          "Script.js",
+          "Module.mjs",
+          "SharedSingleton.qml"
+        ],
+        "generatedDependencyText": "dialogs/qmldir.qrc: dialogs/qmldir\ndialogs/res.qrc dialogs/qmldir: dialogs/qml_modules.stamp\ndialogs/qmlcachegen.rsp: $(builddir)/dialogs/res.qrc\ndialogs/qmlcache_loader.cpp: dialogs/qmlcachegen.rsp\ndialogs/qmlassets.cpp: $(builddir)/dialogs/qmldir.qrc $(builddir)/dialogs/res.qrc\ndialogs/qmlassets.cpp: $(libqml_module_dialogs_a_QML) $(libqml_module_dialogs_a_Singleton_QML)\nOld.cpp: $(builddir)/dialogs/res.qrc\n",
+        "cppPrerequisites": {
+          "Old.cpp": "Old.qml dialogs/res.qrc\n",
+          "New.cpp": null,
+          "Script.cpp": null,
+          "Module.cpp": null,
+          "SharedSingleton.cpp": null
+        },
+        "stampText": "VLC.Dialogs VLC/Dialogs Old.qml New.qml Script.js Module.mjs SharedSingleton.qml\n"
+      },
+      {
+        "mode": "current-production",
+        "makeRun": true,
+        "exitCode": 0,
+        "desiredOracle": true,
+        "resourceAliases": [
+          "Old.qml",
+          "New.qml",
+          "Script.js",
+          "Module.mjs",
+          "SharedSingleton.qml"
+        ],
+        "generatedDependencyText": "dialogs/qmldir.qrc: dialogs/qmldir\ndialogs/res.qrc dialogs/qmldir: dialogs/qml_modules.stamp\ndialogs/qmlcachegen.rsp: $(builddir)/dialogs/res.qrc\ndialogs/qmlcache_loader.cpp: dialogs/qmlcachegen.rsp\ndialogs/qmlassets.cpp: $(builddir)/dialogs/qmldir.qrc $(builddir)/dialogs/res.qrc\ndialogs/qmlassets.cpp: $(libqml_module_dialogs_a_QML) $(libqml_module_dialogs_a_Singleton_QML)\nqml_dialogs_cachegen_sources = $(libqml_module_dialogs_a_QML) $(libqml_module_dialogs_a_Singleton_QML)\nqml_dialogs_cachegen_qml = $(qml_dialogs_cachegen_sources:.qml=.cpp)\nqml_dialogs_cachegen_js = $(qml_dialogs_cachegen_qml:.js=.cpp)\n$(qml_dialogs_cachegen_js:.mjs=.cpp): $(builddir)/dialogs/res.qrc\n",
+        "cppPrerequisites": {
+          "Old.cpp": "Old.qml dialogs/res.qrc\n",
+          "New.cpp": "New.qml dialogs/res.qrc\n",
+          "Script.cpp": "Script.js dialogs/res.qrc\n",
+          "Module.cpp": "Module.mjs dialogs/res.qrc\n",
+          "SharedSingleton.cpp": "SharedSingleton.qml dialogs/res.qrc\n"
+        },
+        "stampText": "VLC.Dialogs VLC/Dialogs Old.qml New.qml Script.js Module.mjs SharedSingleton.qml\n"
+      }
+    ]
+  },
+  "retainedSetupFailures": [
+    "Default system Python lacked PySide6; replay used existing Qt6.8.3 test environment",
+    "Host test default root resolved parent directory; one-line root correction, original assertions unchanged"
+  ],
+  "ciForNewHeadPending": true
+}

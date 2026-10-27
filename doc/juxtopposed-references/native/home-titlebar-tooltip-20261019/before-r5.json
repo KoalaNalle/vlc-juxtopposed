@@ -1,0 +1,125 @@
+{
+  "passed": false,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "758df308cca3974c767652d66d2ce4273c2ec585a393db2d40b31aa2022df71b",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "4e8215ad5d7dcdb81111f42b335ac64e7a740adc917e1db1616ba0b79dabff1d",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "tooltip-edge": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 25576,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 19.313000000000102,
+      "exitCode": 0,
+      "elapsedSeconds": 22.45299999999952,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "tooltip journey remains on the selected test monitor",
+            "passed": true
+          },
+          {
+            "name": "actual native window maximizes before edge placement checks",
+            "passed": true
+          },
+          {
+            "name": "actual visible title-strip Close control exists",
+            "passed": true
+          },
+          {
+            "name": "Close owns actual keyboard focus without activation",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual attached title-strip tooltip is materialized",
+            "passed": true
+          },
+          {
+            "name": "keyboard focus opens the real Close tooltip",
+            "passed": true
+          },
+          {
+            "name": "tooltip has actual rendered popup content",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "complete Close tooltip stays within the selected monitor available bounds",
+            "passed": false
+          }
+        ],
+        "error": "complete Close tooltip stays within the selected monitor available bounds",
+        "failedPins": [],
+        "failedRoute": [
+          "home",
+          "base"
+        ],
+        "fullBetaAccepted": false,
+        "mode": "tooltip-edge",
+        "ownedWindowOnly": true,
+        "passed": false,
+        "pinServiceError": "",
+        "popupType": 1,
+        "screenAvailableBounds": [
+          -1920,
+          357,
+          1920,
+          1032
+        ],
+        "screenName": "LF24T450F",
+        "startupGateUsed": true,
+        "tooltipGlobalBounds": [
+          0,
+          329,
+          44,
+          32
+        ]
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "282836a11b902331b51f414aaa84e29a61a79be8163ee3700f0ec34cc25bc294",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true
+}

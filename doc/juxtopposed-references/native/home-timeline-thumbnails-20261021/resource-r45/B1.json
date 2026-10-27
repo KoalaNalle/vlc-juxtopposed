@@ -1,0 +1,80 @@
+{
+  "trial": "B1",
+  "workaround": true,
+  "frameLatencyEnvironment": "0",
+  "os": "Windows-11-10.0.26200-SP0",
+  "privateFixture": false,
+  "syntheticMedia": true,
+  "thumbnailJourneyHooksAbsent": true,
+  "fullBetaAccepted": false,
+  "responsivenessAccepted": false,
+  "forcedCleanupUsed": false,
+  "status": "measurement-incomplete-process-left-running",
+  "passed": false,
+  "runnerSha256": "7f67da3b0404ef8d2a3937f6e73463825b01be304636595da2c813f47b860fa8",
+  "sourceInputsSha256": "6a195cc36c7d889a1e67536cc8866ce4cafea83c0170f27cc222766d49105cb7",
+  "mediaSha256": "c02e7fe34d73c90139b72048a6aab3cc1f994859b622c66c72b7d04de8f89151",
+  "identities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "db78919ef2e351550eba5b7f8657ee6b794297be64594e89eb636cd9c9101f36",
+    "plugins/gui/libqt_plugin.dll": "e8df140c4ecfd6abe0a4763f644bd1aa8c2d22957453daac3b952bb1c6f8343c",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb",
+    "plugins/control/librc_plugin.dll": "73f306118d33863c23f5988541cbc0f950d8694fabb5ee051d0a37de88b724c1"
+  },
+  "phases": {
+    "playing": {
+      "before": {
+        "video decoded": 264,
+        "frames displayed": 485,
+        "frames late": 1,
+        "frames lost": 0,
+        "audio decoded": 282,
+        "buffers played": 282,
+        "buffers lost": 0,
+        "wall": 31053.4448539
+      },
+      "after": {
+        "video decoded": 1539,
+        "frames displayed": 1760,
+        "frames late": 1,
+        "frames lost": 0,
+        "audio decoded": 1477,
+        "buffers played": 1477,
+        "buffers lost": 0,
+        "wall": 31078.9275048
+      },
+      "metrics": "playing-metrics.json",
+      "durationSeconds": 25.482650900001317
+    },
+    "paused": {
+      "before": {
+        "video decoded": 1539,
+        "frames displayed": 1760,
+        "frames late": 1,
+        "frames lost": 0,
+        "audio decoded": 1477,
+        "buffers played": 1477,
+        "buffers lost": 0,
+        "wall": 31081.0309377
+      },
+      "after": {
+        "video decoded": 1539,
+        "frames displayed": 1760,
+        "frames late": 1,
+        "frames lost": 0,
+        "audio decoded": 1477,
+        "buffers played": 1477,
+        "buffers lost": 0,
+        "wall": 31093.1369912
+      },
+      "timeBefore": "30\r\n",
+      "timeAfter": "30\r\n",
+      "metrics": "paused-metrics.json",
+      "durationSeconds": 12.106053499999689
+    }
+  },
+  "pid": 3472,
+  "loopbackPort": 64150,
+  "error": "Command '['C:\\\\Modding\\\\vlc-juxtopposed\\\\build-windows\\\\beta-timeline-thumbnails-20261021\\\\ordinary-resource-B1-r45\\\\runtime\\\\vlc.exe', '--intf=qt', '--extraintf=rc', '--rc-quiet', '--rc-host=127.0.0.1:64150', '--no-one-instance', '--no-media-library', '--no-crashdump', '--no-qt-privacy-ask', '--no-qt-updates-notif', '--no-metadata-network-access', '--no-ml-network-discovery', '--config=C:\\\\Modding\\\\vlc-juxtopposed\\\\build-windows\\\\beta-timeline-thumbnails-20261021\\\\ordinary-resource-B1-r45\\\\vlcrc', '--file-logging', '--log-verbose=2', '--verbose=2', '--logfile=C:\\\\Modding\\\\vlc-juxtopposed\\\\build-windows\\\\beta-timeline-thumbnails-20261021\\\\ordinary-resource-B1-r45\\\\vlc.log', '--no-qt-video-autoresize', '--restore-playback-pos=0', '--start-paused', '--vout=direct3d11,none', 'C:\\\\Modding\\\\vlc-juxtopposed\\\\build-windows\\\\beta-timeline-thumbnails-20261021\\\\resource-fixtures-r45\\\\motion-1080p50-silent.mp4']' timed out after 240 seconds"
+}

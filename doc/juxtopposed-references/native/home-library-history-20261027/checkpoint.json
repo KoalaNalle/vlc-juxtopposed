@@ -1,0 +1,839 @@
+{
+  "status": "passed-scoped-library-history-nightly",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "4dfe9fb9a96cf7576c12dad10ae286ccd17d580a3a5c90902d718668c9b7a4de",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484"
+  },
+  "sourceManifestSha256": "60a9264139ea6396287e938fa0b2447281918945eebe911b870a277ff2f8d535",
+  "sourceInputCount": 3331,
+  "componentResult": {
+    "passed": true,
+    "mode": "fixed",
+    "completed": [
+      "expandedVideoLeafIndex",
+      "pendingInitialResetDoesNotReplayAfterGridSwitch",
+      "countBeforeLoadingSettlesConsumesPendingIndex",
+      "defaultPlaylistLeafZeroIndex",
+      "genuineIdTitleBeforeConstruction",
+      "adapterBackForwardLeafRestoration",
+      "playlistToRealNoIndexHomeContract",
+      "sameParentReloadAndGroupAlias",
+      "explicitChildFalseNewAndReusedParent",
+      "unknownLeafPropertyFailsWithoutDropping",
+      "conditionalNoMlLeaf",
+      "defaultLeafSearchStoredInItsHistoryEntry",
+      "sameRouteNewEntryIgnoresOutgoingPageChanges",
+      "backForwardRestoresBeforeCompletionAndClearRemainsCleared",
+      "sortReflectsNativeFallbackAndTogglesWithoutInventingGlobalDefault"
+    ],
+    "failure": null,
+    "messages": [],
+    "allMessages": [
+      "file:///C:/Modding/vlc-juxtopposed/build-windows/beta-single-frame-20261025-night/component-history-r293d/modules/VLC/Widgets/PageLoader.qml:108: Error: Cannot assign to non-existent property \"doesNotExist\"",
+      "unknown initial property doesNotExist of view base"
+    ],
+    "expectedFailures": [
+      {
+        "case": "unknownLeafProperty",
+        "messages": [
+          "file:///C:/Modding/vlc-juxtopposed/build-windows/beta-single-frame-20261025-night/component-history-r293d/modules/VLC/Widgets/PageLoader.qml:108: Error: Cannot assign to non-existent property \"doesNotExist\"",
+          "unknown initial property doesNotExist of view base"
+        ]
+      }
+    ],
+    "sourceSha256": {
+      "modules/gui/qt/widgets/qml/PageLoader.qml": "459c229788802a6a9733d0a358854b217722a3f347b85ffb77cc72e46225a1cb",
+      "modules/gui/qt/widgets/qml/PageExt.qml": "8168b98a09221b3a233550455fb04d92d77f0589db924c81dc4969d5119465f7",
+      "modules/gui/qt/widgets/qml/StackViewExt.qml": "81fba20d7d96a08c149fdadd457709af9bcd63002916e3e4511d6b46fc8136ef",
+      "modules/gui/qt/maininterface/qml/MainViewLoader.qml": "c21417f3c42e5941dfdc7b54331cf292bc67367df9faf0a58dae94880763e77a",
+      "modules/gui/qt/maininterface/qml/MainDisplay.qml": "e03a0a8413fc55ebb0c63778de6d6d7c66dae0ab782d321d56a622c38b8f9a83",
+      "modules/gui/qt/medialibrary/qml/VideoDisplay.qml": "a1c344d21314f034a4dd0f2b493477990243f1b743504edbd0eb04bc6bc8d395",
+      "modules/gui/qt/medialibrary/qml/MusicDisplay.qml": "9abbd09cf4a3bd6aff3ef5e2d5bd1b196d0712e0c08d4c3d49df424811ebcd04",
+      "modules/gui/qt/network/qml/DiscoverDisplay.qml": "7f992482960dd22224296982b46ca2e16e74c3a901046bb883c242a9e3d92c45",
+      "modules/gui/qt/medialibrary/qml/VideoAllSubDisplay.qml": "08382a5a8ed79a02ad1c81409147d92cceabc6daa2d857c3c56d250e2929066c",
+      "modules/gui/qt/medialibrary/qml/VideoGroupDisplay.qml": "9da875c1d327070ab13f07652be6898014ada98b615e60337154d0d745407e1c",
+      "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+    },
+    "helperSha256": "414b667933964d9b17e0fb994a35a58711576d4224171472f89ae7ac5d1b76f2",
+    "scope": "Unchanged production PageLoader/StackViewExt/MainViewLoader/PageExt; exact wrapper alias declarations and nesting registry values extracted into dependency-adapted fixtures. Supplied History/Navigation/model/style/search/sort/header/menu adapters; real Qt property maps and item-selection model. Header rendering and traditional SearchBox are not covered here. No actual C++ NavigationHistory, native MediaLibrary wrappers, primary playback or desktop navigation acceptance.",
+    "fullNativeIntegrationAccepted": false,
+    "negativeBaselineReproduced": false
+  },
+  "otherComponentCheck": {
+    "command": "test_juxtopposed_library.py --output-dir build-windows/beta-single-frame-20261025-night/component-library-r293",
+    "exitCode": 0,
+    "scope": "Existing offscreen header, media row, folder/category roles/actions and simulated scales. No OS DPI or native query claim."
+  },
+  "ordinaryRuns": {
+    "ui-library-history-before-r292": {
+      "exitCode": 0,
+      "allGuards": true,
+      "role": "before failure"
+    },
+    "ui-library-history-fixed-r294": {
+      "exitCode": 0,
+      "allGuards": true,
+      "role": "accepted scoped replay"
+    },
+    "ui-library-history-classic-r294": {
+      "exitCode": 0,
+      "allGuards": true,
+      "role": "accepted scoped replay"
+    },
+    "ui-library-history-cold-r294": {
+      "exitCode": 0,
+      "allGuards": true,
+      "role": "accepted scoped replay"
+    }
+  },
+  "staging": {
+    "ui-library-history-fixed-r294": {
+      "hardLinkedFiles": 9,
+      "copiedLinkLimitFiles": 521
+    },
+    "ui-library-history-classic-r294": {
+      "hardLinkedFiles": 8,
+      "copiedLinkLimitFiles": 522
+    },
+    "ui-library-history-cold-r294": {
+      "hardLinkedFiles": 8,
+      "copiedLinkLimitFiles": 522
+    }
+  },
+  "build": {
+    "exitCode": 0,
+    "logSha256": "2921e0287f6182f3c6a7a3482e316238a65749ea0d4e259edc7c29bf8f41778e"
+  },
+  "artifacts": [
+    {
+      "path": "ui-library-history-before-r292/verification.json.gz",
+      "sha256": "57c7de701290633b178c567404d4bcf65de0cee51e06dc4fed149046276d8f95",
+      "rawSha256": "7db5120e94d83440784dd87dbc69825e07b2d820725993f474e423c518c3e675"
+    },
+    {
+      "path": "ui-library-history-before-r292/launch.json.gz",
+      "sha256": "18dba8062fba2a7e34dce8a9ea790e4aba9fe4d2da51b0b66dfb1368690990d7",
+      "rawSha256": "eb739c1cbaa9b703c546393efdfba1f5c4d45f757860098afacfb1a30652e1b7"
+    },
+    {
+      "path": "ui-library-history-before-r292/producer.py.gz",
+      "sha256": "d872cd779b4d55834bd19fbc9b31199af32d721aaa205669947b0227873a9c75",
+      "rawSha256": "a130021243c0c4c8a5d31545be928f66ac21eef4ac3601c0cd36d68b567ae394"
+    },
+    {
+      "path": "ui-library-history-before-r292/ml-copy.json.gz",
+      "sha256": "433932aeefea088fcfedb79c83b1192f7a8a52465dcf30b0131aaa64a8b109cd",
+      "rawSha256": "8fb1027cb167d22013de448e59ee81ee0b5f795ca8d0d23a067af55014ba3956"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/01-filtered-artists-one-fixture-0.png.gz",
+      "sha256": "92587c932657dffa37aaea8d8e3bfeb98788535903272b6a6c9ed60f006011aa",
+      "rawSha256": "95fb30658888cba1404c29fcc4d8ce05e387dae37a7814026949a810c9dc866b"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/01-filtered-artists-one-fixture.json.gz",
+      "sha256": "bfc215ec498dba2d8c42207655d2d4f01af59c6c7837c8c5b3312fadef610523",
+      "rawSha256": "fa76cba306928ab85e1d61e18619fe1518f2514eb1cc7d723e98f3b701ff3bdb"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/02-detail-from-filtered-artist-0.png.gz",
+      "sha256": "103328780870703a1ac50736eef1bee2a7c6783ccc17e1d72dc3217749ea3a67",
+      "rawSha256": "4c2a1e0cf89b4a87f5247eee56b154bac57bab61ab3cba4e34044e5685654579"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/02-detail-from-filtered-artist.json.gz",
+      "sha256": "7e72aa46b0979f0c695f802310bc73aac33076b5332fef91291a60f0c97aa516",
+      "rawSha256": "a72c4a200f044e4b137c7f4cf85fdfec75b00c18b0e1b2e7f19fb32de9526b85"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/03-failure-back-clears-query-and-selects-other-artist-0.png.gz",
+      "sha256": "f35c66a1f8636c2386cf951f63747db1534c1a642c891daa8e03a85112702393",
+      "rawSha256": "f36fec99094c8b5fb311e541655f172a31494ba0ee1c80bd4f54afe95fdf1995"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/03-failure-back-clears-query-and-selects-other-artist.json.gz",
+      "sha256": "b1ae1e06aa652fd457699524113fef07f84e8dc10598caddd4bad229e9a58c99",
+      "rawSha256": "ef4b6f4dc9ca25809361b5b65e80db9c06ef56ea2159fb623b7fdb3b595a4664"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/04-failure-folder-alphabetic-unmarked-0.png.gz",
+      "sha256": "7fc4f88b7dec765bd0c6eab3f2c2deeb8866863e119a7123d7d59ec8cca5a51c",
+      "rawSha256": "79555b71446154f594f60cb92f07260a54f15d25f81d96b0594984163e3c0727"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/04-failure-folder-alphabetic-unmarked-1.png.gz",
+      "sha256": "75d10f11874dbbd2ab5c1286a4104b2f66abc675a15afeed7a7a04e2579ff170",
+      "rawSha256": "aa24e8d12bd62fd345d2b3a54137f3566690fb0bab1f7e4a7f590f942f8e89e8"
+    },
+    {
+      "path": "ui-library-history-before-r292/observations/04-failure-folder-alphabetic-unmarked.json.gz",
+      "sha256": "57339830c44389ea43a8e107aa16696ce590032f0729638d9a6ce4908c4a2e1a",
+      "rawSha256": "9d69cd39516f1a87ccd2cb6f441763876ff355f311da234d8e6699c4d48387d0"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/verification.json.gz",
+      "sha256": "7d74cd6dc740d7e9f832d059a35e3f8f0b5c29e4415ecc816969b6843ef1e233",
+      "rawSha256": "f79e21355e84df2df10d92d42f22afecfbd20ec20ce949fd88996d10f617b2e8"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/launch.json.gz",
+      "sha256": "9cbef68f67b60567b83bc4687b71377bf64cac98d8808843a48e366226e50f72",
+      "rawSha256": "af924646d6e4b94e2f34dad4f728e0cec9aa24df2984724c386d657ad81f53ec"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/producer.py.gz",
+      "sha256": "caaeacfb53f82882c82131fd63f458a4f0e810df98b8242748207b854d6717b7",
+      "rawSha256": "352a6ad87f6ead6673bd6c6b40fbad3ab0115bc6721c957b5a7621ae6a2fa9ca"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/staging.json.gz",
+      "sha256": "0a54b5da4f207565ee6911582b3cc2068b4862a693c5a830c6c0bfa562ab5d53",
+      "rawSha256": "b7683e61e7158042ca5a0ea30afc766810dd6fcce1177ae8b8e50ea38dd3ab42"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/ml-copy.json.gz",
+      "sha256": "433932aeefea088fcfedb79c83b1192f7a8a52465dcf30b0131aaa64a8b109cd",
+      "rawSha256": "8fb1027cb167d22013de448e59ee81ee0b5f795ca8d0d23a067af55014ba3956"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/01-startup-paused-0.png.gz",
+      "sha256": "b27185a2bf8658c1aac1dee7424b3ba65f9a9f0616ec48796738672546deb56e",
+      "rawSha256": "a286d4180b0bda32ddd68a0e3e145670b800c58a1841e2508ca3d4f1a0bbdda0"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/01-startup-paused.json.gz",
+      "sha256": "f3a5250eaeaa94b889985fd2e39dd43c9bbadbe13300d066db4b74446f4dcc2c",
+      "rawSha256": "8e67fa692b915d7d7fbb56b4f46b648ad7a98fce344f8c0df3d7cb66575366fc"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/02-filtered-artists-one-fixture-0.png.gz",
+      "sha256": "99422359a44bcae5d5de91bd95abc9e943b48b4ec400b54da6c6c93eba42da2b",
+      "rawSha256": "3b0b8d32745a4856273b51fd81c84a3ad2837f9093023fa47e03a17a75cd4298"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/02-filtered-artists-one-fixture.json.gz",
+      "sha256": "ecfb7e845df4b0dd60d8f28288924497f5609b63bff5d8ee811fe053042bf0af",
+      "rawSha256": "919476f79f96b4de8101027cc411c8ddf03f995f200a848474171067db89bba1"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/03-artist-detail-has-fresh-empty-query-0.png.gz",
+      "sha256": "6f7da494280a48e5158549207faf42508d7749a371d82c80a31ab08bc18e5574",
+      "rawSha256": "20ccf87519b05017d5fec4f661e703e1b542862570b38fe8ecab9c17691d4067"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/03-artist-detail-has-fresh-empty-query.json.gz",
+      "sha256": "ee2bae62e52a07b0c772dc80cf57f10a13f5d95ff01ad43a667826cfa4399ae8",
+      "rawSha256": "03012297630e56acdcada29bcec8697950e31ff0721064260a8f508aec00ac47"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/04-back-restores-fixture-one-result-0.png.gz",
+      "sha256": "0cd81dbfd767035aa2a969c8fefb38fc6ad2e85ccbdd8923b9ff3a01a0aa1e3b",
+      "rawSha256": "e830cf5c038af533539dec3b43374d5fc3e8d43375f6885f9689b757475d2afb"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/04-back-restores-fixture-one-result.json.gz",
+      "sha256": "57bc812ca3ef40882505c2cfcf2a1c5f258942827420639a8e5b30d7a705e51b",
+      "rawSha256": "01a38c0d64dc930e572e515d639314895490779211b570b2afe9f4e59091c333"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/05-detail-own-query-empty-results-0.png.gz",
+      "sha256": "d77a08ff09d287a6acf12f91c363a9fdf2170de301853353567ce7037e6ac88c",
+      "rawSha256": "24270fbc4e8ae3e2a6cc953562c9ca570f305be0ad49e676ede188b6b4141691"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/05-detail-own-query-empty-results.json.gz",
+      "sha256": "7d1957903bb4a5e5d118388a190748313b35242bd8dc41135b429b4127f3f60e",
+      "rawSha256": "f38156ab727d70c528baf6cdec2a9f817cc2b79118dbb29e887fc88eaa69168e"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/06-back-retains-independent-artists-query-0.png.gz",
+      "sha256": "93e1df030668c86f95fcaaa3c29500978480852cab61843fb9e7216a560bae8b",
+      "rawSha256": "71215eb1328846e87746f597489da94e656872398c92b660af8ff2c79ac80c87"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/06-back-retains-independent-artists-query.json.gz",
+      "sha256": "b2ecb3ff17aa1be4354fa24be15e6d1d78941459509e9937879f5b8314a66481",
+      "rawSha256": "06a4c850ccf2a05c1ca990173a255c1cd2fb8a2ad77538c193f468e55eb65fc3"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/07-forward-restores-detail-missing-query-0.png.gz",
+      "sha256": "2949ded2215f2447edf9d5413da0fa0c08cc13f25baa8a6f73739977efe93ee9",
+      "rawSha256": "74c2d718f40745563497db8ad036932caea45deb3d60806d14c37e97efd1db23"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/07-forward-restores-detail-missing-query.json.gz",
+      "sha256": "eaaa00069f9ecb5e244be48bd21e9727892a241ae40a2da7d23cdd8882f96fd8",
+      "rawSha256": "867352878218ad6919967eb3f55d316af123d9b1a3a6463a39b73b199a30cb6f"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/08-clear-detail-query-restores-album-0.png.gz",
+      "sha256": "01335985d28baf9cd90e6203ce38b5d153746ab0233536cb64ae1e96e19f75a9",
+      "rawSha256": "a1a279ad4075b05b82507004d3ebb0acb7f832a879f08cd5e67f66bbd9dff03d"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/08-clear-detail-query-restores-album.json.gz",
+      "sha256": "5f169b1459cf37cbbe89616b8adf01ee33b46f5899b61320834a27579a07a19f",
+      "rawSha256": "63fd0082b6b9ff90cc29d963894441040c9dc1cbd921551504a957b8dcb9ba71"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/09-forward-keeps-cleared-detail-query-0.png.gz",
+      "sha256": "abad15a0e968da50501276edce00f234263037b7eaaa86294d8c50a1c411eb44",
+      "rawSha256": "47da840fd4285ebf52e4adb81bf01c64b1dd29ac960a359c7d4ca6398e95b3b8"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/09-forward-keeps-cleared-detail-query.json.gz",
+      "sha256": "8b7ec03751a7a52ae1c46abf6157e2dfbc3f83682636435d20691b5305fecfa8",
+      "rawSha256": "6568fd107263774cb12c2aff3b9f51a9ab939e52bfbdbcbb4292493169b80ef3"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/10-folder-native-alphabetic-selected-descending-0.png.gz",
+      "sha256": "4cc38b3750133b430ca659b20376941b753caac61e1e18db8f6ab36dddfa577d",
+      "rawSha256": "83bdba2bce10f170c11baf3cd5bc1dfd2c71b3bd9ca988b4b1801c8cd0ca90db"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/10-folder-native-alphabetic-selected-descending-1.png.gz",
+      "sha256": "b54e4dd7454696a9e643b8d140ca55f075836bf9f6ac8534bb6cd1081050940c",
+      "rawSha256": "14fea8e614756221fb8e000a9132444034046459223a212dbaf79f1d09f2c9ae"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/10-folder-native-alphabetic-selected-descending.json.gz",
+      "sha256": "020fbf39c82a4a27a55f5904bafe9c3cded9334a5b778f262f60a6202b8b64d5",
+      "rawSha256": "11f996d3b5e032e258c52fdef2266ebf140292dfa6ca1ce6d5b5da147f428cc4"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/11-alphabetic-toggle-reorders-ascending-0.png.gz",
+      "sha256": "1f04c049f83148b43f18f6ae44acdbdcbb071fd83be746a3a4bf7081fe585732",
+      "rawSha256": "ee09436f38750462fada10810ea1eadbdc3d4897a7b0ad45ebc8b203abc5f86c"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/11-alphabetic-toggle-reorders-ascending-1.png.gz",
+      "sha256": "ce8220e5728b28750d072c363bcd840734df0bfff2625092c526524e804156c8",
+      "rawSha256": "ea5639526cc900f337a1dc379f4cd83ad2756db4a968bf7cd92aaf104ddb5814"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/11-alphabetic-toggle-reorders-ascending.json.gz",
+      "sha256": "0d56d8af926fe6aff3b9eb89dc34aadc87294be81bd765dc693f1f6266228717",
+      "rawSha256": "316444ae6de81b1adf854302c7055d43bf89e17c21b34378c6ca7daa5cc805ca"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/12-folder-filter-my-one-result-0.png.gz",
+      "sha256": "2122a098f47be9483b243395d5005f1a357ef0f71503844451a797927adc8a3d",
+      "rawSha256": "232ccf4cee76f717dfde1cd7a8139ed92cdbf75862c067d90f15972dc70b9f5a"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/12-folder-filter-my-one-result.json.gz",
+      "sha256": "395ac5490fd383504d2dadff4005ba480cf7cd2abb325b7719a98b56e801703a",
+      "rawSha256": "5e20c411feed0b825643eaf1cb624d083cfeadd31efaaca6c4eca2aa2d30c308"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/13-folder-contents-new-empty-query-0.png.gz",
+      "sha256": "6d89c0820f38686c7df55e76a17d64b113d6fb9066bd5c2e106e7765950106b1",
+      "rawSha256": "2200f7064c14e181530160f36915692a6c4a585595ef6e0856a4030d566cb3f6"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/13-folder-contents-new-empty-query.json.gz",
+      "sha256": "1522d1dd451c2f5d394702b287c390982d76cfbc49f0399cb32511417738501a",
+      "rawSha256": "1c409ed735ba3759361a781aeb59e9e9bb863821c7da3176363e8edf014d7ee0"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/14-back-restores-native-folder-filter-0.png.gz",
+      "sha256": "0c62cde34af332f70199543f1e1f9ef75ded9737352e624348521d5e9e0a44ad",
+      "rawSha256": "ba2cadecd42a95bda4eee03cf34fe7438a336d6af60e93d1d6713bc97de23625"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/14-back-restores-native-folder-filter.json.gz",
+      "sha256": "114703df60c087dede92e81d904485841fe0e9b8821b3fe9cc0fc6e7981394da",
+      "rawSha256": "b2299982a9a785bfdc448d8a5635e6aaa5817e4b7837e2936602fa75d760619a"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/15-playing-forward-folder-independent-0.png.gz",
+      "sha256": "5c72be0b0978a614c086e15956b1547303d1dd0b227ae907e48d165a60569248",
+      "rawSha256": "5535efe38ac06c9a4fb584fc252be7127cf5ce360c037100aaee22da2de342e4"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/15-playing-forward-folder-independent.json.gz",
+      "sha256": "d470077af95b2d3730c32e279d8b80f6817ce05675aee8d5edada88f79f56cee",
+      "rawSha256": "f5dd4cd1a15c9ad26973fb7759fd91cbe9b2fd1bfd002998f803abee6df2ca73"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/16-settled-playing-forward-my-songs-empty-query-0.png.gz",
+      "sha256": "08c2c653159ee94108be1cf62b6bb1ca099a1e12f86d885a6d018b73265e04e3",
+      "rawSha256": "598af115e3a883d2eafef844b8684f674b092a2f285068ecf5eef11851c03ea3"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/16-settled-playing-forward-my-songs-empty-query-1.png.gz",
+      "sha256": "4685dd4f1721e037bb11c038bcd18ff83a87315f87de5cc484327db26052e2cd",
+      "rawSha256": "6fdbb61d52da8742280c242624020abd7ae4d98495b5d4ee6ce610c530c54218"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/16-settled-playing-forward-my-songs-empty-query.json.gz",
+      "sha256": "bbb91bb4e6565a7331dc39d6d3f7d34c35321480e3284c986caa6bc06b19584e",
+      "rawSha256": "6f20cc1b1bb870787a46166ca8342f1214b0866a9071b28db3791e65616ab1af"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/17-playing-back-restores-my-then-paused-0.png.gz",
+      "sha256": "0d14b4e9a4c021e978bd94c8714ada87156180a2c0c662b9d30c7ff0c8fb8264",
+      "rawSha256": "bfe3d213e3ee4487c627a6a12a1b42f10bf1f892735b3827db652ef0e8bc3fb7"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/17-playing-back-restores-my-then-paused-1.png.gz",
+      "sha256": "9c7289a34c94837042ab6655f359c75c2514e9ad0612c0a9bcc1b8eaaf962ab8",
+      "rawSha256": "bdb5e505d00e0ae333e1d6cf3d5070e24ec4c1de674e7b3f4f92501a054f2116"
+    },
+    {
+      "path": "ui-library-history-fixed-r294/observations/17-playing-back-restores-my-then-paused.json.gz",
+      "sha256": "0837660f64aadf04166b233553f68f1d5091586916904e851f68cfe49a6d13c5",
+      "rawSha256": "5e9a600943a1d4139055e574f517ea2991289edb65502c31b70699130820feeb"
+    },
+    {
+      "path": "ui-library-history-classic-r294/verification.json.gz",
+      "sha256": "89238d3d9d6c25f0f0bec8753d51601dc7ef5661647d9ba0e3966259d44157f8",
+      "rawSha256": "6c82a5a00d440bf5bb8ad0cb5a4edde952a3dc59abf49f18340e6defc0eab150"
+    },
+    {
+      "path": "ui-library-history-classic-r294/launch.json.gz",
+      "sha256": "89bfc442b54f72f8ccaf4996aad4738f6b752e253e0bbbd89b4a7050235fa0a0",
+      "rawSha256": "d7497d33659bd617ec3fa7ecda677507032d4a7b07e4328684e86a71bd3a1e5a"
+    },
+    {
+      "path": "ui-library-history-classic-r294/producer.py.gz",
+      "sha256": "caaeacfb53f82882c82131fd63f458a4f0e810df98b8242748207b854d6717b7",
+      "rawSha256": "352a6ad87f6ead6673bd6c6b40fbad3ab0115bc6721c957b5a7621ae6a2fa9ca"
+    },
+    {
+      "path": "ui-library-history-classic-r294/staging.json.gz",
+      "sha256": "22218fd9f5bf717d886587eb761c59dea4f8f70c5c6fccb6d0d0d3ce4d9b46d3",
+      "rawSha256": "2a31635aa498bb01122b23b8a809e000d02d3c3973cb7bf73657e6b5e51c2069"
+    },
+    {
+      "path": "ui-library-history-classic-r294/ml-copy.json.gz",
+      "sha256": "ebe5c4c8264f405f5d915f9e7cede841e470dc40e69d70f3d19c5a9e1cf90ef7",
+      "rawSha256": "0b0200bfd49d5bde01ed916c117dc56d560c356101abafa32a6abdcd6f400cda"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/01-classic-startup-paused-0.png.gz",
+      "sha256": "890dd07eeea6eb4eb233c1b13b46774ebc7c3526a8f046520a3038d383c34014",
+      "rawSha256": "67381fe406eff2e4239f926d6545144592ed732952238e6e2be4bc518d429ea2"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/01-classic-startup-paused.json.gz",
+      "sha256": "6582531cb7083f953423602d70c12f4e48adca8e835c0845c91b4fb5b7b2f12a",
+      "rawSha256": "8faf29123288415a60621a0516f4af2a412c6e36f29df7acf9274fbebbe2fabf"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/02-classic-filter-fixture-one-artist-0.png.gz",
+      "sha256": "e87056e374abe8fed557a3a9cda24df25247e5edfeb740cc3d055581fc6b363f",
+      "rawSha256": "5e116095fb7dc77137607bd526072cd54a074df8c97d54f22a71a2e4043f5641"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/02-classic-filter-fixture-one-artist-1.png.gz",
+      "sha256": "8a92df37d199b3b7676d323668b2b14677605ce09b976d01e73aecd7a4e9ddf4",
+      "rawSha256": "e773251e7cdbc49389689875affa5663d690c7af9c3433c239b831c341d93b7e"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/02-classic-filter-fixture-one-artist.json.gz",
+      "sha256": "8707df8085514a79af33b986562f7627cbdf90e07288237152eccf7d964d700c",
+      "rawSha256": "55d03f170d0e280f6289b364dd19f2b29d00a212d8e3c5c9a80f29b584821768"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/03-classic-fresh-detail-empty-filter-0.png.gz",
+      "sha256": "14c0466dcbf6aaccae0d7b01d8bb09845f7ea5e7622dfdf305e121bd9fc1af5c",
+      "rawSha256": "ccbdd16d9270ea4083a60616cf6d5349cb168b112320fe08b601f8510b809bd3"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/03-classic-fresh-detail-empty-filter.json.gz",
+      "sha256": "c49a5f3283c7b8c29806e2b587269d30ba091584b30c1f1b700242bb5a1cd68c",
+      "rawSha256": "564f4db6db01814387a3e182cab54858861d8753f79e0ab8081ab97be94de7e7"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/04-classic-back-restores-filter-popup-0.png.gz",
+      "sha256": "1f59aa3729f8fe7c8bdcdb1d9309212faf002e9e5eb7a6c0c384fb3d644fdea6",
+      "rawSha256": "985e7e9c861a29bada78ab9e8345a69c5c13845eb35d35636cfce5fa06fb8715"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/04-classic-back-restores-filter-popup.json.gz",
+      "sha256": "18550a1b949c82e161e47437d97ef41b0d3edb7bd41438319428d5ef460fb185",
+      "rawSha256": "76ce6f94ac00046f9e0035285b4cf71f5126c5923e107da75f54bfbc61ed8966"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/05-classic-edit-restored-query-with-space-paused-0.png.gz",
+      "sha256": "3d91db0ff63dbc54d01ac40f54a867a6f4e82a1c3bec1bee144f5c121d15a0f1",
+      "rawSha256": "ee350ed71773a10457ff7200ee4bebbd8f299f51ee10640a1964292e5e5022a8"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/05-classic-edit-restored-query-with-space-paused.json.gz",
+      "sha256": "3b5537feb7cc73d6068283b83e04f9711262e6f1401686cfcb1e266a5a424ba8",
+      "rawSha256": "4084bc4460274de1bb3215baa98be4dc79f12f444c52446cfd11d7065b13f43e"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/06-classic-escape-clears-and-closes-filter-0.png.gz",
+      "sha256": "1b6c8cf63b1a54b228a300cfab3b6b4c97d146daf96da9dd9f5f527b0e082ea1",
+      "rawSha256": "0a6481b7f1c5ec77abac992020419aad91e1110b19c78676e1b707e83128d7d3"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/06-classic-escape-clears-and-closes-filter.json.gz",
+      "sha256": "a9bb1083594196ffb15cfdc5649a1479a08c34f78db29d09ff00c032be8e967c",
+      "rawSha256": "7fa1a2de084f1465301b0417b08ab35fe34d28b213dfdf17765527fbda25b1e5"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/07-classic-settled-escape-popup-closed-three-artists-0.png.gz",
+      "sha256": "343a910846d9df4ecc7aed6edf11f1df0fc5330e5114297ffc42b9cfa25af8a2",
+      "rawSha256": "538268976072020683dbbe9e01b15028bd99d3f1a458a13beef12d27388a9806"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/07-classic-settled-escape-popup-closed-three-artists-1.png.gz",
+      "sha256": "6ebfc20370df51fd2b0871e8c81f303c1a66e3a6196835312acacaca140e3794",
+      "rawSha256": "55444606e09d509d4239b38c104f757b93974d913ee0eddb99388abf24b1061d"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/07-classic-settled-escape-popup-closed-three-artists.json.gz",
+      "sha256": "e81e5c942ffd4735dbf4b464049bb03e557212b9d7168e6954317ed659acdb0c",
+      "rawSha256": "2fb7766dd010d20c9d4b3375a9019f76636fa9b6c61c7d80a527cf781bb91009"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/08-classic-table-enter-navigates-keeps-video-paused-0.png.gz",
+      "sha256": "527d40edb64f6f490500c52ef27abfbf42eaab81a286b01c2d519ad54c59d0d8",
+      "rawSha256": "f5e573393b85417647631803f30cfd7d501f7f38d9f14db54f02ce5c97e314ad"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/08-classic-table-enter-navigates-keeps-video-paused.json.gz",
+      "sha256": "60a2e23f07e19503f38631f808e2a03a95d6ff30aa7a8cdced49360d2f1a3825",
+      "rawSha256": "c703a4ab51d2eb53cfa759c2e0af842bd9ed6388bad8392fb172fdf8ae256d4a"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/09-classic-back-keeps-cleared-filter-and-selection-0.png.gz",
+      "sha256": "227ae1e4ca33b33a88e441f123e304ccf956d3030a2d17a625e3b606fd51c8da",
+      "rawSha256": "e27f82d36dd0c390e943184fa59f916338d1df1e433808cd9d1b65a4b0daa5ed"
+    },
+    {
+      "path": "ui-library-history-classic-r294/observations/09-classic-back-keeps-cleared-filter-and-selection.json.gz",
+      "sha256": "c82f890b1437df6704f05fa73b5362279fdb3c564425307d3ccb9388bb22b647",
+      "rawSha256": "5a869be7db683f768c7390f36cdf194d5be5b677cef567185993e8c34ff447a6"
+    },
+    {
+      "path": "ui-library-history-cold-r294/verification.json.gz",
+      "sha256": "8be06006d2b766b41c70739807bdd23a9a55e9e242dc64685ab81846a48ae6fc",
+      "rawSha256": "840abcfb0976d20e4687feb04a0520220136b2d062ba0aedcdc0ad698348f846"
+    },
+    {
+      "path": "ui-library-history-cold-r294/launch.json.gz",
+      "sha256": "d68c23ebc6e5d63c48a685b638245a892f2ab557b908ae118f12f2546c7eb0e3",
+      "rawSha256": "5d24e173faefb178dbd44f80c106133c4a51b1bc8f9ec8c7f750e45b4a709106"
+    },
+    {
+      "path": "ui-library-history-cold-r294/producer.py.gz",
+      "sha256": "caaeacfb53f82882c82131fd63f458a4f0e810df98b8242748207b854d6717b7",
+      "rawSha256": "352a6ad87f6ead6673bd6c6b40fbad3ab0115bc6721c957b5a7621ae6a2fa9ca"
+    },
+    {
+      "path": "ui-library-history-cold-r294/staging.json.gz",
+      "sha256": "22218fd9f5bf717d886587eb761c59dea4f8f70c5c6fccb6d0d0d3ce4d9b46d3",
+      "rawSha256": "2a31635aa498bb01122b23b8a809e000d02d3c3973cb7bf73657e6b5e51c2069"
+    },
+    {
+      "path": "ui-library-history-cold-r294/ml-copy.json.gz",
+      "sha256": "ebe5c4c8264f405f5d915f9e7cede841e470dc40e69d70f3d19c5a9e1cf90ef7",
+      "rawSha256": "0b0200bfd49d5bde01ed916c117dc56d560c356101abafa32a6abdcd6f400cda"
+    },
+    {
+      "path": "ui-library-history-cold-r294/observations/01-cold-songs-ascending-and-empty-query-0.png.gz",
+      "sha256": "172649a48d72e23b7fbdb354c738f510dd815432846386eb277dd1790d0c518e",
+      "rawSha256": "df283702cafd3476085fcc4912dab44328fc772182b2d6936ff0bf2380a49c94"
+    },
+    {
+      "path": "ui-library-history-cold-r294/observations/01-cold-songs-ascending-and-empty-query.json.gz",
+      "sha256": "168a8eac504d05b9b149b71a5c6e332a832f5609de0f09cd16a994cfe34287ca",
+      "rawSha256": "a99b5e4b9716ffdd9938af1e1242ec689db8066c4fb5fc593a4928b8704f6281"
+    },
+    {
+      "path": "ui-library-history-cold-r294/observations/02-cold-alphabetic-marked-ascending-0.png.gz",
+      "sha256": "7da6937b668548b2dec41852a82f984a43758ce22040f6a3cedc161ce356e16e",
+      "rawSha256": "c7917895284456bc393c392a521b8c2ff3c563f541dfa131941d0dd46af70890"
+    },
+    {
+      "path": "ui-library-history-cold-r294/observations/02-cold-alphabetic-marked-ascending-1.png.gz",
+      "sha256": "3d6ad269e1718ad28698f2aa30b8132b7c09061f4d009636c21002563f6ccc92",
+      "rawSha256": "8a35582d8a2ef8027a9dcd4f1f11ee8ebc275266ac62d09b4da3c236d95bb7e0"
+    },
+    {
+      "path": "ui-library-history-cold-r294/observations/02-cold-alphabetic-marked-ascending.json.gz",
+      "sha256": "3faaa163dcb4610f2d4a34222c073e08dd7e399ea43405d82ee187063b327e49",
+      "rawSha256": "035dff9174522d00ed344b590578e7a7f738128a1e9da833c0dc65e1b77bd7a0"
+    },
+    {
+      "path": "component-history-r293a/verification.json.gz",
+      "sha256": "f75b4da4c5a8bb1e8971502b75c775ed0c2a2cad4ae85195ebb20fcb479bacef",
+      "rawSha256": "323929ed41ed65af81be1cbff8acbe73d169f23ca7eab3dcf3b891c2d8beff84"
+    },
+    {
+      "path": "component-history-r293b/verification.json.gz",
+      "sha256": "9acccf4d676dc21897ec56dcc7e10182449cc5b251df70082c1a447ee8fbd22d",
+      "rawSha256": "4a15131b7e5374ac41f41767bf927ca94998b8e9d880008daa83197a537f4f74"
+    },
+    {
+      "path": "component-history-r293c/verification.json.gz",
+      "sha256": "f2bfb5d5dd06c2237370033c86512ee243beadcf957083cf63f8135204fc1fd3",
+      "rawSha256": "a766946c14e2136f1576cc937b2a39602d163475b6f1cda4ceecef154bcc8cb2"
+    },
+    {
+      "path": "component-history-r293d/verification.json.gz",
+      "sha256": "3e51eda0f492c44e0a60b160b4c14ae444663ccec4c9f2f4f9115e976ced16d9",
+      "rawSha256": "dcd8cb6e6335a6a2c4cf6648417cb782fc9f3ed06f3e06931850cd08951e9070"
+    },
+    {
+      "path": "inputs-r292.json.gz",
+      "sha256": "d4f6c6dcf8620a29afc38f3223bd6de0e63524afef4d29848dea0dfd3f9f141b",
+      "rawSha256": "b989469f8e6103c96b09b7243901474bdab262f25f466205508198fdf4e867ee"
+    },
+    {
+      "path": "inputs-r293.json.gz",
+      "sha256": "c035b3d07d898e48b949b9da8155dbb72a50fb0dcc0cbd9748751ef3c73c7a95",
+      "rawSha256": "e760523daf9394eb22c307511eee12180d7636b30a4d6f55371fbcc6079a649c"
+    },
+    {
+      "path": "inputs-r294.json.gz",
+      "sha256": "8dac0fd227ba9596dd0652f1dfbb31655b0bf5bc99c8facd225af9de5c51e46e",
+      "rawSha256": "60a9264139ea6396287e938fa0b2447281918945eebe911b870a277ff2f8d535"
+    },
+    {
+      "path": "prepare-library-history-r292.py.gz",
+      "sha256": "d79a68d25e242208f70ddb6e70b9c248f1600a954a672b0899d9d01065b46eae",
+      "rawSha256": "8993b4e542c298df30c81e6cadd31219157d6e9772d0c61d5844385fc86dfef1"
+    },
+    {
+      "path": "prepare-library-history-r293.py.gz",
+      "sha256": "f76fd501b109de5befed87163a0974d25b5c5a6be1f488ee6cdfb3723ee4a8df",
+      "rawSha256": "431a75db532019a7dda755848fdd5f8238a7e58455dfc1b659731684c40b25b2"
+    },
+    {
+      "path": "prepare-library-history-r294.py.gz",
+      "sha256": "f306c01d50fd298f5a78fc31076603a46a3234722c2e58d1b596eb6ca7c8b4b8",
+      "rawSha256": "9be782ed1acca50e0cd98182ff9b4c523935d5232a3280e52d05baa2d15c4947"
+    },
+    {
+      "path": "run-ui-library-history-r292.py.gz",
+      "sha256": "d872cd779b4d55834bd19fbc9b31199af32d721aaa205669947b0227873a9c75",
+      "rawSha256": "a130021243c0c4c8a5d31545be928f66ac21eef4ac3601c0cd36d68b567ae394"
+    },
+    {
+      "path": "run-ui-library-history-r293.py.gz",
+      "sha256": "63b93e10a15b7e27cc687b59e0caccf61e2ba86bda39950d12b7cce0be917ca4",
+      "rawSha256": "c4c12b8f1e6773cc46894f009814d31ad7371c708e804e017432581da6c7856f"
+    },
+    {
+      "path": "run-ui-library-history-r294.py.gz",
+      "sha256": "caaeacfb53f82882c82131fd63f458a4f0e810df98b8242748207b854d6717b7",
+      "rawSha256": "352a6ad87f6ead6673bd6c6b40fbad3ab0115bc6721c957b5a7621ae6a2fa9ca"
+    },
+    {
+      "path": "library-history-r293-staging-failure.json.gz",
+      "sha256": "036241ea41ba4288ee2ae8a18efaa2f0f0e6ab0b9f2598fd54ccf1d5f4bef508",
+      "rawSha256": "5ddccdd0a405dcd81ca624e1bcbed45f53245f6a67dd998e525a1a34ebfb6cd0"
+    },
+    {
+      "path": "build-library-history-r293.sh.gz",
+      "sha256": "fe93162a8de01c8405121d71a6f188b350c2572216d32bb01f352bcc41a9d096",
+      "rawSha256": "f997b2303c4acfc9fe21308171a8168460089fe909a2cfb50dfe9f3051aa5a1c"
+    },
+    {
+      "path": "write-library-history-receipt-r295.py.gz",
+      "sha256": "61d1c2ac83ddb8738a2fd3c0783a9765d2cc1feeb172db60315225c4953b5410",
+      "rawSha256": "8dd7b0593fc4d5839af763aaea2781c5194343c5e3b7c8c26ed94e488334a59c"
+    },
+    {
+      "path": "sources/modules/gui/qt/widgets/qml/PageExt.qml.gz",
+      "sha256": "63bd72a4a8eae0e483a97971ba49d8515bbe52229bab8267f20a71082ce0697e",
+      "rawSha256": "8168b98a09221b3a233550455fb04d92d77f0589db924c81dc4969d5119465f7"
+    },
+    {
+      "path": "sources/modules/gui/qt/widgets/qml/GridSortFilterControls.qml.gz",
+      "sha256": "b7a1f3d18b46fbd91e3d486cf3039a9db44f394abd7ac279937dfd9a180f95ac",
+      "rawSha256": "de14fc848055ab52d8f974397a10de3a765eb1b4828d7cc06bbfcf32a20646e4"
+    },
+    {
+      "path": "sources/modules/gui/qt/tests/test_page_loader_routes.py.gz",
+      "sha256": "717fcb29779b5bc3dca82ec9c80ab93ece79cb23c1e703208ba22a8941e244d9",
+      "rawSha256": "414b667933964d9b17e0fb994a35a58711576d4224171472f89ae7ac5d1b76f2"
+    },
+    {
+      "path": "sources/test/libvlc/native_http_runtime.py.gz",
+      "sha256": "83edd77dcaa0313b180466a2a2d0119d5ff8d81697e18b71b1678ec97491b4c4",
+      "rawSha256": "c5066869d1a1e35fc96ffe77d1388c68e95bcd81cc2ed3219ab0182730c5fd67"
+    },
+    {
+      "path": "preimage/modules/gui/qt/widgets/qml/PageExt.qml.gz",
+      "sha256": "04e2cd0fe810de6a62d727975e12ade2852c6f378a67bb8b1c04c25626cf8d0e",
+      "rawSha256": "9d8c6049b646c37e3a0f293fb789b8ccba58eb80a9130cddb49f21fb1bd5728c"
+    },
+    {
+      "path": "preimage/modules/gui/qt/widgets/qml/GridSortFilterControls.qml.gz",
+      "sha256": "037ddc70cbc7daf7082095fe807414613ef677e7e9be2739ffa4ddffcbace729",
+      "rawSha256": "a2d0e6ff1a34c841142e2c093d76f8bb55ccf774da76835a2bd65d70890e793f"
+    }
+  ],
+  "localStreams": [
+    {
+      "path": "ui-library-history-before-r292/vlc.log",
+      "sha256": "89e9b3727e71c7abff8fb05fdc27ef7731afb6dca40bc741754a2d7ac81cf1dc",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/stderr.txt",
+      "sha256": "4a2c8d24bb2f2ed860852c5431e1f42426bc1c95fc1324e7f153d6165967e331",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/config-before.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/config-after.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/settings-before.ini",
+      "sha256": "34ea9947102b08754f98473b07e73622c7fd44ba4d7e51d8f7aabfd6698ee913",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-before-r292/settings-after.ini",
+      "sha256": "65b64d6be12b4cb359754073f14491879f1284f4de2910a964e3cac4484a3336",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/vlc.log",
+      "sha256": "5c2895ae8676224c0e8a69afcdadf63935ba92247fa1dd584d6621021560f11c",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/stderr.txt",
+      "sha256": "73a61fee674fc2be2769c5c8a0a16b13839172b8c8e63fc23952912d87fa1604",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/config-before.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/config-after.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/settings-before.ini",
+      "sha256": "34ea9947102b08754f98473b07e73622c7fd44ba4d7e51d8f7aabfd6698ee913",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-fixed-r294/settings-after.ini",
+      "sha256": "1ce8834bec0f8494f15c6343217c914024bc614705b629878a32313e1a71762b",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/vlc.log",
+      "sha256": "0f5397dbc00242d661813d5537b03df4f7a4d4113d740ad2080fce7fd02d15a8",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/stderr.txt",
+      "sha256": "50628d649d8e89ee80a764633b27fb30cb206959fe9068c8b8d8bbe8346ca784",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/config-before.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/config-after.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/settings-before.ini",
+      "sha256": "1ce8834bec0f8494f15c6343217c914024bc614705b629878a32313e1a71762b",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-classic-r294/settings-after.ini",
+      "sha256": "8f8800b1059ac427d48d951f8060ef33f0dfc6e003907a7f7f1af892666047a0",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/vlc.log",
+      "sha256": "4dff87d8669534abadf8bef49210468275cd30fa9110560344e407a73de9eaa8",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/stdout.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/stderr.txt",
+      "sha256": "49aa8f6b3ace5842b22a00fc2b16e8657b71f45de383e7851167f44b48a6ee5a",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/config-before.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/config-after.txt",
+      "sha256": "ab28a30a866c806ba372bf87f38c4ba7e66f723bb2abfc55804f82fe16696a31",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/settings-before.ini",
+      "sha256": "1ce8834bec0f8494f15c6343217c914024bc614705b629878a32313e1a71762b",
+      "packaged": false
+    },
+    {
+      "path": "ui-library-history-cold-r294/settings-after.ini",
+      "sha256": "1ce8834bec0f8494f15c6343217c914024bc614705b629878a32313e1a71762b",
+      "packaged": false
+    }
+  ],
+  "accepted": [
+    "GUI290 before failure: Artists query Fixture narrows to one artist; opening details and Back clears it to three artists with a different first item. Initial Songs Alphabetic menu is unmarked despite actual native title sorting. The before process exits normally with all guards; that does not accept its failed navigation.",
+    "PageExt stores its SearchCtx pattern in the current session history entry. PageLoader restores the alias as an initial leaf property before row selection. Both current entry identity and exact route guard outgoing signals; no search string is added to persistent settings.",
+    "GUI293 Artists Back restores Fixture and one artist; detail starts fresh, independently retains Missing/zero results on Forward, and Clear stays cleared after Back/Forward. Songs My filter survives native folder drill-down; the new track page has an empty query. Paused primary video stays at0.",
+    "Songs sort projection uses the native model fallback when the saved criterion is empty. The menu marks Alphabetic; selecting the current criterion reverses native folder order and saves the explicit key. Cold startup restores ascending My/Nested/N\u00e4ive order and the marked menu with an empty query.",
+    "Primary video continues during folder Forward/Back:13s and paused24.998474s are observed on the same media; the parent My query returns. Traditional Back reopens Fixture popup/one artist; editing with a space preserves video0, Escape clears/closes, table Enter only navigates, and returning keeps cleared filter and selected Fixture.",
+    "All three final apps exit0/602modules/zero error diagnostics with source, staged/base runtime, fixtures, producer and cache guards true. The shared staging helper uses byte-identical copies only for EMLINK/Windows1142; the real saturated source exercises521 copied files and preserves base runtime hashes."
+  ],
+  "limits": [
+    "Component history uses production PageExt/PageLoader/StackViewExt/MainViewLoader with supplied dependencies and real Qt property maps; it does not execute C++ NavigationHistory or the actual classic SearchBox. Ordinary apps provide those scoped flows. Initial component attempts failed on adapter syntax/missing attached property/typed PySide pointer conversion before the final adapter repair.",
+    "The first GUI293 stage reached Windows1142 on AUTHORS.txt before launching VLC. That failed output remains separate. A fresh run used the narrow copy fallback, without deleting old runtimes or changing application behavior.",
+    "Some immediate UIA trees/screenshots show transitions or stale predecessors; settled captures are acceptance. Warm observation15 precedes the Forward transition; observation16 supplies the actual destination. Classic observation06 precedes popup-close animation; observation07 proves closure. Initial search clicks sometimes only focus Back; typing follows a visible caret. Complete accessibility geometry remains open.",
+    "Ctrl+F was tried as a search shortcut but is VLC Open Folder. Its picker was cancelled without selecting a folder; no shortcut change or search-shortcut acceptance is claimed.",
+    "Sort arrows/selection were assessed in actual menu captures, not its incomplete UIA tree. Search history is session-only by design. No full category matrix, visual score, Windows DPI, multi-selection Play, rapid in-flight artist changes, physical endpoint, Windows10 or consolidated final-package acceptance."
+  ]
+}

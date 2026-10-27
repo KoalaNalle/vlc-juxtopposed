@@ -1,0 +1,147 @@
+{
+  "exitCode": 0,
+  "passed": true,
+  "cases": [
+    "initTestCase",
+    "localValidationAndNoOverwrite",
+    "realFlacAndActualPlayback",
+    "inheritedRunTimeAndInputChoicesDoNotTrim",
+    "inheritedFileFormatKeepsLiteralPercentDestination",
+    "encoderPreferenceIsCapturedBeforeStarting",
+    "corruptSourceDoesNotPublish",
+    "destinationRaceIsPreserved",
+    "runningCancellationAndReuse",
+    "independentPrimaryQueueAndPausedClock",
+    "runningWorkerShutdown",
+    "cleanupTestCase"
+  ],
+  "actualOrderedPassCases": [
+    "initTestCase",
+    "localValidationAndNoOverwrite",
+    "realFlacAndActualPlayback",
+    "inheritedRunTimeAndInputChoicesDoNotTrim",
+    "inheritedFileFormatKeepsLiteralPercentDestination",
+    "encoderPreferenceIsCapturedBeforeStarting",
+    "corruptSourceDoesNotPublish",
+    "destinationRaceIsPreserved",
+    "runningCancellationAndReuse",
+    "independentPrimaryQueueAndPausedClock",
+    "runningWorkerShutdown",
+    "cleanupTestCase"
+  ],
+  "exactTotals": [
+    "Totals: 12 passed, 0 failed, 0 skipped, 0 blacklisted, 4869ms"
+  ],
+  "rejectedStatuses": [],
+  "evidenceSha256": {
+    "results.txt": "d5f41c07ce7db85242af146872023222e44878326b982ff6447d66ff9797d3e0",
+    "stdout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "evidence": "Actual ConversionController, native FLAC encoder/mux, complete validation decode, ordinary LibVLC audio playback, independent primary playlist and paused clock. No desktop or original-design fidelity claim.",
+  "isolatedUserdata": true,
+  "timedOut": false,
+  "processTimeoutSeconds": 80,
+  "nativeCoreHashesMatch": true,
+  "diagnosticEnvironment": {
+    "VLC_LIB_PATH": "${REPO}\\build-windows\\beta-performance-20261017\\encoder-positive-chain-r2\\runtime\\plugins",
+    "VLC_LIBEXEC_PATH": "${REPO}\\build-windows\\beta-performance-20261017\\encoder-positive-chain-r2\\runtime\\vlc-preparser.exe",
+    "VLC_USERDATA_PATH": "${REPO}\\build-windows\\beta-performance-20261017\\conversion-acceptance-r4\\userdata"
+  },
+  "loadedModuleAudit": {
+    "passed": true,
+    "completePluginRoot": "${REPO}\\build-windows\\beta-performance-20261017\\encoder-positive-chain-r2\\runtime\\plugins",
+    "selectedModules": [
+      {
+        "capability": "audio converter",
+        "module": "audio_format",
+        "resolvedPackageDll": "plugins\\audio_filter\\libaudio_format_plugin.dll",
+        "sha256": "bded8569fcf0ffcdaedc1f02d2a635fd894974349716476d490d0089fcb31484"
+      },
+      {
+        "capability": "audio converter",
+        "module": "simple_channel_mixer",
+        "resolvedPackageDll": "plugins\\audio_filter\\libsimple_channel_mixer_plugin.dll",
+        "sha256": "79e254422d7881c83bdf47a63abe4e5e19806c22b5718200e699e33f001c9253"
+      },
+      {
+        "capability": "audio converter",
+        "module": "soxr",
+        "resolvedPackageDll": "plugins\\audio_filter\\libsoxr_plugin.dll",
+        "sha256": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16"
+      },
+      {
+        "capability": "audio converter",
+        "module": "trivial",
+        "resolvedPackageDll": "plugins\\audio_filter\\libtrivial_channel_mixer_plugin.dll",
+        "sha256": "1150ef159de0d5398f0d9224bd3b4e6213a4fe04712357c37dbe9ed3fe8636ba"
+      },
+      {
+        "capability": "audio decoder",
+        "module": "araw",
+        "resolvedPackageDll": "plugins\\codec\\libaraw_plugin.dll",
+        "sha256": "940f74063bc1b95827bc08971c861dfe405a7bdc28bf1af380e4013f67abe568"
+      },
+      {
+        "capability": "audio decoder",
+        "module": "flac",
+        "resolvedPackageDll": "plugins\\codec\\libflac_plugin.dll",
+        "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+      },
+      {
+        "capability": "audio encoder",
+        "module": "araw",
+        "resolvedPackageDll": "plugins\\codec\\libaraw_plugin.dll",
+        "sha256": "940f74063bc1b95827bc08971c861dfe405a7bdc28bf1af380e4013f67abe568"
+      },
+      {
+        "capability": "audio encoder",
+        "module": "avcodec",
+        "resolvedPackageDll": "plugins\\codec\\libavcodec_plugin.dll",
+        "sha256": "6d0b92b173b2cb9064deeee86a111a66f9fc8082220fc50a82ccc1d47ae0fe0e"
+      },
+      {
+        "capability": "audio encoder",
+        "module": "flac",
+        "resolvedPackageDll": "plugins\\codec\\libflac_plugin.dll",
+        "sha256": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+      },
+      {
+        "capability": "audio resampler",
+        "module": "soxr",
+        "resolvedPackageDll": "plugins\\audio_filter\\libsoxr_plugin.dll",
+        "sha256": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16"
+      },
+      {
+        "capability": "sout access",
+        "module": "file",
+        "resolvedPackageDll": "plugins\\access_output\\libaccess_output_file_plugin.dll",
+        "sha256": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6"
+      },
+      {
+        "capability": "sout filter",
+        "module": "transcode",
+        "resolvedPackageDll": "plugins\\stream_out\\libstream_out_transcode_plugin.dll",
+        "sha256": "b1a422d272a9486d1366a02841ce9cb9a97bdab7fe611aff24dd19fac4d5a23f"
+      },
+      {
+        "capability": "sout mux",
+        "module": "dummy",
+        "resolvedPackageDll": "plugins\\mux\\libmux_dummy_plugin.dll",
+        "sha256": "e1b56657942d68bbd1827e42d343d5b720fc4e2124bfcae63851759fc256d03f"
+      }
+    ],
+    "startupErrors": [],
+    "evidence": "Actual selected module names from native log resolved to the exclusive package inventory and recorded DLL identities; no live process memory-map claim."
+  },
+  "nativeLogSha256": "c5f6369f99c36cd009ff1c6a1066f6b0c2a370b2822b25f8f0931d1c597a5c1b",
+  "sourceSha256": "51ab004a7d0a25f8d451adb7abb2d123dafb811c14cfadb5350292cc746a7a51",
+  "convertedSha256": "8584ab48c00e29a202918a0b629005274510784313ef9fde30ac875b96809b36",
+  "testExeSha256": "ee70cdd0c513deafab654beb3f8717ec219d2bee8d655781f725a90cc7e542cc",
+  "coreSha256": "602632d1eebdeb3559590a5b69315f5672163877fcc742487032d71a25ca1896",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "602632d1eebdeb3559590a5b69315f5672163877fcc742487032d71a25ca1896",
+    "vlc-preparser.exe": "fb942106229e2de96c4ed192a8d4d51322ce6b545805eba2097019f69162e927"
+  }
+}

@@ -95,8 +95,8 @@ FocusScope {
         T.Popup {
             id: popup
 
-            x: -width + parent.width
-            y: root.popBelow ? parent.height : -height
+            x: -width + iconButton.width
+            y: root.popBelow ? iconButton.height : -height
 
             implicitWidth: Math.max(implicitBackgroundWidth + leftInset + rightInset,
                                     implicitContentWidth + leftPadding + rightPadding)

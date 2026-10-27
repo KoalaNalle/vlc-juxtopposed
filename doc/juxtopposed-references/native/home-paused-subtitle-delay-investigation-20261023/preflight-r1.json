@@ -1,0 +1,16 @@
+{
+  "status": "terminal",
+  "exitCode": 1,
+  "phase": "isolated-parent-setup",
+  "nativeChildCreated": false,
+  "source": "run-ordinary-r1.py",
+  "sourceSha256": "1fe059c374b7803924fd96f0ad9bf2962f019663031425ef7a84a75f0fc36cdf",
+  "error": "FileNotFoundError: missing state parent for environment helper temp directory; failure before Popen.",
+  "preserved": [
+    "source-r1",
+    "inputs-r1.json",
+    "initial/config-before.txt",
+    "initial/launch.json"
+  ],
+  "repair": "Revision r2 creates state parent before environment(). It verifies and reuses the unchanged staged runtime/config, writes separate source-r2/inputs-r2 and initial-r2 outputs. No production source or test assertion changed."
+}

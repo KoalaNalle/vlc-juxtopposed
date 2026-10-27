@@ -30,6 +30,7 @@
 #include "util/asynctask.hpp"
 
 #include <QQmlEngine>
+#include <QPointer>
 
 
 /// MLListCache
@@ -339,12 +340,18 @@ QVariant MLBaseModel::data(const QModelIndex &index, int role) const
 
 void MLBaseModel::addAndPlay(const QModelIndexList &list, const QStringList &options)
 {
+    Q_D(MLBaseModel);
+    if (!m_mediaLib || list.isEmpty())
+        return;
+
     QVector<int> indx;
     std::transform(list.begin(), list.end(), std::back_inserter(indx), std::mem_fn(&QModelIndex::row));
 
-    ItemCallback play = [this, options](quint64, std::vector<std::unique_ptr<MLItem>> &items)
+    const auto origin = parentId();
+    const QPointer<MediaLib> library = m_mediaLib;
+    ItemCallback play = [library, options, origin](quint64, std::vector<std::unique_ptr<MLItem>> &items)
     {
-        if (!m_mediaLib)
+        if (!library)
             return;
 
         QVariantList ids;
@@ -352,10 +359,14 @@ void MLBaseModel::addAndPlay(const QModelIndexList &list, const QStringList &opt
                        , std::back_inserter(ids)
                        , [](const std::unique_ptr<MLItem> &item) { return item ? QVariant::fromValue(item->getId()) : QVariant {}; });
 
-        m_mediaLib->addAndPlay(ids, options);
+        library->addAndPlay(ids, options, origin);
     };
 
-    loadItems(indx, play);
+    if (!m_itemLoader)
+        m_itemLoader = createMLLoader();
+    // Opening the player destroys the source view/model. Keep the accepted
+    // command under the service lifetime with a snapshot of its original query.
+    m_itemLoader->loadItemsTask(d->m_offset, indx, std::move(play), m_mediaLib);
 }
 
 vlc_ml_sorting_criteria_t MLBaseModel::getMLSortingCriteria() const
@@ -677,14 +688,15 @@ size_t MLListCacheLoader::countAndLoadTask(size_t offset, size_t limit,
         });
 }
 
-quint64 MLListCacheLoader::loadItemsTask(size_t offset, const QVector<int> &indexes, MLBaseModel::ItemCallback cb)
+quint64 MLListCacheLoader::loadItemsTask(size_t offset, const QVector<int> &indexes,
+                                      MLBaseModel::ItemCallback cb, const QObject *owner)
 {
     struct Ctx
     {
         std::vector<std::unique_ptr<MLItem>> items;
     };
 
-    return m_medialib->runOnMLThread<Ctx>(this,
+    return m_medialib->runOnMLThread<Ctx>(owner ? owner : this,
         //ML thread
         [offset, op = m_op, indexes](vlc_medialibrary_t* ml, Ctx& ctx)
         {
@@ -692,6 +704,10 @@ quint64 MLListCacheLoader::loadItemsTask(size_t offset, const QVector<int> &inde
                 return;
 
             auto sortedIndexes = indexes;
+            sortedIndexes.removeIf([](int index) { return index < 0; });
+            ctx.items.resize(indexes.size());
+            if (sortedIndexes.isEmpty())
+                return;
             std::sort(sortedIndexes.begin(), sortedIndexes.end());
 
             struct Range
@@ -710,18 +726,17 @@ quint64 MLListCacheLoader::loadItemsTask(size_t offset, const QVector<int> &inde
                     ranges.push_back(Range {index, index});
             }
 
-            ctx.items.resize(indexes.size());
-
             vlc_ml_query_params_t queryParam = op->getQueryParams();
             for (const auto range : ranges)
             {
                 queryParam.i_offset = offset + range.low;
-                queryParam.i_nbResults = offset + range.high - range.low + 1;
+                queryParam.i_nbResults = range.high - range.low + 1;
                 auto data = op->load(ml, &queryParam);
                 for (int i = 0; i < indexes.size(); ++i)
                 {
                     const auto targetIndex = indexes[i];
-                    if (targetIndex >= range.low && targetIndex <= range.high)
+                    if (targetIndex >= range.low && targetIndex <= range.high
+                        && size_t(targetIndex - range.low) < data.size())
                     {
                         ctx.items.at(i) = std::move(data.at(targetIndex - range.low));
                     }

@@ -1,0 +1,20 @@
+[
+  {
+    "forcedCleanupUsed": false,
+    "pid": 18460,
+    "exitCode": 1,
+    "normalExit": false,
+    "mode": "catalog-invalid",
+    "stdout": "ok 1 user-data override preserves the exact Windows Unicode path\nok 2 actual addons manager created\nnot ok 3 invalid native catalog reports its failure\nok 4 invalid catalog publishes no partial managed entry\nobserved final state -1\nchecks 4 failures 1\n",
+    "stderr": ""
+  },
+  {
+    "forcedCleanupUsed": false,
+    "pid": 15776,
+    "exitCode": 3,
+    "normalExit": false,
+    "mode": "reentrant-found",
+    "stdout": "ok 1 user-data override preserves the exact Windows Unicode path\nok 2 actual addons manager created\nok 3 owned package converted to native URI\n",
+    "stderr": "Assertion failed: !vlc_mutex_held(mtx), file /mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../src/misc/threads.c, line 134\n"
+  }
+]

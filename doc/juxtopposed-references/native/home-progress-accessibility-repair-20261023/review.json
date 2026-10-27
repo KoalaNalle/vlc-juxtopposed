@@ -1,0 +1,53 @@
+{
+  "selectedAccessibleProgressSeekAccepted": true,
+  "fullAccessibilityAccepted": false,
+  "captionClearanceAccepted": false,
+  "fullBetaAccepted": false,
+  "ordinaryIdentities": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+    "plugins/gui/libqt_plugin.dll": "d368d5ec28ea156b4d9c26c5c58820e4840cdc80b2a1369bc3137ebdfa9d8e57",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c"
+  },
+  "sourceInputs": 2232,
+  "sourceManifestSha256": "30527eb8ae681abc655dfbce486ef380127c957c8c369f8b29935892f85917f1",
+  "ordinaryLinkCommandSha256": "09d9e94255ae7beb59983d4a3a0ed808328fa3d195cd612274dcd8cfab3c2ef9",
+  "ordinaryLinkExcludesPrivateQaAndQtTest": true,
+  "qtValueInterfaceSource": {
+    "path": "/root/vlc-juxtopposed-build/contrib/contrib-win64/qtdeclarative/src/quick/accessible/qaccessiblequickitem.cpp",
+    "sha256": "15fbdc474ec930e3f40c0b678939282677403a06904f5bac1e4ce1267d5f093e",
+    "version": "6.8.3",
+    "lines": "689-706",
+    "finding": "setCurrentValue writes the QML value property; it does not request VLC playback seeking."
+  },
+  "repair": "Guard internal engine/drag display writes. An external accessible value write in the released state follows the existing seek function once, with normalized bounds. Preserve held/wrong-input protection, chapter/pointer paths, native seek-speed policy and existing keyboard/step handlers.",
+  "evidence": [
+    "Corrected unchanged build has a working video, pause and real accessible value interface but no native seek after setCurrentValue.",
+    "Candidate passes39 actual-player checks, with one native request per accessible/pointer action and no feedback requests from playing-position updates.",
+    "Ordinary desktop value-setting reaches blue25s, red5s, green45s and green15s segments while paused. Pointer/global arrow routing and resume/Pause/normal Quit also work.",
+    "Legacy/designed seek-handle hover/focus/chapter appearance smoke passes."
+  ],
+  "corrections": [
+    "Initial private test failed its combined cold-paused readiness condition before reaching accessibility; it is retained as a setup result, not an accessibility negative. No per-condition breakdown established which readiness predicate was late. Corrected setup follows existing seek tests: normal video/statistics publication, then pause.",
+    "Before compiling R1b, its byte-identical phase-named make include was added and the preflight manifest retained before extension.",
+    "The appended test distribution line initially used CRLF inside an LF file. Only its final newline was normalized before the ordinary source freeze; whitespace checks pass.",
+    "Paused player time can lag a seek. Native picture counts and requested controller positions alone are insufficient to prove exact content; ordinary desktop coarse colors supply separate content observations. No exact PTS claim."
+  ],
+  "previousImmutableReceiptSha256": "ae772edd05ac74f84eb877aefd69cbd206bd4d8b523934717945d0ce49a315d4",
+  "remaining": [
+    "Caption clearance and redundant bottom fade; preserve saved offsets and authored ASS layout.",
+    "Slider-specific focus/keyboard routes and screen-reader speech, wider accessibility/DPI.",
+    "Remaining track/subtitle workflows and full13-category/32-surface roadmap."
+  ],
+  "questionsForMorning": [],
+  "sideEffects": {
+    "installs": false,
+    "commit": false,
+    "push": false,
+    "release": false,
+    "upload": false,
+    "shutdown": false
+  }
+}

@@ -89,7 +89,7 @@ on_subtree_added(vlc_preparser_req *req, input_item_node_t *subtree,
 }
 
 static void
-on_preparse_ended(vlc_preparser_req *req, int status, void *userdata)
+on_metadata_ended(vlc_preparser_req *req, int status, void *userdata)
 {
     /* This function may be called synchronously on the calling thread if it was
        cancelled when the request had not started yet. The playlist cancels with
@@ -106,6 +106,46 @@ on_preparse_ended(vlc_preparser_req *req, int status, void *userdata)
     if (index != -1)
         vlc_playlist_Notify(playlist, on_items_updated, index,
                             &playlist->items.data[index], 1);
+    vlc_playlist_Unlock(playlist);
+}
+
+static void
+on_preparse_ended(vlc_preparser_req *req, int status, void *userdata)
+{
+    if (status != VLC_SUCCESS)
+        return;
+    vlc_playlist_t *playlist = userdata;
+    input_item_t *media = vlc_preparser_req_GetItem(req);
+    vlc_playlist_Lock(playlist);
+    ssize_t index = vlc_playlist_IndexOfMedia(playlist, media);
+    if (index != -1)
+    {
+        vlc_playlist_item_t *item = playlist->items.data[index];
+        bool network;
+        enum input_item_type_e type = input_item_GetType(media, &network);
+        if (playlist->fetcher != NULL && item->metadata_req == NULL
+            && type != ITEM_TYPE_DIRECTORY && type != ITEM_TYPE_NODE)
+        {
+            static const struct vlc_preparser_cbs callbacks = {
+                .on_ended = on_metadata_ended,
+            };
+            int options = VLC_PREPARSER_TYPE_FETCHMETA_LOCAL
+                | (playlist->metadata_network ? VLC_PREPARSER_TYPE_FETCHMETA_NET : 0);
+            vlc_preparser_req *fetch = vlc_preparser_req_NewParse(playlist->fetcher,
+                media, options, &callbacks, playlist);
+            if (fetch != NULL)
+            {
+                item->metadata_req = fetch;
+                if (vlc_preparser_Submit(playlist->fetcher, fetch) != VLC_SUCCESS)
+                {
+                    item->metadata_req = NULL;
+                    vlc_preparser_req_Release(fetch);
+                }
+            }
+        }
+        vlc_playlist_Notify(playlist, on_items_updated, index,
+                            &playlist->items.data[index], 1);
+    }
     vlc_playlist_Unlock(playlist);
 }
 
@@ -157,7 +197,7 @@ vlc_playlist_AutoPreparse(vlc_playlist_t *playlist, vlc_playlist_item_t *item,
                 return;
         }
 
-        int options = VLC_PREPARSER_TYPE_PARSE | VLC_PREPARSER_TYPE_FETCHMETA_LOCAL;
+        int options = VLC_PREPARSER_TYPE_PARSE;
         if (parse_subitems)
             options |= VLC_PREPARSER_OPTION_SUBITEMS;
 

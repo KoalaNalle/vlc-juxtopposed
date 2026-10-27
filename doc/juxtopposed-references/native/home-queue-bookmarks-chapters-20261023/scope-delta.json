@@ -1,0 +1,9 @@
+{
+  "changedPriorInputs": [
+    "modules/gui/qt/playlist/qml/PlaylistPane.qml"
+  ],
+  "onlyAddition": "    // Mouse-focused bookmark/chapter lists keep activation keys in Qt.\n    readonly property bool navigationKeyScope: root.juxtopposed && root.currentTab !== 0\n",
+  "nativeModelAndMaintainedNativeTestUnchanged": true,
+  "exactPointerSubtreesUnchanged": true,
+  "scope": "Production source comparison only; earlier native/pointer tests remain separate from the new ordinary keyboard check."
+}

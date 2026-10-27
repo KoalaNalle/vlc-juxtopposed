@@ -1,0 +1,67 @@
+{
+  "method": "Actual ordinary Windows app states reviewed through Computer Use. Desktop screenshot pixels were not saved or decoded. Native configuration and logs were independently read through the filesystem.",
+  "ordinaryGui": true,
+  "ordinaryCore": true,
+  "fullBetaAccepted": false,
+  "sessions": [
+    {
+      "media": "frame-marker-ass.mkv",
+      "pid": 26648,
+      "coldPausedPrimaryDelayMs": 1200,
+      "requestedSeekSeconds": 20.5,
+      "settledPosition": 0.34217875764188505,
+      "initialCaption": "SUOMI ENSIMMÄINEN",
+      "accessibleWrites": [
+        {"requestedMs": 0, "observedMs": 0, "caption": "SUOMI KESKIMMÄINEN"},
+        {"requestedMs": 1200, "observedMs": 1200, "caption": "SUOMI ENSIMMÄINEN", "position": 0.34217877429994503},
+        {"requestedMs": -1200, "observedMs": -1200, "caption": "SUOMI KESKIMMÄINEN", "position": 0.34217875764188505}
+      ],
+      "resetObservedMs": 0,
+      "resetCaption": "SUOMI KESKIMMÄINEN",
+      "focusedUpObservedMs": 50,
+      "excessiveWriteRequestedMs": 10050,
+      "excessiveWriteSettledMs": 50,
+      "excessiveWriteApiReturnedNormally": true,
+      "allThreeSpinnersHaveIndividualAccessibleNames": true,
+      "exposedSpinnerValueType": "float",
+      "savedDefaultEditorMs": 1200,
+      "savedNativeSubDelay": 12,
+      "actualHelp": "Default delay for the next media, in milliseconds at 100 ms steps. Current-media timing remains separate. Applies when the next media opens.",
+      "elapsedRemained": "00:00:20",
+      "visibleHeldVideoPatternRetained": true,
+      "resumeRequested": true,
+      "resumedCaptionNotObservedBeforeEof": true,
+      "returnedHomeAfterEof": true,
+      "normalQuitFromHome": true,
+      "cleanPlaybackAudioAcceptance": false,
+      "audioInterruption": "Log records endpoints unplugged/not present, session disconnected: device removed, default output disabled and later active; stream invalidation and missing-default errors remain retained. Physical cause and complete recovery are unproven."
+    },
+    {
+      "media": "frame-marker.mp4",
+      "pid": 27000,
+      "coldPausedPrimaryDelayMs": 1200,
+      "requestedSeekSeconds": 20.5,
+      "settledPosition": 0.34193731149289297,
+      "initialCaption": "SUOMI ENSIMMÄINEN",
+      "accessibleWrites": [
+        {"requestedMs": 0, "observedMs": 0, "caption": "SUOMI KESKIMMÄINEN"},
+        {"requestedMs": 1200, "observedMs": 1200, "caption": "SUOMI ENSIMMÄINEN", "position": 0.3419373281565046}
+      ],
+      "allThreeSpinnersHaveIndividualAccessibleNames": true,
+      "elapsedRemainedWhileAdjusting": "00:00:20",
+      "visibleHeldVideoPatternRetained": true,
+      "resumedWithOneObservedPlayClick": true,
+      "resumedElapsed": "00:00:25",
+      "resumedPosition": 0.4308664911432904,
+      "resumedCaption": "SUOMI KESKIMMÄINEN",
+      "normalQuitRequestedWhilePlaying": true,
+      "checkedRuntimeDiagnostics": []
+    }
+  ],
+  "limits": [
+    "The first ASS session is not a clean playback/audio regression pass; retain its device-removal failure separately from successful numeric-control/help observations.",
+    "Desktop observations establish displayed captions, controls, marker patterns and coarse elapsed time. Exact numeric conservation is not accepted: normalized position reconciles by about one microsecond during some changes.",
+    "Secondary-delay and subtitle-speed controls have names, but their backend timing semantics were not exercised here.",
+    "No audible-output, real device-loss recovery, screen-reader session, Windows DPI matrix or full-beta acceptance is claimed."
+  ]
+}

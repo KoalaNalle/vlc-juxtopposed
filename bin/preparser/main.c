@@ -162,6 +162,15 @@ preparser_req_BuildParse(vlc_preparser_t *preparser,
 {
     assert(pp->req_msg.req_type == VLC_PREPARSER_MSG_REQ_TYPE_PARSE);
 
+    const int hidden = pp->req_msg.req.show_hiddenfiles;
+    if (hidden >= 0
+        && input_item_AddOption(pp->res_msg.res.item,
+                               hidden ? "show-hiddenfiles" : "no-show-hiddenfiles",
+                               VLC_INPUT_OPTION_TRUSTED) != VLC_SUCCESS) {
+        pp->res_msg.res.status = VLC_ENOMEM;
+        return NULL;
+    }
+
     static const struct vlc_preparser_cbs cbs = {
         .on_ended = parse_OnEnded,
         .on_attachments_added = parse_OnAttachmentsAdded,

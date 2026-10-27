@@ -51,6 +51,19 @@ static float CompressorGain( float f_env,
     return vlc_dynamics_Db2Lin( ( f_threshold - vlc_dynamics_Lin2Db( f_env, p_sys ) ) * f_rs, p_sys );
 }
 
+#ifdef NIGHT_MODE_PRESET
+/* Compile the existing compression kernel as a separate filter. Neither its
+ * parameters nor its enabled state belong to the manual Compressor effect. */
+static const vlc_dynamics_varnames_t compressor_varnames = {
+    .rms_peak    = "nightmode-rms-peak",
+    .attack      = "nightmode-attack",
+    .release     = "nightmode-release",
+    .threshold   = "nightmode-threshold",
+    .ratio       = "nightmode-ratio",
+    .knee        = "nightmode-knee",
+    .makeup_gain = "nightmode-makeup-gain",
+};
+#else
 static const vlc_dynamics_varnames_t compressor_varnames = {
     .rms_peak    = "compressor-rms-peak",
     .attack      = "compressor-attack",
@@ -60,6 +73,7 @@ static const vlc_dynamics_varnames_t compressor_varnames = {
     .knee        = "compressor-knee",
     .makeup_gain = "compressor-makeup-gain",
 };
+#endif
 
 static int Open( vlc_object_t *p_this )
 {
@@ -67,6 +81,20 @@ static int Open( vlc_object_t *p_this )
 }
 
 vlc_module_begin()
+#ifdef NIGHT_MODE_PRESET
+    set_shortname( N_("Night mode") )
+    set_description( N_("Reduce loudness differences for quieter listening") )
+    set_capability( "audio filter", 0 )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
+    add_float_with_range( compressor_varnames.rms_peak, 1.0, 0.0, 1.0, RMS_PEAK_TEXT, RMS_PEAK_LONGTEXT )
+    add_float_with_range( compressor_varnames.attack, 5.0, 1.5, 400.0, ATTACK_TEXT, ATTACK_LONGTEXT )
+    add_float_with_range( compressor_varnames.release, 200.0, 2.0, 800.0, RELEASE_TEXT, RELEASE_LONGTEXT )
+    add_float_with_range( compressor_varnames.threshold, -18.0, -30.0, 0.0, THRESHOLD_TEXT, THRESHOLD_LONGTEXT )
+    add_float_with_range( compressor_varnames.ratio, 6.0, 1.0, 20.0, RATIO_TEXT, RATIO_LONGTEXT )
+    add_float_with_range( compressor_varnames.knee, 5.0, 1.0, 10.0, KNEE_TEXT, KNEE_LONGTEXT )
+    /* No makeup boost: enabling this preset must not raise quiet sample levels. */
+    add_float_with_range( compressor_varnames.makeup_gain, 0.0, 0.0, 24.0, MAKEUP_GAIN_TEXT, MAKEUP_GAIN_LONGTEXT )
+#else
     set_shortname( N_("Compressor") )
     set_description( N_("Dynamic range compressor") )
     set_capability( "audio filter", 0 )
@@ -78,6 +106,11 @@ vlc_module_begin()
     add_float_with_range( compressor_varnames.ratio, 4.0, 1.0, 20.0, RATIO_TEXT, RATIO_LONGTEXT )
     add_float_with_range( compressor_varnames.knee, 5.0, 1.0, 10.0, KNEE_TEXT, KNEE_LONGTEXT )
     add_float_with_range( compressor_varnames.makeup_gain, 7.0, 0.0,  24.0, MAKEUP_GAIN_TEXT, MAKEUP_GAIN_LONGTEXT )
+#endif
     set_callback( Open )
+#ifdef NIGHT_MODE_PRESET
+    add_shortcut( "nightmode" )
+#else
     add_shortcut( "compressor" )
+#endif
 vlc_module_end()

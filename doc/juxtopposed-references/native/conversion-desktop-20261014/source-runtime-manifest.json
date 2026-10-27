@@ -1,0 +1,125 @@
+{
+  "documentationDate": "2026-10-14",
+  "scope": "Actual native source/destination picker and one completed desktop conversion; Succeeded modal key/Done/outside-modal restoration and normal quit, plus separate full mono PCM native content check. No Encoding/Cancelling keys or full-beta/Figma acceptance.",
+  "desktopEvidenceBasis": "Root-owned actual native app/Computer interaction observations and exact approved captures; reviewer inspected saved evidence only.",
+  "selectedDevelopmentPackage": "build-windows/slice-conversion-modal-package-20261014",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61",
+    "plugins/gui/libqt_plugin.dll": "c8c2f604d86731b46e92da684afb77a52e04dc80f9b79fdae6d40cb5711e9d81",
+    "plugins/codec/libflac_plugin.dll": "f84a14ec08895f5bef6d0068a95ea716c536eb65b86ce87c651fbe2c3f2b9dd2"
+  },
+  "stagedGuiMatchesSelectedC8Package": true,
+  "selectedReviewedSourceIdentities": {
+    "modules/gui/qt/maininterface/interface_window_handler.cpp": {
+      "sha256": "d6e818ea0f26256462f56e2d834a7f846fbdae172c5fe86aa7ca1f0155a6b3e7",
+      "basis": "Recorded integrated conversion-modal proposal shadow identity",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/maininterface/mainctx.cpp": {
+      "sha256": "b5a36669d051b71b01e445075d3e7c0cfbe243625e85e630795211f0c8db855e",
+      "basis": "Recorded integrated conversion-modal proposal shadow identity",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/maininterface/qml/MainInterface.qml": {
+      "sha256": "371efd2f12de551beb3bc4c9d6a378e9a6888162596288edb72c2769c9fdb75c",
+      "basis": "Recorded integrated conversion-modal proposal shadow identity",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/dialogs/dialogs_provider.cpp": {
+      "sha256": "43f3727ac49eac14b0b8d64c77ea1194d5c5cbf572af975954c183867f048069",
+      "basis": "Recorded integrated conversion-modal proposal shadow identity",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/dialogs/dialogs_provider.hpp": {
+      "sha256": "3156224df51b343d91b5ea59912c2f85ea4faf6dba8af3283cc019513ed71de5",
+      "basis": "Recorded integrated conversion-modal proposal shadow identity",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/dialogs/dialogs/qml/JuxtopposedConversionDialog.qml": {
+      "sha256": "e66f92cbb552619b983987e6244876b072548821ad1221db0a728a813808830d",
+      "basis": "Recorded new modal source identity in integrated proposal",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    },
+    "modules/gui/qt/dialogs/conversion_controller.cpp": {
+      "sha256": "24c11c75379063b26a4d4916191898fe31c1dbebf195c8832d643609d12a2bbd",
+      "basis": "Recorded inherited-option repair shadow identity; earlier native closure compiled/verified separately",
+      "currentSourceMatchesSelectedIdentityAtDocumentation": true
+    }
+  },
+  "recordedIntegratedFeaturePatchSha256": "467a4d47e9178dd2c249237385dfb42366ddd165965efb9f64dee5c975847fe6",
+  "recordedControllerOptionPatchSha256": "af525209cccda998687363cef31721fa19b135f15f60a2e74b37a06e04013e43",
+  "sourceBuildMapping": {
+    "buildOwner": "Root",
+    "ownerBuilderId": "92956",
+    "ownerObservedExitCode": 0,
+    "wholeQtSourceAtBuildFreezeAvailable": false,
+    "scope": "Selected frozen feature/controller identities plus actual GUI/resource compilation, Root build/copy record and exact staging/runtime bytes; not complete DLL provenance reconstruction.",
+    "actualGuiCxxCachegenLinkLog": "build/conversion-modal-gui-build.log",
+    "actualResourceRegistrationLog": "build/conversion-modal-resource-build.log",
+    "executedScript": "build/executed-c8-build.sh.txt",
+    "stagingRecord": "build/package-staging.json",
+    "controllerCompilationNote": "The controller closure was compiled/verified previously; no new controller CC is claimed for this GUI build."
+  },
+  "checkerSha256": "2d0123c82aa9a89d34f78e3d674f1ab73b62bf5428181dc280544a004d318821",
+  "frozenNativeBindings": {
+    "repositoryPath": "test/libvlc/native_flac_drain.py",
+    "sha256": "3ff0fc044cf2fdce8d20cc864698c043912b353f21660d2f807947b1423ac609"
+  },
+  "sourceFixtureSha256": "661d2ee20c2ea5952c89f7ec0e295e27cfc29b5ebfb054b49c9ce0a90153921c",
+  "desktopOutputSha256": "6aa147941667f0a2f20db8034701daa280e954499dc34ffb7a9cf72c274879a1",
+  "completeMonoPcmSha256": "404bb49451768e577fe6c841019877c4785e0c9ebca062d165207841305c7d45",
+  "outputStreaminfoReadOnly": {
+    "sampleRate": 44100,
+    "channels": 2,
+    "bitsPerSample": 16,
+    "headerTotalSamples": 0,
+    "totalSamplesMeaning": "Zero is unknown; full decoded frame count is authoritative for this check."
+  },
+  "nativeOutputCheck": {
+    "passed": true,
+    "exitCode": 0,
+    "decodedFrames": 1323000,
+    "decodedBytes": 2646000,
+    "negotiatedFormat": "Mono S16N/44100; comparison against exact generated mono source",
+    "exactPcm": true,
+    "exactFinal64Samples": true,
+    "sourceAndConvertedPreserved": true,
+    "stoppingReasons": [
+      1
+    ],
+    "finalState": 4,
+    "observedAudioDrainCallbacks": 1,
+    "drainCountGate": "Observed1; not separately asserted by the checker passed expression.",
+    "evidence": "results/output-verification.json"
+  },
+  "approvedCaptureDimensions": [
+    2560,
+    1392
+  ],
+  "normalExitEvidence": {
+    "ownedPlayerPid": 32180,
+    "normalQuitRequested": true,
+    "rootVerifiedProcessExitCode": 0,
+    "rootStillActive": false,
+    "logMarkers": "results/gui-module-exit-markers.txt"
+  },
+  "notCopied": [
+    "private native-picker captures",
+    "private media/original metadata",
+    "source WAV",
+    "converted FLAC",
+    "decoded PCM",
+    "userdata",
+    "executables/DLLs",
+    "full GUI/media log"
+  ],
+  "remainingGates": [
+    "Encoding/Cancelling keyboard delivery",
+    "active primary playback throughout conversion",
+    "full queue/drop/restart/lifecycle",
+    "broader media/video/format/profile and channel-content behavior",
+    "original Figma-form fidelity",
+    "complete whole-Qt source-at-build provenance/final-beta packaging"
+  ]
+}

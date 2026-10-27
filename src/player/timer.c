@@ -323,33 +323,38 @@ vlc_player_UpdateTimerSeekState(vlc_player_t *player, vlc_tick_t time,
     vlc_mutex_lock(&player->timer.lock);
     struct vlc_player_timer_source *source = &player->timer.best_source;
 
+    /* The input can publish its duration before the first output clock point,
+     * notably when audio starts paused. Use that current input information for
+     * the request; an output point may still be unset or belong to old timing. */
+    const vlc_tick_t length = player->timer.input_length;
+    const bool live = player->timer.input_live;
+
     if (time == VLC_TICK_INVALID)
     {
         assert(position >= 0);
-        if (source->point.length != VLC_TICK_INVALID)
-            player->timer.seek_ts = position * source->point.length;
+        if (length != VLC_TICK_INVALID)
+            player->timer.seek_ts = position * length;
         else
             player->timer.seek_ts = VLC_TICK_INVALID;
     }
     else
         player->timer.seek_ts = time;
 
+    player->timer.seek_position = position;
     if (position < 0)
     {
         assert(time != VLC_TICK_INVALID);
-        if (source->point.length != VLC_TICK_INVALID && !source->point.live)
-            player->timer.seek_position = time / (double) source->point.length;
+        if (length != VLC_TICK_INVALID && !live)
+            player->timer.seek_position = time / (double) length;
     }
-    else
-        player->timer.seek_position = position;
 
     const struct vlc_player_timer_point point =
     {
         .position = player->timer.seek_position,
         .rate = source->point.rate,
         .ts = player->timer.seek_ts,
-        .length = source->point.length,
-        .live = source->point.live,
+        .length = length,
+        .live = live,
         .system_date = VLC_TICK_MAX,
     };
 
@@ -404,7 +409,13 @@ vlc_player_UpdateTimerBestSource(vlc_player_t *player, vlc_es_id_t *es_source,
      * 3/ es_source == NULL (from the input)
      */
     struct vlc_player_timer_source *source = &player->timer.best_source;
-    if (!source->es || es_source_is_master)
+    /* A paused subtitle redraw can invalidate the audio master's clock without
+     * producing another audio buffer. Use a fresh video update in that case;
+     * the master regains priority as soon as it publishes again on resume. */
+    const bool paused_video = player->timer.update_state == UPDATE_STATE_PAUSED
+                           && source->point.system_date == VLC_TICK_INVALID
+                           && es_source && vlc_es_id_GetCat(es_source) == VIDEO_ES;
+    if (!source->es || es_source_is_master || paused_video)
         source->es = es_source;
 
     /* Notify the best source */
@@ -416,10 +427,12 @@ vlc_player_UpdateTimerBestSource(vlc_player_t *player, vlc_es_id_t *es_source,
             force_update = true;
         }
 
-        /* When paused (VLC_TICK_MAX), the same ts can be send more than one
-         * time from the video source, only send it if different in that case.
+        /* A discontinuity invalidates the clock. Its first fresh point must
+         * restore it even when a paused seek lands on the same video frame.
+         * Suppress duplicate paused timestamps only for a valid clock.
          */
-        if (point->ts != player->timer.last_ts
+        if (source->point.system_date == VLC_TICK_INVALID
+          || point->ts != player->timer.last_ts
           || (source->point.system_date != system_date && system_date != VLC_TICK_MAX))
         {
             vlc_player_UpdateTimerSource(player, source, point->rate, point->ts,
@@ -473,15 +486,16 @@ vlc_player_UpdateTimerSmpteSource(vlc_player_t *player, vlc_es_id_t *es_source,
                                            frame_rate_base);
         }
 
-        if (source->smpte.frame_rate != 0)
-        {
-            vlc_player_UpdateTimerSource(player, source, point->rate, point->ts,
-                                         system_date);
+        /* A held video timestamp is useful before its frame rate is known,
+         * including for an exact paused subtitle refresh. Only frame-number
+         * notifications require the rate metadata. */
+        vlc_player_UpdateTimerSource(player, source, point->rate, point->ts,
+                                     system_date);
 
-            if (!vlc_list_is_empty(&source->listeners))
-                vlc_player_SendSmpteTimerSourceUpdates(player, source,
-                                                       &source->point);
-        }
+        if (source->smpte.frame_rate != 0
+         && !vlc_list_is_empty(&source->listeners))
+            vlc_player_SendSmpteTimerSourceUpdates(player, source,
+                                                   &source->point);
     }
 }
 

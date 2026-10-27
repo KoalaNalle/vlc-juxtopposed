@@ -28,6 +28,8 @@
 #include "util.hpp"
 #include "stream_io_callback.hpp"
 
+#include <vlc_interrupt.h>
+
 #include <sstream>
 #include <limits>
 
@@ -110,6 +112,99 @@ SegmentSeeker::add_cluster( KaxCluster * const p_cluster )
     }
 
     return it;
+}
+
+void
+SegmentSeeker::add_subtitle_block( track_id_t track_id, fptr_t fpos,
+                                  vlc_tick_t pts, vlc_tick_t end_pts ) noexcept
+{
+    if( !_subtitle_index_available )
+        return;
+    try {
+        auto &blocks = _subtitle_blocks[track_id];
+        auto it = std::lower_bound( blocks.begin(), blocks.end(), fpos,
+            [](const SubtitleBlock &block, fptr_t pos) { return block.fpos < pos; } );
+        const SubtitleBlock block = { fpos, pts, end_pts };
+        if( it != blocks.end() && it->fpos == fpos )
+            *it = block;
+        else
+            blocks.insert( it, block );
+    }
+    catch( const std::exception& ) {
+        /* Keep playback usable if the optional index cannot be retained.
+         * Precise seeks then replay from the first cluster instead. */
+        _subtitle_index_available = false;
+        _subtitle_blocks.clear();
+    }
+}
+
+bool
+SegmentSeeker::index_subtitles( matroska_segment_c &ms, fptr_t end_fpos )
+{
+    const fptr_t unset = std::numeric_limits<fptr_t>::max();
+    if( !_subtitle_index_available || _subtitle_first_cluster == unset
+     || end_fpos <= _subtitle_first_cluster
+     || (_subtitle_indexed_through != unset && _subtitle_indexed_through >= end_fpos) )
+        return true;
+
+    /* Extend one contiguous prefix from a known block boundary. Re-reading
+     * its final block avoids seeking into an EBML element's payload. */
+    const fptr_t start = _subtitle_indexed_through == unset
+                      ? _subtitle_first_cluster : _subtitle_indexed_through;
+    mkv_jump_to( ms, start );
+    fptr_t previous = unset;
+    while( !vlc_killed() )
+    {
+        KaxBlock *block = nullptr;
+        KaxSimpleBlock *simpleblock = nullptr;
+        KaxBlockAdditions *additions = nullptr;
+        bool key, discardable;
+        uint64_t duration;
+        if( ms.BlockGet( block, simpleblock, additions, &key, &discardable, &duration, false ) )
+        {
+            delete additions;
+            return false;
+        }
+        const KaxInternalBlock &data = simpleblock
+            ? static_cast<const KaxInternalBlock&>( *simpleblock )
+            : static_cast<const KaxInternalBlock&>( *block );
+        const fptr_t pos = data.GetElementPosition();
+        delete block;
+        delete additions;
+        if( previous != unset && pos <= previous )
+            return false;
+        previous = pos;
+        if( !_subtitle_index_available )
+            return true;
+        if( _subtitle_indexed_through == unset || pos > _subtitle_indexed_through )
+            _subtitle_indexed_through = pos;
+        if( pos >= end_fpos )
+            return true;
+    }
+    return false;
+}
+
+SegmentSeeker::fptr_t
+SegmentSeeker::get_subtitle_seekpoint( track_id_t track_id, long double target_pts,
+                                      fptr_t end_fpos ) const
+{
+    const fptr_t unset = std::numeric_limits<fptr_t>::max();
+    if( !_subtitle_index_available )
+        return _subtitle_first_cluster;
+    const auto track = _subtitle_blocks.find( track_id );
+    if( track == _subtitle_blocks.end() )
+        return unset;
+    for( const SubtitleBlock &block : track->second )
+    {
+        if( block.fpos >= end_fpos )
+            break;
+        /* Unknown durations remain conservative; the subtitle decoder and
+         * renderer decide whether such a packet is still active. */
+        if( block.pts <= target_pts
+         && (block.end_pts == VLC_TICK_INVALID || block.end_pts >= target_pts) )
+            return block.fpos;
+    }
+    return unset;
 }
 
 void

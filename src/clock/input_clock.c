@@ -138,6 +138,7 @@ struct input_clock_t
     bool    b_paused;
     float   rate;
     vlc_tick_t i_pts_delay;
+    vlc_tick_t i_tracks_delay;
     vlc_tick_t i_pause_date;
 };
 
@@ -190,6 +191,7 @@ input_clock_t *input_clock_New(struct vlc_logger *logger, float rate)
 
     cl->rate = rate;
     cl->i_pts_delay = 0;
+    cl->i_tracks_delay = 0;
     cl->b_paused = false;
     cl->i_pause_date = VLC_TICK_INVALID;
 
@@ -462,10 +464,17 @@ void input_clock_ChangeSystemOrigin( input_clock_t *cl, vlc_tick_t i_system )
 
 #warning "input_clock_SetJitter needs more work"
 void input_clock_SetJitter( input_clock_t *cl,
-                            vlc_tick_t i_pts_delay, int i_cr_average )
+                            vlc_tick_t i_pts_delay, vlc_tick_t i_tracks_delay,
+                            int i_cr_average )
 {
+    /* Network/cache jitter retains its established floor. A user track
+     * offset is current state: removing it must neither retain that extra
+     * buffering forever nor turn the removed offset into observed jitter. */
+    assert(i_tracks_delay >= 0);
+    const vlc_tick_t previous_base = cl->i_pts_delay - cl->i_tracks_delay;
+    const vlc_tick_t next_base = __MAX(previous_base, i_pts_delay);
     /* Update late observations */
-    const vlc_tick_t i_delay_delta = i_pts_delay - cl->i_pts_delay;
+    const vlc_tick_t i_delay_delta = next_base - previous_base;
     vlc_tick_t pi_late[INPUT_CLOCK_LATE_COUNT];
     for( int i = 0; i < INPUT_CLOCK_LATE_COUNT; i++ )
         pi_late[i] = __MAX( cl->late.pi_value[(cl->late.i_index + 1 + i)%INPUT_CLOCK_LATE_COUNT] - i_delay_delta, 0 );
@@ -482,11 +491,8 @@ void input_clock_SetJitter( input_clock_t *cl,
         cl->late.i_index = ( cl->late.i_index + 1 ) % INPUT_CLOCK_LATE_COUNT;
     }
 
-    /* TODO always save the value, and when rebuffering use the new one if smaller
-     * TODO when increasing -> force rebuffering
-     */
-    if( cl->i_pts_delay < i_pts_delay )
-        cl->i_pts_delay = i_pts_delay;
+    cl->i_pts_delay = next_base + i_tracks_delay;
+    cl->i_tracks_delay = i_tracks_delay;
 
     /* */
     if( i_cr_average < 10 )

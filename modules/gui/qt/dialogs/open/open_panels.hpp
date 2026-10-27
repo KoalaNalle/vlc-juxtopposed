@@ -155,7 +155,7 @@ public:
     void onAccept() override;
 private:
     Ui::OpenNetwork ui;
-    bool b_recentList;
+    void reloadHistory();
 public slots:
     void updateMRL() override;
     void clearHistory();

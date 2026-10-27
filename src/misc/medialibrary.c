@@ -99,7 +99,7 @@ static const vlc_medialibrary_callbacks_t callbacks = {
     .pf_send_event = &vlc_ml_event_send
 };
 
-vlc_medialibrary_t* libvlc_MlCreate( libvlc_int_t* p_libvlc  )
+static vlc_medialibrary_t* MlCreate( libvlc_int_t* p_libvlc, bool history_only )
 {
     vlc_medialibrary_t *p_ml = vlc_custom_create( VLC_OBJECT( p_libvlc ),
                                                   sizeof( *p_ml ), "medialibrary" );
@@ -108,13 +108,25 @@ vlc_medialibrary_t* libvlc_MlCreate( libvlc_int_t* p_libvlc  )
     vlc_mutex_init( &p_ml->lock );
     vlc_list_init( &p_ml->cbs );
     p_ml->m.cbs = &callbacks;
-    p_ml->m.p_module = module_need( &p_ml->m, "medialibrary", NULL, false );
+    if (var_Create(&p_ml->m, "ml-history-only", VLC_VAR_BOOL) != VLC_SUCCESS)
+    {
+        vlc_object_delete(&p_ml->m);
+        return NULL;
+    }
+    var_SetBool(&p_ml->m, "ml-history-only", history_only);
+    p_ml->m.p_module = module_need(&p_ml->m,
+        history_only ? "medialibrary-history" : "medialibrary", NULL, false);
     if ( p_ml->m.p_module == NULL )
     {
         vlc_object_delete(&p_ml->m);
         return NULL;
     }
     return p_ml;
+}
+
+vlc_medialibrary_t* libvlc_MlCreate(libvlc_int_t* libvlc)
+{
+    return MlCreate(libvlc, false);
 }
 
 void libvlc_MlRelease( vlc_medialibrary_t* p_ml )
@@ -130,6 +142,34 @@ vlc_medialibrary_t* vlc_ml_instance_get( vlc_object_t* p_obj )
 {
     libvlc_priv_t* p_priv = libvlc_priv( vlc_object_instance(p_obj) );
     return p_priv->p_media_library;
+}
+
+#undef vlc_ml_history_available
+bool vlc_ml_history_available(vlc_object_t *obj)
+{
+    if (vlc_ml_instance_get(obj))
+        return true;
+    module_t **modules = NULL;
+    size_t strict_matches;
+    ssize_t count = vlc_module_match("medialibrary-history", NULL, false,
+                                    &modules, &strict_matches);
+    free(modules);
+    return count > 0;
+}
+
+#undef vlc_ml_history_get
+vlc_medialibrary_t* vlc_ml_history_get(vlc_object_t *obj)
+{
+    libvlc_int_t *libvlc = vlc_object_instance(obj);
+    libvlc_priv_t *priv = libvlc_priv(libvlc);
+    if (priv->p_media_library)
+        return priv->p_media_library;
+    vlc_mutex_lock(&priv->history_lock);
+    if (!priv->history_library)
+        priv->history_library = MlCreate(libvlc, true);
+    vlc_medialibrary_t *ml = priv->history_library;
+    vlc_mutex_unlock(&priv->history_lock);
+    return ml;
 }
 
 static void vlc_ml_thumbnails_release( vlc_ml_thumbnail_t *p_thumbnails )

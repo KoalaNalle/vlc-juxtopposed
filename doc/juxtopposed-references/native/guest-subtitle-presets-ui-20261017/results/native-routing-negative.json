@@ -1,0 +1,24 @@
+{
+  "accepted": false,
+  "failure": "Escape closes actual player-settings popup object",
+  "beforeEscape": {
+    "focusClass": "Button_QMLTYPE_13",
+    "focusName": "subtitlePresetSelector",
+    "height": 900,
+    "popupExists": true,
+    "popupOpened": true,
+    "popupVisible": true,
+    "width": 1280
+  },
+  "afterEscape": {
+    "focusClass": "Button_QMLTYPE_13",
+    "focusName": "subtitlePresetSelector",
+    "height": 360,
+    "popupExists": true,
+    "popupOpened": true,
+    "popupVisible": true,
+    "width": 320
+  },
+  "cause": "Player preferred-hotkey window filter intercepts keys before Qt mouse-focused popup controls because visualFocus is false. Existing modal guard does not cover player popups.",
+  "fix": "Let visible QQuickPopupItem ancestors own focused child press/release, preserving outside-popup visual-focus policy."
+}

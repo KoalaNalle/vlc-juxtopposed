@@ -38,6 +38,7 @@
 #include <vlc_tls.h>
 #include "conn.h"
 #include "message.h"
+#include "test_transport.h"
 
 #if defined(PF_UNIX) && !defined(PF_LOCAL)
 #    define PF_LOCAL PF_UNIX
@@ -52,7 +53,7 @@ static void conn_create(void)
 {
     vlc_tls_t *tlsv[2];
 
-    if (vlc_tls_SocketPair(PF_LOCAL, 0, tlsv))
+    if (vlc_http_test_socket_pair(tlsv))
         assert(!"vlc_tls_SocketPair");
 
     external_tls = tlsv[0];
@@ -74,6 +75,17 @@ static void conn_send(const char *str)
 
 static void conn_shutdown(bool duplex)
 {
+#ifdef _WIN32
+    {
+        // The synthetic server never otherwise reads the client's request.
+        // Winsock resets shutdown/close with unread incoming data. Drain that
+        // request first so queued response bytes still test graceful EOF.
+        short events = POLLIN;
+        int socket = vlc_tls_GetPollFD(external_tls, &events);
+        char discarded[1024];
+        while (recv(socket, discarded, sizeof(discarded), 0) > 0) {}
+    }
+#endif
     vlc_tls_Shutdown(external_tls, duplex);
 }
 
@@ -162,6 +174,7 @@ int main(void)
     conn_shutdown(true);
     b = vlc_http_msg_read(m);
     assert(b != NULL);
+    assert(b != vlc_http_error);
     assert(b->i_buffer == 12);
     assert(!memcmp(b->p_buffer, "Hello world!", 12));
     block_Release(b);

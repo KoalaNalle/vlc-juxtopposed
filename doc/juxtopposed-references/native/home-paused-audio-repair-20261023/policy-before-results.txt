@@ -1,0 +1,49 @@
+********* Start testing of TestPlayerSeekTimerPoint *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestPlayerSeekTimerPoint::initTestCase()
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(initial-percentage) Compared values are not the same
+   Actual   (point.ts)                : 0
+   Expected (vlc_tick_t(expectedTime)): 9000000
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(45) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(initial-time) Compared doubles are not the same (fuzzy compare)
+   Actual   (point.position)  : -1
+   Expected (expectedPosition): 0.3
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(46) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(initial-zero) Compared values are not the same
+   Actual   (point.length)           : 0
+   Expected (vlc_tick_t(inputLength)): 30000000
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(47) : failure location
+PASS   : TestPlayerSeekTimerPoint::pendingPoint(existing-output-percentage)
+PASS   : TestPlayerSeekTimerPoint::pendingPoint(existing-output-time)
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(replacement-duration) Compared values are not the same
+   Actual   (point.ts)                : 18000000
+   Expected (vlc_tick_t(expectedTime)): 6000000
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(45) : failure location
+PASS   : TestPlayerSeekTimerPoint::pendingPoint(unknown-duration)
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(unknown-replacement) Compared values are not the same
+   Actual   (point.ts)                : 18000000
+   Expected (vlc_tick_t(expectedTime)): 0
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(45) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(unknown-time-clears-old-position) Compared doubles are not the same (fuzzy compare)
+   Actual   (point.position)  : 0.6
+   Expected (expectedPosition): -1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(46) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(initial-live-percentage) Compared values are not the same
+   Actual   (point.ts)                : 0
+   Expected (vlc_tick_t(expectedTime)): 9000000
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(45) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(live-time-keeps-absolute-clock) Compared doubles are not the same (fuzzy compare)
+   Actual   (point.position)  : 0.6
+   Expected (expectedPosition): -1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(46) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(replacement-live-status) Compared doubles are not the same (fuzzy compare)
+   Actual   (point.position)  : 1200
+   Expected (expectedPosition): -1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(46) : failure location
+FAIL!  : TestPlayerSeekTimerPoint::pendingPoint(replacement-finite-status) Compared doubles are not the same (fuzzy compare)
+   Actual   (point.position)  : 0.8
+   Expected (expectedPosition): 0.6
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_player_seek_timer_point.cpp(46) : failure location
+PASS   : TestPlayerSeekTimerPoint::cleanupTestCase()
+Totals: 5 passed, 10 failed, 0 skipped, 0 blacklisted, 3ms
+********* Finished testing of TestPlayerSeekTimerPoint *********

@@ -191,7 +191,19 @@ void input_SetPosition( input_thread_t *p_input, double f_position, bool b_fast 
 
     param.pos.f_val = f_position;
     param.pos.b_fast_seek = b_fast;
+    param.pos.b_absolute_media = false;
     input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION, &param );
+}
+
+void input_SetMediaPosition(input_thread_t *input, double position, bool fast)
+{
+    if (!(position >= 0. && position <= 1.))
+        return;
+    const input_control_param_t param = {
+        .pos = { .b_fast_seek = fast, .b_absolute_media = true,
+                 .f_val = position },
+    };
+    input_ControlPush(input, INPUT_CONTROL_SET_POSITION, &param);
 }
 
 /**
@@ -342,6 +354,7 @@ input_thread_t * input_Create( vlc_object_t *p_parent, input_item_t *p_item,
 
     priv->b_low_delay = var_InheritBool( p_input, "low-delay" );
     priv->i_jitter_max = VLC_TICK_FROM_MS(var_InheritInteger( p_input, "clock-jitter" ));
+    msg_Dbg( p_input, "clock jitter maximum: %"PRId64" us", priv->i_jitter_max );
 
     /* Remove 'Now playing' info as it is probably outdated */
     input_item_SetNowPlaying( p_item, NULL );
@@ -653,7 +666,11 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
         VLC_TICK_FROM_MS(var_InheritInteger( p_input, "stats-min-report-interval" ));
     vlc_tick_t i_last_seek_mdate = 0;
 
-    if( b_interactive && var_InheritBool( p_input, "start-paused" ) )
+    /* A thumbnail input must reach its picture independently of the playback
+     * startup policy. Pausing it can fill the paced decoder FIFO and prevent
+     * even its timeout/cancellation from completing input_Close(). */
+    if( b_interactive && input_priv(p_input)->type != INPUT_TYPE_THUMBNAILING
+     && var_InheritBool( p_input, "start-paused" ) )
         ControlPause(p_input, vlc_tick_now(), true);
 
     bool eof_signaled = false;
@@ -674,7 +691,10 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
         {
             b_paused = !es_out_GetBuffering( input_priv(p_input)->p_es_out )
                     || input_priv(p_input)->master->b_eof;
-            if( b_paused && input_priv(p_input)->next_frame_need_data )
+            /* A late decoder request cannot read more data after EOF, and
+             * must not make a paused input run its completion path. */
+            if( b_paused && input_priv(p_input)->next_frame_need_data
+             && !input_priv(p_input)->master->b_eof )
                 b_paused = false;
         }
 
@@ -766,7 +786,8 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
             }
 
             /* Update the wakeup time */
-            if( input_priv(p_input)->next_frame_need_data )
+            if( input_priv(p_input)->next_frame_need_data
+             && !input_priv(p_input)->master->b_eof )
                 i_wakeup = 0;
             else if( i_wakeup != 0 )
             {
@@ -1220,6 +1241,8 @@ static void UpdatePtsDelay( input_thread_t *p_input )
 
     /* Update cr_average depending on the caching */
     const int i_cr_average = var_GetInteger( p_input, "cr-average" ) * i_pts_delay / DEFAULT_PTS_DELAY;
+    msg_Dbg( p_input, "clock reference averaging: %d (caching %"PRId64" us)",
+             i_cr_average, i_pts_delay );
 
     es_out_SetJitter( input_priv(p_input)->p_es_out, i_pts_delay, 0, i_cr_average );
 }
@@ -1702,6 +1725,9 @@ static void ControlRelease( int i_type, const input_control_param_t *p_param )
     case INPUT_CONTROL_RESTART_ES:
         vlc_es_id_Release( p_param->id );
         break;
+    case INPUT_CONTROL_REFRESH_SUBTITLE:
+        vlc_es_id_Release(p_param->subtitle_refresh.id);
+        break;
     case INPUT_CONTROL_SET_ES_LIST:
     {
         for (size_t i = 0; ; i++)
@@ -1745,6 +1771,19 @@ static void ControlPause(input_thread_t *p_input, vlc_tick_t i_control_date,
 {
     int i_state = PAUSE_S;
 
+    /* Keep the demuxer feeding a buffer whose pause is deferred. Pausing an
+     * adaptive live demux first would stop the very data needed to finish that
+     * buffer, leaving the pending pause stuck until playback is stopped. */
+    if (can_defer &&
+        input_priv(p_input)->master->b_can_pause &&
+        es_out_GetBuffering(input_priv(p_input)->p_es_out))
+    {
+        input_priv(p_input)->b_pause_after_buffering = true;
+        return;
+    }
+
+    input_priv(p_input)->b_pause_after_buffering = false;
+
     if( input_priv(p_input)->master->b_can_pause )
     {
         demux_t *p_demux = input_priv(p_input)->master->p_demux;
@@ -1755,23 +1794,6 @@ static void ControlPause(input_thread_t *p_input, vlc_tick_t i_control_date,
             return;
         }
     }
-
-    /* Check if in buffering state, and if so, deferred the pasue
-     * instead of trying to pause the media playback right away, since
-     * the playback and the clocks are not even configured yet.
-     *
-     * We must avoid switching to PAUSE_S here, so that we keep the
-     * property that PAUSE_S implies es_out is paused. We'll handle the
-     * pause as soon as buffering is done. */
-    if (can_defer &&
-        input_priv(p_input)->master->b_can_pause &&
-        es_out_GetBuffering(input_priv(p_input)->p_es_out))
-    {
-        input_priv(p_input)->b_pause_after_buffering = true;
-        return;
-    }
-
-    input_priv(p_input)->b_pause_after_buffering = false;
 
     /* */
     if( es_out_SetPauseState( input_priv(p_input)->p_es_out,
@@ -1967,7 +1989,16 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
     input_thread_private_t *priv = input_priv(p_input);
     int i_ret;
 
-    i_ret = demux_SetTime( priv->master->p_demux, priv->i_start + val,
+    const vlc_tick_t requested = priv->i_start + val;
+    vlc_tick_t subtitle_preroll = 0;
+    if (!fast_seek && !priv->prev_frame.enabled)
+        es_out_PrivControl(priv->p_es_out_display,
+                           ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+                           priv->master, &subtitle_preroll);
+    const vlc_tick_t demux_target = subtitle_preroll > 0 && requested > 0
+                                 ? __MAX(requested - subtitle_preroll, 0)
+                                 : requested;
+    i_ret = demux_SetTime( priv->master->p_demux, demux_target,
                            !fast_seek );
     if( i_ret )
     {
@@ -1975,7 +2006,7 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
         /* Emulate it with a SET_POS */
         if( i_length > 0 )
         {
-            double f_pos = (double)(priv->i_start + val) / (double)i_length;
+            double f_pos = (double)demux_target / (double)i_length;
             i_ret = demux_SetPosition( priv->master->p_demux, f_pos,
                                        !fast_seek );
         }
@@ -1983,6 +2014,11 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
 
     if( i_ret == VLC_SUCCESS )
     {
+        /* Decode earlier delayed subtitle cues, but retain the requested
+         * video/audio display boundary and the source's timestamp origin. */
+        if (demux_target != requested)
+            es_out_Control(&priv->p_es_out->out, ES_OUT_SET_NEXT_DISPLAY_TIME,
+                           priv->master->i_normal_time + requested);
         if( priv->i_slave > 0 )
             SlaveSeek( p_input );
         priv->master->b_eof = false;
@@ -1992,7 +2028,7 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
 }
 
 static int ControlSetPosition( input_thread_t *p_input, double val,
-                               bool fast_seek )
+                               bool fast_seek, bool absolute_media )
 {
     input_thread_private_t *priv = input_priv(p_input);
 
@@ -2000,12 +2036,32 @@ static int ControlSetPosition( input_thread_t *p_input, double val,
     if( i_length > 0 )
     {
         /* Calculate the updated position according to the current track duration */
-        if (priv->i_stop != 0)
+        if (absolute_media)
+        {
+            /* A saved percentage belongs to the whole media. Do not scale it
+             * into a newly configured clip, or restore outside that clip. */
+            const double time = val * i_length;
+            const vlc_tick_t end = priv->i_stop != 0 ?
+                                  __MIN(priv->i_stop, i_length) : i_length;
+            if (time < priv->i_start || time >= end)
+                return VLC_SUCCESS;
+        }
+        else if (priv->i_stop != 0)
             val = (priv->i_start + val * (priv->i_stop - priv->i_start)) / i_length;
         else
             val = (priv->i_start + val * (i_length - priv->i_start)) / i_length;
     }
 
+    if (!fast_seek && i_length > 0)
+    {
+        vlc_tick_t subtitle_preroll = 0;
+        es_out_PrivControl(priv->p_es_out_display,
+                           ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+                           priv->master, &subtitle_preroll);
+        if (subtitle_preroll > 0)
+            return ControlSetTime(p_input, llround(val * i_length) - priv->i_start,
+                                  false);
+    }
     int i_ret = demux_SetPosition( priv->master->p_demux, val, !fast_seek );
 
     if( i_ret == VLC_SUCCESS )
@@ -2116,7 +2172,8 @@ static bool Control( input_thread_t *p_input,
             priv->next_frame_need_data = false;
 
             int i_ret = ControlSetPosition( p_input, param.pos.f_val,
-                                            param.pos.b_fast_seek );
+                                            param.pos.b_fast_seek,
+                                            param.pos.b_absolute_media );
 
             if( i_ret )
                 msg_Err( p_input, "INPUT_CONTROL_SET_POSITION "
@@ -2276,6 +2333,46 @@ static bool Control( input_thread_t *p_input,
         case INPUT_CONTROL_SET_ES_LIST:
             ControlSetEsList( p_input, param.list.cat, param.list.ids );
             break;
+        case INPUT_CONTROL_REFRESH_SUBTITLE:
+        {
+            vlc_es_id_t *id = param.subtitle_refresh.id;
+            const input_source_t *source = vlc_es_id_GetSource(id);
+            bool selected = false;
+            if (priv->b_recording || priv->p_sout || !source->b_slave_sub
+             || es_out_PrivControl(priv->p_es_out_display,
+                                   ES_OUT_PRIV_GET_ES_STATE, id, &selected)
+                != VLC_SUCCESS || !selected)
+                break;
+
+            for (size_t i = 0; i < priv->i_slave; ++i)
+            {
+                input_source_t *in = priv->slave[i];
+                if (in != source)
+                    continue;
+
+                /* A preloaded subtitle can have emitted its current cue while
+                 * another language was selected. Refill only this source at
+                 * the playback clock, without seeking audio/video or their PCR.
+                 * Keep delayed cues in the refill, as a normal accurate seek
+                 * does, and revalidate selection after the queued request. */
+                vlc_tick_t preroll = 0;
+                es_out_PrivControl(priv->p_es_out_display,
+                                   ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+                                   in, &preroll);
+                const vlc_tick_t time = __MAX(priv->i_start
+                    + param.subtitle_refresh.time - __MAX(preroll, 0), 0);
+                if (demux_Control(in->p_demux, DEMUX_SET_TIME, time, true)
+                    == VLC_SUCCESS)
+                {
+                    es_out_PrivControl(priv->p_es_out_display,
+                                       ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
+                    in->b_eof = false;
+                    SlaveDemux(p_input);
+                }
+                break;
+            }
+            break;
+        }
         case INPUT_CONTROL_UNSET_ES:
             es_out_UnsetEs( priv->p_es_out_display, param.id );
             break;
@@ -3045,6 +3142,7 @@ static int InputSourceInit( input_source_t *in, input_thread_t *p_input,
 
     if( var_GetInteger( p_input, "clock-synchro" ) != -1 )
         in->b_can_pace_control = !var_GetInteger( p_input, "clock-synchro" );
+    msg_Dbg( p_input, "source clock pacing: %d", in->b_can_pace_control );
 
     return VLC_SUCCESS;
 }
@@ -3139,21 +3237,29 @@ static void SlaveDemux( input_thread_t *p_input )
         input_source_t *in = input_priv(p_input)->slave[i];
         int i_ret;
 
-        if( in->b_eof )
-            continue;
-
         if( priv->slave_subs_rate != in->sub_rate )
         {
             if( in->b_slave_sub && in->b_can_rate_control )
             {
-                if( in->sub_rate != 0 ) /* Don't reset when it's the first time */
-                    es_out_Control(&priv->p_es_out->out, ES_OUT_RESET_PCR);
+                /* Subtitle timing follows the main clock. A slave rate change
+                 * must not reset the main video/audio PCR during a refill. */
                 float new_rate = priv->slave_subs_rate;
-                demux_Control( in->p_demux, DEMUX_SET_RATE, &new_rate );
+                if (demux_Control(in->p_demux, DEMUX_SET_RATE, &new_rate) == VLC_SUCCESS)
+                {
+                    /* The demux resends the current cue at its new timestamps.
+                     * Drop this source's old cues without seeking the player. */
+                    if (in->sub_rate != 0)
+                        es_out_PrivControl(priv->p_es_out_display,
+                                           ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
+                    in->b_eof = false;
+                }
             }
             in->sub_rate = priv->slave_subs_rate;
         }
 
+        /* A rate change can make cues available again after subtitle EOF. */
+        if( in->b_eof )
+            continue;
 
         /* Call demux_Demux until we have read enough data */
         if( demux_Control( in->p_demux, DEMUX_SET_NEXT_DEMUX_TIME, i_time ) )
@@ -3205,8 +3311,20 @@ static void SlaveSeek( input_thread_t *p_input )
     for (size_t i = 0; i < input_priv(p_input)->i_slave; i++)
     {
         input_source_t *in = input_priv(p_input)->slave[i];
+        vlc_tick_t source_time = i_time;
+        if (in->b_slave_sub)
+        {
+            vlc_tick_t preroll = 0;
+            es_out_PrivControl(input_priv(p_input)->p_es_out_display,
+                               ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+                               in, &preroll);
+            /* Refill an earlier delayed cue in its own demux. An external
+             * subtitle must not move the main video's seek boundary. */
+            if (preroll > 0)
+                source_time = __MAX(source_time - preroll, 0);
+        }
 
-        if( demux_Control( in->p_demux, DEMUX_SET_TIME, i_time, true ) )
+        if( demux_Control( in->p_demux, DEMUX_SET_TIME, source_time, true ) )
         {
             if( !in->b_eof )
                 msg_Err(p_input, "seek failed for slave %zu -> EOF", i);
@@ -3593,6 +3711,9 @@ static int input_SlaveSourceAdd( input_thread_t *p_input,
     if( !p_source )
         return VLC_EGENERIC;
 
+    /* Demux opening may already publish timing controls. */
+    p_source->b_slave_sub = i_type == SLAVE_TYPE_SPU;
+
     if( b_forced )
         p_source->autoselected = true;
 
@@ -3633,10 +3754,14 @@ static int input_SlaveSourceAdd( input_thread_t *p_input,
         /* Get meta (access and demux) */
         InputUpdateMeta( p_input, p_source->p_demux );
     }
-    else
-        p_source->b_slave_sub = true;
 
     TAB_APPEND( priv->i_slave, priv->slave, p_source );
+
+    /* A runtime load-and-select request is an explicit choice, rather than
+     * another candidate for language/ID-based automatic selection. */
+    if( i_type == SLAVE_TYPE_SPU && b_forced && b_set_time )
+        es_out_PrivControl( priv->p_es_out_display, ES_OUT_PRIV_SELECT_SOURCE,
+                            p_source, SPU_ES );
 
     return VLC_SUCCESS;
 

@@ -1,0 +1,429 @@
+{
+  "runtime": {
+    "libvlccore.dll": "9182557b9f4ad0de4cbbfec46e4ef99c66c3a7c240216c74804228c02a66eaa4",
+    "plugins/misc/libaddonsfsstorage_plugin.dll": "1f72cd18278294baccf78d9b26f6e83c7e37544f1d4df46020460d5eef982ef0",
+    "plugins/misc/libaddonsvorepository_plugin.dll": "e480f590309f612320abfd614c0cc3af32604f6c122c4af70a675b97eff5d18c"
+  },
+  "probe": "f9147609e6c2d6fa065ee86f62659970c9118a99809d6c719edbccda3bf26708",
+  "cases": [
+    {
+      "case": "normal",
+      "mode": "normal",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 26,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "remove-first",
+      "mode": "remove-first",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 20,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "install-twice",
+      "mode": "install-twice",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 25,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "queued-install",
+      "mode": "queued-install",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 28,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "queued-remove-catalog",
+      "mode": "queued-remove-catalog",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 22,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "reentrant-found",
+      "mode": "reentrant-found",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 26,
+      "accepted": true,
+      "filesMatchExpected": true
+    },
+    {
+      "case": "invalid-root",
+      "mode": "discover-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 14,
+      "accepted": true
+    },
+    {
+      "case": "truncated-xml",
+      "mode": "discover-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 14,
+      "accepted": true
+    },
+    {
+      "case": "invalid-uuid",
+      "mode": "discover-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 14,
+      "accepted": true
+    },
+    {
+      "case": "missing-package",
+      "mode": "discover-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 14,
+      "accepted": true
+    },
+    {
+      "case": "short-file-uri",
+      "mode": "discover-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 14,
+      "accepted": true
+    },
+    {
+      "case": "catalog-root",
+      "mode": "catalog-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 11,
+      "accepted": true
+    },
+    {
+      "case": "catalog-truncated",
+      "mode": "catalog-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 11,
+      "accepted": true
+    },
+    {
+      "case": "catalog-invalid-uuid",
+      "mode": "catalog-invalid",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 11,
+      "accepted": true
+    },
+    {
+      "case": "unicode-uppercase-package",
+      "mode": "normal",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 26,
+      "accepted": true
+    },
+    {
+      "case": "catalog-publication-failure",
+      "mode": "catalog-save-failure",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "catalogPreserved": true,
+      "actualInstalledBytes": true,
+      "temporaryFilesCleaned": true
+    },
+    {
+      "case": "catalog-publication-retry",
+      "mode": "catalog-save-retry",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 26,
+      "accepted": true,
+      "catalogTracksInstalledFile": true
+    },
+    {
+      "case": "restart-after-catalog-retry",
+      "mode": "catalog-check",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 15,
+      "accepted": true
+    },
+    {
+      "case": "filename-collision",
+      "mode": "install-failure",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "existingBytesPreserved": true,
+      "noPartialOrTemporaryFiles": true
+    },
+    {
+      "case": "partial-missing-resource",
+      "mode": "install-failure",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "existingBytesPreserved": true,
+      "noPartialOrTemporaryFiles": true
+    },
+    {
+      "case": "second-file-collision",
+      "mode": "install-failure",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "existingBytesPreserved": true,
+      "noPartialOrTemporaryFiles": true
+    },
+    {
+      "case": "duplicate-resource",
+      "mode": "install-failure",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "existingBytesPreserved": true,
+      "noPartialOrTemporaryFiles": true
+    },
+    {
+      "case": "selected-local-replacement",
+      "mode": "replace-source",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 32,
+      "accepted": true,
+      "selectedPackageBytesMatch": true
+    },
+    {
+      "case": "durable-install",
+      "mode": "install-only",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 23,
+      "accepted": true,
+      "installedBytesMatch": true,
+      "catalogTracksFile": true
+    },
+    {
+      "case": "restart-installed",
+      "mode": "catalog-check",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 15,
+      "accepted": true
+    },
+    {
+      "case": "locked-remove",
+      "mode": "catalog-locked-remove",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 20,
+      "accepted": true,
+      "filePreserved": true,
+      "catalogPreserved": true
+    },
+    {
+      "case": "restart-after-failure",
+      "mode": "catalog-check",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 15,
+      "accepted": true
+    },
+    {
+      "case": "unlocked-retry",
+      "mode": "catalog-remove",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 20,
+      "accepted": true,
+      "fileRemoved": true,
+      "catalogUntracksFile": true
+    },
+    {
+      "case": "restart-after-removal",
+      "mode": "catalog-empty",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 11,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-00",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-01",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-02",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-03",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-04",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-05",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-06",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-07",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-08",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-09",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-10",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-11",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-12",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-13",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-14",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-15",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-16",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-17",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-18",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    },
+    {
+      "case": "pending-shutdown-19",
+      "mode": "delete-pending",
+      "exitCode": 0,
+      "forcedCleanupUsed": false,
+      "checks": 19,
+      "accepted": true
+    }
+  ],
+  "accepted": true,
+  "sourceRuntimePreserved": true
+}

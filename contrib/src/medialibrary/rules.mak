@@ -15,8 +15,9 @@ $(TARBALLS)/medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2:
 
 .sum-medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2
 
-medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2 .sum-medialibrary
+medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2 .sum-medialibrary $(SRC)/medialibrary/history-only.patch
 	$(UNPACK)
+	$(APPLY) $(SRC)/medialibrary/history-only.patch
 	$(MOVE)
 
 .medialibrary: medialibrary crossfile.meson

@@ -1,0 +1,70 @@
+{
+  "sourceParent": "ae50bff09a3ab7a2bd09bdc5fd47da07b034c5d8",
+  "sourceSha256": {
+    "src/audio_output/filters.c": "2353cb094ca57e850f67ac7c08e2cfc63def18f342a1014d1f5d53432be0eacd",
+    "modules/audio_filter/resampler/soxr.c": "0b192456ba608d5b560ee137ef720ccdac03b358786be8fefc45b70ccde09072",
+    "test/modules/audio_filter/soxr_timestamps.c": "9abc955a48a7baf8a493239325a1203e05009c413cff1ce3f40fe0a73d745806",
+    "test/modules/audio_filter/soxr_lifecycle.c": "73882bf3dc02325cab752363623806eb6b0b2127b283816e7b230119aea802b8",
+    "test/libvlc/native_soxr_timestamps.py": "d14a7ede66192a5911e62ebd46ccca33f3c45395023d86de13622877cb08045c",
+    "test/libvlc/native_file_output.py": "025e649e3f6445c467e665689d6f5a999e2994bce8ffc7cbb56287637232b777",
+    "test/Makefile.am": "98da685d805ebf79345278fb80fb8b34a13ec65abeabeae1b7785fb72b047a98",
+    "test/modules/meson.build": "f02b3efc36f60a2da31959bac1fccfc7677895d424f1c5322103958b74938d76",
+    "modules/stream_out/transcode/pcr_helper.c": "7e33878c0d0d4273744503597f10666735ae61a19857e10af6469692dd1959dd"
+  },
+  "platform": "Windows 10 Pro x64 22H2 build 19045",
+  "buildJobs": 1,
+  "incrementalCoreAndSoxrBuildExitCode": 0,
+  "loadedModuleTestCases": 16,
+  "sourceCompiledLifecycleCases": 11,
+  "finalTimestampTestExecutableSha256": "1c52110c8de34718fb191939f8d665b733233acc37d2147bea51a7113eb6020d",
+  "finalLifecycleExecutableSha256": "4e646f89a40f8de86b5114a1baf7a9d3fc572defd458709385392f0e81a312cd",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "6038664a7b4b02c19bcba38dbe6c09716d1dfbcf55b3b8dae4f7d2ddf876cc4a",
+    "plugins/gui/libqt_plugin.dll": "fe6113bd9b4203c3e9daf1dd8405e63dfe3c1a06e7d8c40fb735d16db3bb71ea",
+    "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+    "plugins/demux/libwav_plugin.dll": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b",
+    "plugins/stream_out/libstream_out_transcode_plugin.dll": "cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c",
+    "plugins/audio_filter/libsoxr_plugin.dll": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16"
+  },
+  "imports": {
+    "core": {
+      "imports": [
+        "ADVAPI32.dll",
+        "IPHLPAPI.DLL",
+        "KERNEL32.dll",
+        "SHELL32.dll",
+        "USER32.dll",
+        "WINMM.dll",
+        "WS2_32.dll",
+        "bcrypt.dll",
+        "msvcrt.dll",
+        "ole32.dll"
+      ],
+      "unchanged": true
+    },
+    "soxr": {
+      "imports": [
+        "ADVAPI32.dll",
+        "KERNEL32.dll",
+        "bcrypt.dll",
+        "libvlccore.dll",
+        "msvcrt.dll"
+      ],
+      "unchanged": true
+    }
+  },
+  "adaptiveResampleBodyUnchanged": true,
+  "productionPcrHelperUnchanged": true,
+  "traceInstrumentationShipped": false,
+  "ordinaryPackageUnchanged": true,
+  "immutableRuntimeFilesReusedInTestStaging": true,
+  "mesonSyntaxParsed": true,
+  "nativeMesonBuild": false,
+  "fixedExportTimestampCaseAccepted": true,
+  "fullAvSyncAccepted": false,
+  "sdiHardwareAccepted": false,
+  "fullCleanBetaPackage": false,
+  "fullBetaAccepted": false
+}

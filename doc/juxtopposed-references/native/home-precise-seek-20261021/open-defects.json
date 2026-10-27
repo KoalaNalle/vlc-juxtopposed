@@ -1,0 +1,30 @@
+{
+  "fullBetaAccepted": false,
+  "defects": [
+    {
+      "id": "paused-fast-seek-clock",
+      "priority": "P2",
+      "status": "fixed_selected_native_and_ordinary_checks_pass",
+      "repair": "Accept the first new point after clock invalidation; reconcile display-only SliderBar.value on release without issuing another seek.",
+      "evidence": [
+        "edit-qualified-r8.json",
+        "ordinary-qualified-r8.json",
+        "ordinary-observations-r8.json",
+        "edit-before-core-r7.json",
+        "ordinary-observations-r7.json"
+      ],
+      "limits": "Owned fixed-GOP MP4 and standard Dark ordinary UI. Additional chapter/input-replacement, broader visual/DPI and final package qualification remain separate."
+    },
+    {
+      "id": "focused-toggle-after-save-error",
+      "priority": "P2",
+      "status": "fixed_selected_component_and_native_checks_pass",
+      "evidence": [
+        "component-error-r6.json",
+        "component-error-geometry-r6.json",
+        "edit-r8.json"
+      ],
+      "limits": "Pointer/Space Dark/Light four-layout component checks; actual native pointer lock/rollback/retry. Full visual/accessibility/OS-DPI gates remain separate."
+    }
+  ]
+}

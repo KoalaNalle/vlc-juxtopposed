@@ -104,6 +104,9 @@ CompositorDirectComposition::~CompositorDirectComposition()
 
     //m_acrylicSurface should be released before the RHI context is destroyed
     assert(!m_acrylicSurface);
+
+    if (m_defaultFrameLatencyApplied && qgetenv("QT_D3D_MAX_FRAME_LATENCY") == "0")
+        qunsetenv("QT_D3D_MAX_FRAME_LATENCY");
 }
 
 bool CompositorDirectComposition::init()
@@ -303,6 +306,22 @@ bool CompositorDirectComposition::makeMainInterface(MainCtx* mainCtx, std::funct
 {
     assert(mainCtx);
     m_mainCtx = mainCtx;
+
+#if QT_VERSION == QT_VERSION_CHECK(6, 8, 3)
+    // Qt 6.8.3 can wait for a full second in QRhiD3D11::beginFrame when
+    // updating our composed UI over video. Disable its optional DXGI wait
+    // before this view creates its RHI; normal presentation/vsync stays on.
+    // Keep this local to the affected compositor/backend/version, and respect
+    // every explicit override, including an explicitly empty value.
+    if (QQuickWindow::graphicsApi() == QSGRendererInterface::Direct3D11
+        && qstrcmp(qVersion(), "6.8.3") == 0
+        && !qEnvironmentVariableIsSet("QT_D3D_MAX_FRAME_LATENCY"))
+    {
+        m_defaultFrameLatencyApplied = qputenv("QT_D3D_MAX_FRAME_LATENCY", "0");
+        if (m_defaultFrameLatencyApplied)
+            msg_Dbg(m_intf, "Qt 6.8.3 DirectComposition/D3D11: disabled optional frame-latency wait");
+    }
+#endif
 
     m_quickView = std::make_unique<QQuickView>();
     const auto quickViewPtr = m_quickView.get();

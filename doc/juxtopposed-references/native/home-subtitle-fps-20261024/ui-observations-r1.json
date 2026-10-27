@@ -1,0 +1,24 @@
+{
+  "status": "terminal",
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true,
+  "checkedRuntimeDiagnostics": [],
+  "pid": 27092,
+  "ordinaryGui": "faf4d30b89add9a08dbfc07d64b26dcae65b18a0a94028e4b24f64217e2f1b17",
+  "core": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+  "observations": [
+    "Startup selects embedded English despite --sub-file. The added external file is Track 3; selecting it through the real track menu immediately shows EXTERNAL FPS FIRST.",
+    "Accessible progress write 0.2 seeks while paused to coarse 00:00:12. Settled progress is 0.20062988452117111, with green/black marker pattern and EXTERNAL FPS FIRST.",
+    "Actual Playback settings > Subtitles editor initially shows 23.976 fps, matching isolated startup configuration.",
+    "Windows accessibility set_value on the string editor changes displayed text to 50. After focusing and pressing Enter it reverts to 23.976 fps. The existing dirty/onTextEdited gate ignores that accessibility route.",
+    "Ctrl+A selects exactly 23.976 fps in the visible focused editor although the accessibility focused_element incorrectly continues reporting the title. Actual type_text 50 followed by Enter shows 50.000 fps.",
+    "With 50.000 fps applied, an additional independent observation still shows EXTERNAL FPS FIRST at held progress 0.20062988452117111 and elapsed 00:00:12. This is an observed paused-retiming failure, not acceptance.",
+    "A new accessible progress write of 0.2 shows EXTERNAL FPS MIDDLE. The subsequent settled GUI position is 0.17130192797987034 and elapsed 00:00:10, while the seek OSD initially says 00:12. The request/settled position discrepancy is retained as a failure; no exact frame-conservation claim is made.",
+    "Tracks > Subtitle menu > Synchronize exposes one Subtitle frame rate spinner with real value 50. Its visible localized text is 50,000 fps, not 50000 fps.",
+    "Accessibility write 29.97 to the synchronization spinner returns native float feedback 29.969999313354492. A focused Up increments it to 30.06999969482422. Reset shows 0,000 fps; the stale EXTERNAL FPS MIDDLE caption remains visible at the unchanged paused position."
+  ],
+  "desktopFpsAccepted": false,
+  "fullBetaAccepted": false
+}

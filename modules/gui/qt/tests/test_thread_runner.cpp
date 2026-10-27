@@ -19,6 +19,8 @@
 #include <QTest>
 #include <QSignalSpy>
 #include <QWaitCondition>
+#include <QSemaphore>
+#include <atomic>
 #include "../medialibrary/mlthreadpool.hpp"
 #include "qtestcase.h"
 
@@ -728,6 +730,46 @@ private slots:
         CHECK_TASK_TIMEOUT(taskRet);
     }
 
+
+    void testDestroyDrainsRunningTasks()
+    {
+        ThreadRunner* runner = getRunner();
+        runner->setMaxThreadCount(1);
+        Dummy target;
+        QSemaphore started, release, destroying;
+        std::atomic_bool completed = false, returned = false;
+        std::atomic_bool returnedBeforeRelease = false;
+        std::atomic_int queuedRuns = 0, callbacks = 0;
+        runner->runOnThread<Ctx>(&target, [&](Ctx&) {
+            started.release();
+            if (release.tryAcquire(1, 5000)) completed = true;
+        }, [&](quint64, Ctx&) { ++callbacks; });
+        const bool workerStarted = started.tryAcquire(1, 5000);
+        runner->runOnThread<Ctx>(&target, [&](Ctx&) { ++queuedRuns; },
+                                [&](quint64, Ctx&) { ++callbacks; });
+        auto releaser = std::unique_ptr<QThread>(QThread::create([&] {
+            if (destroying.tryAcquire(1, 5000)) {
+                QThread::msleep(100);
+                returnedBeforeRelease = returned.load();
+            }
+            release.release();
+        }));
+        releaser->start();
+        auto drain = [&] {
+            destroying.release();
+            runner->destroyAndWait();
+            returned = true;
+        };
+        if (runner->thread() == QThread::currentThread()) drain();
+        else QMetaObject::invokeMethod(runner, drain, Qt::BlockingQueuedConnection);
+        releaser->wait();
+        QVERIFY(workerStarted);
+        QVERIFY(completed.load());
+        QVERIFY(!returnedBeforeRelease.load());
+        QCOMPARE(queuedRuns.load(), 0);
+        QTest::qWait(100);
+        QCOMPARE(callbacks.load(), 0);
+    }
 
     void testNestedTask()
     {

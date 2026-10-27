@@ -45,6 +45,8 @@ public:
 
     Q_INVOKABLE void markHeardTime();
     Q_INVOKABLE void markSpottedTime();
+    // Discard an incomplete pair without publishing a delay adjustment.
+    Q_INVOKABLE void cancel();
     Q_INVOKABLE void reset();
 
 signals:

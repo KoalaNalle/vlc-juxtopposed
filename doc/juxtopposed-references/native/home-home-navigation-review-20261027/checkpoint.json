@@ -1,0 +1,402 @@
+{
+  "status": "open-home-policy-and-music-navigation-followup",
+  "fullBetaAccepted": false,
+  "implementationChanged": false,
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/Player.qml": "5dd7a3899192d4508f89d2b978e9a66f28dbd47a4c1a07408d4ce7a8117bacf5",
+    "modules/gui/qt/player/qml/JuxtopposedMusicPlayer.qml": "73fe8aec0fdfd6cabb4e4cf2393267477f04b6e29345dbc64b337bef0758786d",
+    "modules/gui/qt/maininterface/qml/JuxtopposedNavigation.qml": "490d1bc895dde601a164902b96ef5212b2ba90267e06b879a210c2eda9357f85",
+    "modules/gui/qt/maininterface/qml/JuxtopposedNavigationPane.qml": "30da156cc1f533fb306895bafcf2efd91e467fe133d48840652878a7685785c9"
+  },
+  "figma": {
+    "fileKey": "zdNUYRVOH9lEtIxMYvh8DV",
+    "nodeId": "4778:25123",
+    "sidebarNode": "4778:25149",
+    "reusedHighFidelityContext": true,
+    "referenceRailWidth": 50,
+    "referenceTotalSidebarWidth": 427,
+    "retainedHighFidelitySubtree": "music-navigation-high-fidelity-r379.json.gz"
+  },
+  "musicRoutes": [
+    "video",
+    "music",
+    "network",
+    "playlists"
+  ],
+  "sharedRoutes": [
+    "home",
+    "video",
+    "music",
+    "network",
+    "playlists",
+    "recent"
+  ],
+  "assets": [
+    {
+      "originalAsset": "27471.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-home-inactive-27471.svg",
+      "originalSha256": "35a942e7f0d72b781ec75aad213766cc3f3b787d7e78d0348fac1f5e644ff6bb",
+      "localSha256": "9d83182ec0df19cc2521ce32ee669bf36dcdce0246056d4f499518804ce76fa4",
+      "xmlTreeEqual": false,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "1b0f7.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-videos-7c4e4.svg",
+      "originalSha256": "75b1efc01fbf135aafec9e8d89201da74b33fef70b0ab35a0e89d83e8ef7e9c7",
+      "localSha256": "e97ff16b4a645efaa00214733a7e8c4b40952b1a72b7eb2e41ec7e93847c8634",
+      "xmlTreeEqual": false,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "8b7f6.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-music-61ad2.svg",
+      "originalSha256": "30f416d9bb5e45055227616a9c0912a7329f1a127eb729e5ccc02c97950badeb",
+      "localSha256": "6c117cb2279a6691708c5762533e75155264e1078293af6d50936f060194b4f8",
+      "xmlTreeEqual": false,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "6db55.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-network-6db55.svg",
+      "originalSha256": "2a0f66ce1bfd750d747c8364c0d51ec92bde1343e9824f032b8c0eef8f5898ac",
+      "localSha256": "2a0f66ce1bfd750d747c8364c0d51ec92bde1343e9824f032b8c0eef8f5898ac",
+      "xmlTreeEqual": true,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "c9326.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-playlists-c9326.svg",
+      "originalSha256": "de53cd0938a806fd409c77f749cb94160ae33d8c1d342e54d9b3f5bb9aba9e6d",
+      "localSha256": "de53cd0938a806fd409c77f749cb94160ae33d8c1d342e54d9b3f5bb9aba9e6d",
+      "xmlTreeEqual": true,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "50e8b.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-recent-50e8b.svg",
+      "originalSha256": "8a52c218d03f20f81f0470af36dd00642e638302c59c8fc1f65cbea1285bbb8f",
+      "localSha256": "8a52c218d03f20f81f0470af36dd00642e638302c59c8fc1f65cbea1285bbb8f",
+      "xmlTreeEqual": true,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    },
+    {
+      "originalAsset": "bfdda.svg",
+      "localPath": "modules/gui/qt/pixmaps/juxtopposed/sidebar-add-bfdda.svg",
+      "originalSha256": "318a294b2d2099a407597ec869ea59230069350227dc1d3d3e11abe792920a02",
+      "localSha256": "318a294b2d2099a407597ec869ea59230069350227dc1d3d3e11abe792920a02",
+      "xmlTreeEqual": true,
+      "originalDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      },
+      "localDimensions": {
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }
+    }
+  ],
+  "findings": [
+    "The music presentation supplies four routes and font icons. The paired original Figma music frame has Home/Video/Music/Network/Playlists/Recent plus Add; the existing shared NavigationPane already implements all six routes, original artwork, pins and Add handlers.",
+    "The standalone navigation inside JuxtopposedMusicPlayer has no Add-request handler. Its separate source-panel Add emits the handled root addRequested signal. Ordinary GUI357 now confirms the rail failure: clicking enabled Add item produces only its tooltip, with no action menu/file chooser and unchanged paused0. The matching app then exits normally with all guards.",
+    "The music rail currently declares46px and the wide source panel380px, while the original paired frame uses50px rail/427px total. Source header/breadcrumb/actions and title-bar source context remain separate unassessed presentation work.",
+    "Four shared SVG XML trees match the paired-frame exports. The structurally different Home asset renders identically at240x240 with QtSvg; Video and Music have different rendered pixels and need their exact frame/state variants assessed before reusing a shared descriptor blindly. No artwork or production implementation was changed in this audit.",
+    "The Stop-policy Home screenshot contains the video that reached EOF in the preceding copied-profile test. A read-only owned-database query finds last_position0.995987,duration-1,play_count0. The recent-video query does not by itself define a completed-item policy."
+  ],
+  "nextAction": [
+    "Qualify the exact Music-player route asset/state variants and repair inline navigation using the established shared service/component. Preserve a single active handler for pins/collections: the hidden video drawer must not compete with a music pane.",
+    "Exercise rail Add and Home/Recent/other destinations, source-panel Add, short-window scrolling/focus, unavailable-library states, pins and paused/playing independence. Keep original static assets; do not replace them with font approximations.",
+    "Ask whether Continue Watching should retain all recently watched videos or only unfinished items. If resume-only is chosen, filter before pagination/limiting with a native count/order/search/event contract; do not invent a completion threshold from this one read-only observation."
+  ],
+  "limits": [
+    "Read-only design/source/database observation, not a runtime repair or a full visual/behavior pass. The raw owned database remains ignored and unchanged. Exact original source/header semantics and all applicable beta gates remain open."
+  ],
+  "artifacts": [
+    {
+      "path": "audit-home-history-r371.py.gz",
+      "sha256": "c0f6a0f7af5c6d2197e150af7935aeb78b34e98bf9507fdae1710083db20906a",
+      "rawSha256": "ac3c6f81226929da30f2d48dbf03468b90adec68f129f60ce1cfdbdc4df026e7"
+    },
+    {
+      "path": "home-history-observation-r371.json.gz",
+      "sha256": "523e34d9482dca45d3c5802aec9a0155e85ede823180b4e55e6cf3a2ff5145f0",
+      "rawSha256": "516fa03cd792b71f530baa3095a6498176c8c95265647b0ad869e72a417d801a"
+    },
+    {
+      "path": "figma-music-navigation-r372/1b0f7.svg.gz",
+      "sha256": "627f4b1f1be76df26a03a1067b3dfc7ad301a50d094345fd5dcd9ec38c00146a",
+      "rawSha256": "75b1efc01fbf135aafec9e8d89201da74b33fef70b0ab35a0e89d83e8ef7e9c7"
+    },
+    {
+      "path": "figma-music-navigation-r372/27471.svg.gz",
+      "sha256": "6a9e13c15da1e1643f10def85215da46d3a10f5117c37f43de8c9532c25de628",
+      "rawSha256": "35a942e7f0d72b781ec75aad213766cc3f3b787d7e78d0348fac1f5e644ff6bb"
+    },
+    {
+      "path": "figma-music-navigation-r372/50e8b.svg.gz",
+      "sha256": "9cca81495dbe9d1cb097a44dff5d62f1b94c735d72c375c89168700dcaee6b37",
+      "rawSha256": "8a52c218d03f20f81f0470af36dd00642e638302c59c8fc1f65cbea1285bbb8f"
+    },
+    {
+      "path": "figma-music-navigation-r372/6db55.svg.gz",
+      "sha256": "84c985f52a55d9d9913f94f138d39f8cff417656c8ed41c1568370baa3e4eeb3",
+      "rawSha256": "2a0f66ce1bfd750d747c8364c0d51ec92bde1343e9824f032b8c0eef8f5898ac"
+    },
+    {
+      "path": "figma-music-navigation-r372/8b7f6.svg.gz",
+      "sha256": "98e22a2e40fc6e7eb1dada7852aa39b2c02030a05d6cfe06ec03680ff0baf4b1",
+      "rawSha256": "30f416d9bb5e45055227616a9c0912a7329f1a127eb729e5ccc02c97950badeb"
+    },
+    {
+      "path": "figma-music-navigation-r372/bfdda.svg.gz",
+      "sha256": "5cd561f5dbd563911702cc58661541d0ff424a77eaec35ddf9edb45a64694ec7",
+      "rawSha256": "318a294b2d2099a407597ec869ea59230069350227dc1d3d3e11abe792920a02"
+    },
+    {
+      "path": "figma-music-navigation-r372/c9326.svg.gz",
+      "sha256": "c2d1c923c37714afc5ed7d6470df0f42a8f2f639ba68127ae20924b8ea060f60",
+      "rawSha256": "de53cd0938a806fd409c77f749cb94160ae33d8c1d342e54d9b3f5bb9aba9e6d"
+    },
+    {
+      "path": "ui-music-toolbar-fixed-r360/observations/02-compact-default-maximized-open-0.png.gz",
+      "sha256": "90702890012b2ed8b7e9d879f7cfe0d77ad9d981b3e214298b03460bf6506de5",
+      "rawSha256": "c1b902cd4124178c498bfbe3c7fa0d480b00084dcda971b3d7977985aa3a35a7"
+    },
+    {
+      "path": "ui-music-toolbar-fixed-r360/observations/02-compact-default-maximized-open.json.gz",
+      "sha256": "f7f20b3a64ee4d697330d922b37ca143babe410b21204c4670588829413bb882",
+      "rawSha256": "055ec6d3913a4d8276b01c767fd19561c16b139a483bd56a2e01ffc1ebf7ad1f"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/04-stop-policy-keeps-app-open-home-0.png.gz",
+      "sha256": "878996159514025ad78b51fe8da2bb555bb983f1c0435fc81d0751336ff85482",
+      "rawSha256": "323c097c1002d28cf7d2e2b729c4b4ccac8daf3927f24430a8f66f127eefeaa4"
+    },
+    {
+      "path": "ui-finish-stop-policy-r368/observations/04-stop-policy-keeps-app-open-home.json.gz",
+      "sha256": "d134f13fb9b7d9c21b5184bca1053cb003366fdd139f66780d8fa8f48024c25c",
+      "rawSha256": "3b027187c62e31c075aa99bc730c4323e1223d3039438e636da7f2f764c777f4"
+    },
+    {
+      "path": "write-home-review-r373.py.gz",
+      "sha256": "bf46ad0067a473fc9b41ddad81b92e3c8a2230b3d32f28aa783ff0f747c20345",
+      "rawSha256": "8f84fbbbdc85b47669282fe9ddff9e7d14cbd22c661a9f81a5aee8ec56c2d521"
+    },
+    {
+      "path": "render-check-navigation-r374.py.gz",
+      "sha256": "d1b719ddf365f96b5a2b4b1eb7622d05e967fc1b3fcde2cba9ac8ee8c6ec2a80",
+      "rawSha256": "063a94612bc3bfb4aea1a0e1128a892bb4f5a31751b7b61ca16489d526d013e6"
+    },
+    {
+      "path": "music-navigation-asset-renders-r374.json.gz",
+      "sha256": "9cef6495ab6155b013a4b3b17a6bce2d4cfa06b575d69c9b95136dd10b4f1ae6",
+      "rawSha256": "f495f8cd26d976e13ea2c07d990cbfdb6c087a59bf9bb765e77a2714e1be2e20"
+    },
+    {
+      "path": "finalize-home-review-r375.py.gz",
+      "sha256": "40e9715109ef33f2c1b476eea047c220f6978a9b834542135c973e8a5a788905",
+      "rawSha256": "5e0a2a1084c9227a9c0d1c721cee05fbef1d85d1a51f3bbdfda5e321ca44343e"
+    },
+    {
+      "path": "ui-music-nav-before-r377/verification.json.gz",
+      "sha256": "e4b5a1c8069e69a7761007408f36075aea9f981d61808a8df1b89a4de8809971",
+      "rawSha256": "76292411e12fb4c2c4ec9ec99b036ff9c2b6708fcf61980fc52890d36c0f0532"
+    },
+    {
+      "path": "ui-music-nav-before-r377/producer.py.gz",
+      "sha256": "4e0f32daf596a179af3f15f8bf71585785bd816b1e4717d6e8aecdcf55c8ca0c",
+      "rawSha256": "70086dc713fac1c130a67468c359b7a24300b1a9b23937c7bed6cdaadfacee3b"
+    },
+    {
+      "path": "ui-music-nav-before-r377/launch.json.gz",
+      "sha256": "4075ff6c9d0b6e8bc569d9c5d7e6321891a98ecb1a62b5fcadd755a3bd5296c7",
+      "rawSha256": "14c8a1081c61c1a006abb84d23615a420a18e1f345b3a90a115cbdd4587fccc5"
+    },
+    {
+      "path": "ui-music-nav-before-r377/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-music-nav-before-r377/layout-fixture.json.gz",
+      "sha256": "01d9bb0fbbe86369562e1968464277e62528bb4aa1cb9e01bedf24b301ea3165",
+      "rawSha256": "d7341fe8050821e77ebab429a28c6ba3db6c591bbd0bf0cf98614725ddd5b5e8"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/01-before-rail-add-0.png.gz",
+      "sha256": "dc8084fdcc6e74d52941c3216ea64a97b8aff750b3e3fe7fc3ae35d1290289a1",
+      "rawSha256": "81981d0208dce95fe47f5df25ce551cefe32e535a36ac6d1eeb40de2c77df857"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/01-before-rail-add.json.gz",
+      "sha256": "692158e4096340a10e08b417b946daa31de3bd0c766a96af2697a46745720f3d",
+      "rawSha256": "4d53b6c1f848350feac1dcfdf9f47147e6705095831760691faf0e283b9e8ee1"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/02-rail-add-no-actions-open-0.png.gz",
+      "sha256": "9ef2bd63a828f2a97f53dc12e2321ff44c98547cc18989c4e63b97d98f45b2c9",
+      "rawSha256": "bdd778150021a5d4a603b1983abdd09dcd433519226932328f09038df65c9120"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/02-rail-add-no-actions-open-1.png.gz",
+      "sha256": "5ff4e197e176a2469d75f08fe3edfcdcfde1cf13e7d22718f5aba8937f160d8d",
+      "rawSha256": "ad43c50a3193bf49f4d0cac70a4e96b8f303c0474c7a240b4eaeb696fbfe3544"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/02-rail-add-no-actions-open.json.gz",
+      "sha256": "d0379e8742fedc15afd578993fd7bb1d4a3853ae4eb798e55e78f1e1469361a2",
+      "rawSha256": "5fbf73056c2620473b7093c25a787df2acd08e1d4b841b475e5aeda8c44c5789"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/action.json.gz",
+      "sha256": "91f1690ca0e8d8555d289762df247a399f63129b454d4cc486a91349156a48e9",
+      "rawSha256": "961320180c980a32bd9d9a1a094efe00cb2f9d2f195ce4f6680d62dd055f8708"
+    },
+    {
+      "path": "ui-music-nav-before-r377/observations/window-inventory.json.gz",
+      "sha256": "1577ec7ac265934984d935f804bd925517f7fe0ee930ac00c758ffa84f3512fc",
+      "rawSha256": "5f2312ce7e3e86cd09b84412bde9d59cd04bf9105a511f622bf97b231b2d3492"
+    },
+    {
+      "path": "inputs-r377.json.gz",
+      "sha256": "1f35464d2dd05d3120758e2d70aa6414751d519e4945745f2dacc7e8e32785e5",
+      "rawSha256": "0c14a113261a4c592f3e6beb87160ade52cc39beac91f5fce9fa193d9b92b6e7"
+    },
+    {
+      "path": "append-navigation-baseline-r378.py.gz",
+      "sha256": "41a94ef1782ecf64c124bd7342d955ae89a92216b6d67c8512457787fd8bc868",
+      "rawSha256": "77a99482cf677b70eb10895d6f8968b2e9d813a32a0507802dd1bed4fee8c654"
+    },
+    {
+      "path": "music-navigation-high-fidelity-r379.json.gz",
+      "sha256": "ee8fcf9a4a59378e38c6232af5800f6d7670674628d3e8a411401dea92a722a9",
+      "rawSha256": "e6ef54f7574212c8447ff3982b11cb88d0c303949b86457fa238714136f392a5"
+    },
+    {
+      "path": "retain-navigation-context-r379.py.gz",
+      "sha256": "7a4fb0734f8383c0b6335716ae7c10b74a67c4429421aca9fbff583589e23076",
+      "rawSha256": "a8f8244022c114db54e183a8a37088f795eeb6e3c026b07e0cd22979f40a9171"
+    }
+  ],
+  "assetRenderComparisons": [
+    {
+      "asset": "27471.svg",
+      "local": "sidebar-home-inactive-27471.svg",
+      "renderDimensions": [
+        240,
+        240
+      ],
+      "differentPixels": 0,
+      "renderSha256": [
+        "6a142374e267aa6a44023f725d83aa291a3e2fae2f5516c09933c94f3475941a",
+        "6a142374e267aa6a44023f725d83aa291a3e2fae2f5516c09933c94f3475941a"
+      ]
+    },
+    {
+      "asset": "1b0f7.svg",
+      "local": "sidebar-videos-7c4e4.svg",
+      "renderDimensions": [
+        240,
+        240
+      ],
+      "differentPixels": 17647,
+      "renderSha256": [
+        "039729c1e51e0d120e27f18adb10c200ff7aeaf6e35cbf84e556a10a6bb8dcf5",
+        "3948abbc531c84291e1dd991ef47d8fe179750b8c92a58d92567232ad1048961"
+      ]
+    },
+    {
+      "asset": "8b7f6.svg",
+      "local": "sidebar-music-61ad2.svg",
+      "renderDimensions": [
+        240,
+        240
+      ],
+      "differentPixels": 25222,
+      "renderSha256": [
+        "e759fb8a2e4bacb046c2d50687195e4e70e86bfddcb3892de37993169de4d50e",
+        "4d1cdbc5cbdd52761569040778086760487ea4984b8fd2a6ac9d1fbdcba096fa"
+      ]
+    }
+  ],
+  "ordinaryBaseline": {
+    "runtimeSha256": {
+      "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+      "plugins/gui/libqt_plugin.dll": "caa02e28c3cddf45c1778dd5111274ecfe78c19de0438dc257da39d87ea756e2",
+      "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+      "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+      "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+      "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+      "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+      "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+      "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+    },
+    "normalExit": true,
+    "moduleCounts": [
+      "602"
+    ],
+    "checkedDiagnostics": [],
+    "allGuards": true,
+    "expectedFailure": "The enabled music navigation rail Add item button opens no action menu or file chooser after clicking. Only its tooltip appears. Home and Recent are absent from the inline route list.",
+    "currentPausedProgress": 0,
+    "fullBetaAccepted": false
+  }
+}

@@ -50,14 +50,14 @@ ButtonExt {
 
         ColorAnimation {
             target: control.background
-            property: "backgroundColor"
+            property: "color"
             from: theme.bg.primary
             to: theme.accent
             duration: VLCStyle.duration_long
         }
         ColorAnimation {
             target: control.background
-            property: "backgroundColor"
+            property: "color"
             from: theme.accent
             to: theme.bg.primary
             duration: VLCStyle.duration_long

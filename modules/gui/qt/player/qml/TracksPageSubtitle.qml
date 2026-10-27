@@ -31,6 +31,23 @@ import VLC.Widgets as Widgets
 TracksPage {
     id: root
 
+    // A pair of real-time marks belongs to one continuous media timeline.
+    // Cancellation must not apply a zero per-track delay or change inheritance.
+    Connections {
+        target: Player
+        function onInputChanged() { root.cancelPendingMarks() }
+        function onRateChanged() { root.cancelPendingMarks() }
+        function onSeekStarted() { root.cancelPendingMarks() }
+        function onPlayingStateChanged() { root.cancelPendingMarks() }
+        function onSubtitleSelectionChanged() { root.cancelPendingMarks() }
+        function onSecondarySubtitleSelectionChanged() { root.cancelPendingMarks() }
+    }
+
+    function cancelPendingMarks() {
+        delayEstimatorPrimary.cancel()
+        delayEstimatorSecondary.cancel()
+    }
+
     // Functions
 
     function textFromValueA(value, locale) {
@@ -42,11 +59,11 @@ TracksPage {
     }
 
     function textFromValueB(value, locale) {
-        return qsTr("%1 fps").arg(Number(value / 10).toLocaleString(locale, 'f', 3))
+        return qsTr("%1 fps").arg(Number(value / 1000).toLocaleString(locale, 'f', 3))
     }
 
     function valueFromTextB(text, locale) {
-        return Number.fromLocaleString(locale, text.substring(0, text.length - 4)) * 10
+        return Number.fromLocaleString(locale, text.substring(0, text.length - 4)) * 1000
     }
 
     // Children
@@ -78,7 +95,8 @@ TracksPage {
                 id: delayEstimatorPrimary
 
                 onDelayChanged: {
-                    Player.addSubtitleDelay(delayEstimatorPrimary.delay)
+                    // Marks measure wall time; native track offsets use media time.
+                    Player.addSubtitleDelay(delayEstimatorPrimary.delay.scale(Player.rate))
                 }
             }
 
@@ -98,6 +116,8 @@ TracksPage {
 
                 Widgets.SpinBoxExt {
                     id: spinBoxA
+
+                    Accessible.name: qsTr("Primary subtitle delay")
 
                     property bool update: false
 
@@ -167,6 +187,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: voiceHeardA
+                    Navigation.parentItem: root
 
                     iconTxt: VLCIcons.check
                     text: qsTr("Voice Heard")
@@ -181,6 +202,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: textSeenA
+                    Navigation.parentItem: root
 
                     iconTxt: VLCIcons.check
                     text: qsTr("Text Seen")
@@ -202,12 +224,13 @@ TracksPage {
 
             Accessible.role: Accessible.Grouping
             Accessible.name: qsTr("Secondary subtitle delay")
+            enabled: Player.hasSecondarySubtitle
 
             DelayEstimator {
                 id: delayEstimatorSecondary
 
                 onDelayChanged: {
-                    Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay)
+                    Player.addSecondarySubtitleDelay(delayEstimatorSecondary.delay.scale(Player.rate))
                 }
             }
 
@@ -227,6 +250,8 @@ TracksPage {
 
                 Widgets.SpinBoxExt {
                     id: spinBoxB
+
+                    Accessible.name: qsTr("Secondary subtitle delay")
 
                     property bool update: false
 
@@ -294,6 +319,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: voiceHeardB
+                    Navigation.parentItem: root
 
                     text: qsTr("Voice Heard")
                     iconTxt: VLCIcons.check
@@ -308,6 +334,7 @@ TracksPage {
 
                 Widgets.TrackDelayButton {
                     id: textSeenB
+                    Navigation.parentItem: root
 
                     text: qsTr("Text Seen")
                     iconTxt: VLCIcons.check
@@ -328,36 +355,60 @@ TracksPage {
             spacing: VLCStyle.margin_xsmall
 
             Accessible.role: Accessible.Grouping
-            Accessible.name: qsTr("Subtitle Speed")
+            Accessible.name: qsTr("Subtitle frame rate")
 
             Widgets.MenuCaption {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignHCenter
 
-                text: qsTr("Subtitle Speed")
+                text: qsTr("Subtitle frame rate")
 
                 color: root.colorContext.fg.primary
             }
 
-            Widgets.SpinBoxExt {
+            FocusScope {
                 id: spinBoxC
 
+                objectName: "subtitleFrameRate"
+                Accessible.role: Accessible.SpinBox
+                Accessible.name: qsTr("Subtitle frame rate")
+                Accessible.description: qsTr("Frame rate of external subtitle files. Set to 0 to restore normal timing.")
+                activeFocusOnTab: true
+
                 property bool update: false
+                // Expose real FPS to accessibility; the existing visual spin
+                // control uses integer thousandths only as its implementation.
+                property real value: 0
+                readonly property real minimumValue: 0
+                readonly property real maximumValue: Math.max(100, value)
+                readonly property real stepSize: 0.1
 
                 Layout.preferredWidth: VLCStyle.dp(128, VLCStyle.scale)
-
-                stepSize: 1
-                from: 0
-                to: 100
-
-                textFromValue: root.textFromValueB
-                valueFromText: root.valueFromTextB
+                implicitHeight: fpsEditor.implicitHeight
+                implicitWidth: fpsEditor.implicitWidth
 
                 Navigation.parentItem: root
                 Navigation.rightItem: resetC
 
+                onActiveFocusChanged: if (activeFocus) fpsEditor.forceActiveFocus()
+
+                Widgets.SpinBoxExt {
+                    id: fpsEditor
+
+                    anchors.fill: parent
+                    Accessible.ignored: true
+                    from: 0
+                    to: Math.max(100000, Math.ceil(spinBoxC.value * 1000))
+                    stepSize: 100
+                    value: Math.round(spinBoxC.value * 1000)
+                    textFromValue: root.textFromValueB
+                    valueFromText: root.valueFromTextB
+                    Navigation.parentItem: spinBoxC
+                    onValueModified: spinBoxC.value = value / 1000
+                }
+
                 Component.onCompleted: {
-                    value = Player.subtitleFPS * 10
+                    value = Player.subtitleFPS
 
                     update = true
                 }
@@ -366,16 +417,16 @@ TracksPage {
                     if (update === false)
                         return
 
-                    Player.subtitleFPS = value / 10
+                    Player.subtitleFPS = value
                 }
 
                 Connections {
                     target: Player
 
-                    function onSecondarySubtitleDelayChanged() {
+                    function onSubtitleFPSChanged() {
                         spinBoxC.update = false
 
-                        value = Player.subtitleFPS / 10
+                        spinBoxC.value = Player.subtitleFPS
 
                         spinBoxC.update = true
                     }
@@ -387,7 +438,7 @@ TracksPage {
 
                 text: qsTr("Reset")
 
-                onClicked: spinBoxC.value = 10
+                onClicked: Player.subtitleFPS = 0
 
                 Navigation.parentItem: root
                 Navigation.leftItem: spinBoxC

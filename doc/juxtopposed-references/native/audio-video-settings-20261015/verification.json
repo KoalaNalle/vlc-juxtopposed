@@ -1,0 +1,751 @@
+{
+  "schema": 1,
+  "status": "BOUNDED_NATIVE_CHECKPOINT_BETA_INCOMPLETE",
+  "date": "2026-10-15",
+  "scope": "Native Audio31/Video23, actual shared-store General regressions and three ordinary desktop journeys; full beta gates remain open",
+  "nativeEnvironment": {
+    "platform": "Windows 11 x86_64",
+    "qt": "6.8.3 static",
+    "compiler": "GCC13-posix"
+  },
+  "nativeSuites": {
+    "sharedFloatStore": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 4.828,
+      "qtSha256DuringRun": "dade24833f4394361db693d374a0297f4e2821349192a37d28367b15fd878a36",
+      "runtimeSha256": {
+        "test_qt_checked_float_preferences.exe": "0429e8d6daff1000532d604ae925156673a77bdc641faedb5f9c868880ebf766",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "003cf6debd9c3e8a6165e8e47ba2f46fc77fe3e90555d67054dc50e865883c53"
+    },
+    "interfaceRegression": {
+      "passed": 14,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 9.984,
+      "qtSha256DuringRun": "dade24833f4394361db693d374a0297f4e2821349192a37d28367b15fd878a36",
+      "runtimeSha256": {
+        "test_qt_interface_preferences.exe": "1c6303695cda616688f447afd9f4f601d8d7459a11b31d643546c449ffc202d6",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "5318d031e012d98c2bd990cdeb47d98dfaf9a5e1a387d090206eff1e7f86a2a3"
+    },
+    "playbackRegression": {
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 15.718,
+      "qtSha256DuringRun": "dade24833f4394361db693d374a0297f4e2821349192a37d28367b15fd878a36",
+      "runtimeSha256": {
+        "test_qt_playback_preferences.exe": "9fd6122fe1c6773938d690f1f5ed3fd16df67963340b1c217a4b264515592340",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "21e677cb1ced3f59e4c205099e480bba393d67294945d7d39cac7d4bbe540932"
+    },
+    "liveEqualizerRegression": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 2.36,
+      "qtSha256DuringRun": "dade24833f4394361db693d374a0297f4e2821349192a37d28367b15fd878a36",
+      "runtimeSha256": {
+        "test_qt_audio_equalizer.exe": "cb0ff620762dbd6ee8b227c64808d7703abb4a872483a358b94253f7f2c728c6",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "93a531324d98aaba563bb9013fc6d84d1f0423905014086ae5d8992f1de4f5d1"
+    },
+    "videoTransformRegression": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 9.812,
+      "qtSha256DuringRun": "dade24833f4394361db693d374a0297f4e2821349192a37d28367b15fd878a36",
+      "runtimeSha256": {
+        "test_qt_video_transform.exe": "22c7bdb0df1f5546b0952afce4f004922f58984988193443778aa19c4f3b593d",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "94751f7aed05ecbce4fc9d17e2a665c586ae0423535ce1fc9b64f351c55d36a9"
+    },
+    "revisedAudioDefaults": {
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 12.033,
+      "qtSha256DuringRun": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "532b2ca29f60fd0aff6f270d8cca4f0116d6a0e7cc08340ed9dd44737ebbfe63",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "add70fc752a598d53b0e83343859a7256b7dc2edfed0e063e64a0b39fbeb0623"
+    },
+    "revisedVideoDefaults": {
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 20.125,
+      "qtSha256DuringRun": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "runtimeSha256": {
+        "test_qt_video_preferences.exe": "004f7145707ee71c874ad2c91fdfe6976f5dfb2ca6635469ddefb9b4ccb8d75e",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "45f7aa145eed2ef066f827c7f89c4b76b4c5e0e333da8eee40ddb30b3791534d"
+    },
+    "audioPcmSubset": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 3.01,
+      "qtSha256DuringRun": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "532b2ca29f60fd0aff6f270d8cca4f0116d6a0e7cc08340ed9dd44737ebbfe63",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "8b105dfaebe001ec53af9ee56978d7ec657fb42d9cc5b2c34ea3f38a4f92692e"
+    },
+    "finalAudioDefaults": {
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 18.07,
+      "qtSha256DuringRun": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "b9274abd7d0d19ded3414302b79254b6c9f3c880e5e6da95e08e8704ba6b08a6",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "70f62b4d724bba02f10496597a805c37e27ea23fcd783a8ad9bb72d39fbebefd"
+    }
+  },
+  "audioPcmSubsetOverlapsFullSuite": true,
+  "generalActualFloatStoreReplay": {
+    "runs": {
+      "desired": {
+        "passed": 29,
+        "failed": 0,
+        "skipped": 1,
+        "exitCode": 0,
+        "boundedWaitCompleted": true,
+        "terminationConfirmed": true,
+        "elapsedSeconds": 22.172,
+        "sameOriginalAssertions": true,
+        "runtimeSha256": {
+          "test_qt_general_preferences.exe": "718acbaf23966ea6680b962fa879e62f6d0142dc04d8be5936b67313c6dbd26c",
+          "native_general_log.exe": "4223d6c169d875df23ea8d849792648bf3bb2f871b6631317b93042a38551cfa",
+          "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+          "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+        },
+        "auditReceiptSha256": "84579024b7c67c036d81fa8019bed7f941d26e28c7813b6073c5ab11be4b45a1",
+        "faultInjectedCore": false
+      },
+      "groupedPolicy": {
+        "passed": 31,
+        "failed": 0,
+        "skipped": 1,
+        "exitCode": 0,
+        "boundedWaitCompleted": true,
+        "terminationConfirmed": true,
+        "elapsedSeconds": 22.985,
+        "sameOriginalAssertions": true,
+        "runtimeSha256": {
+          "test_qt_general_preferences.exe": "2c9f148f0231eb7c9e62d8e38addd373ddc0d3cc1651b693e28b18d13f1f757a",
+          "native_general_log.exe": "4223d6c169d875df23ea8d849792648bf3bb2f871b6631317b93042a38551cfa",
+          "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+          "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+        },
+        "auditReceiptSha256": "42741cd0e50edec7f9db5071d51e63b0980e6037c2080fac34a25c7201481639",
+        "faultInjectedCore": false
+      },
+      "actualSyncCloseFault": {
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0,
+        "exitCode": 0,
+        "boundedWaitCompleted": true,
+        "terminationConfirmed": true,
+        "elapsedSeconds": 0.563,
+        "sameOriginalAssertions": true,
+        "runtimeSha256": {
+          "test_qt_general_preferences.exe": "718acbaf23966ea6680b962fa879e62f6d0142dc04d8be5936b67313c6dbd26c",
+          "native_general_log.exe": "4223d6c169d875df23ea8d849792648bf3bb2f871b6631317b93042a38551cfa",
+          "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+          "libvlccore.dll": "88018c3aa82fccd181e08017b86844e57c3eee69f52cc601b982f9a8114f62de"
+        },
+        "auditReceiptSha256": "6d22e5f1376089bcfdf1cf300502b515b57e3947596f1de0a622c8c55fccfd2a",
+        "faultInjectedCore": true
+      }
+    },
+    "checkedHumanFiles": 2,
+    "checkedHumanFilesUnchanged": true,
+    "strictRunnersPassed": 3,
+    "trackedNativeGeneralSuite": false,
+    "ordinaryCasesHaveOneDeliberateFaultOnlySkip": true,
+    "faultCoreIsPrivateAndNotShipped": true,
+    "sameCompiledDesiredExecutableForOrdinaryAndFault": true,
+    "originalDesiredObjectSha256": "892c1af7bb1ae0ec141c4b8f18159fe9f62ee9a39c1d573d030bedb0ac37d599",
+    "originalPolicyObjectSha256": "5ac6464f6db68fd77a9519b3b59253873733d1e35a87ea8af029d239b4d6a54d",
+    "actualGeneralObjectSha256": "a94d51dce8fe588363b537b41c531ba58159a98ccd63729a172aa5f0f5b4304d",
+    "actualSharedFloatStoreObjectSha256": "a1dfc03a01cfa9567cf2ed33162818c67801b7c78088c162dc85288a7f2da9eb",
+    "actualSharedFloatStoreSourceSha256": "2240bbdbfbc354a893841d61bda63c107218a02bcd5f0fa6c50125b0c791900e",
+    "ownedImplementationObjectBytesVerified": true,
+    "sourceTestRecompiled": false
+  },
+  "components": {
+    "audioOriginal": {
+      "groupsOrChecks": 15,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "6d00af2ff2e767b0673c15691145dbaf66f3a2b0063a72c857faec2cba98db35"
+    },
+    "videoOriginal": {
+      "groupsOrChecks": 14,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "28eb20814afd1e749a4dea0c6fb1394549f946ab3bd1c1888d2b6861c43309c8"
+    },
+    "sharedHost": {
+      "groupsOrChecks": 24,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "cee1750cd8aa05a6fe734d04a9a2f97d6558ce927f6f96a429983eab78c958fd",
+      "directedTransitions": 12,
+      "busyGuards": 9
+    },
+    "softwareBackdrop": {
+      "groupsOrChecks": 23,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "8ebdf1258bc8d623f0ccf9f27fc6632c163b61483545d52e2112f5af548645cf"
+    },
+    "audioInlineErrorCandidate": {
+      "groupsOrChecks": 16,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "7748f2df678a764176c5682a4f1731bb36863bd43a85f565a8a0dad6191c8672"
+    },
+    "videoInlineErrorCandidate": {
+      "groupsOrChecks": 15,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "13fe228f8dd07d2af90454f866df36211fe3c2a17c09749759155e3b35df4296"
+    },
+    "finalAudioDisplay": {
+      "groupsOrChecks": 17,
+      "qtMessages": 0,
+      "suppliedStateOnly": true,
+      "verificationSha256": "82d3fb67245a163c2ef63c42edaa550c25b1fe6b2e09ad8e1c44e551f712a91d",
+      "uneditedFocusDoesNotSaveRoundedDisplay": true,
+      "explicitEditsKeepFullPrecision": true
+    }
+  },
+  "sameAdditiveErrorWorkerRejectsBothBaselines": true,
+  "retainedInitialNativeFailures": [
+    {
+      "id": "originalAudioOwner",
+      "passed": 20,
+      "failed": 1,
+      "skipped": 0,
+      "exitCode": 1,
+      "terminationConfirmed": true,
+      "allOriginalArtifactsRetained": true,
+      "rawArtifactsCopiedIntoPublicDraft": false,
+      "explanation": "The intentionally independent LibVLC media-player variables masked correct saved global EQ defaults; corrected native playlist-owner fixture preserves original assertions.",
+      "receiptSha256": "91aad033558a0ece81e184b21dbe1e0623567b1a686ec02b926e4c9909f47d53",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "85e319f050f6dcaa61657af3643fa32daaa93c09d63dae646e4646085f0e956c",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      }
+    },
+    {
+      "id": "originalVideoResetPrecondition",
+      "passed": 22,
+      "failed": 1,
+      "skipped": 0,
+      "exitCode": 1,
+      "terminationConfirmed": true,
+      "allOriginalArtifactsRetained": true,
+      "rawArtifactsCopiedIntoPublicDraft": false,
+      "explanation": "A saturated YUV source did not satisfy the black precondition; neutral generated source corrects the setup while retaining the threshold and colored post-reset assertions.",
+      "receiptSha256": "364875fbe05caf05ae29f3828ca8244c5b4d5f3f62a6c153fb577c2cbc2ce6b4",
+      "runtimeSha256": {
+        "test_qt_video_preferences.exe": "ea7268d890addd73b4acf7256ec17647e5ac500eb604177cece65c54c3ff0c75",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      }
+    }
+  ],
+  "normalGuiQuits": [
+    {
+      "journey": 1,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 23.024,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "diagnosticOrFaultCoreIncluded": false,
+      "quitReceiptSha256": "3c607ed1f9ff8fe6952859a6337adaadaf0ada8b80f6515f9a3e03a4d91e442f"
+    },
+    {
+      "journey": 2,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 22.294,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "diagnosticOrFaultCoreIncluded": false,
+      "quitReceiptSha256": "7dd2761f629c2f4b6668d5e710e71e8935d238e0e9d48125d2fb16eb2c8cea0f"
+    },
+    {
+      "journey": 3,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 18.735,
+      "qtSha256": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "diagnosticOrFaultCoreIncluded": false,
+      "quitReceiptSha256": "6909b156bdd9815cd6d562b3dab05f7cdd7e71667a57ad2069fd29d974deacbe"
+    }
+  ],
+  "guiExamples": {
+    "customEqualizer60HzDb": -3.5,
+    "customEqualizerPreampDb": -6,
+    "sameValuesRestoredAfterRestart": true,
+    "pitch99RejectedAndRestoredTo0": true,
+    "nativeLowerFieldErrorVisible": true,
+    "zeroBrightnessDefaultLeavesCurrentNeutralFrameUnchanged": true,
+    "nextLaunchGeneratedClipIsBlack": true,
+    "savingNormalDefaultsLeavesCurrentBlackFrameUnchanged": true,
+    "invalidPrefixRestoresPriorTextAndShowsError": true,
+    "visibleLightAndDarkJourneys": true,
+    "hardwareOrAllControlsAccepted": false,
+    "finalNormalBrightnessRestoredAfterRestart": true,
+    "finalVolumeStepDisplays5": true,
+    "exactNativeFloatMinimumAcceptedAndPhysicallySaved": true,
+    "originalTargetRestoredAndRestartWarningCleared": true,
+    "allThreeFlushedLogsHaveNoQmlTypeReferenceOrAssignmentErrors": true,
+    "nativeMinimumDisplayed": "0.000001"
+  },
+  "selectedCaptureIdentities": {
+    "audioCustomEnabled": {
+      "accessibilityReceiptSha256": "96a090a08f0443cf0c735bf7f3783ebe517ea09b0be1a481c98f5f4ef9a56741",
+      "pngSha256": "b0285a18fceeaac50e61a8999db44ac617821c1b4db439035da54e87f33ac532",
+      "rawMachineMetadataCopied": false
+    },
+    "audioPitchRollbackVisibleError": {
+      "accessibilityReceiptSha256": "4d8bf31ef6b54414360cf88350876df2c065873b314c2c5911386e49abbc7667",
+      "pngSha256": "0cca879d9bc79f61ae1493f9efd4ab100cca956e041bf9783515859e97903bcd",
+      "rawMachineMetadataCopied": false
+    },
+    "audioCustomRestored": {
+      "accessibilityReceiptSha256": "73b8a7ad0da8818cc667f96f869ce9cb4d11b7a7d4721c7749579001760c3888",
+      "pngSha256": "de70fa6e2ab4545747eaa933e50ab89893f29dbc0948f10f3a521514496f7f40",
+      "rawMachineMetadataCopied": false
+    },
+    "videoZeroDefaultSaved": {
+      "accessibilityReceiptSha256": "c3a3aaf39dd703f31c51cab1e7dfd90c05baed2d6792a69837ea184fd1373bb0",
+      "pngSha256": "216c5b2df25042e58104c7bf5762ad1750ae882550128edc446af50083e06425",
+      "rawMachineMetadataCopied": false
+    },
+    "videoCurrentNeutralAfterDefault": {
+      "accessibilityReceiptSha256": "f00daef2611059399b1ff45282af302c0f0fd9d0d833912401db660d02799ec9",
+      "pngSha256": "47be4ccf080d7b38c3cd81ca3a32e56c8f7ae3228a9a7f97994be636607cd6f6",
+      "rawMachineMetadataCopied": false
+    },
+    "videoBlackAfterRestart": {
+      "accessibilityReceiptSha256": "60e94918bac67446ee09131d643013f9c5ece0ce8ece4eb582e5845fbbff2cbe",
+      "pngSha256": "50ec4294b6ab7ba5196fe8a336428bb2bfb9a7634e1a5e5f2d16508df64cc312",
+      "rawMachineMetadataCopied": false
+    },
+    "videoCurrentBlackAfterNormalDefault": {
+      "accessibilityReceiptSha256": "db2cf6f7ac1b9574f104ac88c7014ed913a7732da123ac445403bc2c0b9227b2",
+      "pngSha256": "eb2e6af13da144addeeaabf7fe04bf3bac0701b79c2ca6987e17b779dc0b8ab4",
+      "rawMachineMetadataCopied": false
+    },
+    "videoPrefixRollbackVisibleError": {
+      "accessibilityReceiptSha256": "8f9697619f2bd4a4a320490f1f64374a3892acaf4765ba003fa2c82923c2ee75",
+      "pngSha256": "819fc0acec70816b549b21b623b0263ac1970f264891e7a8d780af67b63393a4",
+      "rawMachineMetadataCopied": false
+    }
+  },
+  "pendingGates": {
+    "actualPickerJourneysAccepted": false,
+    "fullHardwareCodecSurroundVisualizationAccepted": false,
+    "allDpiScreensAccepted": false,
+    "fullFigmaFidelityAccepted": false,
+    "newHeadCiAccepted": false,
+    "cleanBetaPackagingAccepted": false,
+    "completeBetaAccepted": false,
+    "allNineUnavailableAudioControlsAccepted": false,
+    "videoWallpaperConsumerAccepted": false,
+    "actualGuiResetButtonAccepted": false,
+    "hardwareVideoBackdropBlurAccepted": false,
+    "intermittentHomeGlyphGateClosed": false
+  },
+  "sanitization": {
+    "rawMachineMetadataIncluded": false,
+    "absolutePathsIncluded": false,
+    "processIdsIncluded": false,
+    "humanConfigContentsOrHashesIncluded": false,
+    "rawLogsOrAccessibilityTreesIncluded": false,
+    "pngsCopied": true,
+    "onlyCuratedGeneratedMediaAndSettingsPixelsPublished": true
+  },
+  "inputReceiptSha256": {
+    "sharedFloatStore.receipt": "003cf6debd9c3e8a6165e8e47ba2f46fc77fe3e90555d67054dc50e865883c53",
+    "sharedFloatStore.qtestText": "5a9e0806cb63c01148c4a4ee97246992e00a571ab550de539c355e9f9b78e235",
+    "sharedFloatStore.qtestXml": "78257bb91425cc291722006acdb39390e0443d081749974f6a4a7477cb0da2a6",
+    "interfaceRegression.receipt": "5318d031e012d98c2bd990cdeb47d98dfaf9a5e1a387d090206eff1e7f86a2a3",
+    "interfaceRegression.qtestText": "92ea76a37eb76f10895065d13c7a61dd7b28ecea9f641e0167d2952968339673",
+    "interfaceRegression.qtestXml": "c98e2ec8ce64a6ae54b7433cd3a34a590166346606c06fcfd6285aec02cdb0c6",
+    "playbackRegression.receipt": "21e677cb1ced3f59e4c205099e480bba393d67294945d7d39cac7d4bbe540932",
+    "playbackRegression.qtestText": "2e0a62ccd1a796a096dba40112a0c5e0c7aeac4a671de6c35c356d8be250d4b0",
+    "playbackRegression.qtestXml": "43c5e90594d83116aad89303b30f87f03f7f65785928c6964afd16508e232f79",
+    "liveEqualizerRegression.receipt": "93a531324d98aaba563bb9013fc6d84d1f0423905014086ae5d8992f1de4f5d1",
+    "liveEqualizerRegression.qtestText": "4c8feb0449ed0adf72b002b8b1ca3b1ed86c4b4ee9d8aced644b55d4b76d07dc",
+    "liveEqualizerRegression.qtestXml": "f4a145c87adce65d68d3cbbf3744047b93ccaff754c328c81a1128a90d9f24a4",
+    "videoTransformRegression.receipt": "94751f7aed05ecbce4fc9d17e2a665c586ae0423535ce1fc9b64f351c55d36a9",
+    "videoTransformRegression.qtestText": "a52d3b436db15b20ab71465b876af5f817c66edc93c071b6f70e363f31fd26f7",
+    "videoTransformRegression.qtestXml": "e5f817496b5491de2a04962c83a8e7db5f138dd7cf3dd08dedc6f42d935fbcca",
+    "revisedAudioDefaults.receipt": "add70fc752a598d53b0e83343859a7256b7dc2edfed0e063e64a0b39fbeb0623",
+    "revisedAudioDefaults.qtestText": "aaa79603ca9d18a7b4ff80d74b243d21731fe2b4ecf55c9e6621c0fdf6180f54",
+    "revisedAudioDefaults.qtestXml": "66ea87a9155638810315fd37a1635928bdc4105e6e56735bbace6c5b71c4a81b",
+    "revisedVideoDefaults.receipt": "45f7aa145eed2ef066f827c7f89c4b76b4c5e0e333da8eee40ddb30b3791534d",
+    "revisedVideoDefaults.qtestText": "7119634c3ebf04d84b322aa544dc29fbcf8211c8bddf284f52f31b48c6f045a9",
+    "revisedVideoDefaults.qtestXml": "85dea8f18e26ff400cab110ccd311356827c555e81d7f95c46b224232e7718fc",
+    "audioPcmSubset.receipt": "8b105dfaebe001ec53af9ee56978d7ec657fb42d9cc5b2c34ea3f38a4f92692e",
+    "audioPcmSubset.qtestText": "f62f84cb0b9fbe85d32b0e498740ded57ac71d8e2b9f4944ecfeb9036589d9a9",
+    "audioPcmSubset.qtestXml": "543efa44c31310089e60981287f0c163e9e75c87c4c833aa08a14ba2732a86f4",
+    "general.desired.audit": "84579024b7c67c036d81fa8019bed7f941d26e28c7813b6073c5ab11be4b45a1",
+    "general.desired.process": "30d646f3848a7c29188181145a1d58908504d4fefc9228c792faa56872bfca1c",
+    "general.desired.qtest": "ba5509b50e42c3f4b444764729c36a85d3e0c3fa3f08c1ff6b3da4c9693563f2",
+    "general.groupedPolicy.audit": "42741cd0e50edec7f9db5071d51e63b0980e6037c2080fac34a25c7201481639",
+    "general.groupedPolicy.process": "16f34f5fe2d19b225cd6a5851f8a79e8aff8aa90c09e6baec3a4d19023c3255c",
+    "general.groupedPolicy.qtest": "0a8cdbbe265418c62bd7a7d2d26806884f37ac851d68a51013789187ca5dd092",
+    "general.actualSyncCloseFault.audit": "6d22e5f1376089bcfdf1cf300502b515b57e3947596f1de0a622c8c55fccfd2a",
+    "general.actualSyncCloseFault.process": "fd6930d6c1c79bd6e6b05c11fb5566073d5c7b88ff4831a734127a24fa160eb9",
+    "general.actualSyncCloseFault.qtest": "a1b0ce7e5a11568a8134f2c2b8b646c9cf0e4783a06a6ea5a4fb642e27019c01",
+    "general.humanPreservation": "e03eabafa4068c137f35a611f7674e9807c6d568eed12889df7b1fcd3e2288ee",
+    "general.actualObjectLinkPreparation": "7e338804e5603499e7644cbdbe43d212a4ab294c9c419865dc07c9f0c8815876",
+    "originalAudioOwner.receipt": "91aad033558a0ece81e184b21dbe1e0623567b1a686ec02b926e4c9909f47d53",
+    "originalAudioOwner.qtest": "66e06d8e2542ce5113dd1afeb0e9d8e7e6d920f9cbbccc8f1ba90ca8a9fedb9f",
+    "originalVideoResetPrecondition.receipt": "364875fbe05caf05ae29f3828ca8244c5b4d5f3f62a6c153fb577c2cbc2ce6b4",
+    "originalVideoResetPrecondition.qtest": "15e43d2de1600b566285541e6890dd2def08658e27b53d12480962a0baec81a6",
+    "gui.journey1.quit": "3c607ed1f9ff8fe6952859a6337adaadaf0ada8b80f6515f9a3e03a4d91e442f",
+    "gui.journey1.launch": "db35cae5fedf589a90e5e41ff1513fddd305519e680e84675c69cf16b3a11347",
+    "gui.journey2.quit": "7dd2761f629c2f4b6668d5e710e71e8935d238e0e9d48125d2fb16eb2c8cea0f",
+    "gui.journey2.launch": "e5095baecf5bd6d9d9f2069c52549a313a3aa73fe84b4e06f6f4e38a2b1ca338",
+    "component.audioOriginal": "6d00af2ff2e767b0673c15691145dbaf66f3a2b0063a72c857faec2cba98db35",
+    "component.videoOriginal": "28eb20814afd1e749a4dea0c6fb1394549f946ab3bd1c1888d2b6861c43309c8",
+    "component.sharedHost": "cee1750cd8aa05a6fe734d04a9a2f97d6558ce927f6f96a429983eab78c958fd",
+    "component.softwareBackdrop": "8ebdf1258bc8d623f0ccf9f27fc6632c163b61483545d52e2112f5af548645cf",
+    "component.audioInlineErrorCandidate": "7748f2df678a764176c5682a4f1731bb36863bd43a85f565a8a0dad6191c8672",
+    "component.videoInlineErrorCandidate": "13fe228f8dd07d2af90454f866df36211fe3c2a17c09749759155e3b35df4296",
+    "component.inlineErrorPair": "5eadb73bde58d371e129026271d0223e624dc26ba52adbb67d9ae6270a03ce55",
+    "capture.audioCustomEnabled": "96a090a08f0443cf0c735bf7f3783ebe517ea09b0be1a481c98f5f4ef9a56741",
+    "capture.audioPitchRollbackVisibleError": "4d8bf31ef6b54414360cf88350876df2c065873b314c2c5911386e49abbc7667",
+    "capture.audioCustomRestored": "73b8a7ad0da8818cc667f96f869ce9cb4d11b7a7d4721c7749579001760c3888",
+    "capture.videoZeroDefaultSaved": "c3a3aaf39dd703f31c51cab1e7dfd90c05baed2d6792a69837ea184fd1373bb0",
+    "capture.videoCurrentNeutralAfterDefault": "f00daef2611059399b1ff45282af302c0f0fd9d0d833912401db660d02799ec9",
+    "capture.videoBlackAfterRestart": "60e94918bac67446ee09131d643013f9c5ece0ce8ece4eb582e5845fbbff2cbe",
+    "capture.videoCurrentBlackAfterNormalDefault": "db2cf6f7ac1b9574f104ac88c7014ed913a7732da123ac445403bc2c0b9227b2",
+    "capture.videoPrefixRollbackVisibleError": "8f9697619f2bd4a4a320490f1f64374a3892acaf4765ba003fa2c82923c2ee75",
+    "revisedOrdinaryBuildStatus": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "originalArtifactsAltered": false,
+  "recordedRevisedOrdinaryBuildExitCode": 0,
+  "audioFloatBoundaryPair": {
+    "original": {
+      "passed": 29,
+      "failed": 2,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 2,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 18.266,
+      "qtSha256DuringRun": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "daf859eeb9bcc544c5309ad12ac8aaf49ba0158de5eaccca344f805a1ad931f6",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "2cc3c1d20f8eef02be753f3fc4848ef5a629ee99fbf9057a3415b346c347932a",
+      "expectedFailedCases": [
+        "normalizationTargetCanonicalMinimum(native-float)",
+        "normalizationTargetCanonicalMinimum(exact-model-double-readback)"
+      ]
+    },
+    "fixed": {
+      "passed": 31,
+      "failed": 0,
+      "skipped": 0,
+      "includesSetupAndCleanup": true,
+      "exitCode": 0,
+      "boundedWaitCompleted": true,
+      "terminationConfirmed": true,
+      "forcedCleanupUsed": false,
+      "checkedHumanFilesUnchanged": true,
+      "elapsedSeconds": 18.07,
+      "qtSha256DuringRun": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "runtimeSha256": {
+        "test_qt_audio_preferences.exe": "b9274abd7d0d19ded3414302b79254b6c9f3c880e5e6da95e08e8704ba6b08a6",
+        "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+        "libvlccore.dll": "465c32797907c311ea723cbaade026c5d3dc441ac2d53f3a4a2ea20fe31e756d"
+      },
+      "receiptSha256": "70f62b4d724bba02f10496597a805c37e27ea23fcd783a8ad9bb72d39fbebefd"
+    },
+    "sameCompiledDesiredTestObjectSha256": "969f42ba5d449f68dcebbd62537a9a990f806018e21ec998a652f976420551a7",
+    "genericIntegerPolicyUnchanged": true,
+    "immediatelyLowerFloatAndDoubleRemainRejected": true,
+    "allOriginal21CasesRetained": true
+  },
+  "finalOrdinaryBuild": {
+    "exitCode": 0,
+    "qtSha256": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+    "sourceFileCount": 1191,
+    "sourceFreezeSha256": "7ce9f632ec1c101a5d96fa045314d83bfeb17eb6e2947f15ce4dd65f6a6924fe",
+    "compiledDesiredOracleObjectPreserved": true,
+    "mesonBuilt": false
+  },
+  "unchangedAcceptedNativeExecutablesInFinalBuild": {
+    "sharedFloatStore": "0429e8d6daff1000532d604ae925156673a77bdc641faedb5f9c868880ebf766",
+    "interfaceRegression": "1c6303695cda616688f447afd9f4f601d8d7459a11b31d643546c449ffc202d6",
+    "playbackRegression": "9fd6122fe1c6773938d690f1f5ed3fd16df67963340b1c217a4b264515592340",
+    "liveEqualizerRegression": "cb0ff620762dbd6ee8b227c64808d7703abb4a872483a358b94253f7f2c728c6",
+    "videoTransformRegression": "22c7bdb0df1f5546b0952afce4f004922f58984988193443778aa19c4f3b593d",
+    "revisedVideoDefaults": "004f7145707ee71c874ad2c91fdfe6976f5dfb2ca6635469ddefb9b4ccb8d75e",
+    "finalAudioDefaults": "b9274abd7d0d19ded3414302b79254b6c9f3c880e5e6da95e08e8704ba6b08a6"
+  },
+  "publishedOriginalCaptures": {
+    "audio-custom-equalizer": {
+      "relativePath": "assets/audio-custom-equalizer.png",
+      "sha256": "b0285a18fceeaac50e61a8999db44ac617821c1b4db439035da54e87f33ac532",
+      "width": 1410,
+      "height": 961,
+      "journey": 1,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "96a090a08f0443cf0c735bf7f3783ebe517ea09b0be1a481c98f5f4ef9a56741",
+      "originalUntransformedPixels": true
+    },
+    "audio-visible-field-error": {
+      "relativePath": "assets/audio-visible-field-error.png",
+      "sha256": "0cca879d9bc79f61ae1493f9efd4ab100cca956e041bf9783515859e97903bcd",
+      "width": 1410,
+      "height": 961,
+      "journey": 1,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "4d8bf31ef6b54414360cf88350876df2c065873b314c2c5911386e49abbc7667",
+      "originalUntransformedPixels": true
+    },
+    "audio-custom-after-restart": {
+      "relativePath": "assets/audio-custom-after-restart.png",
+      "sha256": "de70fa6e2ab4545747eaa933e50ab89893f29dbc0948f10f3a521514496f7f40",
+      "width": 1410,
+      "height": 961,
+      "journey": 2,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "73b8a7ad0da8818cc667f96f869ce9cb4d11b7a7d4721c7749579001760c3888",
+      "originalUntransformedPixels": true
+    },
+    "video-light-defaults": {
+      "relativePath": "assets/video-light-defaults.png",
+      "sha256": "8f027fb97bf6ae01ec29a39d70cf0fb7694f6277e9ecb69a888ff9fba028d915",
+      "width": 1410,
+      "height": 961,
+      "journey": 1,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "354de1334be6e44538dd26cc0118b3af7905642dff507cf51b96b12d7cd8edfc",
+      "originalUntransformedPixels": true
+    },
+    "video-visible-field-error": {
+      "relativePath": "assets/video-visible-field-error.png",
+      "sha256": "819fc0acec70816b549b21b623b0263ac1970f264891e7a8d780af67b63393a4",
+      "width": 1410,
+      "height": 961,
+      "journey": 2,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "8f9697619f2bd4a4a320490f1f64374a3892acaf4765ba003fa2c82923c2ee75",
+      "originalUntransformedPixels": true
+    },
+    "video-current-neutral": {
+      "relativePath": "assets/video-current-neutral.png",
+      "sha256": "47be4ccf080d7b38c3cd81ca3a32e56c8f7ae3228a9a7f97994be636607cd6f6",
+      "width": 1410,
+      "height": 961,
+      "journey": 1,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "f00daef2611059399b1ff45282af302c0f0fd9d0d833912401db660d02799ec9",
+      "originalUntransformedPixels": true
+    },
+    "video-restarted-black": {
+      "relativePath": "assets/video-restarted-black.png",
+      "sha256": "50ec4294b6ab7ba5196fe8a336428bb2bfb9a7634e1a5e5f2d16508df64cc312",
+      "width": 1410,
+      "height": 961,
+      "journey": 2,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "60e94918bac67446ee09131d643013f9c5ece0ce8ece4eb582e5845fbbff2cbe",
+      "originalUntransformedPixels": true
+    },
+    "video-current-black": {
+      "relativePath": "assets/video-current-black.png",
+      "sha256": "eb2e6af13da144addeeaabf7fe04bf3bac0701b79c2ca6987e17b779dc0b8ab4",
+      "width": 1410,
+      "height": 961,
+      "journey": 2,
+      "qtSha256": "9f5632e4c46aa51ae7baacef32bb8532e8ffb288247e9000cf44a9d169f1791d",
+      "metadataReceiptSha256": "db2cf6f7ac1b9574f104ac88c7014ed913a7732da123ac445403bc2c0b9227b2",
+      "originalUntransformedPixels": true
+    },
+    "video-restored-neutral": {
+      "relativePath": "assets/video-restored-neutral.png",
+      "sha256": "720d0a6942b3756bd49ef7f33f5ff26072fbd72b8b071abeee7eef450df31b25",
+      "width": 1410,
+      "height": 961,
+      "journey": 3,
+      "qtSha256": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "metadataReceiptSha256": "b0612ec82a6fa3ae1237e98ba344dd0f5b2b8495d28f48ff388dad314dec0ca1",
+      "originalUntransformedPixels": true
+    },
+    "audio-clean-number": {
+      "relativePath": "assets/audio-clean-number.png",
+      "sha256": "21210accec18854cf9d528e764722d12aeeadda7613eaf577960a9f381da62b2",
+      "width": 1410,
+      "height": 961,
+      "journey": 3,
+      "qtSha256": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "metadataReceiptSha256": "dc8ece07bec4895516de39794e93f3d8f74e7f8ffa0325d2a0a3a0cc9cdbcc5f",
+      "originalUntransformedPixels": true
+    },
+    "audio-native-minimum": {
+      "relativePath": "assets/audio-native-minimum.png",
+      "sha256": "6f3a4620f3c399f78520fd88870ea887a4f0fbd5adfbec215a64c1244e8d4cc7",
+      "width": 1410,
+      "height": 961,
+      "journey": 3,
+      "qtSha256": "4c173d25fef01ca591080761f83dd379e8417d920a43e4f98f2cda02a1d6c3bb",
+      "metadataReceiptSha256": "413c9f888b38b931c6eae0d702db448f89136ff3b2a2aa0731dfd98ccf2d3ddb",
+      "originalUntransformedPixels": true
+    }
+  },
+  "nativeDesktopFrameSamples": {
+    "video-current-neutral": {
+      "originalPixel": [
+        700,
+        500
+      ],
+      "rgb": [
+        64,
+        64,
+        64
+      ]
+    },
+    "video-restarted-black": {
+      "originalPixel": [
+        700,
+        500
+      ],
+      "rgb": [
+        0,
+        0,
+        0
+      ]
+    },
+    "video-current-black": {
+      "originalPixel": [
+        700,
+        500
+      ],
+      "rgb": [
+        0,
+        0,
+        0
+      ]
+    },
+    "video-restored-neutral": {
+      "originalPixel": [
+        700,
+        500
+      ],
+      "rgb": [
+        64,
+        64,
+        64
+      ]
+    }
+  },
+  "preparedBeforeGitPublication": true
+}

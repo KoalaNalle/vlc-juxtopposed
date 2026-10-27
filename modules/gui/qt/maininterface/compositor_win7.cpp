@@ -29,6 +29,18 @@
 
 using namespace vlc;
 
+namespace {
+class NativeVideoWidget final : public QWidget
+{
+public:
+    using QWidget::QWidget;
+
+    // Qt requires this override to keep WA_PaintOnScreen enabled on Windows.
+    // The video output owns this native surface, not Qt's backing store.
+    QPaintEngine *paintEngine() const override { return nullptr; }
+};
+}
+
 int CompositorWin7::windowEnable(const vlc_window_cfg_t *)
 {
     commonWindowEnable();
@@ -70,7 +82,7 @@ bool CompositorWin7::makeMainInterface(MainCtx* mainCtx, std::function<void (QQu
      * and showing them would raise the video widget above the interface
      */
     m_videoWidget = new QWidget(nullptr, Qt::Tool | Qt::FramelessWindowHint);
-    m_stable = new QWidget(m_videoWidget);
+    m_stable = new NativeVideoWidget(m_videoWidget);
     m_stable->setContextMenuPolicy( Qt::PreventContextMenu );
 
     QPalette plt = m_stable->palette();

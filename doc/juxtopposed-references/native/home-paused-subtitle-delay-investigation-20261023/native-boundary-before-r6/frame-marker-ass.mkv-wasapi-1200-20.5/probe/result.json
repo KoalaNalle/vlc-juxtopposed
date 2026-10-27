@@ -1,0 +1,435 @@
+{
+  "status": "terminal",
+  "passed": false,
+  "fullBetaAccepted": false,
+  "scope": "Generated English cue masks, delayed paused seek and live delay/reset frame conservation, plus a matched playing boundary. No desktop, audibility, full synchronization or full beta acceptance.",
+  "coreSha256": "0ef9dde2f0a221135cab0a548ac292dd89d7cc9b7b79427eaaba121995b7773f",
+  "mediaSha256": "5e4c6f0705ecc45b8f1811b167114e74326f9c827252bb965e7b7934c3e68757",
+  "producerSha256": "731e06a80599a27e6dd5b7b0954d14102c99a78588086c422ded6cde5e918350",
+  "media": "frame-marker-ass.mkv",
+  "audio": "wasapi",
+  "defaultDelayMs": 1200,
+  "seekMode": "position",
+  "boundarySeconds": 20.5,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--sub-language=eng",
+    "--sub-track=-1",
+    "--sub-track-id=",
+    "--sub-delay=12",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\native-boundary-before-r6\\frame-marker-ass.mkv-wasapi-1200-20.5\\probe\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "observations": [
+    {
+      "step": "cold-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "cold-paused.png",
+      "snapshotSha256": "078c6543e02116fb16c757846ac6ea4c3b02935cd0f56090e96f064d07668ddc",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 1,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        },
+        {
+          "state": 3,
+          "timeUs": 61334
+        }
+      ]
+    },
+    {
+      "step": "reference-first",
+      "state": 3,
+      "timeUs": 5021334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "reference-first.png",
+      "snapshotSha256": "66d819dafe51ab49755fcaf1fc13df7961895b2a6b72b0a3da9f316de743f8e6",
+      "captionMaskSha256": "0bb306ea56b83edb78422ac657ef524f992fc8229f3f73a86c524adcffae3141",
+      "brightPixels": 1346,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 125,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        },
+        {
+          "state": 3,
+          "timeUs": 5021334
+        }
+      ]
+    },
+    {
+      "step": "reference-middle",
+      "state": 3,
+      "timeUs": 25021334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "reference-middle.png",
+      "snapshotSha256": "6744b65ffb06ab7a7e42affcef4997008f2272e364a4173b423c41d1600f64e8",
+      "captionMaskSha256": "2fd302b7b1a4b719d4b5e8f580735e7353b22cfad4c4f3b722948cba16f47930",
+      "brightPixels": 1564,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 625,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 25021334
+        },
+        {
+          "state": 3,
+          "timeUs": 25021334
+        },
+        {
+          "state": 3,
+          "timeUs": 25021334
+        }
+      ]
+    },
+    {
+      "step": "boundary-seek",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "boundary-seek.png",
+      "snapshotSha256": "251bd2111df19e705202a6b5ff6b5b11d9278042df90a1dffa55ddfbcb04b7e3",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "boundary-settled",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "boundary-settled.png",
+      "snapshotSha256": "05b14ebcfd4d90d0be44e3737a477437aa7a1ac5a7f46fd8e06684a42562267e",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "live-reset",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": 0,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "live-reset.png",
+      "snapshotSha256": "c6f8f81ddece1dd9c738e13d764ce871232efcbfd23681cd897740731b2e83f9",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "live-positive",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "live-positive.png",
+      "snapshotSha256": "7cbe5d579491670cebd4305f47369d63a5884a3c6e77b10110515fca026adfb2",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "live-negative",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": -1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "live-negative.png",
+      "snapshotSha256": "a1daf64526cff5e2932d7dca14630369fcc689add35ef0c19765be20838e1ca5",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "live-zero",
+      "state": 3,
+      "timeUs": 20501334,
+      "delayUs": 0,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "live-zero.png",
+      "snapshotSha256": "c54ec91a1079bd4b18707466b9dc75142d3996dea14373bc7efebb62d854fff6",
+      "captionMaskSha256": "35cee74fe697d2c7732cc06aede881251e466d1c0f4cd3f4ac46e96bdc1536ff",
+      "brightPixels": 0,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 512,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        },
+        {
+          "state": 3,
+          "timeUs": 20501334
+        }
+      ]
+    },
+    {
+      "step": "before-playing-boundary",
+      "state": 3,
+      "timeUs": 18021334,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "before-playing-boundary.png",
+      "snapshotSha256": "1ecfe5afb024c750fe701a0fd5bade9607d9cb62e762319db6119f8d0f8be28b",
+      "captionMaskSha256": "0bb306ea56b83edb78422ac657ef524f992fc8229f3f73a86c524adcffae3141",
+      "brightPixels": 1346,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 450,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 18021334
+        },
+        {
+          "state": 3,
+          "timeUs": 18021334
+        },
+        {
+          "state": 3,
+          "timeUs": 18021334
+        }
+      ]
+    },
+    {
+      "step": "after-playing-boundary",
+      "state": 3,
+      "timeUs": 20209934,
+      "delayUs": 1200000,
+      "vouts": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailable": true,
+      "snapshot": "after-playing-boundary.png",
+      "snapshotSha256": "b1c85f6e8662532e543c815cc1832939f0ab32c2aeb1e488d0cbeb459501c101",
+      "captionMaskSha256": "0bb306ea56b83edb78422ac657ef524f992fc8229f3f73a86c524adcffae3141",
+      "brightPixels": 1346,
+      "width": 960,
+      "height": 540,
+      "frameMarker": 505,
+      "pausedSamples": [
+        {
+          "state": 3,
+          "timeUs": 20209934
+        },
+        {
+          "state": 3,
+          "timeUs": 20209934
+        },
+        {
+          "state": 3,
+          "timeUs": 20209934
+        }
+      ]
+    }
+  ],
+  "teardownComplete": true,
+  "initialPauseReached": true,
+  "playingBoundaryReached": true,
+  "playingPauseReached": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "actualWasapiSelected": true,
+  "captionComparisons": {
+    "boundary-seek:reference-first": {
+      "differingPixels": 1346,
+      "unionPixels": 1346,
+      "maximumDifferenceFraction": 0.005
+    },
+    "boundary-settled:reference-first": {
+      "differingPixels": 1346,
+      "unionPixels": 1346,
+      "maximumDifferenceFraction": 0.005
+    },
+    "after-playing-boundary:reference-first": {
+      "differingPixels": 0,
+      "unionPixels": 1346,
+      "maximumDifferenceFraction": 0.005
+    },
+    "live-reset:reference-middle": {
+      "differingPixels": 1564,
+      "unionPixels": 1564,
+      "maximumDifferenceFraction": 0.005
+    },
+    "live-positive:reference-first": {
+      "differingPixels": 1346,
+      "unionPixels": 1346,
+      "maximumDifferenceFraction": 0.005
+    },
+    "live-negative:reference-middle": {
+      "differingPixels": 1564,
+      "unionPixels": 1564,
+      "maximumDifferenceFraction": 0.005
+    },
+    "live-zero:reference-middle": {
+      "differingPixels": 1564,
+      "unionPixels": 1564,
+      "maximumDifferenceFraction": 0.005
+    }
+  },
+  "checks": {
+    "executionComplete": true,
+    "initialPause": true,
+    "teardown": true,
+    "audioBackend": true,
+    "distinctReferenceCaptions": true,
+    "defaultDelayReadback": true,
+    "boundarySeekCaption": false,
+    "boundarySettledCaption": false,
+    "boundaryPictureSettled": true,
+    "pausedPictures": true,
+    "sampledPause": true,
+    "liveFramesConserved": true,
+    "liveDelayReadback": true,
+    "playingControlReached": true,
+    "playingControlFrame": true,
+    "playingControlCaption": true,
+    "live-resetCaption": false,
+    "live-positiveCaption": false,
+    "live-negativeCaption": false,
+    "live-zeroCaption": false
+  }
+}

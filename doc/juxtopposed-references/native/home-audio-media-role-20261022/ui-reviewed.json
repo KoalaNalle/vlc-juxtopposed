@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "scope": "Four selected ordinary processes reviewed through Computer Use plus isolated native config readback.",
+  "cases": [
+    "Music pointer selection; focused Down/Up; restart feedback; help",
+    "Cold Communication, no restart feedback",
+    "Explicit DirectSound backend: disabled, no popup or saved-value change",
+    "Ordinary Communication WASAPI playback at11s, pause19s, normal paused Quit"
+  ],
+  "nativeConfigAfter": {
+    "ui": {
+      "role": "communication"
+    },
+    "reopen": {
+      "role": "communication"
+    },
+    "unsupported": {
+      "role": "video",
+      "mmdevice-backend": "directsound"
+    },
+    "play": {
+      "role": "communication"
+    }
+  },
+  "ordinaryClassificationTrace": [
+    "media role \"communication\" category 3 accepted"
+  ],
+  "normalExitProcesses": 4,
+  "rawProcessPassedFalsePreserved": true,
+  "screenReaderAccepted": false,
+  "fullVisualAccepted": false,
+  "limitations": [
+    "The popup UIA focused element remained the main title despite working visible caret/Tab focus. Full screen-reader testing remains open.",
+    "Right immediately after pointer selection did not change the value. Keyboard acceptance is explicitly focused Down/Up, not Right.",
+    "Native file picker indexed File name control was unavailable to the helper. It was dismissed; opening via that picker was not accepted.",
+    "Screenshots inspected directly through Computer Use; no screenshot artifact retained. Compact behavior observed, not complete DPI/layout acceptance."
+  ]
+}

@@ -1,0 +1,1372 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "3857fa66519cc84299ee60f7cb066b89c3335f427c59df4ef711fa86e74e3d83",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "de7506005fca99b0504b1e1fff8325f8d726ace50b7fb57f2a8205a06dba4bb7",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "audio-device-stale": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 24828,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 20.57799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 23.32799999999952,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns the Audio service",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists",
+            "passed": true
+          },
+          {
+            "name": "receiver passthrough remains independently unavailable",
+            "passed": true
+          },
+          {
+            "name": "Windows endpoint and fixed-volume capabilities are linked",
+            "passed": true
+          },
+          {
+            "name": "real enumeration contains System default and an active render endpoint",
+            "passed": true
+          },
+          {
+            "name": "owned stale endpoint is preserved before an explicit replacement",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual device combo leaves a missing saved endpoint unselected",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual device popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual keyboard popup selection commits its indexed endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual System default selection repairs the saved endpoint with restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "audio-device-stale",
+        "nativeAudioDeviceSettingsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-audio-device-activation-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "mmdevice error: cannot get selected device owned-disconnected-endpoint (error 0x80070057)"
+      ],
+      "expectedNativeErrors": [
+        "mmdevice error: cannot get selected device owned-disconnected-endpoint (error 0x80070057)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "audio-device-paused": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 23180,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 28.311999999999898,
+      "exitCode": 0,
+      "elapsedSeconds": 40.375,
+      "journey": {
+        "activeEndpointVerifiedOnColdStart": false,
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns the Audio service",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists",
+            "passed": true
+          },
+          {
+            "name": "receiver passthrough remains independently unavailable",
+            "passed": true
+          },
+          {
+            "name": "Windows endpoint and fixed-volume capabilities are linked",
+            "passed": true
+          },
+          {
+            "name": "real enumeration contains System default and an active render endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual main player decodes and plays owned silence through a real audio output",
+            "passed": true
+          },
+          {
+            "name": "primary reaches the requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused native clock settles before Audio defaults editing",
+            "passed": true
+          },
+          {
+            "name": "actual audio output owner is available",
+            "passed": true
+          },
+          {
+            "name": "no-write audio output input volume and clock control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual endpoint fixed-policy and numeric editors are enabled",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual device popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual keyboard popup selection commits its indexed endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual endpoint editor saves an enumerated real device identifier",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "preparing the startup number preserves Remember policy and current output",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual numeric editor refuses volume above the native one-hundred-twenty-five percent limit",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fixed-startup policy saves without changing the current audio output",
+            "passed": true
+          },
+          {
+            "name": "owned config locks for a genuine native write failure",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "same actual startup-volume editor retries successfully after config unlock",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Remember action preserves current playback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "keyboard fixed-policy activation preserves exact current output and primary state",
+            "passed": true
+          },
+          {
+            "name": "changed endpoint and fixed policy retain truthful restart feedback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "real dialog reopen retains the saved startup number",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation retry and reopen preserve primary and output identity",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "audio-device-paused",
+        "nativeAudioDeviceSettingsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "selectedEndpointSha256": "bc3cf201d6af737200eeab6d7c355203eefb2e63330c89c6f317f836be999224",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-audio-device-activation-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "audio-device-reopen": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 28424,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 20.031999999999243,
+      "exitCode": 0,
+      "elapsedSeconds": 28.67200000000048,
+      "journey": {
+        "activeEndpointVerifiedOnColdStart": true,
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns the Audio service",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists",
+            "passed": true
+          },
+          {
+            "name": "receiver passthrough remains independently unavailable",
+            "passed": true
+          },
+          {
+            "name": "Windows endpoint and fixed-volume capabilities are linked",
+            "passed": true
+          },
+          {
+            "name": "real enumeration contains System default and an active render endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual main player decodes and plays owned silence through a real audio output",
+            "passed": true
+          },
+          {
+            "name": "cold real output consumes the saved explicit endpoint and sixty-five percent volume",
+            "passed": true
+          },
+          {
+            "name": "cold fixed-volume policy has no stale restart warning",
+            "passed": true
+          },
+          {
+            "name": "primary reaches the requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "paused native clock settles before Audio defaults editing",
+            "passed": true
+          },
+          {
+            "name": "actual audio output owner is available",
+            "passed": true
+          },
+          {
+            "name": "no-write audio output input volume and clock control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual endpoint fixed-policy and numeric editors are enabled",
+            "passed": true
+          },
+          {
+            "name": "cold actual editor displays the saved fixed volume",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "changed startup number preserves the paused output and requests restart",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "restoring the original startup number clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Remember action preserves current playback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "keyboard fixed-policy activation preserves exact current output and primary state",
+            "passed": true
+          },
+          {
+            "name": "restoring the cold startup policies clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "real dialog reopen retains the saved startup number",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation retry and reopen preserve primary and output identity",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "audio-device-reopen",
+        "nativeAudioDeviceSettingsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "selectedEndpointSha256": "bc3cf201d6af737200eeab6d7c355203eefb2e63330c89c6f317f836be999224",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-audio-device-activation-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "audio-device-playing": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 26012,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 195.28099999999904,
+      "exitCode": 0,
+      "elapsedSeconds": 207.10900000000038,
+      "journey": {
+        "activeEndpointVerifiedOnColdStart": true,
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns the Audio service",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists",
+            "passed": true
+          },
+          {
+            "name": "receiver passthrough remains independently unavailable",
+            "passed": true
+          },
+          {
+            "name": "Windows endpoint and fixed-volume capabilities are linked",
+            "passed": true
+          },
+          {
+            "name": "real enumeration contains System default and an active render endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual main player decodes and plays owned silence through a real audio output",
+            "passed": true
+          },
+          {
+            "name": "cold real output consumes the saved explicit endpoint and sixty-five percent volume",
+            "passed": true
+          },
+          {
+            "name": "cold fixed-volume policy has no stale restart warning",
+            "passed": true
+          },
+          {
+            "name": "primary reaches the requested playing or paused state",
+            "passed": true
+          },
+          {
+            "name": "actual audio output owner is available",
+            "passed": true
+          },
+          {
+            "name": "no-write audio output input volume and clock control passes",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual endpoint fixed-policy and numeric editors are enabled",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual device popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual keyboard popup selection commits its indexed endpoint",
+            "passed": true
+          },
+          {
+            "name": "System default is saved without restarting the current playing output",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual device popup opens",
+            "passed": true
+          },
+          {
+            "name": "actual keyboard popup selection commits its indexed endpoint",
+            "passed": true
+          },
+          {
+            "name": "actual endpoint editor saves an enumerated real device identifier",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "preparing the startup number preserves Remember policy and current output",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual numeric editor refuses volume above the native one-hundred-twenty-five percent limit",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual fixed-startup policy saves without changing the current audio output",
+            "passed": true
+          },
+          {
+            "name": "owned config locks for a genuine native write failure",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "same actual startup-volume editor retries successfully after config unlock",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Remember action preserves current playback",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "keyboard fixed-policy activation preserves exact current output and primary state",
+            "passed": true
+          },
+          {
+            "name": "restoring the cold startup policies clears restart feedback",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "actual Audio editor exists",
+            "passed": true
+          },
+          {
+            "name": "real dialog reopen retains the saved startup number",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "Audio editor validation retry and reopen preserve primary and output identity",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "audio-device-playing",
+        "nativeAudioDeviceSettingsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "selectedEndpointSha256": "bc3cf201d6af737200eeab6d7c355203eefb2e63330c89c6f317f836be999224",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-audio-device-activation-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    },
+    "audio-device-unmanaged": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 23500,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 20.296000000000276,
+      "exitCode": 0,
+      "elapsedSeconds": 21.936999999999898,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "actual MainCtx owns the Audio service",
+            "passed": true
+          },
+          {
+            "name": "owned native config exists",
+            "passed": true
+          },
+          {
+            "name": "receiver passthrough remains independently unavailable",
+            "passed": true
+          },
+          {
+            "name": "unmanaged output refuses Windows-only capabilities",
+            "passed": true
+          },
+          {
+            "name": "native route opens the actual settings host",
+            "passed": true
+          },
+          {
+            "name": "actual Audio category button materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual Audio page mounts its production service",
+            "passed": true
+          },
+          {
+            "name": "unmanaged output disables the actual paired editor or fixed policy",
+            "passed": true
+          },
+          {
+            "name": "unmanaged output disables the actual paired editor or fixed policy",
+            "passed": true
+          },
+          {
+            "name": "unmanaged output disables the actual paired editor or fixed policy",
+            "passed": true
+          },
+          {
+            "name": "independent Remember policy remains available",
+            "passed": true
+          },
+          {
+            "name": "unavailable native writer refuses a Windows volume change without saving",
+            "passed": true
+          },
+          {
+            "name": "actual immediate-write Audio settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "audio-device-unmanaged",
+        "nativeAudioDeviceSettingsAccepted": true,
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-audio-device-activation-20261019/ui-r2/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [],
+      "pluginModuleCounts": [
+        "601"
+      ]
+    }
+  },
+  "runnerSha256": "fbf6de2d08d844bf46e2930ae2e93142705037e0ec71b7624e2c40cc8f960ac0",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true,
+  "realOutputModules": {
+    "audio-device-paused": {
+      "mmdevice": true,
+      "wasapi": true
+    },
+    "audio-device-reopen": {
+      "mmdevice": true,
+      "wasapi": true
+    },
+    "audio-device-playing": {
+      "mmdevice": true,
+      "wasapi": true
+    }
+  },
+  "actualWindowsAudioGroupAccepted": true
+}

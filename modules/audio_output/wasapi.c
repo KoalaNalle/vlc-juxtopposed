@@ -37,6 +37,7 @@
 #include <mmreg.h>
 #include <audioclient.h>
 #include "mmdevice.h"
+#include "wasapi_role.h"
 
 #include <vlc_codecs.h> // GUID_FMT/GUID_PRINT
 
@@ -115,6 +116,7 @@ typedef struct aout_stream_sys
 #define STARTED_STATE_OK 1
 #define STARTED_STATE_ERROR 2
     uint8_t started_state;
+    bool paused;
 
     uint8_t chans_table[AOUT_CHAN_MAX];
     uint8_t chans_to_reorder;
@@ -185,7 +187,9 @@ static HRESULT StartNow(aout_stream_t *s)
 
 static void StartDeferredCallback(aout_stream_t *s)
 {
-    StartNow(s);
+    aout_stream_sys_t *sys = s->sys;
+    if (!sys->paused && sys->started_state == STARTED_STATE_INIT)
+        StartNow(s);
 }
 
 static HRESULT StartDeferred(aout_stream_t *s, vlc_tick_t date)
@@ -225,8 +229,10 @@ static HRESULT Play(aout_stream_t *s, block_t *block, vlc_tick_t date)
         hr = E_FAIL;
         goto out;
     }
-    /* Partial-block retries have no date: keep the already scheduled start. */
-    else if (sys->started_state == STARTED_STATE_INIT && date != VLC_TICK_INVALID)
+    /* Partial-block retries have no date: keep the already scheduled start.
+     * Queued blocks may also arrive after Pause; buffer them without starting. */
+    else if (!sys->paused && sys->started_state == STARTED_STATE_INIT
+          && date != VLC_TICK_INVALID)
     {
         hr = StartDeferred(s, date);
         if (FAILED(hr))
@@ -324,10 +330,13 @@ static HRESULT Pause(aout_stream_t *s, bool paused)
     aout_stream_sys_t *sys = s->sys;
     HRESULT hr;
 
+    if (sys->paused == paused)
+        return S_OK;
+    sys->paused = paused;
+    aout_stream_DisarmTimer(s);
+
     if (paused)
     {
-        aout_stream_DisarmTimer(s);
-
         if (sys->started_state == STARTED_STATE_OK)
         {
             hr = IAudioClient_Stop(sys->client);
@@ -778,6 +787,7 @@ static HRESULT Start(aout_stream_t *s, audio_sample_format_t *restrict pfmt,
         return E_OUTOFMEMORY;
     sys->client = NULL;
     sys->started_state = STARTED_STATE_INIT;
+    sys->paused = false;
 
     /* Configure audio stream */
     WAVEFORMATEXTENSIBLE_IEC61937 wf_iec61937;
@@ -798,6 +808,17 @@ static HRESULT Start(aout_stream_t *s, audio_sample_format_t *restrict pfmt,
     }
     sys->client = pv;
 
+    char *role = var_InheritString(s, "role");
+    HRESULT role_hr = vlc_wasapi_SetMediaRole(sys->client, role);
+    if (SUCCEEDED(role_hr))
+        msg_Dbg(s, "media role \"%s\" category %u accepted",
+                role != NULL ? role : "", (unsigned)vlc_wasapi_MediaCategory(role));
+    else if (role_hr == E_NOINTERFACE)
+        msg_Dbg(s, "audio stream category interface unavailable");
+    else
+        msg_Warn(s, "cannot set media role \"%s\" (error 0x%lX)",
+                 role != NULL ? role : "", role_hr);
+    free(role);
 
     if (b_spdif || b_hdmi)
     {

@@ -1,0 +1,200 @@
+{
+  "case": "edit",
+  "status": "terminal",
+  "passed": false,
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "9f9702bec96dd8b56807831d987c4cdb1ec018fbdeafb042df750c2809c53dcf",
+    "plugins/gui/libqt_plugin.dll": "f3c76b0db93b004e0d57c45966cba166f1a1e92636c086697a45285efd9ddae7",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "cd11b388523fc32ff3470b18adb77f85d5d572a17bf86a4b81a34bdede7d0d97",
+  "runnerSha256": "9261bb35c4b988c94abac41a438eb57eda949e9287d1bc81af626cfd184c7ec2",
+  "mediaSha256": {
+    "preview-motion-1080p.mp4": "3ebde0e2c041981c0f3ddb85b01d7fb69f0e18e16dd4161038de7550aac82bbe",
+    "preview-silent.wav": "512a25be1b2dc6ef4a3f3abec8ca3b109f8a7803a8907f7a20c8b8547330c945"
+  },
+  "pid": 27336,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "native and Qt settings are fenced to the owned runtime",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables the implemented preview consumer",
+        "passed": true
+      },
+      {
+        "name": "fresh or cold startup restores the expected thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "owned synthetic input is created",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary plays seekable synthetic media",
+        "passed": true
+      },
+      {
+        "name": "primary pauses for preview independence checks",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "disabled previews preserve the existing time tooltip path",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual thumbnail settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual clipped settings viewport exists",
+        "passed": true
+      },
+      {
+        "name": "thumbnail toggle is fully visible before pointer input",
+        "passed": true
+      },
+      {
+        "name": "thumbnail control center is inside the window",
+        "passed": true
+      },
+      {
+        "name": "actual toggle commits thumbnail choice",
+        "passed": true
+      },
+      {
+        "name": "settings closes normally",
+        "passed": true
+      },
+      {
+        "name": "native saved preference and live provider agree",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": true
+      },
+      {
+        "name": "actual preview stays visible after its image settles",
+        "passed": true
+      },
+      {
+        "name": "actual preview image is Ready and timestamp is rendered",
+        "passed": true
+      },
+      {
+        "name": "card dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "image dimensions match Figma at the current scale",
+        "passed": true
+      },
+      {
+        "name": "actual native preview surface capture is available",
+        "passed": true
+      },
+      {
+        "name": "bounded preview capture saved",
+        "passed": true
+      },
+      {
+        "name": "rendered preview pixels match the requested synthetic scene",
+        "passed": true
+      },
+      {
+        "name": "preview preserves focus policy, input and paused primary clock",
+        "passed": true
+      },
+      {
+        "name": "one actual production timeline is visible",
+        "passed": true
+      },
+      {
+        "name": "hover opens the actual preview card at the requested second",
+        "passed": false
+      }
+    ],
+    "error": "hover opens the actual preview card at the requested second",
+    "fullBetaAccepted": false,
+    "passed": false,
+    "previews": [
+      {
+        "color": "#ff1700",
+        "dpr": 1,
+        "height": 189,
+        "label": "00:02",
+        "name": "preview-red",
+        "requested": 2.25,
+        "sampled": 2,
+        "scale": 1,
+        "width": 272
+      }
+    ],
+    "privateFixture": true,
+    "status": "awaiting-owned-window-inspection"
+  },
+  "diagnostics": [
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/ControlBar.qml:316:21: QML SliderBar: Binding loop detected for property \"thumbnailWanted\":",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/ControlBar.qml:316:21: QML SliderBar: Binding loop detected for property \"thumbnailWanted\":",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action"
+  ],
+  "rawDiagnostics": [
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/ControlBar.qml:316:21: QML SliderBar: Binding loop detected for property \"thumbnailWanted\":",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/ControlBar.qml:316:21: QML SliderBar: Binding loop detected for property \"thumbnailWanted\":",
+    "qt warning: (default) qrc:/qt/qml/VLC/Player/TimelineThumbnail.qml:9:1: QML TimelineThumbnail: Accessible must be attached to an Item or an Action"
+  ],
+  "expectedDiagnostics": [],
+  "realD3D11Opened": true,
+  "quitLogOrder": {
+    "wait": 389,
+    "stopped": 422,
+    "teardown": 426
+  },
+  "scope": "Actual Qt settings, live timeline consumer, native rendered preview pixels, disabled/audio fallback, config denial/retry and decoded resume. Visual/Figma/OS scaling/full beta gates remain separate."
+}

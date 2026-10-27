@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "medialib.hpp"
+#include "mlhomeactivity.hpp"
 #include "mlhelper.hpp"
 #include "playlist/playlist_controller.hpp"
 #include "util/shared_input_item.hpp"
@@ -24,12 +25,26 @@
 #include <utility>
 
 #include <QQmlEngine>
+#include <QFileInfo>
 
 MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlistController, QObject *_parent)
+    : MediaLib(_intf, playlistController, vlc_ml_instance_get(_intf), false, _parent)
+{}
+
+std::unique_ptr<MediaLib> MediaLib::createHistorySource(qt_intf_t *intf, vlc::playlist::PlaylistController *playlist,
+                                                     vlc_medialibrary_t *backend, QObject *parent)
+{
+    assert(backend != nullptr);
+    return std::unique_ptr<MediaLib>(new MediaLib(intf, playlist, backend, true, parent));
+}
+
+MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlistController,
+                   vlc_medialibrary_t *backend, bool historyOnly, QObject *_parent)
     : QObject( _parent )
     , m_intf( _intf )
     , m_playlistController(playlistController)
-    , m_ml( vlc_ml_instance_get( _intf ) )
+    , m_ml(backend)
+    , m_historyOnly(historyOnly)
     , m_event_cb( nullptr, [this](vlc_ml_event_callback_t* cb ) {
         vlc_ml_event_unregister_callback( m_ml, cb );
       })
@@ -37,11 +52,18 @@ MediaLib::MediaLib(qt_intf_t *_intf, vlc::playlist::PlaylistController* playlist
     m_event_cb.reset( vlc_ml_event_register_callback( m_ml, MediaLib::onMediaLibraryEvent,
                                                       this ) );
     m_runner = new ThreadRunner();
+    m_idle = historyOnly;
+    if (!historyOnly && _intf->mainSettings)
+        m_homeActivity = std::make_unique<MLHomeActivity>(this, _intf->mainSettings, _intf);
 }
 
 MediaLib::~MediaLib()
 {
-    m_runner->destroy();
+    m_homeActivity.reset();
+    if (m_historyOnly)
+        m_runner->destroyAndWait();
+    else
+        m_runner->destroy();
 }
 
 static void convertMLItemToPlaylistMedias(vlc_medialibrary_t* ml, const MLItemId & itemId, const QStringList &options, QVector<vlc::playlist::Media>& medias)
@@ -66,7 +88,10 @@ static void convertMLItemToPlaylistMedias(vlc_medialibrary_t* ml, const MLItemId
         auto mediaRange = ml_range_iterate<vlc_ml_media_t>( media_list );
         std::transform(mediaRange.begin(), mediaRange.end(), std::back_inserter(medias), [&](vlc_ml_media_t& m) {
             SharedInputItem item(vlc_ml_get_input_item( ml, m.i_id ), false);
-            return vlc::playlist::Media(item.get(), options);
+            vlc::playlist::Media result(item.get(), options);
+            if (itemId.type == VLC_ML_PARENT_PLAYLIST)
+                result.setSourcePlaylistId(itemId.id);
+            return result;
         });
     }
 }
@@ -105,6 +130,45 @@ static void convertQVariantListToPlaylistMedias(vlc_medialibrary_t* ml, QVariant
         }
         // else ignore
     }
+}
+
+static void applyPlaylistOrigin(vlc_medialibrary_t *ml, MLItemId source,
+                                QVector<vlc::playlist::Media> &media)
+{
+    if (source.type != VLC_ML_PARENT_PLAYLIST || source.id <= 0) return;
+    ml_unique_ptr<vlc_ml_playlist_t> playlist{vlc_ml_get_playlist(ml, source.id)};
+    if (!playlist) return;
+    // The model/menu supplies its captured origin. Do not guess a playlist by
+    // looking up memberships, or lose origin when that playlist is later edited.
+    for (auto &entry : media)
+        if (!entry.sourcePlaylistId()) entry.setSourcePlaylistId(source.id);
+}
+
+void MediaLib::addFolder(const QUrl &folder)
+{
+    if (m_historyOnly) { emit folderAddFailed(folder); return; }
+    if (!folder.isLocalFile() || !QFileInfo(folder.toLocalFile()).isDir())
+    {
+        emit folderAddFailed(folder);
+        return;
+    }
+
+    // Pending state exists before native discovery can publish its root event.
+    const auto serial = m_homeActivity ? m_homeActivity->beginFolderAddition(folder) : 0;
+    struct Context { bool accepted = false, existingRoot = false; };
+    runOnMLThread<Context>(this,
+        [folder](vlc_medialibrary_t *ml, Context &ctx) {
+            // Successful root-added events are emitted only once. A root
+            // already indexed before this user action is also a genuine visit.
+            ctx.existingRoot = lookupMLHomeAddedFolder(ml, folder).status == MLHomeFolderLookup::Ready;
+            ctx.accepted = vlc_ml_add_folder(ml,
+                qtu(folder.toString(QUrl::FullyEncoded))) == VLC_SUCCESS;
+        },
+        [this, folder, serial](quint64, Context &ctx) {
+            if (m_homeActivity) m_homeActivity->completeFolderAddition(serial, ctx.accepted, ctx.existingRoot);
+            if (!ctx.accepted)
+                emit folderAddFailed(folder);
+        }, "ML_FOLDER_ADD_QUEUE");
 }
 
 MLItemId MediaLib::deserializeMlItemIdFromString(const QString& serialized_id) {
@@ -146,15 +210,21 @@ void MediaLib::addToPlaylist(const MLItemId & itemId, const QStringList &options
 
 void MediaLib::addToPlaylist(const QVariantList& itemIdList, const QStringList &options)
 {
+    addToPlaylist(itemIdList, options, MLItemId{});
+}
+
+void MediaLib::addToPlaylist(const QVariantList& itemIdList, const QStringList &options, MLItemId sourcePlaylist)
+{
     struct Context {
         QVector<vlc::playlist::Media> medias;
     };
     runOnMLThread<Context>(this,
     //ML thread
-    [itemIdList, options]
+    [itemIdList, options, sourcePlaylist]
     (vlc_medialibrary_t* ml, Context& ctx)
     {
         convertQVariantListToPlaylistMedias(ml, itemIdList, options, ctx.medias);
+        applyPlaylistOrigin(ml, sourcePlaylist, ctx.medias);
     },
     //UI thread
     [this](quint64, Context& ctx){
@@ -201,15 +271,21 @@ void MediaLib::addAndPlay(const QUrl& mrl, const QStringList &options)
 
 void MediaLib::addAndPlay(const QVariantList& itemIdList, const QStringList &options)
 {
+    addAndPlay(itemIdList, options, MLItemId{});
+}
+
+void MediaLib::addAndPlay(const QVariantList& itemIdList, const QStringList &options, MLItemId sourcePlaylist)
+{
     struct Context {
         QVector<vlc::playlist::Media> medias;
     };
     runOnMLThread<Context>(this,
     //ML thread
-    [itemIdList, options]
+    [itemIdList, options, sourcePlaylist]
     (vlc_medialibrary_t* ml, Context& ctx)
     {
         convertQVariantListToPlaylistMedias(ml, itemIdList, options, ctx.medias);
+        applyPlaylistOrigin(ml, sourcePlaylist, ctx.medias);
     },
     //UI thread
     [this](quint64, Context& ctx){
@@ -240,6 +316,7 @@ void MediaLib::insertIntoPlaylist(const size_t index, const QVariantList &itemId
 
 void MediaLib::reload()
 {
+    if (m_historyOnly) return;
     runOnMLThread(this,
     //ML thread
     [](vlc_medialibrary_t* ml){
@@ -356,6 +433,17 @@ void MediaLib::onMediaLibraryEvent( void* data, const vlc_ml_event_t* event )
     MediaLib* self = static_cast<MediaLib*>( data );
     switch ( event->i_type )
     {
+        case VLC_ML_EVENT_ENTRY_POINT_ADDED:
+        {
+            if (!event->entry_point_added.b_success)
+            {
+                const QUrl folder = QUrl::fromEncoded(event->entry_point_added.psz_entry_point);
+                QMetaObject::invokeMethod(self, [self, folder]() {
+                    emit self->folderAddFailed(folder);
+                }, Qt::QueuedConnection);
+            }
+            break;
+        }
         case VLC_ML_EVENT_PARSING_PROGRESS_UPDATED:
         {
             int percent =  event->parsing_progress.i_percent;
@@ -398,6 +486,7 @@ void MediaLib::onMediaLibraryEvent( void* data, const vlc_ml_event_t* event )
         }
         case VLC_ML_EVENT_BACKGROUND_IDLE_CHANGED:
         {
+            if (self->m_historyOnly) break;
             bool idle = event->background_idle_changed.b_idle;
             QMetaObject::invokeMethod(self, [self, idle]() {
                 self->m_idle = idle;

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+build_dir=/build/vlc
+repo=/checkout
+export PATH="$build_dir/extras/tools/build/bin:$build_dir/contrib/bin:/windows/System32:$PATH"
+unset CC CXX
+exec 9> "$build_dir/.vlc-build.lock"
+flock -n 9 || exit 75
+qt_dir="$build_dir/win64/modules/gui/qt"
+make -C "$qt_dir" Makefile tests/test_navigation_history.moc > "$repo/build-windows/leaf-history-moc-build.log" 2>&1
+make -C "$qt_dir" -j8 test_qt_navigation_history.exe > "$repo/build-windows/leaf-history-test-build.log" 2>&1
+cp -- "$qt_dir/.libs/test_qt_navigation_history.exe" "$repo/build-windows/core-tests/test_qt_navigation_history.exe"

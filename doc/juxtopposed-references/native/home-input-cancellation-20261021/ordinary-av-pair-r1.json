@@ -1,0 +1,93 @@
+{
+  "status": "both_ordinary_instances_exited",
+  "fullBetaAccepted": false,
+  "sharedConfigOnly": true,
+  "privateHooks": false,
+  "guiSha256": "d148035d54bee58e841fb4e727fd788af7adcf2a90f41c68f06ec76f2a54a8ba",
+  "coreSha256": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+  "closeOrder": "ab",
+  "forcedCleanupUsed": false,
+  "distinctAudioEndpointsAccepted": false,
+  "cases": {
+    "A": {
+      "pid": 15708,
+      "mediaSha256": "4aba7b9aea1ecfaca14b32258f37b8b3fade0c4f2b67a6f07e6fa0f044978863",
+      "startupRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "exitCode": 0,
+      "normalExit": true,
+      "generatedMediaUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "strictQtDiagnostics": [],
+      "realWindowsAudioOpened": true,
+      "realWindowsVideoOpened": true,
+      "logOrder": {
+        "wait": 486,
+        "stopped": 532,
+        "teardown": 536
+      },
+      "logSha256": "cedc00d5e984b2b693caf42387e4882e956e6f35d9dea7fed57ce4e0d111fbb4",
+      "stderrSha256": "aac94f95f87c2f6d4d6268828f9949c34391103a9f2bbf10d61db2c18278aff9",
+      "savedNormalRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "pluginCacheLoads": 1
+    },
+    "B": {
+      "pid": 30672,
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "startupRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "exitCode": 0,
+      "normalExit": true,
+      "generatedMediaUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [],
+      "strictQtDiagnostics": [],
+      "realWindowsAudioOpened": true,
+      "realWindowsVideoOpened": false,
+      "logOrder": {
+        "wait": 447,
+        "stopped": 481,
+        "teardown": 485
+      },
+      "logSha256": "e8a0575f3a03b6a3628b10fea09788649e2375ddd0505379c0a3e3701ebb68e3",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "savedNormalRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "pluginCacheLoads": 1
+    }
+  },
+  "sourceInputsUnchanged": true,
+  "finalSharedValues": {
+    "qt-remember-window-geometry": "1",
+    "qt-notification-duration": "777"
+  },
+  "passed": true,
+  "rawReceiptSha256": "015d523cad7038c50c6c337d0af8104109e2145b3701d07fafac13b90b60f44d",
+  "runtimeIdentitiesUnchanged": true,
+  "normalBoundsPreserved": true,
+  "observation": {
+    "A": "Playing 1:14 normal, fullscreen 1:20; still playing 1:49 after B seek, then fullscreen 2:35 with unchanged volume after B mute/resume; direct Ctrl+Q.",
+    "B": "Playing 1:34; paused 1:38, sought to 4:59 while paused; mute and resume independently; survives A exit and remains playing/muted 8:03, then direct Ctrl+Q."
+  },
+  "QtStorage": "separate portable Qt stores, common native vlcrc",
+  "audioRouting": "one explicit endpoint and Default alias, same physical endpoint; distinct outputs not accepted",
+  "silentGeneratedMedia": true
+}

@@ -1,0 +1,79 @@
+{
+  "status": "rejected_for_clean_playback_acceptance",
+  "fullBetaAccepted": false,
+  "sharedConfigOnly": true,
+  "privateHooks": false,
+  "guiSha256": "371bc858e3bbf4dd5b5fd7fbe8793b6656914142c5938ccd311f8aa5d9a34e56",
+  "coreSha256": "3a7b0a360e3caf4b3404627f6fb3c87546a027ec8593b65ecd92c99b8cdd75c6",
+  "closeOrder": "ab",
+  "forcedCleanupUsed": false,
+  "distinctAudioEndpointsAccepted": false,
+  "cases": {
+    "A": {
+      "pid": 29920,
+      "screen": "LC27G7xT",
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "startupRect": [
+        40,
+        40,
+        1280,
+        900
+      ],
+      "exitCode": 0,
+      "normalExit": true,
+      "generatedMediaUnchanged": true,
+      "qtDiagnostics": [],
+      "nativeErrors": [
+        "main error: ES_OUT_SET_(GROUP_)PCR  is called 768 ms late (pts_delay increased to 1000 ms)"
+      ],
+      "explicitEndpointRequested": true
+    },
+    "B": {
+      "pid": 23140,
+      "screen": "LF24T450F",
+      "mediaSha256": "72757f6c87b6ee673fcfafd30892c04e7384f54ef8937a20c7ee34fa2c807756",
+      "startupRect": [
+        -1880,
+        397,
+        1280,
+        900
+      ],
+      "exitCode": 0,
+      "normalExit": true,
+      "generatedMediaUnchanged": true,
+      "qtDiagnostics": [
+        "OWNED_QT_DIAG|warning|Retrying to obtain clipboard.",
+        "OWNED_QT_DIAG|warning|Retrying to obtain clipboard."
+      ],
+      "nativeErrors": [
+        "main error: ES_OUT_SET_(GROUP_)PCR  is called 1205 ms late (pts_delay increased to 1000 ms)",
+        "main error: ES_OUT_SET_(GROUP_)PCR  is called 900 ms late (pts_delay increased to 1900 ms)"
+      ],
+      "explicitEndpointRequested": false
+    }
+  },
+  "sourceInputsUnchanged": true,
+  "finalSharedValues": {
+    "qt-remember-window-geometry": "1",
+    "qt-notification-duration": "777"
+  },
+  "passed": false,
+  "localRawRecordSha256": "5a027e6c05819443e0331ab8b85c25cfc3eb597839d030068c243c4b62837495",
+  "rawComputerUseScreenshotsSaved": false,
+  "explicitRenderEndpointCount": 1,
+  "defaultIsDistinctEndpoint": false,
+  "observedFunctionalBehavior": [
+    "Both clocks advanced with A fullscreen and B normal",
+    "B paused and sought to298s while A kept playing",
+    "B changed volume to40% while A retained100%",
+    "B appended a second generated file and switched to it; A retained its one-item queue",
+    "A returned from fullscreen and exited normally; B continued its second item at31s"
+  ],
+  "limitations": [
+    "No clean native playback acceptance: A PCR768ms late; B1205ms and900ms late after Qt removal starts",
+    "Two Qt clipboard retries during ComputerUse file-picker path entry",
+    "One explicit render endpoint only; distinct-output routing unverified",
+    "Shared Qt profile/geometry storage remains unverified"
+  ],
+  "nextComparison": "Same Core/audio modules, concurrent no-GUI90s steady playback with explicit stop before release; ordinary Stop-before-Quit comparison then needed"
+}

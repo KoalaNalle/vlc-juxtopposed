@@ -80,6 +80,12 @@ class SegmentSeeker
             TrustLevel trust_level;
         };
 
+        struct SubtitleBlock {
+            fptr_t fpos;
+            vlc_tick_t pts;
+            vlc_tick_t end_pts;
+        };
+
         struct Cluster {
             fptr_t  fpos;
             vlc_tick_t pts;
@@ -100,6 +106,9 @@ class SegmentSeeker
         typedef std::pair<Seekpoint, Seekpoint> seekpoint_pair_t;
 
         void add_seekpoint( track_id_t, Seekpoint );
+        void add_subtitle_block( track_id_t, fptr_t, vlc_tick_t, vlc_tick_t ) noexcept;
+        bool index_subtitles( matroska_segment_c&, fptr_t );
+        fptr_t get_subtitle_seekpoint( track_id_t, long double, fptr_t ) const;
 
         seekpoint_pair_t get_seekpoints_around( vlc_tick_t, seekpoints_t const& );
         Seekpoint get_first_seekpoint_around( vlc_tick_t, seekpoints_t const&, Seekpoint::TrustLevel = Seekpoint::TRUSTED );
@@ -124,6 +133,10 @@ class SegmentSeeker
         tracks_seekpoints_t _tracks_seekpoints;
         cluster_positions_t _cluster_positions;
         cluster_map_t       _clusters;
+        std::map<track_id_t, std::vector<SubtitleBlock>> _subtitle_blocks;
+        fptr_t _subtitle_first_cluster = std::numeric_limits<fptr_t>::max();
+        fptr_t _subtitle_indexed_through = std::numeric_limits<fptr_t>::max();
+        bool _subtitle_index_available = true;
 };
 
 } // namespace

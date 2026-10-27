@@ -123,6 +123,7 @@ vlc_player_input_SeekByPos(struct vlc_player_input *input, double position,
 {
     vlc_player_t *player = input->player;
     vlc_player_assert_seek_params(speed, whence);
+    input->subtitle_refresh_deadline = VLC_TICK_INVALID;
 
     /* Assert before we modify position internally, this only check that user
      * positions are correct. */
@@ -147,6 +148,7 @@ vlc_player_input_SeekByPos(struct vlc_player_input *input, double position,
         &(input_control_param_t) {
             .pos.f_val = position,
             .pos.b_fast_seek = speed == VLC_PLAYER_SEEK_FAST,
+            .pos.b_absolute_media = false,
     });
 
     if (ret == VLC_SUCCESS)
@@ -160,6 +162,7 @@ vlc_player_input_SeekByTime(struct vlc_player_input *input, vlc_tick_t time,
 {
     vlc_player_t *player = input->player;
     vlc_player_assert_seek_params(speed, whence);
+    input->subtitle_refresh_deadline = VLC_TICK_INVALID;
 
     if (whence != VLC_PLAYER_WHENCE_ABSOLUTE)
         time += vlc_player_input_GetTime(input, true, vlc_tick_now());
@@ -232,6 +235,9 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
 
     enum vlc_player_state last_state = input->state;
     input->state = state;
+    if (state == VLC_PLAYER_STATE_STOPPING || state == VLC_PLAYER_STATE_STOPPED
+     || (state == VLC_PLAYER_STATE_PLAYING && last_state == VLC_PLAYER_STATE_PAUSED))
+        input->subtitle_refresh_deadline = VLC_TICK_INVALID;
 
     /* Override the global state if the player is still playing and has a next
      * media to play */
@@ -341,6 +347,8 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
             vlc_player_UpdateTimerEvent(player, NULL,
                                         VLC_PLAYER_TIMER_EVENT_PAUSED,
                                         input->pause_date);
+            if (input->subtitle_refresh_deadline != VLC_TICK_INVALID)
+                vlc_cond_signal(&player->mainloop.wait);
             break;
         default:
             vlc_assert_unreachable();
@@ -611,6 +619,73 @@ vlc_player_input_HandleTeletextMenu(struct vlc_player_input *input,
     }
 }
 
+void
+vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
+{
+    vlc_player_t *player = input->player;
+    if (!(input->capabilities & VLC_PLAYER_CAP_SEEK)
+     || input->recording || input != player->input
+     || (input->state != VLC_PLAYER_STATE_STARTED
+      && input->state != VLC_PLAYER_STATE_PLAYING
+      && input->state != VLC_PLAYER_STATE_PAUSED))
+    {
+        input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+        return;
+    }
+
+    if (input->state != VLC_PLAYER_STATE_PAUSED)
+    {
+        /* Selection can precede the startup pause, or a pause can be queued
+         * from the selection callback. Retain the request briefly without
+         * seeking a playing input. The PAUSED event wakes the worker. */
+        input->subtitle_refresh_deadline = vlc_tick_now() + VLC_TICK_FROM_SEC(5);
+        vlc_cond_signal(&player->mainloop.wait);
+        return;
+    }
+
+    bool have_target = false;
+    vlc_tick_t target = 0;
+    vlc_mutex_lock(&player->timer.lock);
+    const struct vlc_player_timer_source *video = &player->timer.smpte_source;
+    if (video->es && !video->seeking
+     && video->point.system_date != VLC_TICK_INVALID
+     && video->point.ts >= VLC_TICK_0)
+    {
+        target = video->point.ts - VLC_TICK_0;
+        have_target = true;
+    }
+    else if (player->timer.seek_ts != VLC_TICK_INVALID)
+    {
+        target = player->timer.seek_ts;
+        have_target = true;
+    }
+    else if (player->timer.seek_position == 0.)
+        have_target = true;
+    vlc_mutex_unlock(&player->timer.lock);
+    if (have_target)
+    {
+        input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+        /* Keep the pending request in media-relative units too. A second
+         * redraw can reuse it before the video clock becomes valid again;
+         * retaining VLC_TICK_0 here would advance a frame at an exact boundary. */
+        /* Zero is also the timer's invalid timestamp. Represent the origin
+         * by position, retaining an exact zero target for repeated redraws. */
+        if (target == 0)
+            vlc_player_UpdateTimerSeekState(player, VLC_TICK_INVALID, 0.);
+        else
+            vlc_player_UpdateTimerSeekState(player, target, -1);
+        input_SetTime(input->thread, target, false);
+    }
+    else if (input->subtitle_refresh_deadline == VLC_TICK_INVALID)
+    {
+        /* Initial hardware output can publish its first clock after track
+         * selection. Retry on the existing player worker under its lock;
+         * never acquire that lock in an output-clock callback. */
+        input->subtitle_refresh_deadline = vlc_tick_now() + VLC_TICK_FROM_SEC(5);
+        vlc_cond_signal(&player->mainloop.wait);
+    }
+}
+
 static void
 vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
                                const struct vlc_input_event_es *ev)
@@ -672,12 +747,30 @@ vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
             trackpriv = vlc_player_track_vector_FindById(vec, ev->id, NULL);
             if (trackpriv)
             {
+                const bool newly_selected = !trackpriv->t.selected;
                 trackpriv->t.selected = true;
                 trackpriv->selected_by_user = ev->forced;
                 trackpriv->vout_order = ev->vout_order;
                 vlc_player_SendEvent(player, on_track_selection_changed,
                                      NULL, trackpriv->t.es_id);
                 vlc_player_input_HandleTeletextMenu(input, ev, trackpriv);
+                if (newly_selected && ev->fmt->i_cat == SPU_ES)
+                {
+                    if (input->state == VLC_PLAYER_STATE_STARTED
+                     || input->state == VLC_PLAYER_STATE_PLAYING)
+                    {
+                        const input_control_param_t param = {
+                            .subtitle_refresh = {
+                                .id = vlc_es_id_Hold(ev->id),
+                                .time = __MAX(vlc_player_input_GetTime(input,
+                                    false, vlc_tick_now()), 0),
+                            },
+                        };
+                        input_ControlPush(input->thread,
+                                          INPUT_CONTROL_REFRESH_SUBTITLE, &param);
+                    }
+                    vlc_player_input_RefreshPausedSubtitle(input);
+                }
             }
             break;
         case VLC_INPUT_ES_UNSELECTED:
@@ -744,7 +837,7 @@ vlc_player_input_HandleTitleEvent(struct vlc_player_input *input,
                 (size_t)input->ml.states.current_title == ev->selected_idx &&
                 input->ml.pos > .0f)
             {
-                input_SetPosition(input->thread, input->ml.pos, false);
+                input_SetMediaPosition(input->thread, input->ml.pos, false);
             }
             /* Reset the wanted title to avoid forcing it or the position
              * again during the next title change
@@ -798,6 +891,10 @@ vlc_player_input_HandleVoutEvent(struct vlc_player_input *input,
     {
         case VLC_INPUT_EVENT_VOUT_STARTED:
             trackpriv->vout = ev->vout;
+            /* A subtitle added alongside an existing track can be selected
+             * first in the request list but get the secondary renderer
+             * channel. Publish the actual output role before its observers. */
+            trackpriv->vout_order = ev->order;
             vlc_player_SendEvent(player, on_vout_changed,
                                  VLC_PLAYER_VOUT_STARTED, ev->vout,
                                  ev->order, ev->id);
@@ -901,6 +998,14 @@ static void
 vlc_player_input_MouseFallback(struct vlc_player_input *input)
 {
     vlc_player_t *player = input->player;
+    if (input != player->input || var_InheritBool(player, "intf-input-blocked"))
+        return;
+    /* The main hotkeys interface owns deferred single/double/drag policy.
+     * Without it, retain the embedding player's ordinary release fallback. */
+    libvlc_int_t *root = vlc_object_instance(player);
+    if (var_Type(root, "mouse-click-policy-player") == VLC_VAR_ADDRESS
+        && var_GetAddress(root, "mouse-click-policy-player") == player)
+        return;
     vlc_player_TogglePause(player);
 }
 
@@ -1117,6 +1222,8 @@ input_thread_Events(input_thread_t *input_thread,
             break;
         case INPUT_EVENT_RECORD:
             input->recording = event->record;
+            if (input->recording)
+                input->subtitle_refresh_deadline = VLC_TICK_INVALID;
             vlc_player_SendEvent(player, on_recording_changed, input->recording);
             break;
         case INPUT_EVENT_STATISTICS:
@@ -1258,10 +1365,12 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     input->rate = 1.f;
     input->capabilities = 0;
     input->length = input->time = VLC_TICK_INVALID;
+    input->subtitle_refresh_deadline = VLC_TICK_INVALID;
     input->live = false;
     input->normal_time = VLC_TICK_0;
     input->pause_date = VLC_TICK_INVALID;
     input->position = 0.f;
+    input->position_before_stop = -1.;
 
     input->recording = false;
 
@@ -1311,6 +1420,8 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     };
 
     input->repeat = player->repeat;
+    input->history_epoch = player->history_epoch;
+    input->position_epoch = player->position_epoch;
 
     input->thread = input_Create(player, item, &cfg);
     if (!input->thread)
@@ -1370,5 +1481,6 @@ vlc_player_input_Delete(struct vlc_player_input *input)
     vlc_vector_destroy(&input->spu_track_vector);
 
     input_Close(input->thread);
+    vlc_ml_release(&input->ml.states);
     free(input);
 }

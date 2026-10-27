@@ -1,0 +1,114 @@
+make: Entering directory '/build/vlc/win64/modules/gui/qt'
+  GEN      style/qml.deps
+  GEN      util/qml.deps
+  GEN      player/qml.deps
+  GEN      widgets/qml.deps
+  GEN      playlist/qml.deps
+  GEN      playercontrols/qml.deps
+  GEN      network/qml.deps
+  GEN      menus/qml.deps
+  GEN      medialibrary/qml.deps
+  GEN      maininterface/qml.deps
+  GEN      dialogs/qml.deps
+  GEN      shaders/shaders.deps
+  CXX      dialogs/libqt_plugin_la-conversion_controller.lo
+  GEN      shaders/shaders.qrc
+  GEN      shaders/shaders.cpp
+  GEN      maininterface/qmlassets.cpp
+ CACHEGEN  maininterface/qml/MainViewLoader.cpp
+ CACHEGEN  maininterface/qml/MainDisplay.cpp
+ CACHEGEN  medialibrary/qml/VideoGroupDisplay.cpp
+ CACHEGEN  medialibrary/qml/MusicDisplay.cpp
+ CACHEGEN  medialibrary/qml/VideoDisplay.cpp
+ CACHEGEN  medialibrary/qml/VideoAllSubDisplay.cpp
+ CACHEGEN  medialibrary/qml/VideoPlaylistsDisplay.cpp
+  GEN      medialibrary/qmlassets.cpp
+ CACHEGEN  network/qml/DiscoverDisplay.cpp
+  GEN      network/qmlassets.cpp
+ CACHEGEN  widgets/qml/PageLoader.cpp
+  GEN      widgets/qmlassets.cpp
+  CXX      shaders/libqt_plugin_la-shaders.lo
+  CXX      maininterface/qml/libqml_module_maininterface_a-MainViewLoader.o
+  CXX      maininterface/libqml_module_maininterface_a-qmlassets.o
+  CXX      medialibrary/qml/libqml_module_medialibrary_a-VideoGroupDisplay.o
+  CXX      medialibrary/qml/libqml_module_medialibrary_a-MusicDisplay.o
+  CXX      medialibrary/qml/libqml_module_medialibrary_a-VideoDisplay.o
+  CXX      medialibrary/qml/libqml_module_medialibrary_a-VideoAllSubDisplay.o
+  CXX      medialibrary/qml/libqml_module_medialibrary_a-VideoPlaylistsDisplay.o
+  CXX      medialibrary/libqml_module_medialibrary_a-qmlassets.o
+  CXX      network/qml/libqml_module_network_a-DiscoverDisplay.o
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp: In member function ‘ConversionController::Result ConversionController::convert(const QString&, const QString&, const std::shared_ptr<Job>&)’:
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:292:115: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  292 |     if (!directory.isValid()) return {Failed, tr("Could not create conversion storage in the destination folder.")};
+      |                                                                                                                   ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:379:48: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  379 |     if (!error.isEmpty()) return {Failed, error};
+      |                                                ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:381:79: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  381 |         return {Failed, tr("Conversion did not produce a complete FLAC file.")};
+      |                                                                               ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:384:103: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  384 |     if (!error.isEmpty()) return {Failed, tr("The converted file could not be decoded: %1").arg(error)};
+      |                                                                                                       ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:387:87: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  387 |         return {Failed, tr("The converted file contains no complete decodable audio.")};
+      |                                                                                       ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:391:82: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  391 |         return {Failed, tr("This conversion supports audio up to one hour long.")};
+      |                                                                                  ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:395:84: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  395 |         return {Failed, tr("The converted audio duration differs from the source.")};
+      |                                                                                    ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:397:102: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  397 |         return {Failed, tr("The source changed during conversion. Try again with an unchanged file.")};
+      |                                                                                                      ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:403:116: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  403 |             return {Failed, tr("Could not publish the result. The destination may already exist or be unwritable.")};
+      |                                                                                                                    ^
+  CXX      network/libqml_module_network_a-qmlassets.o
+  CXX      widgets/qml/libqml_module_widgets_a-PageLoader.o
+  CXX      widgets/libqml_module_widgets_a-qmlassets.o
+  CXX      maininterface/qml/libqml_module_maininterface_a-MainDisplay.o
+  AR       libqml_module_medialibrary.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  AR       libqml_module_network.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  AR       libqml_module_widgets.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  AR       libqml_module_maininterface.a
+x86_64-w64-mingw32-ar: `u' modifier ignored since `D' is the default (see `U')
+  CXXLD    libqt_plugin.la
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_dialogs.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_maininterface.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_medialibrary.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_menus.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_network.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_player.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_playercontrols.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_playlist.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_style.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_util.a is not portable!
+
+*** Warning: Linking the shared library libqt_plugin.la against the
+*** static library libqml_module_widgets.a is not portable!
+make: Leaving directory '/build/vlc/win64/modules/gui/qt'

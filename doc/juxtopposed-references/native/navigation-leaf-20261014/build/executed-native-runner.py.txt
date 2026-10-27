@@ -1,0 +1,30 @@
+from pathlib import Path
+import hashlib
+import json
+import os
+import subprocess
+
+repo = Path(__file__).resolve().parents[1]
+package = repo / 'build-windows/slice-home-route-package-20261014'
+test = repo / 'build-windows/core-tests/test_qt_navigation_history.exe'
+output = repo / 'build-windows/leaf-navigation-native-20261014'
+output.mkdir(exist_ok=False)
+def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+for name in ['libvlc.dll', 'libvlccore.dll']:
+    adjacent = test.parent / name
+    assert not adjacent.exists() or digest(adjacent) == digest(package / name)
+environment = os.environ.copy()
+environment.pop('VLC_PLUGIN_PATH', None)
+environment.update(PATH=str(package)+os.pathsep+environment.get('PATH',''), VLC_LIB_PATH=str(package / 'plugins'), VLC_LIBEXEC_PATH=str(package / 'vlc-preparser.exe'), VLC_USERDATA_PATH=str(output / 'userdata'))
+(output / 'userdata').mkdir()
+results = output / 'results.txt'
+process = subprocess.run([str(test), '-o', str(results)+',txt'], env=environment, cwd=output, capture_output=True, timeout=30, creationflags=subprocess.CREATE_NO_WINDOW)
+(output / 'stdout.txt').write_bytes(process.stdout)
+(output / 'stderr.txt').write_bytes(process.stderr)
+text = results.read_text(encoding='utf-8-sig') if results.exists() else ''
+cases=['initTestCase','emptyActions','retainsViewState','branchClearsForward','staleForwardEntry','expandedLeafPropertiesSurviveNormalization','playlistZeroIndexAndHomeFramesRemainIsolated','availabilityEdges','cleanupTestCase']
+passed = process.returncode==0 and all('PASS   : TestNavigationHistory::'+case+'()' in text for case in cases) and '9 passed, 0 failed, 0 skipped' in text
+report=dict(passed=passed, exitCode=process.returncode, cases=cases, processTimeoutSeconds=30, scope='Actual QCore Qt NavigationHistory; no mounted QML or desktop acceptance.', testExeSha256=digest(test), sourceSha256={name:digest(repo/name) for name in ['modules/gui/qt/tests/test_navigation_history.cpp','modules/gui/qt/util/navigation_history.cpp','modules/gui/qt/util/navigation_history.hpp']}, runtimeSha256={name:digest(package/name) for name in ['libvlc.dll','libvlccore.dll']})
+(output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(text)
+raise SystemExit(0 if passed else 1)

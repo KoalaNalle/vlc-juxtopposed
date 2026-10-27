@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "checks": [
+    "A normal desktop tap relays one native press/release with surface pixel scaling",
+    "A desktop double tap forwards native classification and releases its second press",
+    "Dragging explicitly cancels the native gesture",
+    "Losing a grab cancels it and leaves the next ordinary tap usable",
+    "Touch preserves its control-visibility action without native mouse playback gestures"
+  ],
+  "touchTested": true,
+  "qmlMessages": [],
+  "nativeCoreAccepted": false,
+  "desktopDpiAccepted": false,
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/VideoInputTapHandler.qml": "e4d69852d522e38fa460b5ccc8b2f8d22bf754a78a522a3c455eaf678216490d",
+    "modules/gui/qt/player/qml/PIPPlayer.qml": "a1853ed06b944e96b316d447a636cc4e16f217f16f88c10569f3538d7b91a5f6"
+  }
+}

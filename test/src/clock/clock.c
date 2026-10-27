@@ -469,6 +469,13 @@ static void run_scenarios(int argc, const char *argv[],
 
     tracer_ctx_Init(&tracer_ctx);
 
+#ifdef _WIN32
+    /* DLL builds cannot discover the executable's static module list. The
+     * opt-in native test runtime supplies a tracer module that calls this
+     * same test-owned opener, preserving the assertions' local trace state. */
+    var_Create(vlc->p_libvlc_int, "clock-test-open", VLC_VAR_ADDRESS);
+    var_SetAddress(vlc->p_libvlc_int, "clock-test-open", OpenTracer);
+#endif
     struct vlc_tracer *tracer = vlc_tracer_Create(VLC_OBJECT(vlc->p_libvlc_int),
                                                   MODULE_STRING);
     assert(tracer != NULL);
@@ -771,6 +778,76 @@ static void monotonic_convert_paused_run(const struct clock_ctx *ctx)
     convert_paused_common(ctx, ctx->slave);
 }
 
+static void subtitle_delay_rate_run(const struct clock_ctx *ctx)
+{
+    const double rates[] = { 0.5, 1.0, 1.5, 2.0 };
+    const vlc_tick_t delays[] = { -VLC_TICK_FROM_MS(5508), 0,
+                                  VLC_TICK_FROM_MS(5508) };
+    vlc_clock_main_Lock(ctx->mainclk);
+    vlc_clock_main_SetFirstPcr(ctx->mainclk, ctx->system_start,
+                              ctx->stream_start);
+    vlc_clock_main_Unlock(ctx->mainclk);
+
+    /* Subtitle cue offsets and seek preroll are media-time values. Their
+     * system-time displacement must match the same offset in the cue's PTS,
+     * with either a master reference or the initial monotonic reference. */
+    for (size_t mode = 0; mode < 2; ++mode)
+    {
+        if (mode == 1)
+        {
+            vlc_clock_Lock(ctx->master);
+            vlc_clock_Start(ctx->master, ctx->system_start, ctx->stream_start);
+            vlc_clock_Unlock(ctx->master);
+        }
+        for (size_t r = 0; r < ARRAY_SIZE(rates); ++r)
+        {
+            const double rate = rates[r];
+            if (mode == 1)
+            {
+                vlc_clock_Lock(ctx->master);
+                vlc_clock_Update(ctx->master, ctx->system_start,
+                                  ctx->stream_start, rate);
+                vlc_clock_Unlock(ctx->master);
+            }
+            for (size_t paused = 0; paused < 2; ++paused)
+            {
+                if (paused)
+                {
+                    vlc_clock_main_Lock(ctx->mainclk);
+                    vlc_clock_main_ChangePause(ctx->mainclk,
+                                               ctx->system_start + 1, true);
+                    vlc_clock_main_Unlock(ctx->mainclk);
+                }
+                vlc_clock_Lock(ctx->slave);
+                for (size_t d = 0; d < ARRAY_SIZE(delays); ++d)
+                {
+                    vlc_clock_SetDelay(ctx->slave, 0);
+                    const vlc_tick_t shifted_pts = vlc_clock_ConvertToSystem(
+                        ctx->slave, ctx->system_start, ctx->stream_start +
+                        VLC_TICK_FROM_SEC(10) + delays[d], rate, NULL);
+                    vlc_clock_SetDelay(ctx->slave, delays[d]);
+                    const vlc_tick_t delayed = vlc_clock_ConvertToSystem(
+                        ctx->slave, ctx->system_start, ctx->stream_start +
+                        VLC_TICK_FROM_SEC(10), rate, NULL);
+                    fprintf(stderr, "%s: master=%zu paused=%zu rate=%.1f delay=%"PRId64
+                            " shifted=%"PRId64" delayed=%"PRId64"\n",
+                            __func__, mode, paused, rate, delays[d], shifted_pts, delayed);
+                    assert(llabs(shifted_pts - delayed) <= 1);
+                }
+                vlc_clock_SetDelay(ctx->slave, 0);
+                vlc_clock_Unlock(ctx->slave);
+                if (paused)
+                {
+                    vlc_clock_main_Lock(ctx->mainclk);
+                    vlc_clock_main_ChangePause(ctx->mainclk,
+                                               ctx->system_start + 2, false);
+                    vlc_clock_main_Unlock(ctx->mainclk);
+                }
+            }
+        }
+    }
+}
+
 static void contexts_run(const struct clock_ctx *ctx)
 {
     vlc_tick_t converted;
@@ -863,6 +940,15 @@ static void contexts_run(const struct clock_ctx *ctx)
     .video_fps = video_fps_
 
 static struct clock_scenario clock_scenarios[] = {
+{
+    .name = "subtitle_delay_rate",
+    .desc = "signed subtitle offsets keep media-time units across playback rates",
+    .type = CLOCK_SCENARIO_RUN,
+    .run = subtitle_delay_rate_run,
+    .disable_jitter = true,
+    .system_start = VLC_TICK_FROM_SEC(20),
+    .stream_start = VLC_TICK_FROM_SEC(1),
+},
 {
     .name = "normal",
     .desc = "normal update has a coeff of 1.0f",

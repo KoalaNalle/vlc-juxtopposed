@@ -32,7 +32,8 @@ VIDEOLAN_GIT := https://code.videolan.org
 GITHUB := https://github.com
 GOOGLE_CODE := https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com
 GNUGPG := https://www.gnupg.org/ftp/gcrypt
-QT := https://download.qt.io/official_releases/qt/$(QTBASE_VERSION_MAJOR)
+# The pinned Qt release is retained in Qt's archive after newer releases ship.
+QT := https://download.qt.io/archive/qt/$(QTBASE_VERSION_MAJOR)
 XIPH := https://ftp.osuosl.org/pub/xiph/releases
 XORG := https://www.x.org/releases/individual
 

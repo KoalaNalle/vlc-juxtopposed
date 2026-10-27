@@ -1,0 +1,23 @@
+{
+  "scope": "Direct Computer Use pointer/keyboard input in the ordinary Windows11 GUI; monitor2 and generated paused audio only",
+  "ordinaryGuiSha256": "56a4a7620f15ac9e9c6c3fc6553884d9c41ac31d95c2dd2de45c4941d7b0d0f8",
+  "privateHooks": false,
+  "observations": [
+    "Initial Interface category shows Current screen and an enabled selector after the real category-open refresh.",
+    "The actual popup contains Current screen and both genuine connected monitors.",
+    "Pointer selection of LF24T450F saves qt-fullscreen-screennumber=1 and displays Restart VLC to apply these changes.",
+    "Escape dismisses the dialog. F11 enters and exits fullscreen on monitor2, keeping the generated paused input and displayed zero clock.",
+    "The initial app exits normally via Ctrl+Q.",
+    "A cold isolated app copies the unchanged saved configuration. Its F11 fullscreen entry/return remains on monitor2 with paused clock zero.",
+    "The cold Interface selector restores LF24T450F without a stale restart notice.",
+    "Home/Return in the open combo selects Current screen and displays restart feedback; independent disk readback shows #qt-fullscreen-screennumber=-1, the native default form.",
+    "End/Return restores LF24T450F, restores the explicit saved value1 and clears restart feedback.",
+    "The cold app exits normally via Ctrl+Q. No permission prompt was observed in either session."
+  ],
+  "normalExits": 2,
+  "forcedCleanupUsed": false,
+  "screenReaderAccepted": false,
+  "completeVisualAccepted": false,
+  "actualWindowsDpiAccepted": false,
+  "fullBetaAccepted": false
+}

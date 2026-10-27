@@ -1,0 +1,58 @@
+{
+  "time": "2026-10-17T20:17:02.062466+00:00",
+  "platform": "Windows 10 Pro 22H2 x64 guest",
+  "parentSource": "d9c59577d1c4d6d6047ae70057a56b5fdd54f6db",
+  "acceptedScope": "Native audio-only Home Add Folder bootstrap, cancellation, navigation, paused-input invariance, policy/clear/restart; mixed-folder fallback and Unicode accessible name fixes.",
+  "fullBetaAccepted": false,
+  "productionCoreAndMlUnchanged": true,
+  "ordinaryRuntime": "E:\\Modding\\vlc-juxtopposed\\build-windows\\beta-home-20261017\\ordinary-runtime-r2",
+  "runtimeSha256": {
+    "libvlccore.dll": "bf29403169b936e2156bcfcd0f03a38fbbaad0d9b54fd0e7d9e843e4bdb5bc33",
+    "plugins/gui/libqt_plugin.dll": "800199d41ccd7814fcdd49c4233323cdf8678fc5bce43722bc877592381eabf0",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a",
+    "plugins/text_renderer/libfreetype_plugin.dll": "d102b09767056a9acb6ab3b007c653c9561dba17857d5a8258d07242a5856ceb"
+  },
+  "nativeUiChecks": [
+    82,
+    140,
+    12
+  ],
+  "nativeUiNormalExits": true,
+  "nativeUiDiagnostics": 0,
+  "capturedNativeFaults": 0,
+  "ordinaryCases": 5,
+  "ordinarySelectedDiagnostics": 0,
+  "ordinaryRuntimeAndOriginalPackageUnchangedDuringTests": true,
+  "homeComponentPassed": true,
+  "newMixedMediaComponentChecks": 6,
+  "appearanceComponentChecks": 43,
+  "frozenOrdinaryInputCount": 1910,
+  "frozenPrivateInputCount": 5,
+  "postTestInputsMatched": true,
+  "inputs": {
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCard.qml": "0a4fa28b8e29244eee14fb50b3a950c7f5376bfc09b7b6fac386d1fc97f425c6",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCollectionView.qml": "441e4bbc8b6c11e2999a250adc93f429afd26c372a2fe7fba1a7f2cc2602ffc6",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeFolderPage.qml": "311fff518329bbbd8ce60e246937e0da167bd1d250cedd0f215dc64f0a5b37c3",
+    "modules/gui/qt/tests/test_juxtopposed_home.py": "95e15e45af331cd864df539b102e64ca86dc6a75678920999702a69f3b19d7f6",
+    "modules/gui/qt/tests/native_ui/home_journey.cpp": "3442baf926a5c305584452cd47e478c7170131d493cb11f5a85b0a6851aad257",
+    "modules/gui/qt/tests/native_ui/home_journey.mk": "da98d915b5458f578b8bcdc5239ec0dca48578a6f1ff36d704f7026b78a0f3f9",
+    "modules/gui/qt/tests/native_ui/run_home_journey.py": "24759b6fa9220ece1aee931bf303ca2a64627fc1c2fcb8592a192306f90ac324",
+    "modules/gui/qt/tests/native_ui/network_journey.mk": "8a9634abbe52ef4e12e69b27b8564240e921225f7cbfa5a66158360a44c72680"
+  },
+  "producers": {
+    "build-r2.sh": "66f9455727567df9f8a57ffdfc09e2c62c46430ea8f75db09f446d972e2e49c6",
+    "stage-ordinary-r2.py": "d1f4297ea717e9e4a2c0582b2b66ab5cb19f51228fa0455f97a963ddb711ca92",
+    "run-ordinary-r3.py": "ca0739c5c1d0fdae312c9912e85507c98b82719c7c293ff79765880d1eb5fa8f"
+  },
+  "rejectedEvidence": [
+    "component-negative-r1: actual audio fallback mismatch before correction",
+    "component-negative-r2: accessible-name mojibake after icon correction",
+    "ordinary-playback-r2: stale expected-GUI assertion, no VLC app launch"
+  ],
+  "nativeBaselineBeforeQmlFixes": [
+    76,
+    130,
+    12
+  ],
+  "buildSystem": "Incremental Autotools / MinGW / Qt 6.8.3; make -j1, sequential ordinary/private links; no clean-package acceptance."
+}

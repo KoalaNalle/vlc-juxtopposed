@@ -1,0 +1,33 @@
+from pathlib import Path
+import ctypes as C
+from ctypes import wintypes as W
+import hashlib
+import json
+import subprocess
+
+root=Path(__file__).resolve().parent
+output=root/'native-results'
+assert not output.exists()
+output.mkdir()
+records=[]
+kernel=C.WinDLL('kernel32',use_last_error=True)
+kernel.GetExitCodeProcess.argtypes=[W.HANDLE,C.POINTER(W.DWORD)]
+kernel.GetExitCodeProcess.restype=W.BOOL
+for variant in ('fixed',):
+    for mode in (0,1,2):
+        name=variant+'-'+str(mode)
+        with (output/(name+'-stdout.txt')).open('wb') as stdout,(output/(name+'-stderr.txt')).open('wb') as stderr:
+            process=subprocess.Popen([str(root/'bin/driver.exe'),str(root/'bin'/(variant+'.dll')),str(mode)],stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
+            timeout=False
+            try:process.wait(timeout=10)
+            except subprocess.TimeoutExpired:timeout=True
+            code=W.DWORD()
+            assert kernel.GetExitCodeProcess(int(process._handle),C.byref(code))
+            expected_timeout=variant=='baseline' and mode==2
+            observed=timeout==expected_timeout and code.value==0
+            records.append(dict(variant=variant,mode=mode,pid=process.pid,timedOut=timeout,terminationConfirmed=not timeout,winApiExitCode=code.value,expectedOutcomeObserved=observed,featurePassed=not timeout and code.value==0,dllSha256=hashlib.sha256((root/'bin'/(variant+'.dll')).read_bytes()).hexdigest()))
+            print(json.dumps(records[-1]),flush=True)
+            if mode==2:assert 'inside its TLS destructor' in (output/(name+'-stdout.txt')).read_text()
+report=dict(expectedOutcomesObserved=all(x['expectedOutcomeObserved'] for x in records),cases=records,scope='Actual Windows MinGW static DLL and real winpthreads keys: normal operations, explicit FreeLibrary, and process-exit destruction with a worker holding the TLS reader lock. Baseline exit remains failed acceptance. No actual Qt GUI acceptance.')
+(output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+raise SystemExit(0 if report['expectedOutcomesObserved'] else 1)

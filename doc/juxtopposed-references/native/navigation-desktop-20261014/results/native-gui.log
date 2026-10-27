@@ -1,0 +1,514 @@
+-- logger module started --
+main debug: VLC media player - 4.0.0-dev Otto Chriek
+main debug: Copyright © 1996-2026 the VideoLAN team
+main debug: revision 4.0.0-dev-39378-g1b4948c322
+main debug: configured with /checkout/extras/package/win32/../../../configure  '--enable-lua' '--enable-flac' '--enable-theora' '--enable-avcodec' '--enable-merge-ffmpeg' '--enable-libass' '--enable-shout' '--enable-goom' '--enable-sse' '--enable-zvbi' '--disable-telx' '--host=x86_64-w64-mingw32' '--with-contrib=../contrib/x86_64-w64-mingw32' '--with-wix=/build/vlc/contrib/x86_64-w64-mingw32/bin' '--enable-live555' '--enable-dvdread' '--enable-debug' '--disable-nls' '--enable-qt' '--enable-skins2' '--enable-update-check' '--enable-caca' '--with-packagedir=/checkout/build-windows/package' 'LTCFLAGS=-O0' 'host_alias=x86_64-w64-mingw32' 'CFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601  -g' 'CPPFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601' 'CXXFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601  -g' 'PKG_CONFIG=x86_64-w64-mingw32-pkg-config'
+main debug: using performance counters as clock source
+main debug:  frequency: 10000000 Hz
+main debug: searching plug-in modules
+main debug: loading plugins cache file /checkout\build-windows\slice-leaf-literal-package-20261014\plugins\plugins.dat
+main debug: recursively browsing `/checkout\build-windows\slice-leaf-literal-package-20261014\plugins'
+main debug: plug-ins loaded: 600 modules
+main debug: opening config file (/checkout\build-windows\slice-leaf-literal-package-20261014\portable\vlcrc)
+main debug: looking for logger module matching "any": 2 candidates
+file debug: opening logfile `/checkout\build-windows\leaf-literal-desktop-20261014\vlc.log'
+main debug: using logger module "file"
+main debug: looking for tracer module matching "none": 0 candidates
+main debug: no tracer modules matched with name none
+main debug: translation test: code is "C"
+main debug: looking for keystore module matching "memory": 1 candidates
+main debug: using keystore module "memory"
+main debug: CPU has capabilities SSE2 SSE3 SSSE3 SSE4.1 FPU 
+main debug: looking for medialibrary module matching "any": 1 candidates
+medialibrary debug: Opening medialibrary from /checkout\build-windows\leaf-literal-desktop-20261014\userdata/ml/ml.db, db at /checkout\build-windows\leaf-literal-desktop-20261014\userdata/ml/mlstorage/
+main debug: using medialibrary module "medialibrary"
+main debug: creating audio output
+main debug: looking for audio output module matching "any": 2 candidates
+mmdevice debug: using default device
+main debug: using audio output module "mmdevice"
+main debug: keeping audio output
+main debug: looking for interface module matching "hotkeys": 1 candidates
+main debug: using interface module "hotkeys"
+main debug: looking for interface module matching "win32": 1 candidates
+main debug: using interface module "win32"
+main: Running vlc with the default interface. Use 'cvlc' to use vlc without interface.
+main debug: looking for interface module matching "any": 3 candidates
+mmdevice debug: display name changed: VLC media player
+mmdevice debug: version 2 session control unavailable
+mmdevice debug: volume from -96.000000 dB to +0.000000 dB with 1.500000 dB increments
+main debug: looking for qtwindoweffects module matching "any": 1 candidates
+main debug: using qtwindoweffects module "qt"
+qt: WinTaskbarWidget::WinTaskbarWidget
+medialibrary debug: MediaLibrary successfully initialized
+qt debug: (qt.rhi.general) FLIP_* swapchain supported = true, ALLOW_TEARING supported = true, use legacy (non-FLIP) model = false, max frame latency = 2
+qt debug: (qt.rhi.general) Adapter 0: 'NVIDIA GeForce RTX 3080 Ti' (vendor 0x10DE device 0x2208 flags 0x0)
+qt debug: (qt.rhi.general)   using this adapter
+qt debug: (qt.rhi.general) Adapter 1: 'Microsoft Basic Render Driver' (vendor 0x1414 device 0x8C flags 0x2)
+qt debug: (qt.rhi.general) Creating Direct Composition device (needed for semi-transparent windows)
+main debug: using interface module "qt"
+qt debug: (qt.rhi.general) FLIP_* swapchain supported = true, ALLOW_TEARING supported = true, use legacy (non-FLIP) model = false, max frame latency = 2
+qt debug: (qt.rhi.general) Adapter 0: 'NVIDIA GeForce RTX 3080 Ti' (vendor 0x10DE device 0x2208 flags 0x0)
+qt debug: (qt.rhi.general)   using this adapter
+qt debug: (qt.rhi.general) Adapter 1: 'Microsoft Basic Render Driver' (vendor 0x1414 device 0x8C flags 0x2)
+medialibrary debug: LazyPreparser: vlc_preparser_t created!
+qt debug: (default) Asynchronous rhi re-probe completed. Graphics api (QSGRendererInterface::GraphicsApi): 4 Prefer software renderer: false
+qt debug: (qml) MainCtx::createWindowWithoutRedirectionSurface(): returned 1 for window QQuickPopupWindow(0x264ddb07e00).
+qt debug: (qt.rhi.general) FLIP_* swapchain supported = true, ALLOW_TEARING supported = true, use legacy (non-FLIP) model = false, max frame latency = 2
+qt debug: (qt.rhi.general) Adapter 0: 'NVIDIA GeForce RTX 3080 Ti' (vendor 0x10DE device 0x2208 flags 0x0)
+qt debug: (qt.rhi.general)   using this adapter
+qt debug: (qt.rhi.general) Adapter 1: 'Microsoft Basic Render Driver' (vendor 0x1414 device 0x8C flags 0x2)
+qt debug: (qt.rhi.general) Creating Direct Composition device (needed for semi-transparent windows)
+main debug: Creating an input for playback'chaptered-colors.mkv'
+qt debug: on_player_current_media_changed
+qt debug: on_player_state_changed
+qt debug: on_player_buffering
+main debug: using timeshift granularity of 50 MiB
+main debug: using timeshift path: /user\AppData\Local\Temp
+main debug: `file:////checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv' gives access `file' demux `any' path `//checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv'
+main debug: creating access: file:////checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv
+main debug:  (path: /checkout\build-windows\native-library-checks\fixtures\chaptered-colors.mkv)
+main debug: looking for access module matching "file": 5 candidates
+main debug: using access module "filesystem"
+main debug: looking for stream_filter module matching "prefetch,cache": 2 candidates
+cache_read debug: Using stream method for AStream*
+cache_read debug: starting pre-buffering
+cache_read debug: received first data after 0 ms
+cache_read debug: pre-buffering done 1024 bytes in 0s - 32258 KiB/s
+main debug: using stream_filter module "cache_read"
+main debug: looking for stream_filter module matching "any": 4 candidates
+main debug: no stream_filter modules matched with name any
+main debug: looking for stream_directory module matching "any": 1 candidates
+main debug: no stream_directory modules matched with name any
+main debug: attachment of directory-extractor failed for file:////checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv
+main debug: looking for stream_filter module matching "record": 1 candidates
+main debug: using stream_filter module "record"
+main debug: creating demux "any", URL: file:////checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv, path: /checkout\build-windows\native-library-checks\fixtures\chaptered-colors.mkv
+main debug: looking for demux module matching "ext-mkv": 65 candidates
+mkv debug: |   + Seek head
+mkv debug: |   - info at 213
+mkv debug: |   + Information
+mkv debug: |   |   + TimecodeScale=1000000
+mkv debug: |   |   + Title=Juxtopposed Native Chapter Fixture
+mkv debug: |   |   + Muxing Application=Lavf60.16.100
+mkv debug: |   |   + Writing Application=Lavf60.16.100
+mkv debug: |   |   + UID=1e869504f346e86a
+mkv debug: |   |   + Duration=18000
+mkv debug: |   - tracks at 330
+mkv debug: |   + Tracks
+mkv debug: |   |   + Track Entry
+mkv debug: |   |   |   + Track Number=1
+mkv debug: |   |   |   + Track UID=7f0b38b3
+mkv debug: |   |   |   + Track Lacing=0
+mkv debug: |   |   |   + Track Language=`und'
+mkv debug: |   |   |   + Track CodecId=V_MPEG4/ISO/ASP
+mkv debug: |   |   |   + Track Type=video
+mkv debug: |   |   |   + Track Default Duration=40000
+mkv debug: |   |   |   + Track Video
+mkv debug: |   |   |   |   + width=320
+mkv debug: |   |   |   |   + height=180
+mkv debug: |   |   |   |   + Video Colors
+mkv debug: |   |   |   |   |   + Chroma Siting Horizontal=left
+mkv debug: |   |   |   |   |   + Chroma Siting Vertical=center
+mkv debug: |   |   |   + Track Max BlockAdditionID=0
+mkv debug: |   |   |   + Track CodecPrivate size=47
+mkv debug: |   |   + Track Entry
+mkv debug: |   |   |   + Track Number=2
+mkv debug: |   |   |   + Track UID=1319cffb
+mkv debug: |   |   |   + Track Lacing=0
+mkv debug: |   |   |   + Track Language=`und'
+mkv debug: |   |   |   + Track Default=0
+mkv debug: |   |   |   + Track CodecId=A_FLAC
+mkv debug: |   |   |   + Track Type=audio
+mkv debug: |   |   |   + Track Audio
+mkv debug: |   |   |   |   + achan=1
+mkv debug: |   |   |   |   + afreq=44100
+mkv debug: |   |   |   |   + abits=16
+mkv debug: |   |   |   + Track Max BlockAdditionID=0
+mkv debug: |   |   |   + Track CodecPrivate size=42
+mkv debug: |   |   + Track Entry
+mkv debug: |   |   |   + Track Number=3
+mkv debug: |   |   |   + Track UID=a9cd6c0f
+mkv debug: |   |   |   + Track Lacing=0
+mkv debug: |   |   |   + Track Language=`und'
+mkv debug: |   |   |   + Track Default=0
+mkv debug: |   |   |   + Track CodecId=S_TEXT/UTF8
+mkv debug: |   |   |   + Track Type=subtitle
+mkv debug: |   |   |   + Track Max BlockAdditionID=0
+mkv debug: |   - chapters at 659
+mkv debug: |   + Chapters
+mkv debug: |   |   |   + ChapterAtom (level=0)
+mkv debug: |   |   |   |   + ChapterUID=1
+mkv debug: |   |   |   |   + ChapterTimeStart=0
+mkv debug: |   |   |   |   + ChapterTimeEnd=6000000
+mkv debug: |   |   |   |   + ChapterDisplay
+mkv debug: |   |   |   |   |   + ChapterString=Red
+mkv debug: |   |   |   |   |   + ChapterLanguage=und
+mkv debug: |   |   |   + ChapterAtom (level=0)
+mkv debug: |   |   |   |   + ChapterUID=2
+mkv debug: |   |   |   |   + ChapterTimeStart=6000000
+mkv debug: |   |   |   |   + ChapterTimeEnd=12000000
+mkv debug: |   |   |   |   + ChapterDisplay
+mkv debug: |   |   |   |   |   + ChapterString=Blue
+mkv debug: |   |   |   |   |   + ChapterLanguage=und
+mkv debug: |   |   |   + ChapterAtom (level=0)
+mkv debug: |   |   |   |   + ChapterUID=3
+mkv debug: |   |   |   |   + ChapterTimeStart=12000000
+mkv debug: |   |   |   |   + ChapterTimeEnd=18000000
+mkv debug: |   |   |   |   + ChapterDisplay
+mkv debug: |   |   |   |   |   + ChapterString=Green
+mkv debug: |   |   |   |   |   + ChapterLanguage=und
+mkv debug: |   - tags at 782
+mkv debug: |   + Tags
+mkv debug: + Tag
+mkv debug: |   + Targets
+qt debug: on_player_state_changed VLC_PLAYER_STATE_STARTED
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta ENCODER: Lavf60.16.100
+mkv debug: + Tag
+mkv debug: |   + Targets
+mkv debug: |   |   + TrackUID: 2793273807476570291
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta HANDLER_NAME: VideoHandler
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta VENDOR_ID: [0][0][0][0]
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta ENCODER: Lavc60.31.102 mpeg4
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta DURATION: 00:00:18.000000000
+mkv debug: + Tag
+mkv debug: |   + Targets
+mkv debug: |   |   + TrackUID: 13701334901676691451
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta ENCODER: Lavc60.31.102 flac
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta DURATION: 00:00:18.000000000
+mkv debug: + Tag
+mkv debug: |   + Targets
+mkv debug: |   |   + TrackUID: 9520392646247148559
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta ENCODER: Lavc60.31.102 srt
+mkv debug: |   + Simple Tag 
+mkv debug: |   |   + Meta DURATION: 00:00:17.900000000
+mkv debug: loading tags done.
+mkv debug: |   - cues at 568115
+mkv debug: |   + Cues
+mkv debug:  * Unknown (EBMLCrc32)
+main debug: Creating an input for preparsing 'waveform-audio.wav'
+mkv debug: MKV/Ebml Parser: m_el[mi_level] == NULL
+mkv debug: |   - loading cues done.
+mkv debug: |   + Void
+mkv debug: |   + Information
+mkv debug: |   + Tracks
+mkv debug: |   + Chapters
+mkv debug: |   + Tags
+mkv debug: |   + Cluster
+mkv debug: Virtual chapter  Red from 0 to 6000000 - 
+mkv debug: Virtual chapter  Blue from 6000000 to 12000000 - 
+mkv debug: Virtual chapter  Green from 12000000 to 18000000 - 
+mkv debug: Virtual chapter  from 0 to -1 - 
+mkv debug: NEW START CHAPTER uid=1
+mkv debug: found 3 es
+qt debug: on_player_program_list_changed
+main debug: selecting program id=0
+qt debug: on_player_program_selection_changed
+qt debug: on_player_program_list_changed
+main debug: ES track added: 'video/1' (fourcc: 'mp4v')
+qt debug: on_player_track_list_changed
+qt debug: on_player_item_meta_changed
+main debug: ES track added: 'audio/2' (fourcc: 'flac')
+qt debug: on_player_track_list_changed
+qt debug: on_player_item_meta_changed
+main debug: ES track added: 'spu/3' (fourcc: 'subt')
+qt debug: on_player_track_list_changed
+qt debug: on_player_item_meta_changed
+mkv debug: seek: preroll{ track: 1, pts: 40000, fpos: 1154 skip: 1154} 
+mkv debug: seek: preroll{ req: 1, start-pts: 40001, start-fpos: 1154} 
+main debug: using demux module "mkv"
+qt debug: on_player_capabilities_changed
+qt debug: on_player_title_array_changed
+qt debug: on_player_title_selection_changed
+qt debug: on_player_track_list_changed (video)
+main debug: looking for a subtitle file in /checkout\build-windows\native-library-checks\fixtures\
+main debug: looking for video decoder module matching "any": 18 candidates
+qt debug: on_player_track_list_changed (audio)
+qt debug: on_player_track_list_changed (spu)
+main debug: vout: none found
+main debug: looking for text renderer module matching "any": 2 candidates
+freetype debug: Using DWrite backend
+main debug: using text renderer module "freetype"
+main debug: looking for video converter module matching "any": 18 candidates
+swscale debug: 32x32 (32x32) chroma: YUVA colorspace: Undefined -> 16x16 (16x16) chroma: RGBA colorspace: Undefined with scaling using Bicubic (good quality)
+main debug: using video converter module "swscale"
+main debug: looking for video converter module matching "any": 18 candidates
+yuvp debug: YUVP to YUVA converter
+main debug: using video converter module "yuvp"
+main debug: Deinterlacing available
+main debug: deinterlace -1, mode auto, is_needed 0
+main debug: looking for vout window module matching "qt,any": 5 candidates
+main debug: using vout window module "qt"
+main debug: looking for inhibit module matching "any": 1 candidates
+main debug: using inhibit module "inhibit"
+main debug: looking for decoder device module matching "any": 4 candidates
+d3d11_filters debug: Created the D3D11 device type 1 level b100 (flags 00000800).
+d3d11_filters debug: NVIDIA WDDM driver 32.0.16.1742
+main debug: using decoder device module "d3d11_filters"
+nvdec debug: Missing decoder device
+avcodec debug: using Lavc63.1.100
+avcodec debug: CPU flags: 0x024fd3db
+avcodec debug: allowing 6 thread(s) for decoding
+avcodec debug: codec (mpeg4) started
+main debug: using video decoder module "avcodec"
+main debug: ES track selected: 'video/1' (fourcc: 'mp4v')
+qt debug: on_player_track_selection_changed
+main debug: looking for audio decoder module matching "any": 18 candidates
+main debug: using audio decoder module "flac"
+main debug: ES track selected: 'audio/2' (fourcc: 'flac')
+qt debug: on_player_track_selection_changed
+main debug: `file:////checkout/build-windows/native-library-checks/fixtures/chaptered-colors.mkv' successfully opened
+qt debug: on_player_state_changed
+main debug: program(0): using clock source: 'audio'
+qt debug: on_player_buffering
+main debug: Buffering 0%
+qt debug: on_player_item_meta_changed
+qt debug: on_player_track_list_changed
+qt debug: on_player_title_selection_changed
+qt debug: on_player_chapter_selection_changed
+avcodec debug: available hardware decoder output format 117 (cuda)
+avcodec debug: available software decoder output format 0 (yuv420p)
+flac debug: decode STREAMINFO
+flac debug: channels:1 samplerate:44100 bitspersamples:16
+qt debug: on_player_buffering
+flac debug: STREAMINFO decoded
+main debug: Buffering 4%
+main debug: vout change: decoder size
+main debug: vout change: visible size
+main debug: vout change: chroma
+main debug: requested window size: 320x180
+main debug: reusing audio output
+qt debug: on_player_item_meta_changed
+qt debug: on_player_track_list_changed
+main debug: looking for aout stream module matching "any": 1 candidates
+qt debug: on_player_buffering
+main debug: Buffering 6%
+qt debug: on_player_buffering
+main debug: Buffering 16%
+qt debug: on_player_buffering
+qt debug: on_player_buffering
+main debug: Buffering 24%
+qt debug: on_player_buffering
+main debug: Buffering 27%
+qt debug: on_player_buffering
+main debug: Buffering 36%
+qt debug: on_player_buffering
+main debug: Buffering 37%
+qt debug: on_player_buffering
+main debug: Buffering 48%
+qt debug: on_player_buffering
+qt debug: on_player_buffering
+main debug: Buffering 56%
+qt debug: on_player_buffering
+main debug: Buffering 58%
+qt debug: on_player_buffering
+main debug: Buffering 68%
+qt debug: on_player_buffering
+main debug: Buffering 69%
+qt debug: on_player_buffering
+main debug: Buffering 76%
+qt debug: on_player_buffering
+main debug: Buffering 79%
+qt debug: on_player_buffering
+main debug: Buffering 88%
+qt debug: on_player_buffering
+main debug: Buffering 90%
+qt debug: on_player_buffering
+main debug: Stream buffering done (1000 ms in 0 ms)
+qt debug: on_player_state_changed VLC_PLAYER_STATE_PLAYING
+wasapi debug: modified format
+qt debug: on_player_track_list_changed (video)
+qt debug: Logical video size: 320x180
+qt debug: Autoresize interface window size compensation: 0x0
+main debug: deinterlace -1, mode auto, is_needed 0
+qt debug: on_player_track_list_changed (video)
+main debug: Opening vout display wrapper
+main warning: window size missing
+main debug: looking for vout display module matching "any": 6 candidates
+wasapi debug: buffer size    : 1056 frames
+wasapi debug: maximum latency: 000 ns
+wasapi debug: default period : 10000000 ns
+wasapi debug: minimum period : 3000000 ns
+main debug: using aout stream module "wasapi"
+main debug: output 'f32l' 48000 Hz Stereo frame=1 samples/8 bytes
+main debug: looking for audio volume module matching "any": 2 candidates
+main debug: using audio volume module "float_mixer"
+main debug: input 's32l' 44100 Hz Mono frame=1 samples/4 bytes
+main debug: looking for audio filter module matching "scaletempo": 1 candidates
+scaletempo debug: format: 44100 rate, 1 nch, 4 bps, fl32
+scaletempo debug: params: 30 stride, 0.200 overlap, 14 search
+scaletempo debug: 1.000 scale, 1323.000 stride_in, 1323 stride_out, 1059 standing, 264 overlap, 617 search, 2204 queue, fl32 mode
+main debug: using audio filter module "scaletempo"
+main debug: conversion: 's32l'->'f32l' 44100 Hz->44100 Hz Mono->Mono
+main debug: looking for audio converter module matching "any": 9 candidates
+direct3d11 debug: Created the D3D11 device type 1 level b100 (flags 00000800).
+audio_format debug: s32l->f32l, bits per sample: 32->32
+main debug: using audio converter module "audio_format"
+main debug: conversion pipeline complete
+main debug: conversion: 'f32l'->'f32l' 44100 Hz->44100 Hz Mono->Stereo
+main debug: looking for audio converter module matching "any": 9 candidates
+main debug: using audio converter module "trivial"
+main debug: conversion pipeline complete
+main debug: looking for audio resampler module matching "any": 3 candidates
+soxr debug: Using SoX Resampler with 'cr32s' engine and 'Medium 16-bit with medium roll-off' quality to convert f32l/44100Hz to f32l/48000Hz.
+main debug: using audio resampler module "soxr"
+direct3d11 debug: NVIDIA WDDM driver 32.0.16.1742
+direct3d11 debug: Using pixel format I420 for chroma I420
+direct3d11 debug: supports colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: supports colorspace RGB Rec.709 gamma:22 range:STUDIO
+direct3d11 debug: supports colorspace RGB Rec.2020 gamma:22 range:STUDIO
+direct3d11 debug: supports colorspace RGB Rec.2020 gamma:22 range:FULL
+direct3d11 debug: supports colorspace RGB Rec.2020 gamma:2084 range:FULL
+direct3d11 debug: supports colorspace RGB Rec.2020 gamma:2084 range:STUDIO
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: TEXTURE_RESOURCES = 3
+direct3d11 debug: TONE_MAPPING = 0
+direct3d11 debug: SRC_TO_LINEAR = 0
+direct3d11 debug: LINEAR_TO_DST = 0
+direct3d11 debug: SAMPLE_TEXTURES = SAMPLE_TRIPLANAR_TO_YUVA
+direct3d11 debug: using GPU render fence
+direct3d11 debug: TEXTURE_RESOURCES = 1
+direct3d11 debug: TONE_MAPPING = 0
+direct3d11 debug: SRC_TO_LINEAR = 0
+direct3d11 debug: LINEAR_TO_DST = 0
+direct3d11 debug: SAMPLE_TEXTURES = SAMPLE_RGBA_TO_RGBA
+direct3d11 debug: picQuad position (0.00,0.00) 320.00x180.00
+direct3d11 debug: Direct3D11 resources created
+direct3d11 debug: Direct3D11 display adapter successfully initialized
+direct3d11 debug: Direct3D11 Open Succeeded
+main debug: using vout display module "direct3d11"
+main debug: original format sz 320x192, of (0,0), vsz 320x180, 4cc I420, sar 1:1, orient: normal
+main debug: removing "text renderer" module "freetype"
+main debug: looking for text renderer module matching "any": 2 candidates
+freetype debug: Using DWrite backend
+main debug: using text renderer module "freetype"
+main debug: requested window size: 320x180
+main debug: resetting projection_mode to 0
+main debug: setting projection_mode to 0
+direct3d11 debug: TEXTURE_RESOURCES = 3
+direct3d11 debug: TONE_MAPPING = 0
+direct3d11 debug: SRC_TO_LINEAR = 0
+direct3d11 debug: LINEAR_TO_DST = 0
+direct3d11 debug: SAMPLE_TEXTURES = SAMPLE_TRIPLANAR_TO_YUVA
+qt debug: on_player_vout_list_changed
+main debug: Received first picture
+freetype debug: DWrite_GetFamily(): family name: arial
+main debug: Decoder wait done in 63 ms
+qt debug: on_player_state_changed
+main debug: pausing video
+main debug: pausing audio
+freetype debug: DWrite_ParseFamily(): using font at index 0 with weight 400 for bold: 0, italic: 0
+freetype debug: DWrite_ParseFamily(): using font at index 1 with weight 700 for bold: 1, italic: 0
+freetype debug: DWrite_ParseFamily(): using font at index 2 with weight 400 for bold: 0, italic: 1
+freetype debug: DWrite_ParseFamily(): using font at index 3 with weight 700 for bold: 1, italic: 1
+mmdevice debug: state changed: 1
+mmdevice debug: state changed: 0
+qt debug: (default) SGManipulator: Blending is overridden as false for target material 0x26445ffce80
+qt debug: (default) SGManipulator: Blending is overridden as false for target material 0x26445ffbbf0
+main debug: resized to 320x230
+direct3d11 debug: Detected size change 320x230
+main debug: control type=26
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,25.00) 320.00x180.00
+direct3d11 debug: Detected size change 320x230
+direct3d11 debug: picQuad position (0.00,25.00) 320.00x180.00
+qt debug: Logical video size: 320x180
+qt debug: Autoresize interface window size compensation: 0x130
+qt debug: on_player_state_changed VLC_PLAYER_STATE_PAUSED
+qt debug: (qml) MainCtx::createWindowWithoutRedirectionSurface(): returned 1 for window QQuickPopupWindow(0x264d3891300).
+qt debug: (qt.rhi.general) FLIP_* swapchain supported = true, ALLOW_TEARING supported = true, use legacy (non-FLIP) model = false, max frame latency = 2
+qt debug: (qt.rhi.general) Adapter 0: 'NVIDIA GeForce RTX 3080 Ti' (vendor 0x10DE device 0x2208 flags 0x0)
+qt debug: (qt.rhi.general)   using this adapter
+qt debug: (qt.rhi.general) Adapter 1: 'Microsoft Basic Render Driver' (vendor 0x1414 device 0x8C flags 0x2)
+qt debug: (qt.rhi.general) Creating Direct Composition device (needed for semi-transparent windows)
+main debug: looking for playlist export module matching "export-m3u8": 1 candidates
+export debug: saving using M3U8 format
+main debug: using playlist export module "export"
+main debug: removing "playlist export" module "export"
+mkv debug: Handle Mouse Event: Mouse clicked x(241)*y(-17)
+main debug: resized to 320x180
+direct3d11 debug: Detected size change 320x180
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,0.00) 320.00x180.00
+qt debug: (default) SGManipulator: Blending is overridden as false for target material 0x264d30fb890
+qt debug: (default) SGManipulator: Blending is overridden as false for target material 0x264d30fc970
+main debug: resized to 1920x942
+direct3d11 debug: Detected size change 1920x942
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (123.00,0.00) 1674.00x942.00
+mkv debug: Handle Mouse Event: Mouse clicked x(51)*y(32)
+qt debug: on_player_vout_fullscreen_changed fullscreen
+main debug: resized to 1920x1080
+direct3d11 debug: Detected size change 1920x1080
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,0.00) 1920.00x1080.00
+qt debug: on_player_vout_fullscreen_changed windowed
+main debug: requested window size: 320x180
+qt debug: on_player_vout_fullscreen_changed windowed
+main debug: resized to 1904x1072
+direct3d11 debug: Detected size change 1904x1072
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,0.00) 1904.00x1071.00
+main debug: resized to 320x230
+direct3d11 debug: Detected size change 320x230
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,25.00) 320.00x180.00
+main debug: resized to 1920x942
+direct3d11 debug: Detected size change 1920x942
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (123.00,0.00) 1674.00x942.00
+main debug: resized to 320x180
+direct3d11 debug: Detected size change 320x180
+direct3d11 debug: using colorspace RGB Rec.709 gamma:22 range:FULL
+direct3d11 debug: picQuad position (0.00,0.00) 320.00x180.00
+main debug: exiting
+main debug: exiting
+main debug: removing all interfaces
+main debug: removing "interface" module "qt"
+main debug: removing "interface" module "win32"
+main debug: removing "interface" module "hotkeys"
+main debug: killing decoder fourcc `mp4v'
+main debug: removing "video decoder" module "avcodec"
+direct3d11 debug: Direct3D11 resources destroyed
+direct3d11 debug: Direct3D11 display adapter closed
+main debug: saving a free vout
+main debug: ES track unselected: 'video/1' (fourcc: 'mp4v')
+wasapi debug: reset
+main debug: killing decoder fourcc `flac'
+main debug: removing "audio decoder" module "flac"
+main debug: removing "audio resampler" module "soxr"
+main debug: removing "audio converter" module "audio_format"
+main debug: removing "audio filter" module "scaletempo"
+main debug: removing "audio converter" module "trivial"
+main debug: removing "audio volume" module "float_mixer"
+main debug: keeping audio output
+main debug: ES track unselected: 'audio/2' (fourcc: 'flac')
+main debug: removing "demux" module "mkv"
+main debug: ES track deleted: 'video/1' (fourcc: 'mp4v')
+main debug: ES track deleted: 'audio/2' (fourcc: 'flac')
+main debug: ES track deleted: 'spu/3' (fourcc: 'subt')
+main debug: Program doesn't contain anymore ES
+main debug: removing "stream_filter" module "record"
+main debug: removing "stream_filter" module "cache_read"
+main debug: removing "access" module "filesystem"
+main debug: destroying input for 'chaptered-colors.mkv'
+main debug: stop free vout
+main debug: removing "text renderer" module "freetype"
+main debug: removing "video converter" module "yuvp"
+main debug: removing "video converter" module "swscale"
+main debug: removing "inhibit" module "inhibit"
+qt debug: requesting exit...
+qt debug: waiting for UI thread...
+qt debug: QApp exec() finished
+main debug: removing "qtwindoweffects" module "qt"
+main debug: removing "audio output" module "mmdevice"
+main debug: removing "medialibrary" module "medialibrary"
+main debug: removing "keystore" module "memory"
+-- logger module stopped --

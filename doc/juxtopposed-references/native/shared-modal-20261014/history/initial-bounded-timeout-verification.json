@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "timedOut": true,
+  "testExeSha256": "68f6daec88eeec31eef3041500968cc576a7658c1e92dc1e350512361a50ab0d",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "productionExtraction": {
+    "sourceSha256": {
+      "modules/gui/qt/maininterface/interface_window_handler.cpp": "d6e818ea0f26256462f56e2d834a7f846fbdae172c5fe86aa7ca1f0155a6b3e7",
+      "modules/gui/qt/maininterface/mainctx.cpp": "b5a36669d051b71b01e445075d3e7c0cfbe243625e85e630795211f0c8db855e"
+    },
+    "includeSha256": "a438fa584b055d326ada6f06087e7150a2a8f359bf7d27db4ffabf3277962fc2",
+    "scope": "Exact production key-only event branch, applyKeyEvent, sendHotkey and sendVLCHotkey. Other window/interface methods are not extracted."
+  },
+  "processTimeoutSeconds": 30,
+  "scope": "Exact production key-method/branch bodies with dependency adapters; real Qt key press/release delivery and native LibVLC key-pressed callbacks. Full MainCtx/provider lifetime and actual production modal/transport acceptance remain separate.",
+  "evidenceHashes": {
+    "resultsSha256": null,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

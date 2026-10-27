@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "runtimeSha256": {
+    "test_qt_privacy_preferences.exe": "65c78671e40117cabf80b65cd7efa81d8852b1a0876e1e3f498f8be06af2b051",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "186d65be7284e1fdc24003578d7780f2d871c74e3d8eb09018906b18d7c82591",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "forcedCleanupUsed": false,
+  "exitCode": 0,
+  "normalExit": true,
+  "qtestCases": 17,
+  "databaseFailure": {
+    "passed": true,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "runtimeSha256": {
+      "test_qt_privacy_preferences.exe": "65c78671e40117cabf80b65cd7efa81d8852b1a0876e1e3f498f8be06af2b051",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "186d65be7284e1fdc24003578d7780f2d871c74e3d8eb09018906b18d7c82591",
+      "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+    },
+    "libraryOff": false,
+    "ownedPid": 4316,
+    "databaseWithinOwnedUserdata": true,
+    "realDatabaseWriteRejectionInstalled": true,
+    "failedClearDataUnchanged": true,
+    "writeRejectionRemovedForRetry": true,
+    "exitCode": 0,
+    "terminationConfirmed": true,
+    "stdoutReaderTerminated": true,
+    "normalExit": true,
+    "passLines": [
+      "PASS: controller begins native clear asynchronously",
+      "PASS: real database failure reaches controller error without success status",
+      "PASS: failed native clear leaves all interface stores untouched",
+      "PASS: failed controller clear preserves player write generation",
+      "PASS: failed controller clear preserves saved URL and file history",
+      "PASS: controller accepts retry after database repair",
+      "PASS: controller retry reports success after all stores finish",
+      "PASS: retry clears Home callback, network URLs and file location exactly once",
+      "PASS: controller retry clears native history while preserving Library preference and availability"
+    ],
+    "failLines": []
+  },
+  "databaseFailureLibraryOff": {
+    "passed": true,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "runtimeSha256": {
+      "test_qt_privacy_preferences.exe": "65c78671e40117cabf80b65cd7efa81d8852b1a0876e1e3f498f8be06af2b051",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "186d65be7284e1fdc24003578d7780f2d871c74e3d8eb09018906b18d7c82591",
+      "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+    },
+    "libraryOff": true,
+    "ownedPid": 16800,
+    "databaseWithinOwnedUserdata": true,
+    "realDatabaseWriteRejectionInstalled": true,
+    "failedClearDataUnchanged": true,
+    "writeRejectionRemovedForRetry": true,
+    "exitCode": 0,
+    "terminationConfirmed": true,
+    "stdoutReaderTerminated": true,
+    "normalExit": true,
+    "passLines": [
+      "PASS: controller begins native clear asynchronously",
+      "PASS: real database failure reaches controller error without success status",
+      "PASS: failed native clear leaves all interface stores untouched",
+      "PASS: failed controller clear preserves player write generation",
+      "PASS: failed controller clear preserves saved URL and file history",
+      "PASS: controller accepts retry after database repair",
+      "PASS: controller retry reports success after all stores finish",
+      "PASS: retry clears Home callback, network URLs and file location exactly once",
+      "PASS: controller retry clears native history while preserving Library preference and availability"
+    ],
+    "failLines": []
+  }
+}

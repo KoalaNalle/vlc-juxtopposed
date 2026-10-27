@@ -1,4 +1,31 @@
 $(function () {
+    // Wheel gestures on the main player controls use the server's independent
+    // remote policy. Keep native form/slider gestures and browser zoom intact.
+    var wheelArea = document.getElementById('controlContainer');
+    if (wheelArea) {
+        var wheelPixels = { x: 0, y: 0 };
+        var wheelTimer = null;
+        wheelArea.addEventListener('wheel', function (event) {
+            if (current_que !== 'main' || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey ||
+                $(event.target).closest('input, select, textarea, button, [contenteditable], .ui-slider').length)
+                return;
+            if (!isFinite(event.deltaX) || !isFinite(event.deltaY)) return;
+            var unit = event.deltaMode === 1 ? 40 : event.deltaMode === 2 ? 400 : 1;
+            wheelPixels.x = Math.max(-320, Math.min(320, wheelPixels.x + event.deltaX * unit));
+            wheelPixels.y = Math.max(-320, Math.min(320, wheelPixels.y - event.deltaY * unit));
+            event.preventDefault();
+            if (wheelTimer !== null) return;
+            wheelTimer = window.setTimeout(function () {
+                wheelTimer = null;
+                ['x', 'y'].forEach(function (axis) {
+                    var steps = wheelPixels[axis] < 0 ? Math.ceil(wheelPixels[axis] / 40) : Math.floor(wheelPixels[axis] / 40);
+                    wheelPixels[axis] -= steps * 40;
+                    if (steps && current_que === 'main')
+                        sendCommand({ command: 'juxtopposed_wheel', axis: axis, steps: steps });
+                });
+            }, 80);
+        }, { passive: false });
+    }
     $("#seekSlider").slider({
         range: "min",
         value: 0,

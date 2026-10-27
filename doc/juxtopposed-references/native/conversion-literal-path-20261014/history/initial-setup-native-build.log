@@ -1,0 +1,50 @@
+make: Entering directory '/build/vlc/win64/modules/gui/qt'
+  GEN      util/qml.deps
+  GEN      widgets/qml.deps
+  GEN      style/qml.deps
+  GEN      playlist/qml.deps
+  GEN      player/qml.deps
+  GEN      playercontrols/qml.deps
+  GEN      network/qml.deps
+  GEN      menus/qml.deps
+  GEN      medialibrary/qml.deps
+  GEN      maininterface/qml.deps
+  GEN      dialogs/qml.deps
+  GEN      shaders/shaders.deps
+  CXX      dialogs/test_qt_conversion_controller-conversion_controller.o
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp: In member function ‘ConversionController::Result ConversionController::convert(const QString&, const QString&, const std::shared_ptr<Job>&)’:
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:291:115: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  291 |     if (!directory.isValid()) return {Failed, tr("Could not create conversion storage in the destination folder.")};
+      |                                                                                                                   ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:378:48: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  378 |     if (!error.isEmpty()) return {Failed, error};
+      |                                                ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:380:79: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  380 |         return {Failed, tr("Conversion did not produce a complete FLAC file.")};
+      |                                                                               ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:383:103: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  383 |     if (!error.isEmpty()) return {Failed, tr("The converted file could not be decoded: %1").arg(error)};
+      |                                                                                                       ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:386:87: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  386 |         return {Failed, tr("The converted file contains no complete decodable audio.")};
+      |                                                                                       ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:390:82: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  390 |         return {Failed, tr("This conversion supports audio up to one hour long.")};
+      |                                                                                  ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:394:84: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  394 |         return {Failed, tr("The converted audio duration differs from the source.")};
+      |                                                                                    ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:396:102: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  396 |         return {Failed, tr("The source changed during conversion. Try again with an unchanged file.")};
+      |                                                                                                      ^
+/checkout/extras/package/win32/../../../modules/gui/qt/dialogs/conversion_controller.cpp:402:116: warning: missing initializer for member ‘ConversionController::Result::output’ [-Wmissing-field-initializers]
+  402 |             return {Failed, tr("Could not publish the result. The destination may already exist or be unwritable.")};
+      |                                                                                                                    ^
+  CXXLD    test_qt_conversion_controller.exe
+libtool:   error: Could not determine the host path corresponding to
+libtool:   error:   '/build/vlc/win64/src/.libs:/build/vlc/win64/lib/.libs'
+libtool:   error: Continuing, but uninstalled executables may not work.
+libtool:   error: Could not determine the host path corresponding to
+libtool:   error:   '/build/vlc/contrib/x86_64-w64-mingw32/lib:/build/vlc/contrib/x86_64-w64-mingw32/bin:/build/vlc/contrib/x86_64-w64-mingw32/plugins/iconengines:/build/vlc/contrib/x86_64-w64-mingw32/plugins/imageformats:/build/vlc/contrib/x86_64-w64-mingw32/plugins/platforms:/build/vlc/contrib/x86_64-w64-mingw32/plugins/styles:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQml:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQml/Models:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQml/WorkerScript:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Layouts:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Templates:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Controls/Basic:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Controls/impl:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Controls/Basic/impl:/build/vlc/contrib/x86_64-w64-mingw32/qml/QtQuick/Window:/build/vlc/win64/src/.libs:/build/vlc/win64/lib/.libs:/build/vlc/win64/_win32/lib:/build/vlc/win64/_win32/bin'
+libtool:   error: Continuing, but uninstalled executables may not work.
+make: Leaving directory '/build/vlc/win64/modules/gui/qt'

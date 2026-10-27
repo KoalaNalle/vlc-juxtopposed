@@ -37,6 +37,7 @@
 #include <vlc_block.h>
 #include <vlc_sout.h>
 #include <vlc_fs.h>
+#include <vlc_dialog.h>
 #include <assert.h>
 
 /*****************************************************************************
@@ -409,6 +410,90 @@ static vlc_tick_t BlockTick( const block_t *p_block )
         return p_block->i_pts;
 }
 
+static bool BlockAtStart( const sout_stream_id_sys_t *id, block_t *block,
+                          vlc_tick_t start )
+{
+    const vlc_tick_t tick = BlockTick(block);
+    if (tick == VLC_TICK_INVALID)
+        return false;
+    if (tick >= start)
+        return true;
+    if (id->fmt.i_cat != SPU_ES || block->i_length <= 0)
+        return false;
+
+    /* A finite subtitle can remain visible across the selected A/V keyframe.
+     * Keep only that remaining interval. Unsigned subtraction avoids overflow
+     * for unusable timestamp spans; the duration bounds the eventual delta. */
+    const uint64_t elapsed = (uint64_t)start - (uint64_t)tick;
+    if (elapsed >= (uint64_t)block->i_length)
+        return false;
+    const vlc_tick_t delta = elapsed;
+    if (block->i_pts != VLC_TICK_INVALID && block->i_pts > INT64_MAX - delta)
+        return false;
+    block->i_length -= delta;
+    block->i_dts = start;
+    if (block->i_pts != VLC_TICK_INVALID)
+        block->i_pts += delta;
+    return true;
+}
+
+static vlc_tick_t OutputStartDate( const sout_stream_sys_t *p_sys )
+{
+    /* Sparse subtitle packets can be queued far ahead of playback. Align A/V
+     * using A/V streams only; retain the legacy rule for subtitle-only output. */
+    bool b_has_av = false;
+    for( int i = 0; i < p_sys->i_id; i++ )
+    {
+        const sout_stream_id_sys_t *id = p_sys->id[i];
+        if( id->id && id->p_first &&
+            ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
+        {
+            b_has_av = true;
+            break;
+        }
+    }
+
+    /* Compute highest timestamp of first I over the relevant streams. */
+    vlc_tick_t i_dts_start = 0;
+    vlc_tick_t i_highest_head_dts = 0;
+    for( int i = 0; i < p_sys->i_id; i++ )
+    {
+        sout_stream_id_sys_t *id = p_sys->id[i];
+
+        if( !id->id || !id->p_first )
+            continue;
+
+        if( b_has_av && id->fmt.i_cat != AUDIO_ES && id->fmt.i_cat != VIDEO_ES )
+            continue;
+
+        const block_t *p_block = id->p_first;
+        vlc_tick_t i_dts = BlockTick( p_block );
+
+        if( i_dts > i_highest_head_dts &&
+           ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
+        {
+            i_highest_head_dts = i_dts;
+        }
+
+        for( ; p_block != NULL; p_block = p_block->p_next )
+        {
+            if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
+            {
+                i_dts = BlockTick( p_block );
+                break;
+            }
+        }
+
+        if( i_dts > i_dts_start )
+            i_dts_start = i_dts;
+    }
+
+    if( i_dts_start == 0 )
+        i_dts_start = i_highest_head_dts;
+
+    return i_dts_start;
+}
+
 static void OutputStart( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
@@ -536,43 +621,15 @@ static void OutputStart( sout_stream_t *p_stream )
     if( OutputNew( p_stream, psz_muxer, p_sys->psz_prefix, psz_extension ) < 0 )
     {
         msg_Err( p_stream, "failed to open output");
+        vlc_dialog_display_error(p_stream, _("Recording failed"),
+            _("VLC could not create the recording file at:\n%s\n\n"
+              "Check that the recording folder exists and is writable, and that "
+              "the drive has free space. Then try recording again."),
+            p_sys->psz_prefix);
         return;
     }
 
-    /* Compute highest timestamp of first I over all streams */
-    p_sys->i_dts_start = 0;
-    vlc_tick_t i_highest_head_dts = 0;
-    for( int i = 0; i < p_sys->i_id; i++ )
-    {
-        sout_stream_id_sys_t *id = p_sys->id[i];
-
-        if( !id->id || !id->p_first )
-            continue;
-
-        const block_t *p_block = id->p_first;
-        vlc_tick_t i_dts = BlockTick( p_block );
-
-        if( i_dts > i_highest_head_dts &&
-           ( id->fmt.i_cat == AUDIO_ES || id->fmt.i_cat == VIDEO_ES ) )
-        {
-            i_highest_head_dts = i_dts;
-        }
-
-        for( ; p_block != NULL; p_block = p_block->p_next )
-        {
-            if( p_block->i_flags & BLOCK_FLAG_TYPE_I )
-            {
-                i_dts = BlockTick( p_block );
-                break;
-            }
-        }
-
-        if( i_dts > p_sys->i_dts_start )
-            p_sys->i_dts_start = i_dts;
-    }
-
-    if( p_sys->i_dts_start == 0 )
-        p_sys->i_dts_start = i_highest_head_dts;
+    p_sys->i_dts_start = OutputStartDate( p_sys );
 
     sout_stream_id_sys_t *p_cand;
     vlc_tick_t canddts;
@@ -621,7 +678,7 @@ static void OutputStart( sout_stream_t *p_stream )
                 p_cand->pp_last = &p_cand->p_first;
             p_block->p_next = NULL;
 
-            if( BlockTick( p_block ) >= p_sys->i_dts_start )
+            if( BlockAtStart( p_cand, p_block, p_sys->i_dts_start ) )
                 OutputSend( p_stream, p_cand, p_block );
             else
                 block_Release( p_block );

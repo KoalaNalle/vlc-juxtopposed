@@ -1,0 +1,43 @@
+{
+  "baseSha256": {
+    "modules/gui/qt/dialogs/conversion_controller.cpp": "24c11c75379063b26a4d4916191898fe31c1dbebf195c8832d643609d12a2bbd",
+    "modules/gui/qt/tests/test_conversion_controller.cpp": "053cb01870b0cb16f8fcdf6be270adeaf22f75c92ddbb3299bdd51c10076669e",
+    "test/libvlc/native_conversion_controller.py": "ea1361e95d951778429a78db99003c52ec174aba0ff870525f2832b61b4b25b8"
+  },
+  "shadowSha256": {
+    "modules/gui/qt/dialogs/conversion_controller.cpp": "cb0cc5d60efcff1025513d19f1a708811b3b8d755148c0f5cce4107e6ac492c5",
+    "modules/gui/qt/tests/test_conversion_controller.cpp": "374d1a620138d965526026db737568bf929d73b59e6a76c80e41b1bdbaf6ba91",
+    "test/libvlc/native_conversion_controller.py": "72bbb19933dcc70d05adfe3280b15d8224f889bea8fe9d8a6c5d5d9e981aae78"
+  },
+  "patchSha256": {
+    "production.patch": "635439fb6d002033a6c8575b642e01ba97658f4971f58bf154c2b676f4959346",
+    "fixtures.patch": "ea2d5179447179143dbdaef32c01267d9ad333f1bc9e93fa6d3cd8f0c68ff698",
+    "integration.patch": "fbffc511ae0566e92cf3a37916e9b8de55c7c9548c7226045844736bb515fcd4"
+  },
+  "newCaseName": "inheritedFileFormatKeepsLiteralPercentDestination",
+  "newCaseNamesInOrder": [
+    "initTestCase",
+    "localValidationAndNoOverwrite",
+    "realFlacAndActualPlayback",
+    "inheritedRunTimeAndInputChoicesDoNotTrim",
+    "inheritedFileFormatKeepsLiteralPercentDestination",
+    "corruptSourceDoesNotPublish",
+    "destinationRaceIsPreserved",
+    "runningCancellationAndReuse",
+    "independentPrimaryQueueAndPausedClock",
+    "runningWorkerShutdown",
+    "cleanupTestCase"
+  ],
+  "existingTenCasesAndScaffoldingByteIdentityPreservedAfterRemovingNewCaseAndInclude": true,
+  "ownedTestPreferenceParent": "Real independently owned vlc_object_t with sout-file-format=true, outlives controller destruction; shared test parent unchanged.",
+  "productionChange": "Common native file sink uses no-format in both encode and validation stages; no other controller behavior changed.",
+  "nativeBaselineOrFixedRunPerformed": false,
+  "registeredFilesEdited": false,
+  "sourceContractHashes": {
+    "modules/access_output/file.c": "dc198f4f653277107c83c2d4b9b0dbc4cee2f7c881cffab805a8b28a91e501a2",
+    "src/config/chain.c": "c624c188e9056d8a6b812091ba11b738ca6fc543809b0f6ac0561ea846f8e8f7",
+    "modules/gui/qt/util/soutchain.cpp": "3918e468f34749779d3214af61b32876d24307d04834b65ca3cf63d7fa0fd049"
+  },
+  "helperChange": "Separate shadow adds exact ordered11PASS/11-0-0-0/no-rejected-status checks and output hashes; timeout, native/runtime/module/core/source/playback gates unchanged.",
+  "rootSequence": "Apply fixtures only and compile unchanged before controller for expected10pass/1fail baseline; retain evidence; apply production only, rebuild unchanged11-case fixtures for expected11pass. Do not apply combined patch on top of already applied fixtures."
+}

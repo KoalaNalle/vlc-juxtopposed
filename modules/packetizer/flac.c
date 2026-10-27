@@ -365,15 +365,21 @@ static block_t *Packetize(decoder_t *p_dec, block_t **pp_block)
 
     case STATE_HEADER:
     {
-        /* Get FLAC frame header (MAX_FLAC_HEADER_SIZE bytes) */
-        if (block_PeekBytes(&p_sys->bytestream, p_header, FLAC_HEADER_SIZE_MAX))
+        /* A complete final frame may be smaller than the maximum header
+         * lookahead. At EOS parse only the bytes actually present. */
+        size_t i_header_size = FLAC_HEADER_SIZE_MAX;
+        if (pp_block == NULL)
+            i_header_size = __MIN(i_header_size,
+                                  block_BytestreamRemaining(&p_sys->bytestream));
+        if (i_header_size < FLAC_HEADER_SIZE_MIN ||
+            block_PeekBytes(&p_sys->bytestream, p_header, i_header_size))
             return NULL; /* Need more data */
 
         /* Check if frame is valid and get frame info */
         const struct flac_stream_info *streaminfo =
                 p_sys->b_stream_info ? &p_sys->stream_info : NULL;
         struct flac_header_info headerinfo;
-        int i_ret = FLAC_ParseSyncInfo(p_header, FLAC_HEADER_SIZE_MAX, streaminfo,
+        int i_ret = FLAC_ParseSyncInfo(p_header, i_header_size, streaminfo,
                                        flac_crc8, &headerinfo);
         if (!i_ret || !FLAC_CheckFrameInfo(streaminfo, &headerinfo)) {
             msg_Dbg(p_dec, "emulated sync word");
@@ -418,17 +424,32 @@ static block_t *Packetize(decoder_t *p_dec, block_t **pp_block)
             return NULL;
         }
 
-        /* Check next header */
+        /* Check next header, including a small complete final frame. */
         uint8_t nextheader[FLAC_HEADER_SIZE_MAX];
+        size_t i_next_header_size = FLAC_HEADER_SIZE_MAX;
+        if (pp_block == NULL)
+        {
+            const size_t remaining = block_BytestreamRemaining(&p_sys->bytestream);
+            if (p_sys->i_offset > remaining)
+                return NULL;
+            i_next_header_size = __MIN(i_next_header_size, remaining - p_sys->i_offset);
+        }
+        if (i_next_header_size < FLAC_HEADER_SIZE_MIN)
+        {
+            /* At EOS this cannot start another frame. A short emulated sync
+             * inside the final frame must not prevent its CRC acceptance. */
+            p_sys->i_offset++;
+            continue;
+        }
         if (block_PeekOffsetBytes(&p_sys->bytestream, p_sys->i_offset,
-                                  nextheader, FLAC_HEADER_SIZE_MAX))
+                                  nextheader, i_next_header_size))
             return NULL; /* Need more data */
 
         const struct flac_stream_info *streaminfo =
                 p_sys->b_stream_info ? &p_sys->stream_info : NULL;
         struct flac_header_info dummy;
         /* Check if frame is valid and get frame info */
-        if(!FLAC_ParseSyncInfo(nextheader, FLAC_HEADER_SIZE_MAX, streaminfo, NULL, &dummy)||
+        if(!FLAC_ParseSyncInfo(nextheader, i_next_header_size, streaminfo, NULL, &dummy)||
            !FLAC_CheckFrameInfo(streaminfo, &dummy))
         {
             /* Keep trying to find next sync point in bytestream */
@@ -516,6 +537,17 @@ static block_t *Packetize(decoder_t *p_dec, block_t **pp_block)
             p_sys->i_last_frame_size = p_sys->i_offset;
             p_sys->i_buf = p_sys->i_offset;
 
+            /* Retain the accepted frame timestamp before consuming its
+             * last bytestream block; a single-frame file has no successor. */
+            if( p_sys->bytestream.p_block &&
+                p_sys->bytestream.p_block->i_pts > date_Get( &p_sys->pts ) &&
+                p_sys->bytestream.p_block->i_pts != VLC_TICK_INVALID )
+            {
+                date_Init( &p_sys->pts, p_sys->headerinfo.i_rate, 1 );
+                date_Set( &p_sys->pts, p_sys->bytestream.p_block->i_pts );
+                p_sys->bytestream.p_block->i_pts = VLC_TICK_INVALID;
+            }
+
             /* clean */
             block_SkipBytes( &p_sys->bytestream, p_sys->i_offset );
             block_BytestreamFlush( &p_sys->bytestream );
@@ -535,14 +567,6 @@ static block_t *Packetize(decoder_t *p_dec, block_t **pp_block)
         p_dec->fmt_out.audio.i_channels = p_sys->headerinfo.i_channels;
         p_dec->fmt_out.audio.i_physical_channels = pi_channels_maps[p_sys->stream_info.channels];
 
-        if( p_sys->bytestream.p_block &&
-            p_sys->bytestream.p_block->i_pts > date_Get( &p_sys->pts ) &&
-            p_sys->bytestream.p_block->i_pts != VLC_TICK_INVALID )
-        {
-            date_Init( &p_sys->pts, p_sys->headerinfo.i_rate, 1 );
-            date_Set( &p_sys->pts, p_sys->bytestream.p_block->i_pts );
-            p_sys->bytestream.p_block->i_pts = VLC_TICK_INVALID;
-        }
 
 
         out = block_heap_Alloc( p_sys->p_buf, p_sys->i_buf );

@@ -1,0 +1,315 @@
+{
+  "passed": false,
+  "expectedNegativeVerified": true,
+  "cases": [
+    {
+      "name": "startup-library-audio",
+      "step": 0,
+      "action": null,
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "startup-player-audio",
+      "step": 0,
+      "action": null,
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "startup-video",
+      "step": 0,
+      "action": null,
+      "expected": [
+        false,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "startup-hidden",
+      "step": 0,
+      "action": null,
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "redock-player-audio",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": false
+    },
+    {
+      "name": "redock-library-audio",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "redock-player-video",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": false
+    },
+    {
+      "name": "redock-library-video",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": false
+    },
+    {
+      "name": "redock-hidden-audio",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "redock-hidden-video",
+      "step": 0,
+      "action": "dock",
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "floating-toggle",
+      "step": 0,
+      "action": "toggle",
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "floating-toggle",
+      "step": 1,
+      "action": "toggle",
+      "expected": [
+        false,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "docked-toggle",
+      "step": 0,
+      "action": "toggle",
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "docked-toggle",
+      "step": 1,
+      "action": "toggle",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "external-visibility",
+      "step": 0,
+      "action": "hideQueue",
+      "expected": [
+        false,
+        false
+      ],
+      "actual": [
+        false,
+        false
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "external-visibility",
+      "step": 1,
+      "action": "showQueue",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "roundtrip",
+      "step": 0,
+      "action": "undock",
+      "expected": [
+        false,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "roundtrip",
+      "step": 1,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "roundtrip",
+      "step": 2,
+      "action": "undock",
+      "expected": [
+        false,
+        true
+      ],
+      "actual": [
+        false,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    },
+    {
+      "name": "roundtrip",
+      "step": 3,
+      "action": "dock",
+      "expected": [
+        true,
+        true
+      ],
+      "actual": [
+        true,
+        true
+      ],
+      "diagnostics": [],
+      "passed": true
+    }
+  ],
+  "sourceSha256": {
+    "util/qml/FSM.qml": "3d64ceeaa0ec7704b6cc4c87d4600059dc95edea21eabe7c521aacb203c27594",
+    "util/qml/FSMState.qml": "4e35e076522df8464273e1bfdcff436ef8363899841f86b8be9e7003ad0e3168",
+    "util/qml/Helpers.qml": "abd6c0cd39513c3bded9385d92f7cd32b1f87fe2bac7199b2f4757ef5148337e",
+    "player/qml/PlayerPlaylistVisibilityFSM.qml": "96dbc8dc819432eb86f07b85e4a13093a2f18b941435945463a2d146590cc7ab",
+    "player/qml/Player.qml": "6781de5823dc3011e88f9fe987ea551c13ceaff7dba39eea7b36bebeee3bfbfd"
+  },
+  "connectionsSha256": "8bda2894f642a1c6477e30bf15554106dfe517ef9e4915b484df36d81f238a4a",
+  "scope": "Complete production FSM/FSMState/Helpers and exact Player signal connections in real Qt, supplied MainCtx state. No native media/window or desktop acceptance."
+}

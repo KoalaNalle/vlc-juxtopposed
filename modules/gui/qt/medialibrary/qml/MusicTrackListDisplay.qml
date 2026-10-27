@@ -90,6 +90,7 @@ Widgets.TableViewExt {
 
     property var _lineDisc: ({
         criteria: "disc_number",
+        isSortable: false, // Metadata only: no independent native disc-order query.
 
         text: qsTr("Disc"),
 

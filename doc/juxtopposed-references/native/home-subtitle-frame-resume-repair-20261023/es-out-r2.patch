@@ -1,0 +1,39 @@
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-frame-resume-20261023\\candidate-r2\\es_out.c"
+index 6e1d155cbd..675d3a872a 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-frame-resume-20261023\\candidate-r2\\es_out.c"
+@@ -1073,7 +1073,7 @@ static es_out_id_t *EsOutStopNextFrame(es_out_sys_t *p_sys)
+ static void EsOutResumeFromNextFrame(es_out_sys_t *p_sys)
+ {
+     assert( p_sys->p_next_frame_es != NULL );
+-    /* Flush every ES except the video one */
++    /* Retain the held video and queued subtitles when frame stepping ends. */
+     EsOutChangePosition(p_sys, EsOutStopNextFrame(p_sys));
+ }
+ 
+@@ -1169,7 +1169,11 @@ static void EsOutChangePosition(es_out_sys_t *p_sys,
+     {
+         if( p_es->p_dec != NULL )
+         {
+-            if( p_es != p_next_frame_es )
++            /* Only frame-step resume supplies a retained video. Its subtitle
++             * cues were already demuxed; an actual seek supplies NULL and must
++             * still flush them. Audio keeps the existing resynchronization. */
++            if( p_es != p_next_frame_es
++             && !(p_next_frame_es && p_es->fmt.i_cat == SPU_ES) )
+                 vlc_input_decoder_Flush( p_es->p_dec );
+             if( !p_sys->b_buffering )
+             {
+@@ -3254,8 +3258,10 @@ static int EsOutSend(es_out_t *out, es_out_id_t *es, block_t *p_block )
+         }
+     }
+ 
+-    /* Drop all ESes except the video one in case of next-frame */
+-    if( p_sys->p_next_frame_es != NULL && p_sys->p_next_frame_es != es )
++    /* Keep subtitle packets alongside the stepped video, so current and
++     * upcoming cues remain available. Other outputs keep the existing policy. */
++    if( p_sys->p_next_frame_es != NULL && p_sys->p_next_frame_es != es
++     && es->fmt.i_cat != SPU_ES )
+     {
+         block_Release( p_block );
+         vlc_mutex_unlock( &p_sys->lock );

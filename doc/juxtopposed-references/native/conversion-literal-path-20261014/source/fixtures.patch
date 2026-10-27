@@ -1,0 +1,102 @@
+--- a/modules/gui/qt/tests/test_conversion_controller.cpp
++++ b/modules/gui/qt/tests/test_conversion_controller.cpp
+@@ -10,6 +10,7 @@
+ #include <vlc_playlist.h>
+ #include <QCryptographicHash>
+ #include <QDataStream>
++#include <QDateTime>
+ #include <QDir>
+ #include <QElapsedTimer>
+ #include <QFile>
+@@ -238,6 +239,61 @@
+         QVERIFY(m_peak > .3 && m_peak < .5);
+         noTemporaryDirectories();
+     }
++    void inheritedFileFormatKeepsLiteralPercentDestination()
++    {
++        // Own a preference parent instead of changing the shared test player's
++        // options. The controller is declared later, so it joins before this
++        // real VLC configuration object is deleted on every return path.
++        const auto deletePreferences = [](vlc_object_t *object) { vlc_object_delete(object); };
++        std::unique_ptr<vlc_object_t, decltype(deletePreferences)> preferences(
++            static_cast<vlc_object_t *>(vlc_object_create(
++                vlc_test_media_player_object(m_player), sizeof(vlc_object_t))), deletePreferences);
++        QVERIFY(preferences);
++        QCOMPARE(var_Create(preferences.get(), "sout-file-format", VLC_VAR_BOOL), VLC_SUCCESS);
++        QCOMPARE(var_SetBool(preferences.get(), "sout-file-format", true), VLC_SUCCESS);
++        const auto literalFolder = m_directory.filePath("literal 100%% %Y");
++        const auto formattedFolder = m_directory.filePath("literal 100% "
++            + QString::number(QDateTime::currentDateTime().date().year()));
++        QVERIFY(QDir().mkpath(literalFolder));
++        QVERIFY(QDir().mkpath(formattedFolder));
++        const auto sentinel = QUrl::fromLocalFile(QDir(formattedFolder).filePath("sentinel.keep"));
++        QFile other(sentinel.toLocalFile());
++        QVERIFY(other.open(QIODevice::WriteOnly | QIODevice::NewOnly));
++        const QByteArray sentinelBytes("Preserve the unrelated formatted-path sibling");
++        QCOMPARE(other.write(sentinelBytes), qint64(sentinelBytes.size())); other.close();
++        const auto sentinelHash = hash(sentinel), sourceHash = hash(m_source);
++        QVERIFY(!sentinelHash.isEmpty() && !sourceHash.isEmpty());
++        const auto destination = QUrl::fromLocalFile(QDir(literalFolder).filePath("literal result.flac"));
++        ConversionController controller(preferences.get());
++        configure(controller, m_source, destination);
++        QVERIFY(controller.canStart()); QVERIFY(controller.start());
++        QTRY_VERIFY_WITH_TIMEOUT(!controller.busy(), 15000);
++        QVERIFY2(controller.state() == ConversionController::Succeeded, qPrintable(controller.error()));
++        QCOMPARE(controller.outputUrl(), destination);
++        QVERIFY(var_GetBool(preferences.get(), "sout-file-format"));
++        QCOMPARE(hash(m_source), sourceHash); QCOMPARE(hash(sentinel), sentinelHash);
++        QFile flac(destination.toLocalFile());
++        QVERIFY(flac.open(QIODevice::ReadOnly)); QCOMPARE(flac.read(4), QByteArray("fLaC")); flac.close();
++        QCOMPARE(QDir(literalFolder).entryList({".vlc-convert-*"},
++            QDir::Dirs | QDir::Hidden | QDir::NoDotAndDotDot).size(), 0);
++        QCOMPARE(QDir(formattedFolder).entryList(QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot),
++            QStringList{"sentinel.keep"});
++        // Published-file playback is independent of conversion's own second
++        // stage. Inherited formatting must not break either native file sink.
++        m_outputBuffers = 0; m_outputSamples = 0; m_peak = 0;
++        libvlc_audio_set_callbacks(m_player, outputAudio, nullptr, nullptr, nullptr, nullptr, this);
++        libvlc_audio_set_format(m_player, "FL32", 44100, 1);
++        const auto uri = destination.toEncoded();
++        auto *media = libvlc_media_new_location(uri.constData()); QVERIFY(media);
++        libvlc_media_player_set_media(m_player, media); libvlc_media_release(media);
++        QCOMPARE(libvlc_media_player_play(m_player), 0);
++        QTRY_VERIFY_WITH_TIMEOUT(m_outputBuffers > 2, 10000);
++        QTRY_COMPARE_WITH_TIMEOUT(libvlc_media_player_get_state(m_player), libvlc_Stopped, 10000);
++        QVERIFY2(std::abs(qint64(m_outputSamples.load()) - 88200) <= 100,
++            "A literal percent-folder conversion must preserve complete native audio");
++        QVERIFY(m_peak > .3 && m_peak < .5);
++        noTemporaryDirectories();
++    }
+     void corruptSourceDoesNotPublish()
+     {
+         QFile file(m_directory.filePath("broken.wav")); QVERIFY(file.open(QIODevice::WriteOnly));
+--- a/test/libvlc/native_conversion_controller.py
++++ b/test/libvlc/native_conversion_controller.py
+@@ -55,11 +55,14 @@
+ (output / 'stderr.txt').write_bytes(process.stderr)
+ text = results.read_text(encoding='utf-8-sig') if results.is_file() else ''
+ cases = ['initTestCase', 'localValidationAndNoOverwrite', 'realFlacAndActualPlayback',
+-    'inheritedRunTimeAndInputChoicesDoNotTrim', 'corruptSourceDoesNotPublish',
++    'inheritedRunTimeAndInputChoicesDoNotTrim', 'inheritedFileFormatKeepsLiteralPercentDestination',
++    'corruptSourceDoesNotPublish',
+     'destinationRaceIsPreserved', 'runningCancellationAndReuse',
+     'independentPrimaryQueueAndPausedClock', 'runningWorkerShutdown', 'cleanupTestCase']
+-passed = process.returncode == 0 and all('PASS   : TestConversionController::' + case + '()' in text for case in cases)
+-passed = passed and '0 failed, 0 skipped' in text
++actual_cases = re.findall(r'^PASS\s+:\s+TestConversionController::([A-Za-z]\w*)\(\)\s*$', text, re.MULTILINE)
++totals = re.findall(r'^Totals: 11 passed, 0 failed, 0 skipped, 0 blacklisted, \d+ms\s*$', text, re.MULTILINE)
++rejected_statuses = re.findall(r'^(?:FAIL!?|SKIP|XFAIL|XPASS|BFAIL|BPASS)\s*:', text, re.MULTILINE)
++passed = bool(process.returncode == 0 and actual_cases == cases and len(totals) == 1 and not rejected_statuses)
+ # Log names identify the actual selected stages. The exact complete plugin
+ # root above plus each selected module's package DLL/hash records what was
+ # exercised; it does not assert arbitrary unrelated network/media support.
+@@ -94,6 +97,9 @@
+     with converted.open('rb') as file:
+         passed = passed and file.read(4) == b'fLaC'
+ verification = dict(exitCode=process.returncode, passed=bool(passed), cases=cases,
++    actualOrderedPassCases=actual_cases, exactTotals=totals, rejectedStatuses=rejected_statuses,
++    evidenceSha256={name: digest(output / name) if (output / name).is_file() else None
++        for name in ['results.txt', 'stdout.txt', 'stderr.txt']},
+     evidence='Actual ConversionController, native FLAC encoder/mux, complete validation decode, ordinary LibVLC audio playback, independent primary playlist and paused clock. No desktop or original-design fidelity claim.',
+     isolatedUserdata=True,
+     timedOut=False, processTimeoutSeconds=80, nativeCoreHashesMatch=True,

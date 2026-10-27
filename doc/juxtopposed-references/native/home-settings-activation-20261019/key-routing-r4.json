@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "forcedCleanupUsed": false,
+  "scope": "Exact production key-routing bodies, detached Qt receivers and native LibVLC callbacks; actual windows/input have separate evidence.",
+  "exitCode": 0,
+  "normalExit": true,
+  "counts": {
+    "tests": 12,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "caseNames": [
+    "initTestCase",
+    "absentProviderPreservesDirectDispatch",
+    "mouseFocusOutsideModalDispatchesNativeKeys",
+    "mouseFocusedVolumeOwnsPlainArrows(left)",
+    "mouseFocusedVolumeOwnsPlainArrows(right)",
+    "mouseFocusedVolumeOwnsPlainArrows(up)",
+    "mouseFocusedVolumeOwnsPlainArrows(down)",
+    "modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch",
+    "outsideModalQtNavigationPolicyRemains",
+    "mouseFocusedSidebarKeepsNavigationAndContextKeys",
+    "sidebarScopePreservesUnclaimedPlayerShortcuts",
+    "cleanupTestCase"
+  ],
+  "diagnostics": [],
+  "productionExtraction": {
+    "sourceSha256": {
+      "modules/gui/qt/maininterface/interface_window_handler.cpp": "70138457b0efdd16a981234d708af750836152f3be6712f0780564dfe426f91c",
+      "modules/gui/qt/maininterface/mainctx.cpp": "3c611535d4f79dd6d528c45c54bf2d5970f73f15f34fea6bd9021a553d95026f"
+    },
+    "includeSha256": "286b4c2bdee28691168469f8503beee47cdb53a637b5fbaaaffe83710d14cd79",
+    "scope": "Exact production key-only event branch, applyKeyEvent, sendHotkey and sendVLCHotkey. Other window/interface methods are not extracted."
+  },
+  "testExecutableSha256": "b090ef160b3a8c36eb18d580ce7eaa4967b128a978a9c35a43f634cf35c8d2a9",
+  "compiledSourceIdentityMatches": true
+}

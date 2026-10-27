@@ -10,6 +10,8 @@ qt_extra_deps = []
 qt_extra_flags = ['-DQT_STRICT_ITERATORS','-DQT_USE_QSTRINGBUILDER','-DQT_NO_CAST_TO_ASCII','-DQT_NO_CAST_FROM_BYTEARRAY']
 qt_cppargs = []
 qt_link_args = [gc_sections_linkargs]
+qt_plugin_extra_link_args = []
+qt_plugin_extra_deps = []
 
 qt6_dep = dependency('qt6',
     # Note that Qt < 6.2.5 does not provide pc files!
@@ -78,6 +80,24 @@ moc_headers = files(
     'maininterface/compositor_platform.hpp',
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.hpp',
+    'maininterface/general_preferences_model.hpp',
+    'maininterface/interface_preferences_model.hpp',
+    'maininterface/playback_preferences_model.hpp',
+    'maininterface/audio_preferences_model.hpp',
+    'maininterface/subtitles_preferences_model.hpp',
+    'maininterface/library_preferences_model.hpp',
+    'maininterface/privacy_preferences_model.hpp',
+    'maininterface/controls_preferences_model.hpp',
+    'maininterface/network_preferences_model.hpp',
+    'maininterface/performance_preferences_model.hpp',
+    'maininterface/recording_preferences_model.hpp',
+    'maininterface/extensions_preferences_model.hpp',
+    'maininterface/sidebar_pins_model.hpp',
+    'maininterface/player_profile_layout.hpp',
+    'maininterface/player_profiles_model.hpp',
+    'maininterface/history_media_source.hpp',
+    'util/plugin_cache_rescan.hpp',
+    'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.hpp',
     'maininterface/navigationmodel.hpp',
@@ -85,6 +105,7 @@ moc_headers = files(
     'maininterface/video_window_handler.hpp',
     'medialibrary/medialib.hpp',
     'medialibrary/mlmediastore.hpp',
+    'medialibrary/mlcurrentmedia.hpp',
     'medialibrary/mlalbummodel.hpp',
     'medialibrary/mlaudiomodel.hpp',
     'medialibrary/mlartistmodel.hpp',
@@ -96,6 +117,8 @@ moc_headers = files(
     'medialibrary/mlqmltypes.hpp',
     'medialibrary/mlrecentmediamodel.hpp',
     'medialibrary/mlrecentvideomodel.hpp',
+    'medialibrary/mlrecentaudiomodel.hpp',
+    'medialibrary/mlhomeactivity.hpp',
     'medialibrary/mlurlmodel.hpp',
     'medialibrary/mlvideo.hpp',
     'medialibrary/mlmediamodel.hpp',
@@ -114,6 +137,7 @@ moc_headers = files(
     'network/networkdevicemodel.hpp',
     'network/networksourcesmodel.hpp',
     'network/networkmediamodel.hpp',
+    'network/networktreeitem.hpp',
     'network/standardpathmodel.hpp',
     'style/systempalette.hpp',
     'style/vlcicons.hpp',
@@ -121,6 +145,16 @@ moc_headers = files(
     'player/input_models.hpp',
     'player/delay_estimator.hpp',
     'player/player_controller.hpp',
+    'player/audio_equalizer.hpp',
+    'player/audio_waveform.hpp',
+    'player/local_music_folder.hpp',
+    'dialogs/network_stream_model.hpp',
+    'dialogs/conversion_controller.hpp',
+    'dialogs/new_playlist_model.hpp',
+    'player/video_transform.hpp',
+    'player/subtitle_appearance.hpp',
+    'player/subtitle_cue_timeline.hpp',
+    'maininterface/subtitle_preset_model.hpp',
     'player/player_controlbar_model.hpp',
     'player/control_list_model.hpp',
     'player/control_list_filter.hpp',
@@ -265,6 +299,8 @@ qt_plugin_sources = files(
     'dialogs/preferences/expert_view.hpp',
     'dialogs/preferences/preferences.cpp',
     'dialogs/preferences/preferences.hpp',
+    'dialogs/preferences/controls_shortcuts.cpp',
+    'dialogs/preferences/controls_shortcuts.hpp',
     'dialogs/preferences/preferences_widgets.cpp',
     'dialogs/preferences/preferences_widgets.hpp',
     'dialogs/preferences/simple_preferences.cpp',
@@ -300,7 +336,62 @@ qt_plugin_sources = files(
     'maininterface/interface_window_handler.cpp',
     'maininterface/interface_window_handler.hpp',
     'maininterface/mainctx.cpp',
+    'maininterface/general_preferences_model.cpp',
+    'maininterface/interface_preferences_model.cpp',
+    'maininterface/playback_preferences_model.cpp',
+    'maininterface/audio_preferences_model.cpp',
+    'maininterface/subtitles_preferences_model.cpp',
+    'maininterface/library_preferences_model.cpp',
+    'maininterface/privacy_preferences_model.cpp',
+    'maininterface/controls_preferences_model.cpp',
+    'maininterface/network_preferences_model.cpp',
+    'maininterface/performance_preferences_model.cpp',
+    'maininterface/recording_preferences_model.cpp',
+    'maininterface/extensions_preferences_model.cpp',
+    'maininterface/sidebar_pins_model.cpp',
+    'maininterface/player_profiles_store.cpp',
+    'maininterface/player_profile_preferences.cpp',
+    'maininterface/player_profile_layout.cpp',
+    'maininterface/player_profiles_model.cpp',
+    'maininterface/history_media_source.cpp',
+    'maininterface/sidebar_pins_store.cpp',
+    'maininterface/sidebar_pins_store.hpp',
+    'util/modal_input_guard.cpp',
+    'util/modal_input_guard.hpp',
+    'util/cast_discovery_policy.hpp',
+    'maininterface/video_preferences_model.cpp',
+    'util/audio_defaults_policy.hpp',
+    'util/audio_windows_devices.cpp',
+    'util/audio_windows_devices.hpp',
+    'util/playback_seek_policy.hpp',
+    'util/checked_preferences_store.cpp',
+    'util/plugin_cache_rescan.cpp',
+    'util/recent_network_history.cpp',
+    'util/recent_network_history.hpp',
+    'util/checked_preferences_store.hpp',
+    'util/plugin_cache_rescan.hpp',
+    'util/fullscreen_screen_policy.hpp',
+    'util/interface_language_map.hpp',
     'maininterface/mainctx.hpp',
+    'maininterface/general_preferences_model.hpp',
+    'maininterface/interface_preferences_model.hpp',
+    'maininterface/playback_preferences_model.hpp',
+    'maininterface/audio_preferences_model.hpp',
+    'maininterface/subtitles_preferences_model.hpp',
+    'maininterface/library_preferences_model.hpp',
+    'maininterface/privacy_preferences_model.hpp',
+    'maininterface/controls_preferences_model.hpp',
+    'maininterface/network_preferences_model.hpp',
+    'maininterface/performance_preferences_model.hpp',
+    'maininterface/recording_preferences_model.hpp',
+    'maininterface/extensions_preferences_model.hpp',
+    'maininterface/sidebar_pins_model.hpp',
+    'maininterface/player_profiles_store.hpp',
+    'maininterface/player_profile_preferences.hpp',
+    'maininterface/player_profile_layout.hpp',
+    'maininterface/player_profiles_model.hpp',
+    'maininterface/history_media_source.hpp',
+    'maininterface/video_preferences_model.hpp',
     'maininterface/mainctx_submodels.cpp',
     'maininterface/mainctx_submodels.hpp',
     'maininterface/mainui.cpp',
@@ -316,6 +407,8 @@ qt_plugin_sources = files(
     'medialibrary/medialib.hpp',
     'medialibrary/mlmediastore.cpp',
     'medialibrary/mlmediastore.hpp',
+    'medialibrary/mlcurrentmedia.cpp',
+    'medialibrary/mlcurrentmedia.hpp',
     'medialibrary/mlalbum.cpp',
     'medialibrary/mlalbum.hpp',
     'medialibrary/mlalbummodel.cpp',
@@ -355,6 +448,12 @@ qt_plugin_sources = files(
     'medialibrary/mlrecentmediamodel.hpp',
     'medialibrary/mlrecentvideomodel.cpp',
     'medialibrary/mlrecentvideomodel.hpp',
+    'medialibrary/mlrecentaudiomodel.cpp',
+    'medialibrary/mlrecentaudiomodel.hpp',
+    'medialibrary/mlhomeactivity.cpp',
+    'medialibrary/mlhomeactivity.hpp',
+    'medialibrary/mlhomeactivitydata.cpp',
+    'medialibrary/mlhomeactivitydata.hpp',
     'medialibrary/mlurlmodel.cpp',
     'medialibrary/mlurlmodel.hpp',
     'medialibrary/mlvideo.cpp',
@@ -399,6 +498,7 @@ qt_plugin_sources = files(
     'network/networksourcesmodel.hpp',
     'network/networkmediamodel.cpp',
     'network/networkmediamodel.hpp',
+    'network/networktreeitem.hpp',
     'network/standardpathmodel.cpp',
     'network/standardpathmodel.hpp',
     'network/vlcmediasourcewrapper.hpp',
@@ -417,6 +517,32 @@ qt_plugin_sources = files(
     'player/player_controller.cpp',
     'player/player_controller.hpp',
     'player/player_controller_p.hpp',
+    'player/player_timer_point.hpp',
+    'player/audio_equalizer.cpp',
+    'player/audio_equalizer.hpp',
+    'player/audio_waveform.cpp',
+    'player/audio_waveform.hpp',
+    'player/local_music_folder.cpp',
+    'player/local_music_folder.hpp',
+    'dialogs/network_stream_model.cpp',
+    'dialogs/conversion_controller.cpp',
+    'dialogs/new_playlist_model.cpp',
+    'dialogs/new_playlist_model.hpp',
+    'dialogs/new_playlist_data.cpp',
+    'dialogs/new_playlist_data.hpp',
+    'dialogs/network_stream_model.hpp',
+    'dialogs/conversion_controller.hpp',
+    'player/video_transform.cpp',
+    'player/video_transform.hpp',
+    'player/subtitle_appearance.cpp',
+    'player/subtitle_cue_data.hpp',
+    'player/subtitle_cue_data.cpp',
+    'player/subtitle_cue_timeline.hpp',
+    'player/subtitle_cue_timeline.cpp',
+    'player/subtitle_appearance.hpp',
+    'maininterface/subtitle_preset_model.cpp',
+    'maininterface/subtitle_preset_model.hpp',
+    'util/filterchain.hpp',
     'player/player_controlbar_model.cpp',
     'player/player_controlbar_model.hpp',
     'player/control_list_model.cpp',
@@ -551,6 +677,14 @@ if host_system == 'windows'
         'maininterface/compositor_dcomp.cpp',
         'maininterface/compositor_dcomp_acrylicsurface.cpp',
     )
+    if have_mingw
+        qt_plugin_sources += files('util/winpthreads_shutdown.cpp')
+        qt_plugin_extra_deps += [
+            cpp.find_library('winpthread', static: true),
+            cpp.find_library('ntdll'),
+        ]
+        qt_plugin_extra_link_args += '-Wl,--wrap=pthread_key_delete'
+    endif
 endif
 
 if (x11_dep.found() and
@@ -610,6 +744,35 @@ qml_modules += {
     'outdir' : 'VLC/Dialogs',
     'sources': files(
         'dialogs/dialogs/qml/CustomDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedMovableDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedDialogDragArea.qml',
+        'dialogs/dialogs/qml/JuxtopposedNetworkDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedDialogsHost.qml',
+        'dialogs/dialogs/qml/JuxtopposedSetupDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedSetupPreview.qml',
+        'dialogs/dialogs/qml/JuxtopposedPlayerProfilesDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedPlayerCustomizer.qml',
+        'dialogs/dialogs/qml/JuxtopposedGlobalSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedInterfaceSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedPlaybackSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedAudioSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedSubtitlesSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedLibrarySettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedPrivacySettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedControlsSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedNetworkSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedPerformanceSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedRecordingSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedExtensionsSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsChoice.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsFields.qml',
+        'dialogs/dialogs/qml/JuxtopposedVideoSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsBackdrop.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsBackdropEffect.qml',
+        'dialogs/dialogs/qml/JuxtopposedSettingsBackdropShadow.qml',
+        'dialogs/dialogs/qml/JuxtopposedGeneralSettings.qml',
+        'dialogs/dialogs/qml/JuxtopposedNewPlaylistDialog.qml',
+        'dialogs/dialogs/qml/JuxtopposedConversionDialog.qml',
         'dialogs/dialogs/qml/Dialogs.qml',
         'dialogs/dialogs/qml/ModalDialog.qml',
         'dialogs/dialogs/qml/WindowDialog.qml',
@@ -640,6 +803,9 @@ qml_modules += {
         'maininterface/qml/MainInterface.qml',
         'maininterface/qml/MainViewLoader.qml',
         'maininterface/qml/MainDisplay.qml',
+        'maininterface/qml/JuxtopposedNavigation.qml',
+        'maininterface/qml/JuxtopposedTitlebar.qml',
+        'maininterface/qml/JuxtopposedNavigationPane.qml',
         'maininterface/qml/NoMedialibHome.qml',
         qml_maininterface_extra_files,
         'maininterface/qml/SideNavigationPane.qml',
@@ -655,6 +821,16 @@ qml_modules += {
         'medialibrary/qml/AudioGridItem.qml',
         'medialibrary/qml/HomeDisplay.qml',
         'medialibrary/qml/HomePage.qml',
+        'medialibrary/qml/JuxtopposedHomeCard.qml',
+        'medialibrary/qml/JuxtopposedHomeDashboard.qml',
+        'medialibrary/qml/JuxtopposedHomeCollectionView.qml',
+        'medialibrary/qml/JuxtopposedHomePage.qml',
+        'medialibrary/qml/JuxtopposedHomeHistoryPage.qml',
+        'medialibrary/qml/JuxtopposedRecentPage.qml',
+        'medialibrary/qml/JuxtopposedRecentDisplay.qml',
+        'medialibrary/qml/JuxtopposedHomeCollectionPage.qml',
+        'medialibrary/qml/JuxtopposedHomeFolderPage.qml',
+        'medialibrary/qml/JuxtopposedHomeSorting.js',
         'medialibrary/qml/MediaView.qml',
         'medialibrary/qml/VideoGroupDisplay.qml',
         'medialibrary/qml/MusicAlbums.qml',
@@ -666,6 +842,7 @@ qml_modules += {
         'medialibrary/qml/MusicAllArtists.qml',
         'medialibrary/qml/MusicArtistsDisplay.qml',
         'medialibrary/qml/MusicDisplay.qml',
+        'medialibrary/qml/MusicCategoriesDisplay.qml',
         'medialibrary/qml/MusicGenres.qml',
         'medialibrary/qml/MusicGenresDisplay.qml',
         'medialibrary/qml/MusicPlaylistsDisplay.qml',
@@ -680,10 +857,12 @@ qml_modules += {
         'medialibrary/qml/PlaylistMedia.qml',
         'medialibrary/qml/PlaylistMediaDisplay.qml',
         'medialibrary/qml/VideoPlaylistsDisplay.qml',
+        'medialibrary/qml/JuxtopposedPlaylistsDisplay.qml',
         'medialibrary/qml/VideoGridItem.qml',
         'medialibrary/qml/VideoInfoExpandPanel.qml',
         'medialibrary/qml/VideoListDisplay.qml',
         'medialibrary/qml/VideoGridDisplay.qml',
+        'medialibrary/qml/JuxtopposedVideoGrid.qml',
         'medialibrary/qml/MusicAlbumSectionDelegate.qml',
         'medialibrary/qml/MLGlobalShortcuts.qml',
         'medialibrary/qml/Bookmarks.qml',
@@ -732,11 +911,24 @@ qml_modules += {
    'target' : 'player',
    'outdir' : 'VLC/Player',
    'sources': files(
+       'player/qml/JuxtopposedButton.qml',
+       'player/qml/JuxtopposedSeekBackground.qml',
+       'player/qml/JuxtopposedPlaybackBar.qml',
+       'player/qml/JuxtopposedVolumeControl.qml',
+       'player/qml/JuxtopposedLayoutRow.qml',
+       'player/qml/JuxtopposedSubtitleCueTimeline.qml',
+       'player/qml/JuxtopposedSubtitleTimelineAdapter.qml',
+       'player/qml/JuxtopposedSubtitleTimelineToggle.qml',
+       'player/qml/JuxtopposedMusicPlayer.qml',
+       'player/qml/PlaybackSettingsMenu.qml',
+        'player/qml/JuxtopposedSettingsPanel.qml',
+        'player/qml/JuxtopposedSubtitlePresets.qml',
        'player/qml/ControlBar.qml',
        'player/qml/PlaybackSpeed.qml',
        'player/qml/LyricsFlickable.qml',
        'player/qml/MiniPlayer.qml',
        'player/qml/PIPPlayer.qml',
+       'player/qml/VideoInputTapHandler.qml',
        'player/qml/Player.qml',
        'player/qml/PlayerControlLayout.qml',
        'player/qml/PlayerPlaylistVisibilityFSM.qml',
@@ -818,6 +1010,10 @@ qml_modules += {
     'target' : 'playlist',
     'outdir' : 'VLC/Playlist',
     'sources': files(
+        'playlist/qml/JuxtopposedBookmarkList.qml',
+        'playlist/qml/JuxtopposedBookmarkActions.qml',
+        'playlist/qml/JuxtopposedQueuePanel.qml',
+        'playlist/qml/JuxtopposedQueueRow.qml',
         'playlist/qml/PlaylistDelegate.qml',
         'playlist/qml/PlaylistPane.qml',
         'playlist/qml/PlaylistDetachedWindow.qml',
@@ -830,6 +1026,7 @@ qml_modules += {
     'outdir' : 'VLC/Style',
     'singletons': files(
         'style/AcrylicController.qml',
+        'style/JuxtopposedPalette.qml',
         'style/VLCStyle.qml',
     ),
 }
@@ -913,12 +1110,18 @@ qml_modules += {
         'widgets/qml/ScaledImage.qml',
         'widgets/qml/TextAutoScroller.qml',
         'widgets/qml/SearchBox.qml',
+        'widgets/qml/TextInputFocus.qml',
         'widgets/qml/SliderExt.qml',
         'widgets/qml/SortControl.qml',
         'widgets/qml/SpinBoxExt.qml',
         'widgets/qml/StackViewExt.qml',
         'widgets/qml/PageLoader.qml',
         'widgets/qml/PageExt.qml',
+        'widgets/qml/JuxtopposedLibraryHeader.qml',
+        'widgets/qml/JuxtopposedMediaRow.qml',
+        'widgets/qml/JuxtopposedCategoryList.qml',
+        'widgets/qml/JuxtopposedSettingSlider.qml',
+        'widgets/qml/JuxtopposedSettingChoice.qml',
         'widgets/qml/ButtonExt.qml',
         'widgets/qml/TableColumns.qml',
         'widgets/qml/TextFieldExt.qml',
@@ -1089,6 +1292,8 @@ if qt6_dep.found()
         qt_extra_deps += [
             cc.find_library('dwmapi'),
             cc.find_library('comctl32'),
+            cc.find_library('ole32'),
+            cc.find_library('uuid'),
         ]
     endif
 
@@ -1275,11 +1480,11 @@ if qt6_dep.found()
         'name' : 'qt',
         'sources' : [qt6pre_files, qt6pre_qrc, shader_targets, shaders_processed, qt_sources, qt_plugin_sources],
         'extra_files' : [shader_files],
-        'dependencies' : [qt_extra_deps, qt6_dep, corefoundation_dep],
+        'dependencies' : [qt_extra_deps, qt_plugin_extra_deps, qt6_dep, corefoundation_dep],
         'include_directories' : qt_include_dir,
         'c_args' : qt_extra_flags,
         'cpp_args' : [qt_extra_flags, qt_cppargs],
-        'link_args' : qt_link_args,
+        'link_args' : [qt_link_args, qt_plugin_extra_link_args],
         'link_with' : qmllibs,
         'plugin_dir' : 'gui',
     }
@@ -1311,7 +1516,11 @@ if qt6_dep.found()
                 'util/base_model.cpp',
                 'util/vlctick.cpp',
                 'medialibrary/mlbasemodel.cpp',
+                'medialibrary/mlplaylist.cpp',
                 'medialibrary/medialib.cpp',
+                'medialibrary/mlhomeactivity.cpp',
+                'medialibrary/mlhomeactivitydata.cpp', 'util/checked_preferences_store.cpp',
+                'dialogs/new_playlist_data.cpp',
                 'medialibrary/mlthreadpool.cpp',
                 'playlist/playlist_controller.cpp',
                 'playlist/playlist_item.cpp',
@@ -1328,6 +1537,7 @@ if qt6_dep.found()
                 'medialibrary/mlqmltypes.hpp',
                 'medialibrary/mlbasemodel.hpp',
                 'medialibrary/medialib.hpp',
+                'medialibrary/mlhomeactivity.hpp',
                 'medialibrary/mlthreadpool.hpp',
                 'playlist/playlist_controller.hpp',
                 'playlist/playlist_item.hpp',
@@ -1337,6 +1547,508 @@ if qt6_dep.found()
             'link_with': [libvlccore, libvlc],
             'link_args': qt_link_args,
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep],
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_navigation_history',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_navigation_history.cpp',
+                             'util/navigation_history.cpp'),
+            'moc_sources': files('tests/test_navigation_history.cpp'),
+            'moc_headers': files('util/navigation_history.hpp', 'medialibrary/mlqmltypes.hpp',
+                                 'network/networktreeitem.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_audio_equalizer',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_audio_equalizer.cpp',
+                             'tests/media_player_probe.c', 'player/audio_equalizer.cpp', 'util/variables.cpp'),
+            'moc_sources': files('tests/test_audio_equalizer.cpp'),
+            'moc_headers': files('player/audio_equalizer.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_audio_waveform',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_audio_waveform.cpp',
+                             'tests/media_player_probe.c', 'player/audio_waveform.cpp', 'util/soutchain.cpp'),
+            'moc_sources': files('tests/test_audio_waveform.cpp'),
+            'moc_headers': files('player/audio_waveform.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_player_timer_point',
+            'sources': files('tests/test_player_timer_point.cpp'),
+            'moc_sources': files('tests/test_player_timer_point.cpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_local_music_folder',
+            'sources': files('tests/test_local_music_folder.cpp', 'tests/media_player_probe.c',
+                             'tests/network_stream_probe.c', 'player/local_music_folder.cpp'),
+            'moc_sources': files('tests/test_local_music_folder.cpp'),
+            'moc_headers': files('player/local_music_folder.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_home_activity',
+            'sources': files('tests/test_home_activity.cpp', 'tests/network_stream_probe.c',
+                             'medialibrary/mlhomeactivitydata.cpp', 'util/checked_preferences_store.cpp', 'dialogs/new_playlist_data.cpp'),
+            'moc_sources': files('tests/test_home_activity.cpp'),
+            'moc_headers': files('medialibrary/mlqmltypes.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_new_playlist',
+            'sources': files('tests/test_new_playlist.cpp', 'tests/network_stream_probe.c',
+                             'dialogs/new_playlist_model.cpp', 'dialogs/new_playlist_data.cpp',
+                             'util/vlctick.cpp', 'medialibrary/mlplaylist.cpp'),
+            'moc_sources': files('tests/test_new_playlist.cpp'),
+            'moc_headers': files('dialogs/new_playlist_model.hpp', 'medialibrary/mlqmltypes.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        interface_preferences_test_sources = files('tests/test_interface_preferences.cpp', 'tests/interface_preferences_probe.c',
+                                                   'maininterface/interface_preferences_model.cpp', 'util/checked_preferences_store.cpp')
+        interface_preferences_test_deps = []
+        interface_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            interface_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            interface_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            interface_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_interface_preferences',
+            'sources': interface_preferences_test_sources,
+            'moc_sources': files('tests/test_interface_preferences.cpp'),
+            'moc_headers': files('maininterface/interface_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': interface_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, interface_preferences_test_deps]
+        }
+
+        playback_preferences_test_sources = files('tests/test_playback_preferences.cpp', 'tests/test_playback_preferences.hpp',
+                                                  'tests/playback_preferences_probe.c',
+                                                  'maininterface/playback_preferences_model.cpp', 'util/checked_preferences_store.cpp')
+        playback_preferences_test_deps = []
+        playback_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            playback_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            playback_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            playback_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_playback_preferences',
+            'sources': playback_preferences_test_sources,
+            # Generate the included .moc from the exact declaration-only header.
+            'moc_sources': files('tests/test_playback_preferences.hpp'),
+            'moc_headers': files('maininterface/playback_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': playback_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, playback_preferences_test_deps]
+        }
+
+        audio_preferences_test_sources = files('tests/test_audio_preferences.cpp', 'util/checked_preferences_store.cpp', 'maininterface/audio_preferences_model.cpp', 'tests/general_preferences_probe.c', 'tests/audio_preferences_pcm_probe.c', 'util/audio_windows_devices.cpp', 'player/audio_equalizer.cpp', 'util/variables.cpp')
+        audio_preferences_test_deps = []
+        audio_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            audio_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            audio_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            audio_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        if host_system == 'windows'
+            audio_preferences_test_deps += [cpp.find_library('ole32'), cpp.find_library('uuid')]
+        endif
+        vlc_tests += {
+            'name': 'test_qt_audio_preferences',
+            'sources': audio_preferences_test_sources,
+            'moc_sources': files('tests/test_audio_preferences.cpp'),
+            'moc_headers': files('maininterface/audio_preferences_model.hpp', 'player/audio_equalizer.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': audio_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, audio_preferences_test_deps]
+        }
+
+        video_preferences_test_sources = files('tests/test_video_preferences.cpp', 'util/checked_preferences_store.cpp', 'maininterface/video_preferences_model.cpp', 'tests/video_preferences_probe.c')
+        video_preferences_test_deps = []
+        video_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            video_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            video_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            video_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_video_preferences',
+            'sources': video_preferences_test_sources,
+            'moc_sources': files('tests/test_video_preferences.cpp'),
+            'moc_headers': files('maininterface/video_preferences_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': video_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, video_preferences_test_deps]
+        }
+
+        checked_float_preferences_test_sources = files('tests/test_checked_float_preferences.cpp', 'util/checked_preferences_store.cpp', 'tests/general_preferences_probe.c')
+        checked_float_preferences_test_deps = []
+        checked_float_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            checked_float_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            checked_float_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            checked_float_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_checked_float_preferences',
+            'sources': checked_float_preferences_test_sources,
+            'moc_sources': files('tests/test_checked_float_preferences.cpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': checked_float_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, checked_float_preferences_test_deps]
+        }
+
+        subtitles_preferences_test_sources = files('tests/test_subtitles_preferences.cpp', 'maininterface/subtitles_preferences_model.cpp', 'player/subtitle_appearance.cpp', 'maininterface/subtitle_preset_model.cpp', 'util/variables.cpp', 'tests/subtitles_preferences_probe.c', 'util/checked_preferences_store.cpp')
+        subtitles_preferences_test_deps = []
+        subtitles_preferences_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            subtitles_preferences_test_sources += files('util/winpthreads_shutdown.cpp')
+            subtitles_preferences_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            subtitles_preferences_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        vlc_tests += {
+            'name': 'test_qt_subtitles_preferences',
+            'sources': subtitles_preferences_test_sources,
+            'moc_sources': files('tests/test_subtitles_preferences.cpp'),
+            'moc_headers': files('maininterface/subtitles_preferences_model.hpp', 'player/subtitle_appearance.hpp', 'maininterface/subtitle_preset_model.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': subtitles_preferences_test_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, subtitles_preferences_test_deps]
+        }
+
+        shared_modal_test_python = find_program('python3')
+        shared_modal_production = custom_target('shared-modal-hotkey-production',
+            input: files('maininterface/interface_window_handler.cpp', 'maininterface/mainctx.cpp'),
+            output: ['shared_modal_hotkey_production.inc', 'shared_modal_hotkey_production.inc.json'],
+            command: [shared_modal_test_python, files('tests/generate_shared_modal_hotkey_test.py'),
+                      '--repo-root', meson.project_source_root(), '--output', '@OUTPUT0@'],
+            build_by_default: false)
+        # Make MOC depend on the production include by generating an exact copy
+        # of the unchanged harness only after both include/manifest outputs exist.
+        shared_modal_harness = custom_target('shared-modal-hotkey-harness',
+            input: files('tests/test_shared_modal_hotkeys.cpp'),
+            output: 'test_shared_modal_hotkeys.cpp',
+            command: [shared_modal_test_python, '-c',
+                      'import shutil, sys; shutil.copyfile(sys.argv[1], sys.argv[2])', '@INPUT@', '@OUTPUT@'],
+            depends: shared_modal_production,
+            build_by_default: false)
+        vlc_tests += {
+            'name': 'test_qt_shared_modal_hotkeys',
+            'sources': [files('tests/vlc_stub_modules.cpp', 'tests/media_player_probe.c', 'util/vlchotkeyconverter.cpp'),
+                        shared_modal_harness, shared_modal_production[0]],
+            'moc_sources': [shared_modal_harness],
+            'moc_headers': files('util/vlchotkeyconverter.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'link_args': qt_link_args,
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_conversion_controller',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_conversion_controller.cpp', 'tests/media_player_probe.c',
+                             'tests/network_stream_probe.c', 'dialogs/conversion_controller.cpp', 'util/soutchain.cpp'),
+            'moc_sources': files('tests/test_conversion_controller.cpp'),
+            'moc_headers': files('dialogs/conversion_controller.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        if host_system == 'windows'
+            rescan_sources = files('tests/test_plugin_cache_rescan.cpp',
+                'tests/library_preferences_probe.c', 'util/plugin_cache_rescan.cpp')
+            rescan_deps = []
+            rescan_link_args = qt_link_args
+            if have_mingw
+                rescan_sources += files('util/winpthreads_shutdown.cpp')
+                rescan_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                rescan_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_plugin_cache_rescan',
+                'sources': rescan_sources,
+                'moc_sources': files('tests/test_plugin_cache_rescan.cpp'),
+                'moc_headers': files('util/plugin_cache_rescan.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': rescan_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, rescan_deps],
+                'register_test': false,
+            }
+            performance_sources = files('tests/test_performance_preferences.cpp',
+                'tests/library_preferences_probe.c', 'util/plugin_cache_rescan.cpp',
+                'util/checked_preferences_store.cpp', 'maininterface/performance_preferences_model.cpp')
+            performance_deps = []
+            performance_link_args = qt_link_args
+            if have_mingw
+                performance_sources += files('util/winpthreads_shutdown.cpp')
+                performance_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                performance_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_performance_preferences',
+                'sources': performance_sources,
+                'moc_sources': files('tests/test_performance_preferences.cpp'),
+                'moc_headers': files('util/plugin_cache_rescan.hpp', 'maininterface/performance_preferences_model.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': performance_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, performance_deps],
+                'register_test': false,
+            }
+            recording_sources = files('tests/test_recording_preferences.cpp',
+                'tests/library_preferences_probe.c',
+                'util/checked_preferences_store.cpp', 'maininterface/recording_preferences_model.cpp')
+            recording_deps = []
+            recording_link_args = qt_link_args
+            if have_mingw
+                recording_sources += files('util/winpthreads_shutdown.cpp')
+                recording_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+                recording_link_args += '-Wl,--wrap=pthread_key_delete'
+            endif
+            vlc_tests += {
+                'name': 'test_qt_recording_preferences',
+                'sources': recording_sources,
+                'moc_sources': files('tests/test_recording_preferences.cpp'),
+                'moc_headers': files('maininterface/recording_preferences_model.hpp'),
+                'include_directories': [qt_include_dir, include_directories('../../..'), include_directories('../../../src')],
+                'link_with': [libvlccore, libvlc],
+                'link_args': recording_link_args,
+                'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep, recording_deps],
+                'register_test': false,
+            }
+        endif
+
+        vlc_tests += {
+            'name': 'test_qt_network_stream',
+            'sources': files('tests/test_network_stream.cpp', 'tests/network_stream_probe.c',
+                             'dialogs/network_stream_model.cpp'),
+            'moc_sources': files('tests/test_network_stream.cpp'),
+            'moc_headers': files('dialogs/network_stream_model.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_video_transform',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_video_transform.cpp',
+                             'tests/media_player_probe.c', 'player/video_transform.cpp', 'util/variables.cpp'),
+            'moc_sources': files('tests/test_video_transform.cpp'),
+            'moc_headers': files('player/video_transform.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        foreach controller_test : ['player_subtitle_delay', 'player_timeline']
+          controller_test_sources = []
+          controller_test_deps = []
+          controller_test_link_args = []
+          if controller_test == 'player_timeline' and host_system == 'windows' and have_mingw
+            controller_test_sources += files('util/winpthreads_shutdown.cpp')
+            controller_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            controller_test_link_args += '-Wl,--wrap=pthread_key_delete'
+          endif
+          vlc_tests += {
+            'name': 'test_qt_' + controller_test,
+            'sources': files('tests/vlc_stub_modules.cpp',
+                             'player/player_controller.cpp',
+                             'player/input_models.cpp',
+                             'player/audio_equalizer.cpp',
+                             'player/audio_waveform.cpp',
+                             'player/local_music_folder.cpp',
+                             'player/video_transform.cpp',
+                             'player/subtitle_appearance.cpp',
+                             'player/subtitle_cue_data.cpp',
+                             'player/subtitle_cue_timeline.cpp',
+                             'maininterface/subtitle_preset_model.cpp',
+                             'util/audio_device_model.cpp',
+                             'util/variables.cpp',
+                             'util/varchoicemodel.cpp',
+                             'util/renderer_manager.cpp',
+                             'util/vlctick.cpp',
+                             'dialogs/extensions/extensions_manager.cpp',
+                             'dialogs/extensions/extensions.cpp',
+                             'widgets/native/customwidgets.cpp',
+                             'widgets/native/animators.cpp',
+                             'util/soutchain.cpp',
+                             'util/imagehelper.cpp') + files('tests/test_' + controller_test + '.cpp') + controller_test_sources,
+            'moc_sources': files('tests/test_' + controller_test + '.cpp'),
+            'moc_headers': files('player/player_controller.hpp',
+                                 'player/input_models.hpp',
+                                 'player/audio_equalizer.hpp',
+                                 'player/audio_waveform.hpp',
+                                 'player/local_music_folder.hpp',
+                                 'player/video_transform.hpp',
+                                 'player/subtitle_appearance.hpp',
+                                 'player/subtitle_cue_timeline.hpp',
+                                 'maininterface/subtitle_preset_model.hpp',
+                                 'util/audio_device_model.hpp',
+                                 'util/variables.hpp',
+                                 'util/varchoicemodel.hpp',
+                                 'util/renderer_manager.hpp',
+                                 'util/vlctick.hpp',
+                                 'dialogs/extensions/extensions_manager.hpp',
+                                 'dialogs/extensions/extensions.hpp',
+                                 'widgets/native/customwidgets.hpp',
+                                 'widgets/native/animators.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep] + controller_test_deps,
+            'link_args': controller_test_link_args
+        }
+        endforeach
+
+        vlc_tests += {
+            'name': 'test_qt_native_bookmarks_chapters',
+            'sources': files('tests/test_native_bookmarks_chapters.cpp',
+                             'tests/native_model_probe.c',
+                             'tests/network_stream_probe.c',
+                             'player/player_controller.cpp',
+                             'player/input_models.cpp',
+                             'player/audio_equalizer.cpp',
+                             'player/audio_waveform.cpp',
+                             'player/local_music_folder.cpp',
+                             'player/video_transform.cpp',
+                             'player/subtitle_appearance.cpp',
+                             'player/subtitle_cue_data.cpp',
+                             'player/subtitle_cue_timeline.cpp',
+                             'maininterface/subtitle_preset_model.cpp',
+                             'util/audio_device_model.cpp',
+                             'util/variables.cpp',
+                             'util/varchoicemodel.cpp',
+                             'util/renderer_manager.cpp',
+                             'util/vlctick.cpp',
+                             'dialogs/extensions/extensions_manager.cpp',
+                             'dialogs/extensions/extensions.cpp',
+                             'widgets/native/customwidgets.cpp',
+                             'widgets/native/animators.cpp',
+                             'util/soutchain.cpp',
+                             'util/imagehelper.cpp',
+                             'medialibrary/mlbookmarkmodel.cpp',
+                             'medialibrary/medialib.cpp',
+                             'medialibrary/mlhomeactivity.cpp',
+                             'medialibrary/mlhomeactivitydata.cpp', 'util/checked_preferences_store.cpp',
+                             'dialogs/new_playlist_data.cpp',
+                             'medialibrary/mlthreadpool.cpp',
+                             'playlist/playlist_controller.cpp',
+                             'playlist/playlist_item.cpp'),
+            'moc_sources': files('tests/test_native_bookmarks_chapters.cpp'),
+            'moc_headers': files('player/player_controller.hpp',
+                                 'player/input_models.hpp',
+                                 'player/audio_equalizer.hpp',
+                                 'player/audio_waveform.hpp',
+                                 'player/local_music_folder.hpp',
+                                 'player/video_transform.hpp',
+                                 'player/subtitle_appearance.hpp',
+                                 'player/subtitle_cue_timeline.hpp',
+                                 'maininterface/subtitle_preset_model.hpp',
+                                 'util/audio_device_model.hpp',
+                                 'util/variables.hpp',
+                                 'util/varchoicemodel.hpp',
+                                 'util/renderer_manager.hpp',
+                                 'util/vlctick.hpp',
+                                 'dialogs/extensions/extensions_manager.hpp',
+                                 'dialogs/extensions/extensions.hpp',
+                                 'widgets/native/customwidgets.hpp',
+                                 'widgets/native/animators.hpp',
+                                 'medialibrary/mlbookmarkmodel.hpp',
+                                 'medialibrary/medialib.hpp',
+                                 'medialibrary/mlhomeactivity.hpp',
+                                 'medialibrary/mlthreadpool.hpp',
+                                 'medialibrary/mlqmltypes.hpp',
+                                 'playlist/playlist_controller.hpp',
+                                 'playlist/playlist_item.hpp'),
+            'suite': ['qt'],
+            'include_directories': [qt_include_dir, include_directories('../../../src')],
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_subtitle_presets',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_subtitle_presets.cpp', 'tests/media_player_probe.c',
+                             'maininterface/subtitle_preset_model.cpp', 'player/subtitle_appearance.cpp', 'util/variables.cpp', 'util/checked_preferences_store.cpp'),
+            'moc_sources': files('tests/test_subtitle_presets.cpp'),
+            'moc_headers': files('maininterface/subtitle_preset_model.hpp', 'player/subtitle_appearance.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_subtitle_cue_timeline',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_subtitle_cue_timeline.cpp', 'tests/media_player_probe.c',
+                             'player/subtitle_cue_data.cpp', 'player/subtitle_cue_timeline.cpp'),
+            'moc_sources': files('tests/test_subtitle_cue_timeline.cpp'),
+            'moc_headers': files('player/subtitle_cue_timeline.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
+
+        vlc_tests += {
+            'name': 'test_qt_subtitle_appearance',
+            'sources': files('tests/vlc_stub_modules.cpp', 'tests/test_subtitle_appearance.cpp',
+                             'tests/media_player_probe.c', 'player/subtitle_appearance.cpp', 'util/variables.cpp'),
+            'moc_sources': files('tests/test_subtitle_appearance.cpp'),
+            'moc_headers': files('player/subtitle_appearance.hpp', 'util/variables.hpp'),
+            'suite': ['qt'],
+            'include_directories': qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
         vlc_tests += {

@@ -394,7 +394,10 @@ static void vlc_clock_main_reset(vlc_clock_main_t *main_clock)
     AvgResetAndFill(&main_clock->coeff_avg, ctx->coeff);
 
     main_clock->wait_sync_ref_priority = UINT_MAX;
-    main_clock->pause_date = VLC_TICK_INVALID;
+    /* A paused seek can create a new PCR/monotonic reference before resume.
+     * Keep its frozen system date so resume shifts those new references too. */
+    if (!main_clock->paused)
+        main_clock->pause_date = VLC_TICK_INVALID;
     vlc_cond_broadcast(&main_clock->cond);
 }
 
@@ -695,7 +698,10 @@ vlc_clock_monotonic_to_system(vlc_clock_t *clock, struct vlc_clock_context *ctx,
 
         const vlc_tick_t input_delay = main_clock->input_dejitter + pcr_delay;
 
-        const vlc_tick_t delay =
+        /* Paused seeks render at a frozen date. Preserve the PCR/input delay
+         * even when negative; an output-start margin could move an active cue
+         * permanently beyond that date. Playing outputs still use dejitter. */
+        const vlc_tick_t delay = main_clock->paused ? input_delay :
             __MAX(input_delay, main_clock->output_dejitter);
 
         main_clock->wait_sync_ref_priority = clock->priority;
@@ -721,7 +727,10 @@ static vlc_tick_t vlc_clock_slave_to_system(vlc_clock_t *clock,
         system = vlc_clock_monotonic_to_system(clock, ctx, now, ts, rate);
     }
 
-    return system + (clock->delay - main_clock->delay) * rate;
+    /* Track delays use the same media-time units as their timestamps. Apply
+     * the same conversion as an equivalent timestamp shift; multiplying here
+     * would scale the effective offset by the square of the playback rate. */
+    return system + (clock->delay - main_clock->delay) / rate;
 }
 
 static vlc_tick_t vlc_clock_master_to_system(vlc_clock_t *clock,
@@ -897,7 +906,7 @@ vlc_clock_output_start(vlc_clock_t *clock,
 
     const vlc_tick_t input_delay = main_clock->input_dejitter + pcr_delay;
 
-    const vlc_tick_t delay =
+    const vlc_tick_t delay = main_clock->paused ? input_delay :
         __MAX(input_delay, main_clock->output_dejitter);
 
     main_clock->wait_sync_ref_priority = clock->priority;
@@ -1061,7 +1070,7 @@ void vlc_clock_main_ChangePause(vlc_clock_main_t *main_clock, vlc_tick_t now,
         return;
     }
 
-    /* Reset was called before resume from Pause */
+    /* No pause reference is available. */
     if (main_clock->pause_date == VLC_TICK_INVALID)
         return;
 

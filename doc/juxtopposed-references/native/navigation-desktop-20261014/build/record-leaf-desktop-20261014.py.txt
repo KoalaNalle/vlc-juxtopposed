@@ -1,0 +1,51 @@
+from pathlib import Path
+import ctypes as C
+from ctypes import wintypes as W
+import hashlib
+import json
+import re
+
+root=Path(__file__).resolve().parent
+output=root/'leaf-literal-desktop-20261014'
+receipt=output/'desktop-observations.json'
+assert not receipt.exists()
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+kernel=C.WinDLL('kernel32',use_last_error=True)
+kernel.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];kernel.OpenProcess.restype=W.HANDLE
+kernel.GetExitCodeProcess.argtypes=[W.HANDLE,C.POINTER(W.DWORD)];kernel.GetExitCodeProcess.restype=W.BOOL
+kernel.CloseHandle.argtypes=[W.HANDLE];kernel.CloseHandle.restype=W.BOOL
+handle=kernel.OpenProcess(0x1000,False,24264)
+assert handle
+code=W.DWORD()
+assert kernel.GetExitCodeProcess(handle,C.byref(code))
+kernel.CloseHandle(handle)
+assert code.value==0
+log=output/'vlc.log'
+text=log.read_text(encoding='utf-8-sig',errors='replace')
+errors=[line for line in text.splitlines() if re.search(r'Cannot assign|TypeError|ReferenceError|unable to load view|component is not ready|unknown initial property',line)]
+assert not errors,errors
+assert 'QApp exec() finished' in text and '-- logger module stopped --' in text
+captures=sorted(output.glob('*.jpg'))
+assert len(captures)==18
+report=dict(package='build-windows/slice-leaf-literal-package-20261014',qtSha256=digest(root/'slice-leaf-literal-package-20261014/plugins/gui/libqt_plugin.dll'),profileScope='Separate generated-fixture library cloned from the completed-conversion test profile.',process=dict(pid=24264,normalCtrlQRequested=True,winApiExitCode=code.value),navigationPropertyErrors=errors,logSha256=digest(log),
+observed=[
+ 'Initial Home loaded five generated-fixture items; Videos loaded two items.',
+ 'Videos-to-Home and later actual Home/Videos Back/Forward routes loaded.',
+ 'After the user moved VLC to monitor 2, captures confirm its window there; the remaining inputs stayed on that monitor.',
+ 'Playlists overview displayed two authored fixtures; its Home, Back and Forward routes loaded with the paused primary retained.',
+ 'Tab, Right and Return opened the selected empty playlist through the genuine keyboard contents route: title/breadcrumb Figma native checkpoint and No media found.',
+ 'Home from the empty detail, then Back, restored that same title and empty contents.',
+ 'Keyboard navigation to the second playlist opened Desktop mixed fixture with exactly three ordered visible rows: alpha-one.flac, home-video.mp4, home-video.mp4.',
+ 'Back restored the overview with the second playlist selected. Return without changing selection reopened Desktop mixed fixture and the same three ordered rows.',
+ 'The primary chapter fixture remained paused at displayed 00:00 of 00:18 across these contents/history operations; the final volume slider was 1.',
+ 'Final Home loaded; normal Ctrl+Q exit was independently queried as WinAPI code 0; the flushed log contains no recorded QML property or loader errors.'
+ ],limitations=[
+ 'Early pointer inputs do not establish video row selection. An unexpected player transition occurred after those inputs; individual callback receipt and causality were not captured.',
+ 'The centered empty-card Play action entered Player retaining the existing paused primary; a second click entered fullscreen. This does not prove the actual body double-tap/Open route failed. The later genuine keyboard Open route was verified separately.',
+ 'A small window size appeared during later keyboard navigation and was expanded again. Its cause was not established; narrow/short/scaling acceptance is not claimed.',
+ 'Immediate accessibility captures sometimes described the preceding scene. Settled captures and displayed screenshots were used before recording route results.',
+ 'Displayed paused time and retained player are not a native timestamp trace or full queue-content equality proof.',
+ 'No Videos pointer-index restoration, full Music/Network history, rapid same-route generations, clean-profile/restart, conversion GUI on this exact Qt build or original-design fidelity acceptance is claimed.'
+ ],captures=[dict(file=p.name,sha256=digest(p)) for p in captures],uiaEvidenceSha256={p.name:digest(p) for p in sorted(output.glob('*-uia.txt'))},status='Scoped mounted navigation/playlist keyboard restoration observed; beta gates remain open.')
+receipt.write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(dict(exitCode=code.value,captures=len(captures),propertyErrors=len(errors),receiptSha256=digest(receipt))))

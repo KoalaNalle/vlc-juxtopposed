@@ -21,6 +21,8 @@
 #include "playlist_controller.hpp"
 
 #include "qt.hpp" // for qtr()
+#include <QHash>
+#include <QSet>
 
 namespace vlc {
 namespace playlist {
@@ -59,6 +61,10 @@ public:
     bool m_initialized = false;
     ssize_t m_currentIndex = -1;
     PlaylistItem m_currentItem;
+    QHash<quint64, qint64> m_sourcePlaylists;
+    // Library IDs belong to this process's library session. A late conversion
+    // reply must not restore an origin whose deletion was already observed.
+    QSet<qint64> m_deletedSourcePlaylists;
     bool m_hasNext= false;
     bool m_hasPrev = false;
     PlaylistController::PlaybackRepeat m_repeat = PlaylistController::PLAYBACK_REPEAT_NONE;

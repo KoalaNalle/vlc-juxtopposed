@@ -1,0 +1,108 @@
+{
+  "recordedAtUtc": "2026-10-14T13:33:02.068004+00:00",
+  "scope": "Actual Windows warm-profile Music Add Folder, native audio-only source folder, playback/pause/Back, normal quit and restart. This is not fresh-profile first-run or full Home acceptance.",
+  "nativeAppJourneyPassed": true,
+  "figmaVisualAccepted": false,
+  "finalPackageAccepted": false,
+  "capturedPlayerPids": [
+    14804,
+    15636
+  ],
+  "originalCaptures": {
+    "00-baseline-home.jpg": {
+      "sha256": "0da30b1b0d651d4fd3b4340e39265647024fc81cf85464ac917ced7d7e4fc5c1",
+      "bytes": 100152,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "01-audio-only-added-home.jpg": {
+      "sha256": "7d2f69fe441fb18972240b6f4a77462e140d9cbdb154982398e7b65085bb81d3",
+      "bytes": 98217,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "02-native-audio-only-folder-route.jpg": {
+      "sha256": "5ac3bf11fd7a69af7f6b75f5bd5c1e2a1b96732d8b3ef88385ea57e847705967",
+      "bytes": 80866,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "03-audio-opened-paused.jpg": {
+      "sha256": "4e602cf3c0c1002bb965eed11a9fa60efd4248853e3f76fea0f4f4b162894dea",
+      "bytes": 110870,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "04-audio-played-paused-progress.jpg": {
+      "sha256": "5549a1c57a0cddfe43aac3ed86b91ac13d1039fb066bf13fa06b00e73f955b1f",
+      "bytes": 111574,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "05-returned-folder-retained-audio.jpg": {
+      "sha256": "53e5adeedee1bc15f1cdef3230a9e804601c7facaed97897c23f792e60bafcf1",
+      "bytes": 91369,
+      "dimensions": [
+        2482,
+        1353
+      ],
+      "altered": false
+    },
+    "06-warm-restart-home-folder.jpg": {
+      "sha256": "39eefa80c0cafe4f0844581058d6fd2a3905bcd0e5b7dadcb733e373d74989f1",
+      "bytes": 98692,
+      "dimensions": [
+        2466,
+        1345
+      ],
+      "altered": false
+    },
+    "07-warm-restart-native-folder-route.jpg": {
+      "sha256": "4be81232266a4ae3618da6d8a32ffa42a896f47a28f95c513f9e98b7dcba8b24",
+      "bytes": 78938,
+      "dimensions": [
+        2466,
+        1345
+      ],
+      "altered": false
+    }
+  },
+  "runtimeSha256": {
+    "plugins/gui/libqt_plugin.dll": "88452491563814608b6d4790752aa4ad9875204780e35e95d5886ab69aed99c6",
+    "plugins/misc/libmedialibrary_plugin.dll": "067aaf4571c8578e581e07aa7dd012455afafff2ae68cbf81ff554c145d5fcb1",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "loadedRuntime": "Root independently inspected the running test process modules: core, Qt and ML came from this slice-home-package. Current retained files match the recorded hashes.",
+  "observations": [
+    "Baseline Home had no frequent-folder cards in the existing test profile.",
+    "The real native folder picker added a generated local directory containing two actual FLAC files, with Unicode and #/% in the directory name.",
+    "After native indexing, Home showed that audio-only directory; its card opened both real audio metadata titles.",
+    "Opening a track entered the source-folder music player paused at zero. Play followed by Pause yielded native progress 0.0522445.",
+    "Back returned to the folder with paused audio retained in the mini-player.",
+    "Normal quit and restart restored the Home folder card; reopening it still showed both native tracks."
+  ],
+  "remaining": [
+    "Fresh-user first-folder bootstrap",
+    "All folder/playlist/artist visit journeys",
+    "Desktop Clear History/reset/opt-out/error cases",
+    "Home full-scroll state",
+    "Artwork fallback and Figma fidelity",
+    "Native narrow/DPI/theme acceptance"
+  ]
+}

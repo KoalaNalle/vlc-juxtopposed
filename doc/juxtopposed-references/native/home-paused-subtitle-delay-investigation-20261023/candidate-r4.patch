@@ -1,0 +1,274 @@
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\decoder.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\decoder.c"
+index 8129e40b70..33f44eb5b3 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\decoder.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\decoder.c"
+@@ -2975,6 +2975,7 @@ void vlc_input_decoder_ChangeDelay( vlc_input_decoder_t *owner, vlc_tick_t delay
+ {
+     vlc_fifo_Lock( owner->p_fifo );
+     owner->delay = delay;
++    vlc_fifo_Signal( owner->p_fifo );
+     vlc_fifo_Unlock( owner->p_fifo );
+ }
+ 
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\es_out.c"
+index 675d3a872a..f08c681575 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\es_out.c"
+@@ -3289,9 +3289,19 @@ static int EsOutSend(es_out_t *out, es_out_id_t *es, block_t *p_block )
+         if( i_date != VLC_TICK_INVALID )
+             es->i_pts_level = i_date + p_block->i_length;
+ 
++        vlc_tick_t preroll_end = p_sys->i_preroll_end;
++        if (es->fmt.i_cat == SPU_ES)
++        {
++            const vlc_tick_t delay = es->delay != VLC_TICK_MAX
++                                   ? es->delay : p_sys->i_spu_delay;
++            /* A delayed cue can remain visible after its media stop date.
++             * Compare subtitle packets with their own media-time boundary. */
++            if (delay > 0)
++                preroll_end = delay >= preroll_end ? 0 : preroll_end - delay;
++        }
+         /* If i_date is still invalid (first/all non dated), expect to be in preroll */
+         if( i_date == VLC_TICK_INVALID ||
+-            es->i_pts_level < p_sys->i_preroll_end )
++            es->i_pts_level < preroll_end )
+             p_block->i_flags |= BLOCK_FLAG_PREROLL;
+     }
+ 
+@@ -4245,6 +4255,21 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
+         EsOutSetEsDelay(p_sys, es, delay);
+         return VLC_SUCCESS;
+     }
++    case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
++    {
++        vlc_tick_t *delay = va_arg(args, vlc_tick_t *);
++        *delay = 0;
++        es_out_id_t *es;
++        foreach_es_then_es_slaves(es)
++        {
++            if (es->fmt.i_cat != SPU_ES || !es->p_dec)
++                continue;
++            const vlc_tick_t selected_delay = es->delay != VLC_TICK_MAX
++                                           ? es->delay : p_sys->i_spu_delay;
++            *delay = __MAX(*delay, selected_delay);
++        }
++        return VLC_SUCCESS;
++    }
+     case ES_OUT_PRIV_SET_DELAY:
+     {
+         const int i_cat = va_arg( args, int );
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.h" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\es_out.h"
+index 0b10903b91..9e1fc0bbae 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\es_out.h"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\es_out.h"
+@@ -113,7 +113,10 @@ enum es_out_query_private_e
+     ES_OUT_PRIV_SET_VBI_TRANSPARENCY,               /* arg1=bool res=can fail */
+ 
+     /* Select the preferred track from an explicitly added source. */
+-    ES_OUT_PRIV_SELECT_SOURCE /* arg1=input_source_t *, arg2=es_format_category_e */
++    ES_OUT_PRIV_SELECT_SOURCE, /* arg1=input_source_t *, arg2=es_format_category_e */
++
++    /* Earlier media needed to retain delayed selected subtitle cues on seek. */
++    ES_OUT_PRIV_GET_SUBTITLE_PREROLL /* arg1=vlc_tick_t *, res=cannot fail */
+ };
+ 
+ struct vlc_input_es_out;
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\input.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\input.c"
+index aa3bb3915a..6fffc8babe 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\input\\input.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\input\\input.c"
+@@ -1982,7 +1982,15 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
+     input_thread_private_t *priv = input_priv(p_input);
+     int i_ret;
+ 
+-    i_ret = demux_SetTime( priv->master->p_demux, priv->i_start + val,
++    const vlc_tick_t requested = priv->i_start + val;
++    vlc_tick_t subtitle_preroll = 0;
++    if (!fast_seek && !priv->prev_frame.enabled)
++        es_out_PrivControl(priv->p_es_out_display,
++                           ES_OUT_PRIV_GET_SUBTITLE_PREROLL, &subtitle_preroll);
++    const vlc_tick_t demux_target = subtitle_preroll > 0 && requested > 0
++                                 ? __MAX(requested - subtitle_preroll, 0)
++                                 : requested;
++    i_ret = demux_SetTime( priv->master->p_demux, demux_target,
+                            !fast_seek );
+     if( i_ret )
+     {
+@@ -1990,7 +1998,7 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
+         /* Emulate it with a SET_POS */
+         if( i_length > 0 )
+         {
+-            double f_pos = (double)(priv->i_start + val) / (double)i_length;
++            double f_pos = (double)demux_target / (double)i_length;
+             i_ret = demux_SetPosition( priv->master->p_demux, f_pos,
+                                        !fast_seek );
+         }
+@@ -1998,6 +2006,11 @@ static int ControlSetTime( input_thread_t *p_input, vlc_tick_t val,
+ 
+     if( i_ret == VLC_SUCCESS )
+     {
++        /* Decode earlier delayed subtitle cues, but retain the requested
++         * video/audio display boundary and the source's timestamp origin. */
++        if (demux_target != requested)
++            es_out_Control(&priv->p_es_out->out, ES_OUT_SET_NEXT_DISPLAY_TIME,
++                           priv->master->i_normal_time + requested);
+         if( priv->i_slave > 0 )
+             SlaveSeek( p_input );
+         priv->master->b_eof = false;
+@@ -2031,6 +2044,15 @@ static int ControlSetPosition( input_thread_t *p_input, double val,
+             val = (priv->i_start + val * (i_length - priv->i_start)) / i_length;
+     }
+ 
++    if (!fast_seek && i_length > 0)
++    {
++        vlc_tick_t subtitle_preroll = 0;
++        es_out_PrivControl(priv->p_es_out_display,
++                           ES_OUT_PRIV_GET_SUBTITLE_PREROLL, &subtitle_preroll);
++        if (subtitle_preroll > 0)
++            return ControlSetTime(p_input, llround(val * i_length) - priv->i_start,
++                                  false);
++    }
+     int i_ret = demux_SetPosition( priv->master->p_demux, val, !fast_seek );
+ 
+     if( i_ret == VLC_SUCCESS )
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\input.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\input.c"
+index 66f3ff1328..1f61d664df 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\input.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\input.c"
+@@ -612,6 +612,40 @@ vlc_player_input_HandleTeletextMenu(struct vlc_player_input *input,
+     }
+ }
+ 
++void
++vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
++{
++    vlc_player_t *player = input->player;
++    if (input->state != VLC_PLAYER_STATE_PAUSED
++     || !(input->capabilities & VLC_PLAYER_CAP_SEEK)
++     || input->recording || input != player->input)
++        return;
++
++    bool have_target = false;
++    vlc_tick_t target = 0, clock_time = VLC_TICK_INVALID;
++    vlc_mutex_lock(&player->timer.lock);
++    const struct vlc_player_timer_source *video = &player->timer.smpte_source;
++    if (video->es && !video->seeking
++     && video->point.system_date != VLC_TICK_INVALID
++     && video->point.ts >= VLC_TICK_0)
++    {
++        clock_time = video->point.ts;
++        target = clock_time - VLC_TICK_0;
++        have_target = true;
++    }
++    else if (player->timer.seek_ts != VLC_TICK_INVALID)
++    {
++        target = clock_time = player->timer.seek_ts;
++        have_target = true;
++    }
++    vlc_mutex_unlock(&player->timer.lock);
++    if (have_target)
++    {
++        vlc_player_UpdateTimerSeekState(player, clock_time, -1);
++        input_SetTime(input->thread, target, false);
++    }
++}
++
+ static void
+ vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
+                                const struct vlc_input_event_es *ev)
+@@ -680,41 +714,8 @@ vlc_player_input_HandleEsEvent(struct vlc_player_input *input,
+                 vlc_player_SendEvent(player, on_track_selection_changed,
+                                      NULL, trackpriv->t.es_id);
+                 vlc_player_input_HandleTeletextMenu(input, ev, trackpriv);
+-                /* Refill a new subtitle decoder at the frozen video picture.
+-                 * Timer points and demux dates use different time origins. */
+-                if (newly_selected && ev->fmt->i_cat == SPU_ES
+-                 && input->state == VLC_PLAYER_STATE_PAUSED
+-                 && (input->capabilities & VLC_PLAYER_CAP_SEEK)
+-                 && !input->recording && input == player->input)
+-                {
+-                    bool have_target = false;
+-                    vlc_tick_t target = 0, clock_time = VLC_TICK_INVALID;
+-                    vlc_mutex_lock(&player->timer.lock);
+-                    const struct vlc_player_timer_source *video =
+-                        &player->timer.smpte_source;
+-                    if (video->es && !video->seeking
+-                     && video->point.system_date != VLC_TICK_INVALID
+-                     && video->point.ts >= VLC_TICK_0)
+-                    {
+-                        /* The timer point includes the VLC_TICK_0 origin.
+-                         * Demux seek dates are relative and add that origin. */
+-                        clock_time = video->point.ts;
+-                        target = clock_time - VLC_TICK_0;
+-                        have_target = true;
+-                    }
+-                    else if (player->timer.seek_ts != VLC_TICK_INVALID)
+-                    {
+-                        /* No new picture yet: retain the pending user target. */
+-                        target = clock_time = player->timer.seek_ts;
+-                        have_target = true;
+-                    }
+-                    vlc_mutex_unlock(&player->timer.lock);
+-                    if (have_target)
+-                    {
+-                        vlc_player_UpdateTimerSeekState(player, clock_time, -1);
+-                        input_SetTime(input->thread, target, false);
+-                    }
+-                }
++                if (newly_selected && ev->fmt->i_cat == SPU_ES)
++                    vlc_player_input_RefreshPausedSubtitle(input);
+             }
+             break;
+         case VLC_INPUT_ES_UNSELECTED:
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\player.c" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\player.c"
+index c10573ec3c..5fbd5b3069 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\player.c"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\player.c"
+@@ -1847,6 +1847,7 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
+     if (cat != AUDIO_ES && cat != SPU_ES && cat != VIDEO_ES)
+         return VLC_EGENERIC;
+     vlc_tick_t *cat_delay = &input->cat_delays[cat];
++    const vlc_tick_t old_delay = *cat_delay;
+ 
+     if (absolute)
+         *cat_delay = delay;
+@@ -1863,6 +1864,8 @@ vlc_player_SetCategoryDelay(vlc_player_t *player, enum es_format_category_e cat,
+                                es_format_category_to_string(cat),
+                                (int)MS_FROM_VLC_TICK(delay));
+         vlc_player_SendEvent(player, on_category_delay_changed, cat, delay);
++        if (cat == SPU_ES && old_delay != delay)
++            vlc_player_input_RefreshPausedSubtitle(input);
+     }
+     return VLC_SUCCESS;
+ }
+@@ -1895,6 +1898,7 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
+         (trackpriv->t.fmt.i_cat != AUDIO_ES && trackpriv->t.fmt.i_cat != SPU_ES))
+         return VLC_EGENERIC;
+ 
++    const vlc_tick_t old_delay = trackpriv->delay;
+     if (absolute)
+         trackpriv->delay = delay;
+     else
+@@ -1915,6 +1919,8 @@ vlc_player_SetEsIdDelay(vlc_player_t *player, vlc_es_id_t *es_id,
+                                    trackpriv->t.name,
+                                    (int)MS_FROM_VLC_TICK(delay));
+         vlc_player_SendEvent(player, on_track_delay_changed, es_id, delay);
++        if (trackpriv->t.fmt.i_cat == SPU_ES && old_delay != delay)
++            vlc_player_input_RefreshPausedSubtitle(input);
+     }
+ 
+     return VLC_SUCCESS;
+diff --git "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\player.h" "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\player.h"
+index 960273f73b..77a2fd353b 100644
+--- "a/C:\\Modding\\vlc-juxtopposed\\src\\player\\player.h"
++++ "b/C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-preferences-20261023\\candidate-r4\\src\\player\\player.h"
+@@ -604,6 +604,9 @@ vlc_player_osd_Program(vlc_player_t *player, const char *name);
+  * player/medialib.c
+  */
+ 
++void
++vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input);
++
+ void
+ vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos);
+ 

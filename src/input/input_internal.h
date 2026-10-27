@@ -452,6 +452,8 @@ typedef union
     } time;
     struct {
         bool b_fast_seek;
+        /* Saved history uses whole-media coordinates. Keep f_val's offset. */
+        bool b_absolute_media;
         double f_val;
     } pos;
     struct
@@ -469,6 +471,11 @@ typedef union
         vlc_es_id_t *id;
         vlc_tick_t delay;
     } es_delay;
+    struct
+    {
+        vlc_es_id_t *id;
+        vlc_tick_t time;
+    } subtitle_refresh;
     struct {
         vlc_es_id_t *id;
         unsigned page;
@@ -645,11 +652,16 @@ enum input_control_e
 
     INPUT_CONTROL_SET_VBI_PAGE,
     INPUT_CONTROL_SET_VBI_TRANSPARENCY,
+    INPUT_CONTROL_REFRESH_SUBTITLE,
 };
 
 /* Internal helpers */
 
 int input_ControlPush( input_thread_t *, int, const input_control_param_t * );
+
+/* Restore a whole-media fraction, only if it lies in the configured input
+ * start/stop range. Ordinary input_SetPosition() remains range-relative. */
+void input_SetMediaPosition(input_thread_t *, double position, bool fast);
 
 /* XXX for string value you have to allocate it before calling
  * input_ControlPushHelper

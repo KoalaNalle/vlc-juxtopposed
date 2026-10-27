@@ -1,0 +1,21 @@
+{
+  "previous": "build-windows/beta-tracks-subtitles-20261023/inputs-r2.json",
+  "changedPriorInputs": [
+    "modules/gui/qt/Makefile.am",
+    "modules/gui/qt/player/qml/TracksListPage.qml",
+    "modules/gui/qt/player/qml/TracksMenu.qml",
+    "modules/gui/qt/player/qml/TracksPage.qml"
+  ],
+  "addedInputs": [
+    "build-windows/beta-tracks-subtitles-20261023/build-navigation-r3b.sh",
+    "build-windows/beta-tracks-subtitles-20261023/build-r3.sh",
+    "build-windows/beta-tracks-subtitles-20261023/ordinary-r3.mk",
+    "build-windows/beta-tracks-subtitles-20261023/prepare-r3.py",
+    "build-windows/beta-tracks-subtitles-20261023/run-navigation-r3b.py",
+    "build-windows/beta-tracks-subtitles-20261023/run-ordinary-r3.py",
+    "modules/gui/qt/tests/native_library/tracks-navigation.mk",
+    "modules/gui/qt/tests/test_tracks_cancel_navigation.cpp"
+  ],
+  "productionScope": "Missing cancellation route from track columns/speed button and nested pages to menu Back; pop nested page or close root. R2 modal/focus policy retained. Core/native track selection/decoding remain unchanged.",
+  "nativeTestScope": "Navigation implementation/key helper and test source unchanged between paired before/after runs of executable29510809; QML cancellation bindings differ. Native compiled source identities recorded by runner; this full snapshot is made after native replay and before ordinary plugin build."
+}

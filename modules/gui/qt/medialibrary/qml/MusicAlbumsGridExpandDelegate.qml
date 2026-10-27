@@ -269,11 +269,16 @@ FocusScope {
 
                         width: parent.width
 
-                        text: qsTr("%1 - %2 - %3 - %4")
-                            .arg(root.model?.main_artist || qsTr("Unknown artist"))
-                            .arg(root.model?.release_year || "")
-                            .arg(_getStringTrack())
-                            .arg(root.model?.duration?.formatHMS() ?? 0)
+                        text: root.model?.release_year
+                            ? qsTr("%1 - %2 - %3 - %4")
+                                .arg(root.model.main_artist || qsTr("Unknown artist"))
+                                .arg(root.model.release_year)
+                                .arg(_getStringTrack())
+                                .arg(root.model.duration?.formatHMS() ?? 0)
+                            : qsTr("%1 - %2 - %3")
+                                .arg(root.model?.main_artist || qsTr("Unknown artist"))
+                                .arg(_getStringTrack())
+                                .arg(root.model?.duration?.formatHMS() ?? 0)
                     }
                 }
             }

@@ -1,0 +1,15 @@
+{
+  "sameControllerExecutableSha256": "c9de356e34c46b161470c2cfe95cb8da435beb7078dd4a302397719b145e23c6",
+  "sameCoreSha256": "dd8c11ccded80371731f76c43f4b36518a11d6288de02ad0a2fdf4b1537d9186",
+  "beforeMlSha256": "fd70207d3067a8ce38e1cb9e8a3df6630da78bc39a0eff4402cd08484a916e90",
+  "afterMlSha256": "0a9d2d3980cd37df7b803d3eaee0e091c656764248a3272fde181b011fee44e0",
+  "beforeExitCode": 3221225477,
+  "beforeComplete": false,
+  "beforePassCases": 8,
+  "afterExitCode": 0,
+  "afterTotals": "11 passed, 0 failed, 0 skipped",
+  "firstChance": "libmedialibrary_plugin!medialibrary::sqlite::Connection::WriteContext::WriteContext+0x1e; RDX is null and [RDX+0xb0] is read",
+  "cause": "VLC_ML_CLEAR_HISTORY did not initialize the lazy media library before opening its SQLite write transaction",
+  "machineCrash": false,
+  "scope": "This exact initial Qt executable was compared before adding the recent-network-history follow-up. Final controller/GUI tests remain separate."
+}

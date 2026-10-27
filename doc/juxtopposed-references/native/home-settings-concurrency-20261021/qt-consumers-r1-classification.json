@@ -1,0 +1,11 @@
+{
+  "status": "partial_only_wrong_libtool_launcher_staged",
+  "fullBetaAccepted": false,
+  "acceptedCases": {
+    "setup": 11,
+    "audio": 32
+  },
+  "networkExitCodeRecorded": false,
+  "explanation": "The 65KB libtool launcher was staged instead of the 13MB executable under .libs. It returned without test XML; the original runner parsed XML before recording its return code. No Network or profile acceptance is claimed. Original files retained; restage actual built executables and record return code before XML parsing.",
+  "networkTestEntryEstablished": false
+}

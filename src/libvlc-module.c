@@ -37,6 +37,7 @@
 #include <vlc_cpu.h>
 #include <vlc_vout_display.h>
 #include <vlc_subpicture.h>
+#include <vlc_process_priority.h>
 #include "libvlc.h"
 #include "modules/modules.h"
 
@@ -46,6 +47,7 @@
 #include <vlc_aout.h>
 #include <vlc_vout.h>
 #include <vlc_player.h>
+#include <vlc_mouse.h>
 
 #include "clock/clock.h"
 
@@ -1184,6 +1186,15 @@ static const char *const clock_sources_text[] = {
     "Multimedia timers",
 #endif
 };
+static const int process_priority_values[] = {
+    VLC_PROCESS_PRIORITY_INHERIT, VLC_PROCESS_PRIORITY_IDLE,
+    VLC_PROCESS_PRIORITY_BELOW_NORMAL, VLC_PROCESS_PRIORITY_NORMAL,
+    VLC_PROCESS_PRIORITY_ABOVE_NORMAL, VLC_PROCESS_PRIORITY_HIGH,
+};
+static const char *const process_priority_names[] = {
+    N_("Inherit"), N_("Idle"), N_("Below normal"), N_("Normal"),
+    N_("Above normal"), N_("High"),
+};
 #endif
 
 #define PLAYLISTENQUEUE_TEXT N_( \
@@ -1325,6 +1336,13 @@ static const int mouse_wheel_values[] = { -1, 0, 2, 3, };
 static const char *const mouse_wheel_texts[] = {
     N_("Ignore"), N_("Volume control"),
     N_("Position control"), N_("Position control reversed"),
+};
+
+static const int mouse_click_values[] = {
+    VLC_MOUSE_ACTION_NONE, VLC_MOUSE_ACTION_PLAY_PAUSE, VLC_MOUSE_ACTION_FULLSCREEN,
+};
+static const char *const mouse_click_texts[] = {
+    N_("Do nothing"), N_("Play / Pause"), N_("Toggle fullscreen"),
 };
 
 #define MOUSE_Y_WHEEL_MODE_TEXT N_("Mouse wheel vertical axis control")
@@ -1806,6 +1824,11 @@ vlc_module_begin ()
     add_bool( "spu-fill", true, SPU_FULL_TEXT, SPU_FULL_LONGTEXT )
         change_safe ()
     add_bool( "osd", true, OSD_TEXT, OSD_LONGTEXT )
+    add_bool("osd-shortcut-feedback", true, N_("Show shortcut feedback"),
+        N_("Show shortcut text, icons and sliders without disabling explicit filename messages."))
+    add_integer_with_range("osd-feedback-duration", -1, -1, 5000,
+        N_("Shortcut feedback duration in milliseconds"),
+        N_("-1 retains native text and widget durations; explicit values use 500 to 5000 ms."))
     add_module("text-renderer", "text renderer", "any",
                TEXTRENDERER_TEXT, TEXTRENDERER_LONGTEXT)
 
@@ -1829,6 +1852,17 @@ vlc_module_begin ()
                  SUB_MARGIN_LONGTEXT )
     add_integer_with_range( "sub-text-scale", 100, 10, 500,
                SUB_TEXT_SCALE_TEXT, SUB_TEXT_SCALE_LONGTEXT )
+    add_bool("sub-text-style-enabled", false, N_("Custom subtitle appearance"), NULL)
+    add_bool("sub-text-style-embedded", true, N_("Use embedded subtitle formatting"), NULL)
+    add_string("sub-text-style-font", "", N_("Subtitle font family"), NULL)
+    add_rgb("sub-text-style-color", 0xFFFFFF, N_("Subtitle text color"), NULL)
+    add_rgb("sub-text-style-outline-color", 0, N_("Subtitle outline color"), NULL)
+    add_integer_with_range("sub-text-style-size-mode", 0, 0, 1, N_("Subtitle size units"), NULL)
+    add_float_with_range("sub-text-style-relative-size", 6.25, 0.1, 50, N_("Subtitle size in video height percent"), NULL)
+    add_float_with_range("sub-text-style-pixel-size", 18, 1, 512, N_("Subtitle size in pixels"), NULL)
+    add_float_with_range("sub-text-style-relative-outline", 4, 0, 50, N_("Subtitle outline in font size percent"), NULL)
+    add_float_with_range("sub-text-style-pixel-outline", 2, 0, 50, N_("Subtitle outline in pixels"), NULL)
+    add_integer_with_range("sub-text-style-background-opacity", 0, 0, 255, N_("Subtitle background opacity"), NULL)
     set_section( N_( "Overlays" ) , NULL )
     add_module_list("sub-source", "sub source", NULL,
                     SUB_SOURCE_TEXT, SUB_SOURCE_LONGTEXT)
@@ -1836,6 +1870,9 @@ vlc_module_begin ()
                     SUB_FILTER_TEXT, SUB_FILTER_LONGTEXT)
 
     set_section( N_( "Multiple Subtitles" ) , NULL )
+    add_integer_with_range("sub-primary-alignment", -1, -1, 8,
+        N_("Default primary subtitle vertical placement"),
+        N_("-1 preserves authored placement; 0 center, 4 top, 8 bottom. Relative primary subtitles only."))
     add_integer( "secondary-sub-alignment", -1, SECONDARY_SUB_POSITION_TEXT,
                  SECONDARY_SUB_POSITION_LONGTEXT )
         change_integer_list( pi_sub_align_values, ppsz_sub_align_descriptions )
@@ -1924,6 +1961,10 @@ vlc_module_begin ()
         change_safe ()
 
     add_bool( "save-recentplay", true, SAVE_RECENTPLAY, NULL )
+    add_bool( "remember-playback-pos", true, N_("Remember playback positions"),
+              N_("Allow saving and restoring playback positions independently of the restore prompt policy.") )
+    add_string( "history-exclude-pattern", "", N_("Never remember items matching"),
+                N_("Case-sensitive wildcard substring matched against the media URI, decoded local path and name. * matches any sequence, ? one Unicode character. Empty excludes nothing. Applies to automatic playback history and Home visits.") )
 
     add_integer( "restore-playback-pos", VLC_PLAYER_RESTORE_PLAYBACK_POS_ASK,
                  RESTORE_PLAYBACK_POS_TEXT, RESTORE_PLAYBACK_POS_LONGTEXT )
@@ -1939,6 +1980,10 @@ vlc_module_begin ()
 
     set_section( N_( "Network settings" ), NULL )
 
+#if defined(_WIN32) && !defined(VLC_WINSTORE_APP)
+    add_integer("system-proxy-policy-version", 1, NULL, NULL)
+        change_private()
+#endif
     add_integer( "mtu", MTU_DEFAULT, MTU_TEXT, MTU_LONGTEXT )
     add_integer( "ipv4-timeout", 5 * 1000, TIMEOUT_TEXT,
                  TIMEOUT_LONGTEXT )
@@ -1947,6 +1992,16 @@ vlc_module_begin ()
     add_string( "http-host", NULL, HTTP_HOST_TEXT, HOST_LONGTEXT )
     add_integer( "http-port", 8080, HTTP_PORT_TEXT, HTTP_PORT_LONGTEXT )
         change_integer_range( 1, 65535 )
+    add_bool("http-wheel-linked", true, N_("Use the same wheel settings"),
+             N_("Use the video-window mouse wheel settings in the web remote."))
+    add_integer("http-wheel-y-mode", 0, N_("Web remote vertical scrolling"),
+                N_("Action for unmodified vertical scrolling in the web remote."))
+        change_integer_list(mouse_wheel_values, mouse_wheel_texts)
+    add_integer("http-wheel-x-mode", 2, N_("Web remote horizontal scrolling"),
+                N_("Action for unmodified horizontal scrolling in the web remote."))
+        change_integer_list(mouse_wheel_values, mouse_wheel_texts)
+    add_bool("http-wheel-reverse", false, N_("Reverse web remote scrolling"),
+             N_("Reverse both wheel axes in the web remote independently of the video window."))
     add_integer( "https-port", 8443, HTTPS_PORT_TEXT, HTTPS_PORT_LONGTEXT )
         change_integer_range( 1, 65535 )
     add_string( "rtsp-host", NULL, RTSP_HOST_TEXT, RTSP_HOST_LONGTEXT )
@@ -2139,6 +2194,16 @@ vlc_module_begin ()
 #ifdef _WIN32
     add_string( "clock-source", "perf", CLOCK_SOURCE_TEXT, NULL )
         change_string_list( clock_sources, clock_sources_text )
+    add_integer("win32-process-priority", VLC_PROCESS_PRIORITY_INHERIT,
+                N_("Windows process priority"),
+                N_("Base process class when real-time scheduling is off: -2 Idle, "
+                   "-1 Below normal, 0 Normal, 1 Above normal, 2 High. "
+                   "The default 3 preserves the inherited class."))
+        change_integer_list(process_priority_values, process_priority_names)
+    add_bool("win32-realtime-priority", false, N_("Real-time process scheduling"),
+             N_("Request the actual Windows real-time process class. "
+                "The request is rejected if Windows does not grant that exact class. "
+                "The base process priority is used when this option is off."))
 #endif
 
 /* Play Queue options */
@@ -2170,6 +2235,13 @@ vlc_module_begin ()
         change_volatile ()
     add_bool( "one-instance-when-started-from-file", true,
               ONEINSTANCEWHENSTARTEDFROMFILE_TEXT, NULL )
+    add_integer("one-instance-file-manager-policy", -1,
+        N_("File-manager single-instance policy"),
+        N_("-1 preserves the legacy policy; 0 excludes file-manager launches; 1 follows one-instance."))
+        change_integer_range(-1, 1)
+    add_integer("playlist-open-mode", -1, N_("External opening policy"),
+        N_("-1 preserves legacy play/enqueue; 0 replaces the queue; 1 appends without changing the current item."))
+        change_integer_range(-1, 1)
     add_bool( "playlist-enqueue", false, PLAYLISTENQUEUE_TEXT,
               PLAYLISTENQUEUE_LONGTEXT )
 #endif
@@ -2279,6 +2351,15 @@ vlc_module_begin ()
     add_integer( "hotkeys-x-wheel-mode", 2, MOUSE_X_WHEEL_MODE_TEXT,
                  MOUSE_X_WHEEL_MODE_LONGTEXT )
         change_integer_list( mouse_wheel_values, mouse_wheel_texts )
+    add_bool("hotkeys-wheel-reverse", false, N_("Reverse mouse scrolling"),
+             N_("Reverse both mouse-wheel axes. Takes effect after restart."))
+    add_integer("video-singleclick-action", VLC_MOUSE_ACTION_PLAY_PAUSE,
+                N_("Single click on the video"),
+                N_("Action for a video click without dragging. A double click cancels the pending single-click action."))
+        change_integer_list(mouse_click_values, mouse_click_texts)
+    add_integer("video-doubleclick-action", VLC_MOUSE_ACTION_FULLSCREEN,
+                N_("Double click on the video"), N_("Action for a video double click."))
+        change_integer_list(mouse_click_values, mouse_click_texts)
     add_obsolete_integer( "hotkeys-mousewheel-mode" ) /* since 3.0.0 */
 
 #if defined(__APPLE__)

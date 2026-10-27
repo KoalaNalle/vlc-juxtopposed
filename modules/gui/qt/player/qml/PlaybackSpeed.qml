@@ -256,7 +256,7 @@ ColumnLayout {
         rowSpacing: VLCStyle.margin_small
         columnSpacing: VLCStyle.margin_small
 
-        ButtonGroup {
+        T.ButtonGroup {
             id: buttonGroup
 
             onClicked: function(button /* : AbstractButton */) {
@@ -273,6 +273,8 @@ ColumnLayout {
             delegate: Widgets.RadioButtonExt {
                 required property double modelData
 
+                Navigation.parentItem: root
+
                 Layout.fillWidth: true
 
                 text: modelData
@@ -281,7 +283,7 @@ ColumnLayout {
 
                 padding: 0 // we use spacing instead of paddings here
 
-                ButtonGroup.group: buttonGroup
+                T.ButtonGroup.group: buttonGroup
             }
         }
     }

@@ -1,0 +1,40 @@
+{
+  "status": "terminal",
+  "phase": "before",
+  "privateCore": false,
+  "privateGui": false,
+  "privateWindowFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "bebbfed6e38b88d2ef54b85e0f83dd1efc112ac63f9a27c7a3d5d6af31fa3991",
+    "plugins/gui/libqt_plugin.dll": "ecaeab25a8dca90a0b3ad92a8794a2aabf8226f7d327db03f7a984dbebd130d5",
+    "plugins/audio_output/libwasapi_plugin.dll": "4e4e33c04003ab5597b64f3657eff68ed2c583f1c7ba192f660482d16d792408",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/controls-fixture/libcontrols_fixture_plugin.dll": "a42185e0c6fd2ca9a83ab0b6077effb9e79d2ae2c9ecfd187768f66e50c10c3c",
+    "test_controls_input.exe": "0a901810be74636e8b8f54f5c0f1cae52b1f5884b6c0f3be42bf7a01131271fb"
+  },
+  "fixtureSha256": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+  "sourceInputCount": 2745,
+  "sourceManifestSha256": "037165b7e423f2a46a89cbe03fed0bab2e9b692a0920fea8da333325c83ab205",
+  "extraInputsSha256": "8a9fd2bbc6d2e44f92bfe140f652e880553b7b7c16e66c687f6213513335d0e3",
+  "producerSha256": "b5343dd1f24fe7929b49fd7bad58a6f135ef8dc57b594d1a1c8b291d2c289e8f",
+  "pid": 27336,
+  "exitCode": 3,
+  "normalExit": false,
+  "checks": [
+    "ok 1 native instance starts",
+    "ok 2 quoted interface chain preserves colons, order and all option blocks",
+    "ok 3 bare embedding player allocated without Qt/hotkeys",
+    "ok 4 bare embedding media allocated",
+    "ok 5 bare embedding video starts",
+    "ok 6 bare embedding window decodes frames"
+  ],
+  "sourceInputsUnchanged": true,
+  "runtimeUnchanged": true,
+  "fixturesUnchanged": true,
+  "producerUnchanged": true,
+  "passed": false
+}

@@ -1,0 +1,23 @@
+{
+  "changedPriorInputs": [
+    "modules/gui/qt/Makefile.am",
+    "src/player/timer.c"
+  ],
+  "addedInputs": [
+    "build-windows/beta-queue-workflow-20261022/build-core-r23.sh",
+    "build-windows/beta-queue-workflow-20261022/prepare-followups-r23.py",
+    "build-windows/beta-queue-workflow-20261022/run-native-audio-r23.py",
+    "build-windows/beta-queue-workflow-20261022/run-ordinary-r23.py",
+    "build-windows/beta-queue-workflow-20261022/run-seek-point-r23.py",
+    "build-windows/beta-queue-workflow-20261022/stage-core-r23.py",
+    "modules/gui/qt/tests/generate_player_seek_timer_test.py",
+    "modules/gui/qt/tests/native_library/paused-audio.mk",
+    "modules/gui/qt/tests/native_library/seek-timer-point.mk",
+    "modules/gui/qt/tests/player_seek_timer_probe.c",
+    "modules/gui/qt/tests/test_native_paused_audio_seek.cpp",
+    "modules/gui/qt/tests/test_player_seek_timer_point.cpp"
+  ],
+  "ordinaryGuiReusedFrom": "ordinary-r19/libqt_plugin.dll",
+  "guiProductionSourceUnchanged": true,
+  "coreProductionScope": "Use current input duration/live status in pending seek points and clear an unavailable position for a new time seek."
+}

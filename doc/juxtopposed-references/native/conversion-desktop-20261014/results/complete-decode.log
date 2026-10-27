@@ -1,0 +1,159 @@
+-- logger module started --
+main debug: VLC media player - 4.0.0-dev Otto Chriek
+main debug: Copyright © 1996-2026 the VideoLAN team
+main debug: revision 4.0.0-dev-39378-g1b4948c322
+main debug: configured with /checkout/extras/package/win32/../../../configure  '--enable-lua' '--enable-flac' '--enable-theora' '--enable-avcodec' '--enable-merge-ffmpeg' '--enable-libass' '--enable-shout' '--enable-goom' '--enable-sse' '--enable-zvbi' '--disable-telx' '--host=x86_64-w64-mingw32' '--with-contrib=../contrib/x86_64-w64-mingw32' '--with-wix=/build/vlc/contrib/x86_64-w64-mingw32/bin' '--enable-live555' '--enable-dvdread' '--enable-debug' '--disable-nls' '--enable-qt' '--enable-skins2' '--enable-update-check' '--enable-caca' '--with-packagedir=/checkout/build-windows/package' 'LTCFLAGS=-O0' 'host_alias=x86_64-w64-mingw32' 'CFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601  -g' 'CPPFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601' 'CXXFLAGS= -D__MSVCRT_VERSION__=0x700 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601  -g' 'PKG_CONFIG=x86_64-w64-mingw32-pkg-config'
+main debug: using performance counters as clock source
+main debug:  frequency: 10000000 Hz
+main debug: searching plug-in modules
+main debug: loading plugins cache file /checkout/build-windows\slice-conversion-modal-package-20261014\plugins\plugins.dat
+main debug: recursively browsing `/checkout/build-windows\slice-conversion-modal-package-20261014\plugins'
+main debug: plug-ins loaded: 600 modules
+main debug: looking for logger module matching "any": 2 candidates
+file debug: opening logfile `/checkout/build-windows\conversion-desktop-output-native-20261014\complete-decode.log'
+main debug: using logger module "file"
+main debug: looking for tracer module matching "none": 0 candidates
+main debug: no tracer modules matched with name none
+main debug: translation test: code is "C"
+main debug: looking for keystore module matching "memory": 1 candidates
+main debug: using keystore module "memory"
+main debug: CPU has capabilities SSE2 SSE3 SSSE3 SSE4.1 FPU 
+main debug: creating audio output
+main debug: looking for audio output module matching "amem,none": 1 candidates
+main debug: no audio output modules matched with name amem,none
+main error: no suitable audio output module
+main debug: creating audio output
+main debug: looking for audio output module matching "amem,none": 1 candidates
+main debug: using audio output module "amem"
+main debug: keeping audio output
+main debug: removing "audio output" module "amem"
+main debug: creating audio output
+main debug: looking for audio output module matching "amem,none": 1 candidates
+main debug: using audio output module "amem"
+main debug: keeping audio output
+main debug: Creating an input for playback'converted-native.flac'
+main debug: using timeshift granularity of 50 MiB
+main debug: using timeshift path: /user-profile/AppData\Local\Temp
+main debug: `repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac' gives access `file' demux `any' path `//checkout/build-windows/conversion-modal-desktop-20261014/converted-native.flac'
+main debug: creating access: repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac
+main debug:  (path: /checkout/build-windows\conversion-modal-desktop-20261014\converted-native.flac)
+main debug: looking for access module matching "file": 5 candidates
+main debug: using access module "filesystem"
+main debug: looking for stream_filter module matching "prefetch,cache": 2 candidates
+cache_read debug: Using stream method for AStream*
+cache_read debug: starting pre-buffering
+cache_read debug: received first data after 0 ms
+cache_read debug: pre-buffering done 1024 bytes in 0s - 34482 KiB/s
+main debug: using stream_filter module "cache_read"
+main debug: looking for stream_filter module matching "any": 4 candidates
+main debug: no stream_filter modules matched with name any
+main debug: looking for stream_directory module matching "any": 1 candidates
+main debug: no stream_directory modules matched with name any
+main debug: attachment of directory-extractor failed for repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac
+main debug: looking for stream_filter module matching "record": 1 candidates
+main debug: using stream_filter module "record"
+main debug: creating demux "any", URL: repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac, path: /checkout/build-windows\conversion-modal-desktop-20261014\converted-native.flac
+main debug: looking for demux module matching "ext-flac": 65 candidates
+main debug: looking for audio packetizer module matching "any": 11 candidates
+main debug: using audio packetizer module "flac"
+main debug: selecting program id=0
+main debug: ES track added: 'audio/0' (fourcc: 'flac')
+main debug: using demux module "flacsys"
+main debug: looking for audio packetizer module matching "any": 11 candidates
+main debug: using audio packetizer module "flac"
+main debug: looking for audio decoder module matching "flac": 18 candidates
+main debug: using audio decoder module "flac"
+main debug: ES track selected: 'audio/0' (fourcc: 'flac')
+main debug: looking for meta reader module matching "any": 2 candidates
+main debug: creating access: repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac
+main debug:  (path: /checkout/build-windows\conversion-modal-desktop-20261014\converted-native.flac)
+main debug: looking for access module matching "file": 5 candidates
+main debug: using access module "filesystem"
+main debug: looking for stream_filter module matching "prefetch,cache": 2 candidates
+cache_read debug: Using stream method for AStream*
+cache_read debug: starting pre-buffering
+cache_read debug: received first data after 0 ms
+cache_read debug: pre-buffering done 1024 bytes in 0s - 43478 KiB/s
+main debug: using stream_filter module "cache_read"
+main debug: removing "stream_filter" module "cache_read"
+main debug: removing "access" module "filesystem"
+lua debug: Trying Lua scripts in /checkout/build-windows\conversion-desktop-output-native-20261014\userdata\lua\meta\reader
+lua debug: Trying Lua scripts in /checkout/build-windows\slice-conversion-modal-package-20261014\vlc-preparser.exe\lua\meta\reader
+lua debug: Trying Lua scripts in /checkout/build-windows\slice-conversion-modal-package-20261014\lua\meta\reader
+lua debug: Trying Lua playlist script /checkout/build-windows\slice-conversion-modal-package-20261014\lua\meta\reader\filename.luac
+main debug: no meta reader modules matched with name any
+main debug: `repo:///build-windows/conversion-modal-desktop-20261014/converted-native.flac' successfully opened
+main debug: program(0): using clock source: 'audio'
+main debug: Buffering 0%
+main debug: Buffering 9%
+main debug: restarting module due to input format change
+main debug: 'decoder in/packetizer out' i_physical_channels 0 / 6
+main debug: removing "audio decoder" module "flac"
+main debug: Buffering 18%
+main debug: looking for audio decoder module matching "flac": 18 candidates
+main debug: using audio decoder module "flac"
+flac debug: decode STREAMINFO
+main debug: Buffering 27%
+flac debug: channels:2 samplerate:44100 bitspersamples:16
+flac debug: STREAMINFO decoded
+main debug: Buffering 37%
+main debug: Buffering 46%
+main debug: Buffering 55%
+main debug: reusing audio output
+main debug: Buffering 65%
+main debug: output 's16l' 44100 Hz Mono frame=1 samples/2 bytes
+main debug: looking for audio volume module matching "any": 2 candidates
+main debug: Buffering 74%
+main debug: Buffering 83%
+main debug: Buffering 92%
+main debug: Stream buffering done (1021 ms in 0 ms)
+main debug: using audio volume module "integer_mixer"
+main debug: input 's32l' 44100 Hz Stereo frame=1 samples/8 bytes
+main debug: looking for audio filter module matching "scaletempo": 1 candidates
+scaletempo debug: format: 44100 rate, 2 nch, 4 bps, fl32
+scaletempo debug: params: 30 stride, 0.200 overlap, 14 search
+scaletempo debug: 1.000 scale, 1323.000 stride_in, 1323 stride_out, 1059 standing, 264 overlap, 617 search, 2204 queue, fl32 mode
+main debug: using audio filter module "scaletempo"
+main debug: conversion: 's32l'->'f32l' 44100 Hz->44100 Hz Stereo->Stereo
+main debug: looking for audio converter module matching "any": 9 candidates
+audio_format debug: s32l->f32l, bits per sample: 32->32
+main debug: using audio converter module "audio_format"
+main debug: conversion pipeline complete
+main debug: conversion: 'f32l'->'s16l' 44100 Hz->44100 Hz Stereo->Mono
+main debug: looking for audio converter module matching "any": 9 candidates
+main debug: using audio converter module "simple_channel_mixer"
+main debug: looking for audio converter module matching "any": 9 candidates
+audio_format debug: f32l->s16l, bits per sample: 32->16
+main debug: using audio converter module "audio_format"
+main debug: conversion pipeline complete
+main debug: looking for audio resampler module matching "any": 3 candidates
+soxr debug: Using SoX Resampler with 'cr32s' engine and 'Medium 16-bit with medium roll-off' quality to convert s16l/44100Hz to s16l/44100Hz.
+main debug: using audio resampler module "soxr"
+main debug: Decoder wait done in 5 ms
+main debug: EOF reached
+main debug: waiting decoder fifos to empty
+main debug: killing decoder fourcc `flac'
+main debug: removing "audio decoder" module "flac"
+main debug: removing "audio packetizer" module "flac"
+main debug: removing "audio resampler" module "soxr"
+main debug: removing "audio converter" module "audio_format"
+main debug: removing "audio filter" module "scaletempo"
+main debug: removing "audio converter" module "simple_channel_mixer"
+main debug: removing "audio converter" module "audio_format"
+main debug: removing "audio volume" module "integer_mixer"
+main debug: keeping audio output
+main debug: ES track unselected: 'audio/0' (fourcc: 'flac')
+main debug: removing "demux" module "flacsys"
+main debug: removing "audio packetizer" module "flac"
+main debug: removing "stream_filter" module "record"
+main debug: removing "stream_filter" module "cache_read"
+main debug: removing "access" module "filesystem"
+main debug: ES track deleted: 'audio/0' (fourcc: 'flac')
+main debug: Program doesn't contain anymore ES
+main debug: destroying input for 'converted-native.flac'
+main debug: removing "audio output" module "amem"
+main debug: exiting
+main debug: no exit handler
+main debug: removing all interfaces
+main debug: removing "keystore" module "memory"
+-- logger module stopped --

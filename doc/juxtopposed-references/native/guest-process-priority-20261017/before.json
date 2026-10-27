@@ -1,0 +1,99 @@
+{
+  "passed": true,
+  "expectedMissingSavedHigh": true,
+  "cases": {
+    "default": {
+      "forcedCleanupUsed": false,
+      "pid": 19204,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 32,
+      "after": 32,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "inherit",
+      "passed": true
+    },
+    "saved-high": {
+      "forcedCleanupUsed": false,
+      "pid": 1768,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 32,
+      "after": 32,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "above",
+      "passed": false
+    },
+    "cli-high": {
+      "forcedCleanupUsed": false,
+      "pid": 2300,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 32,
+      "after": 32768,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "above",
+      "passed": true
+    },
+    "cli-no-high": {
+      "forcedCleanupUsed": false,
+      "pid": 3856,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 32,
+      "after": 32,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "inherit",
+      "passed": true
+    },
+    "inherited-below": {
+      "forcedCleanupUsed": false,
+      "pid": 11208,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 16384,
+      "after": 16384,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "inherit",
+      "passed": true
+    },
+    "inherited-below-cli-no-high": {
+      "forcedCleanupUsed": false,
+      "pid": 3968,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 16384,
+      "after": 16384,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "inherit",
+      "passed": true
+    },
+    "cli-lookalike": {
+      "forcedCleanupUsed": false,
+      "pid": 16980,
+      "exitCode": 0,
+      "normalExit": true,
+      "before": 32,
+      "after": 32768,
+      "restored": true,
+      "initialized": true,
+      "startupError": -1,
+      "expectation": "inherit",
+      "passed": false
+    }
+  },
+  "coreSha256": "ea9253fef4f596a29b158b8d331aed05eaff59e4ced0f012c9d19e347b8b7557",
+  "fullPerformanceOrBetaAccepted": false
+}

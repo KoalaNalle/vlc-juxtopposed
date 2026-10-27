@@ -36,7 +36,8 @@
 typedef struct input_fetcher_t input_fetcher_t;
 
 typedef struct input_fetcher_callbacks_t {
-    void (*on_art_fetch_ended)(input_item_t *, bool fetched, void *userdata);
+    /* status describes completion/cancellation/timeout, independently of art. */
+    void (*on_art_fetch_ended)(input_item_t *, int status, bool fetched, void *userdata);
 } input_fetcher_callbacks_t;
 
 /**
@@ -54,8 +55,12 @@ input_fetcher_t *input_fetcher_New( vlc_object_t *, int request_type );
  * The input item is retained until the art fetching is done or until the
  * fetcher object is destroyed.
  */
-int input_fetcher_Push( input_fetcher_t *, input_item_t *, int,
+int input_fetcher_Push( input_fetcher_t *, input_item_t *, int, vlc_tick_t deadline,
                         const input_fetcher_callbacks_t *, void * );
+
+/* Cancel matching callback contexts (NULL means all), including active stages.
+ * Callbacks may run synchronously, always outside the fetcher's lock. */
+void input_fetcher_Cancel(input_fetcher_t *, void *userdata);
 
 /**
  * This function destroys the fetcher object and thread.

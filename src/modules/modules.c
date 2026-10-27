@@ -264,6 +264,27 @@ static int generic_start(void *func, bool forced, va_list ap)
     return ret;
 }
 
+static int generic_start_preferred(void *func, bool forced, va_list ap)
+{
+    (void)forced;
+    return generic_start(func, false, ap);
+}
+
+#undef module_need_preferred
+module_t *module_need_preferred(vlc_object_t *obj, const char *cap,
+                               const char *name)
+{
+    const bool previous_force = obj->force;
+    module_t *module = vlc_module_load(obj->logger, cap, name, false,
+                                      generic_start_preferred, obj);
+    if (module != NULL) {
+        var_Create(obj, "module-name", VLC_VAR_STRING);
+        var_SetString(obj, "module-name", module_get_object(module));
+    }
+    obj->force = previous_force;
+    return module;
+}
+
 #undef module_need
 module_t *module_need(vlc_object_t *obj, const char *cap, const char *name,
                       bool strict)

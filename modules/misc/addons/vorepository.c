@@ -80,9 +80,10 @@ struct addons_finder_sys_t
 static int ParseManifest( addons_finder_t *p_finder, addon_entry_t *p_entry,
                           const char *psz_tempfileuri, stream_t *p_stream )
 {
+    struct addon_xml_binding data_pointer = { {NULL}, TYPE_NONE };
     int i_num_entries_created = 0;
     const char *p_node;
-    int i_current_node_type;
+    int i_current_node_type = 0;
 
     /* attr */
     const char *attr, *value;
@@ -197,22 +198,27 @@ static int ParseManifest( addons_finder_t *p_finder, addon_entry_t *p_entry,
         }
     }
 
+    if (i_current_node_type < 0)
+        i_num_entries_created = 0;
 end:
+   free(psz_filename);
    xml_ReaderDelete( p_xml_reader );
    return i_num_entries_created;
 }
 
 static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
 {
+    struct addon_xml_binding data_pointer = { {NULL}, TYPE_NONE };
     int i_num_entries_created = 0;
 
     const char *p_node;
     const char *attr, *value;
-    int i_current_node_type;
+    int i_current_node_type = 0;
     addon_entry_t *p_entry = NULL;
+    bool valid_document = false, valid_uuid = false;
 
     xml_reader_t *p_xml_reader = xml_ReaderCreate( p_finder, p_stream );
-    if( !p_xml_reader ) return 0;
+    if( !p_xml_reader ) return -1;
 
     if( xml_ReaderNextNode( p_xml_reader, &p_node ) != XML_READER_STARTELEM )
     {
@@ -225,6 +231,7 @@ static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
         msg_Err( p_finder, "unsupported XML data format" );
         goto end;
     }
+    valid_document = true;
 
     while( (i_current_node_type = xml_ReaderNextNode( p_xml_reader, &p_node )) > 0 )
     {
@@ -237,6 +244,12 @@ static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
                 if ( p_entry ) /* Unclosed tag */
                     addon_entry_Release( p_entry );
                 p_entry = addon_entry_New();
+                if (!p_entry)
+                {
+                    valid_document = false;
+                    goto end;
+                }
+                valid_uuid = false;
                 p_entry->psz_source_module = strdup( ADDONS_MODULE_SHORTCUT );
                 p_entry->e_flags = ADDON_MANAGEABLE;
                 p_entry->e_state = ADDON_NOTINSTALLED;
@@ -249,7 +262,7 @@ static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
                     }
                     else if ( !strcmp( attr, "id" ) )
                     {
-                        addons_uuid_read( value, & p_entry->uuid );
+                        valid_uuid = addons_uuid_read( value, & p_entry->uuid );
                     }
                     else if ( !strcmp( attr, "downloads" ) )
                     {
@@ -306,6 +319,13 @@ static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
             if ( !p_entry ) break;
             if ( ! strcmp( p_node, "addon" ) )
             {
+                const addon_uuid_t nil = {0};
+                if (!valid_uuid || !memcmp(p_entry->uuid, nil, sizeof(nil)))
+                {
+                    addon_entry_Release(p_entry);
+                    p_entry = NULL;
+                    break;
+                }
                 /* then append entry */
                 ARRAY_APPEND( p_finder->entries, p_entry );
                 p_entry = NULL;
@@ -320,11 +340,13 @@ static int ParseCategoriesInfo( addons_finder_t *p_finder, stream_t *p_stream )
         }
     }
 
+    if (i_current_node_type < 0 || p_entry != NULL)
+        valid_document = false;
 end:
    if ( p_entry ) /* Unclosed tag */
        addon_entry_Release( p_entry );
    xml_ReaderDelete( p_xml_reader );
-   return i_num_entries_created;
+   return valid_document ? i_num_entries_created : -1;
 }
 
 static stream_t * vlc_stream_NewURL_ND( addons_finder_t *p_obj, const char *psz_uri )
@@ -351,12 +373,21 @@ static int Find( addons_finder_t *p_finder )
     int i_res = ParseCategoriesInfo( p_finder, p_stream );
     vlc_stream_Delete( p_stream );
 
-    return i_res > 0 ? VLC_SUCCESS : VLC_EGENERIC;
+    return i_res >= 0 ? VLC_SUCCESS : VLC_EGENERIC;
 }
 
 static int Retrieve( addons_finder_t *p_finder, addon_entry_t *p_entry )
 {
     vlc_mutex_lock( &p_entry->lock );
+    /* A failed attempt must not leave stale archive-resource URLs in a retry. */
+    addon_file_t *file;
+    ARRAY_FOREACH(file, p_entry->files)
+    {
+        free(file->psz_filename);
+        free(file->psz_download_uri);
+        free(file);
+    }
+    ARRAY_RESET(p_entry->files);
     if ( !p_entry->psz_archive_uri )
     {
         vlc_mutex_unlock( &p_entry->lock );
@@ -430,6 +461,9 @@ static int Retrieve( addons_finder_t *p_finder, addon_entry_t *p_entry )
         }
     }
 
+    if (i_read < 0)
+        i_ret = VLC_EGENERIC;
+
     vlc_close( fd );
     vlc_stream_Delete( p_stream );
 
@@ -480,7 +514,7 @@ static int FindDesignated( addons_finder_t *p_finder )
     free( psz_manifest );
     if ( !p_stream ) return VLC_EGENERIC;
 
-    if ( ParseCategoriesInfo( p_finder, p_stream ) )
+    if ( ParseCategoriesInfo( p_finder, p_stream ) > 0 )
     {
         /* Do archive uri fixup */
         addon_entry_t *p_entry;
@@ -510,7 +544,7 @@ static int Open(vlc_object_t *p_this)
 
     if ( p_finder->psz_uri &&
          strcmp( "repo://"ADDONS_MODULE_SHORTCUT, p_finder->psz_uri ) &&
-         memcmp( "repo://", p_finder->psz_uri, 8 ) )
+         strcmp( "repo://", p_finder->psz_uri ) )
     {
         free( p_finder->p_sys );
         return VLC_EGENERIC;
@@ -538,7 +572,8 @@ static int OpenDesignated(vlc_object_t *p_this)
     addons_finder_t *p_finder = (addons_finder_t*) p_this;
     if ( !p_finder->psz_uri
          || strncmp( "file://", p_finder->psz_uri, 7 )
-         || strncmp( ".vlp", p_finder->psz_uri + strlen( p_finder->psz_uri ) - 4, 4 )
+         || strlen(p_finder->psz_uri) < 12
+         || strcasecmp( ".vlp", p_finder->psz_uri + strlen( p_finder->psz_uri ) - 4 )
        )
         return VLC_EGENERIC;
 

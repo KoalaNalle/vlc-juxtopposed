@@ -48,6 +48,7 @@ MainViewLoader {
     property alias searchPattern: artistModel.searchPattern
     property alias sortOrder: artistModel.sortOrder
     property alias sortCriteria: artistModel.sortCriteria
+    readonly property string libraryDefaultSortCriteria: "name"
 
     signal artistAlbumViewRequested(var id, int reason)
 
@@ -225,9 +226,11 @@ MainViewLoader {
             Navigation.parentItem: root
 
             onActionForSelection: (selection) => {
-                artistModel.addAndPlay( selection )
-                if ( selection.length === 1)
-                    requestArtistAlbumView(Qt.TabFocusReason)
+                if (selection.length > 1) {
+                    artistModel.addAndPlay(selection)
+                } else if (selection.length === 1) {
+                    root.requestArtistAlbumView(Qt.TabFocusReason)
+                }
             }
 
             sortModel: (_availableRowWidth < VLCStyle.colWidth(4)) ? _modelSmall

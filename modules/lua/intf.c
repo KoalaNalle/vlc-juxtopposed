@@ -50,7 +50,18 @@ struct intf_sys_t
     lua_State *L;
     vlc_thread_t thread;
     vlclua_dtable_t dtable;
+    bool http;
 };
+
+/* This transient state describes this instance's own service, without sending
+ * credentials to a listener which might have acquired the configured port. */
+static void HttpState(intf_thread_t *intf, const char *state, bool release)
+{
+    libvlc_int_t *root = vlc_object_instance(intf);
+    if (var_GetAddress(root, "http-service-owner") != intf) return;
+    var_SetString(root, "http-service-state", state);
+    if (release) var_SetAddress(root, "http-service-owner", NULL);
+}
 /*****************************************************************************
  *
  *****************************************************************************/
@@ -187,6 +198,7 @@ static void *Run(void *data)
 
     if (vlclua_dofile(VLC_OBJECT(p_intf), L, p_sys->psz_filename))
     {
+        if (p_sys->http) HttpState(p_intf, "failed", false);
         msg_Err(p_intf, "Error loading script %s: %s", p_sys->psz_filename,
                 lua_tostring(L, lua_gettop(L)));
         lua_pop(L, 1);
@@ -214,17 +226,37 @@ static int Start_LuaIntf( vlc_object_t *p_this, const char *name )
         name = namebuf;
     }
 
+    const bool http = !strcmp(name, "http");
+    if (http)
+    {
+        libvlc_int_t *root = vlc_object_instance(p_intf);
+        if (var_Type(root, "http-service-owner") == 0)
+            var_Create(root, "http-service-owner", VLC_VAR_ADDRESS);
+        if (var_Type(root, "http-service-state") == 0)
+            var_Create(root, "http-service-state", VLC_VAR_STRING);
+        if (var_GetAddress(root, "http-service-owner") != NULL)
+        {
+            free(namebuf);
+            return VLC_EGENERIC;
+        }
+        var_SetAddress(root, "http-service-owner", p_intf);
+        HttpState(p_intf, "starting", false);
+    }
+
     intf_sys_t *p_sys = malloc( sizeof(*p_sys) );
     if( unlikely(p_sys == NULL) )
     {
+        if (http) HttpState(p_intf, "failed", true);
         free( namebuf );
         return VLC_ENOMEM;
     }
     p_intf->p_sys = p_sys;
+    p_sys->http = http;
 
     p_intf->obj.logger = vlc_LogHeaderCreate( logger, name );
     if( p_intf->obj.logger == NULL )
     {
+        if (http) HttpState(p_intf, "failed", true);
         p_intf->obj.logger = logger;
         free( p_sys );
         free( namebuf );
@@ -388,6 +420,7 @@ error_lua:
     vlclua_fd_cleanup( &p_sys->dtable );
     lua_close( p_sys->L );
 error:
+    if (http) HttpState(p_intf, "failed", true);
     free( p_sys->psz_filename );
     free( p_sys );
     vlc_LogDestroy( p_intf->obj.logger );
@@ -403,6 +436,8 @@ void Close_LuaIntf( vlc_object_t *p_this )
 
     vlclua_fd_interrupt( &p_sys->dtable );
     vlc_join( p_sys->thread, NULL );
+
+    if (p_sys->http) HttpState(p_intf, "stopped", true);
 
     lua_close( p_sys->L );
     vlclua_fd_cleanup( &p_sys->dtable );

@@ -1,0 +1,113 @@
+{
+  "config": {
+    "name": "single-picture",
+    "media": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\media-r12\\single-picture.mkv",
+    "audio": "none",
+    "video": true,
+    "extraOptions": []
+  },
+  "passed": true,
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\startup-single-picture\\probe\\native.log",
+    "--no-audio"
+  ],
+  "producerSha256": "c6567017d5e8e0516e8d26acbb0e1b82d90c5215a9185bb6d577fcd6a9f1f010",
+  "coreSha256": "7ab8075014b11a72c5b51e41e0e067fcb8966505b19d23614d0c5ddc1f4ba53f",
+  "mediaSha256": "0b50b2e4f36b2350ae5ceeb38cf6315af52f37ec3d3674ef76cf43325551c1c6",
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 1,
+      "vouts": 1,
+      "selectedVideoTracks": 1,
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshotSha256": "9ad62ee8a09a29ed0430c91dd03a2e03e2801373e6ad837aed1011e3d5970402",
+      "width": 960,
+      "height": 540
+    },
+    {
+      "step": "held-paused-0",
+      "state": 3,
+      "timeUs": 1,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-1",
+      "state": 3,
+      "timeUs": 1,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-2",
+      "state": 3,
+      "timeUs": 1,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "held-paused-3",
+      "state": 3,
+      "timeUs": 1,
+      "vouts": 1,
+      "selectedVideoTracks": 1
+    },
+    {
+      "step": "resumed",
+      "state": 4,
+      "timeUs": 0,
+      "vouts": 1,
+      "selectedVideoTracks": 0
+    },
+    {
+      "step": "paused-again-or-ended",
+      "state": 4,
+      "timeUs": 0,
+      "vouts": 1,
+      "selectedVideoTracks": 0
+    }
+  ],
+  "teardownComplete": true,
+  "assertions": {
+    "initialPaused": true,
+    "expectedVideoSelection": true,
+    "initialPicture": true,
+    "heldPausedClockStable": true,
+    "resumedOrShortMediaEnded": true,
+    "advancedOrShortMediaEnded": true,
+    "repausedOrShortMediaEnded": true
+  },
+  "playReturn": 0,
+  "initialPauseReached": true,
+  "stopReturn": -2147483648,
+  "stopReached": true,
+  "diagnostics": [
+    "main error: buffer deadlock prevented",
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-subtitle-delay-repair-20261023\\regressions-ordinary-r3\\runtime\\plugins\\plugins.dat: No error",
+    "mkv warning: find KaxCues FIXME",
+    "mkv warning: EOF",
+    "mkv warning: cannot get block EOF?",
+    "main warning: window size missing"
+  ],
+  "actualWasapiSelected": false
+}

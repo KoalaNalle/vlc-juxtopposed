@@ -31,6 +31,28 @@
 #include "encoder.h"
 #include "encoder_priv.h"
 
+module_t *transcode_encoder_module_need(encoder_t *encoder,
+                                      const char *capability,
+                                      const char *explicit_name)
+{
+    if (explicit_name && *explicit_name && strcmp(explicit_name, "any"))
+        return module_need(encoder, capability, explicit_name, true);
+
+    char *preferred = var_InheritString(encoder, "sout-transcode-preferred-encoder");
+    if (!preferred || !*preferred || !strcmp(preferred, "any") || !strcmp(preferred, "none"))
+    {
+        free(preferred);
+        return module_need(encoder, capability, explicit_name, true);
+    }
+
+    /* A preference orders candidates; it must not force an encoder to override
+     * the requested codec/format. Keep the module loader's normal fallback and
+     * activation-resource cleanup, and preserve the caller's force state. */
+    module_t *module = module_need_preferred(encoder, capability, preferred);
+    free(preferred);
+    return module;
+}
+
 void transcode_encoder_config_init( transcode_encoder_config_t *p_cfg )
 {
     memset( p_cfg, 0, sizeof(*p_cfg) );

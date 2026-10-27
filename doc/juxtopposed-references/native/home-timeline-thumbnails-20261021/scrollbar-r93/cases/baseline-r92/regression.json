@@ -1,0 +1,56 @@
+{
+    "allPassed": false,
+    "checks": [
+        {
+            "actualPosition": 0.41000000000000003,
+            "expectedPosition": 0.41,
+            "name": "one activation increases once",
+            "passed": true,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0.39,
+            "expectedPosition": 0.39,
+            "name": "one activation decreases once",
+            "passed": true,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0.75,
+            "expectedPosition": 0.41,
+            "name": "1000 repeated activations still increase once",
+            "passed": false,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0,
+            "expectedPosition": 0.39,
+            "name": "1000 repeated activations still decrease once",
+            "passed": false,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0.4,
+            "expectedPosition": 0.4,
+            "name": "deactivation disconnects the action",
+            "passed": true,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0.41000000000000003,
+            "expectedPosition": 0.41,
+            "name": "reactivation reconnects exactly once",
+            "passed": true,
+            "signalInvoked": true
+        },
+        {
+            "actualPosition": 0.39,
+            "expectedPosition": 0.39,
+            "name": "repeat and deactivate cycle reconnects exactly once",
+            "passed": true,
+            "signalInvoked": true
+        }
+    ],
+    "privateFixture": true,
+    "scope": "Real Qt Quick scrollbar accessibility signals after repeated activation, deactivation and reactivation. Hidden generated test object; no user media/settings/input."
+}

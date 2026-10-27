@@ -1,0 +1,79 @@
+{
+  "cases": 16,
+  "originalFailures": 15,
+  "repairedFailures": 0,
+  "sameNativeExecutable": true,
+  "onlyChangedBinaries": [
+    "libvlccore.dll",
+    "plugins/audio_filter/libsoxr_plugin.dll"
+  ],
+  "original": {
+    "runtimeSha256": {
+      "test_modules_soxr_timestamps.exe": "1c52110c8de34718fb191939f8d665b733233acc37d2147bea51a7113eb6020d",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "da2989f73d5fc1040104ee745c13538375a6381e8f2d37d0979bb0a5af9c6345",
+      "plugins/audio_filter/libsoxr_plugin.dll": "d5600210c4932d41efdb1d2d6c7783965369f43f9c7ce6b9e5720d2bd0fb039d"
+    },
+    "passed": false,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "exitCode": 1,
+    "normalExit": false,
+    "terminationConfirmed": true,
+    "passLines": [
+      "PASS: adaptive input-clock/ratio-switch contract failures=0"
+    ],
+    "failLines": [
+      "FAIL: stereo downsample samples=16000 expected=16000 blocks=186 bad-pts=185 bad-lengths=0",
+      "FAIL: mono upsample samples=88200 expected=88200 blocks=36 bad-pts=35 bad-lengths=10",
+      "FAIL: fractional output clock samples=22050 expected=22050 blocks=204 bad-pts=203 bad-lengths=20",
+      "FAIL: partial tail samples=96480 expected=96480 blocks=186 bad-pts=185 bad-lengths=54",
+      "FAIL: short buffered stream samples=94 expected=94 blocks=4 bad-pts=3 bad-lengths=0",
+      "FAIL: flush reanchors and drops old tail samples=88200 expected=88200 blocks=36 bad-pts=35 bad-lengths=10",
+      "FAIL: discontinuity reanchors and drops old tail samples=90924 expected=88200 blocks=36 bad-pts=35 bad-lengths=11",
+      "FAIL: missing later timestamps use sample clock samples=16000 expected=16000 blocks=186 bad-pts=185 bad-lengths=0",
+      "FAIL: completed drain reanchors samples=88200 expected=88200 blocks=36 bad-pts=35 bad-lengths=10",
+      "FAIL: fresh stream after completed drain samples=88200 expected=88200 blocks=36 bad-pts=35 bad-lengths=10",
+      "FAIL: forward timestamp jump preserves buffered PCM samples=96000 expected=96000 blocks=186 bad-pts=185 bad-lengths=54",
+      "FAIL: backward timestamp jump preserves buffered PCM samples=96000 expected=96000 blocks=186 bad-pts=185 bad-lengths=54",
+      "FAIL: unknown head preserved until timestamp arrives samples=88294 expected=88294 blocks=37 bad-pts=36 bad-lengths=10",
+      "FAIL: all unknown timestamps retain complete PCM samples=88200 expected=88200 blocks=36 bad-pts=1 bad-lengths=10",
+      "FAIL: generic no-clock downsample chain samples=16000 expected=16000 bad-pts=173 bad-lengths=0",
+      "FAIL: generic no-clock upsample chain samples=88200 expected=88200 bad-pts=32 bad-lengths=8"
+    ]
+  },
+  "repaired": {
+    "runtimeSha256": {
+      "test_modules_soxr_timestamps.exe": "1c52110c8de34718fb191939f8d665b733233acc37d2147bea51a7113eb6020d",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "6038664a7b4b02c19bcba38dbe6c09716d1dfbcf55b3b8dae4f7d2ddf876cc4a",
+      "plugins/audio_filter/libsoxr_plugin.dll": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16"
+    },
+    "passed": true,
+    "timedOut": false,
+    "forcedCleanupUsed": false,
+    "exitCode": 0,
+    "normalExit": true,
+    "terminationConfirmed": true,
+    "passLines": [
+      "PASS: stereo downsample samples=16000 expected=16000 blocks=186 bad-pts=0 bad-lengths=0",
+      "PASS: mono upsample samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: fractional output clock samples=22050 expected=22050 blocks=204 bad-pts=0 bad-lengths=0",
+      "PASS: partial tail samples=96480 expected=96480 blocks=186 bad-pts=0 bad-lengths=0",
+      "PASS: short buffered stream samples=94 expected=94 blocks=4 bad-pts=0 bad-lengths=0",
+      "PASS: flush reanchors and drops old tail samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: discontinuity reanchors and drops old tail samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: missing later timestamps use sample clock samples=16000 expected=16000 blocks=186 bad-pts=0 bad-lengths=0",
+      "PASS: completed drain reanchors samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: fresh stream after completed drain samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: forward timestamp jump preserves buffered PCM samples=96000 expected=96000 blocks=186 bad-pts=0 bad-lengths=0",
+      "PASS: backward timestamp jump preserves buffered PCM samples=96000 expected=96000 blocks=186 bad-pts=0 bad-lengths=0",
+      "PASS: unknown head preserved until timestamp arrives samples=88294 expected=88294 blocks=37 bad-pts=0 bad-lengths=0",
+      "PASS: all unknown timestamps retain complete PCM samples=88200 expected=88200 blocks=36 bad-pts=0 bad-lengths=0",
+      "PASS: adaptive input-clock/ratio-switch contract failures=0",
+      "PASS: generic no-clock downsample chain samples=16000 expected=16000 bad-pts=0 bad-lengths=0",
+      "PASS: generic no-clock upsample chain samples=88200 expected=88200 bad-pts=0 bad-lengths=0"
+    ],
+    "failLines": []
+  }
+}

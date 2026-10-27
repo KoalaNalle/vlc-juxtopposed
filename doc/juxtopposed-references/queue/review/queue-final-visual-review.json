@@ -1,0 +1,2867 @@
+{
+  "schema_version": 1,
+  "reviewer": "Independent delegated reviewer /root/visual_final",
+  "reviewed_at_utc": "2026-10-13T11:03:45.643292+00:00",
+  "scope": "Independent comparison of three canonical 400x946 isolated Queue panel states. Four assessed categories cover 85% of the shared rubric; combined state/responsive 15% is null/excluded. Not an overall VLC/UI/release score.",
+  "review_method": [
+    "Visual inspection with tools.view_image of the original PNG exports and current production QML captures, followed by side-by-side and cyan/magenta overlay inspection.",
+    "Original PNGs composited on black using Pillow alpha_composite for color comparison; original bytes preserved separately. Render snapshots copied byte-for-byte.",
+    "Geometry measured from foreground pixels above luminance30 in predefined regions; bounding boxes are exclusive-right/bottom. SVG text and rectangle metadata read for reference only; vector paths not inspected, edited or redrawn.",
+    "Scores independently assigned from the observed images and measured differences; no implementer or previous reviewer score was read or used. Pixel error is corroborating evidence, not a substituted visual score. Whole-image MAE is dominated by the empty body, so top300 and per-element metrics are also provided."
+  ],
+  "design_provenance": {
+    "author": "Juxtopposed",
+    "creator_url": "https://www.youtube.com/@juxtopposed",
+    "original_design_url": "https://www.figma.com/community/file/1691465999134370980/vlc-redesign",
+    "inspection_file_url": "https://www.figma.com/design/zdNUYRVOH9lEtIxMYvh8DV/VLC-Redesign--Community-",
+    "export_date": "2026-10-13",
+    "license": "CC BY 4.0",
+    "node_ids": {
+      "queue": "463:831",
+      "bookmarks": "6320:13784",
+      "chapters": "6321:14045"
+    },
+    "provenance_basis": "Read source reference manifest; matching current original PNG/SVG hashes recorded independently."
+  },
+  "capture_provenance": {
+    "source": "Existing production QML captures in work/queue-panel-previews",
+    "renderer_script": "modules/gui/qt/tests/test_juxtopposed_queue.py",
+    "runtime_python": "external development runtime (PySide6 Essentials 6.8.3)",
+    "pyside_runtime": "work/qt-tooling-6.8/PySide6",
+    "qt_version": "6.8",
+    "platform": "Windows offscreen",
+    "quick_backend": "software",
+    "canonical_size": [
+      400,
+      946
+    ],
+    "pixel_format_limit": "RGB32 capture even with requested alpha; saved PNG mode RGB. No alpha synthesized into renders.",
+    "source_fill": "Qt.rgba(14 / 255, 14 / 255, 14 / 255, 0.95)",
+    "original_png_body_alpha": 242
+  },
+  "weights_percent": {
+    "layout": 35,
+    "typography": 20,
+    "surfaces": 15,
+    "artwork": 15,
+    "state_responsive": 15
+  },
+  "score_interpretation": {
+    "threshold": 9.5,
+    "all_states_must_pass": true,
+    "no_critical_defects_required": true,
+    "state_responsive_category": "Combined state/responsive category (15%) remains unassessed: null and excluded. Canonical active-tab/content matches are separately confirmed evidence without a numerical category score.",
+    "surfaces_category": "Scores appearance on the isolated black-backed canonical comparison. Source translucent fill observed, native compositing unverified; missing background blur is recorded separately.",
+    "assessed_weight_percent": 85,
+    "unassessed_weight_percent": 15,
+    "normalization": "Unchanged four assessed category scores normalized over their total weight of 85%. No category score changed during this amendment.",
+    "pass_scope": "The 9.5 threshold is met within assessed canonical static presentation (85% rubric coverage), without remaining observed critical defects; this does not establish 100% rubric coverage."
+  },
+  "states": {
+    "queue": {
+      "reference_png": {
+        "path": "doc/juxtopposed-references/queue/queue-463-831.png",
+        "sha256": "b52063f846048ac2942743b46ad7bb41ab9fd9f503e38262cf24d81beed78305",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGBA"
+      },
+      "reference_svg": {
+        "path": "doc/juxtopposed-references/queue/queue-463-831.svg",
+        "sha256": "8892df7ac4e657178e56840ad1a7be423ef9fe5027a4e23a69a28487c613d7dd"
+      },
+      "render_png": {
+        "path": "doc/juxtopposed-references/queue/review/queue-final-visual-review-queue-render-snapshot.png",
+        "sha256": "ee0427eaeb56462aa81bccf0bd245d7eedf2d9d252c77e9c41fe09ca92849940",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGB"
+      },
+      "black_matte_pixel_comparison": {
+        "whole_panel": {
+          "rgb_mae_0_255": 0.774678,
+          "pixels_any_channel_difference_above_20": 4513,
+          "area": 378400
+        },
+        "content_top_300": {
+          "rgb_mae_0_255": 2.442661,
+          "pixels_any_channel_difference_above_20": 4513,
+          "area": 120000
+        }
+      },
+      "measured_foreground_geometry": {
+        "tab_queue_icon": {
+          "roi": [
+            38,
+            14,
+            58,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 3.848333,
+            "pixels_any_channel_difference_above_20": 27,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              55,
+              31
+            ],
+            "ink_pixels_gt_30": 111
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              56,
+              31
+            ],
+            "ink_pixels_gt_30": 112
+          }
+        },
+        "tab_bookmarks_icon": {
+          "roi": [
+            154,
+            14,
+            174,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 8.3475,
+            "pixels_any_channel_difference_above_20": 72,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              158,
+              16,
+              170,
+              31
+            ],
+            "ink_pixels_gt_30": 61
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              157,
+              16,
+              169,
+              31
+            ],
+            "ink_pixels_gt_30": 62
+          }
+        },
+        "tab_chapters_icon": {
+          "roi": [
+            289,
+            14,
+            310,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.947619,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 420
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              291,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 75
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              292,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 72
+          }
+        },
+        "tab_queue_caption": {
+          "roi": [
+            60,
+            15,
+            109,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 7.374866,
+            "pixels_any_channel_difference_above_20": 120,
+            "area": 931
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              66,
+              19,
+              103,
+              30
+            ],
+            "ink_pixels_gt_30": 145
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              67,
+              20,
+              103,
+              30
+            ],
+            "ink_pixels_gt_30": 134
+          }
+        },
+        "tab_bookmarks_caption": {
+          "roi": [
+            180,
+            15,
+            260,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 11.009211,
+            "pixels_any_channel_difference_above_20": 272,
+            "area": 1520
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              183,
+              19,
+              245,
+              29
+            ],
+            "ink_pixels_gt_30": 261
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              182,
+              20,
+              246,
+              29
+            ],
+            "ink_pixels_gt_30": 210
+          }
+        },
+        "tab_chapters_caption": {
+          "roi": [
+            313,
+            15,
+            380,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 7.379419,
+            "pixels_any_channel_difference_above_20": 171,
+            "area": 1273
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              318,
+              19,
+              369,
+              31
+            ],
+            "ink_pixels_gt_30": 209
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              319,
+              20,
+              370,
+              32
+            ],
+            "ink_pixels_gt_30": 174
+          }
+        },
+        "summary": {
+          "roi": [
+            15,
+            70,
+            180,
+            100
+          ],
+          "difference": {
+            "rgb_mae_0_255": 6.158586,
+            "pixels_any_channel_difference_above_20": 438,
+            "area": 4950
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              80,
+              132,
+              91
+            ],
+            "ink_pixels_gt_30": 355
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              28,
+              80,
+              129,
+              91
+            ],
+            "ink_pixels_gt_30": 385
+          }
+        },
+        "toolbar": {
+          "roi": [
+            190,
+            68,
+            385,
+            103
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.218022,
+            "pixels_any_channel_difference_above_20": 10,
+            "area": 6825
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              202,
+              76,
+              376,
+              94
+            ],
+            "ink_pixels_gt_30": 404
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              202,
+              76,
+              376,
+              94
+            ],
+            "ink_pixels_gt_30": 415
+          }
+        },
+        "row1_move": {
+          "roi": [
+            20,
+            120,
+            53,
+            152
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.045455,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 1056
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              132,
+              43,
+              140
+            ],
+            "ink_pixels_gt_30": 56
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              29,
+              132,
+              43,
+              140
+            ],
+            "ink_pixels_gt_30": 56
+          }
+        },
+        "row1_title": {
+          "roi": [
+            53,
+            120,
+            310,
+            152
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.803259,
+            "pixels_any_channel_difference_above_20": 704,
+            "area": 8224
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              62,
+              131,
+              213,
+              145
+            ],
+            "ink_pixels_gt_30": 643
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              63,
+              131,
+              213,
+              145
+            ],
+            "ink_pixels_gt_30": 733
+          }
+        },
+        "row1_duration": {
+          "roi": [
+            310,
+            120,
+            380,
+            152
+          ],
+          "difference": {
+            "rgb_mae_0_255": 4.340179,
+            "pixels_any_channel_difference_above_20": 181,
+            "area": 2240
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              338,
+              131,
+              375,
+              142
+            ],
+            "ink_pixels_gt_30": 179
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              336,
+              131,
+              375,
+              142
+            ],
+            "ink_pixels_gt_30": 188
+          }
+        },
+        "row2_move": {
+          "roi": [
+            20,
+            164,
+            53,
+            196
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.045455,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 1056
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              176,
+              43,
+              184
+            ],
+            "ink_pixels_gt_30": 56
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              29,
+              176,
+              43,
+              184
+            ],
+            "ink_pixels_gt_30": 56
+          }
+        },
+        "row2_title": {
+          "roi": [
+            53,
+            164,
+            310,
+            196
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.748541,
+            "pixels_any_channel_difference_above_20": 703,
+            "area": 8224
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              62,
+              175,
+              216,
+              189
+            ],
+            "ink_pixels_gt_30": 644
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              63,
+              175,
+              216,
+              189
+            ],
+            "ink_pixels_gt_30": 748
+          }
+        },
+        "row2_duration": {
+          "roi": [
+            310,
+            164,
+            380,
+            196
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.541964,
+            "pixels_any_channel_difference_above_20": 112,
+            "area": 2240
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              341,
+              175,
+              375,
+              186
+            ],
+            "ink_pixels_gt_30": 162
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              340,
+              175,
+              375,
+              186
+            ],
+            "ink_pixels_gt_30": 163
+          }
+        },
+        "row3_move": {
+          "roi": [
+            20,
+            208,
+            53,
+            240
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.045455,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 1056
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              220,
+              43,
+              228
+            ],
+            "ink_pixels_gt_30": 56
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              29,
+              220,
+              43,
+              228
+            ],
+            "ink_pixels_gt_30": 56
+          }
+        },
+        "row3_title": {
+          "roi": [
+            53,
+            208,
+            310,
+            240
+          ],
+          "difference": {
+            "rgb_mae_0_255": 6.148589,
+            "pixels_any_channel_difference_above_20": 714,
+            "area": 8224
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              62,
+              219,
+              216,
+              233
+            ],
+            "ink_pixels_gt_30": 648
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              63,
+              219,
+              215,
+              233
+            ],
+            "ink_pixels_gt_30": 749
+          }
+        },
+        "row3_duration": {
+          "roi": [
+            310,
+            208,
+            380,
+            240
+          ],
+          "difference": {
+            "rgb_mae_0_255": 3.377232,
+            "pixels_any_channel_difference_above_20": 153,
+            "area": 2240
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              339,
+              219,
+              375,
+              230
+            ],
+            "ink_pixels_gt_30": 174
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              337,
+              219,
+              375,
+              230
+            ],
+            "ink_pixels_gt_30": 184
+          }
+        },
+        "row4_move": {
+          "roi": [
+            20,
+            252,
+            53,
+            284
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.045455,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 1056
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              264,
+              43,
+              272
+            ],
+            "ink_pixels_gt_30": 56
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              29,
+              264,
+              43,
+              272
+            ],
+            "ink_pixels_gt_30": 56
+          }
+        },
+        "row4_title": {
+          "roi": [
+            53,
+            252,
+            310,
+            284
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.805812,
+            "pixels_any_channel_difference_above_20": 713,
+            "area": 8224
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              62,
+              263,
+              216,
+              277
+            ],
+            "ink_pixels_gt_30": 648
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              63,
+              263,
+              216,
+              277
+            ],
+            "ink_pixels_gt_30": 752
+          }
+        },
+        "row4_duration": {
+          "roi": [
+            310,
+            252,
+            380,
+            284
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.7625,
+            "pixels_any_channel_difference_above_20": 120,
+            "area": 2240
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              339,
+              263,
+              375,
+              274
+            ],
+            "ink_pixels_gt_30": 160
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              337,
+              263,
+              375,
+              274
+            ],
+            "ink_pixels_gt_30": 166
+          }
+        }
+      },
+      "body_pixel_200_500": {
+        "original_rgba": [
+          14,
+          14,
+          14,
+          242
+        ],
+        "black_matted_reference_rgb": [
+          13,
+          13,
+          13
+        ],
+        "render_rgb": [
+          13,
+          13,
+          13
+        ]
+      },
+      "outputs": {
+        "comparison": "queue-final-visual-review-queue-comparison.png",
+        "detail_overlay": "queue-final-visual-review-queue-detail-overlay.png",
+        "render_snapshot": "queue-final-visual-review-queue-render-snapshot.png",
+        "unaltered_reference_copy": "queue-final-visual-review-queue-reference-original.png"
+      },
+      "independent_score": {
+        "categories_0_10": {
+          "layout": 9.8,
+          "typography": 9.1,
+          "surfaces": 9.8,
+          "artwork": 9.8,
+          "state_responsive": null
+        },
+        "weighted_score_0_10": 9.63529,
+        "threshold": 9.5,
+        "passed": true,
+        "critical_defects": [],
+        "category_rationale": {
+          "layout": "Panel and content topology match. Toolbar foreground bounds are exactly [202,76,376,94]. All four row baselines and the 44px pitch align; title1 ink begins 1px to the right of the reference, primarily a glyph bearing/rasterization effect.",
+          "typography": "Inter family, 12px tab captions and 14px row text match source metadata. Qt glyph rasterization and advance metrics differ: summary ink [28,80,129,91] versus [29,80,132,91], duration1 [336,131,375,142] versus [338,131,375,142]. Title1 has 733 pixels above luminance30 versus reference643; this metric reflects raster coverage rather than changed font weight.",
+          "surfaces": "Black-matted body RGB13, tab RGB9, and accent RGB211/121/24 match. Corner geometry is close. Native alpha and blur fidelity are excluded from this isolated black-backed score.",
+          "artwork": "Original queue/tab/toolbar/move imagery is retained. Small edge rasterization differences occur; icon placement and visual dimensions agree."
+        },
+        "assessed_weight_percent": 85,
+        "unassessed_weight_percent": 15,
+        "normalization_denominator_percent": 85,
+        "normalization_formula": "(layout*35 + typography*20 + surfaces*15 + artwork*15) / 85",
+        "pass_scope": "Pass against 9.5 for the assessed 85% of canonical static presentation; unassessed combined state/responsive category excluded.",
+        "confirmed_active_tab_content_evidence": "Canonical Queue active icon and underline, 4-row content and summary match. This category scores the visible canonical state only; responsive behavior and interaction states are unassessed.",
+        "scoring_amendment": {
+          "previous_weighted_score_0_10": 9.675,
+          "reason": "Previous calculation applied the combined state/responsive category to only its canonical active-tab/content subset. Strict shared rubric excludes the full combined category because responsive coverage is unassessed.",
+          "four_assessed_category_scores_changed": false,
+          "active_tab_content_evidence_scored": false
+        }
+      },
+      "render_stable_through_review": true
+    },
+    "bookmarks": {
+      "reference_png": {
+        "path": "doc/juxtopposed-references/queue/bookmarks-6320-13784.png",
+        "sha256": "c9456f562d716330de6aa16d99100899f6d2fbbcd552262cbf06d92d4905c133",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGBA"
+      },
+      "reference_svg": {
+        "path": "doc/juxtopposed-references/queue/bookmarks-6320-13784.svg",
+        "sha256": "c062bea41617c16ff0453acad3d8de617c5a4c860c1cbd0c29d1dc1de23c1af7"
+      },
+      "render_png": {
+        "path": "doc/juxtopposed-references/queue/review/queue-final-visual-review-bookmarks-render-snapshot.png",
+        "sha256": "4b5a0ad289c5aa85f5d1655692c47b667ce3111e303ed6c6feb8498aa7d041ef",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGB"
+      },
+      "black_matte_pixel_comparison": {
+        "whole_panel": {
+          "rgb_mae_0_255": 0.522885,
+          "pixels_any_channel_difference_above_20": 2967,
+          "area": 378400
+        },
+        "content_top_300": {
+          "rgb_mae_0_255": 1.648672,
+          "pixels_any_channel_difference_above_20": 2967,
+          "area": 120000
+        }
+      },
+      "measured_foreground_geometry": {
+        "tab_queue_icon": {
+          "roi": [
+            38,
+            14,
+            58,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.2625,
+            "pixels_any_channel_difference_above_20": 13,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              55,
+              31
+            ],
+            "ink_pixels_gt_30": 84
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              56,
+              31
+            ],
+            "ink_pixels_gt_30": 82
+          }
+        },
+        "tab_bookmarks_icon": {
+          "roi": [
+            154,
+            14,
+            174,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 19.329167,
+            "pixels_any_channel_difference_above_20": 137,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              157,
+              16,
+              171,
+              32
+            ],
+            "ink_pixels_gt_30": 138
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              156,
+              16,
+              170,
+              32
+            ],
+            "ink_pixels_gt_30": 140
+          }
+        },
+        "tab_chapters_icon": {
+          "roi": [
+            289,
+            14,
+            310,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.947619,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 420
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              291,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 75
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              292,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 72
+          }
+        },
+        "tab_queue_caption": {
+          "roi": [
+            60,
+            15,
+            109,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.388829,
+            "pixels_any_channel_difference_above_20": 102,
+            "area": 931
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              66,
+              19,
+              102,
+              30
+            ],
+            "ink_pixels_gt_30": 136
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              67,
+              20,
+              103,
+              30
+            ],
+            "ink_pixels_gt_30": 126
+          }
+        },
+        "tab_bookmarks_caption": {
+          "roi": [
+            180,
+            15,
+            260,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 15.061842,
+            "pixels_any_channel_difference_above_20": 304,
+            "area": 1520
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              183,
+              19,
+              245,
+              29
+            ],
+            "ink_pixels_gt_30": 274
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              182,
+              20,
+              246,
+              29
+            ],
+            "ink_pixels_gt_30": 225
+          }
+        },
+        "tab_chapters_caption": {
+          "roi": [
+            313,
+            15,
+            380,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 7.379419,
+            "pixels_any_channel_difference_above_20": 171,
+            "area": 1273
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              318,
+              19,
+              369,
+              31
+            ],
+            "ink_pixels_gt_30": 209
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              319,
+              20,
+              370,
+              32
+            ],
+            "ink_pixels_gt_30": 174
+          }
+        },
+        "summary": {
+          "roi": [
+            15,
+            70,
+            180,
+            100
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.529293,
+            "pixels_any_channel_difference_above_20": 235,
+            "area": 4950
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              29,
+              78,
+              114,
+              89
+            ],
+            "ink_pixels_gt_30": 366
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              28,
+              78,
+              113,
+              89
+            ],
+            "ink_pixels_gt_30": 411
+          }
+        },
+        "toolbar": {
+          "roi": [
+            310,
+            68,
+            385,
+            103
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.030476,
+            "pixels_any_channel_difference_above_20": 0,
+            "area": 2625
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              324,
+              75,
+              376,
+              91
+            ],
+            "ink_pixels_gt_30": 92
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              324,
+              75,
+              376,
+              91
+            ],
+            "ink_pixels_gt_30": 92
+          }
+        },
+        "row1_title": {
+          "roi": [
+            15,
+            116,
+            260,
+            148
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.574617,
+            "pixels_any_channel_difference_above_20": 553,
+            "area": 7840
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              21,
+              127,
+              116,
+              138
+            ],
+            "ink_pixels_gt_30": 427
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              20,
+              127,
+              118,
+              138
+            ],
+            "ink_pixels_gt_30": 480
+          }
+        },
+        "row1_duration": {
+          "roi": [
+            280,
+            116,
+            380,
+            148
+          ],
+          "difference": {
+            "rgb_mae_0_255": 10.87875,
+            "pixels_any_channel_difference_above_20": 587,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              286,
+              127,
+              375,
+              138
+            ],
+            "ink_pixels_gt_30": 404
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              283,
+              127,
+              374,
+              138
+            ],
+            "ink_pixels_gt_30": 421
+          }
+        },
+        "row2_title": {
+          "roi": [
+            15,
+            160,
+            260,
+            192
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.774745,
+            "pixels_any_channel_difference_above_20": 570,
+            "area": 7840
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              21,
+              171,
+              119,
+              182
+            ],
+            "ink_pixels_gt_30": 441
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              20,
+              171,
+              121,
+              182
+            ],
+            "ink_pixels_gt_30": 495
+          }
+        },
+        "row2_duration": {
+          "roi": [
+            280,
+            160,
+            380,
+            192
+          ],
+          "difference": {
+            "rgb_mae_0_255": 4.6575,
+            "pixels_any_channel_difference_above_20": 290,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              289,
+              171,
+              375,
+              182
+            ],
+            "ink_pixels_gt_30": 379
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              287,
+              171,
+              375,
+              182
+            ],
+            "ink_pixels_gt_30": 405
+          }
+        }
+      },
+      "body_pixel_200_500": {
+        "original_rgba": [
+          14,
+          14,
+          14,
+          242
+        ],
+        "black_matted_reference_rgb": [
+          13,
+          13,
+          13
+        ],
+        "render_rgb": [
+          13,
+          13,
+          13
+        ]
+      },
+      "outputs": {
+        "comparison": "queue-final-visual-review-bookmarks-comparison.png",
+        "detail_overlay": "queue-final-visual-review-bookmarks-detail-overlay.png",
+        "render_snapshot": "queue-final-visual-review-bookmarks-render-snapshot.png",
+        "unaltered_reference_copy": "queue-final-visual-review-bookmarks-reference-original.png"
+      },
+      "independent_score": {
+        "categories_0_10": {
+          "layout": 9.8,
+          "typography": 9.0,
+          "surfaces": 9.8,
+          "artwork": 9.8,
+          "state_responsive": null
+        },
+        "weighted_score_0_10": 9.61176,
+        "threshold": 9.5,
+        "passed": true,
+        "critical_defects": [],
+        "category_rationale": {
+          "layout": "Summary and toolbar match position. Toolbar foreground bounds exactly [324,75,376,91]. Two rows have the same vertical bounds and 44px pitch; right-aligned duration ink has a 1px bearing difference at the right edge.",
+          "typography": "Correct DON\u2019T BLINK labels verified after re-capture. Row1 title ink [20,127,118,138] versus [21,127,116,138]; duration1 [283,127,374,138] versus [286,127,375,138]. Baselines align; the 1-3px width/bearing and raster-density differences are visible only in detail comparison.",
+          "surfaces": "Body RGB13, tab RGB9 and active accent match black-matted reference; alpha is flattened by the capture and source fill is rgba(14,14,14,0.95). Blur is outside this isolated comparison.",
+          "artwork": "Active bookmark icon, inactive tab icons, remove and add icons align. The original bookmark artwork differs slightly under Qt antialiasing."
+        },
+        "assessed_weight_percent": 85,
+        "unassessed_weight_percent": 15,
+        "normalization_denominator_percent": 85,
+        "normalization_formula": "(layout*35 + typography*20 + surfaces*15 + artwork*15) / 85",
+        "pass_scope": "Pass against 9.5 for the assessed 85% of canonical static presentation; unassessed combined state/responsive category excluded.",
+        "confirmed_active_tab_content_evidence": "Canonical Bookmarks active tab, summary, two labels, two times and two actions are present. Responsive, selection, hover, disabled and focus states were not assessed.",
+        "scoring_amendment": {
+          "previous_weighted_score_0_10": 9.655,
+          "reason": "Previous calculation applied the combined state/responsive category to only its canonical active-tab/content subset. Strict shared rubric excludes the full combined category because responsive coverage is unassessed.",
+          "four_assessed_category_scores_changed": false,
+          "active_tab_content_evidence_scored": false
+        }
+      },
+      "render_stable_through_review": true
+    },
+    "chapters": {
+      "reference_png": {
+        "path": "doc/juxtopposed-references/queue/chapters-6321-14045.png",
+        "sha256": "366c2a798e1542de0640feb1135e40662b8725a2406b3eb62a274c91b2b98cd8",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGBA"
+      },
+      "reference_svg": {
+        "path": "doc/juxtopposed-references/queue/chapters-6321-14045.svg",
+        "sha256": "4564ff35140f4004053f28d6353fb1a7cd2ba5a9f3544201f59fc4311161d10c"
+      },
+      "render_png": {
+        "path": "doc/juxtopposed-references/queue/review/queue-final-visual-review-chapters-render-snapshot.png",
+        "sha256": "eb8cd387500663a98437918ef8a93cf62c3ee2e1fa41234965691ed4ff8ebe98",
+        "size": [
+          400,
+          946
+        ],
+        "mode": "RGB"
+      },
+      "black_matte_pixel_comparison": {
+        "whole_panel": {
+          "rgb_mae_0_255": 0.507238,
+          "pixels_any_channel_difference_above_20": 3250,
+          "area": 378400
+        },
+        "content_top_300": {
+          "rgb_mae_0_255": 1.599333,
+          "pixels_any_channel_difference_above_20": 3250,
+          "area": 120000
+        }
+      },
+      "measured_foreground_geometry": {
+        "tab_queue_icon": {
+          "roi": [
+            38,
+            14,
+            58,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.2625,
+            "pixels_any_channel_difference_above_20": 13,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              55,
+              31
+            ],
+            "ink_pixels_gt_30": 84
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              40,
+              17,
+              56,
+              31
+            ],
+            "ink_pixels_gt_30": 82
+          }
+        },
+        "tab_bookmarks_icon": {
+          "roi": [
+            154,
+            14,
+            174,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 8.3475,
+            "pixels_any_channel_difference_above_20": 72,
+            "area": 400
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              158,
+              16,
+              170,
+              31
+            ],
+            "ink_pixels_gt_30": 61
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              157,
+              16,
+              169,
+              31
+            ],
+            "ink_pixels_gt_30": 62
+          }
+        },
+        "tab_chapters_icon": {
+          "roi": [
+            289,
+            14,
+            310,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.546032,
+            "pixels_any_channel_difference_above_20": 20,
+            "area": 420
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              291,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 84
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              292,
+              18,
+              308,
+              30
+            ],
+            "ink_pixels_gt_30": 74
+          }
+        },
+        "tab_queue_caption": {
+          "roi": [
+            60,
+            15,
+            109,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 5.388829,
+            "pixels_any_channel_difference_above_20": 102,
+            "area": 931
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              66,
+              19,
+              102,
+              30
+            ],
+            "ink_pixels_gt_30": 136
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              67,
+              20,
+              103,
+              30
+            ],
+            "ink_pixels_gt_30": 126
+          }
+        },
+        "tab_bookmarks_caption": {
+          "roi": [
+            180,
+            15,
+            260,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 11.009211,
+            "pixels_any_channel_difference_above_20": 272,
+            "area": 1520
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              183,
+              19,
+              245,
+              29
+            ],
+            "ink_pixels_gt_30": 261
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              182,
+              20,
+              246,
+              29
+            ],
+            "ink_pixels_gt_30": 210
+          }
+        },
+        "tab_chapters_caption": {
+          "roi": [
+            313,
+            15,
+            380,
+            34
+          ],
+          "difference": {
+            "rgb_mae_0_255": 10.073056,
+            "pixels_any_channel_difference_above_20": 199,
+            "area": 1273
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              318,
+              19,
+              369,
+              31
+            ],
+            "ink_pixels_gt_30": 220
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              319,
+              20,
+              370,
+              32
+            ],
+            "ink_pixels_gt_30": 185
+          }
+        },
+        "row1_number": {
+          "roi": [
+            20,
+            71,
+            55,
+            103
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.812202,
+            "pixels_any_channel_difference_above_20": 27,
+            "area": 1120
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              24,
+              82,
+              29,
+              93
+            ],
+            "ink_pixels_gt_30": 27
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              24,
+              82,
+              29,
+              93
+            ],
+            "ink_pixels_gt_30": 28
+          }
+        },
+        "row1_title": {
+          "roi": [
+            60,
+            71,
+            280,
+            103
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.600142,
+            "pixels_any_channel_difference_above_20": 189,
+            "area": 7040
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              68,
+              82,
+              111,
+              93
+            ],
+            "ink_pixels_gt_30": 207
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              68,
+              82,
+              110,
+              93
+            ],
+            "ink_pixels_gt_30": 230
+          }
+        },
+        "row1_duration": {
+          "roi": [
+            280,
+            71,
+            380,
+            103
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.302812,
+            "pixels_any_channel_difference_above_20": 155,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              319,
+              82,
+              375,
+              93
+            ],
+            "ink_pixels_gt_30": 253
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              318,
+              82,
+              375,
+              93
+            ],
+            "ink_pixels_gt_30": 267
+          }
+        },
+        "row2_number": {
+          "roi": [
+            20,
+            115,
+            55,
+            147
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.949702,
+            "pixels_any_channel_difference_above_20": 31,
+            "area": 1120
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              25,
+              126,
+              32,
+              137
+            ],
+            "ink_pixels_gt_30": 45
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              25,
+              126,
+              32,
+              137
+            ],
+            "ink_pixels_gt_30": 46
+          }
+        },
+        "row2_title": {
+          "roi": [
+            60,
+            115,
+            280,
+            147
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.118608,
+            "pixels_any_channel_difference_above_20": 157,
+            "area": 7040
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              69,
+              126,
+              110,
+              140
+            ],
+            "ink_pixels_gt_30": 202
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              68,
+              126,
+              110,
+              140
+            ],
+            "ink_pixels_gt_30": 237
+          }
+        },
+        "row2_duration": {
+          "roi": [
+            280,
+            115,
+            380,
+            147
+          ],
+          "difference": {
+            "rgb_mae_0_255": 4.120312,
+            "pixels_any_channel_difference_above_20": 247,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              317,
+              126,
+              375,
+              137
+            ],
+            "ink_pixels_gt_30": 272
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              315,
+              126,
+              375,
+              137
+            ],
+            "ink_pixels_gt_30": 282
+          }
+        },
+        "row3_number": {
+          "roi": [
+            20,
+            159,
+            55,
+            191
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.244643,
+            "pixels_any_channel_difference_above_20": 46,
+            "area": 1120
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              25,
+              170,
+              32,
+              181
+            ],
+            "ink_pixels_gt_30": 45
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              24,
+              170,
+              32,
+              181
+            ],
+            "ink_pixels_gt_30": 52
+          }
+        },
+        "row3_title": {
+          "roi": [
+            60,
+            159,
+            280,
+            191
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.151847,
+            "pixels_any_channel_difference_above_20": 241,
+            "area": 7040
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              69,
+              170,
+              123,
+              181
+            ],
+            "ink_pixels_gt_30": 231
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              68,
+              170,
+              122,
+              181
+            ],
+            "ink_pixels_gt_30": 269
+          }
+        },
+        "row3_duration": {
+          "roi": [
+            280,
+            159,
+            380,
+            191
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.506875,
+            "pixels_any_channel_difference_above_20": 149,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              319,
+              170,
+              375,
+              181
+            ],
+            "ink_pixels_gt_30": 249
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              318,
+              170,
+              375,
+              181
+            ],
+            "ink_pixels_gt_30": 269
+          }
+        },
+        "row4_number": {
+          "roi": [
+            20,
+            203,
+            55,
+            235
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.95119,
+            "pixels_any_channel_difference_above_20": 54,
+            "area": 1120
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              24,
+              214,
+              33,
+              225
+            ],
+            "ink_pixels_gt_30": 45
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              25,
+              214,
+              33,
+              225
+            ],
+            "ink_pixels_gt_30": 50
+          }
+        },
+        "row4_title": {
+          "roi": [
+            60,
+            203,
+            280,
+            235
+          ],
+          "difference": {
+            "rgb_mae_0_255": 0.873295,
+            "pixels_any_channel_difference_above_20": 128,
+            "area": 7040
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              69,
+              214,
+              90,
+              225
+            ],
+            "ink_pixels_gt_30": 112
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              68,
+              214,
+              89,
+              225
+            ],
+            "ink_pixels_gt_30": 124
+          }
+        },
+        "row4_duration": {
+          "roi": [
+            280,
+            203,
+            380,
+            235
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.605625,
+            "pixels_any_channel_difference_above_20": 182,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              321,
+              214,
+              375,
+              225
+            ],
+            "ink_pixels_gt_30": 225
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              321,
+              214,
+              375,
+              225
+            ],
+            "ink_pixels_gt_30": 248
+          }
+        },
+        "row5_number": {
+          "roi": [
+            20,
+            247,
+            55,
+            279
+          ],
+          "difference": {
+            "rgb_mae_0_255": 1.44881,
+            "pixels_any_channel_difference_above_20": 47,
+            "area": 1120
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              25,
+              258,
+              32,
+              269
+            ],
+            "ink_pixels_gt_30": 48
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              24,
+              258,
+              32,
+              269
+            ],
+            "ink_pixels_gt_30": 49
+          }
+        },
+        "row5_title": {
+          "roi": [
+            60,
+            247,
+            280,
+            279
+          ],
+          "difference": {
+            "rgb_mae_0_255": 8.59929,
+            "pixels_any_channel_difference_above_20": 770,
+            "area": 7040
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              68,
+              257,
+              211,
+              271
+            ],
+            "ink_pixels_gt_30": 596
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              68,
+              257,
+              208,
+              271
+            ],
+            "ink_pixels_gt_30": 674
+          }
+        },
+        "row5_duration": {
+          "roi": [
+            280,
+            247,
+            380,
+            279
+          ],
+          "difference": {
+            "rgb_mae_0_255": 2.248438,
+            "pixels_any_channel_difference_above_20": 146,
+            "area": 3200
+          },
+          "reference": {
+            "ink_bbox_gt_30": [
+              320,
+              258,
+              375,
+              269
+            ],
+            "ink_pixels_gt_30": 237
+          },
+          "render": {
+            "ink_bbox_gt_30": [
+              320,
+              258,
+              375,
+              269
+            ],
+            "ink_pixels_gt_30": 248
+          }
+        }
+      },
+      "body_pixel_200_500": {
+        "original_rgba": [
+          14,
+          14,
+          14,
+          242
+        ],
+        "black_matted_reference_rgb": [
+          13,
+          13,
+          13
+        ],
+        "render_rgb": [
+          13,
+          13,
+          13
+        ]
+      },
+      "outputs": {
+        "comparison": "queue-final-visual-review-chapters-comparison.png",
+        "detail_overlay": "queue-final-visual-review-chapters-detail-overlay.png",
+        "render_snapshot": "queue-final-visual-review-chapters-render-snapshot.png",
+        "unaltered_reference_copy": "queue-final-visual-review-chapters-reference-original.png"
+      },
+      "independent_score": {
+        "categories_0_10": {
+          "layout": 9.9,
+          "typography": 9.2,
+          "surfaces": 9.8,
+          "artwork": 9.8,
+          "state_responsive": null
+        },
+        "weighted_score_0_10": 9.7,
+        "threshold": 9.5,
+        "passed": true,
+        "critical_defects": [],
+        "category_rationale": {
+          "layout": "No toolbar; content begins at the reference chapter band. Chapter numbers, titles and durations share the reference vertical placement and 44px row pitch. Number1 foreground bbox exactly [24,82,29,93].",
+          "typography": "Inter Medium14 numbers and Regular14 titles match metadata. Winter ink [68,82,110,93] versus [68,82,111,93]; longest title ends x208 versus x211 with the same y257-271. Time1 begins x318 versus x319, ending at x375 in both. Raster density is moderately higher in Qt.",
+          "surfaces": "Black-matted body RGB13, tab RGB9 and accent match; corner geometry is close. Native compositing and background blur remain unproven.",
+          "artwork": "Original active Chapters icon and other tab artwork match visual placement and scale; small antialiasing differences remain."
+        },
+        "assessed_weight_percent": 85,
+        "unassessed_weight_percent": 15,
+        "normalization_denominator_percent": 85,
+        "normalization_formula": "(layout*35 + typography*20 + surfaces*15 + artwork*15) / 85",
+        "pass_scope": "Pass against 9.5 for the assessed 85% of canonical static presentation; unassessed combined state/responsive category excluded.",
+        "confirmed_active_tab_content_evidence": "Canonical Chapters active tab and underline, 5 numbered rows, labels and times match. No judgment is made on responsive or interaction states.",
+        "scoring_amendment": {
+          "previous_weighted_score_0_10": 9.73,
+          "reason": "Previous calculation applied the combined state/responsive category to only its canonical active-tab/content subset. Strict shared rubric excludes the full combined category because responsive coverage is unassessed.",
+          "four_assessed_category_scores_changed": false,
+          "active_tab_content_evidence_scored": false
+        }
+      },
+      "render_stable_through_review": true
+    }
+  },
+  "source_sha256": [
+    {
+      "path": "modules/gui/qt/playlist/qml/JuxtopposedQueuePanel.qml",
+      "sha256": "b0aa8e664ab7f0bea0bb169687282592be8b601c363627164b7cc32601952ec8",
+      "bytes": 13351
+    },
+    {
+      "path": "modules/gui/qt/playlist/qml/JuxtopposedQueueRow.qml",
+      "sha256": "e57f5d38d42f01f67ab2567af214e28b5fc68f2aab06ac579054136d780dada1",
+      "bytes": 3631
+    },
+    {
+      "path": "modules/gui/qt/tests/test_juxtopposed_queue.py",
+      "sha256": "3b9b4437706c0aaee67b072dd1627335800121047e89d017675de5c1a34cc495",
+      "bytes": 20089
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf",
+      "sha256": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+      "bytes": 879708
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-add.svg",
+      "sha256": "189c5ef63e32eeb54246f8efc6de73bd1cce873328fad7d68a9efdbe9855a5c7",
+      "bytes": 314
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-bookmarks-active.svg",
+      "sha256": "e0530bc5722d6457b0c23b780a61f38ab28f44637a1e994063847e8ca39af359",
+      "bytes": 741
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-bookmarks.svg",
+      "sha256": "4c81cc15d25c9342e0d1e6812f2d2a361304c2145209221a6f52445c0709401a",
+      "bytes": 513
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-chapters-active.svg",
+      "sha256": "5bb07dd971a57a26174580fe60e14e7eb8fd200819f3b4f8588dc557e2ff93ff",
+      "bytes": 587
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-chapters.svg",
+      "sha256": "67be24ce1db532a7f38fb8b8ea399d806c44f16cd34d5730ff4797227a9df09a",
+      "bytes": 587
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-move.svg",
+      "sha256": "de49b0eac4cb5f555e171fd30639b4edc75af5cd9769a5e9bc301c33172aa7de",
+      "bytes": 313
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-remove.svg",
+      "sha256": "ca1dc4ca726fc82169ee6404696c4b10966bb0d771df73b4a7de70d8ad59ca9f",
+      "bytes": 210
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-repeat.svg",
+      "sha256": "3ac66c48d0df9840254efd3cad5e74990e9c1b9994e556a0b72622c0dbc85ac6",
+      "bytes": 480
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-shuffle.svg",
+      "sha256": "d6d64d165a8d922101036f7c3abf4a07bdfaca3a9a3ad8a11372629e4b375488",
+      "bytes": 564
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-sort.svg",
+      "sha256": "ae18c81ec7eee66e369ba47439b25ae5f743bca785cf566ee78d335859edaa7b",
+      "bytes": 366
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-tab-active.svg",
+      "sha256": "305f6767034d2a09a7bca1327387c270fdb99616e47d7b843ffc412c24f89122",
+      "bytes": 451
+    },
+    {
+      "path": "modules/gui/qt/pixmaps/juxtopposed/queue-tab-inactive.svg",
+      "sha256": "ce90fbd59a3cd5c2be0d418fc89c92acd782f5f3143d645cf9707548b138c624",
+      "bytes": 450
+    },
+    {
+      "path": "generated test output (not archived): bookmarks-panel-fixture.qml",
+      "sha256": "9ff88aa82e2291ed22b36c175b9274e7077deeb1196ba65f81a77d087c243fa9",
+      "bytes": 1291
+    },
+    {
+      "path": "generated test output (not archived): chapters-panel-fixture.qml",
+      "sha256": "482400f04f93c0175f892c932f6be46d9387f81f2b009f8ce624b94416b37bd2",
+      "bytes": 1409
+    },
+    {
+      "path": "generated test output (not archived): queue-panel-fixture.qml",
+      "sha256": "8ff2ca7b0ed97f2950c944d6273a1556e4244b86fed81409c00b70d29b2af622",
+      "bytes": 1332
+    },
+    {
+      "path": "doc/juxtopposed-references/queue/manifest.json",
+      "sha256": "071df82e45bc5601b257cd26c9cfc6daa4239131896bb0ffec9d296bab127293",
+      "bytes": 5673
+    }
+  ],
+  "reference_text_metadata": {
+    "queue": [
+      {
+        "attributes": {
+          "fill": "#8F8F8F",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "65.806",
+            "y": "28.3636",
+            "text": "Queue"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "182.447",
+            "y": "28.3636",
+            "text": "Bookmarks"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "317.715",
+            "y": "28.3636",
+            "text": "Chapters"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "28",
+            "y": "90.0909",
+            "text": "4 items - 2h 3m"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "62",
+            "y": "141.091",
+            "text": "The Wand_S01E11.mp4"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "337.268",
+            "y": "141.091",
+            "text": "23:06"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "62",
+            "y": "185.091",
+            "text": "The Wand_S01E12.mp4"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "339.77",
+            "y": "185.091",
+            "text": "24:18"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "62",
+            "y": "229.091",
+            "text": "The Wand_S01E13.mp4"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "337.65",
+            "y": "229.091",
+            "text": "25:00"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "62",
+            "y": "273.091",
+            "text": "The Wand_S01E14.mp4"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "337.76",
+            "y": "273.091",
+            "text": "22:35"
+          }
+        ]
+      }
+    ],
+    "bookmarks": [
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "65.806",
+            "y": "28.3636",
+            "text": "Queue"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#8F8F8F",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "182.447",
+            "y": "28.3636",
+            "text": "Bookmarks"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "317.715",
+            "y": "28.3636",
+            "text": "Chapters"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "28",
+            "y": "88.0909",
+            "text": "2 Bookmarks"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "20",
+            "y": "137.091",
+            "text": "DON\u2019T BLINK 1"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "285.834",
+            "y": "137.091",
+            "text": "00:00:42:023"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "20",
+            "y": "181.091",
+            "text": "DON\u2019T BLINK 2"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "287.967",
+            "y": "181.091",
+            "text": "00:00:44:125"
+          }
+        ]
+      }
+    ],
+    "chapters": [
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "65.806",
+            "y": "28.3636",
+            "text": "Queue"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "182.447",
+            "y": "28.3636",
+            "text": "Bookmarks"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#8F8F8F",
+          "font-family": "Inter",
+          "font-size": "12",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "317.715",
+            "y": "28.3636",
+            "text": "Chapters"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#D37918",
+          "font-family": "Inter",
+          "font-size": "14",
+          "font-weight": "500",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "24",
+            "y": "92.0909",
+            "text": "1"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "68",
+            "y": "92.0909",
+            "text": "Winter"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "318.537",
+            "y": "92.0909",
+            "text": "00:02:15"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#D37918",
+          "font-family": "Inter",
+          "font-size": "14",
+          "font-weight": "500",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "24",
+            "y": "136.091",
+            "text": "2"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "68",
+            "y": "136.091",
+            "text": "Spring"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "316.076",
+            "y": "136.091",
+            "text": "00:29:45"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#D37918",
+          "font-family": "Inter",
+          "font-size": "14",
+          "font-weight": "500",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "24",
+            "y": "180.091",
+            "text": "3"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "68",
+            "y": "180.091",
+            "text": "Summer"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "318.1",
+            "y": "180.091",
+            "text": "00:51:30"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#D37918",
+          "font-family": "Inter",
+          "font-size": "14",
+          "font-weight": "500",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "24",
+            "y": "224.091",
+            "text": "4"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "68",
+            "y": "224.091",
+            "text": "Fall"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "320.342",
+            "y": "224.091",
+            "text": "01:13:50"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#D37918",
+          "font-family": "Inter",
+          "font-size": "14",
+          "font-weight": "500",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "24",
+            "y": "268.091",
+            "text": "5"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#969696",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "68",
+            "y": "268.091",
+            "text": "Winter (5 Years Later)"
+          }
+        ]
+      },
+      {
+        "attributes": {
+          "fill": "#6B6B6B",
+          "font-family": "Inter",
+          "font-size": "14",
+          "letter-spacing": "0em"
+        },
+        "spans": [
+          {
+            "x": "319.809",
+            "y": "268.091",
+            "text": "01:44:10"
+          }
+        ]
+      }
+    ]
+  },
+  "required_fixes_ranked": [
+    {
+      "rank": 1,
+      "severity": "Resolved critical",
+      "scope": "Canonical Bookmarks text",
+      "finding": "Initial reviewed Bookmarks capture showed mojibake DON\u00e2\u20ac\u2122T BLINK labels.",
+      "status": "Resolved before the scored capture; reinspection shows correct DON\u2019T BLINK 1/2. Current capture SHA2564b5a0ad289c5aa85f5d1655692c47b667ce3111e303ed6c6feb8498aa7d041ef.",
+      "required_action": "No further canonical action."
+    },
+    {
+      "rank": 2,
+      "severity": "Full design parity gap",
+      "scope": "Compositing over native/video content",
+      "finding": "Figma background blur50 is not implemented in Qt. Its effect cannot be evaluated from black-backed isolated panel captures.",
+      "status": "Open and outside canonical static pass.",
+      "required_action": "Implement or explicitly accept the missing 50px background blur before claiming full Figma surface parity."
+    },
+    {
+      "rank": 3,
+      "severity": "Low-priority polish",
+      "scope": "Canonical typography",
+      "finding": "Qt glyph advance, bearing and antialiasing differences produce 1-3px run-width changes with aligned baselines and correct font configuration.",
+      "status": "Residual; no canonical blocker.",
+      "required_action": "No blind offsets or per-label width adjustments are required to meet the canonical threshold. Validate native font rendering before any change."
+    }
+  ],
+  "remaining_canonical_required_fixes": [],
+  "critical_defects_remaining": [],
+  "all_canonical_states_pass": true,
+  "limitations": [
+    "The original isolated PNGs show no informative scene behind the translucent surface; black-matted comparison cannot establish native transparency, color blending or blur over video.",
+    "The 50px Figma background blur is absent from the Qt panel.",
+    "Full VLC/native Windows release rendering, real playlist/bookmark/chapter model integration and full application visual quality are not evaluated by this report.",
+    "Hover, selected, playback-current, disabled, keyboard-focus, overflow, narrow/wide and high-DPI responsive fidelity are unassessed.",
+    "Only the supplied canonical 400x946 scenes are scored; no overall UI score is issued.",
+    "Measurements include renderer-specific antialiasing and glyph bearing, so a 1px ink-bound difference does not necessarily indicate an anchor/layout error."
+  ],
+  "artifacts": {
+    "production_contact_sheet": "queue-final-visual-review-production-contact-sheet.png",
+    "contact_sheet_method": "Three production capture pixel arrays pasted unchanged side by side at 400x946; labels outside capture rectangles.",
+    "measurement_data": "queue-final-visual-review-measurement-data.json",
+    "comparisons_and_overlays": "One full-size reference/render pair and one top300 cyan/magenta overlay per state; raw reference copies and byte-identical render snapshots saved."
+  },
+  "artifact_sha256": [
+    {
+      "file": "queue-final-visual-review-bookmarks-comparison.png",
+      "sha256": "0f748b73d43375f98247e0123950c3a733600a9a05081682d0bf05180ea5a600"
+    },
+    {
+      "file": "queue-final-visual-review-bookmarks-detail-overlay.png",
+      "sha256": "457d119f1612c890cff30921efb0fececa7e1f0436e2e64da8a819ee376d1fa2"
+    },
+    {
+      "file": "queue-final-visual-review-bookmarks-reference-black-matte.png",
+      "sha256": "9d0bd0154971337c20ca2a609cbac3191173db7ae494d0b9647386c2eb84ab5f"
+    },
+    {
+      "file": "queue-final-visual-review-bookmarks-reference-original.png",
+      "sha256": "c9456f562d716330de6aa16d99100899f6d2fbbcd552262cbf06d92d4905c133"
+    },
+    {
+      "file": "queue-final-visual-review-bookmarks-render-snapshot.png",
+      "sha256": "4b5a0ad289c5aa85f5d1655692c47b667ce3111e303ed6c6feb8498aa7d041ef"
+    },
+    {
+      "file": "queue-final-visual-review-chapters-comparison.png",
+      "sha256": "0d668335897e482d61f576df54070fed0b62e2d5f583ae88419abea4ae7465c0"
+    },
+    {
+      "file": "queue-final-visual-review-chapters-detail-overlay.png",
+      "sha256": "8cf3a3861319b01a7a74e73a6b4490b2df2f457fe99c729f4775b6d664d51d4c"
+    },
+    {
+      "file": "queue-final-visual-review-chapters-reference-black-matte.png",
+      "sha256": "d2d8fbb99671f529d5228a2a1016753159a60dd266ec509e4aa7d722554743c6"
+    },
+    {
+      "file": "queue-final-visual-review-chapters-reference-original.png",
+      "sha256": "366c2a798e1542de0640feb1135e40662b8725a2406b3eb62a274c91b2b98cd8"
+    },
+    {
+      "file": "queue-final-visual-review-chapters-render-snapshot.png",
+      "sha256": "eb8cd387500663a98437918ef8a93cf62c3ee2e1fa41234965691ed4ff8ebe98"
+    },
+    {
+      "file": "queue-final-visual-review-production-contact-sheet.png",
+      "sha256": "e7ef573b4a1c37aab12a2c61c572849d9dbd351085ff61f0bc1e8243a9439890"
+    },
+    {
+      "file": "queue-final-visual-review-queue-comparison.png",
+      "sha256": "9247c3def0440b04d9fff2bc3bfb6f47bac3ded7a071e2ccc5cef1416b15bc59"
+    },
+    {
+      "file": "queue-final-visual-review-queue-detail-overlay.png",
+      "sha256": "2284eb175bb7b0d157098c756f54ae5990c925048bb59124a80d2efd67db44e0"
+    },
+    {
+      "file": "queue-final-visual-review-queue-reference-black-matte.png",
+      "sha256": "e9ed2b08a8014598aa2f34f204d13723eb835569da1447091f2b5cea270c2b1c"
+    },
+    {
+      "file": "queue-final-visual-review-queue-reference-original.png",
+      "sha256": "b52063f846048ac2942743b46ad7bb41ab9fd9f503e38262cf24d81beed78305"
+    },
+    {
+      "file": "queue-final-visual-review-queue-render-snapshot.png",
+      "sha256": "ee0427eaeb56462aa81bccf0bd245d7eedf2d9d252c77e9c41fe09ca92849940"
+    }
+  ],
+  "git_source_provenance": {
+    "repository": ".",
+    "head_at_review": "b8f28cbcfae6c445b8ec8b34d4aec919478f258e",
+    "head_status": "Existing base/current HEAD during review; this report does not certify a later commit, push or release.",
+    "core_autocrlf": "true",
+    "normalized_source_blobs": [
+      {
+        "path": "modules/gui/qt/playlist/qml/JuxtopposedQueuePanel.qml",
+        "working_tree_sha256": "b0aa8e664ab7f0bea0bb169687282592be8b601c363627164b7cc32601952ec8",
+        "git_normalized_blob_id": "3f16e4c73a0abbc9946bfef3b8dbabfc8a77222b",
+        "command": "git hash-object --path=modules/gui/qt/playlist/qml/JuxtopposedQueuePanel.qml modules/gui/qt/playlist/qml/JuxtopposedQueuePanel.qml",
+        "ls_files_eol": "",
+        "source_stable_through_review": true
+      },
+      {
+        "path": "modules/gui/qt/playlist/qml/JuxtopposedQueueRow.qml",
+        "working_tree_sha256": "e57f5d38d42f01f67ab2567af214e28b5fc68f2aab06ac579054136d780dada1",
+        "git_normalized_blob_id": "6a4ef6f9c46eeb77084300ecd664a6085819ed8e",
+        "command": "git hash-object --path=modules/gui/qt/playlist/qml/JuxtopposedQueueRow.qml modules/gui/qt/playlist/qml/JuxtopposedQueueRow.qml",
+        "ls_files_eol": "",
+        "source_stable_through_review": true
+      }
+    ],
+    "purpose": "Git blob IDs apply repository path filters, so normalized source identity remains stable despite working-tree CRLF/LF differences.",
+    "head_at_source_rebind": "b8f28cbcfae6c445b8ec8b34d4aec919478f258e"
+  },
+  "conclusion": {
+    "assessed_weight_percent": 85,
+    "unassessed_weight_percent": 15,
+    "normalized_scores_0_10": {
+      "queue": 9.63529,
+      "bookmarks": 9.61176,
+      "chapters": 9.7
+    },
+    "threshold": 9.5,
+    "all_assessed_canonical_states_pass": true,
+    "remaining_observed_critical_defects": [],
+    "statement": "Queue, Bookmarks and Chapters exceed 9.5 across the assessed 85% of the rubric. The combined state/responsive category remains unassessed; active-tab/content matches are separate confirmed evidence. Native compositing, absent blur50, and other recorded limitations remain."
+  },
+  "amended_at_utc": "2026-10-13T11:05:51.155475+00:00",
+  "amendment_provenance": "Scoring coverage correction requested by parent reviewer. Original images, source/render hashes, artifact hashes, geometry measurements, and four independent category scores preserved.",
+  "canonical_source_rebind": {
+    "checked_at_utc": "2026-10-13T11:14:35.007379+00:00",
+    "source_changes": [
+      {
+        "path": "modules/gui/qt/playlist/qml/JuxtopposedQueuePanel.qml",
+        "previous_working_tree_sha256": "6ed6d368fb80724ec37ef981fb0532380f49c380f7a4819681f12c756e771df7",
+        "current_working_tree_sha256": "b0aa8e664ab7f0bea0bb169687282592be8b601c363627164b7cc32601952ec8",
+        "previous_git_normalized_blob_id": "80a4a84f6120362a60b4c047dfbadad74d5a0d53",
+        "current_git_normalized_blob_id": "3f16e4c73a0abbc9946bfef3b8dbabfc8a77222b",
+        "previous_source_reconstructed_after_reversing_reported_changes": true,
+        "canonical_impact": "Only added state descriptions and checked-only active feedback; repeatActive/shuffleActive default false and canonical captures have identical bytes."
+      },
+      {
+        "path": "modules/gui/qt/playlist/qml/JuxtopposedQueueRow.qml",
+        "previous_working_tree_sha256": "e57f5d38d42f01f67ab2567af214e28b5fc68f2aab06ac579054136d780dada1",
+        "current_working_tree_sha256": "e57f5d38d42f01f67ab2567af214e28b5fc68f2aab06ac579054136d780dada1",
+        "previous_git_normalized_blob_id": "6a4ef6f9c46eeb77084300ecd664a6085819ed8e",
+        "current_git_normalized_blob_id": "6a4ef6f9c46eeb77084300ecd664a6085819ed8e",
+        "previous_source_reconstructed_after_reversing_reported_changes": true,
+        "canonical_impact": "Row source unchanged."
+      }
+    ],
+    "capture_checks": {
+      "queue": {
+        "regenerated_capture_byte_identical_to_reviewed_snapshot": true,
+        "sha256": "ee0427eaeb56462aa81bccf0bd245d7eedf2d9d252c77e9c41fe09ca92849940",
+        "score_unchanged": true
+      },
+      "bookmarks": {
+        "regenerated_capture_byte_identical_to_reviewed_snapshot": true,
+        "sha256": "4b5a0ad289c5aa85f5d1655692c47b667ce3111e303ed6c6feb8498aa7d041ef",
+        "score_unchanged": true
+      },
+      "chapters": {
+        "regenerated_capture_byte_identical_to_reviewed_snapshot": true,
+        "sha256": "eb8cd387500663a98437918ef8a93cf62c3ee2e1fa41234965691ed4ff8ebe98",
+        "score_unchanged": true
+      }
+    },
+    "review_scope": "Only checked for canonical impact of the final Panel functional change. No category scores changed. Active repeat/shuffle feedback remains unassessed with the combined state/responsive15% category.",
+    "other_source_hashes": "Other source SHA256 entries retain their original review-time identity; current pure Panel/Row identities are updated here and in the source list.",
+    "artifact_hashes_unchanged": true,
+    "repo_files_edited_by_reviewer": false
+  },
+  "record_normalization": "Local paths normalized to repository-relative paths for publication. Review scores, findings, source hashes and image bytes are unchanged."
+}

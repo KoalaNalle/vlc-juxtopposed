@@ -41,6 +41,7 @@ pluginsinclude_HEADERS.h = \
 	../include/vlc_config.h \
 	../include/vlc_config_cat.h \
 	../include/vlc_configuration.h \
+	../include/vlc_config_transaction.h \
 	../include/vlc_cpu.h \
 	../include/vlc_clock.h \
 	../include/vlc_chroma_probe.h \
@@ -78,6 +79,7 @@ pluginsinclude_HEADERS.h = \
 	../include/vlc_meta_fetcher.h \
 	../include/vlc_mime.h \
 	../include/vlc_modules.h \
+	../include/vlc_process_priority.h \
 	../include/vlc_mouse.h \
 	../include/vlc_network.h \
 	../include/vlc_objects.h \
@@ -245,6 +247,7 @@ libvlccore_la_SOURCES = \
 	media_source/media_source.h \
 	media_source/media_tree.c \
 	modules/modules.h \
+	modules/cache_output.h \
 	modules/modules.c \
 	modules/bank.c \
 	modules/cache.c \
@@ -361,6 +364,7 @@ libvlccore_la_SOURCES = \
 	video_output/video_output.c \
 	video_output/video_text.c \
 	video_output/video_epg.c \
+	video_output/osd_feedback_duration.h \
 	video_output/video_widgets.c \
 	video_output/vout_subpictures.c \
 	video_output/vout_spuregion_helper.h \
@@ -377,6 +381,7 @@ libvlccore_la_SOURCES = \
 	network/http_auth.c \
 	network/httpd.c \
 	network/io.c \
+	network/proxy.c network/proxy.h \
 	network/udp.c \
 	network/rootbind.c \
 	network/stream.c \
@@ -415,6 +420,7 @@ libvlccore_la_SOURCES = \
 	misc/rcu.c \
 	misc/renderer_discovery.c \
 	misc/threads.c \
+	misc/process_priority.c \
 	misc/threads.h \
 	misc/cpu.c \
 	misc/diffutil.c \
@@ -463,7 +469,7 @@ if HAVE_WINSTORE
 libvlccore_la_SOURCES += posix/timer.c win32/dirs-uap.c
 else
 libvlccore_la_SOURCES += win32/timer.c win32/dirs.c win32/spawn.c
-libvlccore_la_LIBADD += -lwinmm -lole32 -luuid
+libvlccore_la_LIBADD += -lwinmm -lole32 -luuid -lwinhttp -lnormaliz
 endif
 libvlccore_la_LIBADD += -lbcrypt
 endif
@@ -680,6 +686,13 @@ check_PROGRAMS = \
 	test_cpp_list
 
 TESTS = $(check_PROGRAMS) check_symbols
+
+if HAVE_WIN32
+if !HAVE_WINSTORE
+test_win32_pipe_SOURCES = test/win32_pipe.c
+check_PROGRAMS += test_win32_pipe
+endif
+endif
 
 test_block_SOURCES = test/block_test.c
 test_block_LDADD = $(LDADD) $(LIBS_libvlccore)

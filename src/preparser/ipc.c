@@ -84,6 +84,7 @@ vlc_preparser_msg_Init(struct vlc_preparser_msg *msg, int msg_type,
     if (msg->type == VLC_PREPARSER_MSG_TYPE_REQ) {
         msg->req.type = req_type;
         msg->req.options = 0;
+        msg->req.show_hiddenfiles = -1;
         msg->req.arg.seek.type = VLC_THUMBNAILER_SEEK_NONE;
         msg->req.arg.seek.speed = VLC_THUMBNAILER_SEEK_PRECISE;
         msg->req.arg.hw_dec = false;

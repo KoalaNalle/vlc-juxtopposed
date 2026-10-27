@@ -1,0 +1,54 @@
+{
+  "phase": "after",
+  "status": "terminal",
+  "passed": true,
+  "expectedNegativeVerified": false,
+  "forcedCleanupUsed": false,
+  "producerSha256": "79edf1a39b52c27376f587cb37612b844d950c824659642d146b62fb5ffc2550",
+  "exeSha256": "4db9ac3601dd4164d2138d9859d785a168ed8341f6071a1f855db2e6739438a8",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "0404d1f6cd89ca77603ab115ae09f17ef2e9d6748ce17b9f8b0a4ca1ac5dbaf6",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "mediaSha256": {
+    "chaptered-colors.mkv": "5e799cf413aad806d2c32e60fd4b693c7ee0e9f6537626b6f96f7dd80cf6d00b",
+    "paused-seek-colors.mp4": "41ff20b16d672c15baef996177da05cb96fe8216d06b756796a2481bf349a1dc"
+  },
+  "sourceSha256": {
+    "input_models.cpp": "32ac630a56c6104e84246e3eb9e976110e75bd9de82c9fdeea19eb7b6aa4621d",
+    "test_native_bookmarks_chapters.cpp": "09eab26d615ecd2e5925a00a3816a05bc633194e3193df44a42162115caded9e"
+  },
+  "pid": 29772,
+  "exitCode": 0,
+  "normalExit": true,
+  "counts": {
+    "passed": 9,
+    "failed": 0,
+    "skipped": 0
+  },
+  "passedCases": [
+    "initTestCase",
+    "actualThreeChapterMetadataAndSelection",
+    "actualBookmarkAddRenameSeekAndRemove",
+    "actualMediaSwitchRejectsOldBookmarksBeforeGuiDispatch",
+    "actualLateNativeMediaRegistrationRestoresAdd",
+    "actualStopSameMediaRestartRetainsBookmark",
+    "actualNativeRestartPersistsBookmarkAndMetadata",
+    "actualModelDetachAndOwnerDestruction",
+    "cleanupTestCase"
+  ],
+  "failedCases": [],
+  "diagnostics": [
+    "main error: window closed",
+    "main error: window closed"
+  ],
+  "expectedShutdownDiagnostics": [
+    "main error: window closed",
+    "main error: window closed"
+  ],
+  "shutdownContextVerified": true,
+  "unexpectedDiagnostics": [],
+  "networkDiscoveryObserved": false,
+  "scope": "Maintained native test on real local ML, production controller and NORMAL-lock playlist: real chapter metadata/selection, bookmark mutation/seek, switching, persistence and settled destruction. No Windows QML or physical device acceptance."
+}

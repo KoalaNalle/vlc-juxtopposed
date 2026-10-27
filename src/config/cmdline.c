@@ -134,7 +134,7 @@ void config_CmdLineEarlyScan( libvlc_int_t *p_this, int argc, const char *argv[]
         check_option("reset-plugins-cache")
 #endif
 
-#if defined(_WIN32) || defined(__OS2__)
+#if defined(__OS2__)
         check_option("high-priority")
 #endif
 #ifdef _WIN32

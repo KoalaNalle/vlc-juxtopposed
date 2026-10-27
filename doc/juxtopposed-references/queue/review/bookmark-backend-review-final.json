@@ -1,0 +1,100 @@
+{
+  "review": "Independent final MLBookmarkModel backend review",
+  "repository": ".",
+  "result": "Both confirmed findings resolved in source; no remaining actionable static finding",
+  "runtime_status": "Native build and integrated VLC runtime validation pending",
+  "reviewed_files": [
+    {
+      "path": "modules/gui/qt/medialibrary/mlbookmarkmodel.cpp",
+      "sha256": "B9267A4F80AADA533552EC2D17263D14DA8DC805504FC34DFA373BC0CCB0E0D8"
+    },
+    {
+      "path": "modules/gui/qt/medialibrary/mlbookmarkmodel.hpp",
+      "sha256": "75C6CBA38E0349D043155B3053C3268CA0FD4DE7DB3C8AD4A4D9FEEDE54D64FD"
+    }
+  ],
+  "findings": [],
+  "resolved_findings": [
+    {
+      "id": "bookmark-clear-state-gapless",
+      "priority": "P2",
+      "status": "resolved in source",
+      "problem": "A queued STARTED(A) callback could be rejected after a continuous transition to B, leaving the stopped-model clear flag true. B emits no STARTED event, so its bookmarks stayed hidden.",
+      "fix": "The current-media callback captures vlc_player_GetState(player) under its existing player lock and applies the captured clear flag only after accepting the media revision, before starting the media lookup.",
+      "fix_location": {
+        "file": "modules/gui/qt/medialibrary/mlbookmarkmodel.cpp",
+        "lines": "432, 438-442, 455, 460-464"
+      },
+      "verification": "Traced delayed startup followed by continuous A-to-B transition, stopped media selection followed by start, stop during an outstanding lookup/refresh, stale older-media callbacks, and paused sessions. The accepted media snapshot now supplies the flag independently of a STARTED event.",
+      "supporting_api_evidence": [
+        "include/vlc_player.h:202-207 documents omitted next-media state events during continuous playback.",
+        "include/vlc_player.h:2832-2835 permits player getters under the callback's existing lock.",
+        "src/player/player.c:1385-1388 shows GetState returns the locked global state."
+      ]
+    },
+    {
+      "id": "bookmark-subscribe-after-initial-lookup",
+      "priority": "P2",
+      "status": "resolved in source",
+      "problem": "The thread pool could read media ID zero before listener registration, while MEDIA_ADDED occurred in that interval. Events are not replayed, so the lookup could complete with no pending retry and leave bookmarks unready.",
+      "fix": "initModel registers the media library event listener before updateMediaId and does so after releasing both the player and model mutexes.",
+      "fix_location": {
+        "file": "modules/gui/qt/medialibrary/mlbookmarkmodel.cpp",
+        "lines": "699-705"
+      },
+      "verification": "Subscription now precedes the initial read. Additions before subscription are visible to the later lookup; additions after an ID-zero read are observed by the registered listener and coalesced or retried. Registration introduces no player/model lock inversion.",
+      "supporting_api_evidence": [
+        "modules/gui/qt/medialibrary/mlthreadpool.hpp:153-173 immediately schedules work through start.",
+        "modules/gui/qt/medialibrary/mlthreadpool.cpp:51-55 starts default-queue work in the thread pool immediately.",
+        "src/misc/medialibrary.c:54-78 sends events only to currently registered callbacks and synchronizes registration with the same callback-list mutex."
+      ]
+    }
+  ],
+  "other_backend_checks_from_initial_review": [
+    "Index ownership, bounds, invalid parent handling, and native multi-column selection deduplication.",
+    "Preserved existing role IDs and added timeMs compatible with the inline delegate.",
+    "Player-before-model mutex order, GUI-only model fields, and value captures for ML workers.",
+    "Player and media library listener replacement and synchronized unregister behavior.",
+    "Media, lookup, and refresh revision rejection after player, library, or media changes.",
+    "Null player and optional MediaLib guards, plus separate optional-module QML loading.",
+    "ThreadRunner target lifetime cancellation and owned async contexts."
+  ],
+  "final_static_checks": {
+    "scoped_git_diff_check": "passed",
+    "player_state_snapshot": "passed",
+    "clear_flag_capture_by_value": "passed",
+    "accepted_revision_before_flag_assignment": "passed",
+    "flag_assignment_before_lookup": "passed",
+    "explicitly_queued_ui_callback": "passed",
+    "subscription_before_initial_query": "passed",
+    "registration_after_player_and_model_lock_scope": "passed by source inspection"
+  },
+  "remaining_native_gates": [
+    {
+      "gate": "Native Windows VLC Qt build",
+      "status": "pending",
+      "scope": "Compile and link the modified C++ model and its moc-generated QML invokable/property interfaces."
+    },
+    {
+      "gate": "Integrated bookmark operations",
+      "status": "pending",
+      "scope": "Run the actual inline production QML adapter with VLC Player and MediaLib; confirm Add, Remove, selection-to-seek, and persisted name/timeMs data on real indexed media."
+    },
+    {
+      "gate": "Playback lifecycle and async ordering",
+      "status": "pending",
+      "scope": "Exercise same-media stop/restart, continuous A-to-B transition with delayed GUI delivery, switches while lookups/refreshes are outstanding, and selection of another media while stopped."
+    },
+    {
+      "gate": "Readiness and optional media library",
+      "status": "pending",
+      "scope": "Construct the bookmark helper while current media is playing and its database record appears during the initial lookup; verify readiness. Also run without an available media library to confirm the parent loader stays inactive and does not raise QML import/runtime errors."
+    }
+  ],
+  "limitations": [
+    "Read-only repository review; this reviewer created only review artifacts outside the repository.",
+    "This final pass verified the two scoped fixes and recorded file hashes; the initial broad review is retained in bookmark-backend-review.json and the first fix review in bookmark-backend-review-round2.json.",
+    "No native VLC compile or real player/media-library runtime was available. Static source review is not an integrated runtime pass."
+  ],
+  "record_normalization": "Local paths normalized to repository-relative paths for publication. Review scores, findings, source hashes and image bytes are unchanged."
+}

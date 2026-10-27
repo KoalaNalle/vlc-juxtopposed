@@ -1,0 +1,53 @@
+# Exact line-numbered excerpts of after-conversion-native.log; path labels sanitized.
+
+# Original lines 924-945
+924: main debug: creating audio output
+925: main debug: looking for audio output module matching "amem,none": 1 candidates
+926: main debug: using audio output module "amem"
+927: main debug: keeping audio output
+928: main debug: Creating an input for playback'source 'quoted, audio.wav'
+929: main debug: creating stream output chain `transcode{acodec=flac,channels=2,samplerate=44100,ab=128}:std{access=file{no-overwrite,no-format},mux=flac,dst='/tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/audio.flac'}'
+930: main debug: stream=`std'
+931: main debug: looking for sout output module matching "std": 2 candidates
+932: main debug: set config option: sout-standard-access to file{no-overwrite,no-format}
+933: main debug: set config option: sout-standard-mux to flac
+934: main debug: set config option: sout-standard-dst to /tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/audio.flac
+935: main debug: looking for sout access module matching "file": 1 candidates
+936: main debug: set config option: sout-file-overwrite to (null)
+937: main debug: set config option: sout-file-format to (null)
+938: file debug: file access output opened (/tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/audio.flac)
+939: main debug: using sout access module "file"
+940: main debug: looking for sout mux module matching "flac": 0 candidates
+941: main debug: no sout mux modules matched with name flac
+942: stream_out_standard debug: Couldn't open mux `flac', trying `raw' instead
+943: main debug: looking for sout mux module matching "raw": 1 candidates
+944: dummy debug: Dummy/Raw muxer opened
+945: dummy: Open
+
+# Original lines 1092-1117
+1092: main debug: creating audio output
+1093: main debug: looking for audio output module matching "amem,none": 1 candidates
+1094: main debug: using audio output module "amem"
+1095: main debug: keeping audio output
+1096: main debug: Creating an input for playback'audio.flac'
+1097: main debug: creating stream output chain `transcode{acodec=s16l,channels=1,samplerate=8000}:std{access=file{no-overwrite,no-format},mux=raw,dst='/tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/validation.pcm'}'
+1098: main debug: stream=`std'
+1099: main debug: looking for sout output module matching "std": 2 candidates
+1100: main debug: set config option: sout-standard-access to file{no-overwrite,no-format}
+1101: main debug: set config option: sout-standard-mux to raw
+1102: main debug: set config option: sout-standard-dst to /tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/validation.pcm
+1103: main debug: looking for sout access module matching "file": 1 candidates
+1104: main debug: set config option: sout-file-overwrite to (null)
+1105: main debug: set config option: sout-file-format to (null)
+1106: file debug: file access output opened (/tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/validation.pcm)
+1107: main debug: using sout access module "file"
+1108: main debug: looking for sout mux module matching "raw": 1 candidates
+1109: dummy debug: Dummy/Raw muxer opened
+1110: dummy: Open
+1111: main debug: using sout mux module "dummy"
+1112: main debug: muxer support adding stream at any time
+1113: stream_out_standard debug: using `file{no-overwrite,no-format}/raw:///tmp/native/literal-conversion-after-test-iFiZwb/literal 100%% %Y/.vlc-convert-rbOJKS/validation.pcm'
+1114: main debug: using sout output module "stream_out_standard"
+1115: main debug: stream=`transcode'
+1116: main debug: looking for sout filter module matching "transcode": 1 candidates
+1117: main debug: set config option: sout-transcode-acodec to s16l

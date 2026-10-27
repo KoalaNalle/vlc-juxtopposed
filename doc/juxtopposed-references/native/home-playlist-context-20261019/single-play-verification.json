@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "mode": "fixed",
+  "cases": [
+    {
+      "name": "knownZeroAccessiblePlayKeepsLibraryView",
+      "passed": true,
+      "observation": {
+        "nativePointerDelivery": false,
+        "mediaCalls": [],
+        "playerView": false,
+        "coverSelectionSignals": []
+      }
+    },
+    {
+      "name": "knownZeroCoverPlayKeepsLibraryView",
+      "passed": true,
+      "observation": {
+        "nativePointerDelivery": false,
+        "mediaCalls": [],
+        "playerView": false,
+        "coverSelectionSignals": [
+          [
+            0,
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "knownZeroLeftDoubleTapBodyOpensDetails",
+      "passed": true,
+      "observation": {
+        "historyCalls": [
+          [
+            [
+              "main",
+              "playlists",
+              "list"
+            ],
+            {
+              "parentId": 42,
+              "title": "Empty checkpoint"
+            },
+            0
+          ]
+        ],
+        "nativePointerDelivery": false
+      }
+    },
+    {
+      "name": "rightDoubleTapBodyDoesNotOpenDetails",
+      "passed": true,
+      "observation": {
+        "historyCalls": [],
+        "nativePointerDelivery": false
+      }
+    },
+    {
+      "name": "filledPlaylistAccessibleDispatchesOnce",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "filledPlaylistCoverDispatchesOnce",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [
+          [
+            0,
+            true
+          ]
+        ],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "unknownCountDispatchesOnce",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "nullCountDispatchesOnce",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "nonNumericZeroDispatchesOnce",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "nonCollectionVideoRetainsDefaultPlay",
+      "passed": true,
+      "observation": {
+        "mediaCalls": [
+          42
+        ],
+        "playerView": true,
+        "coverSelectionSignals": [],
+        "nativeMediaEngineConstructed": false
+      }
+    },
+    {
+      "name": "oneSelectionKeyboardBodyOpensEmptyDetails",
+      "passed": true,
+      "observation": {
+        "historyCalls": [
+          [
+            [
+              "main",
+              "playlists",
+              "list"
+            ],
+            {
+              "parentId": 42,
+              "title": "Empty checkpoint"
+            },
+            1
+          ]
+        ],
+        "selectionPlayCalls": [],
+        "nativeKeyDelivery": false
+      }
+    },
+    {
+      "name": "multipleSelectionKeyboardBodyRetainsModelPlay",
+      "passed": true,
+      "observation": {
+        "historyCalls": [],
+        "selectionPlayCalls": [
+          [
+            0,
+            1
+          ]
+        ],
+        "nativeKeyDelivery": false
+      }
+    },
+    {
+      "name": "noSelectionKeyboardBodyDoesNothing",
+      "passed": true,
+      "observation": {
+        "historyCalls": [],
+        "selectionPlayCalls": [],
+        "nativeKeyDelivery": false
+      }
+    }
+  ],
+  "failureNames": [],
+  "expectedBaselineFailureNames": [
+    "knownZeroAccessiblePlayKeepsLibraryView",
+    "knownZeroCoverPlayKeepsLibraryView",
+    "filledPlaylistAccessibleDispatchesOnce",
+    "filledPlaylistCoverDispatchesOnce",
+    "unknownCountDispatchesOnce",
+    "nullCountDispatchesOnce",
+    "nonNumericZeroDispatchesOnce"
+  ],
+  "baselineShapeMatches": false,
+  "sourceSha256": {
+    "modules/gui/qt/widgets/qml/GridItem.qml": "567d9c3ebcba0ee102c11f54d4e5a13eabf84b43f66b39960d22a92ce85b0c9d",
+    "modules/gui/qt/medialibrary/qml/VideoGridItem.qml": "e0dd43ef4cdf243674ac676193da954ec4788ff17d1dc00d05d171fed712ad89",
+    "modules/gui/qt/medialibrary/qml/PlaylistMediaList.qml": "5771eb884ca59de5ba2491dfaa22e1418326a05a52e2fb29e30eceecbf7d482a",
+    "modules/gui/qt/medialibrary/qml/VideoPlaylistsDisplay.qml": "a7f294b0b4c97d211e24d34b4572de3b0253e89603f026ffe32722911dc5d8ee"
+  },
+  "generatedQmlSha256": {
+    "Base.qml": "ee170f8fdb352ad266aa12e55f2e85f6355ae7132dbdc8b7c3489bf20811bbf2",
+    "Child.qml": "4d716025b4a75e8227af664f897618f87dd90c0f1adb7062a9bc50fbb5a7617e",
+    "Collection.qml": "3233f835500be16dc8b8a2d8021f270cb9e7fb936541a34a366f39ad296abc9a"
+  },
+  "fixtureSha256": "e201404fa453cecdbfa4449e908a94143202afbfdf3ba152c292142cf3d00ff1",
+  "scope": "Actual production routing bodies and normal Qt QML base/derived signal connections with supplied dependencies. No window, native input delivery, actual ML/primary player, rendering, lifetime or Figma acceptance.",
+  "messages": [],
+  "allMessages": [],
+  "diagnosticsScope": "QCore startup, QML creation, all actions and explicit QML-object/engine teardown; subsequent process stderr is checked by the launcher."
+}

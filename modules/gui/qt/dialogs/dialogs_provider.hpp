@@ -89,6 +89,13 @@ class PluginDialog;
 class EpgDialog;
 class UpdateDialog;
 class PrefsDialog;
+class NetworkStreamModel;
+class ConversionController;
+struct vlc_player_listener_id;
+Q_MOC_INCLUDE("dialogs/conversion_controller.hpp")
+class NewPlaylistModel;
+Q_MOC_INCLUDE("dialogs/new_playlist_model.hpp")
+Q_MOC_INCLUDE("dialogs/network_stream_model.hpp")
 
 class DialogsProvider : public QObject, public Singleton<DialogsProvider>
 {
@@ -106,6 +113,11 @@ public:
     Q_ENUM(Mode)
 
     Q_PROPERTY(bool openDialogVisible READ openDialogVisible NOTIFY openDialogVisibleChanged FINAL)
+    Q_PROPERTY(NetworkStreamModel* networkStream READ networkStream CONSTANT FINAL)
+    Q_PROPERTY(ConversionController *conversion READ conversion CONSTANT FINAL)
+    Q_PROPERTY(NewPlaylistModel *newPlaylist READ newPlaylist CONSTANT FINAL)
+    Q_PROPERTY(bool qmlDialogVisible READ qmlDialogVisible WRITE setQmlDialogVisible NOTIFY qmlDialogVisibleChanged FINAL)
+    Q_PROPERTY(bool qmlInputFocused READ qmlInputFocused WRITE setQmlInputFocused NOTIFY qmlInputFocusedChanged FINAL)
     Q_PROPERTY(bool firstRunDialogVisible READ firstRunDialogVisible NOTIFY firstRunDialogVisibleChanged FINAL)
     Q_PROPERTY(bool extendedDialogVisible READ extendedDialogVisible NOTIFY extendedDialogVisibleChanged FINAL)
     Q_PROPERTY(bool messagesDialogVisible READ messagesDialogVisible NOTIFY messagesDialogVisibleChanged FINAL)
@@ -139,6 +151,13 @@ public:
                                 EXT_FILTER_PLAYLIST,
                                 const QUrl& path = QUrl() );
     bool isDying() { return b_isDying; }
+    NetworkStreamModel *networkStream();
+    ConversionController *conversion();
+    NewPlaylistModel *newPlaylist();
+    bool qmlDialogVisible() const { return m_qmlDialogVisible; }
+    void setQmlDialogVisible(bool visible);
+    bool qmlInputFocused() const { return m_qmlInputFocused; }
+    void setQmlInputFocused(bool focused);
     static QString getDirectoryDialog( qt_intf_t *p_intf);
 
     static QString getSaveFileName(QWidget *parent = NULL,
@@ -158,6 +177,11 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
+    std::unique_ptr<NetworkStreamModel> m_networkStream;
+    std::unique_ptr<ConversionController> m_conversion;
+    std::unique_ptr<NewPlaylistModel> m_newPlaylist;
+    bool m_qmlDialogVisible = false;
+    bool m_qmlInputFocused = false;
     DialogsProvider( qt_intf_t * );
     virtual ~DialogsProvider() override;
 
@@ -191,10 +215,12 @@ private:
     std::unique_ptr<input_item_parser_id_t,
                     decltype(&input_item_parser_id_Release)> m_parser;
 
-    QWidget* root;
     bool b_isDying;
+    vlc_player_listener_id *m_quitStopListener = nullptr;
+    void finishQuitAfterPlaybackStop();
 
     void openDialog( OpenDialog::OpenTab );
+    void openNativePrefsDialog(bool advanced);
 
     template<typename T>
     inline void ensureDialog(std::unique_ptr<T>& dialog);
@@ -216,6 +242,7 @@ public slots:
                                               const QMessageBox::StandardButton defaultButton = QMessageBox::NoButton,
                                               const QMessageBox::Icon icon = QMessageBox::NoIcon);
     void prefsDialog();
+    void expertPrefsDialog();
     void firstRunDialog();
     void extendedDialog();
     void synchroDialog();
@@ -246,6 +273,15 @@ public slots:
     void openUrlDialog();
     void openNetDialog();
     void openCaptureDialog();
+    void addMediaLibraryFolder();
+    void newPlaylistDialog();
+    void chooseNewPlaylistFiles();
+    void chooseNewPlaylistThumbnail();
+    void chooseConversionSource();
+    void chooseConversionDestination();
+    void chooseSubtitleAttachmentFiles();
+    void chooseSubtitleAttachmentFolder();
+    void searchSubtitlesOnline();
 
     void PLOpenDir();
     void PLAppendDir();
@@ -255,6 +291,7 @@ public slots:
     void streamingDialog( const QList<QUrl>& urls, bool b_stream = true );
     void openAndStreamingDialogs();
     void openAndTranscodingDialogs();
+    void openLegacyTranscodingDialog();
 
     void savePlayingToPlaylist();
 
@@ -288,6 +325,15 @@ public:
 signals:
     void releaseMouseEvents();
     void showToolbarEditorDialog();
+    void showNetworkStreamDialog();
+    void showGlobalSettingsDialog();
+    void showNewPlaylistDialog();
+    void showConversionDialog();
+    void showSubtitleAttachmentsDialog();
+    void showPlayerProfilesDialog(bool create);
+    void newPlaylistSaved(MLItemId playlist);
+    void qmlDialogVisibleChanged();
+    void qmlInputFocusedChanged();
 
     //visiblity signal
     void openDialogVisibleChanged();

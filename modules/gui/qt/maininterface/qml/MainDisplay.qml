@@ -25,6 +25,7 @@ import VLC.Playlist
 import VLC.Player
 
 import VLC.Util
+import VLC.Menus
 import VLC.Dialogs
 
 FocusScope {
@@ -65,10 +66,11 @@ FocusScope {
     function loadView(path, properties, focusReason) {
         const found = stackView.loadView(path, properties, focusReason)
         if (!found)
-            return
+            return false
 
         if (Player.hasVideoOutput && MainCtx.hasEmbededVideo)
             _showMiniPlayer = true
+        return true
     }
 
     function loadCurrentHistoryView(focusReason) {
@@ -84,7 +86,8 @@ FocusScope {
                 MainPlaylistController.stop()
         }
 
-        if (History.previousEmpty) {
+        // A valid first route still has no previous entry.
+        if (History.viewPath.length === 0) {
             History.update(["home"])
         }
         loadCurrentHistoryView(Qt.OtherFocusReason)
@@ -107,20 +110,33 @@ FocusScope {
     readonly property var pageModel: [
         {
             name: "home",
+            nested: MainCtx.mediaLibraryAvailable,
             url: MainCtx.mediaLibraryAvailable ?
                  "qrc:///qt/qml/VLC/MediaLibrary/HomeDisplay.qml" :
                  "qrc:///qt/qml/VLC/MainInterface/NoMedialibHome.qml"
         }, {
+            name: "recent",
+            nested: true,
+            url: "qrc:///qt/qml/VLC/MediaLibrary/JuxtopposedRecentDisplay.qml"
+        }, {
             name: "video",
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/VideoDisplay.qml"
         }, {
             name: "music",
+            nested: true,
             url: "qrc:///qt/qml/VLC/MediaLibrary/MusicDisplay.qml"
         }, {
+            name: "playlists",
+            nested: true,
+            url: "qrc:///qt/qml/VLC/MediaLibrary/JuxtopposedPlaylistsDisplay.qml"
+        }, {
             name: "network",
+            nested: true,
             url: "qrc:///qt/qml/VLC/Network/BrowseDisplay.qml"
         }, {
             name: "discover",
+            nested: true,
             url: "qrc:///qt/qml/VLC/Network/DiscoverDisplay.qml"
         }, {
             name: "mlsettings",
@@ -234,7 +250,7 @@ FocusScope {
         enabled: visible
 
         anchors {
-            top: parent.top
+            top: MainCtx.juxtopposedControls ? localTopbar.bottom : parent.top
             right: parent.right
             left: parent.left
         }
@@ -242,8 +258,8 @@ FocusScope {
         plListView: {
             if (playlistLoader.active)
                 return playlistLoader.item
-            else if (playlistWindowLoader.status === Loader.Ready)
-                return playlistWindowLoader.item.playlistView
+            else if (playlistWindowLoader?.status === Loader.Ready)
+                return playlistWindowLoader.item?.playlistView ?? null
             else
                 return null
         }
@@ -254,7 +270,7 @@ FocusScope {
         z: 5
 
         anchors {
-            top: menuTopbar.visible ? menuTopbar.bottom : parent.top
+            top: !MainCtx.juxtopposedControls && menuTopbar.visible ? menuTopbar.bottom : parent.top
             left: parent.left
             right: parent.right
         }
@@ -266,8 +282,8 @@ FocusScope {
         plListView: {
             if (playlistLoader.active)
                 return playlistLoader.item
-            else if (playlistWindowLoader.status === Loader.Ready)
-                return playlistWindowLoader.item.playlistView
+            else if (playlistWindowLoader?.status === Loader.Ready)
+                return playlistWindowLoader.item?.playlistView ?? null
             else
                 return null
         }
@@ -287,7 +303,7 @@ FocusScope {
         id: mainRow
 
         anchors {
-            top: localTopbar.bottom
+            top: MainCtx.juxtopposedControls && menuTopbar.visible ? menuTopbar.bottom : localTopbar.bottom
             right: parent.right
             left: parent.left
             bottom: parent.bottom
@@ -446,7 +462,8 @@ FocusScope {
                 focus: true
 
                 anchors.fill: parent
-                anchors.leftMargin: (sidebar.visible && (VLCStyle.isScreenSmall ? (sidebar.state === "") : true)) ? sidebar.width : 0.0
+                anchors.leftMargin: navigation.visible ? (VLCStyle.isScreenSmall ? 46 * navigation.uiScale : navigation.width)
+                                  : (sidebar.visible && (VLCStyle.isScreenSmall ? (sidebar.state === "") : true)) ? sidebar.width : 0.0
                 anchors.rightMargin: (playlistLoader.shown && !VLCStyle.isScreenSmall)
                                      ? playlistLoader.width
                                      : 0
@@ -454,13 +471,13 @@ FocusScope {
 
                 // Prevent animating x on collapse with overlayed side navigation bar:
                 Binding on anchors.leftMargin {
-                    when: (VLCStyle.isScreenSmall && sidebar.state === "" && sidebarTransition.running)
+                    when: (!MainCtx.juxtopposedControls && VLCStyle.isScreenSmall && sidebar.state === "" && sidebarTransition.running)
                     value: 0.0
                 }
 
                 pageModel: g_mainDisplay.pageModel
 
-                leftPadding: sidebar.visible  ? 0 : VLCStyle.applicationHorizontalMargin
+                leftPadding: (sidebar.visible || navigation.visible) ? 0 : VLCStyle.applicationHorizontalMargin
 
                 rightPadding: playlistLoader.shown ? 0 : VLCStyle.applicationHorizontalMargin
 
@@ -518,7 +535,7 @@ FocusScope {
                 Navigation.parentItem: g_mainDisplay
                 Navigation.upItem: localTopbar
                 Navigation.rightItem: playlistLoader
-                Navigation.leftItem: sidebar
+                Navigation.leftItem: navigation.visible ? navigation : sidebar
                 Navigation.downItem: loaderUpdatePane
             }
         }
@@ -535,7 +552,8 @@ FocusScope {
 
             height: parent.height - g_mainDisplay.displayMargin
 
-            visible: VLCStyle.isScreenSmall && (playlistLoader.shown || (sidebar.visible && (sidebar.state === "expanded")))
+            visible: VLCStyle.isScreenSmall && (playlistLoader.shown || (sidebar.visible && (sidebar.state === "expanded"))
+                                               || (navigation.visible && navigation.expanded))
             color: "black"
             opacity: 0.4
 
@@ -549,6 +567,32 @@ FocusScope {
                     wheel.accepted = true
                 }
             }
+        }
+
+        JuxtopposedNavigationPane {
+            id: navigation
+            z: 3
+            anchors.left: parent.left
+            anchors.top: parent.top
+            height: Math.max(0, parent.height - g_mainDisplay.displayMargin)
+            width: implicitWidth
+            visible: MainCtx.juxtopposedControls
+            activeSurface: !MainCtx.playerView
+            expanded: pannelVisiblity.showNavigation
+            Navigation.parentItem: g_mainDisplay
+            Navigation.upItem: localTopbar
+            Navigation.rightItem: stackView.currentItem
+            onRouteRequested: (uri, reason) => {
+                if (stackView.isDefaulLoadedForPath([...uri]) || History.exactMatch(History.viewPath, uri))
+                    stackView.positionContentAtBeginning()
+                else
+                    History.push(uri, {}, reason)
+                stackView.forceActiveFocus(reason)
+                if (VLCStyle.isScreenSmall) pannelVisiblity.showNavigation = false
+            }
+            onDestinationOpened: reason => stackView.forceActiveFocus(reason)
+            onPreferencesRequested: DialogsProvider.prefsDialog()
+            onContentFocusRequested: reason => stackView.forceActiveFocus(reason)
         }
 
         SideNavigationPane {
@@ -567,7 +611,7 @@ FocusScope {
 
             delegateShowText: (state === "expanded")
 
-            visible: (width > 0.0)
+            visible: !MainCtx.juxtopposedControls && (width > 0.0)
 
             height: parent.height - g_mainDisplay.displayMargin
 
@@ -638,7 +682,7 @@ FocusScope {
             }
 
             Component.onCompleted: {
-                Qt.callLater(() => { sidebarTransition.enabled = true; })
+                Qt.callLater(() => { if (sidebarTransition) sidebarTransition.enabled = true; })
             }
 
             states: State {
@@ -714,7 +758,7 @@ FocusScope {
             }
 
             Component.onCompleted: {
-                Qt.callLater(() => { playlistTransition.enabled = true; })
+                Qt.callLater(() => { if (playlistTransition) playlistTransition.enabled = true; })
             }
 
             states: State {
@@ -750,7 +794,7 @@ FocusScope {
                 property int maximumWidth: Math.max(minimumWidth, (g_mainDisplay.width + playqueueResizeHandle.width)
                                                     / (pannelVisiblity.showNavigation ? 3 : 2))
 
-                implicitWidth: Math.round(Helpers.clamp(MainCtx.playqueuePanel.width, minimumWidth, maximumWidth))
+                implicitWidth: Math.round(Helpers.clamp(playlist.preferredWidth, minimumWidth, maximumWidth))
 
                 focus: true
 
@@ -988,8 +1032,11 @@ FocusScope {
                 leftMargin: VLCStyle.margin_normal + VLCStyle.applicationHorizontalMargin
             }
 
-            width: VLCStyle.dp(320, VLCStyle.scale)
-            height: VLCStyle.dp(180, VLCStyle.scale)
+            // Keep the preview inside the library when video auto-resize
+            // makes the window narrower than its preferred 320 dp size.
+            width: Math.max(0, Math.min(VLCStyle.dp(320, VLCStyle.scale),
+                                       g_mainDisplay.width - 2 * (VLCStyle.margin_normal + VLCStyle.applicationHorizontalMargin)))
+            height: Math.round(width * 9 / 16)
             z: 4
             visible: g_mainDisplay._showMiniPlayer && MainCtx.hasEmbededVideo
             enabled: g_mainDisplay._showMiniPlayer && MainCtx.hasEmbededVideo
@@ -1002,7 +1049,7 @@ FocusScope {
             }
 
             Component.onCompleted: {
-                Qt.callLater(() => { visibleBinding.when = true })
+                Qt.callLater(() => { if (visibleBinding) visibleBinding.when = true })
             }
 
             dragXMin: VLCStyle.applicationHorizontalMargin
@@ -1045,6 +1092,14 @@ FocusScope {
             left: parent.left
             right: parent.right
             margins: VLCStyle.margin_large
+        }
+    }
+
+    Connections {
+        target: MainCtx.mediaLibrary
+        function onFolderAddFailed(folder) {
+            DialogsProvider.messageDialog(qsTr("Could not add this folder to the media library:\n%1").arg(folder),
+                                          qsTr("Add Folder"))
         }
     }
 

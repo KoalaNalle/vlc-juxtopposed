@@ -1,0 +1,28 @@
+$ErrorActionPreference = 'Stop'
+$workspacePath = '/checkout'
+$packagePath = Join-Path $workspacePath 'build-windows\slice-leaf-literal-package-20261014'
+$evidencePath = Join-Path $workspacePath 'build-windows\leaf-literal-desktop-20261014'
+$profilePath = Join-Path $evidencePath 'userdata'
+if (Test-Path -LiteralPath $evidencePath) { throw 'Use a fresh desktop evidence directory' }
+[System.IO.Directory]::CreateDirectory($profilePath) | Out-Null
+[System.IO.Directory]::CreateDirectory((Join-Path $packagePath 'portable\vlc')) | Out-Null
+Copy-Item -LiteralPath (Join-Path $workspacePath 'build-windows\slice-conversion-modal-package-20261014\portable\vlcrc') -Destination (Join-Path $packagePath 'portable\vlcrc')
+Copy-Item -LiteralPath (Join-Path $workspacePath 'build-windows\slice-conversion-modal-package-20261014\portable\vlc\vlc-qt-interface.ini') -Destination (Join-Path $packagePath 'portable\vlc\vlc-qt-interface.ini')
+foreach ($fixtureDirectory in @('ml','juxtopposed-playlist-art')) {
+    $sourcePath = Join-Path (Join-Path $workspacePath 'build-windows\conversion-modal-desktop-20261014\userdata') $fixtureDirectory
+    Copy-Item -LiteralPath $sourcePath -Destination (Join-Path $profilePath $fixtureDirectory) -Recurse
+}
+$startInfo = [System.Diagnostics.ProcessStartInfo]::new()
+$startInfo.FileName = Join-Path $packagePath 'vlc.exe'
+$startInfo.UseShellExecute = $false
+$startInfo.WorkingDirectory = $packagePath
+$startInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Normal
+$startInfo.Environment.Remove('VLC_PLUGIN_PATH') | Out-Null
+$startInfo.Environment['VLC_LIB_PATH'] = Join-Path $packagePath 'plugins'
+$startInfo.Environment['VLC_LIBEXEC_PATH'] = Join-Path $packagePath 'vlc-preparser.exe'
+$startInfo.Environment['VLC_USERDATA_PATH'] = $profilePath
+foreach ($argument in @('--qt-juxtopposed-controls', '--no-one-instance', '--qt-pin-controls', '--start-paused', '--no-ml-network-discovery', '--file-logging', "--logfile=$evidencePath\vlc.log", '-vv')) {
+    $startInfo.ArgumentList.Add($argument)
+}
+$startedPlayer = [System.Diagnostics.Process]::Start($startInfo)
+Write-Output "Leaf navigation test player PID: $($startedPlayer.Id)"

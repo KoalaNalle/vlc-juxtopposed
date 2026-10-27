@@ -1,0 +1,21 @@
+{
+  "qtWarningsOrNativeErrorsAbsent": true,
+  "allNativeWarningsAbsent": false,
+  "nativeWarnings": {
+    "hevc": [
+      "faad warning: decoded zero sample",
+      "d3d11va warning: surface dimensions (384x256) differ from avcodec dimensions (320x192)",
+      "main warning: window size missing"
+    ],
+    "vp9": [
+      "d3d11va warning: surface dimensions (320x192) differ from avcodec dimensions (320x180)",
+      "main warning: window size missing"
+    ]
+  },
+  "scope": "Warnings retained verbatim; selected actual displayed frames/resume/normal Quit pass. No audio audibility or every startup/window-size path claim.",
+  "review": [
+    "directx_va.c aligns decoder surfaces before this diagnostic: HEVC128 alignment produces384x256 from320x192, VP9 surface320x192 from320x180. Actual primary pictures displayed; renderer logs confirm the chosen hardware decoder.",
+    "display.c reports initial missing window width/height, then explicitly falls back to source/default size. Actual600x420 primary/card placement and decoded playback were observed. The missing initial geometry remains a diagnostic to consider in wider window-lifecycle checks; this is not a claim that all warnings vanished.",
+    "faad.c logs a zero-sample AAC frame, flushes consumed bytes and continues; HEVC native paused stats show decoded/played audio buffers. Audibility was not evaluated because the synthetic tracks are silent."
+  ]
+}

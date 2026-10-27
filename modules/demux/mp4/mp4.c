@@ -513,8 +513,15 @@ static stime_t MP4_MapTrackTimeIntoTimeline( const mp4_track_t *p_track,
     const MP4_Box_data_elst_entry_t *edit =
             &p_track->BOXDATA(p_elst)->entries[p_track->i_elst];
 
+    /* The edit begins on the presentation timeline. A B-frame stream can
+     * start decoding before that point while its first displayed sample is
+     * already inside the edit. Using DTS alone changes the timestamp mapping
+     * when a seek needs an earlier keyframe for subtitle preroll. */
+    stime_t i_start_pts = p_track->i_start_dts;
+    if( p_track->i_start_delta != UNKNOWN_DELTA )
+        i_start_pts += p_track->i_start_delta;
     /* convert to offset in our current edit */
-    if( edit->i_media_time > 0 && p_track->i_start_dts >= edit->i_media_time )
+    if( edit->i_media_time > 0 && i_start_pts >= edit->i_media_time )
         i_time -= edit->i_media_time;
 
     /* convert media timeline to track timescale */
@@ -2186,6 +2193,32 @@ static int FragSeekToTime( demux_t *p_demux, vlc_tick_t i_nztime, bool b_accurat
                 p_sys->b_error = (vlc_stream_Seek( p_demux->s, i_backup_pos ) != VLC_SUCCESS);
                 return VLC_EGENERIC;
             }
+            /* A selected subtitle sample can cover several video fragments.
+             * Include its fragment so an accurate seek can restore that cue,
+             * instead of starting after the only packet which contains it. */
+            for( unsigned i = 0; i < p_sys->i_tracks; ++i )
+            {
+                const mp4_track_t *tk = &p_sys->track[i];
+                bool b_selected = false;
+                if( !tk->b_ok || tk->fmt.i_cat != SPU_ES || !tk->p_es
+                 || es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE,
+                                    tk->p_es, &b_selected ) != VLC_SUCCESS
+                 || !b_selected )
+                    continue;
+                stime_t i_subtime = MP4_rescale_qtime( i_nztime, p_sys->i_timescale );
+                uint64_t i_subpos;
+                if( MP4_Fragments_Index_Lookup( p_sys->p_fragsindex, &i_subtime, &i_subpos, i )
+                 && i_subpos < i64 )
+                {
+                    i64 = i_subpos;
+                    i_basetime = MP4_Fragment_Index_GetTrackStartTime(
+                        p_sys->p_fragsindex, i_seek_track_index, i64 );
+                }
+            }
+            /* Decode from the resolved fragment start, not an arbitrary
+             * sample at the requested display time. Keep i_nztime for the
+             * accurate display cutoff below. */
+            i_sync_time = MP4_rescale_mtime( i_basetime, p_sys->i_timescale );
             msg_Dbg( p_demux, "seeking to fragment index pos %" PRId64 " %" PRId64, i64,
                      MP4_rescale_mtime( i_basetime, p_sys->i_timescale ) );
         }
@@ -3535,8 +3568,9 @@ static int STTSToSampleChunk(const mp4_track_t *p_track, uint64_t i_dts,
     uint32_t i_sample = ck->i_sample_first;
     uint64_t i_entrydts = ck->i_first_dts;
 
+    /* i_sample is a track index; i_sample_count is local to this chunk. */
     for( uint_fast32_t i = 0;
-         i < ck->i_entries_dts && i_sample < ck->i_sample_count;
+         i < ck->i_entries_dts && i_sample - ck->i_sample_first < ck->i_sample_count;
          i++ )
     {
         uint64_t i_entry_duration = ck->p_sample_count_dts[i] * (uint64_t)

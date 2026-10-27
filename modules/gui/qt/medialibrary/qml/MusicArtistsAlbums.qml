@@ -52,8 +52,17 @@ Widgets.PageExt {
     hasGridListMode: true
     isSearchable: true
 
-    //we provide our own header
-    header: null
+    // Keep the original custom banner; the redesign also needs its shared
+    // history/search/sort header above this detail view.
+    libraryHeaderEnabled: MainCtx.juxtopposedControls
+    title: albumSubView._artist.name || qsTr("Artist")
+    libraryModel: albumSubView._effectiveModel
+    sortMenu: albumSubView.sortMenu
+    libraryBreadcrumbs: [
+        {text: qsTr("Music"), uri: ["music"]},
+        {text: qsTr("Artists"), uri: ["music", "artists"]},
+        {text: root.title, uri: root.pagePrefix}
+    ]
 
     sortModel: MainCtx.gridView ? [
         { text: qsTr("Title"), criteria: "title" },

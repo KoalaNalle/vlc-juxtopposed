@@ -26,10 +26,12 @@ import VLC.Widgets as Widgets
 
 Widgets.PageExt {
     id: root
+    property alias initialIndex: albumsView.initialIndex
 
     title: qsTr("Albums")
 
     MusicAlbums {
+        id: albumsView
         anchors.fill: parent
 
         focus: true
@@ -44,7 +46,10 @@ Widgets.PageExt {
         enableBeginningFade: root.enableBeginningFade
         enableEndFade: root.enableEndFade
 
-        onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+        onCurrentIndexChanged: {
+            if (History.exactMatch(History.viewPath, root.pagePrefix))
+                History.viewProp.initialIndex = currentIndex
+        }
     }
 
 }

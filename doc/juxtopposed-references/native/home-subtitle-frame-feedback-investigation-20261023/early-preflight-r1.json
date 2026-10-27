@@ -1,0 +1,10 @@
+{
+  "status": "terminal",
+  "exitCode": 1,
+  "stage": "source manifest read before any runtime staging or native child launch",
+  "error": "FileNotFoundError: inputs-before-r1.json",
+  "cause": "The baseline parent was started while the source-copy process was still live.",
+  "nativeChildStarted": false,
+  "nativeOutputDirectoryCreated": false,
+  "recovery": "Waited on original source-copy session 79757 to terminal exit 0, confirmed sourceCount 2347 and native-before-r1 absent, then invoked the baseline parent. No live test was restarted."
+}

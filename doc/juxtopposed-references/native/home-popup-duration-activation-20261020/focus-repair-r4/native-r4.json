@@ -1,0 +1,1747 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "privateGuiOnly": true,
+  "ordinaryGuiSha256": "a56a6f456b82842e48ba915d6089353df4e0c4de3d439dc4d4caa1376f1658c9",
+  "runtimeSha256": {
+    "libvlccore.dll": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "plugins/gui/libqt_plugin.dll": "7290c44fe050517b1b3c156fcbc871d6f8035f9846145a1bb9a4c8b4a2a68f13",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a"
+  },
+  "cases": {
+    "popup-editor-initial": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 27196,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 21.375,
+      "exitCode": 0,
+      "elapsedSeconds": 30.65599999999904,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "popup editor no-write primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "opening the actual slider preserves arbitrary native milliseconds without rounding or writes",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual visible and accessible duration help explains zero and system timing",
+            "passed": true
+          },
+          {
+            "name": "owned notification config locks for genuine save failure",
+            "passed": true
+          },
+          {
+            "name": "real locked-save failure rolls back policy and exposes retry feedback",
+            "passed": true
+          },
+          {
+            "name": "failed keyboard save restores the actual slider value",
+            "passed": true
+          },
+          {
+            "name": "actual notification save failure is visible",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer duration edit saves next-start policy without changing primary state",
+            "passed": true
+          },
+          {
+            "name": "restoring the exact native value clears restart feedback without rounding legacy milliseconds",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual slider keyboard edits reach the exact duration boundary and preserve primary state",
+            "passed": true
+          },
+          {
+            "name": "actual tray dependency toggle exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "saved tray Off disables the editor and retains duration and active tray until restart",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "restoring saved tray On restores the existing editor without replacing the active tray",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual notification dialog reopen retains saved boundary and original active duration",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete notification editor preserves active primary media",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [
+          "owned-settings.wav",
+          "owned-popup-next.wav"
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-editor-initial",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "savedNextStartupDuration": 0,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 777
+      },
+      "diagnostics": [],
+      "nativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "expectedNativeErrors": [
+        "main error: cannot replace configuration file (Windows error 5)"
+      ],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [
+        {
+          "name": "owned-settings.wav",
+          "durationHintMs": 777
+        },
+        {
+          "name": "owned-popup-next.wav",
+          "durationHintMs": 777
+        }
+      ],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 0
+    },
+    "popup-editor-reopen": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 27924,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 20.57799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 31.531999999999243,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "popup editor no-write primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "opening the actual slider preserves arbitrary native milliseconds without rounding or writes",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual visible and accessible duration help explains zero and system timing",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer duration edit saves next-start policy without changing primary state",
+            "passed": true
+          },
+          {
+            "name": "restoring the exact native value clears restart feedback without rounding legacy milliseconds",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual slider keyboard edits reach the exact duration boundary and preserve primary state",
+            "passed": true
+          },
+          {
+            "name": "actual tray dependency toggle exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "saved tray Off disables the editor and retains duration and active tray until restart",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "restoring saved tray On restores the existing editor without replacing the active tray",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual notification dialog reopen retains saved boundary and original active duration",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete notification editor preserves active primary media",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [
+          "owned-settings.wav",
+          "owned-popup-next.wav"
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-editor-reopen",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 0,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 0,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "savedNextStartupDuration": 10000,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 0
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [
+        {
+          "name": "owned-settings.wav",
+          "durationHintMs": 0
+        },
+        {
+          "name": "owned-popup-next.wav",
+          "durationHintMs": 0
+        }
+      ],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 10000
+    },
+    "popup-cold-max": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 26408,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 24.07800000000134,
+      "exitCode": 0,
+      "elapsedSeconds": 27.390000000001237,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [
+          "owned-settings.wav",
+          "owned-popup-next.wav"
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-cold-max",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 10000,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 10000,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 10000
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [
+        {
+          "name": "owned-settings.wav",
+          "durationHintMs": 10000
+        },
+        {
+          "name": "owned-popup-next.wav",
+          "durationHintMs": 10000
+        }
+      ],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 10000
+    },
+    "popup-editor-playing": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 10148,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 23.32799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 32.375,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "popup editor no-write primary-state control passes",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "invalid duration type or range cannot change saved or active state",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "opening the actual slider preserves arbitrary native milliseconds without rounding or writes",
+            "passed": true
+          },
+          {
+            "name": "owned QML target exists",
+            "passed": true
+          },
+          {
+            "name": "owned QML operation succeeds",
+            "passed": true
+          },
+          {
+            "name": "actual visible and accessible duration help explains zero and system timing",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer duration edit saves next-start policy without changing primary state",
+            "passed": true
+          },
+          {
+            "name": "restoring the exact native value clears restart feedback without rounding legacy milliseconds",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual slider keyboard edits reach the exact duration boundary and preserve primary state",
+            "passed": true
+          },
+          {
+            "name": "actual tray dependency toggle exists",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "saved tray Off disables the editor and retains duration and active tray until restart",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "restoring saved tray On restores the existing editor without replacing the active tray",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "native route opens actual Interface host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual popup-duration slider materializes",
+            "passed": true
+          },
+          {
+            "name": "actual popup slider is enabled and keyboard focused",
+            "passed": true
+          },
+          {
+            "name": "actual popup group and scrolling viewport exist",
+            "passed": true
+          },
+          {
+            "name": "focused popup title scale and timing note are fully inside actual viewport",
+            "passed": true
+          },
+          {
+            "name": "actual notification dialog reopen retains saved boundary and original active duration",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          },
+          {
+            "name": "notification settings dismiss normally",
+            "passed": true
+          },
+          {
+            "name": "complete notification editor preserves active primary media",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [
+          "owned-settings.wav",
+          "owned-popup-next.wav"
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-editor-playing",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "savedNextStartupDuration": 10000,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 777
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [
+        {
+          "name": "owned-settings.wav",
+          "durationHintMs": 777
+        },
+        {
+          "name": "owned-popup-next.wav",
+          "durationHintMs": 777
+        }
+      ],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 10000
+    },
+    "popup-never": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 20852,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 26.82799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 30.10900000000038,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-never",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 777
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 777
+    },
+    "popup-minimized": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 18284,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 10.57799999999952,
+      "exitCode": 0,
+      "elapsedSeconds": 18.25,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "actual window and MainCtx reach minimized state",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "new input preserves the real minimized state",
+            "passed": true
+          },
+          {
+            "name": "actual window restores before next normal track",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [
+          "owned-popup-next.wav"
+        ],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-minimized",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": true,
+            "startupDuration": 777,
+            "visibilityAfter": 3,
+            "visibilityBefore": 3
+          },
+          {
+            "name": "owned-popup-restored.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 777
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [
+        {
+          "name": "owned-popup-next.wav",
+          "durationHintMs": 777
+        }
+      ],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 777
+    },
+    "popup-tray-off": {
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "pid": 18644,
+      "startupApprovalPending": false,
+      "startupApproved": true,
+      "startupWaitSeconds": 36.36000000000058,
+      "exitCode": 0,
+      "elapsedSeconds": 40.375,
+      "journey": {
+        "checks": [
+          {
+            "name": "owned native window and MainCtx became ready",
+            "passed": true
+          },
+          {
+            "name": "requested native test screen exists",
+            "passed": true
+          },
+          {
+            "name": "owned native window is on the requested test screen",
+            "passed": true
+          },
+          {
+            "name": "real MainCtx owns pin service",
+            "passed": true
+          },
+          {
+            "name": "real Windows system tray is available",
+            "passed": true
+          },
+          {
+            "name": "actual popup duration consumer is independently linked",
+            "passed": true
+          },
+          {
+            "name": "actual startup duration agrees with saved native milliseconds without stale feedback",
+            "passed": true
+          },
+          {
+            "name": "actual tray creation obeys cold startup preference",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "native route opens cold tray-Off host",
+            "passed": true
+          },
+          {
+            "name": "actual Interface category materializes",
+            "passed": true
+          },
+          {
+            "name": "actual pointer action is enabled",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target stays in owned window",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "actual pointer target is inside clipped viewport",
+            "passed": true
+          },
+          {
+            "name": "cold tray-Off duration row materializes",
+            "passed": true
+          },
+          {
+            "name": "cold absent tray disables duration editor without discarding its saved value",
+            "passed": true
+          },
+          {
+            "name": "genuine new input decodes and emits its actual player name",
+            "passed": true
+          },
+          {
+            "name": "notification journey reaches requested primary playback state",
+            "passed": true
+          },
+          {
+            "name": "notification paused clock settles",
+            "passed": true
+          },
+          {
+            "name": "actual track change retains the original tray and duration snapshot",
+            "passed": true
+          },
+          {
+            "name": "owned actual-window image saved",
+            "passed": true
+          }
+        ],
+        "expectedNotificationNames": [],
+        "finalPins": [],
+        "fullBetaAccepted": false,
+        "mode": "popup-tray-off",
+        "nativePopupDurationAccepted": true,
+        "notificationTransitions": [
+          {
+            "name": "owned-settings.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          },
+          {
+            "name": "owned-popup-next.wav",
+            "nameSignals": 1,
+            "notificationExpected": false,
+            "startupDuration": 777,
+            "visibilityAfter": 2,
+            "visibilityBefore": 2
+          }
+        ],
+        "ownedWindowOnly": true,
+        "passed": true,
+        "screenName": "LF24T450F",
+        "settingsFile": "C:/Modding/vlc-juxtopposed/build-windows/beta-popup-duration-20261020/ui-r4a/runtime/portable/vlc/vlc-qt-interface.ini",
+        "startupGateUsed": true,
+        "startupNotificationDuration": 777
+      },
+      "diagnostics": [],
+      "nativeErrors": [],
+      "expectedNativeErrors": [],
+      "unexpectedNativeErrors": [],
+      "nativeWarnings": [
+        "main warning: no more input streams for this mux",
+        "main warning: no more input streams for this mux"
+      ],
+      "pluginModuleCounts": [
+        "601"
+      ],
+      "platformDeliveries": [],
+      "platformNotificationNamesMatch": true,
+      "platformDurationHintsMatch": true,
+      "independentSavedDuration": 777
+    }
+  },
+  "runnerSha256": "673c1a060b8f25f129fae96e8607b3794a40102bd3d32c084ca390dd3a899034",
+  "sourceInputsUnchanged": true,
+  "ordinaryGuiUnchanged": true,
+  "ownedMediaUnchanged": true,
+  "ownedGeneratedMediaUnchanged": true
+}

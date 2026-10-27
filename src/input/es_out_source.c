@@ -76,6 +76,20 @@ static int EsOutSourceControl(es_out_t *out, input_source_t *in, int query,
 {
     assert(in == NULL);
     struct es_out_source *sys = PRIV(out);
+    /* Subtitle slaves follow the main media clock. A container demuxer can
+     * publish its own preroll/PCR even during opening or subtitle seeking;
+     * those controls must not reset the main video picture or its clock. */
+    if( sys->in->b_slave_sub )
+    {
+        switch( query )
+        {
+            case ES_OUT_SET_PCR:
+            case ES_OUT_SET_GROUP_PCR:
+            case ES_OUT_RESET_PCR:
+            case ES_OUT_SET_NEXT_DISPLAY_TIME:
+                return VLC_SUCCESS;
+        }
+    }
     return sys->parent_out->out.cbs->control(&sys->parent_out->out, sys->in, query, args);
 }
 

@@ -22,6 +22,7 @@
 #include <QAbstractListModel>
 
 #include <memory>
+#include <functional>
 
 class ColorSchemeModel : public QAbstractListModel
 {
@@ -54,6 +55,10 @@ public:
 
     int currentIndex() const;
     void setCurrentIndex(int newIndex);
+    // MainCtx routes interactive legacy choices through the checked preference
+    // owner. Startup restoration and an already committed choice bypass it.
+    void setChangeHandler(std::function<bool(int)> handler);
+    void restoreCurrentIndex(int newIndex);
 
     QString currentText() const;
     QVector<Item> getSchemes() const;
@@ -82,6 +87,7 @@ private:
 
     const QVector<ColorSchemeModel::Item> m_list;
     int m_currentIndex;
+    std::function<bool(int)> m_changeHandler;
 };
 
 #endif // COLORSCHEMEMODEL_HPP

@@ -43,6 +43,7 @@ typedef struct
     FILE *stream;
     const char *footer;
     int verbosity;
+    int message_filter;
 } vlc_logger_sys_t;
 
 #define TEXT_FILENAME "vlc-log.txt"
@@ -56,7 +57,9 @@ static void LogText(void *opaque, int type, const vlc_log_t *meta,
     vlc_logger_sys_t *sys = opaque;
     FILE *stream = sys->stream;
 
-    if (sys->verbosity < type)
+    if (sys->verbosity < type
+        || (sys->message_filter == 0 && type != VLC_MSG_ERR)
+        || (sys->message_filter == 1 && type != VLC_MSG_ERR && type != VLC_MSG_WARN))
         return;
 
     flockfile(stream);
@@ -109,7 +112,9 @@ static void LogHtml(void *opaque, int type, const vlc_log_t *meta,
     vlc_logger_sys_t *sys = opaque;
     FILE *stream = sys->stream;
 
-    if (sys->verbosity < type)
+    if (sys->verbosity < type
+        || (sys->message_filter == 0 && type != VLC_MSG_ERR)
+        || (sys->message_filter == 1 && type != VLC_MSG_ERR && type != VLC_MSG_WARN))
         return;
 
     flockfile(stream);
@@ -151,6 +156,7 @@ static const struct vlc_logger_operations *Open(vlc_object_t *obj,
     const struct vlc_logger_operations *ops = &text_ops;
     sys->footer = TEXT_FOOTER;
     sys->verbosity = verbosity;
+    sys->message_filter = var_InheritInteger(obj, "log-message-filter");
 
     char *mode = var_InheritString(obj, "logmode");
     if (mode != NULL)
@@ -240,6 +246,10 @@ vlc_module_begin()
     add_savefile("logfile", NULL, LOGFILE_NAME_TEXT, LOGFILE_NAME_LONGTEXT)
     add_string("logmode", "text", LOGMODE_TEXT, LOGMODE_LONGTEXT)
         change_string_list(mode_list, mode_list_text)
+    add_integer("log-message-filter", -1, N_("File log message filter"),
+                N_("-1 preserves the legacy verbosity filter; 0 logs errors only, "
+                   "1 errors and warnings, and 2 all messages permitted by verbosity."))
+        change_integer_range(-1, 2)
     add_integer("log-verbose", -1, LOGVERBOSE_TEXT, LOGVERBOSE_LONGTEXT)
         change_integer_list(verbosity_values, verbosity_text)
 vlc_module_end ()

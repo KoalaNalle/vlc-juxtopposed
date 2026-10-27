@@ -80,7 +80,7 @@ vlc_ml_sorting_criteria_t MLAudioModel::nameToCriteria(QByteArray name) const
         {QByteArrayLiteral("id"), VLC_ML_SORTING_DEFAULT},
         {QByteArrayLiteral("title"), VLC_ML_SORTING_ALPHA},
         {QByteArrayLiteral("album_title"), VLC_ML_SORTING_ALBUM},
-        {QByteArrayLiteral("track_number"), VLC_ML_SORTING_TRACKNUMBER},
+        {QByteArrayLiteral("track_number"), VLC_ML_SORTING_MEDIA_TRACKNUMBER},
         {QByteArrayLiteral("release_year"), VLC_ML_SORTING_RELEASEDATE},
         {QByteArrayLiteral("main_artist"), VLC_ML_SORTING_ARTIST},
         {QByteArrayLiteral("duration"), VLC_ML_SORTING_DURATION},
@@ -138,7 +138,7 @@ size_t MLAudioModel::Loader::count(vlc_medialibrary_t* ml, const vlc_ml_query_pa
 {
     if ( m_parent.id <= 0 )
         return vlc_ml_count_audio_media(ml, queryParams);
-    return vlc_ml_count_media_of(ml, queryParams, m_parent.type, m_parent.id );
+    return vlc_ml_count_audio_of(ml, queryParams, m_parent.type, m_parent.id );
 }
 
 std::vector<std::unique_ptr<MLItem>>
@@ -149,7 +149,7 @@ MLAudioModel::Loader::load(vlc_medialibrary_t* ml, const vlc_ml_query_params_t* 
     if ( m_parent.id <= 0 )
         media_list.reset( vlc_ml_list_audio_media(ml, queryParams) );
     else
-        media_list.reset( vlc_ml_list_media_of(ml, queryParams, m_parent.type, m_parent.id ) );
+        media_list.reset( vlc_ml_list_audio_of(ml, queryParams, m_parent.type, m_parent.id ) );
     if ( media_list == nullptr )
         return {};
     std::vector<std::unique_ptr<MLItem>> res;
@@ -163,7 +163,7 @@ MLAudioModel::Loader::loadItemById(vlc_medialibrary_t* ml, MLItemId itemId) cons
 {
     assert(itemId.type == VLC_ML_PARENT_UNKNOWN);
     ml_unique_ptr<vlc_ml_media_t> media(vlc_ml_get_media(ml, itemId.id));
-    if (!media)
+    if (!media || media->i_type != VLC_ML_MEDIA_TYPE_AUDIO)
         return nullptr;
     return std::make_unique<MLAudio>(ml, media.get());
 }

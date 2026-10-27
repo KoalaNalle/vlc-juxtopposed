@@ -1,0 +1,175 @@
+{
+  "status": "terminal",
+  "passed": false,
+  "case": "edit",
+  "privateFixture": true,
+  "fullBetaAccepted": false,
+  "forcedCleanupUsed": false,
+  "identities": {
+    "libvlccore.dll": "d04e9134a43f9bf6f0634fe1e56cc8ad4225285c55344e6b3dac754568072d1d",
+    "plugins/gui/libqt_plugin.dll": "70ff67a347f5ab03f84142f7856eb658b1f2b5993c231c507dadb98fdaca27c9",
+    "plugins/stream_filter/libcache_read_plugin.dll": "1190b018b5e81af33237fce3ec500f91ad216957e9eb2d448b5f89d7ff96e8dd",
+    "plugins/demux/libmp4_plugin.dll": "34d89499b9291eb4c18420c4235a9d950235300e2fece98ff78b2f9034c690a1"
+  },
+  "sourceInputsSha256": "000aa770e228fc9f71f1550ffd1243275d7f49163524816e6c76dfd6232a2875",
+  "runnerSha256": "a11adf930da199905f9f0c39c6a9bcbadb3335c6996dc90c2d6c121f8123b83a",
+  "mediaSha256": "a4f0d47e622ce3813d7e1b3fc83268e05e92fdaed9b068b8e88c613d6dbdc964",
+  "keyframeSeconds": [
+    0.0,
+    10.0,
+    20.0,
+    30.0,
+    40.0,
+    50.0
+  ],
+  "ffprobeSha256": "cb1c395203d8badd5f65aad68d06016fb68d12e128c16f9a9f4c52d3b899a27f",
+  "pid": 4764,
+  "exitCode": 0,
+  "normalExit": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "mediaUnchanged": true,
+  "journey": {
+    "checks": [
+      {
+        "name": "seek fixture settings are fenced to owned paths",
+        "passed": true
+      },
+      {
+        "name": "actual MainCtx enables its paired native precise seek consumer",
+        "passed": true
+      },
+      {
+        "name": "native startup restores the saved precise seek default",
+        "passed": true
+      },
+      {
+        "name": "owned generated MP4 opens",
+        "passed": true
+      },
+      {
+        "name": "actual primary starts the owned MP4",
+        "passed": true
+      },
+      {
+        "name": "actual primary decodes and displays generated video",
+        "passed": true
+      },
+      {
+        "name": "native primary pauses before seek checks",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "actual controller seek reaches the native MP4 demux",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": true
+      },
+      {
+        "name": "actual Windows video output displays a new seeked picture",
+        "passed": true
+      },
+      {
+        "name": "seek preserves the same native input and paused state",
+        "passed": true
+      },
+      {
+        "name": "actual Global settings route opens",
+        "passed": true
+      },
+      {
+        "name": "actual Playback category exists",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seeking toggle mounts",
+        "passed": true
+      },
+      {
+        "name": "actual seek settings control is enabled",
+        "passed": true
+      },
+      {
+        "name": "actual seek control center is inside its native window",
+        "passed": true
+      },
+      {
+        "name": "actual precise seek toggle commits the requested policy",
+        "passed": true
+      },
+      {
+        "name": "actual Playback settings close normally",
+        "passed": true
+      },
+      {
+        "name": "native saved flag matches the accepted precision choice",
+        "passed": true
+      },
+      {
+        "name": "actual controller seek reaches the native MP4 demux",
+        "passed": true
+      },
+      {
+        "name": "native paused clock reaches the expected precise or keyframe position",
+        "passed": false
+      }
+    ],
+    "error": "native paused clock reaches the expected precise or keyframe position",
+    "fullBetaAccepted": false,
+    "passed": false,
+    "privateFixture": true,
+    "seeks": [
+      {
+        "actualSeconds": 24.160000999999998,
+        "decodedPictures": 44,
+        "displayedPictures": 18,
+        "expectedSeconds": 24.2,
+        "label": "precise-time",
+        "precise": true
+      }
+    ],
+    "status": "awaiting-owned-window-inspection"
+  },
+  "diagnostics": [],
+  "nativeSeekLogChecks": [
+    {
+      "label": "precise-time",
+      "branch": "preroll",
+      "lines": [
+        "mp4 debug: seeking with 14200ms preroll (use input-fast-seek to avoid) to 24200000"
+      ],
+      "requestedSeconds": 24.2,
+      "nativeDateMicroseconds": 24200000,
+      "prerollOrAlignmentMs": 14200,
+      "passed": true,
+      "begin": 346,
+      "end": 841
+    }
+  ],
+  "quitLogOrder": {
+    "wait": 914,
+    "stopped": 946,
+    "teardown": 950
+  },
+  "realD3D11Opened": true,
+  "pluginCacheLoads": 1,
+  "scope": "Native Qt explicit seek policy reaches actual MP4 accurate/fast branch, fresh displayed/decoded pictures and paused clock, settings rejection/retry and decoded resume. Does not establish frame-exact output, every format or physical scaling.",
+  "stderr.txtSha256": "9db05c67ac0862844561f34a151f8422050ea53168d5e7bc14c1f21292ec7ece",
+  "stdout.txtSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vlc.logSha256": "a1c522c32e632d25cea1de6c27e0ad7046e4f7b160d76c689509659576ecd4d0",
+  "journey.jsonSha256": "17b7730d7e50468aa5d567ace0ff2cf6fc02d2815113546d99321bf2c8be8c65"
+}

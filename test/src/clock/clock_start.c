@@ -373,6 +373,62 @@ static void test_clock_slave_only(
 
     destroy_fixture_simple(&f);
 }
+
+static void test_clock_paused_seek(struct vlc_logger *logger)
+{
+    struct clock_fixture_simple f = init_fixture_simple(logger, false, 0, 0);
+    const vlc_tick_t pause_date = VLC_TICK_FROM_MS(100);
+    const vlc_tick_t pause_duration = VLC_TICK_FROM_SEC(60);
+    const vlc_tick_t target = VLC_TICK_FROM_SEC(8);
+
+    vlc_clock_main_Lock(f.main);
+    vlc_clock_Start(f.input, pause_date, VLC_TICK_0);
+    vlc_clock_main_ChangePause(f.main, pause_date, true);
+    /* A seek flushes the clock and buffers against the frozen pause date. */
+    vlc_clock_main_Reset(f.main);
+    vlc_clock_main_SetFirstPcr(f.main, pause_date, target);
+
+    vlc_tick_t converted = vlc_clock_ConvertToSystem(f.slave,
+        pause_date, target, 1.0, NULL);
+    assert(converted == pause_date);
+
+    vlc_clock_main_ChangePause(f.main, pause_date + pause_duration, false);
+    /* The next frame must be scheduled after resume, not 60 seconds late. */
+    const vlc_tick_t frame_duration = VLC_TICK_FROM_MS(40);
+    converted = vlc_clock_ConvertToSystem(f.slave,
+        pause_date + pause_duration, target + frame_duration, 1.0, NULL);
+    fprintf(stderr, "%s: converted=%"PRId64" expected=%"PRId64"\n",
+            __func__, converted, pause_date + pause_duration + frame_duration);
+    assert(converted == pause_date + pause_duration + frame_duration);
+    vlc_clock_main_Unlock(f.main);
+
+    destroy_fixture_simple(&f);
+}
+
+static void test_clock_paused_seek_with_dejitter(struct vlc_logger *logger)
+{
+    struct clock_fixture_simple f = init_fixture_simple(logger, false,
+        VLC_TICK_FROM_SEC(1), VLC_TICK_FROM_MS(80));
+    const vlc_tick_t pause_date = VLC_TICK_FROM_SEC(10);
+    const vlc_tick_t wall_date = pause_date + VLC_TICK_FROM_SEC(60);
+    vlc_clock_main_Lock(f.main);
+    vlc_clock_main_ChangePause(f.main, pause_date, true);
+    for (unsigned i = 0; i < 3; ++i)
+    {
+        const double rate = i == 0 ? 1. : 4.;
+        const vlc_tick_t target = VLC_TICK_FROM_SEC(4 + i) + VLC_TICK_FROM_MS(200);
+        vlc_clock_main_Reset(f.main);
+        /* Buffering completion subtracts the one-second input delay. */
+        vlc_clock_main_SetFirstPcr(f.main, pause_date - VLC_TICK_FROM_SEC(1), target);
+        assert(vlc_clock_ConvertToSystem(f.slave, wall_date, target, rate, NULL) == pause_date);
+        const vlc_tick_t cue_start = target - VLC_TICK_FROM_MS(200);
+        assert(vlc_clock_ConvertToSystem(f.slave, wall_date, cue_start, rate, NULL) ==
+               pause_date - VLC_TICK_FROM_MS(200) / rate);
+    }
+    vlc_clock_main_Unlock(f.main);
+    destroy_fixture_simple(&f);
+}
+
 int main(void)
 {
     libvlc_instance_t *libvlc = libvlc_new(0, NULL);
@@ -456,6 +512,8 @@ int main(void)
 
     test_clock_start_reset(logger);
     test_clock_slave_only(logger);
+    test_clock_paused_seek(logger);
+    test_clock_paused_seek_with_dejitter(logger);
 
     libvlc_release(libvlc);
 }

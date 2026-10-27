@@ -1,0 +1,647 @@
+{
+  "status": "passed-scoped-shortcut-editor-repair",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "ec90154f730537a20fe4e042b02854f5af25c18730e3502f7e1a969cd85c0d23",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "nativeExecutableSha256": "c29f25755e101dcbaa3ace055b9743f0bdae6bfef0aaf98f9472fc73b22280a2",
+  "sourceManifestSha256": "2cf52d72daff88b463e22b58296c05b6e9310abae5ff859f2ed37e1b35c92094",
+  "sourceInputCount": 3350,
+  "resetChangedKeys": {
+    "key-play-pause": [
+      "Ctrl+Shift+F12",
+      null
+    ]
+  },
+  "normalOrdinaryExit": true,
+  "allGuards": true,
+  "beforeFailure": {
+    "ordinaryRun": "ui-controls-shortcuts-r298",
+    "ordinaryJourneyAccepted": false,
+    "ordinaryExitAndGuardsPassed": true,
+    "failure": "On two initial unfiltered editor openings, native mappings exist in UIA but the table is blank. Filtering Play/Pause makes the row visible.",
+    "draftCancel": "Ctrl+Shift+F12 was captured in an isolated draft; Cancel discarded it. Reopening still has Space, with video held at0 throughout.",
+    "nativeRun": "native-shortcut-rows-before-r300",
+    "nativeExitCode": 1,
+    "nativeCompleted": true,
+    "nativeFailedCase": "initialShortcutRowsAreReachable",
+    "nativeFailedAssertion": "table->visualItemRect(first).height() > 8",
+    "nativeOtherChecks": "14 passed, 1 failed, 0 skipped; normal QTest cleanup and all source/runtime/cache guards.",
+    "fullBetaAccepted": false
+  },
+  "observations": [
+    "Before: GUI293 opens a blank unfiltered shortcut table twice even though native data exists; filtering reveals Play/Pause. The new native row-geometry regression fails exactly one case, with14 other cases passing and normal QTest cleanup.",
+    "Removing premature uniform row heights restores per-row hints. Fixed native controller/widget suite passes15/0/0. GUI301 first and repeated unfiltered openings show real rows and a scrollbar.",
+    "Ordinary duplicate f assignment reports the Fullscreen conflict. Cancel preserves both original mappings and the paused primary clock. Ctrl+Shift+F12 draft survives an owned configuration-path save failure; original config bytes are restored before retry succeeds.",
+    "The running instance retains Space and ignores the newly saved shortcut. A new GUI301 instance uses Ctrl+Shift+F12 for actual play/pause and ignores Space. Its shortcut dialog is moved by dragging the title bar while playback stays paused.",
+    "Reset saves Space/defaults with truthful restart feedback and preserves every active non-shortcut native option. A fresh traditional-controls instance ignores the removed custom key and actually plays/pauses with Space.",
+    "Four ordinary runs exit0/602modules with all source/runtime/base/fixture/cache/producer guards. Three have zero error diagnostics. The failure/retry run retains exactly the expected configuration read error; its strict no-error runner therefore exits1 after the app exits0. This original result is preserved, not rewritten into a zero-error pass."
+  ],
+  "limits": [
+    "Full shortcut/action/global-key coverage, screen-reader usability, theme, Windows DPI and final-package replay are separate gates. The native QWidget suite does not supply ordinary playback evidence.",
+    "Traditional Simple Preferences opens on the other monitor and can be cancelled, but its Hotkeys category was not reached: Computer Use rejected a target outside the selected owner bounds. Its table visibility is not claimed from that ordinary attempt.",
+    "Before observation03 has a misleading blank-table name: its filtered Play/Pause row is actually visible. The first and second unfiltered captures establish the blank-table defect.",
+    "Owned generated media only. Raw personal logs, isolated profiles/configs, binaries and private media are not included. No security/privacy settings changed. No forced cleanup."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-controls-shortcuts-r298/verification.json.gz",
+      "sha256": "8ae44f96ec3e1e9dc1e596230be29bb55c5efec03d2642433bab21c8352700b9",
+      "rawSha256": "82b2785623bf566f6cd48be9c489affc7175c5524fc9aa735cf39e3465592b4d"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/producer.py.gz",
+      "sha256": "34a7b1b3881a071a08da8c3b30d4020ea8f15a9f9110017067a6a4674b8d289f",
+      "rawSha256": "1fd8980deee4adda38ea77568ec81c13ba2924b855feb0611f7b46bc88d633fb"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/launch.json.gz",
+      "sha256": "19f2a2aee69031a8f71d5ce58ce952db11b3e1d239e837295f4c6d6898066ee9",
+      "rawSha256": "8390075a26a24b0c1f3acbb395de4951c2647a410021dd399d99820c606819b2"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/01-controls-default-shortcuts-paused-video-0.png.gz",
+      "sha256": "79f43796e07ee237231e739d0c124bae8992f88de5a5c364b8a37f7bed92df55",
+      "rawSha256": "e553d634d8e077df873e60d740574eec565da3d5149f7053b3b194f79c78a479"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/01-controls-default-shortcuts-paused-video.json.gz",
+      "sha256": "a520e12c06292b0d4be347256f7059939ea03356fd88963296e58956ce09642c",
+      "rawSha256": "c7213124c9818a25a016da4429a147d47efb2333ca24097f4065acabe8e2cda9"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/02-shortcut-editor-native-space-default-0.png.gz",
+      "sha256": "f8eebc50b4a36da86759e03eb2f3cac72c38c7621d4a33dbbf50e2a8cda9b538",
+      "rawSha256": "4f9881ab30021a88a050c14a608f901b616178451e703683946441db10a75218"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/02-shortcut-editor-native-space-default-1.png.gz",
+      "sha256": "9358848e56f1083f8e2445eecbddd79d5dac984ca2d769cae57930710332dd6a",
+      "rawSha256": "bf5c3fd317b1924f5091318ae1cc2b1f8b2d465df10f9d4ca45288d1cd0a8784"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/02-shortcut-editor-native-space-default.json.gz",
+      "sha256": "57d967994f16a57a4697811e09d5c265a321bb7cfd007fb1a2dcdf5cbb8dbc4f",
+      "rawSha256": "839475193699f38e322159ccb16a46706a37dc352ecdc6b9cd188cf391156b5b"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/03-shortcut-filter-populated-uia-but-blank-table-0.png.gz",
+      "sha256": "97d4c7953e34973b0bce7149425455f83f166ba058ff19bace2a54b071b8c6b3",
+      "rawSha256": "4da058a9ae2b302c925c2a8b1bd6e6e86b7d63a0c4d14bb9403ecba54911e07b"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/03-shortcut-filter-populated-uia-but-blank-table-1.png.gz",
+      "sha256": "9779e41bb117ce904d4b53eb5f1f058f048df0bdf664708b492f68b3cebd6fa3",
+      "rawSha256": "e24e1752c5624e78a296fa33d9cb357265337aaf6dca0ed5e77838ffad5a32c0"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/03-shortcut-filter-populated-uia-but-blank-table.json.gz",
+      "sha256": "7c5a026357f446f299663be2fc7f61940a1e56f6cdd1682aca40799a3d322af6",
+      "rawSha256": "d468bce96a4bf0e6811c2ceaad514d96dc156167b608813af0ff39a8dcd66c07"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/04-shortcut-draft-ctrl-shift-f12-0.png.gz",
+      "sha256": "2336d064fabdbda904e9169a82d11445babd15196d7526667035926528ef383b",
+      "rawSha256": "7593cd0c2376cdf5dc61f23d86b4782e11866260110b61d5e871ca8d9a7de56b"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/04-shortcut-draft-ctrl-shift-f12-1.png.gz",
+      "sha256": "0f5d2a7ab97d0fb3faae3dc08ca4ce3ed397f943efb8b92142263a35d4e29bf4",
+      "rawSha256": "c9d04eaa2c8de5f5558bab03b55dd5a96723c234df1810d6d689724c16119c84"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/04-shortcut-draft-ctrl-shift-f12.json.gz",
+      "sha256": "78764b34d954ecfbf17d78204336bcb5ff0d851d6cc71471e5a36f15586b9a11",
+      "rawSha256": "a1aa8ce431faf0c006d6dd9f9576a097243050633a502154e11e76a5707edc5f"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/05-cancel-shortcut-draft-preserves-defaults-0.png.gz",
+      "sha256": "e5b7ca33ef98c248302e748de59c75433b78179dc44bf0226f479792694ad44d",
+      "rawSha256": "8594e76657ed00ed137da44a91edc9f692ae56511aa956bd2eec2b034c27aebb"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/05-cancel-shortcut-draft-preserves-defaults.json.gz",
+      "sha256": "e49b1ae60d2fe70b12d2557362e8b52cddb40bcd385f42144c8c3cf408075dc2",
+      "rawSha256": "1f1a6fa58e0cfa6a8aa7684475f4f7612124d111d50761ff3fe116cfcf563fa9"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/06-second-open-blank-table-space-still-default-0.png.gz",
+      "sha256": "577d2f7879cf15257988989a6b197fbd738e557a1f218bc051fa0b4174b63c15",
+      "rawSha256": "40c3e2007e57dee6edaa5cf5a528258b86258b03bd476ee108a4fe58d283b2b8"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/06-second-open-blank-table-space-still-default-1.png.gz",
+      "sha256": "03775432f419a2c632218098c21ef14529b27f25be5a44a6fc6cad479e460d72",
+      "rawSha256": "d07f8bbb605ced0e58f428f3883b5b6015acbde8b3a361208f651f20cd688e33"
+    },
+    {
+      "path": "ui-controls-shortcuts-r298/observations/06-second-open-blank-table-space-still-default.json.gz",
+      "sha256": "9cf64411c63336aafbf899d3766fca483f77954dc6934f3d84728c3338997abe",
+      "rawSha256": "56c68d931d1641edc291b555483093b04a1c9e93d29a3b6b2f68f74cfd8ab6e9"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/verification.json.gz",
+      "sha256": "d710da02cfc13d831b017387430e5f82f1e312d75f608a34643598ab1d29cc26",
+      "rawSha256": "5f2daa6823f1ba16105e4334e881a7edb204b3607729e1d25c567b036318b992"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/producer.py.gz",
+      "sha256": "b1c208eca6278a5528daab33631a4c052ca1e70f3eb83edbbc8cdedd484bf658",
+      "rawSha256": "85c4b024a38f834bffe085cfaaad81d1aba4aa87079bafe4d753bbc9a7d6474f"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/launch.json.gz",
+      "sha256": "0ec7c9a52ab2fb8d68d43961fa787138195687f82daabfeeede05a5981fde625",
+      "rawSha256": "01e6f360f5361c065d068266bec055cf9fec452df4e3bfb794559d3ace5dcc0a"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/save-failure-arm.json.gz",
+      "sha256": "8f921e86f992da12199571037fdcd6545d213f43b30b0498e9b7fb1c28d72f1f",
+      "rawSha256": "79e4dba91029292ffab7c17c806682eb8ee49eaf1dfac6ac8556545a509516cd"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/save-failure-restored.json.gz",
+      "sha256": "71a1bfe4abb03403f58c993099d477830be954af7ad662ce125d81f73568427c",
+      "rawSha256": "2ce17f3841a7e33d3588ea38b09779cb705ef7e61eecba8dc87dfbbaa13c0d80"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/01-fixed-editor-unfiltered-visible-rows-0.png.gz",
+      "sha256": "e46511cfe5a612d3031c8def5a6f23a517d16395a22cee4301e1957591c6bea2",
+      "rawSha256": "372825f04b389e34c2dc0bad33e2ce4464900d3d61cb26a0874ce8c67f10b9fd"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/01-fixed-editor-unfiltered-visible-rows-1.png.gz",
+      "sha256": "7676224a2af881fdc5e8ff686b44b09d95ce59a78e0e990506c4fc4d56abea33",
+      "rawSha256": "8ca7c7ced5331aeb1546899f4a85accb8af3d8bbaff30a70d206a92d02f11503"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/01-fixed-editor-unfiltered-visible-rows.json.gz",
+      "sha256": "3daea3df3b93b6df1b989a7da1932c39cb0993fe006ab17fe89bade9966705b8",
+      "rawSha256": "edd787446e03ee23cbf78f9f41fb1051de0606fde084a1980e5a7ca3d49db33b"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/02-fullscreen-key-conflict-visible-primary-held-0.png.gz",
+      "sha256": "6005bca3fa97f958b5b43cbd2b2e2b169a7e32134b769716afcb85d909e1d3fb",
+      "rawSha256": "f08deefd8a4a9b2d076ed7396dc67bb34ac115f7e6d245cb86a97b4dea871ec4"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/02-fullscreen-key-conflict-visible-primary-held-1.png.gz",
+      "sha256": "5de99ed41e5d49796c0454b06f9639830dd61d2308dcf1fc2f54cf46a87578dc",
+      "rawSha256": "79b8b040d02d587cf18f39991b0aafcaff40d06aacea09bb5c6ddd4e23203145"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/02-fullscreen-key-conflict-visible-primary-held-2.png.gz",
+      "sha256": "7ca272d307e70bd97314b8a2887b960b10c7b128bfd2aea72ca50fe18547671f",
+      "rawSha256": "33aa226359c0df97cd97e6cd6ce7621fad1a9b115d47b29530506eb500e3784b"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/02-fullscreen-key-conflict-visible-primary-held.json.gz",
+      "sha256": "c3fb44b64b20744d728187af1f2a66d25f05ad9301e2afd37fcfd9acad12e3c7",
+      "rawSha256": "2da711602465377afc7385499029a19e01181f271494d3613ba40655d4c76d3f"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/03-conflict-cancel-preserves-space-and-fullscreen-0.png.gz",
+      "sha256": "4d22d4bf56be654dbbb0708fb9db6686034d8a0b0a0ba88f4f78b979a6723c84",
+      "rawSha256": "8dbb5e869c19653d4ff723bc50196c6cc5f240f2914e3532f68164cf29989913"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/03-conflict-cancel-preserves-space-and-fullscreen-1.png.gz",
+      "sha256": "8b4148d5068c492d488f80d951fb3cd596dc77f73aa513dd446a958f213c76f3",
+      "rawSha256": "d02f61d5d8a29ee33347cbe02ca90619d763eb4fda754f52d571c56a8ec6d514"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/03-conflict-cancel-preserves-space-and-fullscreen.json.gz",
+      "sha256": "2bec07306f6feaa175e30eb7ee02d64c61d00b56cd8bb51c159d537de77e2996",
+      "rawSha256": "9c461e2f291956f4ece9c80eb18e4f36731ba9ae0b88bc317bb70ef571cf896d"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/04-replacement-shortcut-draft-primary-held-0.png.gz",
+      "sha256": "7f7a86965f08b01fc4c655a51afc9ef0ae144909e89d0f25ad0c5502a3786613",
+      "rawSha256": "0d4a1faff8a600e1dbc725813d661c6abbaf29f780c597b29076515759d8265c"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/04-replacement-shortcut-draft-primary-held-1.png.gz",
+      "sha256": "dc353bceca65a2c8647b0676b9d03d90a704fc3a2ea6006bea14fcab5f4589c8",
+      "rawSha256": "77aede8853ba143141ad08a6a8ca13189bddfb9e6363c142e3280a5b213138ed"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/04-replacement-shortcut-draft-primary-held.json.gz",
+      "sha256": "074be8dcbd378264d662cb21d5ecd877a51173c45b4eaa2eea773f10a949d207",
+      "rawSha256": "6941715766df29963db34343f573a2f1d10d486079380db030fd1a43753b20d9"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/05-save-failure-keeps-shortcut-draft-0.png.gz",
+      "sha256": "5264952883e9b10d0ee0039ee99ef58a0007a362090eca43bceb85a2afa04c0b",
+      "rawSha256": "d6033681711a51d74282955186c9146846a25d99cdbe422e3d07a3be7b74a1c5"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/05-save-failure-keeps-shortcut-draft-1.png.gz",
+      "sha256": "a57ff9b4920ef930ee7fc764d074911932ab9940614152f566abaa75cdb3b13f",
+      "rawSha256": "ad14d2a398707efa59d6a4c26a3f3a8959fd99ff9e13783fdb8bff17c0c52bfd"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/05-save-failure-keeps-shortcut-draft.json.gz",
+      "sha256": "67f184b5c130dbe80cb7aa02d1f0b19605eab59c263e7ad732d8e524e6ca57c2",
+      "rawSha256": "2cb6933882926902a97b24fa84ef9a556e89fca61ecf1dfc294876e9f495b557"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/06-save-retry-after-owned-path-restored-0.png.gz",
+      "sha256": "0cb8109ee4dea558cdaad1326ec08d316c476b0615073229d841113a80492f46",
+      "rawSha256": "a05e61f0cf2aaa6cf2d1a179b1ed0e560c48c32b99dd6729e383cc0d3728dd48"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/06-save-retry-after-owned-path-restored.json.gz",
+      "sha256": "ec14be7b4adf385deb5593a0dcf6768b5d07c7d94fc629d908ec95161cf03c45",
+      "rawSha256": "bf87885cdc71e84aa38e297fadd6aa89150cd9806c5972f918acc8b9eaeee29e"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/07-saved-shortcut-reopens-visible-unfiltered-table-0.png.gz",
+      "sha256": "b63df93c734d968b1c4b11cd6f832e4f2057df3d1ac8fe31461a125e2c412b37",
+      "rawSha256": "180ab8787a4b84d35739278322436b0776bce174154dbe682d60b8e909be0f97"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/07-saved-shortcut-reopens-visible-unfiltered-table-1.png.gz",
+      "sha256": "6062aefffc3d6b7b8243c68cd0ec371b1636ceda9b4e1ce5fa04e3b33d2f957d",
+      "rawSha256": "cbfb822401332454e5db49b37f623ce558f03ec778ff1737f8079ec3ef447fcc"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/07-saved-shortcut-reopens-visible-unfiltered-table.json.gz",
+      "sha256": "17b86dc6a5669ce2a7dbbcc4b15f88e057d6463665f40de60e286ac89f528895",
+      "rawSha256": "c5afb2dc60b8ac2afc163e8b2fed793f638823ca0da81e88d9c1745546d85ec2"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/08-new-shortcut-inactive-before-restart-0.png.gz",
+      "sha256": "371d21e72f6e96a0e21906d9c21a3acf89ebe94a4e18c747a565dbfed8290abe",
+      "rawSha256": "93b3defb5e9950956b64ca536067c1ce09176530677eb87ea307085926be01bf"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/08-new-shortcut-inactive-before-restart.json.gz",
+      "sha256": "af0e888d47dbae23a437a193ff89cbe94a8e77bb1b9f8716c677f02917bff2e6",
+      "rawSha256": "8947576bcb2baaace0eaa5222b3d0f0c380ca12bcda093dcc237fee8fc57cf72"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/09-original-space-starts-before-restart-0.png.gz",
+      "sha256": "6526c1c6222db869751a6c71b24310d2375767288f135d87e1e96277077ed7bc",
+      "rawSha256": "a2041c926c80e8dd6c4bae537051678076f2844ee98cdebc24065ff0bec45264"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/09-original-space-starts-before-restart.json.gz",
+      "sha256": "cf97e7e1efbe79c1c26027f8dbbcba3e17b33cbc8610b3bcbeda7ec84016bb70",
+      "rawSha256": "c67b55f0f3b3b715e91b4b1abf826ae072580cb2cf84ad0c6cda51854d3a09b0"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/10-original-space-pauses-before-restart-0.png.gz",
+      "sha256": "0ba7722b44d0b3e946b3886a0870d4cd382202e721c1cbfa6379e3efeaa22731",
+      "rawSha256": "d59e1151f9c25ce91efdd7a43a515f19212ca69b54340c73942c4a6fc7a5e647"
+    },
+    {
+      "path": "ui-controls-shortcuts-fixed-r302/observations/10-original-space-pauses-before-restart.json.gz",
+      "sha256": "b59cb5662eccb5706a085a0293a2d45f4d2cf77052f6f9d9360f46f4e060799f",
+      "rawSha256": "d091cc9b34e3fa423a05034337e76d4ce29195e7377b505bbb0ff9170e434ff1"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/verification.json.gz",
+      "sha256": "94658adf33ef3255c3a48922a03238486a9669bff09d20c9b0662973f077e599",
+      "rawSha256": "16ca8b01e52de6e5a9ec3a416dbfc64765aeccb622627ddf22888e96f2c460c8"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/producer.py.gz",
+      "sha256": "b1c208eca6278a5528daab33631a4c052ca1e70f3eb83edbbc8cdedd484bf658",
+      "rawSha256": "85c4b024a38f834bffe085cfaaad81d1aba4aa87079bafe4d753bbc9a7d6474f"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/launch.json.gz",
+      "sha256": "56749ca5323646e252493e8aa7bc79a106a7938fc1368b4927e255ee7b459782",
+      "rawSha256": "c9c170a52cb55e474850e6c782da7912b26d234879cb1173f2e0fcccda3931ec"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/01-cold-paused-saved-custom-shortcut-0.png.gz",
+      "sha256": "580ca12d7b22a9296fbd833853276e53838b902b2ac2c85254a90ce38bafb6f3",
+      "rawSha256": "9d5dc57e6a51b4e39cf2ead133702d84b582ceb6f2edbb2fdd4e28a7f090371b"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/01-cold-paused-saved-custom-shortcut.json.gz",
+      "sha256": "83e3b3397e34733b04bf1316e0c2ee32ff795b92632580fe701e3fcf9556414c",
+      "rawSha256": "bc5a687f47416a44b833caf1ac4207a3ad1b167b3109e34d81e2a1c1327f5130"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/02-custom-shortcut-starts-after-restart-0.png.gz",
+      "sha256": "73cdc9416a5143651ac514ef776219b21067b599e87b47549669d56cf6aaf696",
+      "rawSha256": "0480704c14855aee4f3d382e6f33ec50a4f5b2903206c92725cbad8e7c9dac37"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/02-custom-shortcut-starts-after-restart.json.gz",
+      "sha256": "12a6feb700277a22de9aaccdaf5dcb4dc2cc0c018b15c12a3b2d42fe17d592ca",
+      "rawSha256": "c690449bea2d3e20fe75d5125bbfed7a15fd34533055512c8694183b300d8a47"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/03-custom-shortcut-pauses-after-restart-0.png.gz",
+      "sha256": "e6399fd440f9f5ffc95dd24469aa5098c3c74e5e2ceff9e9d7f09d0a0c2b9252",
+      "rawSha256": "6fe4d28558d1eccca16b6b7bbc031451c73693a48ed110b073497bb4185d03b5"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/03-custom-shortcut-pauses-after-restart.json.gz",
+      "sha256": "ef2f61962bf2d3a366ca43b48f2522ae38d5578cd0eba52ea25a4d7f2189a0b7",
+      "rawSha256": "81f19470266e9705663045f593bbc9ffd0384ca57dc11c69fc01970ee25af6d6"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/04-old-space-does-not-toggle-after-restart-0.png.gz",
+      "sha256": "212963526c40fe80cda4b0ec3c74f2948181f75006cadbc004b8e39fadbe2155",
+      "rawSha256": "cd500d765a935a8e7728195ee978c25a2b4894de2a3ce6d938ec7385b7e504ef"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/04-old-space-does-not-toggle-after-restart.json.gz",
+      "sha256": "a48c37c846eecdfc4ebf4e57b89755c2750c03b81139aa70fa07e8638169de94",
+      "rawSha256": "a8935bf97a4dbca3836b079f68b22057f72fcd702c982c0dcf42d99bcea1dee9"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/05-cold-editor-visible-saved-mapping-0.png.gz",
+      "sha256": "212568992e331068cee0bd9e516bf50a2445723a6ccb2fc0c1423d98793289ad",
+      "rawSha256": "2540c7953cc48315b27ffcb0a1618ea254b2d7f3a1ef7c17966ef7a25e9492e6"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/05-cold-editor-visible-saved-mapping-1.png.gz",
+      "sha256": "0842235fd99c039d28be91235823891f9f5bbc9535b924b58028f79593ebce28",
+      "rawSha256": "4b3d44b5cc8312971604fcbefaa21dd40ddfac1a95bb9d2c85bcd67274131921"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/05-cold-editor-visible-saved-mapping.json.gz",
+      "sha256": "8ccc14192dd6491c362d5b8b7a756475bd384bbad18fb3a86394b4c30d31781d",
+      "rawSha256": "043e05f77b1e3b4ca640b8a61e7108efb2216783982a3feb5584f199043df500"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/06-native-shortcut-popup-moved-primary-clock-held-0.png.gz",
+      "sha256": "c61f46f0933653b37f427ecc65e46a0f61592f1ea50cc9dc9093114bff17bf55",
+      "rawSha256": "a871905ee66e6e373252f035aaf55ef25e29ce326343922d9e48747a87fb2934"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/06-native-shortcut-popup-moved-primary-clock-held-1.png.gz",
+      "sha256": "eec308a852f13f78319d146f423dfa34baaab81bb07d83ca4678995d62e4da86",
+      "rawSha256": "4141cae98b0527122f8100b3056a432a03acf4de4abbc5a8f96ad1a6ff1e50e3"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/06-native-shortcut-popup-moved-primary-clock-held.json.gz",
+      "sha256": "599d76d64b7726d51b47a1ce1aa6cd2e8a9f391b584164b70f286d832b530947",
+      "rawSha256": "e108c514e2b1615c574ed5808af498202e3f2ed35994da819f9c4a6f9af43526"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/07-shortcut-reset-stored-restart-required-0.png.gz",
+      "sha256": "f65e6a16b9ac26a66edc9a367b31428536405b39855bf02d82f11052024562e0",
+      "rawSha256": "f5f76c9227ddc8c1de42932e7f8e4b708d4e22b4dc8338799661d890be8bd970"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/07-shortcut-reset-stored-restart-required.json.gz",
+      "sha256": "80d388a2c069a3bdfb6648e1cad967308510a9471e7bf3ef5bf7c904b650c977",
+      "rawSha256": "01a0cb447ff2c784ce97b12b6af75a0f7f0f3cbca4ee7ff1bd7b108e41a0f12c"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/08-reset-editor-reopens-space-default-0.png.gz",
+      "sha256": "53bb068e74f33cc53745f07f533ef0c773bbed7c149ec6378a6dba668544dc93",
+      "rawSha256": "b266ecbb236502896ebc815490db22303040b6801ec129b5e158370d51c20e49"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/08-reset-editor-reopens-space-default-1.png.gz",
+      "sha256": "ebb2373ab1c8a3e3477ef53a29102743278fcd1d97e774d0bf5cc79cf8d354a3",
+      "rawSha256": "a9ad3a416ffb0b4d7c21afdde2c4925c9931879dd03696cfe68d0fe3999e8484"
+    },
+    {
+      "path": "ui-controls-shortcuts-cold-r302/observations/08-reset-editor-reopens-space-default.json.gz",
+      "sha256": "f24e267b40a25b7011d5636cfc74c45b6bbaf96d0e2d6fbef151a422a55a957c",
+      "rawSha256": "e33f79730e1ed63e2b44a91d055c057a3bf093ae829377965cf7b43d4472ba15"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/verification.json.gz",
+      "sha256": "0edad9f4b0bbbe5f9b421171c137318d18512309acc32bc4de831e07232774fc",
+      "rawSha256": "a6eaa653ed975bb13413e86601549f451bb4def50473cc2c83f12f8b1c992406"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/producer.py.gz",
+      "sha256": "b1c208eca6278a5528daab33631a4c052ca1e70f3eb83edbbc8cdedd484bf658",
+      "rawSha256": "85c4b024a38f834bffe085cfaaad81d1aba4aa87079bafe4d753bbc9a7d6474f"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/launch.json.gz",
+      "sha256": "7a97d804bbcf460e8e9f045cd17716beb9220c7b0de79f20a2c57ac75cef5b6a",
+      "rawSha256": "8b98069c69ac6b52d8a9cc98e2a5495b40b21cfdba4f38acf052b412b048b431"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/01-cold-reset-classic-paused-0.png.gz",
+      "sha256": "c5acb7daf7e865308e7415e3a173fd5941ec33728bbc1dda33641626ac74e359",
+      "rawSha256": "9c7c75ec063f5f2cee61951fd241972807db0b626dd2f0d0a4f0c11ac515e99e"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/01-cold-reset-classic-paused.json.gz",
+      "sha256": "874bee9caee4f945d082a42c382988b5c9c98c0afbc1ce8f2141dd5b920c1910",
+      "rawSha256": "6ee9d24a433494e061e529f86068230334cae2254de88d8cdc2230d6a90a9129"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/02-reset-custom-key-inactive-0.png.gz",
+      "sha256": "c5acb7daf7e865308e7415e3a173fd5941ec33728bbc1dda33641626ac74e359",
+      "rawSha256": "9c7c75ec063f5f2cee61951fd241972807db0b626dd2f0d0a4f0c11ac515e99e"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/02-reset-custom-key-inactive.json.gz",
+      "sha256": "bcc669c7cd139a210836748fcad1c3b30c92ece6a1356157a811bd12e944e115",
+      "rawSha256": "bb36e4f95ed582e557a41db8bca469945fc31b8242d011105ba8e9fca111a8c4"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/03-reset-space-starts-classic-0.png.gz",
+      "sha256": "2882b92dfb985cdffb190b1327cf5514f90c568969db092e8e2f9ab16c2ff8fa",
+      "rawSha256": "794393eaa57e85f8275298a6d08cfa9e2875273bb6e14d0a48de602da05924d6"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/03-reset-space-starts-classic.json.gz",
+      "sha256": "ebb8e6e0f069388a92b6d98025efc0d4dfeba958355e0474613da33171eb84fe",
+      "rawSha256": "7342c996fb1bd90a669edc074848d578f2d59f394e8acb603b8a508675ef530d"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/04-reset-space-pauses-classic-0.png.gz",
+      "sha256": "5c6df1d6e58cbe6f27052bf77417e3d51e1c437dd834fdea44599d1f6f913701",
+      "rawSha256": "5e69a4a70fda87e9b72db7cd69dbf8f72ae8bfd2d68b8fe0d2add1ce229ed0cd"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/04-reset-space-pauses-classic.json.gz",
+      "sha256": "8c02f0009f81d30ba70e49308ca2c05d8c02786703f68aa2ea8bd5ab862b8663",
+      "rawSha256": "c2bdc1fbc4410f3544144fb28c710036ae0842b6c2e9b15f73ca271517e1acce"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/05-classic-preferences-entry-0.png.gz",
+      "sha256": "bc370fda13a824266fb48f802f422e2e482914182559ce399911dc15e1afe236",
+      "rawSha256": "38f2e61dca2da2a0b7a729ce1d580148a79ee30837219a2878415bd346f3138b"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/05-classic-preferences-entry-1.png.gz",
+      "sha256": "6ee8db3b5985ac6846e3c12c5b6948465712a5fef2f335587b4ccde4573250c7",
+      "rawSha256": "b07c0114a6a1da93e68634742b1d7424701d93ce4903393c2bf77e83b1093614"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/05-classic-preferences-entry.json.gz",
+      "sha256": "7e75b574eab150743e7915b7af77b39156d64be6a3aaf9dea00d2ba1fe48c99f",
+      "rawSha256": "e5b6f2edbcd9918cd95affbd335ffbdf0a2b5afb53fbe1535079839646969223"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/07-classic-preferences-cancel-held-playback-0.png.gz",
+      "sha256": "ed38ad4b3034f0404a3d4e83f8af28c1896397ee50d20dd7564474680f660150",
+      "rawSha256": "6e60151e29812ac958069a78af4425ee8750afde5b5469f9f8e5d627ffb23bc8"
+    },
+    {
+      "path": "ui-controls-shortcuts-reset-classic-r302/observations/07-classic-preferences-cancel-held-playback.json.gz",
+      "sha256": "48338dfcfc245a4d5726d1f028f95c7319c93733796599d4613f3a9998103a36",
+      "rawSha256": "4b22044fa331931f12decb576c1893db1faafbea7feaa0396f5eb45e1f399818"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/verification.json.gz",
+      "sha256": "ca48f101012b3657016a07f1586b4052f766a171fa956bdcb2fcbe63bb04c76a",
+      "rawSha256": "0ac0daea1060843467562f6309485a77267292c5c6ac913fc3082b1802af1a05"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/producer.py.gz",
+      "sha256": "955f349fc15de74657f2f54171f0158c1e87398e319bf16c091f4adb59f2c9ff",
+      "rawSha256": "8e5c37d63f80dba9a7c400a0f09431dc519222445fca59a5c23d01aa67d1da91"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/launch.json.gz",
+      "sha256": "3eba65d727f529ea8ba2e2a59da59cba789b5c312a781968f5a9f3cbb2b5fb05",
+      "rawSha256": "febe428c0d028741bf5899e65204bcefca30134f847cc264a8c9e31dd3f53b4e"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/qtest.txt.gz",
+      "sha256": "c80023ee5fca728667a2860608650d9fe5ebc4c96f94179634d46c0c49790f26",
+      "rawSha256": "3f7f21fe382873fa225f670df363bc619c9504beb62048d0a9f0ae9bd0ff8f5a"
+    },
+    {
+      "path": "native-shortcut-rows-before-r300/qtest.xml.gz",
+      "sha256": "dcfa430bb4888e66575f917886da5f48398654d3118efd8b09cf9e6aa2622d02",
+      "rawSha256": "53ab82f3c5c7bd72acca899cbf2b66d9f3c7045947b4b3a7de0d6f2e794b6078"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/verification.json.gz",
+      "sha256": "c25eee42f6ba3ef12c08933f46d46549da8dcad7186283e6383061b1e3c32fe0",
+      "rawSha256": "515b3fef787be94624f5c1ce2973e193cd1f4c5b43c43cc996cdefaec10c031c"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/producer.py.gz",
+      "sha256": "a2ce9880b53093103380636233c60e491e7f10d5d8546d7202cc0258ab939240",
+      "rawSha256": "c34139fc477612a91eea75b08ed74a5e64343829cb147c10bc9f93f17cf2217e"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/launch.json.gz",
+      "sha256": "42b44a3d139470d8c0e1f87bf578fa36e525f3d2ad535d7a6e6f16637270b063",
+      "rawSha256": "e167b6219ac03e67df3f2a9ce9e8f020badd5a58bf5da1f00cecd78e693eac73"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/qtest.txt.gz",
+      "sha256": "978ed98f8a0c68fd0f7e226fa27650bb86fa5b939d987010f2aa6b54f914bfc9",
+      "rawSha256": "444c3e47064645566159625f7601674ac45e0f2c40a6682672aab5a4a0356ed2"
+    },
+    {
+      "path": "native-shortcut-rows-fixed-r301/qtest.xml.gz",
+      "sha256": "3d6343ce788b7b1b30cb5e2a4c968be52d345b00b21c6e1dac4d60c065e4a9c9",
+      "rawSha256": "cd2d00e9591390b8569f77f1a7f40cc4be407f2461c6ed3c26d54cfcfc2fc2fb"
+    },
+    {
+      "path": "inputs-r298.json.gz",
+      "sha256": "084a05728cacc1d17a2723563b78a5b5df194dc3e6ee12737f3ec2814846593d",
+      "rawSha256": "e767961908f9eeb5454d36c048dbb4b38413ef926415df86a5dd2c6b4ce3dd8c"
+    },
+    {
+      "path": "inputs-r300.json.gz",
+      "sha256": "643837e20c122d7dbbb11431580a3c3de727425d8d0f179550509238a31974ef",
+      "rawSha256": "1d5dcf7dad6e42f189faaa5866bcb3026c2551123e70435dc5704283ba43e568"
+    },
+    {
+      "path": "inputs-r301.json.gz",
+      "sha256": "51d647f9ee0746a7d67c9571b39297cf02d0917af887814df005586f224cbd4f",
+      "rawSha256": "a14f7c0afbbdced47dc08d92a85e9221c041db1ff240bd4081e6f8583e673a65"
+    },
+    {
+      "path": "inputs-r302.json.gz",
+      "sha256": "4219125b3dbc07c0b41ebbe0de050367ca5cf9086730df7ddea112a0be3cde35",
+      "rawSha256": "2cf52d72daff88b463e22b58296c05b6e9310abae5ff859f2ed37e1b35c92094"
+    },
+    {
+      "path": "shortcut-rows-before-r300.json.gz",
+      "sha256": "88b8b686a8399c3e8a43e1cc2f4077a473a1e2e952aa55e0e26383871d8535c7",
+      "rawSha256": "e3d10688721a1f101229c079f0c4308aa3f8ed229b7cba3a41ddc3c4f01680f1"
+    },
+    {
+      "path": "freeze-controls-r299.py.gz",
+      "sha256": "dc10c2fa51f7bd7c4bc47967cdbceb20b82869bdd1b6ec19a5cf4d05e9edc3bc",
+      "rawSha256": "bf9dc8c669711e44c07254ac5d5dd59d8e8f11e827390d27b88556adf694e81f"
+    },
+    {
+      "path": "build-shortcut-rows-r299.sh.gz",
+      "sha256": "2c4739d0a116d5b17a0b29a16f03ae8b6d4c55da27406efb89b2dd40e072fc4a",
+      "rawSha256": "fe59466b43d11319b0e7a451b859b149d626e4252de66e8b0be8f73e86c8d29f"
+    },
+    {
+      "path": "build-shortcut-rows-r301.sh.gz",
+      "sha256": "34d8f8cc721107cde64b0c4bbcfe0a05abc7e61aa5b6770883d4c3209f3758e4",
+      "rawSha256": "c81de3e5aca9e812a15cf2b92223dba6500e06b4d1b495aa42db6b7e0806bcd7"
+    },
+    {
+      "path": "run-shortcut-rows-r300.py.gz",
+      "sha256": "955f349fc15de74657f2f54171f0158c1e87398e319bf16c091f4adb59f2c9ff",
+      "rawSha256": "8e5c37d63f80dba9a7c400a0f09431dc519222445fca59a5c23d01aa67d1da91"
+    },
+    {
+      "path": "run-shortcut-rows-r301.py.gz",
+      "sha256": "a2ce9880b53093103380636233c60e491e7f10d5d8546d7202cc0258ab939240",
+      "rawSha256": "c34139fc477612a91eea75b08ed74a5e64343829cb147c10bc9f93f17cf2217e"
+    },
+    {
+      "path": "run-ui-controls-shortcuts-r302.py.gz",
+      "sha256": "b1c208eca6278a5528daab33631a4c052ca1e70f3eb83edbbc8cdedd484bf658",
+      "rawSha256": "85c4b024a38f834bffe085cfaaad81d1aba4aa87079bafe4d753bbc9a7d6474f"
+    },
+    {
+      "path": "shortcut-save-failure-r302.py.gz",
+      "sha256": "08dd65474b5f945f647b5141b67ce285459cfe335408814aa974d560e961e3d2",
+      "rawSha256": "d1b1d4fa2bd8d51c455ce7d023d647da7b2534c0fb6449a6409cc4d848050100"
+    },
+    {
+      "path": "write-controls-shortcuts-receipt-r303.py.gz",
+      "sha256": "80394cbdd242a32b26177bae80eab811a47c2e09d8d4e31e875750c6789189f9",
+      "rawSha256": "66bf4a928a3d574ce6d39e18473194a77614168d443298c9508988743a1b98c0"
+    }
+  ]
+}

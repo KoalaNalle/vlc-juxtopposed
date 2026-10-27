@@ -1,0 +1,20 @@
+{
+  "firstPictureMs": 29579,
+  "controlledPointerLeaveMs": 344850,
+  "observedHoldSeconds": 315.271,
+  "holdRows": 72,
+  "unexpectedHiddenRows": 0,
+  "pointerLeaveClosesWithinMs": 1,
+  "reentryRestoresMs": 368361,
+  "observerPollMs": 200,
+  "unchangedStateHeartbeatMs": 5000,
+  "normalQuit": true,
+  "originalLossCauseEstablished": false,
+  "notes": [
+    "Every saved sample/event during the untouched interval has active window, pointer in timeline, Qt hover true and visible card. Includes25 seconds resumed playback followed by over120 seconds paused. This is bounded diagnostic evidence; sub200ms transients are not excluded.",
+    "The intentional pointer move to the title bar is followed by hovered/wanted/source/card clearing; return to timeline restores the card. No expiry behavior reproduced.",
+    "The human initially reported idle, then said they might have moved the mouse. Original R64 loss remains unconfirmed; no cursor/focus telemetry existed then.",
+    "Earlier R64 action review shows no parent Computer Use input between the19:02:30Z measurement release and19:05:37Z end inspection; this cannot establish outside input or native cursor/focus state.",
+    "No functional hover change, dependency installation or package promotion was required. Ordinary resource qualification remains separate."
+  ]
+}

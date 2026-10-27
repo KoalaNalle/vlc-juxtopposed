@@ -190,6 +190,10 @@ typedef struct libvlc_priv_t
 
     /* Exit callback */
     vlc_exit_t       exit;
+
+    /* Appended: preserve existing private-field offsets. */
+    vlc_mutex_t history_lock;
+    struct vlc_medialibrary_t *history_library; /* Lazy, no browsing/indexing. */
 } libvlc_priv_t;
 
 static inline libvlc_priv_t *libvlc_priv (libvlc_int_t *libvlc)

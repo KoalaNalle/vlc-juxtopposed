@@ -1,0 +1,114 @@
+From: VLC Juxtopposed contributors
+Subject: [PATCH] Allow history-only database access without background jobs
+
+Keep parser startup and filesystem/device refresh disabled for a history-only
+client. Reconstruct removable paths from cached mountpoints. Normal library
+behavior is unchanged by the default-on setup flag.
+
+--- a/include/medialibrary/IMediaLibrary.h
++++ b/include/medialibrary/IMediaLibrary.h
+@@ -204,6 +204,8 @@
+     VideoOnly,
+ };
+ 
++#define MEDIALIBRARY_HAS_BACKGROUND_POLICY 1
++
+ struct SetupConfig
+ {
+     /**
+@@ -240,6 +242,11 @@
+     std::shared_ptr<ILogger> logger;
+ 
+     std::shared_ptr<ICacher> cacher;
++
++    /** Database/history access without parser, device refresh or discovery.
++     * Keep enabled for a normal media-library instance. Set before initialize().
++     */
++    bool enableBackgroundOperations = true;
+ };
+ 
+ class IMediaLibraryCb
+--- a/src/MediaLibrary.h
++++ b/src/MediaLibrary.h
+@@ -241,6 +241,7 @@
+     std::shared_ptr<fs::IFileSystemFactory> fsFactoryForMrl( const std::string& mrl ) const;
+ 
+     void startFsFactory( fs::IFileSystemFactory& fsFactory ) const;
++    bool backgroundOperationsEnabled() const { return m_backgroundOperations; }
+ 
+     const Settings& settings() const;
+ 
+@@ -369,6 +370,7 @@
+ 
+     Settings m_settings;
+     bool m_initialized;
++    const bool m_backgroundOperations;
+     bool m_discovererIdle;
+     bool m_parserIdle;
+     compat::ConditionVariable m_idleCond;
+--- a/src/MediaLibrary.cpp
++++ b/src/MediaLibrary.cpp
+@@ -319,6 +319,7 @@
+                             const SetupConfig* cfg )
+     : m_settings( this )
+     , m_initialized( false )
++    , m_backgroundOperations( cfg == nullptr || cfg->enableBackgroundOperations )
+     , m_discovererIdle( true )
+     , m_parserIdle( true )
+     , m_dbPath( dbPath )
+@@ -757,7 +758,8 @@
+          * initialized, and let the application handle what to do with its
+          * corrupted database
+          */
+-        Device::markNetworkAsDeviceMissing( this );
++        if ( m_backgroundOperations )
++            Device::markNetworkAsDeviceMissing( this );
+         LOG_INFO( "Successfully initialized" );
+     }
+     else
+@@ -771,9 +773,12 @@
+      * the idle callback will be invoked with the lock held, which would deadlock.
+      */
+     lock.unlock();
+-    auto parser = getParser();
+-    if ( parser != nullptr )
+-        parser->start();
++    if ( m_backgroundOperations )
++    {
++        auto parser = getParser();
++        if ( parser != nullptr )
++            parser->start();
++    }
+     return res;
+ }
+ 
+@@ -2493,7 +2498,8 @@
+ 
+ void MediaLibrary::startFsFactory( fs::IFileSystemFactory &fsFactory ) const
+ {
+-    m_fsHolder.startFsFactory( fsFactory );
++    if ( m_backgroundOperations )
++        m_fsHolder.startFsFactory( fsFactory );
+ }
+ 
+ const Settings& MediaLibrary::settings() const
+--- a/src/Folder.cpp
++++ b/src/Folder.cpp
+@@ -971,6 +971,17 @@
+         throw fs::errors::DeviceRemoved{};
+ 
+     /* Fetch and start the fs factory if required */
++    // History-only clients may reconstruct a saved path, but must not start a
++    // filesystem factory or refresh devices while doing so.
++    if ( m_ml->backgroundOperationsEnabled() == false )
++    {
++        const auto mountpoint = d->cachedMountpoint();
++        if ( mountpoint.empty() )
++            throw fs::errors::DeviceRemoved{};
++        m_fullPath = mountpoint + m_path;
++        return m_fullPath;
++    }
++
+     auto fsFactory = m_ml->fsFactoryForMrl( m_device->scheme() );
+     if ( fsFactory == nullptr )
+         throw fs::errors::UnknownScheme{ m_device->scheme() };

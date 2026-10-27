@@ -50,6 +50,7 @@ public: // MLBaseModel reimplementation
     QHash<int, QByteArray> roleNames() const override;
 
 protected:
+    virtual vlc_ml_media_type_t mediaType() const { return VLC_ML_MEDIA_TYPE_VIDEO; }
     QVariant itemRoleData(const MLItem *item, int role = Qt::DisplayRole) const override;
 
     vlc_ml_sorting_criteria_t nameToCriteria(QByteArray name) const override;
@@ -62,14 +63,27 @@ protected: // MLBaseModel reimplementation
 private:
     struct Loader : public MLListCacheLoader::MLOp
     {
-        using MLListCacheLoader::MLOp::MLOp;
+        explicit Loader(const MLVideoFoldersModel &model)
+            : MLOp(model), m_type(model.mediaType()) {}
         size_t count(vlc_medialibrary_t * ml, const vlc_ml_query_params_t* queryParams) const override;
 
         std::vector<std::unique_ptr<MLItem>> load(vlc_medialibrary_t * ml,
                                                   const vlc_ml_query_params_t* queryParams) const override;
 
         std::unique_ptr<MLItem> loadItemById(vlc_medialibrary_t* ml, MLItemId itemId) const override;
+    private:
+        vlc_ml_media_type_t m_type;
     };
+};
+
+// Share folder identity, paging and events with the established video model.
+class MLAudioFoldersModel : public MLVideoFoldersModel
+{
+    Q_OBJECT
+public:
+    explicit MLAudioFoldersModel(QObject *parent = nullptr) : MLVideoFoldersModel(parent) {}
+protected:
+    vlc_ml_media_type_t mediaType() const override { return VLC_ML_MEDIA_TYPE_AUDIO; }
 };
 
 #endif // MLVIDEOFOLDERSMODEL_HPP

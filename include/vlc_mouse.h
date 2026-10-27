@@ -23,6 +23,14 @@
 #ifndef _VLC_MOUSE_H
 #define _VLC_MOUSE_H 1
 
+/** Configurable actions for video click gestures. */
+enum vlc_mouse_action
+{
+    VLC_MOUSE_ACTION_NONE = 0,
+    VLC_MOUSE_ACTION_PLAY_PAUSE = 1,
+    VLC_MOUSE_ACTION_FULLSCREEN = 2,
+};
+
 /**
  * Mouse buttons
  */

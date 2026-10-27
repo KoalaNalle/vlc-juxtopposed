@@ -34,6 +34,7 @@
 
 #include <vlc_common.h>
 #include <vlc_filter.h>
+#include <vlc_modules.h>
 #include <vlc_spu.h>
 #include <vlc_vector.h>
 #include <vlc_vout_display.h>
@@ -109,6 +110,8 @@ struct spu_private_t {
     int channel;             /**< number of subpicture channels registered */
     filter_t *text;                              /**< text renderer module */
     vlc_mutex_t textlock;
+    int64_t text_style_revision;
+    int text_scale;
     filter_t *scale_yuvp;                     /**< scaling module for YUVP */
     filter_t *scale;                    /**< scaling module (all but YUVP) */
     bool crop_highlight;                     /**< force cropping of subpicture */
@@ -126,6 +129,7 @@ struct spu_private_t {
      * Secondary sub margin is not absolute to enable overlap detection.
      */
     int secondary_margin;
+    int primary_alignment;         /**< Relative primary vertical default */
     int secondary_alignment;       /**< Force alignment for secondary subs */
     subtitles_positions_vector subs_pos;
 
@@ -326,11 +330,14 @@ static int spu_get_attachments(filter_t *filter,
 
 static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
 {
+    spu_private_t *sys = container_of(spu, spu_private_t, spu);
+    if (sys->vout) var_SetBool(sys->vout, "sub-text-style-supported", false);
     filter_t *text = vlc_custom_create(spu, sizeof(*text), "spu text");
     if (!text)
         return NULL;
 
     es_format_Init(&text->fmt_in, VIDEO_ES, 0);
+    var_Create(text, "sub-text-is-subtitle", VLC_VAR_BOOL);
 
     es_format_Init(&text->fmt_out, VIDEO_ES, 0);
     text->fmt_out.video.i_width          =
@@ -356,6 +363,9 @@ static filter_t *SpuRenderCreateAndLoadText(spu_t *spu)
         return NULL;
     }
     assert( text->ops != NULL );
+    if (sys->vout)
+        var_SetBool(sys->vout, "sub-text-style-supported",
+                    strcmp(module_get_object(text->p_module), "freetype") == 0);
 
     return text;
 }
@@ -417,6 +427,7 @@ static void region_FixFmt(subpicture_region_t *region)
 
 static subpicture_region_t *SpuRenderText(spu_t *spu,
                           const subpicture_region_t *region,
+                          bool subtitle,
                           unsigned output_width,
                           unsigned output_height,
                           const vlc_fourcc_t *chroma_list)
@@ -442,6 +453,7 @@ static subpicture_region_t *SpuRenderText(spu_t *spu,
     text->fmt_out.video.i_visible_height = output_height;
     assert(region->i_x != INT_MAX && region->i_y != INT_MAX);
 
+    var_SetBool(text, "sub-text-is-subtitle", subtitle);
     subpicture_region_t *rendered_region = text->ops->render(text, region, chroma_list);
     assert(rendered_region == NULL || !subpicture_region_IsText(rendered_region));
 
@@ -802,13 +814,24 @@ static size_t spu_channel_UpdateDates(struct spu_channel *channel,
         return 0;
 
     if (!channel->clock)
+    {
+        spu_render_entry_t *entry;
+        vlc_vector_foreach_ref(entry, &channel->entries)
+        {
+            if (subpicture_GetStopTime(entry->subpic, &entry->orgstop))
+                entry->subpic->i_stop = entry->stop = entry->orgstop;
+            subpicture_SetSourceTiming(entry->subpic, entry->orgstart, entry->start, 1.f);
+        }
         goto end;
+    }
 
     vlc_clock_Lock(channel->clock);
     spu_render_entry_t *entry;
     vlc_vector_foreach_ref(entry, &channel->entries)
     {
         assert(entry);
+
+        const bool stop_changed = subpicture_GetStopTime(entry->subpic, &entry->orgstop);
 
         entry->start = vlc_clock_ConvertToSystem(channel->clock, system_now,
                                                  entry->orgstart, channel->rate,
@@ -824,6 +847,8 @@ static size_t spu_channel_UpdateDates(struct spu_channel *channel,
         }
         else
             entry->stop = VLC_TICK_INVALID;
+        if (stop_changed) entry->subpic->i_stop = entry->stop;
+        subpicture_SetSourceTiming(entry->subpic, entry->orgstart, entry->start, channel->rate);
     }
     vlc_clock_Unlock(channel->clock);
 
@@ -1036,6 +1061,14 @@ static struct subpicture_region_rendered *SpuRenderRegion(spu_t *spu,
         i_align = sys->secondary_alignment;
     else
         i_align = region->i_align;
+
+    /* Preserve secondary, absolute/ASS positions, OSD and horizontal alignment. */
+    if (subpic->b_subtitle && !region->b_absolute &&
+        channel_order != VLC_VOUT_ORDER_SECONDARY &&
+        (sys->primary_alignment == 0 || sys->primary_alignment == SUBPICTURE_ALIGN_TOP ||
+         sys->primary_alignment == SUBPICTURE_ALIGN_BOTTOM))
+        i_align = (i_align & ~(SUBPICTURE_ALIGN_TOP | SUBPICTURE_ALIGN_BOTTOM))
+                | sys->primary_alignment;
 
     SpuRegionPlace(&x_offset, &y_offset,
                    subpic, region, i_align);
@@ -1439,7 +1472,7 @@ static vlc_render_subpicture *SpuRenderSubpictures(spu_t *spu,
             if (unlikely(subpicture_region_IsText( region )))
             {
                 subpicture_region_t *rendered_text =
-                    SpuRenderText(spu, region,
+                    SpuRenderText(spu, region, subpic->b_subtitle,
                             i_original_width, i_original_height,
                             chroma_list);
                 if ( rendered_text  == NULL)
@@ -1781,7 +1814,7 @@ static void spu_PrerenderText(spu_t *spu, subpicture_t *p_subpic,
         if(!subpicture_region_IsText( region ))
             continue;
         subpicture_region_t *rendered_text =
-            SpuRenderText(spu, region,
+            SpuRenderText(spu, region, p_subpic->b_subtitle,
                         i_original_picture_width, i_original_picture_height,
                         chroma_list);
         if (rendered_text == NULL)
@@ -1965,7 +1998,10 @@ spu_t *spu_Create(vlc_object_t *object, vout_thread_t *vout)
     vlc_mutex_init(&sys->lock);
 
     sys->margin = var_InheritInteger(spu, "sub-margin");
+    sys->text_scale = var_InheritInteger(spu, "sub-text-scale");
     sys->secondary_margin = var_InheritInteger(spu, "secondary-sub-margin");
+
+    sys->primary_alignment = var_InheritInteger(spu, "sub-primary-alignment");
 
     sys->secondary_alignment = var_InheritInteger(spu,
                                                   "secondary-sub-alignment");
@@ -2114,22 +2150,16 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
 
     vlc_mutex_lock(&sys->filter_chain_lock);
     if (chain_update) {
+        if (sys->vout)
+            filter_chain_ForEach(sys->filter_chain, SubFilterDelProxyCallbacks, sys->vout);
+        filter_chain_Clear(sys->filter_chain);
         if (*chain_update) {
-            if (sys->vout)
-                filter_chain_ForEach(sys->filter_chain,
-                                     SubFilterDelProxyCallbacks,
-                                     sys->vout);
-            filter_chain_Clear(sys->filter_chain);
-
             filter_chain_AppendFromString(sys->filter_chain, chain_update);
             if (sys->vout)
                 filter_chain_ForEach(sys->filter_chain,
                                      SubFilterAddProxyCallbacks,
                                      sys->vout);
         }
-        else
-            filter_chain_Clear(sys->filter_chain);
-
         /* "sub-source"  was formerly "sub-filter", so now the "sub-filter"
         configuration may contain sub-filters or sub-sources configurations.
         if the filters chain was left empty it may indicate that it's a sub-source configuration */
@@ -2183,11 +2213,13 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
     /* Convert all spu ts */
     vlc_tick_t orgstart = subpic->i_start;
     vlc_tick_t orgstop = subpic->i_stop;
+    subpicture_GetStopTime(subpic, &orgstop);
     if (channel->clock)
     {
         vlc_tick_t system_now = vlc_tick_now();
 
         vlc_clock_Lock(channel->clock);
+        const bool paused = vlc_clock_IsPaused(channel->clock);
         subpic->i_start =
             vlc_clock_ConvertToSystem(channel->clock, system_now,
                                       orgstart, channel->rate, NULL);
@@ -2199,11 +2231,16 @@ void spu_PutSubpicture(spu_t *spu, subpicture_t *subpic)
         }
 
         vlc_clock_Unlock(channel->clock);
+        subpicture_SetSourceTiming(subpic, orgstart, subpic->i_start, channel->rate);
 
-        spu_channel_EarlyRemoveLate(sys, channel, system_now);
+        /* A paused seek maps the new cue to the frozen pause date. Wall time
+         * may already be beyond its stop date even though playback is inside
+         * the cue. Let rendering at the pause date decide what has expired. */
+        if (!paused)
+            spu_channel_EarlyRemoveLate(sys, channel, system_now);
 
         /* Maybe the new one is also already expired */
-        if(spu_HasAlreadyExpired(subpic->i_start, subpic->i_stop, system_now))
+        if(!paused && spu_HasAlreadyExpired(subpic->i_start, subpic->i_stop, system_now))
         {
             vlc_mutex_unlock(&sys->lock);
             subpicture_Delete(subpic);
@@ -2319,6 +2356,25 @@ vlc_render_subpicture *spu_Render(spu_t *spu,
         place.y      = 0;
         place.width  = fmt_dst->i_visible_width;
         place.height = fmt_dst->i_visible_height;
+    }
+
+    const int64_t revision = sys->vout ? var_GetInteger(sys->vout, "sub-text-style-revision") : 0;
+    const int scale = var_InheritInteger(spu, "sub-text-scale");
+    if (revision != sys->text_style_revision || scale != sys->text_scale)
+    {
+        // Wait for the background renderer before resetting cached cue formats.
+        // The subtitle updater retains the original text and can regenerate it.
+        spu_PrerenderPause(sys);
+        vlc_mutex_lock(&sys->lock);
+        for (size_t c = 0; c < sys->channels.size; ++c)
+            for (size_t e = 0; e < sys->channels.data[c].entries.size; ++e)
+            {
+                subpicture_t *subpic = sys->channels.data[c].entries.data[e].subpic;
+                if (subpic->b_subtitle) subpicture_Invalidate(subpic);
+            }
+        vlc_mutex_unlock(&sys->lock);
+        sys->text_style_revision = revision;
+        sys->text_scale = scale;
     }
 
     /* wake up prerenderer, we have some video size and chroma */

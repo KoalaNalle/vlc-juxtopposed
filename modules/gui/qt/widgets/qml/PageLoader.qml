@@ -31,7 +31,8 @@ StackViewExt {
     //path of the current page loader
     property var pagePrefix: []
 
-    //list of available pages
+    //list of available pages. Intermediary routes declare nested: true;
+    //their properties belong to the final descendant, including default paths.
     property var pageModel: []
 
     // Functions
@@ -74,6 +75,11 @@ StackViewExt {
                     continue //we're not allowed to load this page
                 }
 
+                if (path.length > 1 && model.nested !== true) {
+                    console.warn("unable to load subpath of leaf", path.slice(1))
+                    return false
+                }
+
                 //we can't use push(url, properties) as Qt interprets viewProperties
                 //as a second component to load
                 let component = undefined
@@ -91,12 +97,28 @@ StackViewExt {
                     let pageProp = {
                         pagePrefix:[...pagePrefix, head]
                     }
-                    for (const key of properties.keys()) {
-                        pageProp[key] = properties[key]
+                    // Initialize the actual leaf before Component.onCompleted.
+                    // Never construct a view just to probe its properties.
+                    if (model.nested !== true) {
+                        const keys = typeof properties?.keys === "function" ? properties.keys() : Object.keys(properties ?? {})
+                        for (const key of keys)
+                            pageProp[key] = properties[key]
                     }
 
+                    const loaded = root.replace(null, component, pageProp)
+                    if (!loaded) {
+                        console.warn("unable to create view", head)
+                        return false
+                    }
+                    // StackView can return an item after warning and ignoring an
+                    // unknown initial property. Keep that failure visible.
+                    for (const key of Object.keys(pageProp)) {
+                        if (!loaded.hasOwnProperty(key)) {
+                            console.warn("unknown initial property", key, "of view", head)
+                            return false
+                        }
+                    }
                     History.update([...pagePrefix, head])
-                    root.replace(null, component, pageProp)
                     found = true
                     break;
                 } else {
@@ -113,7 +135,8 @@ StackViewExt {
         currentItem.Navigation.parentItem = root
         //pages like MainDisplay are not page PageLoader, so just check for the loadView function
         if (typeof currentItem.loadView === "function") {
-            currentItem.loadView(path.slice(1), properties, focusReason)
+            if (currentItem.loadView(path.slice(1), properties, focusReason) === false)
+                return false
         } else {
             setCurrentItemFocus(focusReason)
         }
@@ -175,13 +198,11 @@ StackViewExt {
             return false
         }
 
-        for (const key of properties.keys()) {
-            if (currentItem.hasOwnProperty(key))
-                currentItem[key] = properties[key]
-        }
-
+        // Only intermediaries reach this reuse path; keep their state and
+        // forward the complete property map to its genuine leaf owner.
         if (typeof currentItem.loadView === "function") {
-            currentItem.loadView(path.slice(1), properties, focusReason)
+            if (currentItem.loadView(path.slice(1), properties, focusReason) === false)
+                return false
         } else if (path.length > 1) {
             console.warn("unable to load subpath", path.slice(1))
             return false

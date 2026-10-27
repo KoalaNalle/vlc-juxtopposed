@@ -1,0 +1,398 @@
+{
+  "sourceCommit": "ac762a8bbbbd88b7f4f52cde1d2128ed1d65127b",
+  "checkpointCommit": "d7941634d1a741885d88850d4e6abc283acee95a",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "3f6170f722f86f3e305167d027b49815f23305899365a43548b6a0392938834d",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "9f4a3f0371b4e752f996701578c2d361f30fe2c2314eb8c4dc55bcd396819b1c",
+    "plugins/control/libwin_hotkeys_plugin.dll": "28e53fd1d6a0cd10d7c6e106a5ea5a67b3c5118ed74c42fabb0f380a68a183d6",
+    "plugins/mux/libmux_mp4_plugin.dll": "42e53a5e86d22e20e564bd15de09aeb902eaea5c98f25d0ec67ff3cd0c4fc69e",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "analysis": {
+    "passed": true,
+    "audioOutputs": [
+      {
+        "input": "wav",
+        "segment": 1,
+        "codec": "pcm_s16le",
+        "pcmSamples": 357210,
+        "decodedSeconds": 8.1,
+        "observedPlaybackSeconds": 7.930766,
+        "absoluteClockDifference": 0.16923399999999944
+      },
+      {
+        "input": "wav",
+        "segment": 2,
+        "codec": "pcm_s16le",
+        "pcmSamples": 350595,
+        "decodedSeconds": 7.95,
+        "observedPlaybackSeconds": 8.010607,
+        "absoluteClockDifference": 0.06060700000000008
+      },
+      {
+        "input": "flac",
+        "segment": 1,
+        "codec": "flac",
+        "pcmSamples": 350208,
+        "decodedSeconds": 7.9412244897959186,
+        "observedPlaybackSeconds": 7.930908,
+        "absoluteClockDifference": 0.010316489795918926
+      },
+      {
+        "input": "flac",
+        "segment": 2,
+        "codec": "flac",
+        "pcmSamples": 340992,
+        "decodedSeconds": 7.732244897959184,
+        "observedPlaybackSeconds": 8.010498,
+        "absoluteClockDifference": 0.2782531020408161
+      },
+      {
+        "input": "mp3",
+        "segment": 1,
+        "codec": "mp3",
+        "pcmSamples": 353664,
+        "decodedSeconds": 8.019591836734694,
+        "observedPlaybackSeconds": 7.982656,
+        "absoluteClockDifference": 0.036935836734693694
+      },
+      {
+        "input": "mp3",
+        "segment": 2,
+        "codec": "mp3",
+        "pcmSamples": 354816,
+        "decodedSeconds": 8.045714285714286,
+        "observedPlaybackSeconds": 8.01013,
+        "absoluteClockDifference": 0.03558428571428607
+      }
+    ],
+    "maxClockDifference": 0.2782531020408161,
+    "retryPrimarySurvived": true,
+    "retrySamePlayerDecoded": true,
+    "blockedMarkerUnchanged": true,
+    "endingGuardsPassed": true,
+    "ordinaryErrorFeedbackAccepted": false,
+    "strictSampleBoundaryAccepted": false,
+    "strictConversionTailAccepted": false,
+    "fullBetaAccepted": false,
+    "firewallRuleChanges": [],
+    "securityPrivacyChanges": []
+  },
+  "artifacts": [
+    {
+      "file": "artifacts/freeze-record-overlap-r462.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/freeze-record-overlap-r462.py",
+      "sha256": "b38e2c969479c9c011e9bf1db76e914a59ef27f623235e07e0308233aa1ad187",
+      "gzipSha256": "b7e15f17524d28c2b5d1ea3f39bb0467e34773cb2443649eb4dd0655b789085a",
+      "bytes": 6771,
+      "compressedBytes": 1999
+    },
+    {
+      "file": "artifacts/inputs-r470.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r470.json",
+      "sha256": "739291105cb661f94ff9a1533c95f6d2fbf8e3f468442b959b071358593df002",
+      "gzipSha256": "b8566129ec5a8c7c770fdafef011d4893a4877599e5949491491db2e60cfc87f",
+      "bytes": 1263098,
+      "compressedBytes": 209253
+    },
+    {
+      "file": "artifacts/inputs-r472.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r472.json",
+      "sha256": "cd88f9acff02edea3bdd6fc8460d071ec28a097243b5c3d71e082af197c3de31",
+      "gzipSha256": "4af06ff03ca6cf57808f8a612b6e83fbc8ddba102f3e8fe7016983778d602862",
+      "bytes": 1264304,
+      "compressedBytes": 209450
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__flac__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/flac/probe.json",
+      "sha256": "a6c85eca5f58b10e888d736f3c313da1c1539dc8783356391d33488a3629b633",
+      "gzipSha256": "30f7acc2cd6ae1b9912497c58b8096c871cae46e9cf2fc10688cce58bd329618",
+      "bytes": 625,
+      "compressedBytes": 288
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__flac__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/flac/vlc.log",
+      "sha256": "c199e884c44a17ecd30ccd9a5909c9740b912f7f3475015b89c0b1db6491c0e3",
+      "gzipSha256": "b5bef9037c4bd266684242c215126a387dc5429dc9f5a02c88b405d2c2a62c63",
+      "bytes": 17454,
+      "compressedBytes": 3059
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__flac__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/flac/vlcrc",
+      "sha256": "21ac25eae0901516a288cdd66ee0a4da1ce5a076fbbe2277fe61713c50296429",
+      "gzipSha256": "58b5b9ba8abf92ffe0ce06ada90b653769d4560b68e9ad0d956d20045aadab3e",
+      "bytes": 161,
+      "compressedBytes": 150
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__flac-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/flac-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__flac-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/flac-stdout.txt",
+      "sha256": "9b7abc765303d36b245ea3f0d743367e831ff9be603eb066e7da5786dfd6519d",
+      "gzipSha256": "d1c6ae4a4714d740a6a2286be036dbfe0aa7d36964f5da7c8a640ba2980a7d0a",
+      "bytes": 478,
+      "compressedBytes": 268
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__mp3__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/mp3/probe.json",
+      "sha256": "cafe7a240b83cdb9cfec706266ba42d790df824a822746a6ff883634ff55c789",
+      "gzipSha256": "dbe1ead44e242d5d2d57ec01bb84c6175bceebe7c5b1b27a3e4e210cb5e4cbce",
+      "bytes": 625,
+      "compressedBytes": 288
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__mp3__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/mp3/vlc.log",
+      "sha256": "5cd3506a4588959233c32fd655de52f798ab11e0180879dc93dca8f71cc985ed",
+      "gzipSha256": "15a6cf413797beab37a432b17c61e2acd1f75663a5618c424bfd7c1b400f5b67",
+      "bytes": 17675,
+      "compressedBytes": 3112
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__mp3__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/mp3/vlcrc",
+      "sha256": "5f332c76d4f7ddcc736e482d6b6ef662bb611fe65b837d82a846804343e07e7e",
+      "gzipSha256": "7fe0fa6a1e625a3c7307cf98f44273cf7490f3f5103389ea379938dae87fd9fc",
+      "bytes": 160,
+      "compressedBytes": 149
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__mp3-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/mp3-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__mp3-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/mp3-stdout.txt",
+      "sha256": "3dfeab79226c90c9779205365511f205395d20131ebbed966e89ccc22765420d",
+      "gzipSha256": "88eea1954a402bc096f77fa53825031bd523568568373c829d98fed86c5afc25",
+      "bytes": 478,
+      "compressedBytes": 267
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/producer.py",
+      "sha256": "76bdc5b0678b4421077f175444e61209b8ad448d7d88ff33848eb02efd7c4dfa",
+      "gzipSha256": "1f7d92f01e0ba539f787a232c5ad2f39c6961991d528c56f445e7c748e601300",
+      "bytes": 5623,
+      "compressedBytes": 2223
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/verification.json",
+      "sha256": "4f2ef4db9da72d191b814ffbe2d9cbcb81897c4f3073e2bf79f34d3fa8d8828c",
+      "gzipSha256": "985e7c68eccb151bc70e2b36ccccde4fcfc3141a125556373d52da7e61a37030",
+      "bytes": 32958,
+      "compressedBytes": 4227
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__wav__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/wav/probe.json",
+      "sha256": "e2510cda339a51951f2d86b5af7d28418c656fb75ff4e570475268ae18f34268",
+      "gzipSha256": "161ab3916fdad25a25706a01428fd8a9be8bb897138e3af433b6e3970dd0d142",
+      "bytes": 627,
+      "compressedBytes": 290
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__wav__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/wav/vlc.log",
+      "sha256": "1d936109e515808c46a040ccd127944dd42be5deae1134fc292fc058f9fc2cfb",
+      "gzipSha256": "48574d9a8e00666d09ae64b01eedacf1694996b41aa538ca7c87281d0cda1adf",
+      "bytes": 16710,
+      "compressedBytes": 3018
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__wav__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/wav/vlcrc",
+      "sha256": "873398127b728aab260bd35313a65f95906a6a06492819c67b3b3e9ff7c4681e",
+      "gzipSha256": "047b6ae149fed74fe9ac2abf20ef18d75d63e5a25e98aaf203d6a536839a634a",
+      "bytes": 160,
+      "compressedBytes": 149
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__wav-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/wav-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-audio-r470__wav-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-audio-r470/wav-stdout.txt",
+      "sha256": "f7bd443b08a76e476516583f50725178f2d3e8acceb5ddc22d869d2fe8f82c43",
+      "gzipSha256": "5084a83803f4e2f9e57074324813d80f3f68c0a9edbbff01de01d1414503177b",
+      "bytes": 480,
+      "compressedBytes": 270
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/producer.py",
+      "sha256": "fc96734bdbd04dbcc530dcfbec233226b0d76d0e4c4ee3e6e7537a3844bbf35e",
+      "gzipSha256": "45b2f3efe1b00e7a86c0db8ec07f02303cf80067b19946de48322c31ec2c1cb4",
+      "bytes": 5726,
+      "compressedBytes": 2280
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/verification.json",
+      "sha256": "7aebb98e0d29a304ecce5d4c0ff6b00209e18ea800226ba6af5c488ca3838113",
+      "gzipSha256": "cf87ce01bf669b8e76d4b9664292b2faac4ce13ce8c3296c0466603b8ad67b59",
+      "bytes": 8752,
+      "compressedBytes": 2916
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav__blocked-output.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav/blocked-output",
+      "sha256": "6c899a29dd2640ad71cf614f6e07c16a7e09e9e7960ede6cddfad670f65afa26",
+      "gzipSha256": "b221bd7a247053088fbecfdc811329ea2e9ef7ba59c91ea2ee645392b330f6b8",
+      "bytes": 32,
+      "compressedBytes": 52
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav/probe.json",
+      "sha256": "3c8d88d6c5178b73516a1e694e03a5ed0dfe8dea8ae4909710279eb2f322c099",
+      "gzipSha256": "2cef92c16889df61942164dbd3d98c2d85baf93b99b02a92d300c613be7db07c",
+      "bytes": 639,
+      "compressedBytes": 331
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav/vlc.log",
+      "sha256": "928120bb4c8045ff1158038ffcd97be143be74fe7582c989da1e3233e781b4f4",
+      "gzipSha256": "ef834d31181e25215e47de39fd0f9fb029055a0c4b5c5c9ffdf619cbc30677df",
+      "bytes": 16348,
+      "compressedBytes": 3116
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav/vlcrc",
+      "sha256": "f77701032fe95a4a0c573a5099be85bb782163bf443130936fe5bffd1a28a940",
+      "gzipSha256": "fee14cd712d3c67296a49e741b8cbe7fb1ebdb6425502296491b099b11f5ea5f",
+      "bytes": 160,
+      "compressedBytes": 150
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav-stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-retry-r472__wav-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-retry-r472/wav-stdout.txt",
+      "sha256": "fa954e3f9e273d1626ea3f676dcd5a24788a2e70153d69ed791b476803ede060",
+      "gzipSha256": "5520855d5ac27f87a1bcb0ac3b1c588802b44c1ca316b997fa3001076839d1b5",
+      "bytes": 500,
+      "compressedBytes": 313
+    },
+    {
+      "file": "artifacts/prepare-record-audio-r469.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-audio-r469.py",
+      "sha256": "cbb36ee87b53190fa8a41454ca2258ed6dcc0c838e365145dd15375dc3af1ca8",
+      "gzipSha256": "bb163357cd0cc718d4060c132d7d7385103d14c020336f9c16457abc4f12919e",
+      "bytes": 2854,
+      "compressedBytes": 1280
+    },
+    {
+      "file": "artifacts/prepare-record-retry-r472.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-retry-r472.py",
+      "sha256": "19c76d5d5733ade524bc6c5815eee199dee1e54ffa57f168d82e4e0ddae399bd",
+      "gzipSha256": "4926dfb2ed636bea58b6ee29ed6c1e9d67ce359e9ed570e5bcdb4cb8aa01bd2c",
+      "bytes": 2609,
+      "compressedBytes": 928
+    },
+    {
+      "file": "artifacts/record-audio-media-r469__fixture.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-media-r469/fixture.json",
+      "sha256": "d962c61604db129b7a97d0d27b68bbf469314e79c05e623be459b8d301252223",
+      "gzipSha256": "787f8dafd9118cdd98ecdcb27d17fc94759ec4cc4aaad97d4ca6d9942c23a0b0",
+      "bytes": 3144,
+      "compressedBytes": 796
+    },
+    {
+      "file": "artifacts/record-audio-media-r469__flac-probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-media-r469/flac-probe.json",
+      "sha256": "b90738b79f01b5552fb16de8ee8d090d0a857d3b8d50a0bec2110ed5ba492204",
+      "gzipSha256": "5d52cd0681e40eae123ce292794ca24c4f40883f1d4ed677f984213d319d664d",
+      "bytes": 2017,
+      "compressedBytes": 652
+    },
+    {
+      "file": "artifacts/record-audio-media-r469__mp3-probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-media-r469/mp3-probe.json",
+      "sha256": "62da8f84e02c8ed7be6d91810cae2e1893fac1ba9aa15939265052c368e2a679",
+      "gzipSha256": "f7c3e30faa0f0b74e3cc83c460e3a77a5bd255b6b1cf3124b43b1a5a5cae7647",
+      "bytes": 1995,
+      "compressedBytes": 651
+    },
+    {
+      "file": "artifacts/record-audio-media-r469__wav-probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-media-r469/wav-probe.json",
+      "sha256": "9dd103f34aeaa4c0f4d40c0e7bbdd062413174ad983b074d1a92cf543c5acbaf",
+      "gzipSha256": "5ac5577267ce78758347bf5cdffc06e608105809c8ac5f995bd87d528921c12c",
+      "bytes": 1858,
+      "compressedBytes": 638
+    },
+    {
+      "file": "artifacts/record-audio-retry-analysis-r473.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-retry-analysis-r473.json",
+      "sha256": "e8c514c70a7a848f38934788a5c1adb2d870215233807616e22e387e121c8944",
+      "gzipSha256": "aab4c5b2e823fd84e2b50482458aa3aa1ceb80a41da4363392b8507f9ae6d6d5",
+      "bytes": 1957,
+      "compressedBytes": 548
+    },
+    {
+      "file": "artifacts/record-audio-worker-r469.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-audio-worker-r469.py",
+      "sha256": "447c81102ccc33b678ac74fab88344651a2e44bc119951697222669463b86218",
+      "gzipSha256": "36c4638892979220bb485bd4777418883eba59b529c80af0b24f75120fb77c58",
+      "bytes": 4275,
+      "compressedBytes": 1591
+    },
+    {
+      "file": "artifacts/record-retry-worker-r472.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-retry-worker-r472.py",
+      "sha256": "c7bd30e9f1b83cd313bccd90db040327ccc499c024f38813b624b1071a57b4b4",
+      "gzipSha256": "788478516f739704985d4619ed9bc75a86eb4d564e7cddd5d6d38a39cea2856b",
+      "bytes": 4710,
+      "compressedBytes": 1757
+    },
+    {
+      "file": "artifacts/write-record-audio-receipt-r473.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/write-record-audio-receipt-r473.py",
+      "sha256": "3e9af1f561f89fe1fc48cdf17e2dba42c0097165d1075c610034e9eb84578b61",
+      "gzipSha256": "8bc969a0daea443596903fca4b8af2670819ae935fdb9f41c23e00a442f13bbd",
+      "bytes": 7171,
+      "compressedBytes": 3052
+    }
+  ],
+  "ordinaryErrorFeedbackAccepted": false,
+  "fullBetaAccepted": false,
+  "finalPackageAccepted": false
+}

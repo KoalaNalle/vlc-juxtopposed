@@ -58,6 +58,21 @@ void *const vlc_http_error = (char *)&vlc_http_error_loc;
 
 static bool vlc_http_is_token(const char *);
 
+struct vlc_http_msg *vlc_http_req_copy(const struct vlc_http_msg *source)
+{
+    if (source->method == NULL) { errno = EINVAL; return NULL; }
+    struct vlc_http_msg *copy = vlc_http_req_create(source->method, source->scheme,
+                                                  source->authority, source->path);
+    if (copy == NULL) return NULL;
+    for (unsigned i = 0; i < source->count; i++) {
+        if (!strcasecmp(source->headers[i][0], "Proxy-Authorization")) continue;
+        if (vlc_http_msg_add_header(copy, source->headers[i][0], "%s", source->headers[i][1])) {
+            vlc_http_msg_destroy(copy); return NULL;
+        }
+    }
+    return copy;
+}
+
 static ssize_t vlc_http_msg_find_header(const struct vlc_http_msg *m,
                                         const char *name)
 {

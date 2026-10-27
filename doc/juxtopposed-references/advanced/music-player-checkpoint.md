@@ -1,0 +1,27 @@
+# Native music source folder and cover checkpoint
+
+14 October 2026. Original design/artwork: [Juxtopposed](https://www.youtube.com/@juxtopposed). The reference is the supplied video's 12:18–12:20 music player. The Windows slice adds the actual source-folder list, square cover, track/artist label and native waveform controls. Exact missing icon exports, blur variants and whole-window fidelity retain open gates.
+
+## Implementation
+
+`Player.musicFolder` discovers audio files in the readable local source file's parent directory without replacing the play queue or requiring library indexing. One cancellable worker publishes actual filenames promptly, then reads native title/artist metadata. Search and sorting retain genuine file identities; activation reuses an existing queue entry or appends the selected native item and starts it. The menu explicitly switches between Source Folder and Play Queue, refreshes the folder and exposes lyrics when available.
+
+Metadata parsing has a 1.5-second per-file timeout. It excludes the native fetch stage, whose cancellation does not interrupt an active artwork downloader. Folder rows accept readable local/cache artwork; the main cover uses actual Player artwork and VLC's missing-artwork fallback. A 4096-file limit is visible. Unsupported remote/UNC sources fall back explicitly to the queue. Metadata failures retain usable files/tags and display a warning. Large-folder throughput, external artwork variants and other filesystem types remain unassessed.
+
+The presentation uses VLC's existing rounded-image and blur primitives. Missing artwork now has a dark backdrop; the legacy floating title no longer overlaps the source panel. The source menu supplies dark hover/pressed palette roles. Legacy controls and the lyrics presentation remain available.
+
+Native testing also reproduced an existing Qt clock fault: `m_player_time` was uninitialized, and the initial audio pause could interpolate it before any output-clock update. Qt also missed duration events delivered before the first clock point. The repair initializes/guards/resets the point, clears timers and published position on media replacement/stop, and listens directly to native length changes.
+
+## Verification
+
+- All eleven Qt 6.8.3 component suites pass locally. The new suite uses actual production row/navigation/rounded-image QML and supplied metadata, covering keyboard/actions, search/sort, source/queue states, loading/errors and five size/scale layouts. The workflow includes it.
+- The actual native folder model [passes seven QtTest checks](music-desktop/folder-results.txt): genuine tagged WAV metadata, case-insensitive search and title order, real queue playback/reuse, missing files, stale source/refresh, and shutdown while scanning 512 real files. It exits 0.
+- The production interpolation helper and actual native timer API [pass six QtTest checks](music-desktop/timer-results.txt), including an initial pause without a point, missing timestamp/date, real frozen/resumed interpolation and media invalidation. This test does not instantiate the complete PlayerController; the desktop check below covers its callbacks.
+- The final compiled application [opens the actual WAV paused](music-desktop/initial-paused.jpg) at `00:00:00 / 00:00:30`, with finite zero progress before any play toggle. Real tags and the one actual source-folder audio file appear. [The source menu](music-desktop/menu.jpg) renders with dark hover/background.
+- Native search/clear/empty-result and explicit queue fallback passed on preceding plugin `b7f99dd9844625a9d6dcaeb3be3f69c554a143829f43975dd0290a114bb9cae3`; those paths are unchanged by the clock/menu repair. The diagnostic's one row proves state changes, while native backend tests establish actual multi-row sort/order.
+- The final waveform seek requests position `0.3859275053304904`. After actual playback, [pause at twelve seconds](music-desktop/resumed.jpg) reports position `0.4303681`; [Back retains it in Home](music-desktop/home.jpg). Position-only seeking before the first audio output point moves the target while elapsed remains zero until playback supplies a clock point; that preview limitation is retained explicitly.
+- [Replacing audio with real video](music-desktop/video-switch.jpg) starts with zero progress, the new eighteen-second duration and a red rendered frame, without the previous audio clock or source-folder presentation. The existing resume prompt appears for the previously watched fixture.
+
+The [verification record](music-desktop/verification.json) records the final Qt hash **`bf78e2d19794d2925f83b9ca13344fbb8b11137970d0c4dad589116cdf844505`**. WSL/MinGW/Qt native test and plugin builds exit 0. Normal desktop shutdown completes; PID 27332 is absent and the logger is stopped. The separate slice package is staged; rollback begins at `libqt_plugin.dll.before-music-20261014`, with intermediate contrast/timer/menu versions also recoverable. Media-library userdata is isolated; portable configuration/Qt settings are retained. No security permissions were changed.
+
+The native captures use genuine VLC fallback artwork, so they do not prove actual album-art blur. Codec/multiple-track variants, native narrow/DPI layouts, lyrics and further queue/settings/subtitle journeys, exact icons and visual acceptance remain open. Home, presets, New Playlist, conversion/preferences and the rest of milestones 0–8 remain active work. Keep the PR draft.

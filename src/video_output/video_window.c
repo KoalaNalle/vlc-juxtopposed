@@ -32,6 +32,9 @@
 #include <vlc_ancillary.h>
 #include "video_window.h"
 #include "vout_internal.h"
+#ifdef _WIN32
+# include <windows.h>
+#endif
 
 #define DOUBLE_CLICK_TIME VLC_TICK_FROM_MS(300)
 
@@ -64,10 +67,56 @@ typedef struct vout_display_window
         vlc_mouse_t window;
         vlc_mouse_t video;
         vlc_tick_t last_left_press;
+        int press_x, press_y;
+        int64_t press_input_epoch;
+        bool dragged, suppress_release;
         vlc_mouse_event event;
         void *opaque;
     } mouse;
 } vout_display_window_t;
+
+static unsigned MouseDragThreshold(vlc_window_t *window)
+{
+#ifdef _WIN32
+    if (window->type == VLC_WINDOW_TYPE_HWND && window->handle.hwnd != NULL)
+    {
+        typedef UINT (WINAPI *dpi_fn)(HWND);
+        typedef int (WINAPI *metrics_fn)(int, UINT);
+        HMODULE user32 = GetModuleHandleW(L"user32.dll");
+        dpi_fn get_dpi = (dpi_fn)GetProcAddress(user32, "GetDpiForWindow");
+        metrics_fn get_metrics = (metrics_fn)GetProcAddress(user32, "GetSystemMetricsForDpi");
+        if (get_dpi && get_metrics)
+        {
+            UINT dpi = get_dpi(window->handle.hwnd);
+            if (dpi != 0)
+                return __MAX(1, __MAX(get_metrics(SM_CXDRAG, dpi),
+                                     get_metrics(SM_CYDRAG, dpi)));
+        }
+    }
+    return __MAX(1, __MAX(GetSystemMetrics(SM_CXDRAG), GetSystemMetrics(SM_CYDRAG)));
+#else
+    (void)window;
+    return 6;
+#endif
+}
+
+static unsigned MouseDoubleClickInterval(vlc_window_t *window)
+{
+    if (!window->info.has_double_click)
+        return MS_FROM_VLC_TICK(DOUBLE_CLICK_TIME);
+#ifdef _WIN32
+    return GetDoubleClickTime();
+#else
+    return 500;
+#endif
+}
+
+static int64_t MouseInputEpoch(vlc_window_t *window)
+{
+    libvlc_int_t *root = vlc_object_instance(window);
+    return var_Type(root, "intf-input-epoch") == VLC_VAR_INTEGER
+        ? var_GetInteger(root, "intf-input-epoch") : 0;
+}
 
 static void vout_display_window_ResizeNotify(vlc_window_t *window,
                                              unsigned width, unsigned height,
@@ -141,15 +190,36 @@ static void vout_display_window_MouseEvent(vlc_window_t *window,
     vlc_mouse_t *m = &state->mouse.window;
 
     m->b_double_click = false;
+    bool single_click = false;
+    bool cancelled = false;
 
     switch (ev->type)
     {
         case VLC_WINDOW_MOUSE_MOVED:
+            if (vlc_mouse_IsLeftPressed(m)
+                && (llabs((int64_t)ev->x - state->mouse.press_x) >= MouseDragThreshold(window)
+                 || llabs((int64_t)ev->y - state->mouse.press_y) >= MouseDragThreshold(window)))
+            {
+                state->mouse.dragged = true;
+                var_SetInteger(vout, "mouse-click-event", 0);
+            }
             vlc_mouse_SetPosition(m, ev->x, ev->y);
             state->mouse.last_left_press = VLC_TICK_MIN;
             break;
 
         case VLC_WINDOW_MOUSE_PRESSED:
+            if (ev->button_mask == MOUSE_BUTTON_LEFT)
+            {
+                if (!vlc_mouse_IsLeftPressed(m)) state->mouse.suppress_release = false;
+                state->mouse.press_x = m->i_x;
+                state->mouse.press_y = m->i_y;
+                state->mouse.dragged = false;
+                state->mouse.press_input_epoch = MouseInputEpoch(window);
+                if (var_InheritBool(window, "intf-input-blocked"))
+                    state->mouse.suppress_release = true;
+            }
+            else
+                var_SetInteger(vout, "mouse-click-event", 0);
             if (!window->info.has_double_click
              && ev->button_mask == MOUSE_BUTTON_LEFT
              && !vlc_mouse_IsLeftPressed(m))
@@ -170,13 +240,33 @@ static void vout_display_window_MouseEvent(vlc_window_t *window,
             break;
 
         case VLC_WINDOW_MOUSE_RELEASED:
+            if (ev->button_mask == MOUSE_BUTTON_LEFT)
+            {
+                single_click = vlc_mouse_IsLeftPressed(m) && !state->mouse.dragged
+                               && !state->mouse.suppress_release
+                               && state->mouse.press_input_epoch == MouseInputEpoch(window);
+                state->mouse.suppress_release = false;
+            }
             vlc_mouse_SetReleased(m, ev->button_mask);
             break;
 
         case VLC_WINDOW_MOUSE_DOUBLE_CLICK:
             assert(window->info.has_double_click);
-            m->b_double_click = true;
-            vlc_mouse_SetPressed(m, ev->button_mask);
+            if (state->mouse.press_input_epoch == MouseInputEpoch(window))
+            {
+                m->b_double_click = true;
+                vlc_mouse_SetPressed(m, ev->button_mask);
+                break;
+            }
+            /* A modal transition invalidates the earlier half of a double
+             * click, even when the dialog closed before the second event. */
+            /* fall through */
+        case VLC_WINDOW_MOUSE_CANCELLED:
+            cancelled = true;
+            m->i_pressed = 0;
+            state->mouse.last_left_press = VLC_TICK_MIN;
+            state->mouse.dragged = state->mouse.suppress_release = true;
+            var_SetInteger(vout, "mouse-click-event", 0);
             break;
 
         default:
@@ -193,12 +283,38 @@ static void vout_display_window_MouseEvent(vlc_window_t *window,
                                           &state->format, &state->display);
     vlc_mutex_unlock(&state->lock);
 
-    if (video_mouse.b_double_click && vlc_mouse_IsLeftPressed(&video_mouse))
-        var_ToggleBool(vout, "fullscreen");
+    const bool double_left = video_mouse.b_double_click
+        && ev->button_mask == MOUSE_BUTTON_LEFT;
+    if (double_left && vlc_mouse_IsLeftPressed(&video_mouse))
+    {
+        state->mouse.suppress_release = true;
+        var_SetInteger(vout, "mouse-click-event", 0);
+        if (!var_InheritBool(window, "intf-input-blocked")
+            && var_InheritInteger(vout, "video-doubleclick-action") == VLC_MOUSE_ACTION_FULLSCREEN)
+            var_ToggleBool(vout, "fullscreen");
+    }
 
-    /* Stop propagation if the event was consumed by a video filter */
-    if (vout_FilterMouse(vout, &video_mouse))
+    if (cancelled)
+    {
+        /* Reset decoder/es-out gesture history. A synthetic release alone
+         * would still trigger the legacy embedding player's pause fallback. */
+        vlc_mutex_lock(&state->lock);
+        if (state->mouse.event != NULL)
+            state->mouse.event(NULL, state->mouse.opaque);
+        vlc_mutex_unlock(&state->lock);
+    }
+    /* Filters see cancellation as a release, while button observers must
+     * still clear any active drag/navigation state if a filter consumes it. */
+    if (vout_FilterMouse(vout, &video_mouse) && !cancelled)
         return;
+
+    if (!var_InheritBool(window, "intf-input-blocked"))
+    {
+        if (double_left)
+            var_SetInteger(vout, "mouse-click-event", -1);
+        else if (single_click)
+            var_SetInteger(vout, "mouse-click-event", MouseDoubleClickInterval(window));
+    }
 
     /* Check if the mouse state actually changed and emit events. */
     /* NOTE: sys->mouse is only used here, so no need to lock. */
@@ -211,7 +327,7 @@ static void vout_display_window_MouseEvent(vlc_window_t *window,
 
     vlc_mutex_lock(&state->lock);
     /* Mouse events are only initialised if the display exists. */
-    if (state->mouse.event != NULL)
+    if (state->mouse.event != NULL && !cancelled)
         state->mouse.event(&video_mouse, state->mouse.opaque);
     vlc_mutex_unlock(&state->lock);
 }
@@ -399,6 +515,9 @@ vlc_window_t *vout_display_window_New(vout_thread_t *vout)
     vlc_mouse_Init(&state->mouse.window);
     vlc_mouse_Init(&state->mouse.video);
     state->mouse.last_left_press = VLC_TICK_MIN;
+    state->mouse.dragged = state->mouse.suppress_release = false;
+    state->mouse.press_x = state->mouse.press_y = 0;
+    state->mouse.press_input_epoch = 0;
     state->mouse.event = NULL;
     state->vout = vout;
 

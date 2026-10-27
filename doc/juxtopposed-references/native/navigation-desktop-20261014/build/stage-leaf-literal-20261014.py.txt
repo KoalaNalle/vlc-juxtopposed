@@ -1,0 +1,27 @@
+from pathlib import Path
+import hashlib
+import json
+import os
+import shutil
+
+root=Path(__file__).resolve().parent
+source=root/'slice-home-route-package-20261014'
+target=root/'slice-leaf-literal-package-20261014'
+assert not target.exists()
+replacement=Path('plugins/gui/libqt_plugin.dll')
+plugin=root/'staged-leaf-literal-libqt_plugin.dll'
+assert plugin.is_file()
+for item in source.rglob('*'):
+    relative=item.relative_to(source)
+    if relative.parts[0]=='portable': continue
+    if item.is_dir():
+        (target/relative).mkdir(parents=True,exist_ok=True)
+    elif not item.is_symlink() and '.before-' not in item.name and item.name!='plugins.dat':
+        destination=target/relative
+        destination.parent.mkdir(parents=True,exist_ok=True)
+        if relative==replacement: shutil.copyfile(plugin,destination)
+        else: os.link(item,destination)
+def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+manifest=dict(scope='Fresh development runtime; leaf-route/native mounted verification pending.',basePackage=source.name,newPackage=target.name,guiSha256=digest(target/replacement),runtimeSha256={name:digest(target/name) for name in ['libvlc.dll','libvlccore.dll']})
+(root/'leaf-literal-package-staging-20261014.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8',newline='\n')
+print(json.dumps(manifest))

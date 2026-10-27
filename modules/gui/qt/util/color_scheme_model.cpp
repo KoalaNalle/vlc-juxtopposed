@@ -64,7 +64,7 @@ bool ColorSchemeModel::setData(const QModelIndex &index,
             && value.toBool())
     {
         setCurrentIndex(index.row());
-        return true;
+        return m_currentIndex == index.row();
     }
 
     return false;
@@ -76,6 +76,30 @@ int ColorSchemeModel::currentIndex() const
 }
 
 void ColorSchemeModel::setCurrentIndex(const int newIndex)
+{
+    const int bounded = newIndex >= 0 && newIndex < m_list.size() ? newIndex : 0;
+    if (m_currentIndex == bounded)
+        return;
+    if (m_changeHandler)
+    {
+        if (!m_changeHandler(bounded))
+        {
+            // QActionGroup/QComboBox have already selected the requested row.
+            // Republish accepted state so rejected writes remain retryable.
+            emit dataChanged(index(0), index(m_list.size() - 1), {Qt::CheckStateRole});
+            emit currentChanged();
+        }
+    }
+    else
+        restoreCurrentIndex(bounded);
+}
+
+void ColorSchemeModel::setChangeHandler(std::function<bool(int)> handler)
+{
+    m_changeHandler = std::move(handler);
+}
+
+void ColorSchemeModel::restoreCurrentIndex(const int newIndex)
 {
     if (m_currentIndex == newIndex)
         return;

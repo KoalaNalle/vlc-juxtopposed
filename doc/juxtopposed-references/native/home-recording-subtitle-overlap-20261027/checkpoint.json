@@ -1,0 +1,980 @@
+{
+  "sourceCommit": "ac762a8bbbbd88b7f4f52cde1d2128ed1d65127b",
+  "runtime": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/runtime",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "3f6170f722f86f3e305167d027b49815f23305899365a43548b6a0392938834d",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "9f4a3f0371b4e752f996701578c2d361f30fe2c2314eb8c4dc55bcd396819b1c",
+    "plugins/control/libwin_hotkeys_plugin.dll": "28e53fd1d6a0cd10d7c6e106a5ea5a67b3c5118ed74c42fabb0f380a68a183d6",
+    "plugins/mux/libmux_mp4_plugin.dll": "42e53a5e86d22e20e564bd15de09aeb902eaea5c98f25d0ec67ff3cd0c4fc69e",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "analysis": {
+    "passed": true,
+    "nativeCases": {
+      "mp4": {
+        "cues": {
+          "OWNED OVERLAP CUE": [
+            0.0,
+            6.08
+          ],
+          "OWNED LATER CUE": [
+            10.08,
+            14.08
+          ]
+        },
+        "avStartDifference": 0.021146,
+        "avDurationDifference": 0.0026669999999988647,
+        "videoFrames": 431,
+        "normalDecode": true
+      },
+      "mkv": {
+        "cues": {
+          "OWNED OVERLAP CUE": [
+            0.0,
+            6.0
+          ],
+          "OWNED LATER CUE": [
+            10.0,
+            14.0
+          ]
+        },
+        "avStartDifference": 0.006,
+        "avDurationDifference": 0.0696879999999993,
+        "videoFrames": 430,
+        "normalDecode": true
+      }
+    },
+    "ordinary": {
+      "cues": {
+        "OWNED OVERLAP CUE": [
+          0.0,
+          6.0
+        ],
+        "OWNED LATER CUE": [
+          10.0,
+          14.0
+        ],
+        "OWNED FINAL CUE": [
+          20.0,
+          25.0
+        ]
+      },
+      "avStartDifference": 0.006,
+      "avDurationDifference": 0.0776869999999974,
+      "videoFrames": 811,
+      "normalDecode": true
+    },
+    "ordinaryOutput": {
+      "file": "ui-record-overlap-r466/recordings/vlc-record-2026-10-27-12h15m29s-owned-overlap.mkv-.mp4",
+      "sha256": "2af277fe408a7dfb5e0c4fdef78725047551ef62d45fcf5b3fb331238504f1ef",
+      "probeCommand": [
+        "wsl.exe",
+        "-d",
+        "VLC-Juxtopposed-Home-20261018",
+        "--exec",
+        "/usr/bin/ffprobe",
+        "-v",
+        "error",
+        "-count_frames",
+        "-show_entries",
+        "stream=index,codec_type,codec_name,nb_read_frames,start_time,duration:format=duration",
+        "-of",
+        "json",
+        "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/recordings/vlc-record-2026-10-27-12h15m29s-owned-overlap.mkv-.mp4"
+      ],
+      "probeExit": 0,
+      "probeStderr": "",
+      "outputProbe": {
+        "programs": [],
+        "streams": [
+          {
+            "index": 0,
+            "codec_name": "mov_text",
+            "codec_type": "subtitle",
+            "start_time": "0.000000",
+            "duration": "25.000000",
+            "nb_read_frames": "5"
+          },
+          {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_type": "audio",
+            "start_time": "0.006000",
+            "duration": "32.362313",
+            "nb_read_frames": "1517"
+          },
+          {
+            "index": 2,
+            "codec_name": "h264",
+            "codec_type": "video",
+            "start_time": "0.000000",
+            "duration": "32.440000",
+            "nb_read_frames": "811"
+          }
+        ],
+        "format": {
+          "duration": "32.440000"
+        }
+      },
+      "decodeCommand": [
+        "wsl.exe",
+        "-d",
+        "VLC-Juxtopposed-Home-20261018",
+        "--exec",
+        "/usr/bin/ffmpeg",
+        "-hide_banner",
+        "-v",
+        "error",
+        "-nostdin",
+        "-xerror",
+        "-i",
+        "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/recordings/vlc-record-2026-10-27-12h15m29s-owned-overlap.mkv-.mp4",
+        "-map",
+        "0:v:0",
+        "-map",
+        "0:a:0",
+        "-progress",
+        "pipe:1",
+        "-f",
+        "null",
+        "-"
+      ],
+      "decodeExit": 0,
+      "decodeStderr": "",
+      "decodeProgress": "frame=0\nfps=0.00\nstream_0_0_q=-0.0\nbitrate=N/A\ntotal_size=N/A\nout_time_us=667000\nout_time_ms=667000\nout_time=00:00:00.667000\ndup_frames=0\ndrop_frames=0\nspeed=24.6x\nprogress=continue\nframe=811\nfps=0.00\nstream_0_0_q=-0.0\nbitrate=N/A\ntotal_size=N/A\nout_time_us=32400000\nout_time_ms=32400000\nout_time=00:00:32.400000\ndup_frames=0\ndrop_frames=0\nspeed= 107x\nprogress=end\n",
+      "subtitleCommand": [
+        "wsl.exe",
+        "-d",
+        "VLC-Juxtopposed-Home-20261018",
+        "--exec",
+        "/usr/bin/ffmpeg",
+        "-hide_banner",
+        "-v",
+        "error",
+        "-nostdin",
+        "-i",
+        "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/recordings/vlc-record-2026-10-27-12h15m29s-owned-overlap.mkv-.mp4",
+        "-map",
+        "0:s:0",
+        "-c:s",
+        "srt",
+        "-f",
+        "srt",
+        "-"
+      ],
+      "subtitleExit": 0,
+      "subtitleStderr": "",
+      "subtitles": "1\n00:00:00,000 --> 00:00:06,000\nOWNED OVERLAP CUE\n\n2\n00:00:06,000 --> 00:00:10,000\n\n\n3\n00:00:10,000 --> 00:00:14,000\nOWNED LATER CUE\n\n4\n00:00:14,000 --> 00:00:20,000\n\n\n5\n00:00:20,000 --> 00:00:25,000\nOWNED FINAL CUE\n\n"
+    },
+    "runtimeSha256": {
+      "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+      "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+      "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+      "plugins/gui/libqt_plugin.dll": "3f6170f722f86f3e305167d027b49815f23305899365a43548b6a0392938834d",
+      "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+      "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+      "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+      "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+      "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+      "plugins/stream_out/libstream_out_record_plugin.dll": "9f4a3f0371b4e752f996701578c2d361f30fe2c2314eb8c4dc55bcd396819b1c",
+      "plugins/control/libwin_hotkeys_plugin.dll": "28e53fd1d6a0cd10d7c6e106a5ea5a67b3c5118ed74c42fabb0f380a68a183d6",
+      "plugins/mux/libmux_mp4_plugin.dll": "42e53a5e86d22e20e564bd15de09aeb902eaea5c98f25d0ec67ff3cd0c4fc69e",
+      "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+    },
+    "directProductionChecks": 22,
+    "endingGuardsPassed": true,
+    "nativeConfigUnchanged": true,
+    "playerProfilesUnchanged": true,
+    "beforeMuxIdentityGuardedDuringRun": false,
+    "beforeMuxSha256MeasuredAfterRun": "dd3b8dc078693af712111423d3fe4937015f3bd7e25e841ced7c35da327108e2",
+    "finalMuxIdentityGuardedDuringRun": true,
+    "allRecordingFormatsAccepted": false,
+    "fullBetaAccepted": false,
+    "finalPackageAccepted": false,
+    "firewallRuleChanges": [],
+    "securityPrivacyChanges": [],
+    "caveats": [
+      "Before r461 did not enumerate the mux source/binary; current repeats do. Its observed failure is preserved without retroactive guard claims.",
+      "Native dummy-video runs log window closed at teardown; this fixture diagnostic is separate from the ordinary run with zero checked errors.",
+      "The ordinary test preseeded one Record tile in its isolated profile; it does not establish customizer-gesture acceptance."
+    ]
+  },
+  "artifacts": [
+    {
+      "file": "artifacts/build-record-overlap-r462-exit.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r462-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gzipSha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "bytes": 2,
+      "compressedBytes": 22
+    },
+    {
+      "file": "artifacts/build-record-overlap-r462.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r462.log",
+      "sha256": "4a2d10996aca349c0e067f1908fb179779681da41beec643f6f4ac38cd75fe00",
+      "gzipSha256": "92c7eddbfe96eeb84b2d3770c7d33fc5cff13dbf656923cbdb5c42cdaaace2ef",
+      "bytes": 7218,
+      "compressedBytes": 1679
+    },
+    {
+      "file": "artifacts/build-record-overlap-r462.sh.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r462.sh",
+      "sha256": "2b8efe25df825dd67805187cd4efa13baaee87b71dc2ae7e60575de4595be4d6",
+      "gzipSha256": "cf773cf32a386a3c48df853c8c02534e49c851135b3f6bab244847f059750314",
+      "bytes": 1417,
+      "compressedBytes": 659
+    },
+    {
+      "file": "artifacts/build-record-overlap-r464-exit.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r464-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "gzipSha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "bytes": 2,
+      "compressedBytes": 22
+    },
+    {
+      "file": "artifacts/build-record-overlap-r464.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r464.log",
+      "sha256": "5e2ed4d972eb4e5d146caacef6fe44061624ac5783617a62cfa0c00a8e8a4be6",
+      "gzipSha256": "5a06e2b05f40178440fd2645a8dc6635b5d6cec8b9cfa8c2e100b2772d737270",
+      "bytes": 7198,
+      "compressedBytes": 1689
+    },
+    {
+      "file": "artifacts/build-record-overlap-r464.sh.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/build-record-overlap-r464.sh",
+      "sha256": "7953f77c03742236a5aa4dd8307b94db18e93eeb9993de85f2dc959c8890c63a",
+      "gzipSha256": "779de19a189bfbfd4037333cf1fdff05cb8bf077c93e8d4d802af3871a4fd65b",
+      "bytes": 1417,
+      "compressedBytes": 659
+    },
+    {
+      "file": "artifacts/check-record-overlap-r467.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/check-record-overlap-r467.py",
+      "sha256": "8fc978759d18b08bc51217f613fabecf7fe6f20a522c177d110ab4336a379883",
+      "gzipSha256": "02d164f3be2062771131cccdd099e8068f21e213c28d8897680015a7a105be67",
+      "bytes": 7281,
+      "compressedBytes": 2691
+    },
+    {
+      "file": "artifacts/freeze-record-overlap-r462.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/freeze-record-overlap-r462.py",
+      "sha256": "b38e2c969479c9c011e9bf1db76e914a59ef27f623235e07e0308233aa1ad187",
+      "gzipSha256": "b7e15f17524d28c2b5d1ea3f39bb0467e34773cb2443649eb4dd0655b789085a",
+      "bytes": 6771,
+      "compressedBytes": 1999
+    },
+    {
+      "file": "artifacts/inputs-r461.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r461.json",
+      "sha256": "8ed4a7f50ef05e4523fb5326de695a2a312c96085eb7dd7f59076282df7a9d89",
+      "gzipSha256": "1bd694c6c302643fcba21e67c6b2d531d2f08538ca2cadc127b07d9a6b529037",
+      "bytes": 1256132,
+      "compressedBytes": 208209
+    },
+    {
+      "file": "artifacts/inputs-r462.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r462.json",
+      "sha256": "91c2c00e2f8928589e43513c5f3f65d76e4116cce4d71314d66ec3f32e9bc80a",
+      "gzipSha256": "a3f1f200b5f34ddfb36df4cb234b7b3ee3404b4d30bb26b0c9a2995b14bf6faa",
+      "bytes": 1258984,
+      "compressedBytes": 208662
+    },
+    {
+      "file": "artifacts/inputs-r464.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r464.json",
+      "sha256": "5564c2fc707f8ddc4b5a56bfe82b0da79733624793761104fc71026c1afebe21",
+      "gzipSha256": "62875cc03afd46893ea4f93103823fad3f2a5a57a16db24562695f860f6e9699",
+      "bytes": 1260222,
+      "compressedBytes": 208808
+    },
+    {
+      "file": "artifacts/inputs-r466.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/inputs-r466.json",
+      "sha256": "002390183f71402d4cd4b910cd4bbf24cad8423c912984443eb42d409724ebd4",
+      "gzipSha256": "8c10e2100c0ff29c893f2d8382c610c0321995cb8876d29e2a4effaf8a1311db",
+      "bytes": 1261054,
+      "compressedBytes": 208919
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mkv__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mkv/probe.json",
+      "sha256": "e12ca5402ac19652af7a000af65209ed90ce0d28bbd2738cf3d840a95d7239bc",
+      "gzipSha256": "e8cc432df4294e48a0b56a1fd0ce0514b63ea376f90bdd9c8c4db47dc1d372ee",
+      "bytes": 295,
+      "compressedBytes": 215
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mkv__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mkv/vlc.log",
+      "sha256": "b30021d719fe66c6413ecf232ac733e0e4df6e7dff04429cc0c460ffbead5545",
+      "gzipSha256": "5da35af712c3dccccfc7b6ad5772eae2e2b7dfeda027d95130dec03ad11b1dba",
+      "bytes": 25615,
+      "compressedBytes": 5311
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mkv__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mkv/vlcrc",
+      "sha256": "8db517e4427f84738f6fd9d689d5da55e0847edfcd62c2cd1a67152032379d43",
+      "gzipSha256": "06b3d2d204a152060fbbe80a8e39ffa9db42da17a7e102bf1b0d7ab4e8af3dab",
+      "bytes": 168,
+      "compressedBytes": 154
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mkv-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mkv-stderr.txt",
+      "sha256": "409637f1341086f1b5e824319abc12f855e9aee700712c342048e92363b5cc82",
+      "gzipSha256": "6150d6622038ee82abaca834db85a649b9631595d231383771f0e9d2956ed1e4",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mkv-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mkv-stdout.txt",
+      "sha256": "719f115de29a5407f1dfde52b8e7de967f8e4f935f910e777842da6a574307d0",
+      "gzipSha256": "5c6e6426b255febba21b96dd65b8bb29a2525b72476f25d8c32b5c67dc2a1da1",
+      "bytes": 252,
+      "compressedBytes": 199
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mp4__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mp4/probe.json",
+      "sha256": "cc5d12f8023e056de7e00199bfa6f02a636e75327c0fe0f80a74fd823cff86e7",
+      "gzipSha256": "0bc55e39d521b63c9fb52fd79bc42180b7c57c2a1c76a74f38893d454f0b32f4",
+      "bytes": 291,
+      "compressedBytes": 208
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mp4__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mp4/vlc.log",
+      "sha256": "778e1ec88e1eba76e5408394de3e165e0cf03a95f1b9c490e484cc3cffa716da",
+      "gzipSha256": "8af172b52e465a69d725b92f1f86589a80aa009bd220989b9ad47e5a7efd3fc0",
+      "bytes": 31081,
+      "compressedBytes": 6223
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mp4__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mp4/vlcrc",
+      "sha256": "f698daa96d3dd051a6c10d6fbae9a2e0f915afff4afd60003a7c76ca2949b6a4",
+      "gzipSha256": "f795b8b7362afcc8399355c8fd2b2a86a767a6f626c8e906801e33fcde554e4e",
+      "bytes": 168,
+      "compressedBytes": 155
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mp4-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mp4-stderr.txt",
+      "sha256": "713817617bccb22dd8b83d9e1ebae2d7055b1bff35e982dcfcb0ece6ba720f43",
+      "gzipSha256": "7fe2fa1c2f791b32cc17359a9da2d2c23b322c2921042942d73daef6a4d34991",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__mp4-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/mp4-stdout.txt",
+      "sha256": "c4227d96e78caa9f1374c72b25ad14d03314f56bc9b7fe9d72caef7da7bc0e4c",
+      "gzipSha256": "1f42b3e1f1b75d36a9cb0caa2f9b322fc1955e7dc23c676caccbb4dad7356a8b",
+      "bytes": 248,
+      "compressedBytes": 197
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/producer.py",
+      "sha256": "935acc54063424b7d116c88bc62700607a6ba18a8f2682b85ff00ce1ed7252bd",
+      "gzipSha256": "103ae0bc593b3e4cffc9a4cd1adbfb473f33ce32f1928bdb4e559f86b4f693fd",
+      "bytes": 5927,
+      "compressedBytes": 2238
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r463__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r463/verification.json",
+      "sha256": "91ee42576b41a8ccfbae60649faa085d134d386e76add5ba009f39e7676b997c",
+      "gzipSha256": "c475dce7401c58e3c5a6a1050467541d0c783c8734dd5385b3730947aac4abc0",
+      "bytes": 12445,
+      "compressedBytes": 2829
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mkv__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mkv/probe.json",
+      "sha256": "d4b0155b101adef986cb847f2940b2f7317691b972d6895233be709622c23a59",
+      "gzipSha256": "51744bcf1211bea23d1c7c0cbe2bdd1fd1dc8ad4c983663a9d394f1655745041",
+      "bytes": 295,
+      "compressedBytes": 216
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mkv__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mkv/vlc.log",
+      "sha256": "658fd1b9db6267906b0cfc736a467581aed59cb46f09c7e99b4953eea69f6035",
+      "gzipSha256": "5772a713d010cb51c5acbf9b4eb33a37d6f1dd48391bf77865084c7476e07ce8",
+      "bytes": 25615,
+      "compressedBytes": 5298
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mkv__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mkv/vlcrc",
+      "sha256": "06223190b0053d696277350705518a375aa186d34d086de86bb458442a041ae1",
+      "gzipSha256": "a0dc2abdd80872e4aa92b0e46234f72f8128dfc1d630e674cd75ba1568354bb8",
+      "bytes": 168,
+      "compressedBytes": 154
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mkv-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mkv-stderr.txt",
+      "sha256": "1b92d9baad69062e54309527ba290a79860bd141b95f08389ebf4411236add03",
+      "gzipSha256": "5d7d214f7f83b4351813960a652aac84fe016ceff0572faf4e0c3c346931b38e",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mkv-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mkv-stdout.txt",
+      "sha256": "7c0d5204709ad4f54409a483986a3b27263808732655ae9f42f3de9612409535",
+      "gzipSha256": "0348b423a2a8170ce8c375f5d2b48ad6348f34f88fbaf4cb571661b4ff370a7b",
+      "bytes": 252,
+      "compressedBytes": 201
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mp4__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mp4/probe.json",
+      "sha256": "48772b6178c143b4c7508a77693e798500fad7742e49a0e603e08029565a8e64",
+      "gzipSha256": "12c5667b01da3d2b53014dd80127941718d0feec071e52b666f5b54dbe08101c",
+      "bytes": 291,
+      "compressedBytes": 207
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mp4__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mp4/vlc.log",
+      "sha256": "3ab0789f9f42da54a8022138359041ddcb6f9682f213b5f206d34ecad80e22ef",
+      "gzipSha256": "7bffdd31858e78586cc3636030a8dabc542213eeb8aa80868ade319fd309cd8d",
+      "bytes": 31046,
+      "compressedBytes": 6194
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mp4__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mp4/vlcrc",
+      "sha256": "5129e516a20143a75868a7bb9c1b109a589cfa3e10063676145e88b3b4aca432",
+      "gzipSha256": "c7f15f1b0ed97de01928369e29bd50938783e2b60a587635b3eafb9a681d19f5",
+      "bytes": 168,
+      "compressedBytes": 154
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mp4-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mp4-stderr.txt",
+      "sha256": "7da86c59bf5a5d2b787d721ccbf6d001f7d5198aa7e0e5ba72524e32b40d3406",
+      "gzipSha256": "cbe2f74dad9e5f3096f223f66f34c7716d3414ba6d330908856caeae112f1d70",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__mp4-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/mp4-stdout.txt",
+      "sha256": "843cba71ce6100be4ec870c7ddab466ce3e1f342d21e7d28f70d274838adc01a",
+      "gzipSha256": "dd5c642fab166a2ad6e128ca058da4b1b7f6c7ac5e8cf7ad7eadf10dfdb2643f",
+      "bytes": 248,
+      "compressedBytes": 197
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/producer.py",
+      "sha256": "bd6dd1700cb769d31c2605a70c838c85197f49bd7defdcdf4a6caff0d2a65dbc",
+      "gzipSha256": "60292c7198074fb595be466f6f1eeb875dc80dbd60000ec243e7db2db7ce37a5",
+      "bytes": 5927,
+      "compressedBytes": 2238
+    },
+    {
+      "file": "artifacts/native-record-overlap-fixed-r465__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-fixed-r465/verification.json",
+      "sha256": "85c7c32bc973ea73d3d01fee84662b29bc77f56714f3f815becc788b91e9a097",
+      "gzipSha256": "56f183e9b5b64a89c8b2bb49bfdec22c7cdfee2c23c0004dfca9b8a5af1daf12",
+      "bytes": 12533,
+      "compressedBytes": 2836
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mkv__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mkv/probe.json",
+      "sha256": "d82033d2b5266a6206ec581bb93590077892e254d73e82d779a5a63799950488",
+      "gzipSha256": "2edf7eaad6858742ea27fe661b3d92ceb073cc46befb7a6f48189a99a6d79467",
+      "bytes": 295,
+      "compressedBytes": 214
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mkv__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mkv/vlc.log",
+      "sha256": "56c8d1cc5ae098cb891afc8abc532c5d26c51cfcbca7079f535f4e91b1440ab9",
+      "gzipSha256": "92b9fdd82fe74bd53eb82b5bc08da36862252052e0dcb64462edbc47b0df60ce",
+      "bytes": 25742,
+      "compressedBytes": 5347
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mkv__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mkv/vlcrc",
+      "sha256": "97cf51771cb998efe58f6910486925e2b15f4218f7bf998a385660dc4360e6f7",
+      "gzipSha256": "c02f7ce3618046b36a3c8294b3fc6a08e9ace48e980eb21092562d9f657457b0",
+      "bytes": 162,
+      "compressedBytes": 150
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mkv-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mkv-stderr.txt",
+      "sha256": "5d1f5e55907bc090f147763c79fe6e0cce10eccea67be858248798cda6c51edb",
+      "gzipSha256": "7b4e1f75b53670cce5161b339cb3c619e0b13487f09f0e5a09989fbf4505bdb3",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mkv-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mkv-stdout.txt",
+      "sha256": "1f9bcd734239c8ef7c2e0cc571e353ca778a15008d9b1a70c1a7315f6be5c51c",
+      "gzipSha256": "084a37f7db42a8b206d44566045e2e2d8babfe0dcc2112c74cf18acece062f2b",
+      "bytes": 252,
+      "compressedBytes": 200
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mp4__probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mp4/probe.json",
+      "sha256": "f57c7e08ff5cc403264daf1b447ac1f7b7132144927f0eb239ac35a38d4f5de6",
+      "gzipSha256": "e4fdeffb2321e42096535be16a3df85cacc9e14faef5b6038f1f5d3f4528bcf3",
+      "bytes": 291,
+      "compressedBytes": 207
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mp4__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mp4/vlc.log",
+      "sha256": "e802c332ab54bd9062199dfb7a4a34d74445b88b2c9c84dd1326431a69746bdd",
+      "gzipSha256": "c82f8829fc8b641503d70401d4938eae262099db3330e2bd1a7daeddc6117266",
+      "bytes": 31186,
+      "compressedBytes": 6259
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mp4__vlcrc.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mp4/vlcrc",
+      "sha256": "a9584e30861b8f65f0373b6c11d565b225a3e5c91288e9f8114d4b8a41a0972d",
+      "gzipSha256": "85279e4f9d8835ab0cc246380676961b8ddab198c396d833b737a2f175ed65d2",
+      "bytes": 162,
+      "compressedBytes": 150
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mp4-stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mp4-stderr.txt",
+      "sha256": "8e9c04b62118d07e119f5d818a05fa1362891c90ceadaf4cf501f32aabafed8e",
+      "gzipSha256": "21da2ca55730774340e5fbbd6e7269583e89768641fcba80cf457aaf714ba6dd",
+      "bytes": 142,
+      "compressedBytes": 92
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__mp4-stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/mp4-stdout.txt",
+      "sha256": "28ece666bafd5e0fe849eff30ea7f62b91306e7bc242dd3c73b12a0c31ef483f",
+      "gzipSha256": "a7bd9a939d9be0134cdcf2556626f00e56bb51d5e4f82e490f79a70be4585a18",
+      "bytes": 248,
+      "compressedBytes": 197
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/producer.py",
+      "sha256": "609925538e1ebb07f3f2956cf394335d2b902bad2037cf286bec64f809b688be",
+      "gzipSha256": "8dddc4a8a944995b74183fc5d5590bf3c99c55c516796248c5753d66312f540f",
+      "bytes": 5501,
+      "compressedBytes": 2095
+    },
+    {
+      "file": "artifacts/native-record-overlap-r461__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-r461/verification.json",
+      "sha256": "d24f9a0dec7900e775c49bfce303a101d2b855143f5aeabbe1373d688922d2d0",
+      "gzipSha256": "0fcce7cda22ee765909f1058be6c14f042b357723e646236281af047973101c0",
+      "bytes": 12286,
+      "compressedBytes": 2803
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r462__stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r462/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r462__stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r462/stdout.txt",
+      "sha256": "0b15af9cc818b0f300d74d9e478b0ecff623c61331582e03296a79a566c141a1",
+      "gzipSha256": "f2f57c721e922ee220f783286d8116b13fb849e51f38554434d9d2ebed9cd724",
+      "bytes": 2188,
+      "compressedBytes": 593
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r462__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r462/verification.json",
+      "sha256": "ef2f98fc7417a3d332c3142355694f6643f003667638e4275e99defe215286db",
+      "gzipSha256": "cf3b8490b19ffb78eb57759e39205eb4ac29729dffc4323a8c9470ad70a78c7c",
+      "bytes": 5101,
+      "compressedBytes": 1553
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r464__stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r464/stderr.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzipSha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "bytes": 0,
+      "compressedBytes": 20
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r464__stdout.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r464/stdout.txt",
+      "sha256": "0b15af9cc818b0f300d74d9e478b0ecff623c61331582e03296a79a566c141a1",
+      "gzipSha256": "f2f57c721e922ee220f783286d8116b13fb849e51f38554434d9d2ebed9cd724",
+      "bytes": 2188,
+      "compressedBytes": 593
+    },
+    {
+      "file": "artifacts/native-record-overlap-unit-r464__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/native-record-overlap-unit-r464/verification.json",
+      "sha256": "4aae753e4ab2b4be1a05bbf255b7d990a29fa9f2400d6fd3650790df53043508",
+      "gzipSha256": "bf080b6669dad7fface50bb900143f6268bb3b75acdb79e8b5a185d76c29af5f",
+      "bytes": 5102,
+      "compressedBytes": 1558
+    },
+    {
+      "file": "artifacts/prepare-record-overlap-fix-r462.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-overlap-fix-r462.py",
+      "sha256": "fe6a9268f28fefb277321c9d6fc3b842e0699fa874b39086107f1a80a7f05850",
+      "gzipSha256": "bdb92b9b8436a91de08ca2536ffca17f672f657c3e4dacf89da5364785321b29",
+      "bytes": 1943,
+      "compressedBytes": 787
+    },
+    {
+      "file": "artifacts/prepare-record-overlap-r460.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-overlap-r460.py",
+      "sha256": "fe408daedb6fa0222a918a95ddcd5d5585919f7ffd74e8394fe057d55b042fb3",
+      "gzipSha256": "0d18b497575a36be732333102fd8376988287f296f26e9af6b1fef0a93f9a364",
+      "bytes": 2399,
+      "compressedBytes": 1123
+    },
+    {
+      "file": "artifacts/prepare-record-overlap-r464.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-overlap-r464.py",
+      "sha256": "1960092068281f3e27119337d92d41b426526e89a35cf7a423bf6b3d674de6d5",
+      "gzipSha256": "7b2ad6dbecf301b2ec5f65ec208d0ab956b5d4869dd335e8faf823c8f8331464",
+      "bytes": 610,
+      "compressedBytes": 258
+    },
+    {
+      "file": "artifacts/prepare-record-overlap-ui-r466.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/prepare-record-overlap-ui-r466.py",
+      "sha256": "3239dba219a9ef2493027e311cb5650ca78959d232cfe263a76a4bd59defc852",
+      "gzipSha256": "798dd026c2e3908d3ae853e2db917d2530896aabd6921e05023a6f0e1800d541",
+      "bytes": 2083,
+      "compressedBytes": 914
+    },
+    {
+      "file": "artifacts/record-overlap-analysis-r467.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-analysis-r467.json",
+      "sha256": "d657122175ebb04f30a8a33b775c896aea70f0f8fea8703f6b85501c51172e8d",
+      "gzipSha256": "695b086d5ba84208062ee3fe71e1acf4f502fda652bb5f2907bf5a00203b55c4",
+      "bytes": 6927,
+      "compressedBytes": 2354
+    },
+    {
+      "file": "artifacts/record-overlap-intermediate-packets-r467.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-intermediate-packets-r467.json",
+      "sha256": "875006e338082aec0c980e88e92b23d7f3aaf1e9a3721577d44267184a18193c",
+      "gzipSha256": "0c5d1b5c657d23ef6c00c5b66d05d1acef19878e5f97243b656240d9c0827da5",
+      "bytes": 2556,
+      "compressedBytes": 779
+    },
+    {
+      "file": "artifacts/record-overlap-media-r460__fixture.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-media-r460/fixture.json",
+      "sha256": "8c997a44281df05698cabe07173c2403299591956a1995dc20c90254773cd988",
+      "gzipSha256": "e2a390809972d74280403be4d9523505d9d1877e914cce414304d69c16fa20f3",
+      "bytes": 2740,
+      "compressedBytes": 757
+    },
+    {
+      "file": "artifacts/record-overlap-media-r460__mkv-probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-media-r460/mkv-probe.json",
+      "sha256": "979a500eb48ae5a1863aab357d8d3f015ce26952bab9df6255e1d8dc6ee52f0b",
+      "gzipSha256": "9b10c0489349ce27e0bf62e79e6776dea6d8f1b32bed5d762f85dcdfb12d65db",
+      "bytes": 5218,
+      "compressedBytes": 1062
+    },
+    {
+      "file": "artifacts/record-overlap-media-r460__mp4-probe.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-media-r460/mp4-probe.json",
+      "sha256": "97c6012877e85ec37743cf5473656ed0abade1280478ff4c765d9aca9f93d7e9",
+      "gzipSha256": "32167c90e833d817b21909a93eae4b81ff1121badfd8a787e1ee8b9962779ee8",
+      "bytes": 5917,
+      "compressedBytes": 1206
+    },
+    {
+      "file": "artifacts/record-overlap-media-r460__owned-overlap.srt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-media-r460/owned-overlap.srt",
+      "sha256": "255e9d435bee1d9e1cd18756f56fd7356af003184107bf4eaadc042d2d5b8d52",
+      "gzipSha256": "40c0d5655abe0b350977578bcc7511329508b7b1d6c7e216561d9c80194e43f3",
+      "bytes": 159,
+      "compressedBytes": 101
+    },
+    {
+      "file": "artifacts/record-overlap-worker-r460.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/record-overlap-worker-r460.py",
+      "sha256": "1052e3c328920a06b37c0b92f0c272cc2b5aaf0bb5091b5a3f6dddc801b68789",
+      "gzipSha256": "2a06425d03c94ad89db5736e9e2ea4fed712f38010c3a0c7d35ed39c8f7dab04",
+      "bytes": 3870,
+      "compressedBytes": 1458
+    },
+    {
+      "file": "artifacts/run-record-overlap-unit-r462.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/run-record-overlap-unit-r462.py",
+      "sha256": "9b04df63565c0208a8818f189936f3ac89494bf7842f30a17a0863cfc93b71c8",
+      "gzipSha256": "c039fbbdde8f008de795aa2b68bfd9faa4bd673155eba4e2257d1a80b7e69d86",
+      "bytes": 3080,
+      "compressedBytes": 1415
+    },
+    {
+      "file": "artifacts/run-ui-record-overlap-r466.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/run-ui-record-overlap-r466.py",
+      "sha256": "4cdb221d4cdc056bdedf028fcdb8a1809f5b0e9624bbff9b73c853ce9d89493e",
+      "gzipSha256": "a04617d98622f302c2bcc28efe364d65f2b29fc7c56f2c0f7d0e2904bdabd060",
+      "bytes": 15967,
+      "compressedBytes": 5310
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__config-after.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/config-after.txt",
+      "sha256": "c6cb05f3677ae47422a81f9fa6c85be07c95a15130fc40aa1c8ecdf7cdeb8bb4",
+      "gzipSha256": "bb885d16dad4405b58b6ac8436868d0d094d530793eabe0d143e7fe3df0da6a2",
+      "bytes": 293,
+      "compressedBytes": 203
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__config-before.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/config-before.txt",
+      "sha256": "c6cb05f3677ae47422a81f9fa6c85be07c95a15130fc40aa1c8ecdf7cdeb8bb4",
+      "gzipSha256": "bb885d16dad4405b58b6ac8436868d0d094d530793eabe0d143e7fe3df0da6a2",
+      "bytes": 293,
+      "compressedBytes": 203
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__launch.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/launch.json",
+      "sha256": "c90aa84934eb92ce7f8036f31f257c427ac48d22d9d9bad59c0f9136a0a4650f",
+      "gzipSha256": "4326e08cf6803395504fe766910a63bf09c0b93fd6bcc36aac9be13b20ba4932",
+      "bytes": 1398,
+      "compressedBytes": 442
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__layout-fixture.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/layout-fixture.json",
+      "sha256": "e26fddc1a11343762075f39ba5d6eceeea2cf09ee3bf463ee8abda9e9d1180d1",
+      "gzipSha256": "3ddd8da0a8793c6a6af2b25d337acbd277fd266ef8c4c0808986b61edcdff669",
+      "bytes": 3770,
+      "compressedBytes": 1165
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__01-video-cold-paused-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/01-video-cold-paused-0.png",
+      "sha256": "33b8c1342abba069dc05ce80b76afb8d91db82f48df2457c5a48785289d8b8cf",
+      "gzipSha256": "3bb8c057efc71d52126d25fc289169ca186ae34d0b2ee5d89a6075b4ede10d58",
+      "bytes": 18058,
+      "compressedBytes": 10032
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__01-video-cold-paused.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/01-video-cold-paused.json",
+      "sha256": "21b51287f92ce9917facea6cfd24b1ea3579f2e695d9ba273e1ab17c61e05533",
+      "gzipSha256": "d476a10fa6e9a651685f0f91159d0295927f874246c085a18b31e709b39ffa41",
+      "bytes": 8174,
+      "compressedBytes": 1216
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__02-record-armed-paused-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/02-record-armed-paused-0.png",
+      "sha256": "465f5df75e89a39c5d17ab3eae443f285be44be4e4cba3827303abf5b7600f08",
+      "gzipSha256": "83502b8c7dd795068bf8d682c241e7d1a260539e7a7681f9ea602793c8a69869",
+      "bytes": 19117,
+      "compressedBytes": 11198
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__02-record-armed-paused.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/02-record-armed-paused.json",
+      "sha256": "c9f51496c1a178f1a746fd2107b759bbf99de81ff1846a4075c7641cb6dbd54b",
+      "gzipSha256": "803a5a31131dd85407079847776b981add061cb3afe55caa78797d1a8f67cfc4",
+      "bytes": 8174,
+      "compressedBytes": 1216
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__03-record-play-start-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/03-record-play-start-0.png",
+      "sha256": "3627c05bd0b9c00aaf20dfafa088b7e9a737f996e638ec8824762e7e4bc48855",
+      "gzipSha256": "34ddb5a45f7a9992422c809fea838fd49f369b470456241e517bfcc76a2049f5",
+      "bytes": 18061,
+      "compressedBytes": 9887
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__03-record-play-start.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/03-record-play-start.json",
+      "sha256": "2956e6b4b552c76503dae327d1a3155eef10a162b72f82edc14f865d901d03f1",
+      "gzipSha256": "1ce293e628843238c17e12e0465a6611ddcbd8922c309b5c986635aa904210ae",
+      "bytes": 8174,
+      "compressedBytes": 1216
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__04-record-playing-before-stop-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/04-record-playing-before-stop-0.png",
+      "sha256": "14f9abcf92e19fb089da46be07ee391320c20588879741a2f2be82b19f985175",
+      "gzipSha256": "5b414b01dc68d9441a31e13795bdfa7508d17cbdc9332d80c227dc12cc921111",
+      "bytes": 18206,
+      "compressedBytes": 10551
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__04-record-playing-before-stop-1.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/04-record-playing-before-stop-1.png",
+      "sha256": "7d7163d3deece73c1dee17e5b4644c54b2a963863ccee76accd98474468d6ae7",
+      "gzipSha256": "49117a71ae95158b15f277e2da1fefd2c62391658c33b316a71d6b37b0f27014",
+      "bytes": 1101,
+      "compressedBytes": 962
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__04-record-playing-before-stop.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/04-record-playing-before-stop.json",
+      "sha256": "6c85a72274c8b805bec8f479185ffd3cf4ab02cdc7f8bf4a382378d5702d47d4",
+      "gzipSha256": "03991e65cc10599d967de3d28b7e82cf238a4feb6a27c2532c353eed142d339b",
+      "bytes": 8697,
+      "compressedBytes": 1287
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__05-record-stopped-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/05-record-stopped-0.png",
+      "sha256": "bb82b9da7d8085d7f24f94704288c62863c608eb5043896f41bd0bfcff01221b",
+      "gzipSha256": "22d1e62837af41bf0166fbb4716f00b8a2042e08081b175bface6499e02d30b3",
+      "bytes": 19588,
+      "compressedBytes": 11410
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__05-record-stopped-1.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/05-record-stopped-1.png",
+      "sha256": "6bbc186efd825783b0f51769bd40714e2e629d94154194e44da2e6703cda2619",
+      "gzipSha256": "97b018b05a5e3440cdb6d28941b8f82134e78959395c0745148e6c66ec8ffae8",
+      "bytes": 1295,
+      "compressedBytes": 1136
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__05-record-stopped.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/05-record-stopped.json",
+      "sha256": "e0c9a7a8a6ea62bfbc092278f51798fd9b8c98d7c5fba370699f25b90ada6a5c",
+      "gzipSha256": "ebcd80542a814ddfee3472a835d6b49fcd628ad751c530de8c57373099bcf5d1",
+      "bytes": 8700,
+      "compressedBytes": 1288
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__06-player-paused-after-record-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/06-player-paused-after-record-0.png",
+      "sha256": "45b557b12521eab4bd989dfedbd5d3f6f2fa25e03c17eec6b8f8626f0b1ab2b8",
+      "gzipSha256": "b3161a63e113f5c2848ba15c7020e1640db5b3d75f4fe8385615b3c23235c7c2",
+      "bytes": 19233,
+      "compressedBytes": 10936
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__06-player-paused-after-record.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/06-player-paused-after-record.json",
+      "sha256": "5c3b920798ec1e26914f10a37ba25ddbd5d8e00e5c6bfcf244cdb296aae1bea6",
+      "gzipSha256": "328ab82154ff4a84217d12e8146cf9b44f7dc2920442e4badff166df93121bcf",
+      "bytes": 8171,
+      "compressedBytes": 1220
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__07-final-player-paused-settled-0.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/07-final-player-paused-settled-0.png",
+      "sha256": "894423e1541224bccc49400511ee1b2ed1fdc5f76fec4de9a60d99a19a6cd6d6",
+      "gzipSha256": "c79a67baa2e2db3c6a52a791eb38c21237f411dc2799a0d9d4bf2a08d736b88f",
+      "bytes": 19393,
+      "compressedBytes": 11067
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__07-final-player-paused-settled-1.png.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/07-final-player-paused-settled-1.png",
+      "sha256": "52f14fc048abe1bfa463e97331f29485b649658fdb2d0cf83704e0b2820be46f",
+      "gzipSha256": "26535df624662078247301825ce7e679bd02e68eedc41575868fc02c451dd217",
+      "bytes": 1193,
+      "compressedBytes": 1056
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__observations__07-final-player-paused-settled.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/observations/07-final-player-paused-settled.json",
+      "sha256": "54d9ab3d0e46df020dfe9fd5e3acc03850bb214ba85f27b81ed2dc023c18f3d2",
+      "gzipSha256": "f86ed783b673cc24e16a6d50ff0e8fa4a012c3d0d8db239525a4d7637819dd2e",
+      "bytes": 8696,
+      "compressedBytes": 1283
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__producer.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/producer.py",
+      "sha256": "4cdb221d4cdc056bdedf028fcdb8a1809f5b0e9624bbff9b73c853ce9d89493e",
+      "gzipSha256": "a04617d98622f302c2bcc28efe364d65f2b29fc7c56f2c0f7d0e2904bdabd060",
+      "bytes": 15967,
+      "compressedBytes": 5310
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__settings-after.ini.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/settings-after.ini",
+      "sha256": "88775d72e2fd5be36feb159a7164c740a74c13822539c46c4e7025d169cc0903",
+      "gzipSha256": "1904e28c15d725ca3438246dade81126399c8b90cb5fdeb2c3567f6a7ceb3d98",
+      "bytes": 14997,
+      "compressedBytes": 2147
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__settings-before.ini.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/settings-before.ini",
+      "sha256": "88775d72e2fd5be36feb159a7164c740a74c13822539c46c4e7025d169cc0903",
+      "gzipSha256": "1904e28c15d725ca3438246dade81126399c8b90cb5fdeb2c3567f6a7ceb3d98",
+      "bytes": 14997,
+      "compressedBytes": 2147
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__stderr.txt.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/stderr.txt",
+      "sha256": "e20d75bb1f7b77262edaca35d0fb09edfc940eab0d8b201f4de509e6880d38eb",
+      "gzipSha256": "8f2b7a161f88094e44a1cdc6db19ca05c68bce3e134f338968ff18d98c7e6f99",
+      "bytes": 150,
+      "compressedBytes": 96
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__verification.json.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/verification.json",
+      "sha256": "24dea1a51f9b5cd04061064a1cfb46b4d65c099f2310012272693e0cce27182e",
+      "gzipSha256": "085ee42f04cfa2535078ff04cbd7afe26c85b116fd1b517e852bf6b8864f0eb5",
+      "bytes": 7290,
+      "compressedBytes": 3418
+    },
+    {
+      "file": "artifacts/ui-record-overlap-r466__vlc.log.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/ui-record-overlap-r466/vlc.log",
+      "sha256": "fe341486a369c32f06ba2432a75ee702b1e7cccd7fc216cbf8d12239fe472010",
+      "gzipSha256": "2ae36b4d0b40408bb13fc9838a7438ac0e84ceef16de8a006e9a9b77d5f20a44",
+      "bytes": 46191,
+      "compressedBytes": 8177
+    },
+    {
+      "file": "artifacts/write-record-overlap-receipt-r468.py.gz",
+      "source": "build-windows/beta-single-frame-20261025-night/write-record-overlap-receipt-r468.py",
+      "sha256": "934f089ded9e428999c0c3de5cb8172225a7c5a70d4d671f2bf05d7a57243127",
+      "gzipSha256": "14128f837c0906ebfd08eac19489ca7275e2aea336c915f079b2d2111825275d",
+      "bytes": 8415,
+      "compressedBytes": 3602
+    }
+  ],
+  "fullBetaAccepted": false,
+  "finalPackageAccepted": false,
+  "independentReviewAccepted": false,
+  "liveRecordingAccepted": false,
+  "allRecordingFormatsAccepted": false,
+  "indefiniteSubtitleRestorationAccepted": false,
+  "firewallRuleChanges": [],
+  "securityPrivacyChanges": []
+}

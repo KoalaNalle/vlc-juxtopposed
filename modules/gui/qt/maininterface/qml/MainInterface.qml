@@ -254,6 +254,7 @@ Item {
         DropArea {
             anchors.fill: parent
             z: -1
+            enabled: !DialogsProvider.qmlDialogVisible
 
             onEntered: (drag) => {
                 // Do not handle internal drag here:
@@ -331,8 +332,45 @@ Item {
         }
 
         Loader {
+            id: globalShortcuts
             asynchronous: true
             source: "qrc:///qt/qml/VLC/Menus/GlobalShortcuts.qml"
+        }
+
+        SystemPalette {
+            id: setupPalette
+            ctx: MainCtx
+            source: setupDialogs.setupDraftTheme
+        }
+        ColorContext { id: setupPreviewViewColors; palette: setupPalette; colorSet: ColorContext.View }
+        ColorContext { id: setupPreviewWindowColors; palette: setupPalette; colorSet: ColorContext.Window }
+        JuxtopposedDialogsHost {
+            id: setupDialogs
+            anchors.fill: parent
+            // Popup visuals live in Overlay, outside this capture source.
+            // Embedded video can be a separate native surface that Qt Quick
+            // cannot capture. Preserve the original translucent tint there.
+            backdropSource: MainCtx.hasEmbededVideo ? null : g_mainInterface
+            dialogsProvider: DialogsProvider
+            mainCtx: MainCtx
+            appearance: JuxtopposedPalette
+            uiScale: VLCStyle.dp(100, VLCStyle.scale) / 100
+            fallbackFocusItem: viewLoader.item
+            setupNativePalette: setupPalette
+            setupViewColors: setupPreviewViewColors
+            setupWindowColors: setupPreviewWindowColors
+            setupInterfaceShortcuts: ({queue: globalShortcuts.item?.queueShortcut ?? ""})
+            playerPreviewState: ({elapsed: Player.displayTime.valid() ? Player.displayTime.formatHMS(0) : "--:--:--",
+                duration: Player.live ? qsTr("LIVE") : Player.length.valid() ? Player.length.formatHMS(0) : "--:--:--",
+                live: Player.live, position: Player.position, volume: Player.volume, muted: Player.muted,
+                playing: Player.playingState === Player.PLAYING_STATE_PLAYING,
+                metadata: {file: Player.fileName, artist: Player.artist, folder: Player.folderName, playlist: MainCtx.currentMedia.playlistName,
+                    artwork: Player.artwork.toString().length ? VLCAccessImage.uri(Player.artwork) : VLCStyle.noArtAlbumCover}})
+            onPlaylistRequested: playlist => {
+                MainCtx.playerView = false
+                History.push(["playlists", "list"], {parentId: playlist, title: DialogsProvider.newPlaylist.name.trim()}, Qt.PopupFocusReason)
+            }
+            onPlaylistSaved: MainCtx.mediaLibrary?.homeActivity?.refresh()
         }
 
         Loader {

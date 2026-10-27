@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "ordinaryPackageAccepted": false,
+  "scope": "Real native toolbar repeat/shuffle defaults, typed Playback observation, selected profile checkpoint and four normal OS-process exits/restarts. Private GUI only.",
+  "before": {
+    "normalExit": true,
+    "diagnostics": [],
+    "error": "toolbar saves Repeat All, Repeat Current and Off as separate native boolean flags",
+    "guiSha256": "2ed33b798a1e9b82330d053ce62df9ef7c8d811f299f36a15128bf89b8a069e9"
+  },
+  "after": {
+    "guiSha256": "aca840073463dc2b9c3defb276e6577ec17c2e79d3a49e24343f206f0fd67b8d",
+    "coreSha256": "0cdebe2f6950939228eac94304393ef946b1947c80d1cbb8a8f83abe546a8072",
+    "cases": {
+      "transport-initial": {
+        "normalExit": true,
+        "checks": 21,
+        "diagnostics": [],
+        "passed": true
+      },
+      "transport-all": {
+        "normalExit": true,
+        "checks": 21,
+        "diagnostics": [],
+        "passed": true
+      },
+      "transport-current": {
+        "normalExit": true,
+        "checks": 19,
+        "diagnostics": [],
+        "passed": true
+      },
+      "transport-none": {
+        "normalExit": true,
+        "checks": 10,
+        "diagnostics": [],
+        "passed": true
+      }
+    },
+    "sourceInputsUnchanged": true,
+    "ordinaryGuiUnchanged": true,
+    "ownedMediaUnchanged": true
+  },
+  "manifestSha256": {
+    "ordinary-inputs-transport-before-r2.json": "fd86c337a585e0ceda6eb418451363fb509a5d3bc6061fcc090b9ab0d969159e",
+    "private-inputs-transport-before-r2.json": "fffbb4eef8aa57a3eb0f80ffc43b2279dd313491cec6024926e7732ec351f564",
+    "ordinary-inputs-transport-after-r1.json": "81569174205e814e56b74ad53723d09bd9d96b0465d5f645403273b57a837d0b",
+    "private-inputs-transport-after-r1.json": "fffbb4eef8aa57a3eb0f80ffc43b2279dd313491cec6024926e7732ec351f564"
+  },
+  "totalNativeChecks": 71
+}

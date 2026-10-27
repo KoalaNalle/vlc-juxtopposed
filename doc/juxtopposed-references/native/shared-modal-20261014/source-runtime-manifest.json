@@ -1,0 +1,89 @@
+{
+  "documentationDate": "2026-10-14",
+  "scope": "Exact production key-method/event-branch extraction compiled into dependency adapters; QCore-only detached Qt delivery and real LibVLC key-pressed callbacks.",
+  "sourceHashesAtDocumentation": {
+    "modules/gui/qt/tests/test_shared_modal_hotkeys.cpp": "d382d07ae429900c85a632252042065c798dadce2a258ebe941a74e5b2e67fd7",
+    "modules/gui/qt/tests/generate_shared_modal_hotkey_test.py": "b14482f75af04848469fba37d98fa100d7e6d48489a80bf08589ec3d5fd1bf06",
+    "test/libvlc/native_shared_modal_hotkeys.py": "4e24c90196b520868a4b57e4a09abcad01e0766ca733eea417aa228155bac2a9",
+    "modules/gui/qt/maininterface/interface_window_handler.cpp": "d6e818ea0f26256462f56e2d834a7f846fbdae172c5fe86aa7ca1f0155a6b3e7",
+    "modules/gui/qt/maininterface/mainctx.cpp": "b5a36669d051b71b01e445075d3e7c0cfbe243625e85e630795211f0c8db855e",
+    "modules/gui/qt/Makefile.am": "12452a310ca7cd91b518caacb7140ca57016a46a31ad73592f4ed6223d3e87c2",
+    "modules/gui/qt/meson.build": "99ce50c6a41410dcbb9678fe36f03000a7e7837867b6b4cc2f4f8e88aeadbfe1"
+  },
+  "sameFrozenHarnessForBeforeAndAfter": "d382d07ae429900c85a632252042065c798dadce2a258ebe941a74e5b2e67fd7",
+  "harnessIdentityBasis": "Build-owner frozen source record and actual CXX/link logs; harness digest is not embedded in runtime output.",
+  "compiledProductionIdentityBasis": "Native runtime prints source identities from each selected generated include; helper verifies these and include hashes.",
+  "sourceBuildProof": {
+    "ownerReportedExitCode": 0,
+    "ownerBuilderId": "66092",
+    "actualCxxAndLinkLogCopies": [
+      "build/before-build.log",
+      "build/final-build.log"
+    ],
+    "executedBuildScriptCopy": "build/executed-before-after-build.sh.txt",
+    "bothVariantCompilationsShown": true,
+    "warningsRetained": "Libtool host-path diagnostics followed by Continuing, and timestamp/clock-skew warnings; final native executions verified separately."
+  },
+  "orderedCases": [
+    "initTestCase",
+    "absentProviderPreservesDirectDispatch",
+    "mouseFocusOutsideModalDispatchesNativeKeys",
+    "modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch",
+    "outsideModalQtNavigationPolicyRemains",
+    "cleanupTestCase"
+  ],
+  "before": {
+    "passed": false,
+    "exitCode": 1,
+    "caseCount": 6,
+    "totals": "5 passed, 1 failed, 0 skipped, 0 blacklisted",
+    "failedCase": "modalKeepsPressAndReleaseInQtAndBlocksDirectDispatch",
+    "observedFailure": "receiver.presses has 0 entries; expected Space/Up/Down has 3",
+    "testExeSha256": "19301722f8066eec95a350cc34194c5e0caac5c17e5e4df84a7f9d0152039cab",
+    "productionExtraction": {
+      "sourceSha256": {
+        "modules/gui/qt/maininterface/interface_window_handler.cpp": "a0153ccfbb49d1f5e9fb8b81bea00b21a5e63c5424542d0dd74823c53357cae5",
+        "modules/gui/qt/maininterface/mainctx.cpp": "025bcf34108679e33865136a19df44ea34f897e24f1a8174dce281ab9c4ec101"
+      },
+      "includeSha256": "6288020ad8ba1cb830c2681128b1be9e3d988001818c656549b6583fbd8d0826",
+      "scope": "Exact production key-only event branch, applyKeyEvent, sendHotkey and sendVLCHotkey. Other window/interface methods are not extracted."
+    },
+    "evidence": "results/before-verification.json"
+  },
+  "after": {
+    "passed": true,
+    "exitCode": 0,
+    "caseCount": 6,
+    "totals": "6 passed, 0 failed, 0 skipped, 0 blacklisted",
+    "testExeSha256": "05a7095e0d41dffe3ab42bb98289e28ef37ec96da733f3d17e2bcaefc90e6102",
+    "productionExtraction": {
+      "sourceSha256": {
+        "modules/gui/qt/maininterface/interface_window_handler.cpp": "d6e818ea0f26256462f56e2d834a7f846fbdae172c5fe86aa7ca1f0155a6b3e7",
+        "modules/gui/qt/maininterface/mainctx.cpp": "b5a36669d051b71b01e445075d3e7c0cfbe243625e85e630795211f0c8db855e"
+      },
+      "includeSha256": "a438fa584b055d326ada6f06087e7150a2a8f359bf7d27db4ffabf3277962fc2",
+      "scope": "Exact production key-only event branch, applyKeyEvent, sendHotkey and sendVLCHotkey. Other window/interface methods are not extracted."
+    },
+    "evidence": "results/after-verification.json"
+  },
+  "selectedRuntimePackage": "build-windows/slice-conversion-modal-package-20261014",
+  "runtimeSha256": {
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "61329b19cc79cf6a310762a3b95d9120d7dae762ee6f6380b2e5db2c395f1c61"
+  },
+  "registeredGlue": "Automake test target with generated extraction and existing converter MOC; Meson custom extraction/harness-copy/MOC/test registration. Actual build evidence here is Automake only; Meson native configure/build is not claimed.",
+  "fullMainCtxProviderWindowLifetimeAcceptance": false,
+  "packagedModalControlPrimaryTransportAcceptance": false,
+  "originalFigmaConversionFormAcceptance": false,
+  "relatedScopes": {
+    "conversionBackend": "Ten native cases pass on the mounted package with exact core/module audit; separate from modal key routing or desktop UI.",
+    "conversionComponent": "Production QML supplied-state/offscreen suite passes with zero messages; picker dispatch and focus/layout/shortcut state only."
+  },
+  "notCopied": [
+    "executables",
+    "DLLs",
+    "userdata",
+    "personal media",
+    "rendered desktop captures"
+  ]
+}

@@ -119,7 +119,7 @@ Widgets.TableViewExt {
     //---------------------------------------------------------------------------------------------
 
     onActionForSelection: (selection) => model.addAndPlay( selection )
-    onItemDoubleClicked: (index, model) => MediaLib.addAndPlay(model.id)
+    onItemDoubleClicked: (index, model) => root.model.addAndPlay([root.model.index(index, 0)])
 
     //---------------------------------------------------------------------------------------------
     // Functions

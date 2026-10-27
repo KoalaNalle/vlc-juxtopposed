@@ -1,0 +1,42 @@
+{
+  "mode": "fixed",
+  "passed": true,
+  "baselineShapeMatches": false,
+  "expectedOutcomeObserved": true,
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedProcessTimeoutSeconds": 30,
+  "elapsedSeconds": 0.375,
+  "exactOrderedCases": [
+    "knownZeroAccessiblePlayKeepsLibraryView",
+    "knownZeroCoverPlayKeepsLibraryView",
+    "knownZeroLeftDoubleTapBodyOpensDetails",
+    "rightDoubleTapBodyDoesNotOpenDetails",
+    "filledPlaylistAccessibleDispatchesOnce",
+    "filledPlaylistCoverDispatchesOnce",
+    "unknownCountDispatchesOnce",
+    "nullCountDispatchesOnce",
+    "nonNumericZeroDispatchesOnce",
+    "nonCollectionVideoRetainsDefaultPlay",
+    "oneSelectionKeyboardBodyOpensEmptyDetails",
+    "multipleSelectionKeyboardBodyRetainsModelPlay",
+    "noSelectionKeyboardBodyDoesNothing"
+  ],
+  "expectedOriginalBaselineFailureNames": [
+    "knownZeroAccessiblePlayKeepsLibraryView",
+    "knownZeroCoverPlayKeepsLibraryView",
+    "filledPlaylistAccessibleDispatchesOnce",
+    "filledPlaylistCoverDispatchesOnce",
+    "unknownCountDispatchesOnce",
+    "nullCountDispatchesOnce",
+    "nonNumericZeroDispatchesOnce"
+  ],
+  "fixtureSha256": "e201404fa453cecdbfa4449e908a94143202afbfdf3ba152c292142cf3d00ff1",
+  "launcherSha256": "52a780108f4c079ceac6970d86e86c6b982398bbebafbcb3074fdedbdb0d4fca",
+  "workerVerificationSha256": "9585a47cc165b3eb0963f758dac00dcb223e63a4875360f34434a66b268fff11",
+  "evidenceSha256": {
+    "stdout.txt": "62c0b96a909b70c48252c481f2fa90426e778fbe1a98eae5138b94046767797c",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": "Bounded windowless QCore/QQml exact routing bodies and supplied dependencies. One requested ML dispatch is required for nonempty/unknown playlists; no native input/ML/queue/player, rendering, lifetime or Figma acceptance."
+}

@@ -1,0 +1,28 @@
+{
+  "status": "terminal_expected_negative",
+  "case": "startup-paused",
+  "oldCore": true,
+  "passed": false,
+  "forcedCleanupUsed": true,
+  "identities": {
+    "test_qt_timeline_thumbnails.exe": "acabf49e272939148a238dfb5cfa011ff9fdfcbe60ac8d39219129903662fa4e",
+    "libvlccore.dll": "db78919ef2e351550eba5b7f8657ee6b794297be64594e89eb636cd9c9101f36",
+    "plugins/gui/libqt_plugin.dll": "e8df140c4ecfd6abe0a4763f644bd1aa8c2d22957453daac3b952bb1c6f8343c",
+    "plugins/demux/libmp4_plugin.dll": "917af1d1a00609e973693b6fb99ecfbefea4c65f89e7b83b5a733eda6943c3fb"
+  },
+  "sourceInputsSha256": "894ac71e400e274f7ab0ff68daa8b6ece4aa7d43600ab2c12a820c56cd2ff0f7",
+  "runnerSha256": "aa1ac76f95168528470b8b09a437fb8e0a14bdb226643d9cdd519da30de6e940",
+  "mediaSha256": {
+    "media.json": "35b636b02ccdee47877e705764c73fed454e472b27420e5abeb466ab6cef1c34",
+    "motion-1080p50-silent.mp4": "c02e7fe34d73c90139b72048a6aab3cc1f994859b622c66c72b7d04de8f89151",
+    "reference-40.png": "ed136af8e277b1a7a525bbdd7c445294007165555f9c34e0576b912e0b16b43c"
+  },
+  "pid": 3524,
+  "normalExit": false,
+  "expectedStartupPauseFailure": true,
+  "exitCode": 1,
+  "negativeVerified": true,
+  "sourceInputsUnchanged": true,
+  "identitiesUnchanged": true,
+  "scope": "Expected old-Core startup-paused failure; native assertion timed out and destructor blocked in the saved thumbnail FIFO/paused-decoder cycle. Owned process forcibly cleaned up after debugger detached. This is not a normal or passing application exit."
+}

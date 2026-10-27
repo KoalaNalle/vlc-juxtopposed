@@ -1,0 +1,427 @@
+{
+  "status": "passed-scoped-music-sidebar-open-close-repair",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "987539e312a6e8e2597af62f4c9079d36e8acbdeeb54a7c17b01267026d94cf9",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "sourceSha256": {
+    "modules/gui/qt/tests/test_juxtopposed_music_player.py": "eaffae7e7be78fefd63d5eb828c6588991774b906179c7754cd5f092a32922c4",
+    "modules/gui/qt/player/qml/JuxtopposedMusicPlayer.qml": "73fe8aec0fdfd6cabb4e4cf2393267477f04b6e29345dbc64b337bef0758786d",
+    "modules/gui/qt/player/qml/Player.qml": "5dd7a3899192d4508f89d2b978e9a66f28dbd47a4c1a07408d4ce7a8117bacf5"
+  },
+  "heldPausedProgress": 0.19965888333333331,
+  "staticToggleAsset": {
+    "path": "modules/gui/qt/pixmaps/juxtopposed/titlebar-navigation-b130a.svg",
+    "sha256": "1cac86eeab87c7962b5d92a7b2c6dbad78776d343a892b9a1e805ea67bfe68ae",
+    "rootTag": "<svg preserveAspectRatio=\"none\" overflow=\"visible\" style=\"display: block;\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">",
+    "designAsset": "b130a.svg",
+    "qrcAlias": "titlebar-navigation.svg",
+    "unchanged": true
+  },
+  "observations": [
+    "Figma high-fidelity contexts and1920x1080screenshots for4767:23726 and4778:25123 show music without/with the inline sidebar. The native GUI344 baseline instead opens an expanded navigation overlay on top of the music source list, leaving the designed closed view unreachable.",
+    "The existing title-bar navigation button now controls the inline music sidebar while the music presentation is active; video retains its existing expanded navigation drawer. The original24x24 b130a navigation SVG/qrc alias/callsite is reused unchanged. Real dynamic cover art remains media data; no design screenshot or example album art is added as an app asset.",
+    "The production component regression fails the closed-panel assertion before and passes after with the same test/helper. It checks focus handoff to controls, current-row focus on reopen, no activation signal, held selection and centred cover; the existing source/search/sort/metadata/empty/error and five simulated-scale layouts also pass.",
+    "Ordinary GUI349 closes/reopens the music source panel in602x421 and1920x1032windows. Space starts and pauses First light while the panel is hidden. Reopening preserves the exact paused progress; Down selects Second light without starting it, then Return activates the real second track and its orange artwork.",
+    "Hiding the sidebar while Second light plays retains playback; Space pauses the closed view. Previous starts the queued video, whose expanded navigation drawer still opens. Next while that drawer is open returns to Second light and the remembered closed music view; the old drawer is absent once the new presentation settles.",
+    "Both ordinary apps exit0/602modules/zero checked errors/all source/runtime/fixture/producer/cache guards. The fixed normal shutdown takes longer while owned media work drains; it completes without forced cleanup."
+  ],
+  "limits": [
+    "This qualifies the sidebar states and interaction, not a whole-player fidelity score. The owned customizer fixture has a two-row control bar, unlike the54px canonical Figma bar, and generated blue/orange artwork; canonical cover sizing, all static assets/states, theme, Windows OS-DPI and final-package review remain open.",
+    "Immediate source-transition captures contain the preceding drawer or a fallback cover before the settled audio/video output. Settled observations establish the new state; no bounded transition latency or complete queue equality claim is made. Accessibility focus text can lag; actual keyboard effects and component focus checks have separate scopes.",
+    "The sidebar choice is per-player session state and defaults open on a fresh player. It is not a new saved profile/global preference. Traditional controls and native playback architecture are preserved.",
+    "Figma was read only. Raw configurations, databases, media, binaries and personal logs remain ignored locally. No dependencies or security/privacy settings changed."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-music-sidebar-before-r347/verification.json.gz",
+      "sha256": "b089f3071f4cc4f1157a9f2a7257faea9b85e236f9cc3c4bd1f4652d217d8177",
+      "rawSha256": "8955413a77e3faf38461a278c84db2ecde21a460ec7fa41df2dea8727dcd01d4"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/producer.py.gz",
+      "sha256": "531b3ea73cff7cb390498e9c10e656c768440b8d2af3d826db7a4c5e572b5f37",
+      "rawSha256": "6af0934d31acb9f5bbb80c5614091646e0355c3f1d86851d45e5b5284b8dd02d"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/launch.json.gz",
+      "sha256": "ef729f383109f539f16ce00277c4cd0f36a90d51811475fc0a6526cfca361159",
+      "rawSha256": "030d60286e8bec2ec460cddd9b92f4fb7be5f9c0a46458e6c78ed214e81864ae"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/layout-fixture.json.gz",
+      "sha256": "abb4ee0aae4d86f3ec009a18d2fb22c798b4cb3876e1b770d28625bba769f9fb",
+      "rawSha256": "cfb7356ecae24421279be61177d5ca634666080669dea782393ad78ace147739"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/01-music-sidebar-before-start-0.png.gz",
+      "sha256": "0d95b929fff32e0935bb1e1a33d8cb5b1078891f455a9ecb12b2310c6be91a61",
+      "rawSha256": "548fe6048b7b2a040ad22a60a99a8980d4d7539c6721fad929be46733a3e31e7"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/01-music-sidebar-before-start.json.gz",
+      "sha256": "6f831c1156935e215788b2e12147509b60366e6995375125ae0938f652c96cde",
+      "rawSha256": "bcba0c3bc4d49def1dacb268a164559497d734ccbbb8ae64c84a840f56a2d2b4"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/02-music-sidebar-before-maximized-0.png.gz",
+      "sha256": "0ea3e326e1421e27446c1b861713360e66997f648f7366c0c3631cc8cf363ca8",
+      "rawSha256": "70cfa5344cf597408fc6c47bba1afd44047eb5c4feaa237def02795d293bb66f"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/02-music-sidebar-before-maximized.json.gz",
+      "sha256": "707e632da209f3a77322e75d1aa9691faf689d0fca90afbaaab9948970aea650",
+      "rawSha256": "23ef6b055f15e7bc26569d3373216a3186792a6f44fc0f229918a29b79519ce6"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/03-before-toggle-opens-overlay-instead-of-collapsing-0.png.gz",
+      "sha256": "10493b66872ee3bddb00a7a207654198866f6a6a03d5494661f3ca8e410aae51",
+      "rawSha256": "6f66f77418318c9c1108da45e0a3b6704afa7e24e13dd160109dd970c142b0f9"
+    },
+    {
+      "path": "ui-music-sidebar-before-r347/observations/03-before-toggle-opens-overlay-instead-of-collapsing.json.gz",
+      "sha256": "94f343ab0a843004d52980146820e33e796fc97aeb8b3fcf876e910ebab05beb",
+      "rawSha256": "036f430bedbe30e342a035bd8a02a77d93b90c10845e086a9de9970f49d8a423"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/verification.json.gz",
+      "sha256": "b39f744a52761f920282f0553846450fd6a0ea96ae9f6ed371aab8b1b790287b",
+      "rawSha256": "e30d244dc66f90f29e2557b2e1eebe1ebbf7e23e31e15e4873b9e4ee21e28088"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/producer.py.gz",
+      "sha256": "1762a083ec03b30a5797247e742971ce041fdae97278f6153a39e48bb40bd6f4",
+      "rawSha256": "9c2fc86084ce2b38ff7e9034cec55993452d0f6799a64c48e8262bcbd0bf77d5"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/launch.json.gz",
+      "sha256": "7614e443370c75d74d2f6c64ccfb3b1792a52d064c08c84b9b05fd8df2e118ec",
+      "rawSha256": "f51deff93451f3ae0c1510f2b3864a31ad37ee41bd343e233d8b40c2a7068b90"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/layout-fixture.json.gz",
+      "sha256": "abb4ee0aae4d86f3ec009a18d2fb22c798b4cb3876e1b770d28625bba769f9fb",
+      "rawSha256": "cfb7356ecae24421279be61177d5ca634666080669dea782393ad78ace147739"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/01-fixed-music-start-0.png.gz",
+      "sha256": "73e684ee2c927a1e827d1b6e312bb34a1f02e9dc43902548e5530418c3f72893",
+      "rawSha256": "c749b5a4d7a29d65f4aacbe83fd8e36af0e59d4f88ec17bd0b23184cc8271728"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/01-fixed-music-start.json.gz",
+      "sha256": "8aa296e8f75009eb281a2202559aa46a3b25924e5e1a16cd13a6ac640ab834d8",
+      "rawSha256": "507baf43b68af6cf76277bd5810744d662c562ebf31c0e4acd9980a60797ae73"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/02-fixed-small-sidebar-close-0.png.gz",
+      "sha256": "d7483bbfcc1d842a1561f9df3a072e8aa740e48b44dfd05e6076f8dfd9e48362",
+      "rawSha256": "04853a179566c9e68f71f35f2b2bc1e786378f01a6fbba7786d97d993da3f59f"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/02-fixed-small-sidebar-close.json.gz",
+      "sha256": "fe185fe5e3e9f0bdf1db27bfea990358570e8a4536b5eb71cf45e7cf059e9b80",
+      "rawSha256": "820a4ef0d88b48d98f2bd5e36a5f9d8cdf2842fe210fb8f220520d7d542cab65"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/03-small-closed-focus-settled.json.gz",
+      "sha256": "d27945cccfba7800b5d203c987db8d31ea11939f9c3bd5a1f492de5c098a94e9",
+      "rawSha256": "fa386f52c418ca32bdb1b6b1b421c6e8941752d47973824751d6b3cd24c5bdce"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/04-fixed-maximized-closed-view-0.png.gz",
+      "sha256": "38463e6748915148d8fb878cecd7ab6e89bd947452048a2a8f04dbe774c825ab",
+      "rawSha256": "a39a8c645fe322bbf7236850fd6210348d44e0915a630d23090f678033efaa01"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/04-fixed-maximized-closed-view.json.gz",
+      "sha256": "d1b87655f3264bca7cc19bd96d97519a1e639fb5a4641bd5bdfda330efec8f3c",
+      "rawSha256": "9da5e303a3a9f6063ba34027af8fd3a5971ea11f06bdd81a626eed7b14e2d78e"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/05-closed-sidebar-space-start-0.png.gz",
+      "sha256": "633c85123d0368299c7f6220cc7e76eea74c893fbf51079c9032b58dacb3077b",
+      "rawSha256": "1b4f07235b190d3ff01f5aa51d57d809ad71034705dc826de645d55fd07a92c5"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/05-closed-sidebar-space-start.json.gz",
+      "sha256": "f59f345d9a47c02f67933ec3e9af5d1c2901f9690c47021c1885d7a4218611ae",
+      "rawSha256": "d342f7c2f7afa132c92ce2fb38f427e62da2bf2a19cfc8d069a5b9cb5bf37552"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/06-closed-sidebar-clock-playing.json.gz",
+      "sha256": "8e279db898109ad1c4ca0cd957550baf347101cee448623651b911762605654e",
+      "rawSha256": "cf5166074e3e22b52f36b2e77e73b3b9c27ab7ba2f4318d2a5bb40d1f2644b31"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/07-closed-sidebar-space-pause-0.png.gz",
+      "sha256": "91538eef50a7bce2f09e9c5950ef301d97c66c8959a4dd94a7de8927ef0449da",
+      "rawSha256": "bb8b001b516e0fbff4582093294ec7419b8c83dc8e8700eeafec4c5424ad3543"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/07-closed-sidebar-space-pause.json.gz",
+      "sha256": "d74b14c81917702308494de531155d6cf8e4524aa2b60ad1378b46c6fa84ecc8",
+      "rawSha256": "d0a3154adc37b385a1f696dd71585b27577777cc8405de172bbb32c7c54bc29d"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/08-closed-view-paused-settled.json.gz",
+      "sha256": "242d042968903b234c51f46e11137692b54432fc938c904e30a39e4df2dbde8c",
+      "rawSha256": "4ded749e634fcf84c2bf378f82adf5b7f2812d6f00518eab84b0b0bec4e1aa9d"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/09-reopened-sidebar-held-position-0.png.gz",
+      "sha256": "7788b092671393a0258d80c7379f22ac1a2eceb8f78434612d64484e0a9479bd",
+      "rawSha256": "458453d7e85f4267b7a11cc7906f3290f3e5ef4b7de2e60972faef4307d4862c"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/09-reopened-sidebar-held-position.json.gz",
+      "sha256": "dc458b261869820dd2d7b5d018de37ce4a70ae852cd0ff0b5ebbbb5f75c9205e",
+      "rawSha256": "b4597b3d33ddec3613cf38d9b0cd2ae9d89daf4931b79f1d800baaac8cec2263"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/10-reopened-paused-position-settled.json.gz",
+      "sha256": "0ab562b8cba5e5a76baa2f239d9c5b725258d96c235e0891a7f2f121f446c2a3",
+      "rawSha256": "f9f6b415f5725ddd68a5c24989dfd6cff8ff9f0b8515cbfc8adbdfd3da2de959"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/11-reopened-keyboard-selection-second-0.png.gz",
+      "sha256": "1a787f603afd595d58621ca4034bc05d510a8a4e787aea487dd626120cb4e964",
+      "rawSha256": "37520907e8fbeab7739b85a17d143ce555499314359f23fe3e52bc7e3d9fd826"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/11-reopened-keyboard-selection-second.json.gz",
+      "sha256": "549dfe0cc3b00cb3071760a871d44c03be7b642be4d895143c402288213cc946",
+      "rawSha256": "3ed4fc03582a7492a3cbc756d80ddba92bb147d2de4b8a75a4f256f1b4305c37"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/12-reopened-enter-activates-second-0.png.gz",
+      "sha256": "91e664f2b98a8df66b3a40a9b1cd8e84d816756d4344a918cb81aa532c9e1915",
+      "rawSha256": "7f95de2dafeb9aeb59d880aad9b073cae60a01636a9adc422b776b8d55d59293"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/12-reopened-enter-activates-second.json.gz",
+      "sha256": "1c58e26ce3e24381ec0b2b0f9cb79010801b5ea991eb97d4a40398ba86012f42",
+      "rawSha256": "60397cd55b633fe401dcd13f193731302847deb2433dfb64d97fed3e8aaa5202"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/13-playing-second-sidebar-close-0.png.gz",
+      "sha256": "b32fec3e72097875e2a8653d190659f3959e9e219ea46efc9880185027e4177d",
+      "rawSha256": "f0c606df704566f3e2d4356c254414642293051afec3ab5494dcba8fe7fe7127"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/13-playing-second-sidebar-close.json.gz",
+      "sha256": "c869de94a007c9fb26bd421b8931c37da5078f12415de1176bfc12a9f80c890e",
+      "rawSha256": "af5615f81f5571c4db2b214e39a6aa4d834b93817ea567e6eb808641cdd1884a"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/14-second-track-pause-in-closed-view.json.gz",
+      "sha256": "3b693b5d21f4409ae9e2da650579aec6dd63326d4e749f6258479a47b53f8687",
+      "rawSha256": "cd1238918f5b20abb216a0a009d27e4b8f9f8ff179b65438bc26b301e2e47faf"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/15-second-pause-settled.json.gz",
+      "sha256": "2278de5fefc7795d0a5bc892a922e3a752083d89622215d5b29c5ac926962b8c",
+      "rawSha256": "0348f7fa54fcb58f1d5dd5cd79a78f89ab71c67671ce746dd900f76013d17229"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/16-previous-returns-to-video-0.png.gz",
+      "sha256": "6087a165df550bb07cfefe3741d4d4d6e767e9cbe1272a77401f1005bec46d10",
+      "rawSha256": "6d22f1fa4a88d3765f69afe170b6b8f578ac4584b9b34d173dc8a89d7daf6f7d"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/16-previous-returns-to-video.json.gz",
+      "sha256": "46a4416a7f5140831a05306c1282b5b544b1439039d807736c92fdb72792e1da",
+      "rawSha256": "e585bdf9371faa54ca326688d9f4d4ba64b48354c6f4610680b56104766bdf05"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/17-video-settled-after-music-0.png.gz",
+      "sha256": "27a95780ae806bab4cb56958556576f2cf60fa47fe7fe60707e71182bb79df4b",
+      "rawSha256": "2d791a702efd46bd65963ca31f0619ff4099d570d9b64176a4f5d70ca90220ab"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/17-video-settled-after-music-1.png.gz",
+      "sha256": "4c531f5a05d541baf8cb82686a804ed8ed892d0e26c9c662e13d0cf6674b661c",
+      "rawSha256": "12bc31f138db2ddb1fc371f20f19e98fc3f06ec8f1f98cdc14d3882c76c2ffef"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/17-video-settled-after-music.json.gz",
+      "sha256": "afff57d910eeea0cc4691fb75fd96b0b9eded8a13761d3a735493a24eb525d13",
+      "rawSha256": "cf2c1c5713cd97a916af53be630b65a164ebbcbede679f45749e6d385b14d7a1"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/18-video-navigation-overlay-still-opens-0.png.gz",
+      "sha256": "ba9a4dfc09ee03ea63332ea121d4889e6ea6f12a6d63731935405e3e8dcfa53d",
+      "rawSha256": "5cc6da2830a637191862f9d3739181257a9c92c1f9e95c447f3e5e3405ee8c7a"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/18-video-navigation-overlay-still-opens.json.gz",
+      "sha256": "788fbfea4b86f1a21c79fc37fc4b5f80cfea38c3f89101c43564911d17e5eff9",
+      "rawSha256": "cd927e328ec1edd9efd0ae05dba0b8b514df53a1526920e97b27aa836c745ea2"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/19-video-open-drawer-next-audio-0.png.gz",
+      "sha256": "7d81aba5b97c51bb7b80c62b9e6138726b921622e58d1ce6e01273b4910b0249",
+      "rawSha256": "8b9bb1c4ba10ea07b7f4778cf732e0d950b67a97c1ae35752b6f56a09984a7a3"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/19-video-open-drawer-next-audio.json.gz",
+      "sha256": "46f929f50a231cef4221a7446fe8061e6780b721d1d84b127c775985500bf6d4",
+      "rawSha256": "a4432fb61d2abb0d46e3c88980803bed321cf171bdeea4628bab1b90224db2f8"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/20-audio-closed-state-restored-after-video-0.png.gz",
+      "sha256": "af166905489d3e63d912e1040b8f7e0ffa3e385a6d0583e8fe3944fb78a673f9",
+      "rawSha256": "464cb44f446c4c7ad4ec5ed9d6580d1974632b4297448d05125ed71c4c5e8c7d"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/20-audio-closed-state-restored-after-video-1.png.gz",
+      "sha256": "9f2bc4d496e17e2fbb041c3c835fbd02ea6f9784cd9225a399ea8a0e22519e33",
+      "rawSha256": "c29502a00a4135c684e79a0cef26a054aa1c3c742104edaff34378411920d2a7"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/20-audio-closed-state-restored-after-video.json.gz",
+      "sha256": "cf566fb899ccff0f054dc8000535df41884de7c4289ac46514c78ee075f84dcd",
+      "rawSha256": "69311e375523e84b9b312d14f19903e18719b0b99b23d29fade6e1d17f4a024d"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/21-final-audio-pause-0.png.gz",
+      "sha256": "c2a60dc15f6cf3621028a14efae65b59e470387d6d3800591fa8bb3f3229ff25",
+      "rawSha256": "477305e4ae44914496df5251363c10a8e9996d15fbd58a611339ef4433609644"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/21-final-audio-pause-1.png.gz",
+      "sha256": "9f2bc4d496e17e2fbb041c3c835fbd02ea6f9784cd9225a399ea8a0e22519e33",
+      "rawSha256": "c29502a00a4135c684e79a0cef26a054aa1c3c742104edaff34378411920d2a7"
+    },
+    {
+      "path": "ui-music-sidebar-fixed-r349/observations/21-final-audio-pause.json.gz",
+      "sha256": "2c6d11c95302522ca7d2add3e5de330f5d4e09cc5d939966c41fc3e6aba0ce67",
+      "rawSha256": "d22d8493225e32f20523a19ce0a29ab8c91f9291f8f01649d15e5a38637115b0"
+    },
+    {
+      "path": "component-music-sidebar-before-r348/verification.json.gz",
+      "sha256": "f79ce25bd053095e528c21ceecae97e0f88ff0afae15617d454678a49b1f0ad8",
+      "rawSha256": "c2d628ef139f939bf4ae74dac38f70750b7070e6200b9903de38a957c952c5a6"
+    },
+    {
+      "path": "component-music-sidebar-before-r348/stdout.txt.gz",
+      "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "component-music-sidebar-before-r348/stderr.txt.gz",
+      "sha256": "9b43ca6aa5aae3e0f0aa7d39bbb9102305563f48bbb161bb06010fa3e660844e",
+      "rawSha256": "d1687621a61eb34639993703ab24f064b7b1a887b231a201bc2052c3b5dc261d"
+    },
+    {
+      "path": "component-music-sidebar-fixed-r349/verification.json.gz",
+      "sha256": "e49d104a155f0bff79bf95764467b99d97437f6b6fb6dcf09cdfa8b3ab864e43",
+      "rawSha256": "675c8edf965acead34181b408dd8f0e4788a922937d187f485d5e750b04284cf"
+    },
+    {
+      "path": "component-music-sidebar-fixed-r349/stdout.txt.gz",
+      "sha256": "1e4587aa9f3a78f8ef4004b385c8e3278f43f745726354afa7d6a035bdc7b07f",
+      "rawSha256": "c1b14949724130ca05cc93b37f147915f2da0b3f268b85786725fc4d9618087a"
+    },
+    {
+      "path": "component-music-sidebar-fixed-r349/stderr.txt.gz",
+      "sha256": "46b50c321b39e89a491b6727a01628c34245605a30beb3e7414c5e01cff90e6e",
+      "rawSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "component-music-sidebar-fixed-r349/captures/music-player-verification.json.gz",
+      "sha256": "e2c90cfdbb0d3e3cac94ac4432a3365145b0342f02977c15afd6c7f7ee2adbfd",
+      "rawSha256": "7f666fedaf6e3af8e608e03f574228cfec1a4fc3629e0fbba61120a2b3ce59c5"
+    },
+    {
+      "path": "figma-music-r347/music-open.png.gz",
+      "sha256": "86265ef504761f373a78d689a43603d98b2c98feb5fe3fe3068549d309d96863",
+      "rawSha256": "a7a3bef59474524b469ec303c39643518c803d0131d0630aa509d425f2efc49b"
+    },
+    {
+      "path": "figma-music-r347/music-closed.png.gz",
+      "sha256": "e43c2f03ef7a61cf98b8fe481f4873bd3283d9857b352340d99a779dc4de161c",
+      "rawSha256": "04912b7dd7941ca63fbf4c2881007c7dcbf67440c39c3c5efebb597a296061b6"
+    },
+    {
+      "path": "figma-music-r347/review-context.json.gz",
+      "sha256": "ef68c8dfe39a2c3465100b409a2d0568c74a4ece85be0d5746b34fb2c0f9f77c",
+      "rawSha256": "9b91bd55d3739a8583e3d079fc6473d48e35e7c6536b134f0f3f97c88020b0dd"
+    },
+    {
+      "path": "inputs-r347.json.gz",
+      "sha256": "5f0557de66f51d50b840b6f9f43afa9faccdaf7b074a18cd28f96ef6184dbaab",
+      "rawSha256": "e05db951fda5a4f52ba6438b0d59c1f41bdbad010145840a28cb4b82727a32ff"
+    },
+    {
+      "path": "inputs-r349.json.gz",
+      "sha256": "785864b575b1d88214bbf34a0d5d978f87a44a5d193e3ca9883f1eed392da409",
+      "rawSha256": "e2eba4f6845b267c88496630415c6bd4217decb07f2ec59d9d23158398a5a5ff"
+    },
+    {
+      "path": "run-component-music-sidebar-r348.py.gz",
+      "sha256": "e4fb5b15bd4fa2026c41e3e97a01516ceee90d6ac3684db8c02010c8f9ac80f1",
+      "rawSha256": "d9017d846e0ef1ad3ab967042f3e508258036a9fcadbeb69907f36d60a620c44"
+    },
+    {
+      "path": "prepare-music-sidebar-before-r347.py.gz",
+      "sha256": "0068f7b66610100e58eeb063041a3026ab5c6738340bb50f01b6b8552aed51c7",
+      "rawSha256": "c4ca617e80e884002a1f389da700635a1c48021cbba3d01d215d6f5a5b6288c4"
+    },
+    {
+      "path": "run-ui-music-sidebar-before-r347.py.gz",
+      "sha256": "531b3ea73cff7cb390498e9c10e656c768440b8d2af3d826db7a4c5e572b5f37",
+      "rawSha256": "6af0934d31acb9f5bbb80c5614091646e0355c3f1d86851d45e5b5284b8dd02d"
+    },
+    {
+      "path": "prepare-music-sidebar-fixed-r349.py.gz",
+      "sha256": "66caf1e64701eeac168a69b0b69f49bcd8a134c68c7f220e5154104566ec8395",
+      "rawSha256": "ad7c3d51bad8bbaf190010fb1156dfbb1ce3b5f282d6198faad7563a6d32a441"
+    },
+    {
+      "path": "run-ui-music-sidebar-fixed-r349.py.gz",
+      "sha256": "1762a083ec03b30a5797247e742971ce041fdae97278f6153a39e48bb40bd6f4",
+      "rawSha256": "9c2fc86084ce2b38ff7e9034cec55993452d0f6799a64c48e8262bcbd0bf77d5"
+    },
+    {
+      "path": "freeze-music-sidebar-r349.py.gz",
+      "sha256": "3589bc1cdf4845efc579dbcc6974b99ecda69ad663e6c1194fb73a924772e3b4",
+      "rawSha256": "c9a3bd65f80beb5bf341dd22250605600bc6e5e086a911d9c327d90340c08456"
+    },
+    {
+      "path": "build-music-sidebar-r349.sh.gz",
+      "sha256": "e67e45d12b3873970a9eb86cf07e5f080422a81e63bbbe1ec888456e4ad7fc7d",
+      "rawSha256": "227311696526838a8644fdced4cec788784d4a1c0035a4c27b868ab51fbcfa2e"
+    },
+    {
+      "path": "build-music-sidebar-r349-exit.txt.gz",
+      "sha256": "8afc61325213625995e1de8b0d2df70f01b1d5304993484a41cc9df249f00fad",
+      "rawSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "write-music-sidebar-receipt-r350.py.gz",
+      "sha256": "813db8fcb8a6cd33b3a2070567693408b60bb9fa841248c59bba1af44623a546",
+      "rawSha256": "2c7e918b0dfa4cc04a033a663086b1bcad7658cd7a754ff654b83fd3015e8904"
+    }
+  ]
+}

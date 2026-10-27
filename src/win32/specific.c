@@ -29,6 +29,8 @@
 # define UNICODE
 #endif
 #include <vlc_common.h>
+#include <vlc_url.h>
+#include <vlc_process_priority.h>
 #include "../libvlc.h"
 #include "../lib/libvlc_internal.h"
 
@@ -69,12 +71,152 @@ typedef struct
     char data[];
 } vlc_ipc_data_t;
 
+/* Explicit Library IPC v1. Keep this block identical in both peers.
+ * Rejected means no queue insertion. Playback failure means the queue was
+ * accepted, so the sender must not replay the request or open it locally.
+ * Acceptance covers synchronous operations, not later decoder/input errors. */
+#define LIBRARY_IPC_QUERY_NAME L"VLC.LibraryOpen.v1"
+#define LIBRARY_IPC_VERSION 0x4c564301
+enum
+{
+    LIBRARY_IPC_REJECTED = 0,
+    LIBRARY_IPC_ACCEPTED = 1,
+    LIBRARY_IPC_ACCEPTED_PLAYBACK_FAILED = 2,
+};
+
+/* Query without sending files first: an older receiver treats modes 2/3
+ * as legacy enqueue, so its window caption alone is not sufficient. */
+static int LibrarySendExplicit(libvlc_int_t *instance, HWND window,
+                               const COPYDATASTRUCT *message)
+{
+    const UINT query = RegisterWindowMessageW(LIBRARY_IPC_QUERY_NAME);
+    DWORD_PTR reply = 0;
+    const UINT flags = SMTO_BLOCK | SMTO_ABORTIFHUNG | SMTO_ERRORONEXIT;
+    if (!query || !SendMessageTimeoutW(window, query, 0, 0, flags, 5000, &reply)
+        || reply != LIBRARY_IPC_VERSION)
+    {
+        msg_Err(instance, "running instance cannot confirm Library IPC v1; "
+                          "no files were sent");
+        return EXIT_FAILURE;
+    }
+
+    reply = LIBRARY_IPC_REJECTED;
+    if (!SendMessageTimeoutW(window, WM_COPYDATA, 0, (LPARAM)message,
+                             flags, 5000, &reply))
+    {
+        /* A timeout or disappearing receiver does not prove non-delivery.
+         * It may already have inserted the files: never retry automatically. */
+        msg_Err(instance, "running instance did not confirm the open request; "
+                          "the queue may have changed; request will not be retried");
+        return EXIT_FAILURE;
+    }
+
+    switch (reply)
+    {
+        case LIBRARY_IPC_ACCEPTED:
+            return EXIT_SUCCESS;
+        case LIBRARY_IPC_REJECTED:
+            msg_Err(instance, "running instance rejected the open request; "
+                              "its queue was not changed by this request");
+            return EXIT_FAILURE;
+        case LIBRARY_IPC_ACCEPTED_PLAYBACK_FAILED:
+            msg_Err(instance, "files were accepted by the running instance, "
+                              "but selecting or starting playback failed; "
+                              "request will not be retried");
+            return EXIT_FAILURE;
+        default:
+            msg_Err(instance, "running instance returned an unknown open result; "
+                              "the queue may have changed; request will not be retried");
+            return EXIT_FAILURE;
+    }
+}
+
+static bool LibrarySingleInstance(libvlc_int_t *p_this)
+{
+    const int policy = var_InheritInteger(p_this, "one-instance-file-manager-policy");
+    if (policy == 0 || policy == 1)
+        return var_InheritBool(p_this, "one-instance") &&
+            (!var_InheritBool(p_this, "started-from-file") || policy == 1);
+    return var_InheritBool( p_this, "one-instance" )
+     || ( var_InheritBool( p_this, "one-instance-when-started-from-file" )
+       && var_InheritBool( p_this, "started-from-file" ) );
+}
+
+static int LibraryOpenMode(libvlc_int_t *p_this)
+{
+    const int policy = var_InheritInteger(p_this, "playlist-open-mode");
+    if (policy == 0 || policy == 1)
+        return policy + 2; /* 2 = replace, 3 = append; legacy 0/1 stays intact. */
+    return var_InheritBool(p_this, "playlist-enqueue");
+}
+
+static void LibraryFreeArguments(char **args, int count)
+{
+    if (args == NULL)
+        return;
+    for (int i = 0; i < count; ++i)
+        free(args[i]);
+    free(args);
+}
+
+/* Resolve relative filenames in the launching process. The running instance
+ * may have an unrelated working directory. Input options stay with their file. */
+static char **LibraryOpenArguments(int count, const char *const argv[])
+{
+    char **args = calloc(count, sizeof(*args));
+    if (args == NULL)
+        return NULL;
+    for (int i = 0; i < count; ++i)
+    {
+        args[i] = argv[i][0] == ':' || strstr(argv[i], "://") != NULL
+            ? strdup(argv[i]) : vlc_path2uri(argv[i], NULL);
+        if (args[i] == NULL)
+        {
+            LibraryFreeArguments(args, count);
+            return NULL;
+        }
+    }
+    return args;
+}
+
+static void ProcessPriorityConfigure(libvlc_int_t *instance)
+{
+    const int64_t configured = var_InheritInteger(instance, "win32-process-priority");
+    /* Validate the complete native integer before narrowing it to an API
+     * class. Invalid input must not wrap into a different valid class. */
+    int level = configured >= VLC_PROCESS_PRIORITY_IDLE
+        && configured <= VLC_PROCESS_PRIORITY_INHERIT
+        ? (int)configured : VLC_PROCESS_PRIORITY_IDLE - 1;
+    bool realtime = var_InheritBool(instance, "win32-realtime-priority");
+    const bool modern_cli = var_Type(instance, "win32-process-priority")
+        || var_Type(instance, "win32-realtime-priority");
+    const bool legacy_cli = var_Type(instance, "high-priority") != 0;
+    const bool legacy_high = var_InheritBool(instance, "high-priority");
+    if (!modern_cli) {
+        if (legacy_cli) {
+            /* Explicit legacy no-high means no Core scheduling override,
+             * preserving a LibVLC host's inherited class. */
+            level = legacy_high ? VLC_PROCESS_PRIORITY_ABOVE_NORMAL : VLC_PROCESS_PRIORITY_INHERIT;
+            realtime = false;
+        } else if (level == VLC_PROCESS_PRIORITY_INHERIT && !realtime && legacy_high)
+            level = VLC_PROCESS_PRIORITY_ABOVE_NORMAL;
+    }
+    vlc_process_priority_state state;
+    const int result = vlc_process_priority_apply(level, realtime, &state);
+    var_Create(instance, "win32-priority-request-error", VLC_VAR_INTEGER);
+    var_SetInteger(instance, "win32-priority-request-error", state.system_error);
+    var_Create(instance, "win32-priority-rollback-failed", VLC_VAR_BOOL);
+    var_SetBool(instance, "win32-priority-rollback-failed", state.rollback_failed);
+    if (result != VLC_SUCCESS)
+        msg_Warn(instance, "process priority request rejected (Windows error %"PRIu32", rollback failed: %s)",
+                 state.system_error, state.rollback_failed ? "yes" : "no");
+}
+
 void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_argv[] )
 {
+    ProcessPriorityConfigure(p_this);
 #if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
-    if( var_InheritBool( p_this, "one-instance" )
-     || ( var_InheritBool( p_this, "one-instance-when-started-from-file" )
-       && var_InheritBool( p_this, "started-from-file" ) ) )
+    if( LibrarySingleInstance(p_this) )
     {
         HANDLE hmutex;
 
@@ -116,6 +258,11 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
                 return;
             }
 
+            int exit_status = EXIT_SUCCESS;
+            const int open_mode = LibraryOpenMode(p_this);
+            char **explicit_args = NULL;
+            const char *const *send_args = ppsz_argv;
+
             /* We assume that the remaining parameters are filenames
              * and their input options */
             if( i_argc > 0 )
@@ -125,22 +272,55 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
                 vlc_ipc_data_t *p_data;
                 size_t i_data = sizeof (*p_data);
 
+                /* Match the explicit receiver's bounds before allocation. */
+                if (open_mode >= 2 && i_argc > 4096)
+                {
+                    msg_Err(p_this, "too many files/options for the running instance");
+                    exit_status = EXIT_FAILURE;
+                    goto handoff_done;
+                }
+                if (open_mode >= 2)
+                {
+                    explicit_args = LibraryOpenArguments(i_argc, ppsz_argv);
+                    if (explicit_args == NULL)
+                    {
+                        msg_Err(p_this, "cannot resolve files for the running instance");
+                        exit_status = EXIT_FAILURE;
+                        goto handoff_done;
+                    }
+                    send_args = (const char *const *)explicit_args;
+                }
                 for( i_opt = 0; i_opt < i_argc; i_opt++ )
                 {
-                    i_data += sizeof (size_t);
-                    i_data += strlen( ppsz_argv[ i_opt ] ) + 1;
+                    const size_t length = strlen(send_args[i_opt]) + 1;
+                    if (open_mode >= 2 &&
+                        (length > 16 * 1024 * 1024 - sizeof(size_t) ||
+                         i_data > 16 * 1024 * 1024 - sizeof(size_t) - length))
+                    {
+                        msg_Err(p_this, "open request exceeds the running instance's limit");
+                        exit_status = EXIT_FAILURE;
+                        goto handoff_done;
+                    }
+                    i_data += sizeof(size_t) + length;
                 }
 
                 p_data = malloc( i_data );
+                if (!p_data)
+                {
+                    if (open_mode < 2) { ReleaseMutex(hmutex); return; }
+                    msg_Err(p_this, "cannot allocate the open request");
+                    exit_status = EXIT_FAILURE;
+                    goto handoff_done;
+                }
                 p_data->argc = i_argc;
-                p_data->enqueue = var_InheritBool( p_this, "playlist-enqueue" );
+                p_data->enqueue = open_mode;
                 i_data = 0;
                 for( i_opt = 0; i_opt < i_argc; i_opt++ )
                 {
-                    size_t i_len = strlen( ppsz_argv[ i_opt ] ) + 1;
+                    size_t i_len = strlen( send_args[ i_opt ] ) + 1;
                     memcpy( &p_data->data[i_data], &i_len, sizeof (size_t) );
                     i_data += sizeof (size_t);
-                    memcpy( &p_data->data[i_data], ppsz_argv[ i_opt ], i_len );
+                    memcpy( &p_data->data[i_data], send_args[ i_opt ], i_len );
                     i_data += i_len;
                 }
                 i_data += sizeof (*p_data);
@@ -149,16 +329,22 @@ void system_Configure( libvlc_int_t *p_this, int i_argc, const char *const ppsz_
                 wm_data.dwData = 0;
                 wm_data.cbData = i_data;
                 wm_data.lpData = p_data;
-                SendMessage( ipcwindow, WM_COPYDATA, 0, (LPARAM)&wm_data );
+                if (open_mode >= 2)
+                    exit_status = LibrarySendExplicit(p_this, ipcwindow, &wm_data);
+                else
+                    SendMessage(ipcwindow, WM_COPYDATA, 0, (LPARAM)&wm_data);
+                free(p_data);
             }
 
+handoff_done:
+            LibraryFreeArguments(explicit_args, i_argc);
             /* Initialization done.
              * Release the mutex to unblock other instances */
             ReleaseMutex( hmutex );
 
             /* Bye bye */
             system_End( );
-            exit( 0 );
+            exit(exit_status);
         }
     }
 #endif

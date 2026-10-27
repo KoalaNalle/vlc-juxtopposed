@@ -224,6 +224,7 @@ static mp4_stream_t *mp4_stream_New(void)
 static void box_send(sout_mux_t *p_mux,  bo_t *box);
 
 static block_t *ConvertSUBT(block_t *);
+static int BlockConvert(mp4_stream_t *, block_t **);
 static bool CreateCurrentEdit(mp4_stream_t *, vlc_tick_t, bool);
 static int MuxStream(sout_mux_t *p_mux, sout_input_t *p_input, mp4_stream_t *p_stream, block_t *p_data);
 
@@ -581,7 +582,7 @@ static void DelStream(sout_mux_t *p_mux, sout_input_t *p_input)
         p_data->p_next = NULL;
         if (fragmented)
             MuxFragBlock(p_mux, p_stream, p_data);
-        else
+        else if (BlockConvert(p_stream, &p_data) == VLC_SUCCESS && p_data != NULL)
             MuxStream(p_mux, p_input, p_stream, p_data);
         p_data = p_next;
     }
@@ -634,6 +635,13 @@ static bool CreateCurrentEdit(mp4_stream_t *p_stream, vlc_tick_t i_mux_start_dts
             newedit.i_duration = p_stream->i_last_pts - p_stream->i_first_dts;
         else
             newedit.i_duration = p_stream->i_last_dts - p_stream->i_first_dts;
+
+        /* A synthesized subtitle clearer sits at the text's end. Its length
+         * is zero, while last_pts still names the preceding text's start. */
+        if (mp4mux_track_GetFmt(p_stream->tinfo)->i_cat == SPU_ES
+            && p_lastsample->i_length == 0)
+            newedit.i_duration = __MAX(newedit.i_duration,
+                                      p_stream->i_last_dts - p_stream->i_first_dts);
 
         newedit.i_duration += p_lastsample->i_length;
     }

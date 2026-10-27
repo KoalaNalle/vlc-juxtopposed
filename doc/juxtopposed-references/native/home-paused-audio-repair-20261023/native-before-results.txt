@@ -1,0 +1,14 @@
+********* Start testing of TestNativePausedAudioSeek *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestNativePausedAudioSeek::initTestCase()
+FAIL!  : TestNativePausedAudioSeek::actualInitialAndPlayedPausedSeeks(initial-position) 'at(9., .3)' returned FALSE. (Paused seek must update both actual controller time and position)
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_native_paused_audio_seek.cpp(129) : failure location
+FAIL!  : TestNativePausedAudioSeek::actualInitialAndPlayedPausedSeeks(initial-time) 'at(9., .3)' returned FALSE. (Paused seek must update both actual controller time and position)
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_native_paused_audio_seek.cpp(129) : failure location
+PASS   : TestNativePausedAudioSeek::actualInitialAndPlayedPausedSeeks(played-position)
+PASS   : TestNativePausedAudioSeek::actualInitialAndPlayedPausedSeeks(played-time)
+FAIL!  : TestNativePausedAudioSeek::actualPausedMediaSwitchUsesTheNewDuration() 'at(6., .6)' returned FALSE. (Initial paused replacement must use its own duration)
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_native_paused_audio_seek.cpp(152) : failure location
+PASS   : TestNativePausedAudioSeek::cleanupTestCase()
+Totals: 4 passed, 3 failed, 0 skipped, 0 blacklisted, 9988ms
+********* Finished testing of TestNativePausedAudioSeek *********

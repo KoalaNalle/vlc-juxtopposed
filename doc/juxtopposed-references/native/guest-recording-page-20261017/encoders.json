@@ -1,0 +1,277 @@
+{
+  "passed": true,
+  "fullBetaAccepted": false,
+  "cases": {
+    "unset-defaults": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 10032,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "medium",
+          ""
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          3,
+          40
+        ]
+      ],
+      "expectedPreset": "medium",
+      "expectedTuning": "",
+      "expectedParameters": [
+        1,
+        1,
+        3,
+        40
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 12500,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "saved-ultrafast": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 15720,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "ultrafast",
+          ""
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "expectedPreset": "ultrafast",
+      "expectedTuning": "",
+      "expectedParameters": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 3732,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "saved-fast": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 18356,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "fast",
+          ""
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          3,
+          30
+        ]
+      ],
+      "expectedPreset": "fast",
+      "expectedTuning": "",
+      "expectedParameters": [
+        1,
+        1,
+        3,
+        30
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 13272,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "saved-zerolatency": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 2284,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "fast",
+          "zerolatency"
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "expectedPreset": "fast",
+      "expectedTuning": "zerolatency",
+      "expectedParameters": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 2916,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "none-after-tuning": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 19424,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "fast",
+          ""
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          3,
+          30
+        ]
+      ],
+      "expectedPreset": "fast",
+      "expectedTuning": "",
+      "expectedParameters": [
+        1,
+        1,
+        3,
+        30
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 15136,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "explicit-profile-wins": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 15560,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "fast",
+          "zerolatency"
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          0,
+          0
+        ]
+      ],
+      "expectedPreset": "fast",
+      "expectedTuning": "zerolatency",
+      "expectedParameters": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 19184,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    },
+    "explicit-cli-wins": {
+      "process": {
+        "forcedCleanupUsed": false,
+        "pid": 16040,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "requested": [
+        [
+          "fast",
+          ""
+        ]
+      ],
+      "effective": [
+        [
+          1,
+          1,
+          3,
+          30
+        ]
+      ],
+      "expectedPreset": "fast",
+      "expectedTuning": "",
+      "expectedParameters": [
+        1,
+        1,
+        3,
+        30
+      ],
+      "passed": true,
+      "replay": {
+        "forcedCleanupUsed": false,
+        "pid": 19324,
+        "exitCode": 0,
+        "normalExit": true
+      },
+      "decodedFrames": 1
+    }
+  },
+  "runtimeSha256": {
+    "libvlccore.dll": "15544aec341c67d7dba56a62241c056a11f3fa9adf86e62d0b714d816b3a6d43",
+    "plugins/codec/libx264_plugin.dll": "692651bcfe2a5ddf3db2e9297c52d3b9e5f688399ffd37077fa1db08df5c9f62"
+  },
+  "sourceRuntimeUnchanged": true
+}

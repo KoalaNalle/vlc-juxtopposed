@@ -35,8 +35,12 @@ Q_MOC_INCLUDE( "dialogs/toolbar/controlbar_profile_model.hpp" )
 Q_MOC_INCLUDE( "util/csdbuttonmodel.hpp" )
 Q_MOC_INCLUDE( "playlist/playlist_controller.hpp" )
 Q_MOC_INCLUDE( "maininterface/mainctx_submodels.hpp" )
+Q_MOC_INCLUDE( "maininterface/subtitle_preset_model.hpp" )
+Q_MOC_INCLUDE( "maininterface/subtitle_attachment_model.hpp" )
 Q_MOC_INCLUDE( "maininterface/videosurface.hpp" )
 Q_MOC_INCLUDE( "medialibrary/medialib.hpp" )
+Q_MOC_INCLUDE( "medialibrary/mlcurrentmedia.hpp" )
+Q_MOC_INCLUDE( "maininterface/history_media_source.hpp" )
 Q_MOC_INCLUDE( "player/player_controller.hpp" )
 Q_MOC_INCLUDE( "util/color_scheme_model.hpp" )
 #ifdef UPDATE_CHECK
@@ -61,11 +65,47 @@ class StandardPLPanel;
 struct vlc_window;
 class VideoSurfaceProvider;
 class ControlbarProfileModel;
+class SubtitlePresetModel;
+class SubtitleAttachmentModel;
 class SearchCtx;
 class SortCtx;
 class VLCSystray;
 class MediaLib;
+class MLCurrentMedia;
+class HistoryMediaSource;
 class ColorSchemeModel;
+class GeneralPreferencesModel;
+class InterfacePreferencesModel;
+class PlaybackPreferencesModel;
+class TimelineThumbnails;
+class VideoPreferencesModel;
+class AudioPreferencesModel;
+class SubtitlesPreferencesModel;
+class LibraryPreferencesModel;
+class PrivacyPreferencesModel;
+class ControlsPreferencesModel;
+class NetworkPreferencesModel;
+class PerformancePreferencesModel;
+class RecordingPreferencesModel;
+class ExtensionsPreferencesModel;
+class SidebarPinsModel;
+class PlayerProfilesModel;
+Q_MOC_INCLUDE("maininterface/player_profiles_model.hpp")
+Q_MOC_INCLUDE("maininterface/general_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/interface_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/playback_preferences_model.hpp")
+Q_MOC_INCLUDE("player/timeline_thumbnails.hpp")
+Q_MOC_INCLUDE("maininterface/video_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/audio_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/subtitles_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/library_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/privacy_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/controls_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/network_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/performance_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/recording_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/extensions_preferences_model.hpp")
+Q_MOC_INCLUDE("maininterface/sidebar_pins_model.hpp")
 class VLCVarChoiceModel;
 class SidePanelCtx;
 #ifdef UPDATE_CHECK
@@ -87,7 +127,7 @@ public:
         VIDEO = 2,
     };
 
-    static bool holdFullscreen( QWindow* window, Source source, bool hold );
+    static bool holdFullscreen(QWindow* window, Source source, bool hold, int screenIndex = -1);
 
 
     static bool holdOnTop( QWindow* window, Source source, bool hold );
@@ -98,6 +138,8 @@ class MainCtx : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(SubtitlePresetModel* subtitlePresets READ subtitlePresets CONSTANT FINAL)
+    Q_PROPERTY(SubtitleAttachmentModel* subtitleAttachments READ subtitleAttachments CONSTANT FINAL)
     Q_PROPERTY(double playerPlaylistWidth READ getPlayerPlaylistWidth WRITE setPlayerPlaylistWidth NOTIFY playerPlaylistWidthChanged FINAL)
     Q_PROPERTY(SidePanelCtx* playqueuePanel READ getPlayqueuePanel CONSTANT FINAL)
     Q_PROPERTY(SidePanelCtx* navigationPanel READ getNavigationPanel CONSTANT FINAL)
@@ -109,16 +151,35 @@ class MainCtx : public QObject
     Q_PROPERTY(double intfScaleFactor READ getIntfScaleFactor NOTIFY intfScaleFactorChanged FINAL)
     Q_PROPERTY(bool mediaLibraryAvailable READ hasMediaLibrary CONSTANT FINAL)
     Q_PROPERTY(MediaLib* mediaLibrary READ getMediaLibrary CONSTANT FINAL)
+    Q_PROPERTY(MLCurrentMedia* currentMedia READ getCurrentMedia CONSTANT FINAL)
+    Q_PROPERTY(HistoryMediaSource* playbackHistory READ getPlaybackHistory CONSTANT FINAL)
     Q_PROPERTY(bool gridView READ hasGridView WRITE setGridView NOTIFY gridViewChanged FINAL)
     Q_PROPERTY(bool hasGridListMode MEMBER m_hasGridListMode NOTIFY hasGridListModeChanged FINAL)
     Q_PROPERTY(Grouping grouping READ grouping WRITE setGrouping NOTIFY groupingChanged FINAL)
     Q_PROPERTY(ColorSchemeModel* colorScheme READ getColorScheme CONSTANT FINAL)
+    Q_PROPERTY(GeneralPreferencesModel* generalPreferences READ getGeneralPreferences CONSTANT FINAL)
+    Q_PROPERTY(InterfacePreferencesModel* interfacePreferences READ getInterfacePreferences CONSTANT FINAL)
+    Q_PROPERTY(PlaybackPreferencesModel* playbackPreferences READ getPlaybackPreferences CONSTANT FINAL)
+    Q_PROPERTY(TimelineThumbnails* timelineThumbnails READ getTimelineThumbnails CONSTANT FINAL)
+    Q_PROPERTY(VideoPreferencesModel* videoPreferences READ getVideoPreferences CONSTANT FINAL)
+    Q_PROPERTY(AudioPreferencesModel* audioPreferences READ getAudioPreferences CONSTANT FINAL)
+    Q_PROPERTY(SubtitlesPreferencesModel* subtitlesPreferences READ getSubtitlesPreferences CONSTANT FINAL)
+    Q_PROPERTY(LibraryPreferencesModel* libraryPreferences READ getLibraryPreferences CONSTANT FINAL)
+    Q_PROPERTY(PrivacyPreferencesModel* privacyPreferences READ getPrivacyPreferences CONSTANT FINAL)
+    Q_PROPERTY(ControlsPreferencesModel* controlsPreferences READ getControlsPreferences CONSTANT FINAL)
+    Q_PROPERTY(NetworkPreferencesModel* networkPreferences READ getNetworkPreferences CONSTANT FINAL)
+    Q_PROPERTY(PerformancePreferencesModel* performancePreferences READ getPerformancePreferences CONSTANT FINAL)
+    Q_PROPERTY(RecordingPreferencesModel* recordingPreferences READ getRecordingPreferences CONSTANT FINAL)
+    Q_PROPERTY(ExtensionsPreferencesModel* extensionsPreferences READ getExtensionsPreferences CONSTANT FINAL)
+    Q_PROPERTY(SidebarPinsModel* sidebarPins READ getSidebarPins CONSTANT FINAL)
+    Q_PROPERTY(PlayerProfilesModel* playerProfiles READ getPlayerProfiles CONSTANT FINAL)
     Q_PROPERTY(bool hasVLM READ hasVLM CONSTANT FINAL)
     Q_PROPERTY(bool clientSideDecoration READ useClientSideDecoration NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasFirstrun READ hasFirstrun CONSTANT FINAL)
     Q_PROPERTY(int  csdBorderSize READ CSDBorderSize NOTIFY useClientSideDecorationChanged FINAL)
     Q_PROPERTY(bool hasToolbarMenu READ hasToolbarMenu WRITE setHasToolbarMenu NOTIFY hasToolbarMenuChanged FINAL)
     Q_PROPERTY(bool canShowVideoPIP READ canShowVideoPIP CONSTANT FINAL)
+    Q_PROPERTY(bool juxtopposedControls READ juxtopposedControls NOTIFY juxtopposedControlsChanged FINAL)
     Q_PROPERTY(bool pinVideoControls READ pinVideoControls WRITE setPinVideoControls NOTIFY pinVideoControlsChanged FINAL)
     Q_PROPERTY(float pinOpacity READ pinOpacity WRITE setPinOpacity NOTIFY pinOpacityChanged FINAL)
     Q_PROPERTY(ControlbarProfileModel* controlbarProfileModel READ controlbarProfileModel CONSTANT FINAL)
@@ -130,6 +191,11 @@ class MainCtx : public QObject
     Q_PROPERTY(float safeArea READ safeArea NOTIFY safeAreaChanged FINAL)
     Q_PROPERTY(VideoSurfaceProvider* videoSurfaceProvider READ getVideoSurfaceProvider WRITE setVideoSurfaceProvider NOTIFY hasEmbededVideoChanged FINAL)
     Q_PROPERTY(int mouseHideTimeout READ mouseHideTimeout NOTIFY mouseHideTimeoutChanged FINAL)
+    // Startup policies: this Interface foundation explicitly reports restart.
+    Q_PROPERTY(int controlAutoHideMode READ controlAutoHideMode CONSTANT FINAL)
+    Q_PROPERTY(int controlsHideTimeout READ controlsHideTimeout NOTIFY mouseHideTimeoutChanged FINAL)
+    Q_PROPERTY(bool showMediaNameInTitle READ showMediaNameInTitle CONSTANT FINAL)
+    Q_PROPERTY(bool showFullscreenControls READ showFullscreenControls CONSTANT FINAL)
     Q_PROPERTY(bool albumSections READ albumSections WRITE setAlbumSections NOTIFY albumSectionsChanged FINAL)
     Q_PROPERTY(bool lyricsMode READ lyricsMode WRITE setLyricsMode NOTIFY lyricsModeChanged FINAL)
     Q_PROPERTY(bool usingTouch READ usingTouch NOTIFY usingTouchChanged FINAL)
@@ -174,6 +240,8 @@ public:
 
 public:
     /* Getters */
+    SubtitlePresetModel* subtitlePresets() const { return m_subtitlePresets; }
+    SubtitleAttachmentModel* subtitleAttachments() const { return m_subtitleAttachments; }
     inline qt_intf_t* getIntf() const { return p_intf; }
     inline vlc_preparser_t *getNetworkPreparser() const { return m_network_preparser; };
     bool smoothScroll() const { return m_smoothScroll; }
@@ -235,11 +303,29 @@ public:
     inline double getMaxIntfUserScaleFactor() const { return MAX_INTF_USER_SCALE_FACTOR; }
     inline bool hasMediaLibrary() const { return b_hasMedialibrary; }
     inline MediaLib* getMediaLibrary() const { return m_medialib; }
+    inline MLCurrentMedia* getCurrentMedia() const { return m_currentMedia; }
+    inline HistoryMediaSource* getPlaybackHistory() const { return m_historyMediaSource; }
     inline bool hasGridView() const { return m_gridView; }
     inline Grouping grouping() const { return m_grouping; }
     inline bool albumSections() const { return m_albumSections; }
     inline bool lyricsMode() const { return m_lyricsMode; }
     inline ColorSchemeModel* getColorScheme() const { return m_colorScheme; }
+    inline GeneralPreferencesModel* getGeneralPreferences() const { return m_generalPreferences; }
+    inline InterfacePreferencesModel* getInterfacePreferences() const { return m_interfacePreferences; }
+    inline PlaybackPreferencesModel* getPlaybackPreferences() const { return m_playbackPreferences; }
+    inline TimelineThumbnails* getTimelineThumbnails() const { return m_timelineThumbnails; }
+    inline VideoPreferencesModel* getVideoPreferences() const { return m_videoPreferences; }
+    inline AudioPreferencesModel* getAudioPreferences() const { return m_audioPreferences; }
+    inline SubtitlesPreferencesModel* getSubtitlesPreferences() const { return m_subtitlesPreferences; }
+    inline LibraryPreferencesModel* getLibraryPreferences() const { return m_libraryPreferences; }
+    inline PrivacyPreferencesModel* getPrivacyPreferences() const { return m_privacyPreferences; }
+    inline ControlsPreferencesModel* getControlsPreferences() const { return m_controlsPreferences; }
+    inline NetworkPreferencesModel* getNetworkPreferences() const { return m_networkPreferences; }
+    inline PerformancePreferencesModel* getPerformancePreferences() const { return m_performancePreferences; }
+    inline RecordingPreferencesModel* getRecordingPreferences() const { return m_recordingPreferences; }
+    inline SidebarPinsModel* getSidebarPins() const { return m_sidebarPins; }
+    inline PlayerProfilesModel* getPlayerProfiles() const { return m_playerProfiles; }
+    inline ExtensionsPreferencesModel* getExtensionsPreferences() const { return m_extensionsPreferences; }
     bool hasVLM() const;
     bool useClientSideDecoration() const;
     bool hasFirstrun() const;
@@ -247,6 +333,7 @@ public:
     inline bool canShowVideoPIP() const { return m_canShowVideoPIP; }
     inline void setCanShowVideoPIP(bool canShowVideoPIP) { m_canShowVideoPIP = canShowVideoPIP; }
 
+    inline bool juxtopposedControls() const { return m_juxtopposedControls; }
     inline bool pinVideoControls() const { return m_pinVideoControls; }
     inline float pinOpacity() const { return m_pinOpacity; }
 
@@ -279,6 +366,15 @@ public:
     void setVideoSurfaceProvider(VideoSurfaceProvider* videoSurfaceProvider);
 
     int mouseHideTimeout() const { return m_mouseHideTimeout; }
+    int controlAutoHideMode() const { return m_startupControlsAutoHide; }
+    int controlsHideTimeout() const {
+        return m_startupControlsHideTimeout < 0 ? m_mouseHideTimeout : m_startupControlsHideTimeout;
+    }
+    bool showMediaNameInTitle() const { return m_startupShowMediaNameInTitle; }
+    bool showFullscreenControls() const { return m_startupFullscreenControls; }
+    bool rememberWindowGeometry() const { return m_startupRememberGeometry; }
+    int notificationDuration() const { return m_startupNotificationDuration; }
+    int fullscreenScreen() const { return m_startupFullscreenScreen; }
 
     bool usingTouch() const { return m_usingTouch; }
 
@@ -352,6 +448,8 @@ public:
         assert(window->handle());
         return window->format().depthBufferSize() > 0;
     }
+
+    Q_INVOKABLE static void placeDetachedQueue(QWindow *window, const QWindow *owner);
 
     // TODO: This functions is akin to Window Web API's `setTimeout()`. Get rid of this once
     //       once Qt implements it.
@@ -432,6 +530,8 @@ protected:
 
     /* */
     QSettings           *settings = nullptr;
+    SubtitlePresetModel *m_subtitlePresets = nullptr;
+    SubtitleAttachmentModel *m_subtitleAttachments = nullptr;
 
     std::unique_ptr<VLCSystray> m_systray;
 
@@ -447,16 +547,43 @@ protected:
     bool                 b_hasWayland = false;
     bool                 b_hasMedialibrary = false;
     MediaLib*            m_medialib = nullptr;
+    MLCurrentMedia*      m_currentMedia = nullptr;
+    HistoryMediaSource* m_historyMediaSource = nullptr;
     bool                 m_gridView = false;
     bool                 m_hasGridListMode = false;
     Grouping             m_grouping = GROUPING_NONE;
     ColorSchemeModel*    m_colorScheme = nullptr;
+    GeneralPreferencesModel* m_generalPreferences = nullptr;
+    InterfacePreferencesModel* m_interfacePreferences = nullptr;
+    PlaybackPreferencesModel* m_playbackPreferences = nullptr;
+    TimelineThumbnails* m_timelineThumbnails = nullptr;
+    VideoPreferencesModel* m_videoPreferences = nullptr;
+    AudioPreferencesModel* m_audioPreferences = nullptr;
+    SubtitlesPreferencesModel* m_subtitlesPreferences = nullptr;
+    LibraryPreferencesModel* m_libraryPreferences = nullptr;
+    PrivacyPreferencesModel* m_privacyPreferences = nullptr;
+    ControlsPreferencesModel* m_controlsPreferences = nullptr;
+    NetworkPreferencesModel* m_networkPreferences = nullptr;
+    PerformancePreferencesModel* m_performancePreferences = nullptr;
+    RecordingPreferencesModel* m_recordingPreferences = nullptr;
+    ExtensionsPreferencesModel* m_extensionsPreferences = nullptr;
+    SidebarPinsModel* m_sidebarPins = nullptr;
+    PlayerProfilesModel* m_playerProfiles = nullptr;
     bool                 m_windowTitlebar = true;
+    // Immutable application-start snapshot for the new Interface consumers.
+    int m_startupControlsAutoHide = -1;
+    int m_startupControlsHideTimeout = -1;
+    bool m_startupFullscreenControls = true;
+    bool m_startupShowMediaNameInTitle = true;
+    bool m_startupRememberGeometry = true;
+    int m_startupNotificationDuration = 3000;
+    int m_startupFullscreenScreen = -1;
     // NOTE: Ideally this should be a QVLCBool.
     bool                 m_hasToolbarMenu = false;
     bool                 m_canShowVideoPIP = false;
 
     /* Pinned */
+    bool                 m_juxtopposedControls = false;
     bool                 m_pinVideoControls = false;
     float                m_pinOpacity       = 1.0f;
 
@@ -587,6 +714,7 @@ signals:
     void intfScaleFactorChanged();
     void intfDevicePixelRatioChanged();
 
+    void juxtopposedControlsChanged();
     void pinVideoControlsChanged();
     void pinOpacityChanged();
 

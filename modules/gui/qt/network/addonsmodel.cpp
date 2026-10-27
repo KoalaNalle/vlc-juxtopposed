@@ -28,6 +28,9 @@
 #include <memory>
 #include <QPixmap>
 #include <QQmlFile>
+#include <QQueue>
+#include <QSet>
+#include <QHash>
 
 #include <vlc_media_source.h>
 #include <vlc_addons.h>
@@ -65,7 +68,7 @@ using AddonPtr = ::vlc::vlc_shared_data_ptr<addon_entry_t,
 class AddonItem {
 public:
     //
-    AddonItem( AddonPtr addon )
+    AddonItem( AddonPtr addon, quint64 generation )
     {
         vlc_mutex_locker locker{&addon->lock};
         name = qfu( addon->psz_name );
@@ -75,6 +78,8 @@ public:
         sourceUrl = QUrl( addon->psz_source_uri );
         entry = addon;
         uuid = QByteArray( reinterpret_cast<const char*>(addon->uuid), sizeof( addon_uuid_t ));
+        key = uuid != QByteArray(ADDON_UUID_SIZE, '\0') ? QString::fromLatin1(uuid.toHex())
+            : QStringLiteral("local:%1:%2").arg(generation).arg(quintptr(addon.get()), 0, 16);
 
         if ( addon->psz_image_data ) {
             char *cDir = config_GetUserDir( VLC_CACHE_DIR );
@@ -110,6 +115,7 @@ public:
 
 public:
     QByteArray  uuid;
+    QString key;
     QString name;
     QString summary;
     QString description;
@@ -130,7 +136,7 @@ template<>
 bool ListCache<AddonItemPtr>::compareItems(const AddonItemPtr& a, const AddonItemPtr& b)
 {
     //just compare the pointers here
-    return a->uuid == b->uuid;
+    return a->key == b->key;
 }
 
 // AddonsModelPrivate
@@ -150,6 +156,7 @@ public: //ctor/dtor
 
     ~AddonsModelPrivate()
     {
+        ++m_generation;
         if ( m_manager )
             addons_manager_Delete( m_manager );
     }
@@ -163,16 +170,44 @@ public:
         return nullptr;
     }
 
-    bool gatherRepository(const char* uri)
+    bool gatherRepository(const QUrl &uri, bool installPackage = false);
+    bool change(const QString &key, bool install);
+    bool nativeBusy() const { return !m_discoveries.isEmpty() || !m_operations.isEmpty(); }
+    AddonItemPtr findKey(const QString &key) const
     {
-        Q_Q(AddonsModel);
-        if (!m_manager)
-            return false;
-        m_loading = true;
-        emit q->loadingChanged();
-        addons_manager_Gather( m_manager, uri);
-        return true;
+        for (const auto &item : m_items) if (item->key == key) return item;
+        return {};
     }
+    bool matches(const AddonItemPtr &item, const QString &pattern) const
+    {
+        vlc_mutex_locker locker{&item->entry->lock};
+        return (m_stateFilter == AddonsModel::State::STATE_NONE || static_cast<AddonsModel::State>(item->entry->e_state) == m_stateFilter)
+            && (m_typeFilter == AddonsModel::Type::TYPE_NONE || static_cast<AddonsModel::Type>(item->entry->e_type) == m_typeFilter)
+            && (pattern.isEmpty() || item->name.contains(pattern, Qt::CaseInsensitive)
+                || item->author.contains(pattern, Qt::CaseInsensitive) || item->summary.contains(pattern, Qt::CaseInsensitive));
+    }
+    bool actionable(const QString &key, bool install) const
+    {
+        if (!m_manager || nativeBusy()) return false;
+        const auto item = findKey(key);
+        if (!item || !matches(item, m_searchPattern)) return false;
+        vlc_mutex_locker locker{&item->entry->lock};
+        return (item->entry->e_flags & ADDON_MANAGEABLE)
+            && item->uuid != QByteArray(ADDON_UUID_SIZE, '\0')
+            && item->entry->e_type != ADDON_UNKNOWN && item->entry->e_type != ADDON_PLUGIN && item->entry->e_type != ADDON_OTHER
+            && item->entry->e_state == (install ? ADDON_NOTINSTALLED : ADDON_INSTALLED);
+    }
+    void error(const QString &value)
+    { Q_Q(AddonsModel); if (m_error != value) { m_error = value; emit q->lastErrorChanged(); } }
+    bool fail(const QString &value) { error(value); return false; }
+    void status(const QString &value)
+    { Q_Q(AddonsModel); if (m_status != value) { m_status = value; emit q->statusTextChanged(); } }
+    void dirty()
+    { Q_Q(AddonsModel); ++m_revision; invalidateCache(); emit q->selectionChanged(); }
+    void busyChanged()
+    { Q_Q(AddonsModel); m_loading = !m_discoveries.isEmpty(); emit q->busyChanged(); emit q->loadingChanged(); emit q->selectionChanged(); }
+    void saveNeeded(bool value)
+    { Q_Q(AddonsModel); if (m_saveNeeded != value) { m_saveNeeded = value; emit q->catalogSaveNeededChanged(); } }
 
 public: //BaseModelPrivateT implementation
     bool initializeModel() override;
@@ -193,8 +228,8 @@ public: //BaseModelPrivateT implementation
 
 public: //discovery callbacks
     void addonFound( AddonPtr addon );
-    void addonChanged( AddonPtr addon );
-    void discoveryEnded();
+    void addonChanged( AddonPtr addon, bool complete, int storage, int catalog );
+    void discoveryEnded(int result);
 
 public: //LocalListCacheLoader implementation
     //return the data matching the pattern
@@ -209,15 +244,7 @@ public: //LocalListCacheLoader implementation
         std::copy_if(
             m_items.cbegin(), m_items.cend(),
             std::back_inserter(items),
-            [&pattern, filter = m_typeFilter, state = m_stateFilter](const AddonItemPtr& item) {
-                if (state != AddonsModel::State::STATE_NONE
-                    && static_cast<AddonsModel::State>(item->entry->e_state) != state)
-                    return false;
-                if (filter != AddonsModel::Type::TYPE_NONE
-                    && static_cast<AddonsModel::Type>(item->entry->e_type) != filter)
-                        return false;
-                return item->name.contains(pattern, Qt::CaseInsensitive);
-            });
+            [this, &pattern](const AddonItemPtr& item) { return matches(item, pattern); });
         return items;
     }
 
@@ -225,6 +252,14 @@ public: // data
     MainCtx* m_ctx = nullptr;
     addons_manager_t* m_manager = nullptr;
     AddonItemList m_items;
+    struct CallbackContext { AddonsModelPrivate *model; quint64 generation; };
+    std::unique_ptr<CallbackContext> m_callbackContext;
+    quint64 m_generation = 0;
+    struct Discovery { QUrl uri; bool installPackage; QSet<QString> keys; };
+    QQueue<Discovery> m_discoveries;
+    QHash<QString, bool> m_operations;
+    QString m_selected, m_error, m_status;
+    bool m_saveNeeded = false;
     AddonsModel::Type m_typeFilter = AddonsModel::Type::TYPE_NONE;
     AddonsModel::State m_stateFilter = AddonsModel::State::STATE_NONE;
 };
@@ -232,6 +267,9 @@ public: // data
 AddonsModel::AddonsModel( QObject* parent )
     : BaseModel( new AddonsModelPrivate(this), parent )
 {
+    connect(this, &BaseModel::searchPatternChanged, this, [this] { setSelectedKey({}); });
+    connect(this, &AddonsModel::stateFilterChanged, this, [this] { setSelectedKey({}); });
+    connect(this, &AddonsModel::typeFilterChanged, this, [this] { setSelectedKey({}); });
 }
 
 QVariant AddonsModel::data( const QModelIndex& index, int role ) const
@@ -241,11 +279,30 @@ QVariant AddonsModel::data( const QModelIndex& index, int role ) const
         return {};
 
     const AddonItem* item = d->getItemForRow(index.row());
-    if (!item)
+    if (!item) {
+        // Cache counts arrive before their rows. Typed QML delegates need
+        // stable empty values until the queued page load emits dataChanged.
+        if (role == Role::NAME || role == Role::AUTHOR || role == Role::SELECTION_KEY || role == Role::STATE_LABEL)
+            return QString{};
+        if (role == Role::MANAGEABLE) return false;
         return {};
+    }
 
     switch ( role )
     {
+        case Role::SELECTION_KEY:
+            return item->key;
+        case Role::STATE_LABEL:
+        {
+            vlc_mutex_locker locker{&item->entry->lock};
+            if (!(item->entry->e_flags & ADDON_MANAGEABLE)) return qtr("Installed manually");
+            if (item->entry->e_state == ADDON_INSTALLING) return qtr("Installing…");
+            if (item->entry->e_state == ADDON_UNINSTALLING) return qtr("Removing…");
+            if (item->entry->e_type == ADDON_UNKNOWN || item->entry->e_type == ADDON_PLUGIN || item->entry->e_type == ADDON_OTHER)
+                return qtr("Unsupported type");
+            if (item->entry->e_flags & ADDON_BROKEN) return qtr("Needs attention");
+            return item->entry->e_state == ADDON_INSTALLED ? qtr("Installed") : qtr("Available");
+        }
         case Qt::DisplayRole:
         case Role::NAME:
             return item->name;
@@ -340,19 +397,11 @@ QVariant AddonsModel::data( const QModelIndex& index, int role ) const
 
 bool AddonsModel::setData(const QModelIndex& index, const QVariant &value, int role)
 {
-    if ( role == Role::STATE )
-    {
-        auto i_value = value.value<AddonsModel::State>();
-        if ( i_value == AddonsModel::State::STATE_INSTALLING )
-        {
-            installService(index.row());
-        }
-        else if ( i_value == AddonsModel::State::STATE_UNINSTALLING )
-        {
-            removeService(index.row());
-        }
-    }
-    return true;
+    if (!index.isValid() || index.model() != this || role != Role::STATE) return false;
+    const auto state = value.value<AddonsModel::State>();
+    if (state == State::STATE_INSTALLING) return installService(index.row());
+    if (state == State::STATE_UNINSTALLING) return removeService(index.row());
+    return false;
 }
 
 Qt::ItemFlags AddonsModel::flags( const QModelIndex &index ) const
@@ -396,47 +445,93 @@ QHash<int, QByteArray> AddonsModel::roleNames() const
         { Role::BROKEN, QByteArrayLiteral("broken") },
         { Role::MANAGEABLE, QByteArrayLiteral("manageable") },
         { Role::UPDATABLE, QByteArrayLiteral("updatable") },
+        { Role::SELECTION_KEY, QByteArrayLiteral("selectionKey") },
+        { Role::STATE_LABEL, QByteArrayLiteral("stateLabel") },
     };
 }
 
-void AddonsModel::installService(int idx)
+bool AddonsModel::installService(int idx)
 {
     Q_D(AddonsModel);
 
     const AddonItem* item = d->getItemForRow(idx);
-    if (!item)
-        return;
-
-    addon_uuid_t uuid;
-    assert(sizeof(uuid) == item->uuid.size());
-    memcpy( uuid, item->uuid.constData(), sizeof( uuid ) );
-    addons_manager_Install( d->m_manager, uuid );
+    return item ? installByKey(item->key) : d->fail(qtr("Choose an available add-on first."));
 }
 
-void AddonsModel::removeService(int idx)
+bool AddonsModel::removeService(int idx)
 {
     Q_D(AddonsModel);
 
     const AddonItem* item = d->getItemForRow(idx);
-    if (!item)
-        return;
-
-    addon_uuid_t uuid;
-    assert(sizeof(uuid) == item->uuid.size());
-    memcpy( uuid, item->uuid.constData(), sizeof( uuid ) );
-    addons_manager_Remove( d->m_manager, uuid );
+    return item ? removeByKey(item->key) : d->fail(qtr("Choose an installed add-on first."));
 }
 
-void AddonsModel::loadFromDefaultRepository()
+bool AddonsModel::loadFromDefaultRepository()
 {
     Q_D(AddonsModel);
-    d->gatherRepository("repo://");
+    return d->gatherRepository(QUrl(QStringLiteral("repo://")));
 }
 
-void AddonsModel::loadFromExternalRepository(QUrl uri)
+bool AddonsModel::loadFromExternalRepository(QUrl uri)
 {
     Q_D(AddonsModel);
-    d->gatherRepository(uri.toEncoded().constData());
+    return d->gatherRepository(uri);
+}
+
+bool AddonsModel::installByKey(const QString &key) { Q_D(AddonsModel); return d->change(key, true); }
+bool AddonsModel::removeByKey(const QString &key) { Q_D(AddonsModel); return d->change(key, false); }
+bool AddonsModel::installSelected() { return installByKey(selectedKey()); }
+bool AddonsModel::removeSelected() { return removeByKey(selectedKey()); }
+int AddonsModel::selectionIndex() const
+{
+    Q_D(const AddonsModel);
+    auto items=d->getModelData(d->m_searchPattern);
+    std::sort(items.begin(),items.end(),d->getSortFunction());
+    const auto found=std::find_if(items.begin(),items.end(),[&](const auto &item){return item->key==d->m_selected;});
+    return found==items.end()?-1:int(std::distance(items.begin(),found));
+}
+bool AddonsModel::available() const { Q_D(const AddonsModel); return d->m_manager != nullptr; }
+bool AddonsModel::busy() const { Q_D(const AddonsModel); return d->nativeBusy(); }
+bool AddonsModel::discovering() const { Q_D(const AddonsModel); return !d->m_discoveries.isEmpty(); }
+QString AddonsModel::lastError() const { Q_D(const AddonsModel); return d->m_error; }
+QString AddonsModel::statusText() const { Q_D(const AddonsModel); return d->m_status; }
+bool AddonsModel::catalogSaveNeeded() const { Q_D(const AddonsModel); return d->m_saveNeeded; }
+QString AddonsModel::selectedKey() const { Q_D(const AddonsModel); return d->m_selected; }
+bool AddonsModel::canInstall() const { Q_D(const AddonsModel); return d->actionable(d->m_selected, true); }
+bool AddonsModel::canRemove() const { Q_D(const AddonsModel); return d->actionable(d->m_selected, false); }
+void AddonsModel::clearError() { Q_D(AddonsModel); d->error({}); }
+void AddonsModel::showAll() { setTypeFilter(Type::TYPE_NONE); setStateFilter(State::STATE_NONE); }
+void AddonsModel::setSelectedKey(const QString &key)
+{
+    Q_D(AddonsModel);
+    const auto item = d->findKey(key);
+    const auto selected = item && d->matches(item, d->m_searchPattern) ? key : QString{};
+    if (d->m_selected == selected) return;
+    d->m_selected = selected; emit selectionChanged();
+}
+bool AddonsModel::retryCatalogSave()
+{
+    Q_D(AddonsModel);
+    if (!d->m_manager || busy()) return d->fail(qtr("Wait for the current add-on operation to finish."));
+    if (addons_manager_SaveCatalog(d->m_manager) != VLC_SUCCESS)
+        return d->fail(qtr("The add-on catalog could not be saved. Check the profile folder and retry."));
+    d->saveNeeded(false); d->error({}); d->status(qtr("Add-on catalog saved.")); return true;
+}
+bool AddonsModel::reloadCatalog()
+{
+    Q_D(AddonsModel);
+    if (busy()) return d->fail(qtr("Wait for the current add-on operation to finish."));
+    return d->initializeModel();
+}
+bool AddonsModel::addFromPackage(const QUrl &uri)
+{
+    Q_D(AddonsModel);
+    if (busy()) return d->fail(qtr("Wait for the current add-on operation to finish."));
+    const QFileInfo file(uri.toLocalFile());
+    if (!uri.isLocalFile() || uri.hasQuery() || uri.hasFragment() || !file.isFile() || !file.isReadable()
+        || file.suffix().compare(QStringLiteral("vlp"), Qt::CaseInsensitive))
+        return d->fail(qtr("Choose a readable local VLC package (.vlp)."));
+    return d->gatherRepository(QUrl::fromLocalFile(file.absoluteFilePath()), true);
 }
 
 void AddonsModel::setCtx(MainCtx* ctx)
@@ -446,7 +541,6 @@ void AddonsModel::setCtx(MainCtx* ctx)
     if (ctx == d->m_ctx)
         return;
 
-    assert(ctx);
     d->m_ctx = ctx;
     d->initializeModel();
     emit ctxChanged();
@@ -578,81 +672,152 @@ int AddonsModel::getMaxScore()
 
 static void addonFoundCallback( addons_manager_t *manager, addon_entry_t *entry )
 {
-    AddonsModelPrivate* d = (AddonsModelPrivate*) manager->owner.sys;
-    QMetaObject::invokeMethod( d->q_func(), [d, entryPtr = AddonPtr(entry)]()
+    const auto cookie = *static_cast<AddonsModelPrivate::CallbackContext*>(manager->owner.sys);
+    QMetaObject::invokeMethod( cookie.model->q_func(), [cookie, entryPtr = AddonPtr(entry)]()
         {
-            d->addonFound( std::move( entryPtr ) );
+            if (cookie.generation == cookie.model->m_generation)
+                cookie.model->addonFound( std::move( entryPtr ) );
         }, Qt::QueuedConnection);
 }
 
 static void addonsDiscoveryEndedCallback( addons_manager_t *manager )
 {
-    AddonsModelPrivate* d = (AddonsModelPrivate*) manager->owner.sys;
-    QMetaObject::invokeMethod( d->q_func(), [d]()
+    const auto cookie = *static_cast<AddonsModelPrivate::CallbackContext*>(manager->owner.sys);
+    const int result = addons_manager_GetDiscoveryResult(manager);
+    QMetaObject::invokeMethod( cookie.model->q_func(), [cookie, result]()
         {
-            d->discoveryEnded();
+            if (cookie.generation == cookie.model->m_generation)
+                cookie.model->discoveryEnded(result);
         }, Qt::QueuedConnection);
 }
 
 static void addonChangedCallback( addons_manager_t *manager, addon_entry_t *entry )
 {
-    AddonsModelPrivate* d = (AddonsModelPrivate*) manager->owner.sys;
-    QMetaObject::invokeMethod( d->q_func(), [d, entryPtr = AddonPtr(entry)]()
+    const auto cookie = *static_cast<AddonsModelPrivate::CallbackContext*>(manager->owner.sys);
+    int storage = VLC_EGENERIC, catalog = VLC_EGENERIC;
+    const bool complete = addon_entry_GetOperationResult(entry, &storage, &catalog);
+    QMetaObject::invokeMethod( cookie.model->q_func(), [cookie, entryPtr = AddonPtr(entry), complete, storage, catalog]()
         {
-            d->addonChanged( std::move( entryPtr ) );
+            if (cookie.generation == cookie.model->m_generation)
+                cookie.model->addonChanged( std::move( entryPtr ), complete, storage, catalog );
         }, Qt::QueuedConnection);
 }
 
 bool AddonsModelPrivate::initializeModel()
 {
     Q_Q(AddonsModel);
-    if (m_qmlInitializing || !m_ctx)
+    if (m_qmlInitializing)
         return false;
-
+    ++m_generation;
     if ( m_manager )
         addons_manager_Delete( m_manager );
-
+    m_manager = nullptr;
+    m_callbackContext.reset();
+    m_items.clear(); m_discoveries.clear(); m_operations.clear(); m_selected.clear();
+    error({}); status({}); saveNeeded(false);
+    m_loading = true; emit q->loadingChanged();
+    m_callbackContext = std::make_unique<CallbackContext>(CallbackContext{this, m_generation});
     struct addons_manager_owner owner =
     {
-        this,
+        m_callbackContext.get(),
         addonFoundCallback,
         addonsDiscoveryEndedCallback,
         addonChangedCallback,
     };
 
-    m_manager = addons_manager_New( VLC_OBJECT( m_ctx->getIntf() ), &owner );
-    assert( m_manager );
-
-    emit q->loadingChanged();
-    addons_manager_LoadCatalog( m_manager );
-
+    if (m_ctx) m_manager = addons_manager_New( VLC_OBJECT( m_ctx->getIntf() ), &owner );
+    if (!m_manager) error(qtr("The add-on manager is unavailable in this session."));
+    else if (addons_manager_LoadCatalog(m_manager) != VLC_SUCCESS)
+        error(qtr("The installed add-on catalog could not be read. Existing scripts are shown where possible."));
     m_revision++;
     m_loading = false;
+    resetCache();
+    emit q->availabilityChanged();
+    emit q->busyChanged(); emit q->selectionChanged();
     emit q->loadingChanged();
-    return true;
+    return m_manager != nullptr;
 }
 
 
 void AddonsModelPrivate::addonFound( AddonPtr addon )
 {
-    m_items.emplace_back(std::make_shared<AddonItem>(addon));
+    const auto item = std::make_shared<AddonItem>(addon, m_generation);
+    auto existing = std::find_if(m_items.begin(), m_items.end(), [&](const auto &value) { return value->key == item->key; });
+    if (existing == m_items.end()) m_items.push_back(item);
+    else *existing = item;
+    if (!m_discoveries.isEmpty()) m_discoveries.head().keys.insert(item->key);
+    dirty();
 }
 
-void AddonsModelPrivate::addonChanged( AddonPtr addon )
+void AddonsModelPrivate::addonChanged( AddonPtr addon, bool complete, int storage, int catalog )
 {
-    AddonItemPtr sdItem = std::make_shared<AddonItem>(addon);
-    m_cache->updateItem(std::move(sdItem));
-
-    m_revision++;
-    invalidateCache();
+    const auto item = std::make_shared<AddonItem>(addon, m_generation);
+    auto existing = std::find_if(m_items.begin(), m_items.end(), [&](const auto &value) { return value->key == item->key; });
+    if (existing == m_items.end()) m_items.push_back(item);
+    else *existing = item;
+    if (m_cache) { auto cached = item; m_cache->updateItem(std::move(cached)); }
+    if (!m_discoveries.isEmpty()) m_discoveries.head().keys.insert(item->key);
+    if (complete && m_operations.contains(item->key)) {
+        const bool install = m_operations.take(item->key);
+        if (storage != VLC_SUCCESS || catalog != VLC_SUCCESS) status({});
+        saveNeeded(catalog != VLC_SUCCESS);
+        if (storage != VLC_SUCCESS) {
+            bool incomplete;
+            { vlc_mutex_locker locker{&addon->lock}; incomplete = (addon->e_flags & ADDON_BROKEN) && addon->e_state == ADDON_INSTALLED; }
+            error(install ? (incomplete
+                ? qtr("Installation is incomplete. Use Remove to clean up its remaining files before retrying Add.")
+                : qtr("The add-on could not be installed. Existing files were preserved; check the package and profile folder before retrying."))
+                : qtr("The add-on could not be fully removed. Close anything using its files, then retry Remove."));
+        }
+        if (catalog != VLC_SUCCESS) error(storage == VLC_SUCCESS
+            ? qtr("The files were processed, but the add-on catalog could not be saved. Retry saving the catalog before closing VLC.")
+            : qtr("The add-on operation failed and its catalog could not be saved. Check the profile folder, retry saving the catalog, then retry the operation."));
+        if (storage == VLC_SUCCESS && catalog == VLC_SUCCESS) status(install ? qtr("Add-on installed. Restart VLC to refresh extension menus.") : qtr("Add-on removed. Restart VLC to refresh extension menus."));
+        busyChanged();
+    }
+    dirty();
 }
 
-void AddonsModelPrivate::discoveryEnded()
+void AddonsModelPrivate::discoveryEnded(int result)
 {
     Q_Q(AddonsModel);
-    assert( m_loading );
-    m_loading = false;
-    emit q->loadingChanged();
-    m_revision++;
-    invalidateCache();
+    if (m_discoveries.isEmpty()) return;
+    const auto request = m_discoveries.dequeue();
+    busyChanged(); dirty();
+    if (result != VLC_SUCCESS) {
+        error(request.installPackage ? qtr("The selected VLC package could not be read.") : qtr("The add-on catalog could not be loaded. Check the connection or source and retry."));
+        status({}); return;
+    }
+    if (request.installPackage) {
+        status({});
+        if (request.keys.size() != 1) { error(qtr("Choose a VLC package containing one identifiable add-on.")); return; }
+        q->setSearchPattern({}); q->setTypeFilter(AddonsModel::Type::TYPE_NONE); q->setStateFilter(AddonsModel::State::STATE_NONE);
+        q->setSelectedKey(*request.keys.cbegin());
+        if (q->canInstall()) q->installSelected();
+        else error(qtr("This add-on is already installed or cannot be managed here. Remove an installed version before adding its replacement."));
+    } else status(request.keys.isEmpty() ? qtr("No add-ons found.") : qtr("Add-on discovery complete."));
+}
+
+bool AddonsModelPrivate::gatherRepository(const QUrl &uri, bool installPackage)
+{
+    if (!m_manager || !uri.isValid() || uri.isEmpty()) return fail(qtr("The add-on source is unavailable."));
+    if (!m_operations.isEmpty() || (installPackage && nativeBusy())) return fail(qtr("Wait for the current add-on operation to finish."));
+    if (m_discoveries.isEmpty()) error({});
+    const auto encoded = uri.toEncoded();
+    if (addons_manager_GatherChecked(m_manager, encoded.constData()) != VLC_SUCCESS)
+        return fail(qtr("The add-on search could not be started."));
+    m_discoveries.enqueue(Discovery{uri, installPackage, {}});
+    status(qtr("Looking for add-ons…")); busyChanged(); return true;
+}
+
+bool AddonsModelPrivate::change(const QString &key, bool install)
+{
+    error({});
+    if (!actionable(key, install)) return fail(install ? qtr("Choose an available manageable add-on and wait for other operations to finish.") : qtr("Choose an installed manageable add-on and wait for other operations to finish."));
+    const auto item = findKey(key);
+    addon_uuid_t uuid; memcpy(uuid, item->uuid.constData(), sizeof(uuid));
+    const int result = install ? addons_manager_Install(m_manager, uuid) : addons_manager_Remove(m_manager, uuid);
+    if (result != VLC_SUCCESS) return fail(qtr("The add-on operation was rejected. Refresh the list and try again."));
+    m_operations.insert(key, install);
+    status(install ? qtr("Installing add-on…") : qtr("Removing add-on…")); busyChanged(); dirty(); return true;
 }

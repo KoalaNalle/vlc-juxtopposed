@@ -88,6 +88,10 @@ typedef struct
     double  f_fixed_ratio;
     size_t  i_last_olen;
     vlc_tick_t i_next_pts;
+    date_t fixed_input_pts;
+    date_t fixed_output_pts;
+    vlc_tick_t fixed_pts_offset;
+    bool fixed_pts_valid;
 } filter_sys_t;
 
 static block_t *Resample( filter_t *, block_t * );
@@ -137,6 +141,12 @@ Open( vlc_object_t *p_obj, bool b_change_ratio )
         return VLC_ENOMEM;
 
     p_sys->i_next_pts = VLC_TICK_INVALID;
+    date_Init( &p_sys->fixed_input_pts, p_filter->fmt_in.audio.i_rate, 1 );
+    date_Init( &p_sys->fixed_output_pts, p_filter->fmt_out.audio.i_rate, 1 );
+    date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+    date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+    p_sys->fixed_pts_offset = 0;
+    p_sys->fixed_pts_valid = false;
 
     /* Setup SoXR */
     int64_t i_vlc_q = var_InheritInteger( p_obj, "soxr-resampler-quality" );
@@ -273,7 +283,10 @@ SoXR_Resample( filter_t *p_filter, soxr_t soxr, block_t *p_in, size_t i_olen )
     if( error )
     {
         msg_Err( p_filter, "soxr_process failed: %s", soxr_strerror( error ) );
+        if( p_out == p_in )
+            p_in = NULL; /* The input/output alias is released once below. */
         block_Release( p_out );
+        p_out = NULL;
         goto error;
     }
     if( unlikely( i_idone < i_ilen ) )
@@ -302,6 +315,90 @@ error:
         block_Release( p_in );
 
     return p_out;
+}
+
+/* Complete both fixed and variable engines before clearing them. The bundled
+ * variable engine reports a placeholder delay; only an actual empty native
+ * drain establishes that all retained output has been produced. */
+static block_t *
+SoXR_Drain( filter_t *p_filter, soxr_t soxr )
+{
+    filter_sys_t *p_sys = p_filter->p_sys;
+    const size_t framesize = p_filter->fmt_out.audio.i_bytes_per_frame;
+    const unsigned rate = p_filter->fmt_out.audio.i_rate;
+    const double pending = ceil(soxr_delay(soxr));
+    if( !isfinite(pending) || pending < 0 || framesize == 0 || rate == 0 )
+        goto invalid;
+    const size_t max_samples = SIZE_MAX / framesize;
+    if( max_samples < 2 || pending >= (double)(max_samples - 2) )
+        goto invalid;
+    const size_t capacity = __MAX(__MAX(p_sys->i_last_olen, (size_t)pending + 2),
+                                 __MIN((size_t)4096, max_samples));
+    if( capacity > max_samples || capacity > UINT_MAX )
+        goto invalid;
+
+    block_t *chain = NULL, **tail = &chain;
+    unsigned samples = 0;
+    /* Fixed delay is an accurate capacity hint; VR must still drain to zero.
+     * A broken engine cannot produce unbounded chunks in one filter call. */
+    for( unsigned attempt = 0; attempt < 64; ++attempt )
+    {
+        block_t *output = block_Alloc(capacity * framesize);
+        if( output == NULL )
+        {
+            if( chain == NULL )
+                return NULL; /* No native consumption: initial OOM is retryable. */
+            goto error;
+        }
+        size_t consumed, produced;
+        soxr_error_t error = soxr_process(soxr, NULL, 0, &consumed,
+                                         output->p_buffer, capacity, &produced);
+        if( error || consumed != 0 || produced > capacity )
+        {
+            msg_Err(p_filter, "soxr drain failed: %s", error ? error : "invalid native counts");
+            block_Release(output);
+            goto error;
+        }
+        if( produced == 0 )
+        {
+            block_Release(output);
+            soxr_clear(soxr);
+            p_sys->i_last_olen = 0;
+            p_sys->last_soxr = NULL;
+            if( chain == NULL )
+                return NULL;
+            block_t *result = chain->p_next ? block_ChainGather(chain) : chain;
+            if( result == NULL )
+            {
+                block_ChainRelease(chain); /* Failed Gather retains its chain. */
+                return NULL;
+            }
+            result->i_nb_samples = samples;
+            result->i_length = vlc_tick_from_samples(samples, rate);
+            return result;
+        }
+        if( produced > UINT_MAX - samples || samples + produced > max_samples )
+        {
+            block_Release(output);
+            goto error;
+        }
+        samples += produced;
+        output->i_buffer = produced * framesize;
+        output->i_nb_samples = produced;
+        output->i_length = vlc_tick_from_samples(produced, rate);
+        *tail = output;
+        tail = &output->p_next;
+    }
+    msg_Err(p_filter, "SoXR drain exceeded its bounded chunk count");
+error:
+    block_ChainRelease(chain);
+    soxr_clear(soxr); /* Partial/error consumption cannot be retried as a full tail. */
+    p_sys->i_last_olen = 0;
+    p_sys->last_soxr = NULL;
+    return NULL;
+invalid:
+    msg_Err(p_filter, "invalid pending SoXR drain size");
+    return NULL;
 }
 
 static size_t
@@ -351,8 +448,14 @@ Resample( filter_t *p_filter, block_t *p_in )
     /* If the new soxr is different than the last one, flush it */
     if( p_sys->last_soxr && soxr != p_sys->last_soxr && p_sys->i_last_olen )
     {
-        p_flushed_out = SoXR_Resample( p_filter, p_sys->last_soxr,
-                                       NULL, p_sys->i_last_olen );
+        p_flushed_out = SoXR_Drain( p_filter, p_sys->last_soxr );
+        if( p_flushed_out == NULL && p_sys->i_last_olen )
+        {
+            /* Initial drain allocation failed without consuming the old engine.
+             * Preserve it for retry instead of overwriting it with a new input. */
+            block_Release(p_in);
+            return NULL;
+        }
         if( soxr )
             msg_Dbg( p_filter, "Using '%s' engine", soxr_engine( soxr ) );
     }
@@ -375,28 +478,71 @@ Resample( filter_t *p_filter, block_t *p_in )
         p_out = block_ChainGather( p_flushed_out );
         if( !p_out )
             goto error;
+        p_flushed_out = NULL; /* Successful gather consumed the chain. */
         p_out->i_nb_samples = i_nb_samples;
     }
     p_out->i_pts = i_pts;
     return p_out;
 error:
-    block_Release( p_in );
+    /* SoXR_Resample consumes its input. A failed gather retains the chain. */
+    block_ChainRelease( p_flushed_out );
     return NULL;
+}
+
+static void
+FixedTimestamp( filter_sys_t *p_sys, block_t *p_out )
+{
+    const vlc_tick_t start = date_Get( &p_sys->fixed_output_pts );
+    const vlc_tick_t end = date_Increment( &p_sys->fixed_output_pts,
+                                           p_out->i_nb_samples );
+    p_out->i_length = end - start;
+    p_out->i_pts = p_sys->fixed_pts_valid
+                ? start + p_sys->fixed_pts_offset : VLC_TICK_INVALID;
+    p_sys->i_next_pts = p_sys->fixed_pts_valid
+                     ? end + p_sys->fixed_pts_offset : VLC_TICK_INVALID;
 }
 
 static block_t *
 FixedResample( filter_t *p_filter, block_t *p_in )
 {
-    /* "audio converter" with fixed ratio */
+    /* Fixed conversion emits buffered samples from earlier input calls. Its
+     * output clock follows emitted samples, including fractional tick remainders.
+     * Adaptive playback's input-media-clock contract in Resample is separate. */
     filter_sys_t *p_sys = p_filter->p_sys;
-    const vlc_tick_t i_pts = p_in->i_pts;
     assert( p_sys->vr_soxr == NULL );
+
+    if( p_in->i_flags & BLOCK_FLAG_DISCONTINUITY )
+        Flush( p_filter );
+
+    if( p_in->i_pts != VLC_TICK_INVALID )
+    {
+        const vlc_tick_t expected = date_Get( &p_sys->fixed_input_pts );
+        if( !p_sys->fixed_pts_valid )
+        {
+            /* Retain unanchored PCM. A later timestamp also locates the
+             * buffered samples that arrived before it. */
+            p_sys->fixed_pts_offset = p_in->i_pts - expected;
+            p_sys->fixed_pts_valid = true;
+        }
+        else
+        {
+            const vlc_tick_t delta = p_in->i_pts - expected
+                                  - p_sys->fixed_pts_offset;
+            if( delta < -1 || delta > 1 )
+                /* Follow source-clock changes without discarding PCM or
+                 * resetting either sample clock's fractional remainder. */
+                p_sys->fixed_pts_offset += delta;
+        }
+    }
+    date_Increment( &p_sys->fixed_input_pts, p_in->i_nb_samples );
 
     const size_t i_olen = SoXR_GetOutLen( p_in->i_nb_samples,
                                           p_sys->f_fixed_ratio );
     block_t *p_out = SoXR_Resample( p_filter, p_sys->soxr, p_in, i_olen );
     if( p_out )
-        p_out->i_pts = i_pts;
+        FixedTimestamp( p_sys, p_out );
+    else
+        Flush( p_filter ); /* A consumed/dropped input cannot extend this clock. */
     return p_out;
 }
 
@@ -407,9 +553,20 @@ Drain( filter_t *p_filter )
 
     if( p_sys->last_soxr && p_sys->i_last_olen )
     {
-        block_t *p_out = SoXR_Resample( p_filter, p_sys->last_soxr, NULL,
-                                        p_sys->i_last_olen );
-        if( p_out != NULL )
+        block_t *p_out = SoXR_Drain( p_filter, p_sys->last_soxr );
+        if( p_sys->vr_soxr == NULL )
+        {
+            if( p_out != NULL )
+                FixedTimestamp( p_sys, p_out );
+            if( p_sys->last_soxr == NULL )
+            {
+                date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+                date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+                p_sys->fixed_pts_offset = 0;
+                p_sys->fixed_pts_valid = false;
+            }
+        }
+        else if( p_out != NULL )
         {
             assert( p_sys->i_next_pts != VLC_TICK_INVALID );
             p_out->i_pts = p_sys->i_next_pts;
@@ -432,4 +589,8 @@ Flush( filter_t *p_filter )
         p_sys->last_soxr = NULL;
     }
     p_sys->i_next_pts = VLC_TICK_INVALID;
+    date_Set( &p_sys->fixed_input_pts, VLC_TICK_0 );
+    date_Set( &p_sys->fixed_output_pts, VLC_TICK_0 );
+    p_sys->fixed_pts_offset = 0;
+    p_sys->fixed_pts_valid = false;
 }

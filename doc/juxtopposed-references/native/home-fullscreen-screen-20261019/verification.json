@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "nativeFullscreenScreenAccepted": true,
+  "ordinaryInteractionAccepted": true,
+  "fullBetaAccepted": false,
+  "completeVisualAccepted": false,
+  "fullAccessibilityAccepted": false,
+  "actualWindowsDpiAccepted": false,
+  "finalPackageAccepted": false,
+  "windows10Accepted": false,
+  "physicalScreenHotUnplugAccepted": false,
+  "ordinaryGuiSha256": "56a4a7620f15ac9e9c6c3fc6553884d9c41ac31d95c2dd2de45c4941d7b0d0f8",
+  "privateGuiSha256": "69af3dfee41244e8039c4c2d0e494c513550985358970763a07578d76ba020c3",
+  "sourceCheckpoint": "build-windows/beta-fullscreen-screen-20261019/source-r3",
+  "ordinaryRuntime": "build-windows/beta-fullscreen-screen-20261019/ordinary-runtime-r1",
+  "ordinaryInputsCount": 1212,
+  "privateInputsCount": 44,
+  "ordinaryInputsSha256": "a0c64d41536b4b187cc615d9b575f9ef4bb39f397cb68c72448a23fe00a8500c",
+  "privateInputsSha256": "435d156da76018a617528b5237b87ced7d248a9b42d79a4dfd247152057797c5",
+  "currentInputsMatch": true,
+  "caseChecks": {
+    "fullscreen-screen-initial": 110,
+    "fullscreen-screen-explicit-playing": 85,
+    "fullscreen-screen-auto-video": 68,
+    "fullscreen-screen-explicit-video": 77,
+    "fullscreen-screen-stale": 59
+  },
+  "totalChecks": 399,
+  "intentionalConfigSharingErrors": 1,
+  "qtDiagnostics": 0,
+  "unexpectedNativeErrors": 0,
+  "nativeWarnings": [
+    "main warning: no more input streams for this mux",
+    "main warning: window size missing",
+    "mp4 warning: CTTS table of 2990 entries",
+    "mp4 warning: STTS table of 1 entries",
+    "mp4 warning: elst box found"
+  ],
+  "reviewedGeneratedCaptures": {
+    "stale-editor.png": "ee9e9549a52f6f08c911940ec9e6fb3d9644adcbfadb73508acc7980c3cea9a3",
+    "selected-fullscreen-ui.png": "fc7506e3a0e43f5d03744984cd33828b51d64bb1e8671b6afce9f24bea26f107"
+  },
+  "files": {
+    "actual-app-r2-rejected.json": "35e718d66bef87fafe7314d9ea587a5558f2337d86580c4e26e9633942ae8648",
+    "actual-app-r3a.json": "1258d2fe2999e45903a87abd298166a08f304883d13e4a903a9844bef3c5b04f",
+    "compilation-r2.json": "814949299324c8d75d9057563ec20abe965b49bcd6701867c7d6553cb621bc0a",
+    "compilation-r3.json": "17b2f8075d647286aec1acbdbf7993621465a17217f21def9c21ba579d160577",
+    "isolated-video-r3.json": "c7dd86960e761fef1f334bb9929702ad4ee48f37eeecc7941f355363207ae136",
+    "ordinary-cold-process-r1.json": "c1ea238acf52813ee9d3672bf09da0c2ba9fbb5eec1fa8fec79dc30ae8887afb",
+    "ordinary-observation-r1.json": "1b72881210393985dfa420e534de4eaa355758fd58d9e7de73f3a3690f3fb599",
+    "ordinary-process-r1.json": "77a93caccce45ada16d1388b91a81de5ff033a851cab8151b3fdefec2ff62bad"
+  },
+  "note": "Visible journeys stay on monitor2. Real cross-screen prepare/restore occurs with the actual main window hidden in Qt and Windows, followed by visible monitor2 fullscreen. Stale999 is an owned unavailable index, not actual hot-unplug. Earlier private fixtures and scopes remain separate."
+}

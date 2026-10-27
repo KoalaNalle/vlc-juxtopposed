@@ -71,6 +71,8 @@ struct vlc_player_input
     bool live;
 
     double position;
+    /* Timer position captured before detaching this input. */
+    double position_before_stop;
     vlc_tick_t time;
     vlc_tick_t normal_time;
 
@@ -130,6 +132,12 @@ struct vlc_player_input
     } ml;
 
     unsigned repeat;
+
+    /* Appended to keep offsets used by existing private native fixtures stable. */
+    uint64_t history_epoch;
+    uint64_t position_epoch;
+    /* Under player->lock; a current-input retry, never a saved timestamp. */
+    vlc_tick_t subtitle_refresh_deadline;
 };
 
 struct vlc_player_listener_id
@@ -309,6 +317,10 @@ struct vlc_player_t
     } mainloop;
 
     struct vlc_player_timer timer;
+
+    struct vlc_player_history_policy history_policy;
+    uint64_t history_epoch;
+    uint64_t position_epoch;
 };
 
 #ifndef NDEBUG
@@ -593,6 +605,9 @@ vlc_player_osd_Program(vlc_player_t *player, const char *name);
 /*
  * player/medialib.c
  */
+
+void
+vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input);
 
 void
 vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos);

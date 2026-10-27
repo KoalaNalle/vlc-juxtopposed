@@ -61,7 +61,11 @@ Widgets.PageLoader {
                 History.push([...root.pagePrefix, "group"], { parentId: model.id, title: model.title }, reason)
             }
 
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                // An outgoing view must not write its index into the newly active route.
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "base"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
 
             displayMarginBeginning: root.displayMarginBeginning
             displayMarginEnd: root.displayMarginEnd
@@ -75,7 +79,11 @@ Widgets.PageLoader {
         id: componentGroup
 
         VideoGroupDisplay {
-            onCurrentIndexChanged: History.viewProp.initialIndex = currentIndex
+            onCurrentIndexChanged: {
+                // An outgoing view must not write its index into the newly active route.
+                if (History.exactMatch(History.viewPath, [...root.pagePrefix, "group"]))
+                    History.viewProp.initialIndex = currentIndex
+            }
 
             function isInfoExpandPanelAvailable(/* modelIndexData */) {
                 return true

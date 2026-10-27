@@ -62,4 +62,10 @@ endif
 	$(HOSTVARS_CMAKE) $(CMAKE) -S $</source $(X265_CONF)
 	+$(CMAKEBUILD)
 	$(CMAKEINSTALL)
+ifdef HAVE_WIN32
+ifndef HAVE_CLANG
+# Keep GCC exception handling static for VLC's restricted Windows plugin loader.
+	sed -i -e 's/ -lgcc_s/ -lgcc_eh/g' "$(PREFIX)/lib/pkgconfig/x265.pc"
+endif
+endif
 	touch $@

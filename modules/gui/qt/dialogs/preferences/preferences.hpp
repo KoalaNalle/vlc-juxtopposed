@@ -45,6 +45,10 @@ class PrefsDialog : public QVLCDialog
 public:
     PrefsDialog( QWindow *, qt_intf_t * );
     virtual ~PrefsDialog();
+    void showAdvancedView() { setAdvanced(); }
+
+signals:
+    void preferencesReset();
 
 private:
     size_t count;

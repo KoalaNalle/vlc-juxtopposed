@@ -1,0 +1,57 @@
+{
+  "method": "Reviewed actual Windows app screenshots and accessibility states through Computer Use. No screenshot pixels were programmatically decoded or saved from that tool.",
+  "ordinaryGui": true,
+  "ordinaryCore": true,
+  "fullBetaAccepted": false,
+  "cases": [
+    {
+      "media": "frame-marker.mkv",
+      "pid": 28548,
+      "pausedElapsed": "00:00:05",
+      "pausedPosition": 0.08364566640569039,
+      "observedCaptions": ["ENGLISH FIRST CUE", "SUOMI ENSIMMÄINEN", "ENGLISH FIRST CUE", "EXTERNAL FIRST CUE"],
+      "languageSwitchVisible": true,
+      "englishRestored": true,
+      "sameTopMarkerPattern": true,
+      "pauseAndDisplayedPositionHeld": true,
+      "externalFileOpenedViaSubtitleMenu": true,
+      "externalAutomaticallySelected": false,
+      "externalExplicitSelectionVisible": true,
+      "externalDetails": "Open subtitles selected the fixture external.srt. Track 3 appeared, but the previous English caption remained. Explicitly choosing Track 3 displayed EXTERNAL FIRST CUE at the same frame and position.",
+      "resumeAndPauseObserved": true,
+      "resumedElapsed": "00:00:12",
+      "pausedAgainElapsed": "00:00:18",
+      "inputLimit": "Initial Space and indexed Play actions had no observed effect. A subsequent coordinate click on Play produced advancing playback; Pause via the indexed control then worked. This does not qualify keyboard activation or exact response latency. One stale file-dialog index failed before refreshed coordinate selection succeeded.",
+      "normalQuitRequested": true
+    },
+    {
+      "media": "frame-marker.mp4",
+      "pid": 28876,
+      "pausedElapsed": "00:00:05",
+      "pausedPosition": 0.08398460282281582,
+      "observedCaptions": ["ENGLISH FIRST CUE", "SUOMI ENSIMMÄINEN"],
+      "languageSwitchVisible": true,
+      "sameTopMarkerPattern": true,
+      "pauseAndDisplayedPositionHeld": true,
+      "externalFileOpenedViaSubtitleMenu": false,
+      "normalQuitRequested": true
+    },
+    {
+      "media": "frame-marker-ass.mkv",
+      "pid": 27084,
+      "pausedElapsed": "00:00:05",
+      "pausedPosition": 0.08364566640569039,
+      "observedCaptions": ["ENGLISH FIRST CUE", "SUOMI ENSIMMÄINEN"],
+      "languageSwitchVisible": true,
+      "sameTopMarkerPattern": true,
+      "pauseAndDisplayedPositionHeld": true,
+      "externalFileOpenedViaSubtitleMenu": false,
+      "normalQuitRequested": true
+    }
+  ],
+  "limits": [
+    "Same visible marker pattern is a desktop observation, not an exact-PTS measurement; native pixel-based marker checks qualify frame conservation separately.",
+    "No cold-initial-caption, automatic external selection, complete subtitle layout, physical audibility, Windows 10, DPI or full-beta acceptance.",
+    "No recording, nonseekable, concurrent seek, unknown-frame-rate or previous-frame stress acceptance."
+  ]
+}

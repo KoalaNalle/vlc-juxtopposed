@@ -1,0 +1,90 @@
+{
+  "method": "Actual ordinary Windows app screenshots and accessibility states reviewed through Computer Use. No Computer Use screenshot pixels were saved or decoded. Native configuration was independently read through the filesystem.",
+  "ordinaryCore": true,
+  "ordinaryGui": true,
+  "fullBetaAccepted": false,
+  "cases": [
+    {
+      "phase": "initial",
+      "pid": 28536,
+      "status": "terminal",
+      "coldMedia": "frame-marker.mkv",
+      "coldEnglishFirstCueVisible": true,
+      "baselinePausedElapsed": "00:00:05",
+      "baselinePosition": 0.08364566640569039,
+      "preferredLanguageEditor": "Global Settings / Subtitles / Preferred language / Finnish",
+      "savedLanguage": "fin",
+      "currentEnglishCaptionPreservedAfterLanguageSave": true,
+      "currentPausedPositionPreservedAfterLanguageSave": true,
+      "noRestartBannerAfterLanguageSave": true,
+      "globalDelaySavedByPointer": 1200,
+      "nativeSubDelayAfterSave": 12,
+      "currentEnglishCaptionAndPositionPreservedAfterDelaySave": true,
+      "nextMediaOpenedViaNativePicker": "frame-marker-ass.mkv",
+      "nextMediaFinnishSoleSelection": true,
+      "nextMediaFinnishCaption": "SUOMI ENSIMM\u00c4INEN",
+      "nextMediaPausedElapsed": "00:00:08",
+      "nextMediaPosition": 0.13871556362546017,
+      "nextMediaPrimaryDelayMs": 1200,
+      "nextMediaSecondaryDelayMs": 0,
+      "captionPreservedAfterSynchronizationEscape": true,
+      "boundarySeek": {
+        "requestedSeconds": 20.5,
+        "requestedPosition": 0.3416666666667,
+        "elapsedText": "00:00:20",
+        "video": "blue",
+        "liveDelayMs": 1200,
+        "expectedCaption": "SUOMI ENSIMM\u00c4INEN",
+        "observedCaption": "none after repeated settled observations",
+        "selectedTrack": "Track 2 - [Finnish]",
+        "passed": false,
+        "causeEstablished": false
+      },
+      "currentMediaReset": {
+        "primaryDelayMsAfterReset": 0,
+        "globalNativeSubDelayPreserved": 12,
+        "pausedPositionPreserved": true,
+        "captionRefreshedImmediately": false,
+        "nextSeekSeconds": 25,
+        "captionAfterNextSeek": "SUOMI KESKIMM\u00c4INEN"
+      },
+      "normalQuitRequested": true,
+      "defaultIndexSavedByTyping": 0,
+      "currentFinnishCaptionAndPositionPreservedAfterIndexSave": true,
+      "nextIndexMediaOpenedViaNativePicker": "frame-marker.mp4",
+      "nextIndexMediaCaption": "ENGLISH FIRST CUE",
+      "nextIndexMediaPausedElapsed": "00:00:07",
+      "nextIndexMediaPosition": 0.12881595040909166,
+      "normalExitVerified": true,
+      "wholeJourneyPassed": false
+    },
+    {
+      "phase": "reopen",
+      "pid": 25064,
+      "status": "terminal",
+      "coldMedia": "frame-marker.mkv",
+      "coldPausedWithoutCaptionAtZeroWithPositiveDelay": true,
+      "seekFiveSecondsEnglishCaptionVisible": true,
+      "explicitTrackIndexTakesPriorityOverFinnishPreference": true,
+      "reopenedDefaultSubtitleTrackEditor": "0",
+      "reopenedPreferredLanguageEditor": "Finnish",
+      "reopenedSubtitleDelaySliderMs": 1200,
+      "pausedElapsed": "00:00:05",
+      "pausedPosition": 0.08364566640569039,
+      "normalQuitRequested": true,
+      "normalExitVerified": true,
+      "sourceRuntimeFixturesUnchanged": true,
+      "checkedGuiDiagnostics": [],
+      "scope": "Saved editor values and cold explicit-index priority observed in the actual ordinary app; no whole timing workflow acceptance."
+    }
+  ],
+  "open": [
+    "Reproduce the positive-delay paused cue-boundary failure with a native regression and matched zero-delay/normal-playback controls.",
+    "Verify paused current-media delay changes refresh the expected cue while conserving the actual video frame.",
+    "The default-delay row has no visible timing-help button even though the model supplies a next-media note; assess this after the functional checks."
+  ],
+  "limits": [
+    "Desktop text/marker observations are not exact absolute seek-PTS or pixel metrics.",
+    "This is in-progress evidence, not whole subtitle/preferences/beta acceptance."
+  ]
+}

@@ -1,0 +1,41 @@
+from pathlib import Path
+import ctypes as C
+from ctypes import wintypes as W
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import time
+
+root=Path(__file__).resolve().parent
+output=root/'navigation-native-self-quit-registered-20261014'
+assert not output.exists()
+output.mkdir()
+profile=output/'userdata';profile.mkdir()
+for name in ('ml','juxtopposed-playlist-art'):
+    shutil.copytree(root/'leaf-literal-desktop-20261014/userdata'/name,profile/name)
+package=root/'slice-music-playlist-package-20261014'
+plugins=package/'plugins-registered-exit-repair-20261014'
+media=root/'home-native-fixtures-20261014/home-video.mp4'
+assert media.is_file()
+environment=os.environ.copy()
+environment.pop('VLC_PLUGIN_PATH',None)
+environment.update(VLC_LIB_PATH=str(plugins),VLC_LIBEXEC_PATH=str(package/'vlc-preparser.exe'),VLC_USERDATA_PATH=str(profile))
+arguments=[str(package/'vlc.exe'),'--qt-juxtopposed-controls','--no-one-instance','--qt-pin-controls','--no-ml-network-discovery','--play-and-exit','--file-logging','--logfile='+str(output/'vlc.log'),'-vv',str(media)]
+started=time.monotonic()
+with (output/'stdout.txt').open('wb') as stdout,(output/'stderr.txt').open('wb') as stderr:
+    process=subprocess.Popen(arguments,cwd=package,env=environment,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
+    print('Native automatic-play-and-exit check PID: '+str(process.pid),flush=True)
+    timed_out=False
+    try:process.wait(timeout=30)
+    except subprocess.TimeoutExpired:timed_out=True
+    kernel=C.WinDLL('kernel32',use_last_error=True)
+    kernel.GetExitCodeProcess.argtypes=[W.HANDLE,C.POINTER(W.DWORD)]
+    kernel.GetExitCodeProcess.restype=W.BOOL
+    code=W.DWORD()
+    assert kernel.GetExitCodeProcess(int(process._handle),C.byref(code))
+    report=dict(pid=process.pid,elapsedSeconds=time.monotonic()-started,terminationConfirmed=not timed_out,timedOut=timed_out,winApiExitCode=code.value,qtSha256=hashlib.sha256((plugins/'gui/libqt_plugin.dll').read_bytes()).hexdigest(),generatedMediaSha256=hashlib.sha256(media.read_bytes()).hexdigest(),scope='Actual Qt GUI playback and automatic quit without Computer Use observation/input. No Network browse, full normal-user launch, or final beta acceptance. Failed wait is preserved without forced cleanup.')
+    (output/'verification.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8',newline='\n')
+    print(json.dumps(report))
+raise SystemExit(0 if not timed_out and code.value==0 else 1)

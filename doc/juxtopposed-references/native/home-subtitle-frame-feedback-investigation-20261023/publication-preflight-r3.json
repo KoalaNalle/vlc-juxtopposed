@@ -1,0 +1,8 @@
+{
+  "status": "terminal",
+  "exitCode": 1,
+  "stage": "Publication verification, before target folder creation or artifact copying",
+  "failedAssumption": "The publication helper incorrectly assumed an absolute held marker of 125 for every format.",
+  "correction": "The native worker already uses actual held-marker conservation and plus-one steps. The report verifier now uses each run's actual held marker too, including MP4 timestamp offsets. No native result, check or threshold was altered.",
+  "targetExistedAfterFailure": false
+}

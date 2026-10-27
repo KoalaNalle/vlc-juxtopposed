@@ -1,0 +1,77 @@
+# Preserve original Figma export bytes and their provenance hashes on Windows.
+modules/gui/qt/pixmaps/juxtopposed/*.svg -text
+doc/juxtopposed-references/queue/*.svg -text
+
+# Preserve frozen native proof bytes and their recorded SHA-256 identities.
+doc/juxtopposed-references/native/shared-modal-20261014/** -text
+doc/juxtopposed-references/native/conversion-desktop-20261014/** -text
+doc/juxtopposed-references/native/navigation-leaf-20261014/** -text
+doc/juxtopposed-references/native/conversion-literal-path-20261014/** -text
+doc/juxtopposed-references/native/navigation-desktop-20261014/** -text
+doc/juxtopposed-references/native/navigation-play-shutdown-20261014/** -text
+
+# Preserve the byte identities of the 19 October native validation receipts.
+doc/juxtopposed-references/native/home-audio-device-activation-20261019/** -text
+doc/juxtopposed-references/native/home-auto-hide-20261019/** -text
+doc/juxtopposed-references/native/home-flac-coded-tail-20261019/** -text
+doc/juxtopposed-references/native/home-fullscreen-screen-20261019/** -text
+doc/juxtopposed-references/native/home-interface-title-20261019/** -text
+doc/juxtopposed-references/native/home-settings-activation-20261019/** -text
+doc/juxtopposed-references/native/home-titlebar-tooltip-20261019/** -text
+doc/juxtopposed-references/native/home-video-warning-20261019/** -text
+doc/juxtopposed-references/native/home-geometry-memory-20261020/** -text
+doc/juxtopposed-references/native/home-geometry-activation-20261020/** -text
+doc/juxtopposed-references/native/home-multi-instance-20261020/** -text
+doc/juxtopposed-references/native/home-popup-duration-20261020/** -text
+doc/juxtopposed-references/native/home-popup-duration-activation-20261020/** -text
+doc/juxtopposed-references/native/home-settings-concurrency-20261021/** -text
+doc/juxtopposed-references/native/home-quit-stop-20261021/** -text
+doc/juxtopposed-references/native/home-input-cancellation-20261021/** -text
+doc/juxtopposed-references/native/home-shared-qt-20261021/** -text
+doc/juxtopposed-references/native/home-profile-error-20261021/** -text
+doc/juxtopposed-references/native/home-precise-seek-20261021/** -text
+
+# Preserve the newly retrieved original Privacy reference artwork bytes.
+doc/juxtopposed-references/figma/20261017/privacy/assets/*.svg -text
+
+/modules/gui/qt/pixmaps/juxtopposed/privacy-settings-*.svg -text
+
+# Preserve the original Controls reference artwork bytes.
+doc/juxtopposed-references/figma/20261017/controls/assets/*.svg -text
+
+# Unified-diff blank context lines intentionally contain one space.
+contrib/src/medialibrary/history-only.patch whitespace=-blank-at-eol
+
+# Preserve the subtitle FPS checkpoint's recorded byte identities.
+doc/juxtopposed-references/native/home-subtitle-fps-20261024/** -text
+
+# Keep archived planning records, including original whitespace, byte-identical.
+doc/juxtopposed/archive/2026-10-24/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof,-space-before-tab
+
+# Frozen before/after sources retain their original whitespace too.
+doc/juxtopposed-references/native/home-subtitle-sync-20261025/** -text whitespace=cr-at-eol,-blank-at-eol,-blank-at-eof,-space-before-tab
+
+# Preserve the single-frame native checkpoint byte identities.
+doc/juxtopposed-references/native/home-single-frame-20261025-night/** -text whitespace=cr-at-eol
+
+# Preserve exact byte identities in the continuing beta receipts.
+doc/juxtopposed-references/native/home-subtitle-roles-estimator-20261025-night/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-integration-20261025-night/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-tracks-context-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-startup-rate-conversion-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-conversion-recovery-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-hardware-snapshot-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-tracks-reset-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-timing-context-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-attachments-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-attachment-presets-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-load-restore-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-notices-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-cue-clock-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-compact-subtitles-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-clock-refill-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-snapshot-display-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-subtitle-rate-buffering-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-estimator-speed-defaults-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-mp4-held-frame-20261026/** -text whitespace=cr-at-eol
+doc/juxtopposed-references/native/home-fragmented-mp4-20261026/** -text whitespace=cr-at-eol

@@ -1,0 +1,30 @@
+{
+  "status": "open-configuration-assertion",
+  "fullBetaAccepted": false,
+  "firstFailure": "timing-ordinary-r7/10-frame-marker-ass.mkv-wasapi-1200-20.5-position",
+  "firstFailureExit": 3,
+  "firstFailureBeforeResult": true,
+  "successfulDiagnosticReplays": [
+    "debug-boundary-r1",
+    "debug-boundary-r2",
+    "debug-boundary-r3",
+    "debug-boundary-r4",
+    "debug-boundary-r5",
+    "debug-boundary-r6",
+    "debug-boundary-venv-r5"
+  ],
+  "excludedSetupAttempts": [
+    "debug-boundary-venv-r1",
+    "debug-boundary-venv-r2",
+    "debug-boundary-venv-r3",
+    "debug-boundary-venv-r4"
+  ],
+  "corrections": [
+    "The first two debug replays passed but -g meant their initial diagnostic breakpoint commands did not execute; they do not establish tracing coverage.",
+    "The four excluded venv attempts stopped at the child initial debugger breakpoint and ended when debugger input closed. They did not exercise native media and do not establish normal teardown. Their forcedCleanupUsed=false only records that the Python parent made no explicit kill call; debugger termination of those children was not normal shutdown.",
+    "The corrected venv trace breaks on the actual child loading libvlccore, then installs config_GetInt+0x1c, the missing-parameter assertion branch. The variable name is retained in RBP by its var_Inherit caller, verified against the current binary disassembly.",
+    "Twenty later startup-only traces disable the debugger heap and compare ten candidate/ten baseline processes. All passed. The absence of another assertion does not establish its cause or resolution.",
+    "The r5/r6 FPS-native attempts incorrectly asserted the paused raw main clock after a precise seek; that clock retains an earlier playing point. The corrected r7 test verifies the actual frame marker and resumed clock beyond 32 seconds. The same corrected executable fails caption replacement on the baseline and passes all twelve functions on the candidate. Later role failures in full r5 followed an early setup return without role restoration and are not independent production regressions."
+  ],
+  "nextAction": "Capture the missing parameter and call stack if the assertion recurs; do not suppress the assertion or call the candidate generally stable."
+}

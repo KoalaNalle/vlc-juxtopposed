@@ -1,0 +1,35 @@
+[
+  {
+    "forcedCleanupUsed": false,
+    "pid": 20168,
+    "exitCode": 0,
+    "normalExit": true,
+    "mode": "normal",
+    "checks": "ok 1 actual addons manager created\nok 2 owned package converted to native URI\nok 3 actual repository discovery finishes within deadline\nok 4 actual local VLP manifest produces an add-on\nok 5 discovered package starts not installed\nok 6 native install request admitted\nok 7 native installer finishes within deadline\nok 8 actual package installs successfully\nok 9 native removal request admitted\nok 10 native removal finishes within deadline\nok 11 native removal reaches not-installed state\nobserved final state 0\nchecks 11 failures 0\n",
+    "installedFileCount": 0,
+    "installedBytesMatch": true,
+    "catalogCount": 1
+  },
+  {
+    "forcedCleanupUsed": false,
+    "pid": 22552,
+    "exitCode": 1,
+    "normalExit": false,
+    "mode": "remove-first",
+    "checks": "ok 1 actual addons manager created\nok 2 owned package converted to native URI\nok 3 actual repository discovery finishes within deadline\nok 4 actual local VLP manifest produces an add-on\nok 5 discovered package starts not installed\nnot ok 6 Remove never installs a not-installed add-on\nnot ok 7 rejected Remove preserves not-installed state\nobserved final state 2\nchecks 7 failures 2\n",
+    "installedFileCount": 1,
+    "installedBytesMatch": true,
+    "catalogCount": 1
+  },
+  {
+    "forcedCleanupUsed": false,
+    "pid": 23188,
+    "exitCode": 1,
+    "normalExit": false,
+    "mode": "install-twice",
+    "checks": "ok 1 actual addons manager created\nok 2 owned package converted to native URI\nok 3 actual repository discovery finishes within deadline\nok 4 actual local VLP manifest produces an add-on\nok 5 discovered package starts not installed\nok 6 native install request admitted\nok 7 native installer finishes within deadline\nok 8 actual package installs successfully\nnot ok 9 Install never uninstalls an installed add-on\nnot ok 10 repeated Install preserves installed state\nobserved final state 0\nchecks 10 failures 2\n",
+    "installedFileCount": 0,
+    "installedBytesMatch": true,
+    "catalogCount": 1
+  }
+]

@@ -31,6 +31,14 @@ import VLC.Player
 TracksPage {
     id: root
 
+    Connections {
+        target: Player
+        function onInputChanged() { delayEstimator.cancel() }
+        function onRateChanged() { delayEstimator.cancel() }
+        function onSeekStarted() { delayEstimator.cancel() }
+        function onPlayingStateChanged() { delayEstimator.cancel() }
+    }
+
     // Functions
 
     function textFromValue(value, locale) {
@@ -68,7 +76,8 @@ TracksPage {
 
             DelayEstimator {
                 id: delayEstimator
-                onDelayChanged: Player.addAudioDelay(delayEstimator.delay)
+                // Marks measure wall time; native track offsets use media time.
+                onDelayChanged: Player.addAudioDelay(delayEstimator.delay.scale(Player.rate))
             }
 
             Widgets.MenuCaption {
@@ -146,6 +155,7 @@ TracksPage {
 
             Widgets.TrackDelayButton {
                 id: soundHeard
+                Navigation.parentItem: root
 
                 text: qsTr("Sound Heard")
                 iconTxt: VLCIcons.check
@@ -160,6 +170,7 @@ TracksPage {
 
             Widgets.TrackDelayButton {
                 id: soundSpotted
+                Navigation.parentItem: root
 
                 text: qsTr("Sound Spotted")
                 iconTxt: VLCIcons.check

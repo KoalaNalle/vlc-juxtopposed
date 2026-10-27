@@ -1,0 +1,21 @@
+{
+  "passed": false,
+  "expectedNegative": true,
+  "fullBetaAccepted": false,
+  "receipt": {
+    "path": "build-windows/beta-compact-interaction-20261018/r8-titlebar-recovery/verification.json",
+    "sha256": "3961e2019b80c262e1c94ba1cdf98f9a46e78ded843938bc7973b808c77bfd71"
+  },
+  "guiSha256": "b53a84c5b0c3662378c111cfd8c0d4daa4eca193d3fe12005bda380c86e37553",
+  "normalExit": true,
+  "qtDiagnostics": 0,
+  "focusedPin": "juxtopposedSidebarPin1",
+  "focusReason": 0,
+  "visualFocus": false,
+  "nativeWindowActive": true,
+  "activePopupWidget": false,
+  "keyboardGrabber": false,
+  "requestSignals": 0,
+  "keyPressReachedPin": false,
+  "diagnosis": "After a pointer-opened menu closes, the already-focused pin keeps MouseFocusReason and visualFocus false. Reapplying Tab focus to the same active item does not change that state. The global applyKeyEvent path therefore takes the navigation/menu keys before the pin handler. A sidebar-specific navigation-key scope is being validated; unrelated shortcuts retain the original routing."
+}

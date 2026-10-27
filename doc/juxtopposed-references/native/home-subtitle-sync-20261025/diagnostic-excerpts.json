@@ -1,0 +1,47 @@
+{
+  "input-click-before-r11/debugger.txt": {
+    "rawSha256": "6f6686a091c2f5f8870140a2d0c031345d82622295193cc6c70a50cf7dc48638",
+    "lines": [
+      "MISSING_PARAMETER",
+      "00007ff8`fde7c531  \"intf-input-blocked\"",
+      "RetAddr               : Args to Child                                                           : Call Site",
+      "00007ff8`fddfe05b     : 000001ee`3003a8e0 00007ff8`fde4d2e8 00000000`00000000 00000000`00000000 : libvlccore!config_GetInt+0x1c",
+      "00007ff8`fddfe836     : 000001ee`2f6add14 b9bacc99`1519f05b 000001ee`2f6adc50 00000014`9b0bfb20 : libvlccore!var_Inherit+0xab",
+      "00007ff8`fde52498     : 00000000`00000020 00000000`00000000 00000000`00000001 00007ff9`da5954b9 : libvlccore!var_InheritBool+0x26",
+      "00007ff8`b45b4324     : 00000000`00d40880 00007ff9`da599475 00000000`00000000 000001ee`2d53ce80 : libvlccore!vout_display_window_MouseEvent+0x488",
+      "(Inline Function)     : --------`-------- --------`-------- --------`-------- --------`-------- : libwin32_window_plugin!vlc_window_SendMouseEvent+0x15",
+      "00007ff8`b45b3bd1     : 00000000`00000200 00000000`00000001 00000000`00d40880 00000000`80006010 : libwin32_window_plugin!vlc_window_ReportMouseMoved+0x44",
+      "00007ff9`da5952e6     : 00000000`00000000 00000000`00000001 00000000`00000001 00000000`00000000 : libwin32_window_plugin!WinVoutEventProc+0x2a1",
+      "00007ff9`da595dbd     : 00000014`9b0bfe10 00007ff8`b45b3930 00000000`00d40880 00000000`00000000 : USER32!CallWindowProcW+0x6a6",
+      "00007ff8`b45b2a57     : 00000014`9b0bfe10 00000014`9b0bfe10 000001ee`2f9f54d0 00007ff6`7d280000 : USER32!IsWindowUnicode+0x20d",
+      "00007ff8`fdd14992     : 000001ee`2fc16aa0 00000000`00000000 000001ee`2fc16aa0 00000000`00000000 : libwin32_window_plugin!EventThread+0x207",
+      "00007ff9`dac3f0ad     : 000001ee`2fc16aa0 00000000`00000000 00000000`00000000 000001ee`2fc16aa0 : libvlccore!ThreadEntry+0x22",
+      "00007ff9`dac3f17c     : 00007ff9`dac9e500 000001ee`2fc16aa0 00000000`00000000 00000000`00000000 : msvcrt!beginthreadex+0x12d",
+      "00007ff9`daf2dda7     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : msvcrt!endthreadex+0xac",
+      "00007ff9`dc53ee4c     : 00000000`00000000 00000000`00000000 000004f0`fffffb30 000004d0`fffffb30 : KERNEL32!BaseThreadInitThunk+0x17",
+      "00000000`00000000     : 00000000`00000000 00000000`00000000 00000000`00000000 00000000`00000000 : ntdll!RtlUserThreadStart+0x2c",
+      "rax=0000000000000000 rbx=0000000000000000 rcx=00007ff8fde7c535",
+      "rdx=fffffffffffe5900 rsi=0000000000000020 rdi=000000149b0bfa50",
+      "rip=00007ff8fdd6f9ec rsp=000000149b0bf9b0 rbp=00007ff8fde7c531",
+      " r8=0000000000000d59  r9=fffffffffffe5992 r10=0000000000000000",
+      "r11=00000000000003c0 r12=000001ee3003a8e0 r13=0000000000000000",
+      "r14=0000000000000000 r15=0000000000000000",
+      "iopl=0         nv up ei pl zr na pe nc",
+      "cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246",
+      "libvlccore!config_GetInt+0x1c:",
+      "00007ff8`fdd6f9ec 41b85c000000    mov     r8d,5Ch"
+    ]
+  },
+  "regressions-ordinary-r12/startup-delayed-video-wasapi/stderr.txt": {
+    "rawSha256": "16678ff309764e3e56230d904bacc1b0e36369cc2059b1f4d5c5bed34f6e5ad7",
+    "lines": [
+      "Assertion failed: sys->started_state == STARTED_STATE_OK, file /mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/audio_output/wasapi.c, line 140"
+    ]
+  },
+  "bare-input-before-r13/stderr.txt": {
+    "rawSha256": "82bbdd215edfede5a1be570533ac7ee49e705fde6524c3c1a737238f66d54930",
+    "lines": [
+      "Assertion failed: param != NULL, file /mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../src/config/core.c, line 92"
+    ]
+  }
+}

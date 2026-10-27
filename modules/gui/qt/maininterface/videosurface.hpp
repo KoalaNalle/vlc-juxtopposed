@@ -70,6 +70,7 @@ public slots:
     void onWindowClosed();
     void onMousePressed( int vlcButton );
     void onMouseReleased( int vlcButton );
+    void onMouseCancelled();
     void onMouseDoubleClick( int vlcButton );
     void onMouseMoved( float x, float y );
     void onMouseWheeled(int vlcButton);
@@ -104,6 +105,7 @@ protected:
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseUngrabEvent() override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void hoverMoveEvent(QHoverEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -134,6 +136,7 @@ protected slots:
 
 private:
     QPointF m_oldHoverPos;
+    Qt::MouseButtons m_pressedButtons = Qt::NoButton;
 
     WheelToVLCConverter m_wheelEventConverter;
 

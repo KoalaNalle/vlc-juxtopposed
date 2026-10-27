@@ -1,0 +1,399 @@
+{
+  "status": "passed-scoped-background-play-pause-and-traditional-navigation",
+  "fullBetaAccepted": false,
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "fdfcfcd599588512bb7f3a51e46305b7b0d947b47387dd205851feb45f032b46",
+    "plugins/gui/libqt_plugin.dll": "56592664b62da4d77bde790b6c3d2fb82b414fbd9f5e42821d6699fbf9c35bf1",
+    "plugins/audio_output/libwasapi_plugin.dll": "e5560794f2a92193a1a389a5226077c8f83640db8ed1dfb62d35f85c8da74aa4",
+    "plugins/demux/libmkv_plugin.dll": "f46d8d158e61e99c4ee293337f7cef0b159c82586288e915a386a690d558280c",
+    "plugins/demux/libmp4_plugin.dll": "df15e8ed0463b7538d468960b0348a89bb2f511a107a0fab0d75c19f6d21d5ea",
+    "plugins/misc/libmedialibrary_plugin.dll": "13ccdc36e29c157641c5d120b41db54f93d17599992b125ebfe06e93b698ad68",
+    "plugins/demux/libsubtitle_plugin.dll": "11f2b78ee21a6de1fe3fa37f8f9845643a7df9118242cbb7a42951ff70d98484",
+    "plugins/stream_out/libstream_out_record_plugin.dll": "930205b140184e519f2ebebd4d8a6737ff387fd8f7b95227ac80757053277206",
+    "plugins/control/libwin_hotkeys_plugin.dll": "ecc8bf278e4b699efe0048bfd5283436f60af5a537817403eb3ecdb4b1096615",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a"
+  },
+  "globalHotkeySourceSha256": "80ede55090728cc6dea587f735798859aaadfe17647c939ca1e52d7e4836b6c4",
+  "observations": [
+    "A uses saved Ctrl+Alt+Shift+F12, B uses saved Ctrl+Alt+Shift+F11 in separate owned configs. Mappings are prepared fixtures, not acceptance of editor gestures. Both are ordinary GUI337/Core265/library282/recording322 with generated media.",
+    "OS keyboard delivery targets a separate native owned Qt window. A starts from paused zero, advances, and pauses at progress0.2844143573678159. Foreground settled readback reports17seconds. Background accessibility snapshots can remain stale even when the rendered clock and Play/Pause state change.",
+    "B starts E02 from zero and pauses at progress0.2037564113245905, about12seconds. A remains paused at the exact previous progress after both B chords. A closes normally; B still starts through its F11 global chord and advances. B is then paused at progress0.5691123294062755 before settings.",
+    "The traditional Advanced Preferences dialog opens from General Advanced Options. Mouse accessibility activation of Simple fails with element unavailable; the native dialog is on the other monitor and not separately returned by the window list. Keyboard navigation selects Simple, follows the category buttons to Hotkeys, and renders the full table including the saved Ctrl+Alt+Shift+F11 value. Escape cancels without saving. The paused player retains progress0.5691123294062755.",
+    "Both ordinary applications exit0, load602modules, log zero checked error diagnostics and pass all original source/runtime/fixture/producer/cache guards. The separate focus helper closes normally before its timeout with unchanged helper and QML. No forced cleanup is used."
+  ],
+  "limits": [
+    "This qualifies two distinct Play/Pause combinations, held-player isolation and survival after the first instance exits. It does not establish all shortcut actions, same-chord conflict feedback, live remapping, both closing orders or broad OS key ownership.",
+    "B explicitly guards the Windows global-key DLL and win32.c source in its frozen inventory. A original runtime guard did not enumerate that DLL; no broader binary guard is retroactively claimed for A.",
+    "An initial occluded target capture shows VLC pixels; activating the target produces its actual dark window. Several immediate snapshots have stale accessibility text; the later settled screenshots/readbacks are the relevant state evidence.",
+    "All profiles and media are owned test fixtures. Raw logs, configs, databases, media and binaries stay ignored locally. No dependency, privacy or security changes were made. Full design, accessibility, Windows DPI and final-package gates remain open."
+  ],
+  "artifacts": [
+    {
+      "path": "ui-global-shortcut-a-r339/verification.json.gz",
+      "sha256": "b392ca94bbe677fe38aa94c495a4195b2d83a1ec48225aa8e57caac0a73fdd18",
+      "rawSha256": "a5f9f1829ce9d56ca5328bef0057ee39d67ed7fb045d9afc7914194c2e4f4253"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/producer.py.gz",
+      "sha256": "5fd371b91455a5923bc384b55932bf736090492fc793e853af1bb7b8e81871c6",
+      "rawSha256": "2df9d2a45e6575115883e91a0c3fc1e761c1550dbe36f53c06c96c5880752307"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/launch.json.gz",
+      "sha256": "7094d5eabdb8fe3cb3ddf74f1477bfa359683d4ae85aff196b5bb2363cae5519",
+      "rawSha256": "25bee465cbb3715e7b8b21b4e299720498bfa1404cfb21813a2334d9ea769338"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/global-shortcut-fixture.json.gz",
+      "sha256": "e59d3b2ca05e659438b8cd89bc4edc39340c2c6cd263255521fd807c4eb150f4",
+      "rawSha256": "6d1c0c5e395c537b3cf39d99c2fb754ec5280f16c8845ebfba01ff8ff714ceef"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/01-global-shortcut-initial-paused-0.png.gz",
+      "sha256": "cef27f8e8f1a6cb4c75c97bfcaa3b1b34b04d7e0ace0a7f7ff6ba30798c1a1d9",
+      "rawSha256": "3dd1f8748cf86535d8bd1141e0d048c723bb0db1b02bff2e47bb3178861cab73"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/01-global-shortcut-initial-paused.json.gz",
+      "sha256": "7e7dec3cf954093146bcf201a22df5809545b494c8456ebe25553bdc98fc8961",
+      "rawSha256": "464ca9c335bce81095a91c0a191b18639885d847b8983ba7a757ba722527f2b9"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/02-owned-focus-target-0.png.gz",
+      "sha256": "5108816bdc31b50d4cf0c07185104907ce80977517e64e916ca980b27c9d355e",
+      "rawSha256": "89eed53bb96835fae30f84f3bd10259c377fdb015d80bde1ae1064098b123bbe"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/02-owned-focus-target.json.gz",
+      "sha256": "1d8c3c9bf5f15eef7fbaf8fad7e6a280beac2e3104474d6395e44ac1256f3f4b",
+      "rawSha256": "b0affa276433f8609ce19a1bfda0e33de291a7b82063558869e773bba683f86e"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/03-owned-target-foreground-0.png.gz",
+      "sha256": "5feebc4138501b0649721ce6a78727122252094622236f8ae9be792b58035e10",
+      "rawSha256": "3dc0f870b097c598c385b3654e4cd5867f840eba13fb830a0dd1d6c2e22c4585"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/03-owned-target-foreground.json.gz",
+      "sha256": "dd7aaf4a56af1742967863fdd60add7601755520ea13892f9dd88d73b5903f6f",
+      "rawSha256": "aaa20e6f70d7752a2da5f1359c46bad5961b81634832c43a8df71a19280705dd"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/04-global-chord-delivered-to-owned-target-0.png.gz",
+      "sha256": "b76216ac6d6c941fd79c3eb7103cc721d85414abbe0cad505ffe9948dfdd27d9",
+      "rawSha256": "6a8bcea3145ceaf970af23a3f3583d81fa3126aabd67a7c6e06537dd34abc1d0"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/04-global-chord-delivered-to-owned-target.json.gz",
+      "sha256": "28722440b607c674fc627c123156a6bf258227edec723f5bf0524934e91d137f",
+      "rawSha256": "abd3c57af5932094a869cfb225279e556eb55c8483906ac767a4a40de9a6bcc3"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/05-background-global-starts-playback-0.png.gz",
+      "sha256": "1e50bbfe747e5ab484c9676e9fc381b6bdb20dd319b2e5a87fb7fa1c8772a7d8",
+      "rawSha256": "da2a0a2a1bd38676d72fe94418f5c713b24b0c290ca9eeb868e854967f06d3e8"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/05-background-global-starts-playback.json.gz",
+      "sha256": "872d367a1cc67e83b52e709238285019b82e005757cbdc5c08b42a7684fa873d",
+      "rawSha256": "d8387d804fdf977ec7651ec38af49105262a27848566913b0d0422328b491b97"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/06-background-global-pause-chord-target.json.gz",
+      "sha256": "9be13e95fe5b70d0ad733208270284f952bd366c99818768e9940a06cec6b807",
+      "rawSha256": "98e1dfd00d0b1f163a44cc71a819c25761665a33e6c4f85b304b5ae3b6ff9271"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/07-background-global-pause-observed-0.png.gz",
+      "sha256": "dd2677b24f3eca9beb131475582b4f39b6a8a30abe5f6df720291e80b7a681a4",
+      "rawSha256": "138b9d2d3a0a0f1ecbd4e8e4762ffd329356496aa2a4f7c74cfc6ec8921d4cc7"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/07-background-global-pause-observed.json.gz",
+      "sha256": "ceda33859ea7e7439971f3d57d2a1a2fed2003365c2e6825c8c7f4926b88cce2",
+      "rawSha256": "a89ce7a552446957f84e7eb5d09802f7edb05dea2da0c29b799e4d2f0c04fd50"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/08-global-pause-foreground-readback-0.png.gz",
+      "sha256": "9164d458904bb58d9080dcd5b080771fa00a9ccf53d9e494e502e22c2568d1c0",
+      "rawSha256": "3ef8b34d3cc128e5b7e3167fb66c41937e6dea42b1424bf421a3dd42ba7cc4c7"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/08-global-pause-foreground-readback.json.gz",
+      "sha256": "3552927d9f80330bb6e2748b218b3c7e6c593aa7b6c9edf1af2f88874fed1555",
+      "rawSha256": "dc56e695d8f11aca2d090369a8758172a31413fec7fba8c5ee77f7e160c82b64"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/09-foreground-paused-readback-0.png.gz",
+      "sha256": "3c05bef829c760a18726fa35569247b35fb7c0be5a52db6e9113beda7facdeac",
+      "rawSha256": "d8002438d4eba5c3eba0f10f1bca895d7e349243d415f5266f045d06e449f09c"
+    },
+    {
+      "path": "ui-global-shortcut-a-r339/observations/09-foreground-paused-readback.json.gz",
+      "sha256": "89e49c705928407fca2fca9138e3cc14eb20cbb469c3de51584be7e2d97efb3b",
+      "rawSha256": "fdcadbb59dd6af660be237caf712ea63930e3fb1f1888d6b8b45ba4006f90898"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/verification.json.gz",
+      "sha256": "d0e2b03099496dbbe0184301f0b907d1b0c4b85819677a915cab3b9e553e5600",
+      "rawSha256": "0e7d9a43ae6479fda89ca029a3726fca49dcb9e0275d764d321686f1853f2555"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/producer.py.gz",
+      "sha256": "c24c3c1a8fc212c3140d54f6a1dcb9c4411625a3a7a710423f99aae8154da855",
+      "rawSha256": "eb424df1daa98dc8ba73619f364357eaa3ffe2ab14c2510513671618f283339f"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/launch.json.gz",
+      "sha256": "e73f5b5685c77eb1f8a187bec46695eb434a99826b6689195cb6d93e50cda9f4",
+      "rawSha256": "4b8df826a3407fe8c5ea5460806a5533cbc88d2b8dd73de7d25593b341c6fc1b"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/staging.json.gz",
+      "sha256": "4804613c0c6de15a469035eb0648ebe8033d4ed9649e79d8f3e5579bdbe09198",
+      "rawSha256": "fc2b9192fec7f01b8ea4e0877d58e743e84b872791efdc4162100450d6e02200"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/global-shortcut-fixture.json.gz",
+      "sha256": "f2be66f07ea54dbf3e2280e1c9427cf42bdd633a3a6fc3026aa130e4f6084167",
+      "rawSha256": "3ef103c2ec3b5f95ed80ed5b9b5b49a7e925bf3797d51e4524ec7cc73a1c237c"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/01-second-instance-initial-paused-0.png.gz",
+      "sha256": "f5c8115474ec5ab5558a79fafde30920bab63180dbe52a0e3d618c9039adc045",
+      "rawSha256": "aded83f791cb480e8ace419c9d7808eae91ae4fb1006019809bc8eccc76dc54c"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/01-second-instance-initial-paused.json.gz",
+      "sha256": "d67e737b391f28bf59ca5769104e824d459add0364b264ce99a9ced199890eb7",
+      "rawSha256": "4ee6fb3561920b34734e1f813f8a3af2f7337b11ca0023f4794cccea4c1e43fd"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/02-second-instance-start-chord-owned-target-0.png.gz",
+      "sha256": "0298850c71922349f6fef9dc065f77fb2c1b0c65a763b5314cf5a428dd15c390",
+      "rawSha256": "0efb463d6282038b8d35426f06dbcdbab4cf44d4275c6775bac8225c9c4cd953"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/02-second-instance-start-chord-owned-target.json.gz",
+      "sha256": "1672124ad66c4329d03983833280709d9cc987e2e966c73627cfb87edefab01a",
+      "rawSha256": "7592d2a84c1751c2c3bc6484bebd7198be0e63c4e9a93d9d92094e725f0b145d"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/03-second-instance-playing-readback-0.png.gz",
+      "sha256": "4b3a45e4487cf70f3e1410d912203f87b8747f607ca655433ce889edc9043a83",
+      "rawSha256": "feeb7726e6f62831a30db3b2d509114fc2e0deeda2ad54e8bedb8b62c366c9ff"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/03-second-instance-playing-readback.json.gz",
+      "sha256": "adb3988e40b19b08483dce8f2a0ba795df79b68fe31964cf14fbd8f846fb545f",
+      "rawSha256": "11847b773b465402084841b7115014a7ef5f762b9aba60eb6a03060380648a4a"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/04-second-instance-playing-settled-0.png.gz",
+      "sha256": "5fcbb8dcc9f833b0806042fefca0f44ef44daf602c882239accf98f68a1c1f16",
+      "rawSha256": "6f6c88664d88c2c6622bac7c54cf6090f4c2f9a234ca2052cdaad27fe5938dc7"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/04-second-instance-playing-settled.json.gz",
+      "sha256": "280b5884544716d523ce3b9a9bdea7c03f8e1f64fa2b0a6d740b9e26b77dbbec",
+      "rawSha256": "5cc348d48c51472ccaa46017565ffa36ef8a9d2b13560aaf6e7f293b3b52f32a"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/05-second-instance-pause-chord-owned-target-0.png.gz",
+      "sha256": "0298850c71922349f6fef9dc065f77fb2c1b0c65a763b5314cf5a428dd15c390",
+      "rawSha256": "0efb463d6282038b8d35426f06dbcdbab4cf44d4275c6775bac8225c9c4cd953"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/05-second-instance-pause-chord-owned-target.json.gz",
+      "sha256": "3360781be5591ad2235494987bcb3bc081ce20bad4fb5521fedb8981131f7fa5",
+      "rawSha256": "ae9d868d4c581aa3b1063ebe0d3aa8c54dcf5556a574adfbdd736c66c7dacdf6"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/06-first-instance-held-through-second-shortcut-0.png.gz",
+      "sha256": "e1e57f204ffdf120dfbb99aaec74763624bc1162f7bfd4da585b7bdf094e22c3",
+      "rawSha256": "725e44c25bc2fe536a2ce905b067e3984eb78c3f97948dfc1d73dd36f120a17c"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/06-first-instance-held-through-second-shortcut.json.gz",
+      "sha256": "10e108c2f21ce141d4eb982231424f7c9b34845f3ec95e386774c51810788987",
+      "rawSha256": "b5a33002f6f69660958b594eee566883005d7a4d43dfc2fed010e235528ea227"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/07-second-instance-paused-readback-0.png.gz",
+      "sha256": "b84e91164ade6f54592db93f639c3864b0729904a76340382a3e8038095d8a52",
+      "rawSha256": "608e461c90895dbcbadab4bf73644e5b49583899cc79d1a36dde0ff04e8d63f3"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/07-second-instance-paused-readback.json.gz",
+      "sha256": "c7ed467379bd9d8a53992dbfce46541b8a1fa9b59f51e3fbb8511b0f75f9d5b9",
+      "rawSha256": "71a43e7d9609c739e2848ef92fa9f77349de297a676b47d1b03a64084ef8641b"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/08-second-instance-pause-settled.json.gz",
+      "sha256": "66cfc382e8f72a3690837bd1640ab0cb49305d835f3a569648dc532dc3456b6e",
+      "rawSha256": "d20c0b8a391eb7d75277e4330aa25406fc61349df04eb7d3918e8bde0160c6a3"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/09-second-instance-starts-after-first-exit-0.png.gz",
+      "sha256": "0298850c71922349f6fef9dc065f77fb2c1b0c65a763b5314cf5a428dd15c390",
+      "rawSha256": "0efb463d6282038b8d35426f06dbcdbab4cf44d4275c6775bac8225c9c4cd953"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/09-second-instance-starts-after-first-exit.json.gz",
+      "sha256": "8529fa64a8ce64221eb5062ef6e0a7914f13301cef13e62c8070fc86e4cc298b",
+      "rawSha256": "5fd6ddb7203441e7ca058c79ef9d18f1f0bd3b738d50152e12b65c347e15aa81"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/10-second-instance-surviving-playback-0.png.gz",
+      "sha256": "458b1edb5e2f45b3f329da06c5beb181d5b5f01894f3ad6070c197fd76193029",
+      "rawSha256": "6e4388e098d6c96dee11f0705f6acd3b48b266d3d511619fb533a08af84c13c1"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/10-second-instance-surviving-playback.json.gz",
+      "sha256": "72e25573b6ed88a037fa6f452a499231605f014b5270e8006e31aef64ad72547",
+      "rawSha256": "c68f5d92d6cb9b89367d96881f64be88d2784a3013cf2f51d37b9c08130af7ba"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/11-survivor-pause-before-settings.json.gz",
+      "sha256": "06327785c3ffa59c5374980a13d31aa47d676378e8268174e6fe005d1d30c8fc",
+      "rawSha256": "c7ac30efac80ad28ad373b3dd6ef53bd4da3034c45c0638aaf03602e64062eeb"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/12-preferences-open-0.png.gz",
+      "sha256": "6a24ee091a054a12fd1ddc278910996062c9df0d299501e7ce4de88bf210e15a",
+      "rawSha256": "3450381eaaa4c1888a49ccb0b76a955758b32e7154b642e95edbb721887ec46b"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/12-preferences-open.json.gz",
+      "sha256": "05a14df23608c7673637e4e7dce6596566819f0495b70c8145b388a4b2f40837",
+      "rawSha256": "a880d3b8c2667b44abcff13dd02270587ac419facada73bffcf1385ddb83927d"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/13-controls-category-maximized-0.png.gz",
+      "sha256": "a189c8be1a15a4581e956577c4b5a83fe57ab1a4d8113dd4cf13788e607074a2",
+      "rawSha256": "568958e00ba02311e01c7d4221bc664acba40b2e7fe96c2b34f0b6775b85faee"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/13-controls-category-maximized.json.gz",
+      "sha256": "f24b404a97f3a1ed01f2d96f88a9f77a3f2f8d58305ca6e1b11534ac6509f682",
+      "rawSha256": "cc6f63e68879b594823c1ff98c3fdf1a0df41a09736ec63987c2c11bcdb80db5"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/14-traditional-preferences-open-0.png.gz",
+      "sha256": "7f3697e518ce316d80fa8adc5e40e57663e64f35ec972ae6ee6e4550447589fd",
+      "rawSha256": "a6476efec11d3b5ccbb466e7a5e0b531b9cac4ca1a94ee01a6a601d8db54ea10"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/14-traditional-preferences-open-1.png.gz",
+      "sha256": "6fe8ccc265a97bc81cbc01ca0c9e6d381d2c96df43bc139dc9c676e22b01ed1d",
+      "rawSha256": "335997c831a60af486b98ec7aca41528997125be27a3192fb1456a349fd17fe0"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/14-traditional-preferences-open.json.gz",
+      "sha256": "962faa8e06b91b3a7b0eba6e626a68c0dc302b5bb5165b49a90ed21cdad198b9",
+      "rawSha256": "6b6258ea575f1bc63183fd5d08890ca6f8c46a761f6f2a80439e464f02a14611"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/16-traditional-simple-selected-keyboard-0.png.gz",
+      "sha256": "e703ae4f4fb67d45c21a5b298de0d992e10746f8186c45403946bb1e9789fc4d",
+      "rawSha256": "c57166fa27048d1b45868de57db85c4fbd04a970702792ea8634db6c19c85575"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/16-traditional-simple-selected-keyboard-1.png.gz",
+      "sha256": "0168bb1f3c3516c4004e62636e0fc51375111c24333f1ac97dc9c338364f4c1a",
+      "rawSha256": "662210169ba853163a1c8820f864bfea8e9992c58b7878245bbee77c4105f171"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/16-traditional-simple-selected-keyboard.json.gz",
+      "sha256": "c7f6af6715b1a837bbe6eb24adb1ee7470fedbbd4a4f57132d70b67864d7ca1f",
+      "rawSha256": "e7ea8c1a0b9443d532e541ba3ba06bf45acf0abe4783c37e90bb6d15208669d6"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/17-traditional-hotkeys-reached-keyboard-0.png.gz",
+      "sha256": "e703ae4f4fb67d45c21a5b298de0d992e10746f8186c45403946bb1e9789fc4d",
+      "rawSha256": "c57166fa27048d1b45868de57db85c4fbd04a970702792ea8634db6c19c85575"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/17-traditional-hotkeys-reached-keyboard-1.png.gz",
+      "sha256": "87d20b56a5d799a886be1e4e19e121b625e36f032bafe59b1182571232e42e57",
+      "rawSha256": "e16ab96fa32c70264acf52c4ffa068d4f267e860152312cb66960a35127244ae"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/17-traditional-hotkeys-reached-keyboard.json.gz",
+      "sha256": "09d2b459da4cb64f12939864b23c45cecd71636b85dff7cf7ebb7603ff73bce2",
+      "rawSha256": "dd8e453ed2970b49cb2c3a1bb8e0882efa6e3175614a80342046807df332ae31"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/18-traditional-preferences-cancel-0.png.gz",
+      "sha256": "e703ae4f4fb67d45c21a5b298de0d992e10746f8186c45403946bb1e9789fc4d",
+      "rawSha256": "c57166fa27048d1b45868de57db85c4fbd04a970702792ea8634db6c19c85575"
+    },
+    {
+      "path": "ui-global-shortcut-b-r340/observations/18-traditional-preferences-cancel.json.gz",
+      "sha256": "2eff0aa65495551a4c0eb4ac917d5038733921a6203f8d66be225e62dd1a8c91",
+      "rawSha256": "a4989d2870e35e07135d8738dd39b1cc6631d058daeb5cfb0698c9c592cff33b"
+    },
+    {
+      "path": "inputs-r339.json.gz",
+      "sha256": "95f3b08612ef558ab034010c40e483c857a914e1d991e9618a5e9751ef9e7052",
+      "rawSha256": "45efa460b80c62f2374499787fb425a35ec6b2d2a0a3bfa34f16216d7583c42c"
+    },
+    {
+      "path": "inputs-r340.json.gz",
+      "sha256": "067ea23aa8a40dc3dee34ff7ee9a939bb08660efbaedabaff8bba16ff8d02f57",
+      "rawSha256": "c391a9077b04d94a33acb3dba99ff704eb7ef7e4ee4304d957d0d5434b0e7e99"
+    },
+    {
+      "path": "run-ui-global-shortcut-r339.py.gz",
+      "sha256": "5fd371b91455a5923bc384b55932bf736090492fc793e853af1bb7b8e81871c6",
+      "rawSha256": "2df9d2a45e6575115883e91a0c3fc1e761c1550dbe36f53c06c96c5880752307"
+    },
+    {
+      "path": "run-ui-global-shortcut-b-r340.py.gz",
+      "sha256": "c24c3c1a8fc212c3140d54f6a1dcb9c4411625a3a7a710423f99aae8154da855",
+      "rawSha256": "eb424df1daa98dc8ba73619f364357eaa3ffe2ab14c2510513671618f283339f"
+    },
+    {
+      "path": "prepare-global-shortcuts-r339.py.gz",
+      "sha256": "33c5a6fc21eae2396bfd3cd34663fb00a814b19141ef891c38e08bd75be7f0ff",
+      "rawSha256": "309030c916962298c83b731d10d93dd67241afab25df22b1ac63375fd6da4db6"
+    },
+    {
+      "path": "prepare-global-shortcut-b-r340.py.gz",
+      "sha256": "96caf0b0e543abdda1101cc0574fe598f0ffb040356014a1275ddbe6c32e2754",
+      "rawSha256": "04328f25a5ac1d085d4aff132c4c299c8b3d5a0e1fb7df31a9491513ecb89116"
+    },
+    {
+      "path": "freeze-global-shortcuts-r340.py.gz",
+      "sha256": "5a895642aa15db02ea04bb16f29063d063d1275ed35192569e1fed5c0ff7ad16",
+      "rawSha256": "6b6534d4d3a72526ff2170d3df6677582dbe5b1b113e4b921435fd810cac07b1"
+    },
+    {
+      "path": "global-shortcut-target-r339.py.gz",
+      "sha256": "492ae3b49459499224046604df7630f2b109c5ef82cce338935b31fe894a2fb2",
+      "rawSha256": "fb8842d82fdb6f8ef341b33a65e659d08a0cc6ec6e31552150d4407c8f2cdb61"
+    },
+    {
+      "path": "global-shortcut-target-r339/verification.json.gz",
+      "sha256": "0f4715091c28095177de61352fc1c9469caa0ec9365bda6302373b657b592008",
+      "rawSha256": "30a9001411c15fd2cd5243f84ca1d2581a09c2d6ebf14330df2f3c891e0728aa"
+    },
+    {
+      "path": "global-shortcut-target-r339/target.qml.gz",
+      "sha256": "59e0b456061c5f4127a4411a1e41070c0c326b7b2c6f142ddb186890bd9f67d7",
+      "rawSha256": "0ef06eae266b53b8dac20b5091329532bec5fce58f6bc889a1f862684ba07c00"
+    },
+    {
+      "path": "write-global-shortcut-receipt-r341.py.gz",
+      "sha256": "9bcbcd17f630d722ec421e8173d7f636fa2814315cdb85a89e4aa66f91aae8e7",
+      "rawSha256": "83466c6567058a12c166f2f8fd2a56adccca86fb9907c734f49fdd36afc8ad44"
+    }
+  ]
+}

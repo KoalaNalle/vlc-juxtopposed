@@ -32,7 +32,6 @@ VideoWindowHandler::VideoWindowHandler(qt_intf_t* intf, QObject *parent)
     m_autoresize = var_InheritBool( m_intf, "qt-video-autoresize" );
 
     assert(qGuiApp);
-    m_hasWayland = qGuiApp->platformName().startsWith(QLatin1String("wayland"));
 
     connect( this, &VideoWindowHandler::askVideoToResize,
              this, &VideoWindowHandler::setVideoSize, Qt::QueuedConnection );
@@ -185,40 +184,14 @@ void VideoWindowHandler::setVideoSize(unsigned int w, unsigned int h, Qt::Window
     }
 }
 
-void VideoWindowHandler::setVideoFullScreen( bool fs )
+void VideoWindowHandler::setVideoFullScreen(bool fs)
 {
-    if (!m_window)
-        return;
+    if (!m_window) return;
     m_videoFullScreen = fs;
-    if( fs )
-    {
-        int numscreen = var_InheritInteger( m_intf, "qt-fullscreen-screennumber" );
-
-        auto screenList = QApplication::screens();
-        if ( numscreen >= 0 && numscreen < screenList.count() )
-        {
-            QRect screenres = screenList[numscreen]->geometry();
-            m_lastWinScreen = m_window->screen();
-            if( !m_hasWayland )
-                m_window->setScreen(screenList[numscreen]);
-
-            /* To be sure window is on proper-screen in xinerama */
-            if( !screenres.contains( m_window->position() ) )
-            {
-                m_window->setPosition(screenres.x(), screenres.y() );
-            }
-        }
-        WindowStateHolder::holdFullscreen(m_window,  WindowStateHolder::VIDEO, true);
-    }
-    else
-    {
-        WindowStateHolder::holdFullscreen(m_window,  WindowStateHolder::VIDEO, false);
-
-        if( m_lastWinScreen != NULL && !m_hasWayland )
-            m_window->setScreen(m_lastWinScreen);
-    }
+    const int target = m_intf->p_mi ? m_intf->p_mi->fullscreenScreen()
+        : var_InheritInteger(m_intf, "qt-fullscreen-screennumber");
+    WindowStateHolder::holdFullscreen(m_window, WindowStateHolder::VIDEO, fs, target);
 }
-
 
 /* Slot to change the video always-on-top flag.
  * Emit askVideoOnTop() to invoke this from other thread. */

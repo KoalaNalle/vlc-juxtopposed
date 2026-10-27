@@ -1164,13 +1164,10 @@ static const struct filter_video_callbacks vout_video_cbs = {
 static picture_t *ConvertRGBAAndBlend(vout_thread_sys_t *vout, picture_t *pic,
                                       vlc_render_subpicture *subpic)
 {
-    vout_thread_sys_t *sys = vout;
     /* This function will convert the pic to RGBA and blend the subpic to it.
      * The returned pic can't be used to display since the chroma will be
      * different than the "vout display" one, but it can be used for snapshots.
      * */
-
-    assert(sys->spu_blend);
 
     filter_owner_t owner = {
         .video = &vout_video_cbs,
@@ -1180,13 +1177,16 @@ static picture_t *ConvertRGBAAndBlend(vout_thread_sys_t *vout, picture_t *pic,
     if (!filterc)
         return NULL;
 
-    es_format_t src = sys->spu_blend->fmt_out;
+    // The blender only describes its destination chroma and dimensions. Use
+    // the picture's full format and context so an opaque surface can actually
+    // be downloaded. filter_chain_Reset copies these borrowed format fields.
+    es_format_t src;
+    es_format_Init(&src, VIDEO_ES, pic->format.i_chroma);
+    src.video = pic->format;
     es_format_t dst = src;
-    dst.video.i_chroma = VLC_CODEC_RGBA;
+    dst.i_codec = dst.video.i_chroma = VLC_CODEC_RGBA;
 
-    filter_chain_Reset(filterc, &src,
-                       NULL /* TODO output video context of blender */,
-                       &dst);
+    filter_chain_Reset(filterc, &src, picture_GetVideoContext(pic), &dst);
 
     if (filter_chain_AppendConverter(filterc, &dst) != VLC_SUCCESS)
     {
@@ -1256,7 +1256,21 @@ static int PrerenderPicture(vout_thread_sys_t *sys, picture_t *filtered,
     vlc_tick_t system_now = vlc_tick_now();
     vlc_tick_t render_subtitle_date;
     if (sys->pause.is_on)
+    {
         render_subtitle_date = sys->pause.date;
+        if (filtered->date >= VLC_TICK_0)
+        {
+            /* A paused seek or frame step changes the displayed media time
+             * without changing the frozen wall-clock pause date. Select
+             * subtitles against this picture on the same clock as the SPU. */
+            vlc_clock_Lock(sys->clock);
+            vlc_tick_t picture_date = vlc_clock_ConvertToSystem(sys->clock,
+                system_now, filtered->date, sys->rate, NULL);
+            vlc_clock_Unlock(sys->clock);
+            if (picture_date != VLC_TICK_INVALID && picture_date != VLC_TICK_MAX)
+                render_subtitle_date = picture_date;
+        }
+    }
     else if (filtered->b_force)
         render_subtitle_date = system_now;
     else
@@ -1274,8 +1288,7 @@ static int PrerenderPicture(vout_thread_sys_t *sys, picture_t *filtered,
      * ourselves (blending_before_converter=true).
      */
     const bool do_snapshot = vout_snapshot_IsRequested(sys->snapshot);
-    const bool vd_does_blending = !do_snapshot &&
-                                   vd->info.subpicture_chromas &&
+    const bool vd_does_blending = vd->info.subpicture_chromas &&
                                    *vd->info.subpicture_chromas != 0;
     const bool spu_in_full_window = vd->cfg->display.full_fill &&
                                     vd_does_blending;
@@ -1335,6 +1348,24 @@ static int PrerenderPicture(vout_thread_sys_t *sys, picture_t *filtered,
      */
     picture_t *todisplay = filtered;
     picture_t *snap_pic = todisplay;
+    if (do_snapshot && vd_does_blending && blending_before_converter)
+    {
+        /* The display still needs its normal subtitle overlay on this frame.
+         * Make a separate software snapshot at the video's dimensions instead
+         * of trying to blend into an opaque decoder/display picture. OSD is
+         * excluded from the saved image, as in the software snapshot path. */
+        video_format_t snapshot_spu;
+        video_format_ApplyRotation(&snapshot_spu, vd->source);
+        vlc_render_subpicture *subpic = RenderSPUs(sys, NULL, &snapshot_spu,
+            system_now, render_subtitle_date, true, false, NULL);
+        if (subpic)
+        {
+            picture_t *copy = ConvertRGBAAndBlend(sys, filtered, subpic);
+            if (copy)
+                snap_pic = copy;
+            vlc_render_subpicture_Delete(subpic);
+        }
+    }
     if (!vd_does_blending && blending_before_converter && sys->spu_blend) {
         vlc_render_subpicture *subpic = RenderSPUs(sys, NULL, &fmt_spu_rot,
                                           system_now, render_subtitle_date,
@@ -2268,6 +2299,7 @@ vout_thread_t *vout_Create(vlc_object_t *object)
     vout_InitInterlacingSupport(vout, &sys->interlacing);
 
     sys->is_late_dropped = var_InheritBool(vout, "drop-late-frames");
+    msg_Dbg(vout, "late frame dropping: %d", sys->is_late_dropped);
 
     vlc_mutex_init(&sys->filter.lock);
 

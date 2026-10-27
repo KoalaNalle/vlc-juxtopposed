@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "candidateOnly": true,
+  "repairAccepted": false,
+  "configuration": {
+    "name": "normal-playback-reference",
+    "media": "media-r26/ass-overlap.mkv",
+    "language": "eng",
+    "audio": true,
+    "steps": []
+  },
+  "producerSha256": "5f57598e5cf383639e009840ad0b43866a3fca0acbc86696684a6a6752e42661",
+  "coreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "mkvSha256": "a5b19b9028cb004263ecf011aa14500b98164f84f5a3ac324e4bc9a6fc2da6f7",
+  "fixtureSha256": "72a9332f000b26511d05f63fd010a1d7a06647a38f1ef7c0a61648c9d8af7ee6",
+  "options": [
+    "--ignore-config",
+    "--no-media-library",
+    "--no-metadata-network-access",
+    "--no-ml-network-discovery",
+    "--no-osd",
+    "--no-video-title-show",
+    "--no-sub-autodetect-file",
+    "--vout=vdummy",
+    "--no-hw-dec",
+    "--audio-language=eng",
+    "--sub-language=eng",
+    "--stats-min-report-interval=10",
+    "--verbose=2",
+    "--file-logging",
+    "--logfile=C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-ass-overlap-reference-r27\\before\\normal-playback-reference\\native.log",
+    "--aout=mmdevice",
+    "--mmdevice-backend=wasapi"
+  ],
+  "observations": [
+    {
+      "step": "initial-paused",
+      "state": 3,
+      "timeUs": 61334,
+      "vouts": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        }
+      ],
+      "stats": {
+        "available": true,
+        "readBytes": 18420,
+        "inputBitrate": 0.0,
+        "demuxReadBytes": 14688,
+        "demuxBitrate": 0.0,
+        "demuxCorrupted": 0,
+        "demuxDiscontinuity": 0,
+        "decodedVideo": 2,
+        "decodedAudio": 1,
+        "displayedPictures": 1,
+        "latePictures": 0,
+        "lostPictures": 0,
+        "playedAudioBuffers": 1,
+        "lostAudioBuffers": 0
+      },
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshot": "initial-paused.png",
+      "snapshotSha256": "c67ba5485fd50ad706ae20c10a8212b9d45ebd1fd2254340595a546ce9f7d6a9",
+      "rgb": [
+        253,
+        0,
+        0
+      ],
+      "brightPixels": 1754,
+      "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828"
+    },
+    {
+      "step": "normal-overlap-31s",
+      "state": 3,
+      "timeUs": 31219900,
+      "vouts": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        }
+      ],
+      "stats": {
+        "available": true,
+        "readBytes": 436282,
+        "inputBitrate": 0.01351220440119505,
+        "demuxReadBytes": 416015,
+        "demuxBitrate": 0.012835769914090633,
+        "demuxCorrupted": 0,
+        "demuxDiscontinuity": 0,
+        "decodedVideo": 804,
+        "decodedAudio": 1516,
+        "displayedPictures": 792,
+        "latePictures": 0,
+        "lostPictures": 0,
+        "playedAudioBuffers": 1516,
+        "lostAudioBuffers": 0
+      },
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshot": "normal-overlap-31s.png",
+      "snapshotSha256": "d8446b48cb64af2708d1f31c31fabb9904473c188883e689c4cb64bf5354e318",
+      "rgb": [
+        253,
+        0,
+        0
+      ],
+      "brightPixels": 3606,
+      "whiteMaskSha256": "8791400569264d45939c84f4527b55ea0cd0943fb41249c0b61929639c893971",
+      "expected": {
+        "name": "both-cues",
+        "target": 31,
+        "color": 0,
+        "subtitle": true
+      },
+      "maskComparisonPerformed": false,
+      "assertions": {
+        "paused": true,
+        "picture": true,
+        "targetColor": true,
+        "subtitlePresence": true,
+        "subtitleMask": true
+      },
+      "passed": true
+    },
+    {
+      "step": "normal-long-alone-35s",
+      "state": 3,
+      "timeUs": 35203884,
+      "vouts": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "language": "eng",
+          "name": "Track 1 - [English]",
+          "selected": true
+        }
+      ],
+      "stats": {
+        "available": true,
+        "readBytes": 489074,
+        "inputBitrate": 0.013242111541330814,
+        "demuxReadBytes": 466967,
+        "demuxBitrate": 0.012717276811599731,
+        "demuxCorrupted": 0,
+        "demuxDiscontinuity": 0,
+        "decodedVideo": 903,
+        "decodedAudio": 1703,
+        "displayedPictures": 896,
+        "latePictures": 1,
+        "lostPictures": 0,
+        "playedAudioBuffers": 1703,
+        "lostAudioBuffers": 0
+      },
+      "snapshotReturn": 0,
+      "snapshotAvailableWhilePaused": true,
+      "snapshot": "normal-long-alone-35s.png",
+      "snapshotSha256": "4ba9a81fde375237982422cf7665e062d0f68c2c467072941d33ecf301f42945",
+      "rgb": [
+        253,
+        0,
+        0
+      ],
+      "brightPixels": 1754,
+      "whiteMaskSha256": "88e927ec8053cf4792a1f8c8be3a647bf6694d533fa5c442a5e07120466cf828",
+      "expected": {
+        "name": "long-alone",
+        "target": 35,
+        "color": 0,
+        "subtitle": true
+      },
+      "maskComparisonPerformed": false,
+      "assertions": {
+        "paused": true,
+        "picture": true,
+        "targetColor": true,
+        "subtitlePresence": true,
+        "subtitleMask": true
+      },
+      "passed": true
+    }
+  ],
+  "teardownComplete": true,
+  "scope": "Native coarse target colors, actual subtitle pixels/masks, frozen paused clock and resume; counters/times are observations, not an accepted performance budget or exact video PTS.",
+  "initialPauseReached": true,
+  "requestedSubtitleLanguageSelected": true,
+  "overlap31Reached": true,
+  "repaused": true,
+  "resumeAdvancedFromRequestedTarget": true,
+  "stopReturn": 0,
+  "stopReached": true,
+  "diagnostics": [
+    "main error: window closed"
+  ],
+  "warnings": [
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-ass-overlap-reference-r27\\before\\normal-playback-reference\\runtime\\plugins\\plugins.dat: No error",
+    "main warning: cannot read C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-tracks-subtitles-20261023\\native-ass-overlap-reference-r27\\before\\normal-playback-reference\\runtime\\plugins\\plugins.dat: No error",
+    "faad warning: decoded zero sample",
+    "main warning: window size missing"
+  ],
+  "actualWasapiSelected": true
+}

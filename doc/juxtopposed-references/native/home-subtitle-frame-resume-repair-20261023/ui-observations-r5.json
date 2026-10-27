@@ -1,0 +1,73 @@
+{
+  "method": "Actual Windows app screenshots and accessibility states reviewed through Computer Use. No Computer Use screenshot pixels were decoded, saved or measured programmatically.",
+  "ordinaryCore": true,
+  "ordinaryGui": true,
+  "fullBetaAccepted": false,
+  "cases": [
+    {
+      "externalFile": "external.srt",
+      "pid": 32472,
+      "externalFileOpenedViaSubtitleMenu": true,
+      "externalAutomaticallySelected": true,
+      "onlyOneSubtitleSelected": true,
+      "selectedTrack": "Track 3",
+      "pausedElapsedBefore": "00:00:05",
+      "pausedPositionBeforeSteps": 0.08364566640569039,
+      "pausedPositionAfterFirstStep": 0.08431198880578368,
+      "pausedPositionAfterSecondStep": 0.08497831120587697,
+      "genuineNextFrameShortcuts": 2,
+      "genuineNextFrameFeedbackVisible": true,
+      "visibleMarkerPatternAdvanced": true,
+      "noMisleadingStepFeedbackObservedOnSubtitleLoad": true,
+      "loadFeedback": "Subtitle slave added (existing native wording); no Next frame message was observed on loading.",
+      "captionsSurviveStepAndResume": true,
+      "resumedElapsed": "00:00:16",
+      "captionAtResumedObservation": "EXTERNAL FIRST CUE",
+      "pausedAgainElapsed": "00:00:30",
+      "captionAfterNaturalCueTransition": "EXTERNAL MIDDLE CUE",
+      "realSeekAfterStepsVerified": true,
+      "realSeekObservations": [
+        {"elapsed": "00:00:25", "picture": "blue", "caption": "EXTERNAL MIDDLE CUE"},
+        {"elapsed": "00:00:05", "picture": "red", "caption": "EXTERNAL FIRST CUE"}
+      ],
+      "normalQuitRequested": true
+    },
+    {
+      "externalFile": "multi-language.mks",
+      "pid": 18604,
+      "externalFileOpenedViaSubtitleMenu": true,
+      "externalAutomaticallySelected": true,
+      "onlyOneSubtitleSelected": true,
+      "selectedTrack": "Track 3 - [English]",
+      "externalFinnishSelectedAndEnglishRestored": true,
+      "finnishCaption": "ULKOINEN ENSIMMAINEN",
+      "pausedElapsedBefore": "00:00:05",
+      "pausedPositionBeforeSteps": 0.08364566640569039,
+      "pausedPositionAfterFirstStep": 0.08431198880578368,
+      "pausedPositionAfterSecondStep": 0.08497831120587697,
+      "genuineNextFrameShortcuts": 2,
+      "genuineNextFrameFeedbackVisible": true,
+      "feedbackObservation": "The first two immediate screenshots preceded the transient message. After both real-seek checks, one additional deliberate e shortcut was followed by an immediate capture and another capture after 250 ms; the latter visibly shows Next frame. No extra input was sent between those captures.",
+      "additionalGenuineStepAfterRealSeeks": true,
+      "additionalStepPosition": 0.08431198880578368,
+      "visibleMarkerPatternAdvanced": true,
+      "noMisleadingStepFeedbackObservedOnSubtitleLoad": true,
+      "loadFeedback": "Subtitle slave added; track changes show their subtitle-track message. No Next frame message was observed on loading or track selection.",
+      "captionsSurviveStepAndResume": true,
+      "resumedElapsed": "00:00:13",
+      "captionAtResumedObservation": "EXTERNAL FIRST CUE",
+      "pausedAgainElapsed": "00:00:19",
+      "realSeekAfterStepsVerified": true,
+      "realSeekObservations": [
+        {"elapsed": "00:00:25", "picture": "blue", "caption": "EXTERNAL MIDDLE CUE"},
+        {"elapsed": "00:00:05", "picture": "red", "caption": "EXTERNAL FIRST CUE"}
+      ],
+      "normalQuitRequested": true
+    }
+  ],
+  "limits": [
+    "Desktop marker patterns and caption text are reviewed observations; native snapshot pixels qualify exact held-frame and one-frame-step checks separately.",
+    "Immediate Qt/accessibility states can precede the settled rendered frame; an additional fresh observation verified seeks and pause changes.",
+    "No exact absolute seek-PTS or GUI normalized-value conservation, full subtitle/layout/DPI, physical audibility, Windows10 or full-beta acceptance."
+  ]
+}

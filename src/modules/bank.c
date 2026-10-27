@@ -48,9 +48,19 @@
 #include "../libvlc.h"
 #include "config/configuration.h"
 #include "modules/modules.h"
+#include "cache_output.h"
 
 /** Core module */
 VLC_DECL_MODULE_ENTRY(core);
+
+unsigned vlc_plugin_cache_output_protocol(void)
+{
+#ifdef HAVE_DYNAMIC_PLUGINS
+    return VLC_CACHE_OUTPUT_PROTOCOL;
+#else
+    return 0;
+#endif
+}
 
 typedef struct vlc_modcap
 {
@@ -513,7 +523,7 @@ static void AllocatePluginDir (module_bank_t *bank, unsigned maxdepth,
  * \param path base directory to browse
  */
 static void AllocatePluginPath(libvlc_int_t *obj, const char *path,
-                               cache_mode_t mode)
+                               cache_mode_t mode, const char *cache_output)
 {
     module_bank_t bank =
     {
@@ -548,7 +558,8 @@ static void AllocatePluginPath(libvlc_int_t *obj, const char *path,
     }
 
     if (mode & CACHE_WRITE_FILE)
-        CacheSave(obj, path, bank.plugins, bank.size);
+        CacheSave(obj, cache_output != NULL ? cache_output : path,
+                  bank.plugins, bank.size);
 
     free(bank.plugins);
 }
@@ -579,16 +590,28 @@ static void AllocateAllPlugins (libvlc_int_t *p_this)
     if (var_InheritBool(p_this, "reset-plugins-cache"))
         mode = (mode | CACHE_WRITE_FILE) & ~CACHE_READ_FILE;
 
+    /* The cache generator's isolated output mode scans one explicit source
+     * without writing into it or enumerating the normal plugin search paths.
+     * Normal application startup and in-place generation keep their behavior. */
+    const char *cache_source = getenv(VLC_CACHE_SOURCE_ENV);
+    const char *cache_output = getenv(VLC_CACHE_OUTPUT_ENV);
+    if ((mode & CACHE_WRITE_FILE) && cache_source != NULL && *cache_source
+        && cache_output != NULL && *cache_output)
+    {
+        AllocatePluginPath(p_this, cache_source, mode, cache_output);
+        return;
+    }
+
 #ifdef HAVE_FORCED_PLUGINS
     /* Windows Store Apps can not load external plugins with absolute paths. */
-    AllocatePluginPath (p_this, "plugins", mode);
+    AllocatePluginPath (p_this, "plugins", mode, NULL);
 #else
     /* Construct the special search path for system that have a relocatable
      * executable. Set it to <vlc path>/plugins. */
     char *vlcpath = config_GetSysPath(VLC_PKG_LIB_DIR, "plugins");
     if (likely(vlcpath != NULL))
     {
-        AllocatePluginPath(p_this, vlcpath, mode);
+        AllocatePluginPath(p_this, vlcpath, mode, NULL);
         free(vlcpath);
     }
 #endif
@@ -609,7 +632,7 @@ static void AllocateAllPlugins (libvlc_int_t *p_this)
     for( char *buf, *path = strtok_r( paths, PATH_SEP, &buf );
          path != NULL;
          path = strtok_r( NULL, PATH_SEP, &buf ) )
-        AllocatePluginPath (p_this, path, mode);
+        AllocatePluginPath (p_this, path, mode, NULL);
 
     free( paths );
 }

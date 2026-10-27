@@ -340,6 +340,20 @@ int main(void)
     assert(vlc_http_msg_headers("HTTP/1.1 200 OK\r\n"
                                 "/naughty: invalid\r\n\r\n") == NULL);
 
+    m = vlc_http_req_create("GET", "http", "origin.owned.invalid", "/owned?q=1");
+    assert(m != NULL);
+    assert(!vlc_http_msg_add_header(m, "Authorization", "owned-origin"));
+    assert(!vlc_http_msg_add_header(m, "Proxy-Authorization", "owned-proxy"));
+    struct vlc_http_msg *copy = vlc_http_req_copy(m);
+    assert(copy != NULL);
+    assert(!strcmp(vlc_http_msg_get_path(copy), "/owned?q=1"));
+    assert(!strcmp(vlc_http_msg_get_header(copy, "Authorization"), "owned-origin"));
+    assert(vlc_http_msg_get_header(copy, "Proxy-Authorization") == NULL);
+    assert(!strcmp(vlc_http_msg_get_header(m, "Proxy-Authorization"), "owned-proxy"));
+    assert(!vlc_http_msg_add_header(copy, "Only-Copy", "owned"));
+    assert(vlc_http_msg_get_header(m, "Only-Copy") == NULL);
+    vlc_http_msg_destroy(copy);
+    vlc_http_msg_destroy(m);
     return 0;
 }
 

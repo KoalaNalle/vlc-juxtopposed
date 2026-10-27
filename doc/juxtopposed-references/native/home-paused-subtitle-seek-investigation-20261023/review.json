@@ -1,0 +1,52 @@
+{
+  "passed": false,
+  "investigationComplete": true,
+  "repairAccepted": false,
+  "fullBetaAccepted": false,
+  "privateCandidateKeptSeparate": true,
+  "ordinaryCoreSha256": "000f1159b7d190d83edaba83739b97b869669ca2eec2ba97bc35d6c51f9bb9cb",
+  "ordinaryGuiSha256": "716862a1e2b8ee0d5dd0673bcd471d7eb85ad7fb64a92ae4388f0d83ffefda8b",
+  "ordinaryMkvSha256": "469751a13e8547291bbfc3bcc28e59cf0bebd7e8f6354c5bb00dfeb7c7cd359b",
+  "privateMkvSha256": {
+    "before": "a5b19b9028cb004263ecf011aa14500b98164f84f5a3ac324e4bc9a6fc2da6f7",
+    "after": "34f4c0a10b8a2c0c64ed5551b9fb6817d706f016d16b33b9067c2fb33573668a"
+  },
+  "evidence": [
+    "Eight packet/seek-position observations match whether an active cue begins before the video-led file-position bound. The ordinary follow-up matches the earlier private Core trace.",
+    "The private selected-SPU replay candidate fixes original/remux backward seeks in three controls and passes cold English/Finnish, delayed first-cue and empty-gap cases on colored video.",
+    "The overlap case still loses a long cue at15s and35s after a shorter cue has been indexed. Normal playback from the beginning preserves that long cue after15s on the preimage plugin.",
+    "The first-cluster QUESTIONABLE seekpoint is seeded for every track by Preload. This existing fallback explains why the delayed first-cue case works even before its first real subtitle packet has been encountered."
+  ],
+  "manualPictureInspection": [
+    "Finnish middle cue reads SUOMI KESKIMM\u00c4INEN on the expected blue segment.",
+    "The25s short-cue gap is blank on blue.",
+    "At11s the candidate shows SHORT OVERLAY CUE plus LONG OVERLAPPING CUE on green.",
+    "At31s it shows only SECOND SHORT OVERLAY on red: the longer cue is missing, despite a presence-only raw row saying passed.",
+    "Normal playback after15s shows LONG OVERLAPPING CUE on green."
+  ],
+  "testScopeCorrections": [
+    "Presence-only success at31s does not qualify the complete overlapping-caption requirement. That row remains unchanged and is explicitly rejected as whole-caption acceptance.",
+    "White masks are recorded, but scenario configs do not supply independent expected masks. maskComparisonPerformed is false; no exact mask-comparison pass is claimed.",
+    "Center colors prove the coarse10s target segment; paused output-clock fields are not exact video PTS.",
+    "Seek timings include a fixed0.9s settle and snapshot overhead. Input counters can be reported asynchronously. Neither qualifies a latency or scanning-cost budget.",
+    "R18 was not compiled. Static inspection moved replay after the existing no-seekpoint return before building R18b, preserving that failure path."
+  ],
+  "nextActions": [
+    "Replace the latest-point assumption with a model that retains every cue still active at the target, including overlapping spans. Inspect finalized BlockDuration and seekpoint insertion/coverage before choosing the implementation.",
+    "Preserve AV time anchors, per-track skip positions, preroll, fast-seek semantics and cancellation; measure first/repeated seeks on larger inputs.",
+    "If index/class layouts change, rebuild all affected Matroska C++ translation units together for both controls; do not mix old-layout objects with new headers.",
+    "Require the full overlap case, cold/played/gap/language controls and ordinary GUI validation before promoting any Matroska change.",
+    "Paused track replacement, external associated subtitle delivery, default/language policy, initial/desktop subtitle display and the full13-category/32-surface roadmap remain open."
+  ],
+  "questionsForMorning": [],
+  "sideEffects": {
+    "productionMkvEdited": false,
+    "ordinaryRuntimeReplaced": false,
+    "installs": false,
+    "commit": false,
+    "push": false,
+    "release": false,
+    "upload": false,
+    "shutdown": false
+  }
+}

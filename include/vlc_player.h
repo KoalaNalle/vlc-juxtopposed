@@ -684,6 +684,20 @@ VLC_API vlc_tick_t
 vlc_player_GetTime(vlc_player_t *player);
 
 /**
+ * Get the current media time, preferring a pending seek target for controls.
+ *
+ * A paused output may retain its old clock point until playback resumes.
+ * This getter lets a controller display the requested position meanwhile.
+ * A pending target is not confirmation that the demuxer completed the seek.
+ * Position-only seeks without a known timestamp fall back to the output time.
+ *
+ * @param player locked player instance
+ * @return a valid time or VLC_TICK_INVALID, as for vlc_player_GetTime()
+ */
+VLC_API vlc_tick_t
+vlc_player_GetTimeWithSeek(vlc_player_t *player);
+
+/**
  * Get the position of the current media
  *
  * @see vlc_player_cbs.on_position_changed
@@ -694,6 +708,16 @@ vlc_player_GetTime(vlc_player_t *player);
  */
 VLC_API double
 vlc_player_GetPosition(vlc_player_t *player);
+
+/**
+ * Get the current media position, preferring a known pending seek target.
+ *
+ * @see vlc_player_GetTimeWithSeek()
+ * @param player locked player instance
+ * @return a valid position in [0;1] or -1, as for vlc_player_GetPosition()
+ */
+VLC_API double
+vlc_player_GetPositionWithSeek(vlc_player_t *player);
 
 /**
  * Seek the current media by position
@@ -973,7 +997,48 @@ VLC_API const struct input_stats_t *
 vlc_player_GetStatistics(vlc_player_t *player);
 
 /**
- * Restore the previous playback position of the current media
+ * History policy for automatic playback activity. The exclusion pattern is an
+ * owned, non-NULL, malloc-allocated UTF-8 string. See history-exclude-pattern.
+ */
+struct vlc_player_history_policy
+{
+    bool save_history;
+    bool remember_position;
+    char *exclusion_pattern;
+};
+
+/**
+ * Swap a preallocated policy with the locked player's policy, without allocating.
+ * The caller owns the returned old string. Restrictions invalidate pending
+ * history/position writes; enabling applies to newly opened inputs. Existing
+ * explicit playlists and favorites are unaffected.
+ */
+VLC_API void
+vlc_player_SwapHistoryPolicy(vlc_player_t *, struct vlc_player_history_policy *);
+
+/**
+ * Test the shared case-sensitive wildcard substring rule. * matches any
+ * sequence and ? one Unicode scalar. URI, decoded local path and name are
+ * checked. Empty excludes nothing. Invalid or overlong nonempty input, or an
+ * excessive matching workload, fails closed. This stateless function does not
+ * require a player lock.
+ */
+VLC_API bool
+vlc_player_HistoryIsExcluded(const char *pattern, const char *uri, const char *name);
+
+/**
+ * Clear global media-library history on the locked player. On success,
+ * invalidate pending history writes and delayed position restoration on all
+ * current/retiring inputs. Does not stop playback or change the queue. Failure
+ * leaves those permissions unchanged. May block on the media-library database;
+ * interfaces should dispatch this operation off their UI thread.
+ */
+VLC_API int
+vlc_player_ClearHistory(vlc_player_t *);
+
+/**
+ * Restore the previous playback position of the current media, if permitted
+ * by the current position-storage and exclusion policy.
  */
 VLC_API void
 vlc_player_RestorePlaybackPos(vlc_player_t *player);

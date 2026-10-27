@@ -43,6 +43,7 @@
 #include <QRegularExpression>
 #include <QApplication>
 #include <QScreen>
+#include <QSignalBlocker>
 
 #include "extended_panels.hpp"
 #include "dialogs/preferences/preferences.hpp"
@@ -1519,10 +1520,11 @@ SyncControls::SyncControls( qt_intf_t *_p_intf, QWidget *_parent )
     subSpeedSpin = new QDoubleSpinBox;
     subSpeedSpin->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );
     subSpeedSpin->setDecimals( 3 );
-    subSpeedSpin->setMinimum( 1 );
+    subSpeedSpin->setMinimum( 0 );
     subSpeedSpin->setMaximum( 100 );
     subSpeedSpin->setSingleStep( 0.2 );
     subSpeedSpin->setSuffix( " fps" );
+    subSpeedSpin->setToolTip( qtr( "0 uses the subtitle's normal timing." ) );
     subSpeedSpin->setButtonSymbols( QDoubleSpinBox::PlusMinus );
     subsLayout->addWidget( subSpeedSpin, 2, 2, 1, 1 );
 
@@ -1572,7 +1574,11 @@ SyncControls::SyncControls( qt_intf_t *_p_intf, QWidget *_parent )
         AVSpin->setValue(value.toSecf());
         b_userAction = true;
     });
-    connect( THEMIM, &PlayerController::subtitleFPSChanged, subSpeedSpin, &QDoubleSpinBox::setValue );
+    connect( THEMIM, &PlayerController::subtitleFPSChanged, subSpeedSpin, [this](float fps) {
+        // Model refreshes must not become edits after rounding or clamping.
+        const QSignalBlocker blocker(subSpeedSpin);
+        subSpeedSpin->setValue(fps);
+    });
     connect( &m_SubsDelayCfgFactor, &QVLCFloat::valueChanged, subDurationSpin, &QDoubleSpinBox::setValue);
 
     initSubsDuration();
@@ -1592,7 +1598,7 @@ void SyncControls::clean()
     AVSpin->setValue( 0.0 );
     subsSpin->setValue( 0.0 );
     secondarySubsSpin->setValue( 0.0 );
-    subSpeedSpin->setValue( 1.0 );
+    subSpeedSpin->setValue( 0.0 );
     subsdelayClean();
     b_userAction = true;
 }

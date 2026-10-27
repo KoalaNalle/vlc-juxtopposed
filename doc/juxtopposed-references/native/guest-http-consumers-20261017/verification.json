@@ -1,0 +1,166 @@
+{
+  "passed": true,
+  "sourceCommit": "a5b1cf5e8667100ee44da5636a430b0649d57a6c",
+  "platform": "Windows 10 Pro 22H2 build 19045 x64",
+  "scope": "Focused HTTP policy/transport and Network persistence regression",
+  "fullBetaAccepted": false,
+  "fullRegressionAccepted": false,
+  "subtitleStallUnresolved": true,
+  "independentVisualScore": null,
+  "windows11Accepted": false,
+  "finalCleanPackage": false,
+  "checks": {
+    "cliPolicyCases": 5,
+    "tlsProxyCases": 12,
+    "pacChecks": 9,
+    "pacTargetedNegative": true,
+    "objectPolicyChecks": 16,
+    "httpUnitExecutables": 6,
+    "proxyResolverChecks": 45,
+    "bufferTls12Checks": 50,
+    "bufferTls13Checks": 50,
+    "networkControllerCases": 17,
+    "controlsControllerCases": 19,
+    "nativeWindowEditChecks": 31,
+    "nativeWindowReopenChecks": 11,
+    "ordinaryPlaybackCases": 5
+  },
+  "ordinaryRuntime": "build-windows/beta-network-20261017/ordinary-consumer-acceptance-r1/runtime",
+  "runtimeSha256": {
+    "vlc.exe": "3d3dbaed76083f1063b444189bdd9555a40ab3c9c610229dbaff23f3a4e58e76",
+    "libvlc.dll": "6e47a6f265cf658e6e07418e6a03cf9f7508c8c06e2bddc50d0e073be3d610f4",
+    "libvlccore.dll": "6823ce2cbcf963eb63adcc68b46854236bd5da042fd89dc7d85105c33bee3e62",
+    "plugins/gui/libqt_plugin.dll": "8cf68a541d2f23bd17ae80c64876bd56d0bb9ffe02c6b5340e3da34ab3975226",
+    "plugins/access_output/libaccess_output_file_plugin.dll": "c5851fbd152e4065ee4a796e0caab953e8e76fa491ea99241e81d56f21cccbc6",
+    "plugins/demux/libwav_plugin.dll": "541d48feda653bed962a18b3f98b3d016f5b3041077d462cd2f74baa1be7dc0b",
+    "plugins/stream_out/libstream_out_transcode_plugin.dll": "cfe7b90fccdd8b67fe651d7710ce45e6ac0666929390ca7b49a3847ae69b475c",
+    "plugins/audio_filter/libsoxr_plugin.dll": "4934e6c5f3f9711fbb7dc625e8409d7f51730ecfd26db5ee7aee25e15dc3ad16",
+    "plugins/misc/libmedialibrary_plugin.dll": "e3ec5ed46c8abb561c99c45864261efb003abfa276ee9b341a50bacfba213c0a",
+    "plugins/control/libhotkeys_plugin.dll": "0e397625c303e0a53bbf3e212542def17f10a5ec31471740fba77ccab8d54b8a",
+    "plugins/lua/liblua_plugin.dll": "0e52a7072c1e86ed64981281823ed6b1e1739aca0922da54c842db6e16a12d90",
+    "lua/intf/http.luac": "fd6fcb7af986d8b8fb58aa0b6fef14d0929e9e1cda73305173c5d78d9c3f3eff",
+    "lua/intf/modules/httprequests.luac": "4829075cb491c252d34688dcc33eddc26fb51311a144b2641b6f479d87ba217b",
+    "lua/http/js/ui.js": "766b6f31fab2d7c8ef22534266b3b8631e2836f9789056c027eb7c78838203b7",
+    "plugins/access/libhttp_plugin.dll": "77e7a0d38a7d9a3e0d670fb7baa881b57bb3926efb467785b5647dd4649e09e7",
+    "plugins/access/libhttps_plugin.dll": "d456b075cdf3e661b13aa68b757ac27ef69287de379df0790494837dbfcf522f",
+    "plugins/access/libwebdav_plugin.dll": "b31c12d2c739b18d5a683f97a87d585092b1a08215b429255d575a8b6e0bc8d7",
+    "plugins/access_output/libaccess_http_put_plugin.dll": "4d37ad8a89207fc0e4126de604207f7498c50be13da10cb09d720e2098341002",
+    "plugins/demux/libadaptive_plugin.dll": "5199ed28fc39501fa77dab1f959efc743883adc8b90f02f5f3717d65568573f6"
+  },
+  "privateGuiSha256": "208406546b17f5d072f8d2b9f8cdf4586816aa0fe5f504a444d260aa35ea74b0",
+  "ordinaryPackageContainsPrivateFixtures": false,
+  "acceptedProcessesForcedCleanupUsed": false,
+  "rawSelectedInputsUnchanged": 2167,
+  "trackedSelectedInputsMatchGit": 2160,
+  "productionSourcesMatchCoreHttpAndGuiBuildFreeze": true,
+  "mesonSyntaxParsed": true,
+  "nativeMesonBuild": false,
+  "normalNegativeTermination": "The old PAC consumer exits 1 after setup/open pass and the targeted routing assertion fails; this is expected negative evidence.",
+  "baselineCorrection": "The first password negative required preemptive authentication without a 407. The corrected challenge authenticates via legacy fallback but exposes the synthetic password in its debug log.",
+  "applicationCrash": "Before the logger-argument fix, HTTPS CONNECT exits 0xC0000005. CDB shows vlc_http_dbg -> vlc_vaLogCallback attempting execution through the TLS-credentials object supplied as logger. The matching fixed forwarding/CONNECT/nested-TLS cases exit normally.",
+  "retainedFailures": [
+    "http-policy-before-r1 (preemptive-only password oracle)",
+    "http-consumers-checks-r1/r2/r3 (Windows socket-pair fixture)",
+    "tls-proxy-acceptance-r1 (real CONNECT logger crash)",
+    "tls-proxy-crash-diagnostic-r1/r2 (debugger runs; not acceptance)",
+    "tls-proxy-acceptance-r2 (first five modern positives; aggregate false after invalid legacy fixture)",
+    "legacy-proxy-stall-diagnostic-r1 (test removed required option registration; assertion dialog)",
+    "tls-proxy-acceptance-r4 (ICY reconnect fixture; forced cleanup)",
+    "consumer-tuple-final-r1 (extra Downloads test used invalid hw-dec=any before startup)",
+    "controller-acceptance-r1/subtitle (earlier unresolved subtitle-role stall)"
+  ],
+  "limitations": [
+    "Basic proxy authentication only is covered; other authentication schemes and PAC failover are not accepted.",
+    "Connection reuse is conservative per complete request URL; reuse across different paths is not validated.",
+    "The legacy test uses an intentionally incomplete 206 response to select the real fallback reader.",
+    "Native window captures cover Dark/100 percent/no playback only; theme/DPI/monitor and full page matrix remain open.",
+    "No WebDAV/HTTP PUT end-to-end acceptance or full beta acceptance is claimed."
+  ],
+  "rawEvidence": {
+    "baseline-policy-407.json": {
+      "source": "build-windows/beta-network-20261017/http-policy-before-r2/verification.json",
+      "rawSha256": "b2c422ca97d08b4d7eff3064c095d0fa540a4a6fec53a7cb960ab39e0c9d82b8",
+      "normalizedSha256": "b2c422ca97d08b4d7eff3064c095d0fa540a4a6fec53a7cb960ab39e0c9d82b8"
+    },
+    "policy-five.json": {
+      "source": "build-windows/beta-network-20261017/http-policy-maintained-final-r1/verification.json",
+      "rawSha256": "4035a9d6cfb398e99d14bc2fa12454c9a486177c24e24ad3b6f8456ba117dca6",
+      "normalizedSha256": "4035a9d6cfb398e99d14bc2fa12454c9a486177c24e24ad3b6f8456ba117dca6"
+    },
+    "tls-proxy-twelve.json": {
+      "source": "build-windows/beta-network-20261017/http-tls-maintained-final-r1/verification.json",
+      "rawSha256": "a576e4d4535e52884021de2b10af99a3d1ecc6b3b60bbec39b68e9ce907ca951",
+      "normalizedSha256": "a576e4d4535e52884021de2b10af99a3d1ecc6b3b60bbec39b68e9ce907ca951"
+    },
+    "pac-before.json": {
+      "source": "build-windows/beta-network-20261017/http-pac-maintained-before-r1/verification.json",
+      "rawSha256": "a622cb504c24b147d524451cd3ebeeac51da8d97dcd034ddae192fefe5c00b4a",
+      "normalizedSha256": "a622cb504c24b147d524451cd3ebeeac51da8d97dcd034ddae192fefe5c00b4a"
+    },
+    "pac-after.json": {
+      "source": "build-windows/beta-network-20261017/http-pac-maintained-after-r1/verification.json",
+      "rawSha256": "d34774fe57bab95c2fca5da8a447ac2735f9aac273785a918a38bd37ebbd8ac8",
+      "normalizedSha256": "d34774fe57bab95c2fca5da8a447ac2735f9aac273785a918a38bd37ebbd8ac8"
+    },
+    "pac-loopback-diagnostic.json": {
+      "source": "build-windows/beta-network-20261017/pac-loopback-diagnostic-r1/verification.json",
+      "rawSha256": "e749f334481173e06ae8f22cacd2b4119a406946bb959e615da77d6c5c5c5785",
+      "normalizedSha256": "e749f334481173e06ae8f22cacd2b4119a406946bb959e615da77d6c5c5c5785"
+    },
+    "network-controller.json": {
+      "source": "build-windows/beta-network-20261017/consumer-models-final-r1/network/verification.json",
+      "rawSha256": "986b61263c1d504a7c502c83f6a7bd88bb15bdd05400be05da8a68d736d291db",
+      "normalizedSha256": "986b61263c1d504a7c502c83f6a7bd88bb15bdd05400be05da8a68d736d291db"
+    },
+    "controls-controller.json": {
+      "source": "build-windows/beta-network-20261017/consumer-models-final-r1/controls/verification.json",
+      "rawSha256": "50c6aa3c149ee1b4b72a63e37edcb39ab29f5b51fda5d22988df47835d7a07a0",
+      "normalizedSha256": "50c6aa3c149ee1b4b72a63e37edcb39ab29f5b51fda5d22988df47835d7a07a0"
+    },
+    "native-window.json": {
+      "source": "build-windows/beta-network-20261017/native-ui-consumer-final-r1/verification.json",
+      "rawSha256": "feb9f1527df0af70ea9e5f02842e43bbf46354f62d8f7a7c932c91cc554a7f3b",
+      "normalizedSha256": "feb9f1527df0af70ea9e5f02842e43bbf46354f62d8f7a7c932c91cc554a7f3b"
+    },
+    "proxy-resolver.json": {
+      "source": "build-windows/beta-network-20261017/proxy-consumer-final-r1/verification.json",
+      "rawSha256": "b8e1a34408c16d0d765d4a901019b9ff60c3b653b4d7510b528bc2c07363fb16",
+      "normalizedSha256": "b8e1a34408c16d0d765d4a901019b9ff60c3b653b4d7510b528bc2c07363fb16"
+    },
+    "buffer-tls12.json": {
+      "source": "build-windows/beta-network-20261017/settings-consumer-tls12-final-r1/verification.json",
+      "rawSha256": "887ef03563551e6728f7bbe34676179010262d8fbfda2c1848c88b77ffe0da1a",
+      "normalizedSha256": "887ef03563551e6728f7bbe34676179010262d8fbfda2c1848c88b77ffe0da1a"
+    },
+    "buffer-tls13.json": {
+      "source": "build-windows/beta-network-20261017/settings-consumer-tls13-final-r1/verification.json",
+      "rawSha256": "ff1b13958fc43494ffffd87cdc5e2ba015928a05711a6e04c45928a22ed5f7fe",
+      "normalizedSha256": "ff1b13958fc43494ffffd87cdc5e2ba015928a05711a6e04c45928a22ed5f7fe"
+    },
+    "credential-log-audit.json": {
+      "source": "build-windows/beta-network-20261017/captured-credential-audit-final-r1.json",
+      "rawSha256": "b6deed55256cf76cf5cbd719f98d411209abcb74fe6d7c524d170b055354838a",
+      "normalizedSha256": "b6deed55256cf76cf5cbd719f98d411209abcb74fe6d7c524d170b055354838a"
+    }
+  },
+  "evidenceSha256": {
+    "baseline-policy-407.json": "b2c422ca97d08b4d7eff3064c095d0fa540a4a6fec53a7cb960ab39e0c9d82b8",
+    "buffer-tls12.json": "887ef03563551e6728f7bbe34676179010262d8fbfda2c1848c88b77ffe0da1a",
+    "buffer-tls13.json": "ff1b13958fc43494ffffd87cdc5e2ba015928a05711a6e04c45928a22ed5f7fe",
+    "controls-controller.json": "50c6aa3c149ee1b4b72a63e37edcb39ab29f5b51fda5d22988df47835d7a07a0",
+    "credential-log-audit.json": "b6deed55256cf76cf5cbd719f98d411209abcb74fe6d7c524d170b055354838a",
+    "http-units.json": "23898bc55456b3e2fd58dbec3d7e529a870d156d8f97635c574e3de3ebde5bef",
+    "native-window.json": "feb9f1527df0af70ea9e5f02842e43bbf46354f62d8f7a7c932c91cc554a7f3b",
+    "network-controller.json": "986b61263c1d504a7c502c83f6a7bd88bb15bdd05400be05da8a68d736d291db",
+    "network-edit-dark.png": "fdd7e86e061981be693af40362690be4da1cb842d9f436774fa909777747e379",
+    "network-reopen-dark.png": "64c272cae06e26a44ffad506d39c5b5b2ac138f8a930de2b5055e41d4586da8f",
+    "ordinary-five.json": "0c57e12e425a4a890d2ad6b1f7bdc8966038ef7edab0393f42aab7fa8b017237",
+    "pac-after.json": "d34774fe57bab95c2fca5da8a447ac2735f9aac273785a918a38bd37ebbd8ac8",
+    "pac-before.json": "a622cb504c24b147d524451cd3ebeeac51da8d97dcd034ddae192fefe5c00b4a",
+    "pac-loopback-diagnostic.json": "e749f334481173e06ae8f22cacd2b4119a406946bb959e615da77d6c5c5c5785",
+    "policy-five.json": "4035a9d6cfb398e99d14bc2fa12454c9a486177c24e24ad3b6f8456ba117dca6",
+    "proxy-resolver.json": "b8e1a34408c16d0d765d4a901019b9ff60c3b653b4d7510b528bc2c07363fb16",
+    "source-inputs.json": "4e75c7ac46bf4933bde36f4dc2f4a85d4cefe95942b2d19e2e1969dab60804cc",
+    "tls-proxy-twelve.json": "a576e4d4535e52884021de2b10af99a3d1ecc6b3b60bbec39b68e9ce907ca951"
+  }
+}

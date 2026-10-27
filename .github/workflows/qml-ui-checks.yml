@@ -1,0 +1,130 @@
+name: Juxtopposed Qt UI checks
+
+on:
+  pull_request:
+    paths:
+      - 'modules/gui/qt/**'
+      - 'src/text/filesystem.c'
+      - 'share/lua/meta/art/**'
+      - '.github/workflows/qml-ui-checks.yml'
+  push:
+    branches:
+      - master
+    paths:
+      - 'modules/gui/qt/**'
+      - 'src/text/filesystem.c'
+      - 'share/lua/meta/art/**'
+      - '.github/workflows/qml-ui-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playback-ui:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Qt Quick test runtime
+        run: python -m pip install PySide6-Essentials==6.8.3
+      - name: Check QML, interactions, assets and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_playback_bar.py --output-dir ui-previews
+      - name: Check native seek handle states
+        run: python modules/gui/qt/tests/test_native_seek_handle.py
+      - name: Check playback settings model synchronization
+        run: python modules/gui/qt/tests/test_playback_settings_choices.py
+      - name: Check filtered queue actions and drops
+        run: python modules/gui/qt/tests/test_playlist_proxy_mapping.py
+      - name: Check queue tabs, actions and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_queue.py --output-dir ui-previews/queue
+      - name: Check production queue overlay placement
+        run: python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
+      - name: Check shared library navigation states and actions
+        run: python modules/gui/qt/tests/test_juxtopposed_navigation.py --output-dir ui-previews/navigation
+      - name: Check leaf route properties and saved selection restoration
+        run: python modules/gui/qt/tests/test_page_loader_routes.py --repo-root . --mode fixed --output-dir ui-previews/page-loader
+      - name: Check Music and Network history model readiness
+        run: python modules/gui/qt/tests/run_music_network_navigation.py --repo-root . --mode fixed --output-dir ui-previews/music-network-navigation
+      - name: Check playlist Play request ownership and empty-state routing
+        run: python modules/gui/qt/tests/run_playlist_single_play.py --repo-root . --overlay . --mode fixed --output-dir ui-previews/playlist-single-play
+      - name: Check library header and compact media rows
+        run: python modules/gui/qt/tests/test_juxtopposed_library.py --output-dir ui-previews/library
+      - name: Check production settings tabs and engine bindings
+        run: python modules/gui/qt/tests/test_juxtopposed_settings.py --output-dir ui-previews/settings
+      - name: Check new playlist dialog, files and save states
+        run: python modules/gui/qt/tests/test_juxtopposed_new_playlist.py --output-dir ui-previews/new-playlist
+      - name: Check subtitle source-cue strip and timing states
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitle_timeline.py --output-dir ui-previews/subtitle-timeline
+      - name: Check network stream dialog and modal shortcuts
+        run: python modules/gui/qt/tests/test_juxtopposed_network_dialog.py --output-dir ui-previews/network
+      - name: Check conversion form states, focus and scaled layouts
+        run: python modules/gui/qt/tests/test_juxtopposed_conversion_dialog.py --output-dir ui-previews/conversion
+      - name: Check music source list and cover layout
+        run: python modules/gui/qt/tests/test_juxtopposed_music_player.py --output-dir ui-previews/music
+      - name: Check Home dashboard and collection actions
+        run: python modules/gui/qt/tests/test_juxtopposed_home.py --output-dir ui-previews/home
+      - name: Check subtitle preset menu, naming and states
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitle_presets.py --output-dir ui-previews/subtitle-presets
+      - name: Check Global Settings assets, choices, focus and feedback
+        run: python modules/gui/qt/tests/test_juxtopposed_global_settings.py --output-dir ui-previews/global-settings
+      - name: Check shared dialog ownership, routing and busy guards
+        run: python modules/gui/qt/tests/test_juxtopposed_dialogs_host.py --output-dir ui-previews/dialogs-host
+      - name: Check original Light volume artwork and native binding contract
+        run: python modules/gui/qt/tests/test_juxtopposed_light_volume.py --output-dir ui-previews/light-volume
+      - name: Check production backdrop software alpha, updates and lifecycle
+        run: python modules/gui/qt/tests/test_juxtopposed_settings_backdrop.py --output-dir ui-previews/settings-backdrop
+      - name: Check Interface native contract, assets and guarded host routing
+        run: python modules/gui/qt/tests/test_juxtopposed_interface_settings.py --output-dir ui-previews/interface-settings
+      - name: Check actual toolbar FSM modes, transitions, locks and real timers
+        run: python modules/gui/qt/tests/test_interface_toolbar_policy.py --output-dir ui-previews/interface-toolbar-policy
+      - name: Check Playback native choices, picker guards and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_playback_settings.py --output-dir ui-previews/playback-settings
+      - name: Check Audio native choices, defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_audio_settings.py --output-dir ui-previews/audio-settings
+      - name: Check Video native choices, defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_video_settings.py --output-dir ui-previews/video-settings
+      - name: Check Subtitles native defaults, units, capability gates and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_subtitles_settings.py --output-dir ui-previews/subtitles-settings
+      - name: Check Library choices, saved defaults and authored assets
+        run: python modules/gui/qt/tests/test_juxtopposed_library_settings.py --output-dir ui-previews/library-settings
+      - name: Save rendered previews and verification details
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juxtopposed-playback-ui
+          path: ui-previews/
+
+  qml-dependency-remake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check deferred QML dependencies through actual GNU make remake
+        run: python modules/gui/qt/tests/test_qml_dependencies.py --output-dir qml-dependency-results
+      - name: Check warm QML metadata through preserved old and current remake recipes
+        run: python modules/gui/qt/tests/test_qml_module_lists.py --output-dir qml-module-list-results
+      - name: Check Library opening failure and reply branches against production helpers
+        run: python modules/gui/qt/tests/test_library_ipc_errors.py --output-dir library-ipc-error-results
+      - name: Check directory comparator contract and artwork provider ordering
+        run: python modules/gui/qt/tests/test_library_directory_sort.py --output-dir library-directory-sort-results
+      - name: Save make logs and generated dependency evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: juxtopposed-qml-dependency-remake
+          path: |
+            qml-dependency-results/
+            qml-module-list-results/
+            library-ipc-error-results/
+            library-directory-sort-results/

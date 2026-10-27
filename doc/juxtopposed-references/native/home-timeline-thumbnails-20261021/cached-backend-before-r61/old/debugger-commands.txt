@@ -1,0 +1,3 @@
+.printf "OWNED_DEBUGGEE_PID=%d\n", @$tpid
+sxd -c2 ".echo OWNED_SECOND_CHANCE_AV; .exr -1; .ecxr; lm m libqt_plugin; ~* kb; gn" av
+g

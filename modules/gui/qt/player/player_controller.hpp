@@ -101,6 +101,18 @@ private:
 };
 
 class PlayerControllerPrivate;
+class AudioEqualizer;
+Q_MOC_INCLUDE("player/audio_equalizer.hpp")
+class AudioWaveform;
+Q_MOC_INCLUDE("player/audio_waveform.hpp")
+class LocalMusicFolderModel;
+Q_MOC_INCLUDE("player/local_music_folder.hpp")
+class VideoTransform;
+Q_MOC_INCLUDE("player/video_transform.hpp")
+class SubtitleAppearance;
+class SubtitleCueTimeline;
+Q_MOC_INCLUDE("player/subtitle_cue_timeline.hpp")
+Q_MOC_INCLUDE("player/subtitle_appearance.hpp")
 class PlayerController : public QObject
 {
     Q_OBJECT
@@ -139,8 +151,12 @@ public:
     Q_PROPERTY(float buffering READ getBuffering  NOTIFY bufferingChanged FINAL)
     Q_PROPERTY(float rate READ getRate WRITE setRate NOTIFY rateChanged FINAL)
     Q_PROPERTY(QUrl url READ getUrl NOTIFY inputChanged FINAL)
+    Q_PROPERTY(QString fileName READ getFileName NOTIFY inputChanged FINAL)
+    Q_PROPERTY(QString folderName READ getFolderName NOTIFY inputChanged FINAL)
 
     Q_PROPERTY(VLCTime time READ getTime WRITE setTime NOTIFY timeChanged FINAL)
+    Q_PROPERTY(VLCTime displayTime READ getDisplayTime NOTIFY displayTimeChanged FINAL)
+    Q_PROPERTY(bool live READ isLive NOTIFY liveChanged FINAL)
     Q_PROPERTY(VLCTime remainingTime READ getRemainingTime NOTIFY remainingTimeChanged FINAL)
     Q_PROPERTY(double position READ getPosition WRITE setPosition NOTIFY positionChanged FINAL)
     Q_PROPERTY(VLCDuration length READ getLength NOTIFY lengthChanged FINAL)
@@ -162,6 +178,7 @@ public:
     Q_PROPERTY(TrackListModel* videoTracks READ getVideoTracks CONSTANT FINAL)
     Q_PROPERTY(TrackListModel* audioTracks READ getAudioTracks CONSTANT FINAL)
     Q_PROPERTY(TrackListModel* subtitleTracks READ getSubtitleTracks CONSTANT FINAL)
+    Q_PROPERTY(bool hasSecondarySubtitle READ hasSecondarySubtitle NOTIFY secondarySubtitleSelectionChanged FINAL)
 
     Q_PROPERTY(VLCDuration audioDelay READ getAudioDelay WRITE setAudioDelay NOTIFY audioDelayChanged FINAL)
     Q_PROPERTY(VLCDuration subtitleDelay READ getSubtitleDelay WRITE setSubtitleDelay NOTIFY subtitleDelayChanged FINAL)
@@ -218,6 +235,12 @@ public:
     Q_PROPERTY(VLCVarChoiceModel* audioMixMode READ getAudioMixMode CONSTANT FINAL)
     Q_PROPERTY(VLCVarChoiceModel* audioVisualization READ getAudioVisualizations CONSTANT FINAL)
     Q_PROPERTY(bool hasAudioVisualization READ hasAudioVisualization NOTIFY hasAudioVisualizationChanged FINAL)
+    Q_PROPERTY(AudioEqualizer* equalizer READ getEqualizer CONSTANT FINAL)
+    Q_PROPERTY(AudioWaveform* waveform READ getWaveform CONSTANT FINAL)
+    Q_PROPERTY(LocalMusicFolderModel* musicFolder READ getMusicFolder CONSTANT FINAL)
+    Q_PROPERTY(VideoTransform* videoTransform READ getVideoTransform CONSTANT FINAL)
+    Q_PROPERTY(SubtitleAppearance* subtitleAppearance READ getSubtitleAppearance CONSTANT FINAL)
+    Q_PROPERTY(SubtitleCueTimeline *subtitleTimeline READ getSubtitleTimeline CONSTANT FINAL)
 
     //misc
     Q_PROPERTY(ABLoopState ABloopState READ getABloopState WRITE setABloopState NOTIFY ABLoopStateChanged FINAL)
@@ -241,6 +264,7 @@ public slots:
     void jumpFwd();
     void jumpBwd();
     void jumpTime( VLCTime i_time );
+    void jumpSeconds(int seconds);
     void jumpToPos( double );
     void frameNext();
     void framePrev();
@@ -299,6 +323,12 @@ public:
     SharedVOutThread getVout();
     VOutThreadList getVouts() const;
     SharedAOut getAout();
+    AudioEqualizer *getEqualizer() const;
+    AudioWaveform *getWaveform() const;
+    LocalMusicFolderModel *getMusicFolder() const;
+    VideoTransform *getVideoTransform() const;
+    SubtitleAppearance *getSubtitleAppearance() const;
+    SubtitleCueTimeline *getSubtitleTimeline() const;
     int AddAssociatedMedia(enum es_format_category_e cat, const QString& uri, bool select, bool notify, bool check_ext);
 
     void requestArtUpdate( input_item_t *p_item );
@@ -319,6 +349,8 @@ public slots:
     float getRate() const;
     void setRate( float );
     VLCTime getTime() const;
+    VLCTime getDisplayTime() const;
+    bool isLive() const;
     void setTime(VLCTime);
     VLCDuration getRemainingTime() const;
     double getPosition() const;
@@ -335,6 +367,11 @@ public slots:
     void openVLsub();
     void acknowledgeRestoreCallback();
     QUrl getUrl() const;
+    QString getFileName() const { return getUrl().fileName(); }
+    QString getFolderName() const {
+        const auto url = getUrl();
+        return url.isLocalFile() ? url.adjusted(QUrl::RemoveFilename | QUrl::StripTrailingSlash).fileName() : QString{};
+    }
 
     //tracks
     TrackListModel* getVideoTracks();
@@ -346,6 +383,7 @@ public slots:
     Q_INVOKABLE void addAudioDelay( VLCDuration );
     VLCDuration getSubtitleDelay() const;
     VLCDuration getSecondarySubtitleDelay() const;
+    bool hasSecondarySubtitle() const;
     void setSubtitleDelay( VLCDuration );
     Q_INVOKABLE void addSubtitleDelay( VLCDuration );
     void setSecondarySubtitleDelay( VLCDuration );
@@ -447,11 +485,14 @@ signals:
     void rateChanged( float );
 
     void timeChanged( VLCTime );
+    void displayTimeChanged();
+    void liveChanged( bool );
     void remainingTimeChanged( VLCTime );
     void positionChanged( double );
     void lengthChanged( VLCDuration );
     void positionUpdated( double , VLCTime, VLCDuration );
     void seekRequested( double pos ); //not exposed through Q_PROPERTY
+    void seekStarted(); // native seek, including requests from other interfaces
 
     void seekableChanged( bool );
     void rewindableChanged( bool );
@@ -465,6 +506,8 @@ signals:
     void audioDelayChanged(VLCDuration);
     void subtitleDelayChanged(VLCDuration);
     void secondarySubtitleDelayChanged(VLCDuration);
+    void secondarySubtitleSelectionChanged();
+    void subtitleSelectionChanged();
     void subtitleFPSChanged(float);
 
     //title/chapters/menu
