@@ -399,22 +399,26 @@ int foo() { return my_array[0]; }
             aarch64)
                 HAVE_WIN64="1"
                 WINDOWS_ARCH="arm64"
+                MANIFEST_ARCH="arm64"
                 PROGRAMFILES="PROGRAMFILES64"
                 LDFLAGS="${LDFLAGS} -Wl,--high-entropy-va -Wl,--image-base,0x140000000"
             ;;
             amd64|x86_64)
                 HAVE_WIN64="1"
                 WINDOWS_ARCH="x64"
+                MANIFEST_ARCH="amd64"
                 PROGRAMFILES="PROGRAMFILES64"
                 LDFLAGS="${LDFLAGS} -Wl,--high-entropy-va -Wl,--image-base,0x140000000"
                 X86ASMFLAGS="-f win64"
             ;;
             armv7)
                 WINDOWS_ARCH="arm"
+                MANIFEST_ARCH="arm"
                 PROGRAMFILES="PROGRAMFILES"
             ;;
             i?86)
                 WINDOWS_ARCH="x86"
+                MANIFEST_ARCH="x86"
                 PROGRAMFILES="PROGRAMFILES"
                 X86ASMFLAGS="-f win32"
                 X86ASMDEFS="${X86ASMDEFS} -DPREFIX"
@@ -425,6 +429,7 @@ int foo() { return my_array[0]; }
             ;;
         esac
         AC_SUBST([WINDOWS_ARCH])
+        AC_SUBST([MANIFEST_ARCH])
         AC_SUBST([PROGRAMFILES])
 
     fi
@@ -3129,18 +3134,26 @@ AS_IF([test "${enable_vpx}" != "no"],[
         VLC_ADD_PLUGIN([vpx])
         VLC_ADD_CPPFLAGS([vpx], [${VPX_CFLAGS}])
         VLC_ADD_LIBS([vpx], [${VPX_LIBS}])
+        vpx_has_feature=no
         AC_CHECK_LIB([vpx],[vpx_codec_vp8_dx], [
             VLC_ADD_CPPFLAGS([vpx], [-DENABLE_VP8_DECODER])
+            vpx_has_feature=yes
         ], [], [${VPX_LIBS}])
         AC_CHECK_LIB([vpx],[vpx_codec_vp9_dx], [
             VLC_ADD_CPPFLAGS([vpx], [-DENABLE_VP9_DECODER])
+            vpx_has_feature=yes
         ], [], [${VPX_LIBS}])
         AC_CHECK_LIB([vpx],[vpx_codec_vp8_cx], [
             VLC_ADD_CPPFLAGS([vpx], [-DENABLE_VP8_ENCODER])
+            vpx_has_feature=yes
         ], [], [${VPX_LIBS}])
         AC_CHECK_LIB([vpx],[vpx_codec_vp9_cx], [
             VLC_ADD_CPPFLAGS([vpx], [-DENABLE_VP9_ENCODER])
+            vpx_has_feature=yes
         ], [], [${VPX_LIBS}])
+        AS_IF([test "${enable_vpx}" = "yes" && test "${vpx_has_feature}" = "no" ],[
+            AC_MSG_ERROR([libvpx does not link with any feature])
+        ])
     ], [
     AS_IF([test "${enable_vpx}" = "yes"],[
         AC_MSG_ERROR([libvpx 1.5.0 or higher was not found])
@@ -5306,6 +5319,9 @@ AM_COND_IF([HAVE_WIN32], [
     extras/package/win32/NSIS/spad.nsi
     extras/package/win32/NSIS/vlc.win32.nsi
     extras/package/win32/msi/config.wxi
+    extras/package/win32/libvlc.dll.manifest
+    extras/package/win32/libvlccore.dll.manifest
+    extras/package/win32/vlc.exe.manifest
   ])
 ])
 

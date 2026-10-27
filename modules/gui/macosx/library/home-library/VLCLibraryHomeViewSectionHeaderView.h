@@ -1,7 +1,7 @@
 /*****************************************************************************
- * VLCLibraryCarouselViewItemView.h: MacOS X interface module
+ * VLCLibraryHomeViewSectionHeaderView.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2023 VLC authors and VideoLAN
+ * Copyright (C) 2026 VLC authors and VideoLAN
  *
  * Authors: Claudio Cambra <developer@claudiocambra.com>
  *
@@ -22,29 +22,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "views/iCarousel/iCarousel.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
-@class VLCImageView;
-@class VLCLinearProgressIndicator;
-@class VLCLibraryRepresentedItem;
+@interface VLCLibraryHomeViewSectionHeaderView : NSView
 
-@interface VLCLibraryCarouselViewItemView : NSView<iCarouselItemView>
-
-@property (readwrite, weak) IBOutlet VLCImageView *imageView;
-@property (readwrite, weak) IBOutlet NSTextField *annotationTextField;
-@property (readwrite, weak) IBOutlet VLCLinearProgressIndicator *progressIndicator;
-@property (readwrite, weak) IBOutlet NSButton *playButton;
-@property (readwrite, weak) IBOutlet NSTextField *titleTextField;
-@property (readwrite, weak) IBOutlet NSTextField *detailTextField;
-@property (readwrite, weak) IBOutlet NSBox *highlightBox;
-
-@property (readwrite, strong, nonatomic) VLCLibraryRepresentedItem *representedItem;
-
-@property (readwrite, nonatomic) BOOL selected;
-
-- (void)playRepresentedItem;
+@property (readwrite, copy, nonatomic) NSString *title;
+@property (readwrite, nonatomic) NSUInteger itemCount;
+@property (readonly) NSButton *libraryButton;
 
 @end
 

@@ -598,6 +598,9 @@ static void OutputStart( sout_stream_t *p_stream )
                 sout_StreamChainDelete( p_sys->p_out, NULL );
             p_sys->p_out = NULL;
 
+            vlc_unlink( psz_file );
+            free( psz_file );
+
             if( i_es > i_best_es )
             {
                 i_best_es = i_es;
@@ -606,8 +609,6 @@ static void OutputStart( sout_stream_t *p_stream )
                 if( i_best_es >= p_sys->i_id )
                     break;
             }
-            vlc_unlink( psz_file );
-            free( psz_file );
         }
 
         /* */
