@@ -1,36 +1,39 @@
 # Current status
 
 Updated 27 October 2026. The desktop is available and beta work is continuing.
-The tested global-shortcut feedback source is `a6cd73445c`.
+The tested Windows key-translation source is `546eecd8e1`.
 The beta remains unfinished; all six readiness gates remain open.
 
 ## Selected checkpoint
 
 - Branch: `juxtopposed-playback-bar`.
-- Ordinary GUI441 `3f6170f7`, Windows-hotkeys432 `33c21ffe`,
+- Ordinary GUI441 `3f6170f7`, Windows-hotkeys452 `28e53fd1`,
   Core265 `fdfcfcd5`, library282 `13ccdc36`,
   recording322 `930205b1`, MP4r240 `df15e8ed`, subtitle130 `11f2b78e`,
   WASAPI15 `e5560794`, MKV `f46d8d15`.
-- Runtime: `build-windows/beta-single-frame-20261025-night/ui-global-hotkeys-cold-r447/runtime`.
+- Runtime: `build-windows/beta-single-frame-20261025-night/ui-global-punctuation-r458/runtime`.
   This is an isolated tested runtime, not a release package. Earlier tested
   GUI418/388/357/349/344/337/329/311 tuples remain recoverable.
 - All owned desktop/native tests are closed. Freeze fresh inputs before the
-  next guarded job; current docs postdate `inputs-r444.json`. The four unrelated
+  next guarded job; current docs postdate `inputs-r456.json`. The four unrelated
   audio experiments stay untouched. No firewall rules or security/privacy settings
   changed; the read-only firewall inventory remains available.
 
 ## Latest verified work
 
-[Global shortcut feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md):
-Controls and the native editor distinguish successful Windows registration from
-saved mappings. Six real-module functions, twenty native model functions and nine
-component groups pass. Ordinary two-player checks prove both global keys reach the
-owning player while the focused conflicting player stays paused. Saving F10 keeps
-the current failures until restart; cold restart shows one active key and real
-play/pause. All three final ordinary runs exit0/602/no checked errors/all guards.
-Only the saved shortcut key changes; player profiles remain identical. Preliminary
-startup-race, atom-skip and short-fixture EOF outcomes stay preserved. Full actions,
-legacy key mapping, focus/DPI and package acceptance remain open.
+[Windows key translation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md):
+the legacy byte fallback's two false-success cases reproduce before. Layout-aware
+punctuation/modifiers, Unicode nontruncation and explicit extended-key mappings
+pass ten native functions/seventeen pass incidents with no skips. An ordinary
+Finnish-layout semicolon key starts/pauses playback, with matching Controls/editor
+feedback and an exactly held clock across inspection. Exit0/602/no checked errors/
+all guards; native config and player profiles stay identical. The preliminary
+OS-owned Tab fixture outcome remains preserved. Startup layout is used until restart.
+
+[Registration feedback](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md)
+retains its earlier module432 tuple: native/component checks, two-player collision,
+actual delivery, saved-versus-running feedback and cold replacement activation.
+The new module does not silently inherit that exact-binary ordinary result.
 
 [GUI418 source-header receipt](../juxtopposed-references/native/home-music-source-header-20261027/README.md):
 native per-player folder history, real breadcrumbs, current-track folder and a
@@ -50,9 +53,10 @@ actual Windows DPI, all pin variants and final-package acceptance remain open.
 
 ## Continue here
 
-1. Audit remaining Windows global-key mappings and shortcut hints/actions in W2;
-   registration feedback now has scoped ordinary evidence. Keep W3's
-   live System-theme change and native UIA/screen-reader focus open. UIA reports
+1. Continue W2's recording-format/subtitle-overlap and remaining settings journeys;
+   key translation and registration feedback now have scoped evidence. The setup
+   tour uses local bindings, so failed global mappings do not alter its hints.
+   Keep W3's live System-theme change and native UIA/screen-reader focus open. UIA reports
    stayed stale even when Enter activated the correct cover. Cover view remains
    a documented functional adaptation rather than a complete visual acceptance.
 2. Continue W3/W2 in [BETA](BETA.md) and [SETTINGS](SETTINGS.md): remaining settings,

@@ -157,6 +157,7 @@ to decide category and package readiness.
 - [Native library defaults, overlapping query cancellation and ordinary sort restart](../juxtopposed-references/native/home-library-defaults-queries-20261027/README.md).
 - [Global Play/Pause isolation and traditional Hotkeys navigation](../juxtopposed-references/native/home-global-shortcuts-20261027/README.md).
 - [Windows global shortcut registration, conflicts, cleanup and saved restart](../juxtopposed-references/native/home-global-shortcut-feedback-20261027/README.md).
+- [Layout-aware punctuation, extended Windows keys and Unicode nontruncation](../juxtopposed-references/native/home-global-key-mapping-20261027/README.md). Ten native functions/seventeen pass incidents and ordinary Finnish-layout play/pause pass; startup layout is used until restart. Other layouts, live layout changes and full action/DPI/accessibility acceptance remain open.
 - [Music sidebar states, keyboard handoff and audio/video transitions](../juxtopposed-references/native/home-music-sidebar-20261027/README.md).
 - [Shared native music navigation, saved pins and scoped nightly validation](../juxtopposed-references/native/home-music-navigation-20261027/README.md).
 - [Native music source-header history, original assets and ordinary playback independence](../juxtopposed-references/native/home-music-source-header-20261027/README.md).
