@@ -1,10 +1,10 @@
 # Current status
 
-Updated 28 October 2026. The beta goal is active and unfinished; all six gates
+Updated 28 October 2026. The beta goal is paused at the owner's request and unfinished; all six gates
 in [BETA](BETA.md) remain open. No beta release or merge to master has been made.
-Owner deadline: work until **00:00 Helsinki on 29 October** (28 October 22:00 UTC),
-then checkpoint and pause the goal. Start wrapping up by 23:45 local; leave no
-owned desktop/native job running past the stop. The beta objective stays unfinished.
+The owner requested an earlier stop at about 21:31 Helsinki with about 5% usage
+remaining, superseding the planned midnight stop. All owned processes are closed.
+Resume only on the owner's request; desktop availability alone does not resume work.
 
 Desktop control reported a physical Escape stop at about 20:48 local. Desktop
 testing stopped; no further Computer Use input was sent. That first R2 input
@@ -15,8 +15,8 @@ A single-session launch then passed that full guard. R3 stopped before mutation
 on a build-helper dependency parser error. During fresh R4 preparation, a child
 diagnostic `make -n -B` unexpectedly rewrote generated Qt dependency records.
 **Hold shared native builds until those records are repaired.** No R4 build ran.
-Desktop availability is awaiting the owner;
-beta readiness remains unfinished.
+The owner has now made the desktop available again. Complete dependency recovery
+before the next ordinary app build/test after an explicit goal resume.
 
 Recovery audit: 424 `.Plo` and 707 `.Po` files became 8-byte placeholders;
 11 `qml.deps` were regenerated. All 1,142 files have verified incident copies in
@@ -29,14 +29,22 @@ Direct compiler `-M` proof now reproduces both selected dependency files exactly
 (927/498 prerequisites, original SHA `af923b3127be`/`16dc86373a15`), with stable
 second passes and qualified header checks. No installation yet. The full mapping
 finds 794 current compiled objects and 337 no-object targets; the latter's history
-is unknown. Next: review full dependency-only scratch generation, validate all
-compiled-target graphs and the 11 QML fragments, then approve installation.
+is unknown. The reviewed full batch was stopped for this pause: 70 first-pass and
+70 second-pass files exist out of 794, without a complete generation receipt.
+They are unqualified scratch; no shared dependency was installed and no object
+was compiled. The nine protected build-file hashes still match. The stop receipt
+is `build-windows/beta-record-feedback-20261028/full-qt-deps-recovery-prep-r1/stopped-run.json`.
+All 11 QML fragments passed read-only template/resource checks. Next: prepare a
+fresh, reviewed continuation of dependency-only generation, validate all compiled
+target graphs, then review installation. The **unexecuted** installer proposal in
+`qt-deps-install-prep-r1/` has a `Path(None)` bug for 35 unmapped no-object paths;
+correct and re-review it before use. Another 302 known no-object paths remain absent.
 Never use `-B` in a dry-run diagnostic again.
 
 ## Selected checkpoint
 
-- Branch `codex/beta-20261028`, HEAD `2db942f7bf`; qualified source/receipts are
-  staged for the Git checkpoint requested by the active goal. No release is ready.
+- Branch `codex/beta-20261028`, source checkpoint `a0ae6670ca`; source/receipts are committed
+  and pushed to the matching origin branch. No release is ready.
   The requested temporary remote backup branch deletion is already complete.
 - Alpha fallback: `master` and `codex/alpha-fallback-20261027` at `0694227ab8`.
   Keep those refs and the preserved ordinary runtimes.

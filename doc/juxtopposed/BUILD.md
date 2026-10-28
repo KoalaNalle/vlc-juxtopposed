@@ -38,6 +38,15 @@ anything beyond the user's expressly authorized environment setup.
    test dependencies and current document paths. A manifest only proves the
    files it enumerates; preserve old receipts unchanged when updating an inventory.
 
+GNU make dry runs can still remake included makefiles and dependency records.
+Never use `make -n -B` as a read-only diagnostic: it reset 1,131 Qt dependency
+records on 28 October. Review included-file behavior before any make probe.
+Dependency recovery can use the matching compiler directly with `-M -MP -MT`
+and an explicit fresh `-MF` scratch destination, without compiling an object.
+Validate the complete regenerated graph before separately approving installation.
+Keep one live WSL namespace across a raw-metadata freeze and its guarded build:
+device numbers can change between WSL invocations even when file contents match.
+
 The successful incremental FPS build is documented by
 [its frozen build producer](../juxtopposed-references/native/home-subtitle-fps-20261024/producers/build-ordinary-r3.sh)
 and [dependency records](../juxtopposed-references/native/home-subtitle-fps-20261024/ordinary-dependencies/).
