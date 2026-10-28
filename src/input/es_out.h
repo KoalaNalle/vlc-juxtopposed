@@ -125,7 +125,11 @@ enum es_out_query_private_e
     ES_OUT_PRIV_GET_ES_STATE, /* arg1=vlc_es_id_t *, arg2=bool * */
 
     /* Seek preroll belongs to the demux source containing the delayed cue. */
-    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL /* arg1=input_source_t *, arg2=vlc_tick_t * */
+    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL, /* arg1=input_source_t *, arg2=vlc_tick_t * */
+
+    /* Earliest selected cue to refill after a source rate change. The supplied
+     * demux time is adjusted for buffered playback and positive source delay. */
+    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME /* arg1=input_source_t *, arg2=vlc_tick_t, arg3=vlc_tick_t * */
 };
 
 struct vlc_input_es_out;

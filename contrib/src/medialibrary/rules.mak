@@ -15,9 +15,10 @@ $(TARBALLS)/medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2:
 
 .sum-medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2
 
-medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2 .sum-medialibrary $(SRC)/medialibrary/history-only.patch
+medialibrary: medialibrary-$(MEDIALIBRARY_VERSION).tar.bz2 .sum-medialibrary $(SRC)/medialibrary/history-only.patch $(SRC)/medialibrary/swmr-priority-wake.patch
 	$(UNPACK)
 	$(APPLY) $(SRC)/medialibrary/history-only.patch
+	$(APPLY) $(SRC)/medialibrary/swmr-priority-wake.patch
 	$(MOVE)
 
 .medialibrary: medialibrary crossfile.meson

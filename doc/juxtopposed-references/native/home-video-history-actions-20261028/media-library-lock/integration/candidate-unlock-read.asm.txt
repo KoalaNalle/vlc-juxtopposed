@@ -1,0 +1,42 @@
+
+/root/vlc-juxtopposed-build/win64/modules/.libs/libmedialibrary_plugin.dll:     file format pei-x86-64
+
+
+Disassembly of section .text:
+
+0000000140133de0 <_ZN12medialibrary5utils8SWMRLock11unlock_readEv>:
+   140133de0:	56                   	push   %rsi
+   140133de1:	53                   	push   %rbx
+   140133de2:	48 83 ec 28          	sub    $0x28,%rsp
+   140133de6:	48 8d 71 08          	lea    0x8(%rcx),%rsi
+   140133dea:	48 89 cb             	mov    %rcx,%rbx
+   140133ded:	48 89 f1             	mov    %rsi,%rcx
+   140133df0:	e8 0b 4a ee ff       	call   140018800 <pthread_mutex_lock>
+   140133df5:	85 c0                	test   %eax,%eax
+   140133df7:	75 3f                	jne    140133e38 <_ZN12medialibrary5utils8SWMRLock11unlock_readEv+0x58>
+   140133df9:	83 6b 10 01          	subl   $0x1,0x10(%rbx)
+   140133dfd:	75 07                	jne    140133e06 <_ZN12medialibrary5utils8SWMRLock11unlock_readEv+0x26>
+   140133dff:	8b 43 1c             	mov    0x1c(%rbx),%eax
+   140133e02:	85 c0                	test   %eax,%eax
+   140133e04:	75 1a                	jne    140133e20 <_ZN12medialibrary5utils8SWMRLock11unlock_readEv+0x40>
+   140133e06:	48 89 f1             	mov    %rsi,%rcx
+   140133e09:	e8 e2 4c ee ff       	call   140018af0 <pthread_mutex_unlock>
+   140133e0e:	90                   	nop
+   140133e0f:	48 83 c4 28          	add    $0x28,%rsp
+   140133e13:	5b                   	pop    %rbx
+   140133e14:	5e                   	pop    %rsi
+   140133e15:	c3                   	ret
+   140133e16:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+   140133e1d:	00 00 00 
+   140133e20:	48 89 d9             	mov    %rbx,%rcx
+   140133e23:	e8 88 e8 14 00       	call   1402826b0 <_ZNSt18condition_variable10notify_allEv>
+   140133e28:	48 89 f1             	mov    %rsi,%rcx
+   140133e2b:	e8 c0 4c ee ff       	call   140018af0 <pthread_mutex_unlock>
+   140133e30:	90                   	nop
+   140133e31:	48 83 c4 28          	add    $0x28,%rsp
+   140133e35:	5b                   	pop    %rbx
+   140133e36:	5e                   	pop    %rsi
+   140133e37:	c3                   	ret
+   140133e38:	89 c1                	mov    %eax,%ecx
+   140133e3a:	e8 71 dc 29 00       	call   1403d1ab0 <_ZSt20__throw_system_errori>
+   140133e3f:	90                   	nop

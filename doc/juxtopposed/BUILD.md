@@ -129,6 +129,43 @@ Dummy subtitle blending needs supported `--no-hw-dec`; do not restore obsolete
 decoder flags from old attempts. Source identities must prove genuine external
 tracks were selected even if the main media already contains embedded subtitles.
 
+`test/modules/demux/avformat_mux_queue.c` includes the production queue helper
+and uses real Core FIFOs/frame ownership. The regular `make check` entry is
+`test_modules_demux_avformat_mux_queue`; its 41 cases cover all 24 A/V/S/S ending
+orders, live flush/gaps, exact release and failure cleanup. The home cross build
+has a separately recorded focused compile/run with 5,772 checks. That result
+does not claim the whole standard test target or FFmpeg/container paths passed;
+use the [real writer receipt](../juxtopposed-references/native/recording-tail-drain-20261028/README.md)
+and its container follow-up for those distinct scopes.
+
+First-change FPS checks in `test_player_subtitle_delay.cpp` are opt-in:
+run the selected function or data row alone in a fresh process with
+`VLC_TEST_FIRST_FPS_FRESH=1`. Earlier FPS edits in the same input can mask the
+initial-rate case. `VLC_TEST_PRIMARY_SUBTITLE` selects an alternate external
+filename beside the generated video. The explicit `VLC_TEST_FPS_FORMAT_ONLY=1`
+mode avoids requiring Freetype appearance/preset support for timing checks of
+renderer-owned ASS styles; it does not qualify those style controls. The
+nonseekable and overlapping fixtures use their separate opt-in variables and
+must follow their fixture-specific setup rather than a seek-based shortcut.
+`VLC_TEST_PLAYBACK_RATE=0.25` starts the native fixture at quarter speed. The
+first-live-change checks allow 700 ms of media-time demux progress, scaled to
+the actual playback rate; they retain independent frame/clock bounds. Delayed
+cases require a nonempty reference caption before evaluating the FPS edit.
+`VLC_TEST_FPS_PROMPT_RESPONSE=1` instead uses the original 700 ms wall-time
+settling wait, including at quarter speed, to catch deferred command handling.
+Snapshot and callback overhead is additional; this is not an exact latency
+measurement. Run each selected case in its own fresh process.
+
+For `firstDefaultFpsChangeRetimesPlayingCaption`, optional `VLC_FPS_RECORDINGS`
+must name an existing empty output directory. Recording begins before the first
+FPS edit and remains active past the fixture's next 20-second video keyframe.
+The ten-second wait assumes normal playback speed. The test checks native state,
+caption, clock and nonempty output; separately decode the complete recording and
+verify its subtitle text/timestamps/durations. A nonempty file is insufficient.
+Video starts after the FPS edit in this fixture, so it cannot establish encoded
+AV continuity across that edit. See the
+[recording follow-up](../juxtopposed-references/native/home-subtitle-refill-20261028/README.md).
+
 `test/libvlc/native_mp4_subtitle_seek.py` exercises the public Windows LibVLC API
 with the generated 960x540 marker MP4 and a supplied external SRT. Positional
 arguments are runtime folder, existing empty output folder, media path, SRT path,

@@ -1,0 +1,1996 @@
+{
+  "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+  "status": "standalone-callback-qualified-plugin-not-built",
+  "currentSourceSha256": "433da57aa248b6be9b7bb65a4ddedd6c940eb1fb4f3fd3c9c6b14c25674df4e6",
+  "currentTestSha256": "a6677c8cafe551c00c752adaa6a541d2601af53f305ae2d0c7e2ffae5483b5a0",
+  "testedCoreSha256": "f8fc980bbe03da57908f79045f266710dd27a16c6ee66b6c45d60cd1f9b93598",
+  "candidate": {
+    "variant": "candidate",
+    "pid": 28632,
+    "exitCode": 0,
+    "cases": [
+      {
+        "case": "actual-demux-containing-cue-refill",
+        "checks": 25,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+        "checks": 46,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+        "checks": 77,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-eof-revival-and-no-wrap",
+        "checks": 34,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-invalid-rates-atomic",
+        "checks": 23,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+        "checks": 24,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+        "checks": 47,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-large-length-exact-ending-position",
+        "checks": 38,
+        "failures": 0,
+        "passed": true
+      }
+    ],
+    "summary": {
+      "summary": true,
+      "cases": 8,
+      "checks": 314,
+      "failures": 0
+    },
+    "runtimeExeUnchanged": true,
+    "runtimeCoreUnchanged": true
+  },
+  "baseline": {
+    "variant": "baseline",
+    "pid": 20324,
+    "exitCode": 1,
+    "cases": [
+      {
+        "case": "actual-demux-containing-cue-refill",
+        "checks": 13,
+        "failures": 1,
+        "passed": false
+      },
+      {
+        "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+        "checks": 23,
+        "failures": 3,
+        "passed": false
+      },
+      {
+        "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+        "checks": 38,
+        "failures": 10,
+        "passed": false
+      },
+      {
+        "case": "actual-demux-eof-revival-and-no-wrap",
+        "checks": 32,
+        "failures": 6,
+        "passed": false
+      },
+      {
+        "case": "actual-demux-invalid-rates-atomic",
+        "checks": 23,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+        "checks": 24,
+        "failures": 0,
+        "passed": true
+      },
+      {
+        "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+        "checks": 54,
+        "failures": 6,
+        "passed": false
+      },
+      {
+        "case": "actual-demux-large-length-exact-ending-position",
+        "checks": 38,
+        "failures": 12,
+        "passed": false
+      }
+    ],
+    "summary": {
+      "summary": true,
+      "cases": 8,
+      "checks": 245,
+      "failures": 38
+    },
+    "runtimeExeUnchanged": true,
+    "runtimeCoreUnchanged": true
+  },
+  "buildGuards": {
+    "sourceUnchanged": true,
+    "dependenciesUnchanged": true,
+    "producersUnchanged": true,
+    "configUnchanged": true
+  },
+  "runGuards": {
+    "sourceUnchanged": true,
+    "producersUnchanged": true,
+    "configUnchanged": true,
+    "buildUnchanged": true,
+    "preservedCoreUnchanged": true
+  },
+  "actualDependencyCount": 38,
+  "actualDependenciesAllFrozen": true,
+  "compilerUnchanged": true,
+  "forcedCleanupUsed": false,
+  "pluginBuildRun": false,
+  "decoderPixelsQualified": false,
+  "ordinaryGuiQualified": false,
+  "finalPackageQualified": false,
+  "ttmlQualified": false,
+  "revisions": [
+    {
+      "revision": 1,
+      "build": {
+        "status": "terminal",
+        "started": 1793213957.0558274,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-build-r1/parser.o"
+            ],
+            "pid": 12,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 15,
+            "exitCode": 1
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402264436736,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "failure": "AssertionError(('baseline-compile', 1))",
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793213959.8239794,
+        "success": false
+      },
+      "buildReceiptSha256": "fd8deca57afd766b7c98450885f42aa84a95548ad02b5059c113b12dea3c1e05"
+    },
+    {
+      "revision": 2,
+      "build": {
+        "status": "terminal",
+        "started": 1793213989.078127,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/parser.o"
+            ],
+            "pid": 33,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 36,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r2/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 39,
+            "exitCode": 1
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402255499264,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "failure": "AssertionError(('baseline-link', 1))",
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793213992.93794,
+        "success": false
+      },
+      "buildReceiptSha256": "a347cc5c0b43299ff71c48eaab11c89f3f129ed118abd3785edb6a9dab157045"
+    },
+    {
+      "revision": 3,
+      "build": {
+        "status": "terminal",
+        "started": 1793214018.1458051,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/parser.o"
+            ],
+            "pid": 49,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 52,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 55,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/candidate/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/candidate/test.o"
+            ],
+            "pid": 58,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/candidate/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r3/unit-build-r1/candidate/test_webvtt_fps.exe"
+            ],
+            "pid": 61,
+            "exitCode": 0
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402255085568,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "executables": {
+          "baseline": "12ff45180aed47918164ea372f3e41b6fee133fd21454326451c829312bf710f",
+          "candidate": "85a0fc263052fe5d275a174c0cf10ec03f131a350ac751958b92bde4fd2ab0c3"
+        },
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793214024.2254188,
+        "success": true
+      },
+      "buildReceiptSha256": "652d7c3da9361890e0d986d2817c9470b4c2138ee0cb94cc3bd6e87bbcc414d3",
+      "run": {
+        "status": "terminal",
+        "started": 1793214029.351914,
+        "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+        "variants": [
+          {
+            "variant": "baseline",
+            "pid": 17828,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 13,
+                "failures": 1,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 23,
+                "failures": 3,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 38,
+                "failures": 10,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 32,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 54,
+                "failures": 6,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 7,
+              "checks": 207,
+              "failures": 26
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          },
+          {
+            "variant": "candidate",
+            "pid": 28000,
+            "exitCode": 0,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 25,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 46,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 77,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 34,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 47,
+                "failures": 0,
+                "passed": true
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 7,
+              "checks": 276,
+              "failures": 0
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "sourceUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "buildUnchanged": true,
+        "preservedCoreUnchanged": true,
+        "ended": 1793214029.7250206,
+        "success": true
+      },
+      "runReceiptSha256": "99f115d35f754766d56f22aab2d43c9da51c220fba1e08a6877cd28fab19fc0b"
+    },
+    {
+      "revision": 4,
+      "build": {
+        "status": "terminal",
+        "started": 1793214288.9170072,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/parser.o"
+            ],
+            "pid": 15,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 18,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 21,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/candidate/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/candidate/test.o"
+            ],
+            "pid": 24,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/candidate/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r4/unit-build-r1/candidate/test_webvtt_fps.exe"
+            ],
+            "pid": 27,
+            "exitCode": 0
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402236653568,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "executables": {
+          "baseline": "17863884ac0e63f2ac0b3507a1ab538a170c87980ddad87789ce771bc1026d2b",
+          "candidate": "2a3d2e45c123675ac0985f1b3d3097897d79ee2c3283830e74d1af0af21df6f3"
+        },
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793214294.8997347,
+        "success": true
+      },
+      "buildReceiptSha256": "51271a51c266526187365617ba8230d1a0796a470b723f4d0650b21dc6e54565",
+      "run": {
+        "status": "terminal",
+        "started": 1793214303.2548375,
+        "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+        "variants": [
+          {
+            "variant": "baseline",
+            "pid": 25312,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 13,
+                "failures": 1,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 23,
+                "failures": 3,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 38,
+                "failures": 10,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 32,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 54,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 16,
+                "failures": 2,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 223,
+              "failures": 28
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          },
+          {
+            "variant": "candidate",
+            "pid": 25680,
+            "exitCode": 0,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 25,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 46,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 77,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 34,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 47,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 16,
+                "failures": 0,
+                "passed": true
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 292,
+              "failures": 0
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "sourceUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "buildUnchanged": true,
+        "preservedCoreUnchanged": true,
+        "ended": 1793214303.4874842,
+        "success": true
+      },
+      "runReceiptSha256": "3a55abf02bca49b32192364f04075e48ed16a84d1f42281dc1226398f45a3a4b"
+    },
+    {
+      "revision": 5,
+      "build": {
+        "status": "terminal",
+        "started": 1793214467.4205496,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/parser.o"
+            ],
+            "pid": 15,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 18,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 21,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/candidate/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/candidate/test.o"
+            ],
+            "pid": 24,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/candidate/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r5/unit-build-r1/candidate/test_webvtt_fps.exe"
+            ],
+            "pid": 27,
+            "exitCode": 0
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402190651392,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "executables": {
+          "baseline": "abe5c109db3f850858cdb2fa1084eb338783a22c46c6bda7f824c6cc6e719dc7",
+          "candidate": "2fd7e8465a43817a0a6d35e4a4eeafb6a38123e5175a8e6d73db87dc89d5eb01"
+        },
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793214473.359606,
+        "success": true
+      },
+      "buildReceiptSha256": "2d3613bcd6f976b3cc7516dbaa1a62253bbf0bf265ba88a5859e3cf56f6ea34b",
+      "run": {
+        "status": "terminal",
+        "started": 1793214479.5542321,
+        "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+        "variants": [
+          {
+            "variant": "baseline",
+            "pid": 3588,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 13,
+                "failures": 1,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 23,
+                "failures": 3,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 38,
+                "failures": 10,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 32,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 54,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 18,
+                "failures": 3,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 225,
+              "failures": 29
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          },
+          {
+            "variant": "candidate",
+            "pid": 24612,
+            "exitCode": 0,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 25,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 46,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 77,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 34,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 47,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 18,
+                "failures": 0,
+                "passed": true
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 294,
+              "failures": 0
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "sourceUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "buildUnchanged": true,
+        "preservedCoreUnchanged": true,
+        "ended": 1793214479.7717307,
+        "success": true
+      },
+      "runReceiptSha256": "451129f805d32ce8573b4bd023639b5c40c526a707d22b50b2d2df3436eeb97f"
+    },
+    {
+      "revision": 6,
+      "build": {
+        "status": "terminal",
+        "started": 1793214667.7963436,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/parser.o"
+            ],
+            "pid": 15,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 18,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 21,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/candidate/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/candidate/test.o"
+            ],
+            "pid": 24,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/candidate/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r6/unit-build-r1/candidate/test_webvtt_fps.exe"
+            ],
+            "pid": 27,
+            "exitCode": 0
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402153033728,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "executables": {
+          "baseline": "74817057188f8837fe1597b019e24ba4178952d463c63267829443fb7513ae12",
+          "candidate": "a30120e96eacb5fa7f1aa37d70cdf5863bee76635f2241560933b1e6122f9273"
+        },
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793214674.078417,
+        "success": true
+      },
+      "buildReceiptSha256": "a8bf94e3524a8d3d0f07102a184435fba3029604adf73edf1d4a93a90fe71bbf",
+      "run": {
+        "status": "terminal",
+        "started": 1793214685.6640246,
+        "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+        "variants": [
+          {
+            "variant": "baseline",
+            "pid": 6752,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 13,
+                "failures": 1,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 23,
+                "failures": 3,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 38,
+                "failures": 10,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 32,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 54,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 32,
+                "failures": 12,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 239,
+              "failures": 38
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          },
+          {
+            "variant": "candidate",
+            "pid": 3412,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 25,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 46,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 77,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 34,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 47,
+                "failures": 2,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 32,
+                "failures": 1,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 308,
+              "failures": 3
+            }
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "failure": "AssertionError()",
+        "sourceUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "buildUnchanged": true,
+        "preservedCoreUnchanged": true,
+        "ended": 1793214685.8659976,
+        "success": false
+      },
+      "runReceiptSha256": "184009d74348d29bb1959d8f9902766d36853f73b6c675bb59c7cbf091fe1354"
+    },
+    {
+      "revision": 7,
+      "build": {
+        "status": "terminal",
+        "started": 1793214747.386358,
+        "commands": [
+          {
+            "name": "parser-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/parser.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/modules/codec/webvtt/webvtt.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/parser.o"
+            ],
+            "pid": 41,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-DWEBVTT_DEMUX_SOURCE=\"/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/source-preimage/webvtt.c\"",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/baseline/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/baseline/test.o"
+            ],
+            "pid": 103,
+            "exitCode": 0
+          },
+          {
+            "name": "baseline-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/baseline/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/baseline/test_webvtt_fps.exe"
+            ],
+            "pid": 106,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-compile",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "-std=gnu11",
+              "-DHAVE_CONFIG_H=1",
+              "-DMODULE_NAME=webvtt_fps_test",
+              "-D__MSVCRT_VERSION__=0x700",
+              "-D_WIN32_WINNT=0x0601",
+              "-DWINVER=0x0601",
+              "-D__USE_MINGW_ANSI_STDIO=1",
+              "-I/root/vlc-juxtopposed-build/win64",
+              "-I/mnt/c/Modding/vlc-juxtopposed/include",
+              "-I/root/vlc-juxtopposed-build/win64/include",
+              "-I/root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include",
+              "-I/mnt/c/Modding/vlc-juxtopposed/modules/demux",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdbit",
+              "-I/mnt/c/Modding/vlc-juxtopposed/compat/stdckdint",
+              "-O1",
+              "-g",
+              "-mms-bitfields",
+              "-Wall",
+              "-Wextra",
+              "-Werror=implicit-function-declaration",
+              "-Werror=incompatible-pointer-types",
+              "-fstack-protector-strong",
+              "-fdata-sections",
+              "-ffunction-sections",
+              "-static-libgcc",
+              "-MMD",
+              "-MF",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/candidate/test.d",
+              "-c",
+              "/mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/candidate/test.o"
+            ],
+            "pid": 109,
+            "exitCode": 0
+          },
+          {
+            "name": "candidate-link",
+            "command": [
+              "/usr/bin/x86_64-w64-mingw32-gcc",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/candidate/test.o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/parser.o",
+              "/root/vlc-juxtopposed-build/win64/src/.libs/libvlccore.dll.a",
+              "/root/vlc-juxtopposed-build/win64/compat/.libs/libcompat.a",
+              "/usr/lib/gcc/x86_64-w64-mingw32/13-posix/libssp.a",
+              "-static-libgcc",
+              "-Wl,--gc-sections,--nxcompat,--dynamicbase,--high-entropy-va",
+              "-o",
+              "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/candidate/test_webvtt_fps.exe"
+            ],
+            "pid": 112,
+            "exitCode": 0
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "storage": {
+          "freeBytes": 402134138880,
+          "minimumFreeBytes": 399864390452,
+          "budgetBytes": 67108864
+        },
+        "executables": {
+          "baseline": "07278436e8029f1af23c6010b8a36df86e9f06bdfb575346836be6c4eea7c43a",
+          "candidate": "7ef88a9bbab3bf304cf69f05650ba7fc51d6ca6801f208d9b88ce8513dce0e69"
+        },
+        "sourceUnchanged": true,
+        "dependenciesUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "ended": 1793214753.5462987,
+        "success": true
+      },
+      "buildReceiptSha256": "8297c2bad489850d3de0af548b35a912247cebe6c9cf9d8949fa4a6d5de6b6cf",
+      "run": {
+        "status": "terminal",
+        "started": 1793214761.0371346,
+        "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+        "variants": [
+          {
+            "variant": "baseline",
+            "pid": 20324,
+            "exitCode": 1,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 13,
+                "failures": 1,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 23,
+                "failures": 3,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 38,
+                "failures": 10,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 32,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 54,
+                "failures": 6,
+                "passed": false
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 38,
+                "failures": 12,
+                "passed": false
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 245,
+              "failures": 38
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          },
+          {
+            "variant": "candidate",
+            "pid": 28632,
+            "exitCode": 0,
+            "cases": [
+              {
+                "case": "actual-demux-containing-cue-refill",
+                "checks": 25,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+                "checks": 46,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+                "checks": 77,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-eof-revival-and-no-wrap",
+                "checks": 34,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-invalid-rates-atomic",
+                "checks": 23,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+                "checks": 24,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+                "checks": 47,
+                "failures": 0,
+                "passed": true
+              },
+              {
+                "case": "actual-demux-large-length-exact-ending-position",
+                "checks": 38,
+                "failures": 0,
+                "passed": true
+              }
+            ],
+            "summary": {
+              "summary": true,
+              "cases": 8,
+              "checks": 314,
+              "failures": 0
+            },
+            "runtimeExeUnchanged": true,
+            "runtimeCoreUnchanged": true
+          }
+        ],
+        "errors": [],
+        "forcedCleanupUsed": false,
+        "sourceUnchanged": true,
+        "producersUnchanged": true,
+        "configUnchanged": true,
+        "buildUnchanged": true,
+        "preservedCoreUnchanged": true,
+        "ended": 1793214761.2619991,
+        "success": true
+      },
+      "runReceiptSha256": "7a938105cdaa564dce5b90d105fcc1fc03884f1249c4b556aac17d03286d6408"
+    }
+  ]
+}

@@ -152,7 +152,10 @@ vlc_player_input_SeekByPos(struct vlc_player_input *input, double position,
     });
 
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Position(player, input, VLC_TICK_INVALID, position);
+    }
 }
 
 void
@@ -179,7 +182,10 @@ vlc_player_input_SeekByTime(struct vlc_player_input *input, vlc_tick_t time,
     });
 
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Position(player, input, time, -1);
+    }
 }
 
 void
@@ -298,6 +304,8 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
                 reason = VLC_PLAYER_MEDIA_STOPPING_USER;
             else
                 reason = VLC_PLAYER_MEDIA_STOPPING_EOS;
+            if (input->error == VLC_PLAYER_ERROR_NONE && input->eof_position >= 0.)
+                input->position_before_stop = input->eof_position;
             input->started = false;
 
             /* Note: no need to hold the media here, as it is already protected
@@ -1125,6 +1133,19 @@ input_thread_Events(input_thread_t *input_thread,
             handled = vlc_player_input_HandleAtoBLoop(input, true);
             if (handled)
                 break;
+            /* EOF is emitted after output drain. Preserve its source position
+             * without changing the playback timer. A queued seek or user Stop
+             * must not be replaced by an earlier EOF notification. */
+            if (input->started && input->error == VLC_PLAYER_ERROR_NONE
+             && input == player->input && (player->play_and_pause || input->repeat == 0))
+            {
+                vlc_mutex_lock(&player->timer.lock);
+                const bool seeking = player->timer.seek_ts != VLC_TICK_INVALID
+                                  || player->timer.seek_position >= 0.;
+                vlc_mutex_unlock(&player->timer.lock);
+                if (!seeking)
+                    input->eof_position = event->eof_position;
+            }
             if (player->play_and_pause)
             {
                 vlc_player_Pause(player);
@@ -1132,6 +1153,7 @@ input_thread_Events(input_thread_t *input_thread,
             }
             else if (input->repeat > 0)
             {
+                input->eof_position = -1.;
                 input->repeat--;
                 handled =
                     input_ControlPush(input->thread,
@@ -1155,6 +1177,8 @@ input_thread_Events(input_thread_t *input_thread,
         }
         case INPUT_EVENT_TIMES:
         {
+            if (!priv->master->b_eof)
+                input->eof_position = -1.;
             bool changed = false;
             vlc_tick_t system_date = VLC_TICK_INVALID;
             vlc_tick_t duration = input_GetItemDuration(input->thread, event->times.length);
@@ -1371,6 +1395,7 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     input->pause_date = VLC_TICK_INVALID;
     input->position = 0.f;
     input->position_before_stop = -1.;
+    input->eof_position = -1.;
 
     input->recording = false;
 
@@ -1422,6 +1447,7 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     input->repeat = player->repeat;
     input->history_epoch = player->history_epoch;
     input->position_epoch = player->position_epoch;
+    input->history_removed = false;
 
     input->thread = input_Create(player, item, &cfg);
     if (!input->thread)

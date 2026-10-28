@@ -10,6 +10,11 @@ import shutil
 from pathlib import Path
 
 repo = Path(__file__).resolve().parents[4]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--repo-root', type=Path, default=repo)
+parser.add_argument('--output-dir', type=Path, default=Path('ui-previews/home'))
+args = parser.parse_args()
+repo = args.repo_root.resolve()
 os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 os.environ['QT_QUICK_BACKEND'] = 'software'
 os.environ['QML_DISABLE_DISK_CACHE'] = '1'
@@ -20,9 +25,6 @@ from PySide6.QtQml import QQmlComponent, QQmlExpression, qmlContext
 from PySide6.QtQuick import QQuickItem, QQuickView
 from PySide6.QtTest import QSignalSpy, QTest
 
-parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--output-dir', type=Path, default=Path('ui-previews/home'))
-args = parser.parse_args()
 args.output_dir.mkdir(parents=True, exist_ok=True)
 messages = []
 qInstallMessageHandler(lambda kind, context, message: messages.append(message))
@@ -97,6 +99,13 @@ def entry_id(value):
 def click(view, item):
     QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, item.mapToScene(item.boundingRect().center()).toPoint())
 
+def context_click(view, item):
+    QTest.mouseClick(view, Qt.RightButton, Qt.NoModifier, item.mapToScene(item.boundingRect().center()).toPoint())
+
+def context_key(view, item, key=Qt.Key_F10, modifiers=Qt.ShiftModifier):
+    item.forceActiveFocus(Qt.TabFocusReason)
+    QTest.keyClick(view, key, modifiers)
+
 art_path = args.output_dir / 'supplied-cover.png'
 art = QImage(400, 400, QImage.Format_RGB32)
 art.fill(QColor('#22554b'))
@@ -104,7 +113,7 @@ assert art.save(str(art_path))
 art_uri = QUrl.fromLocalFile(str(art_path.resolve())).toString()
 video_model = SuppliedMediaModel([
     {'id': 'video-12', 'title': 'RÃ©sumÃ©', 'fileName': 'RÃ©sumÃ©.mp4', 'small_cover': art_uri, 'progress': .4},
-    {'id': 'video-8', 'title': 'Second', 'fileName': 'Second.mp4', 'small_cover': art_uri, 'progress': 0},
+    {'id': 'video-8', 'title': 'Second', 'fileName': 'Second.mp4', 'small_cover': art_uri, 'progress': .2},
     {'id': 'video-31', 'title': 'Third', 'fileName': 'Third.mp4', 'small_cover': art_uri, 'progress': .1},
     {'id': 'video-17', 'title': 'Fourth', 'fileName': 'Fourth.mp4', 'small_cover': art_uri, 'progress': .2},
 ])
@@ -113,11 +122,15 @@ audio_model = SuppliedMediaModel([
     {'id': 'audio-29', 'title': 'Black bird', 'main_artist': 'Artist Î²', 'small_cover': art_uri},
     {'id': 'audio-72', 'title': 'Untangle', 'main_artist': 'Artist Î±', 'small_cover': art_uri},
 ])
+watched_model = SuppliedMediaModel([
+    {'id': 'watched-1', 'title': 'Finished film', 'fileName': 'Finished.mp4', 'small_cover': art_uri, 'progress': -1},
+])
 folders = [{'id': 'folder-21', 'title': 'Shows'}, {'id': 'folder-22', 'title': 'Music'}, {'id': 'folder-23', 'title': 'Mixed media'}]
 playlists = [{'id': 'playlist-56', 'title': 'Fav Episodes'}, {'id': 'playlist-83', 'title': 'Coolest Songs'}]
 artists = [{'id': 'artist-15', 'title': 'Artist Î±', 'artwork': art_uri}]
 properties = {
     'videoEntries': video_model, 'audioEntries': audio_model,
+    'watchAgainEntries': watched_model,
     'folderEntries': folders, 'playlistEntries': playlists, 'artistEntries': artists,
     'arrowIcon': icon('ic_fluent_chevron_right_24'), 'videoIcon': icon('topbar_video'),
     'audioIcon': icon('topbar_music'), 'folderIcon': icon('topbar_discover'),
@@ -164,12 +177,20 @@ artist = QSignalSpy(root.artistRequested)
 see_all = QSignalSpy(root.seeAllRequested)
 expr(root, 'setCurrentItemFocus(Qt.TabFocusReason)')
 assert find(root, 'homevideo0').hasActiveFocus()
+assert view.grabWindow().save(str(args.output_dir / 'home-sections-component.png'))
 click(view, find(root, 'homevideo0'))
 assert media.count() == 1 and entry_id(media.at(0)[0]) == 'video-12' and media.at(0)[1] is True
 click(view, find(root, 'homevideo1'))
-assert media.count() == 2 and entry_id(media.at(1)[0]) == 'video-8' and media.at(1)[1] is False
+assert media.count() == 2 and entry_id(media.at(1)[0]) == 'video-8' and media.at(1)[1] is True
+watched_card = find(root, 'homeWatchedVideo0')
+assert expr(watched_card, 'Accessible.description') == 'Watch again from the beginning'
+watched_card.forceActiveFocus(Qt.TabFocusReason)
+QTest.keyClick(view, Qt.Key_Return)
+assert media.count() == 3 and entry_id(media.at(2)[0]) == 'watched-1' and media.at(2)[1] is False
+find(root, 'homeaudio0').forceActiveFocus(Qt.TabFocusReason)
+QTest.qWait(20)
 click(view, find(root, 'homeaudio0'))
-assert media.count() == 3 and entry_id(media.at(2)[0]) == 'audio-44' and media.at(2)[1] is False
+assert media.count() == 4 and entry_id(media.at(3)[0]) == 'audio-44' and media.at(3)[1] is False
 click(view, find(root, 'homeSectionlistenAgain'))
 assert see_all.count() == 1 and see_all.at(0)[0] == 'listenAgain'
 assert view.grabWindow().save(str(args.output_dir / 'home-grid-component.png'))
@@ -209,7 +230,8 @@ for width, height, scale, grid in [(640, 420, 1, True), (640, 420, 1, False), (9
     layouts.append({'width': width, 'height': height, 'scale': scale, 'grid': grid, 'focusedCenterY': p.y()})
 
 empty_view, empty = load('JuxtopposedHomeDashboard.qml', {}, 700, 500)
-assert 'Videos you watch' in find(empty, 'homeEmptycontinueWatching').property('text')
+assert 'Unfinished videos' in find(empty, 'homeEmptycontinueWatching').property('text')
+assert 'Videos you finish' in find(empty, 'homeEmptywatchAgain').property('text')
 empty.setProperty('historyLoading', True)
 assert 'Loading' in find(empty, 'homeEmptycontinueWatching').property('text')
 empty.setProperty('historyLoading', False)
@@ -280,6 +302,66 @@ click(mixed_view, video_card)
 assert mixed_actions.count() == 2 and mixed_actions.at(1)[1] == 'video'
 assert mixed_view.grabWindow().save(str(args.output_dir / 'home-mixed-fallback-component.png'))
 
+# Context menus must carry the selected row and its history section, including
+# unavailable files whose playback stays disabled. Use actual pointer/key input
+# on production delegates rather than emitting their routing signals directly.
+actions_view, actions = load('JuxtopposedHomeDashboard.qml', dict(properties,
+    videoEntries=[dict(id='offline-video', title='Missing fixture', available=False, progress=.3)]), 1700, 970)
+video_menus = QSignalSpy(actions.videoMenuRequested)
+section_menus = QSignalSpy(actions.historyMenuRequested)
+pin_menus = QSignalSpy(actions.pinMenuRequested)
+play_actions = QSignalSpy(actions.mediaRequested)
+offline_video = find(actions, 'homevideo0')
+assert offline_video.isEnabled() and not offline_video.property('available')
+context_click(actions_view, offline_video)
+context_key(actions_view, offline_video)
+assert video_menus.count() == 2
+for n in range(2):
+    assert entry_id(video_menus.at(n)[0]) == 'offline-video' and video_menus.at(n)[1] == 'continueWatching'
+click(actions_view, offline_video)
+QTest.keyClick(actions_view, Qt.Key_Return)
+assert play_actions.count() == 0, 'Unavailable history must retain its menu without starting playback'
+watched_item = find(actions, 'homeWatchedVideo0')
+context_key(actions_view, watched_item, Qt.Key_Menu, Qt.NoModifier)
+assert video_menus.count() == 3 and video_menus.at(2)[1] == 'watchAgain'
+assert entry_id(video_menus.at(2)[0]) == 'watched-1'
+for category in ['continueWatching', 'watchAgain']:
+    actions.setProperty('contentY', 0)
+    options = find(actions, 'homeHistoryOptions' + category)
+    options.forceActiveFocus(Qt.TabFocusReason)
+    QTest.qWait(20)
+    click(actions_view, options)
+assert section_menus.count() == 2 and [section_menus.at(n)[0] for n in range(2)] == ['continueWatching', 'watchAgain']
+actions.setProperty('historyBusy', True)
+assert not find(actions, 'homeHistoryOptionscontinueWatching').isEnabled()
+assert not find(actions, 'homeHistoryOptionswatchAgain').isEnabled()
+assert 'Updating' in find(actions, 'homeHistoryStatus').property('text')
+actions.setProperty('historyBusy', False)
+actions.setProperty('historyMessage', 'Supplied history failure')
+assert find(actions, 'homeHistoryStatus').isVisible() and find(actions, 'homeHistoryStatus').property('text') == 'Supplied history failure'
+context_key(actions_view, find(actions, 'homefolder0'))
+assert pin_menus.count() == 1 and entry_id(pin_menus.at(0)[0]) == 'folder-21'
+
+history_view, history_collection = load('JuxtopposedHomeCollectionView.qml', {
+    'entries': [dict(id='offline-full', title='Missing fixture', available=False), dict(id='online-full', title='Available fixture')],
+    'kind': 'video', 'historyActionsAvailable': True,
+}, 900, 600)
+full_menus = QSignalSpy(history_collection.contextMenuRequested)
+full_play = QSignalSpy(history_collection.activated)
+full_offline = find(history_collection, 'homeCollectionItem0')
+assert full_offline.isEnabled() and not full_offline.property('available')
+context_click(history_view, full_offline)
+context_key(history_view, full_offline)
+assert full_menus.count() == 2 and all(entry_id(full_menus.at(n)[0]) == 'offline-full' for n in range(2))
+click(history_view, full_offline)
+QTest.keyClick(history_view, Qt.Key_Return)
+assert full_play.count() == 0
+full_online = find(history_collection, 'homeCollectionItem1')
+context_key(history_view, full_online)
+assert full_menus.count() == 3 and entry_id(full_menus.at(2)[0]) == 'online-full'
+click(history_view, full_online)
+assert full_play.count() == 1 and entry_id(full_play.at(0)[0]) == 'online-full'
+
 warnings = messages
 assert not warnings, warnings
 verification = {'scope': 'Production Home QML with supplied QAbstractListModel/array data; native ML/player/persistence not executed.',
@@ -287,6 +369,9 @@ verification = {'scope': 'Production Home QML with supplied QAbstractListModel/a
                 'seeAllActions': see_all.count(), 'fullCollectionCount': collection.property('count'), 'renderedCards': rendered_cards,
                 'dashboardPreviewCardsFrom250Folders': dashboard_folder_cards,
                 'mixedMediaFallbackChecks': 6,
+                'historyContextRouting': {'dashboardItemMenus': video_menus.count(), 'sectionOptions': section_menus.count(),
+                    'unavailablePlaybackActions': play_actions.count(), 'fullCollectionItemMenus': full_menus.count(),
+                    'fullCollectionAvailablePlaybackActions': full_play.count(), 'pointerAndKeyboard': True},
                 'layouts': layouts, 'warnings': warnings, 'imageDependency': 'Unmodified production Widgets.ImageExt', 'imageRenderer': 'Software Image fallback; native RHI rounding not tested'}
 (args.output_dir / 'home-component-verification.json').write_text(json.dumps(verification, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
 print('Home dashboard and collection component checks passed.')

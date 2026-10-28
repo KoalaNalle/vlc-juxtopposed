@@ -1,0 +1,1754 @@
+diff --git a/modules/codec/libass.c b/modules/codec/libass.c
+index f88e1346d2..56791c3d45 100644
+--- a/modules/codec/libass.c
++++ b/modules/codec/libass.c
+@@ -333,6 +333,14 @@ static void Flush( decoder_t *p_dec )
+ 
+     p_sys->i_max_stop = VLC_TICK_INVALID;
+     p_sys->i_last_pts = VLC_TICK_INVALID;
++
++    /* A refill can resend the same ReadOrder with new timestamps. Discard
++     * cached events as well as the decoder's timing bookkeeping. Rendering
++     * and event updates share this track, so use their existing lock. */
++    vlc_mutex_lock( &p_sys->lock );
++    if( p_sys->p_track )
++        ass_flush_events( p_sys->p_track );
++    vlc_mutex_unlock( &p_sys->lock );
+ }
+ 
+ /****************************************************************************
+@@ -451,7 +459,8 @@ static void SubpictureUpdate( subpicture_t *p_subpic,
+     }
+ 
+     /* */
+-    const vlc_tick_t i_stream_date = p_spusys->i_pts + (cfg->pts - p_subpic->i_start);
++    /* The SPU clock mapping includes playback rate and pause adjustments. */
++    const vlc_tick_t i_stream_date = subpicture_GetSourceTime(p_subpic, cfg->pts);
+     int i_changed;
+     ASS_Image *p_img = ass_render_frame( p_sys->p_renderer, p_sys->p_track,
+                                          MS_FROM_VLC_TICK( i_stream_date ), &i_changed );
+diff --git a/modules/demux/avformat/mux.c b/modules/demux/avformat/mux.c
+index 1ffc6f943d..dcb20b76ca 100644
+--- a/modules/demux/avformat/mux.c
++++ b/modules/demux/avformat/mux.c
+@@ -273,6 +273,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
+ 
+     case SPU_ES:
+         codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
++        /* VLC supplies SSA/ASS cues as ReadOrder, Layer, ... event packets.
++         * libavformat uses the ASS codec ID for this packet layout; Matroska
++         * rejects the legacy SSA ID returned by the shared codec mapping. */
++        if( fmt->i_codec == VLC_CODEC_SSA )
++            i_codec_id = AV_CODEC_ID_ASS;
+         /* psz_description and psz_language are expected to be compliant with
+          * the muxing format. It should be the case when muxing a compliant
+          * source to the same muxing format, but we have no general guarantee
+@@ -405,6 +410,10 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
+     if( p_data->i_dts >= VLC_TICK_0 )
+         pkt->dts = av_rescale_q( p_data->i_dts - VLC_TICK_0,
+                                 VLC_TIME_BASE_Q, p_stream->time_base );
++    /* Subtitle packet payloads do not carry their display duration. */
++    if( p_input->p_fmt->i_cat == SPU_ES && p_data->i_length > 0 )
++        pkt->duration = av_rescale_q( p_data->i_length,
++                                     VLC_TIME_BASE_Q, p_stream->time_base );
+ 
+     if( av_write_frame( p_sys->oc, pkt ) < 0 )
+     {
+diff --git a/modules/demux/subtitle.c b/modules/demux/subtitle.c
+index 4664d88cf9..02ae9d63f2 100644
+--- a/modules/demux/subtitle.c
++++ b/modules/demux/subtitle.c
+@@ -771,10 +771,19 @@ ResetCurrentIndex( demux_t *p_demux )
+     demux_sys_t *p_sys = p_demux->p_sys;
+     for( size_t i = 0; i < p_sys->subtitles.i_count; i++ )
+     {
+-        if( SubtitleSourceTime(&p_sys->subtitles.p_array[i], p_sys->f_rate) >
+-            p_sys->i_next_demux_date && i > 0 )
++        const subtitle_t *subtitle = &p_sys->subtitles.p_array[i];
++        const vlc_tick_t start = SubtitleSourceTime(subtitle, p_sys->f_rate);
++        if( start > p_sys->i_next_demux_date && i > 0 )
+             break;
+         p_sys->subtitles.i_current = i;
++        /* Refill every still-active overlapping event, not only the newest
++         * one. Unknown ends retain the existing latest-start fallback. */
++        if( subtitle->i_stop != VLC_TICK_INVALID && subtitle->i_stop >= subtitle->i_start )
++        {
++            const vlc_tick_t length = (subtitle->i_stop - subtitle->i_start) * p_sys->f_rate;
++            if( start + length > p_sys->i_next_demux_date )
++                break;
++        }
+     }
+ }
+ 
+diff --git a/modules/gui/qt/Makefile.am b/modules/gui/qt/Makefile.am
+index 78bb9bd428..64f316aa21 100644
+--- a/modules/gui/qt/Makefile.am
++++ b/modules/gui/qt/Makefile.am
+@@ -265,6 +265,7 @@ libqt_plugin_la_SOURCES = \
+ 	medialibrary/mlrecentmediamodel.hpp \
+ 	medialibrary/mlrecentvideomodel.cpp \
+ 	medialibrary/mlrecentvideomodel.hpp \
++	medialibrary/mlvideohistory.hpp \
+ 	medialibrary/mlrecentaudiomodel.cpp \
+ 	medialibrary/mlrecentaudiomodel.hpp \
+ 	medialibrary/mlhomeactivity.cpp \
+diff --git a/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp b/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp
+index 0e7fbbd7b1..e99c852c31 100644
+--- a/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp
++++ b/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp
+@@ -18,11 +18,21 @@
+ 
+ #include "mlrecentvideomodel.hpp"
+ #include "mlhelper.hpp"
++#include "mlvideohistory.hpp"
+ 
+ // Ctor / dtor
+ 
+ MLRecentVideoModel::MLRecentVideoModel(QObject * parent) : MLVideoModel(parent) {}
+ 
++void MLRecentVideoModel::setHistoryMode(HistoryMode mode)
++{
++    if (m_historyMode == mode)
++        return;
++    m_historyMode = mode;
++    emit historyModeChanged();
++    emit resetRequested();
++}
++
+ // Protected MLBaseModel implementation
+ 
+ std::unique_ptr<MLListCacheLoader>
+@@ -38,6 +48,12 @@ void MLRecentVideoModel::onVlcMlEvent(const MLEvent & event) /* override */
+ {
+     switch (event.i_type)
+     {
++        case VLC_ML_EVENT_MEDIA_UPDATED:
++            if (m_historyMode == All)
++                break;
++            // Membership as well as the row data may have changed.
++            emit resetRequested();
++            return;
+         case VLC_ML_EVENT_HISTORY_CHANGED:
+             emit resetRequested();
+             return;
+@@ -52,12 +68,28 @@ void MLRecentVideoModel::onVlcMlEvent(const MLEvent & event) /* override */
+ 
+ size_t MLRecentVideoModel::Loader::count(vlc_medialibrary_t* ml, const vlc_ml_query_params_t* queryParams) const /* override */
+ {
++    if (mode != All)
++        return visitMLVideoHistory(ml, queryParams, mode == Completed,
++            [](const vlc_ml_media_t &, size_t) { return true; });
+     return vlc_ml_count_video_history(ml, queryParams);
+ }
+ 
+ std::vector<std::unique_ptr<MLItem>>
+ MLRecentVideoModel::Loader::load(vlc_medialibrary_t* ml, const vlc_ml_query_params_t* queryParams) const /* override */
+ {
++    if (mode != All)
++    {
++        std::vector<std::unique_ptr<MLItem>> result;
++        const size_t offset = queryParams ? queryParams->i_offset : 0;
++        const size_t limit = queryParams ? queryParams->i_nbResults : 0;
++        visitMLVideoHistory(ml, queryParams, mode == Completed,
++            [&](const vlc_ml_media_t &media, size_t index) {
++                if (index >= offset)
++                    result.emplace_back(std::make_unique<MLVideo>(&media));
++                return limit == 0 || result.size() < limit;
++            });
++        return result;
++    }
+     ml_unique_ptr<vlc_ml_media_list_t> media_list {
+         vlc_ml_list_video_history(ml, queryParams)
+     };
+@@ -80,7 +112,7 @@ MLRecentVideoModel::Loader::loadItemById(vlc_medialibrary_t* ml, MLItemId itemId
+ {
+     assert(itemId.type == VLC_ML_PARENT_UNKNOWN);
+     ml_unique_ptr<vlc_ml_media_t> media(vlc_ml_get_media(ml, itemId.id));
+-    if (!media)
++    if (!media || (mode != All && !mlVideoHistoryMatches(*media, mode == Completed)))
+         return nullptr;
+     return std::make_unique<MLVideo>(media.get());
+ }
+diff --git a/modules/gui/qt/medialibrary/mlrecentvideomodel.hpp b/modules/gui/qt/medialibrary/mlrecentvideomodel.hpp
+index 5b42b60916..50e721667b 100644
+--- a/modules/gui/qt/medialibrary/mlrecentvideomodel.hpp
++++ b/modules/gui/qt/medialibrary/mlrecentvideomodel.hpp
+@@ -28,11 +28,19 @@
+ class MLRecentVideoModel : public MLVideoModel
+ {
+     Q_OBJECT
++    Q_PROPERTY(HistoryMode historyMode READ historyMode WRITE setHistoryMode NOTIFY historyModeChanged FINAL)
+ 
+ public:
++    enum HistoryMode { All, Unfinished, Completed };
++    Q_ENUM(HistoryMode)
+     explicit MLRecentVideoModel(QObject * parent = nullptr);
+ 
+     virtual ~MLRecentVideoModel() = default;
++    HistoryMode historyMode() const { return m_historyMode; }
++    void setHistoryMode(HistoryMode mode);
++
++signals:
++    void historyModeChanged();
+ 
+ protected: // MLBaseModel implementation
+     std::unique_ptr<MLListCacheLoader> createMLLoader() const override;
+@@ -43,7 +51,9 @@ protected: // MLVideoModel reimplementation
+ private:
+     struct Loader : public MLListCacheLoader::MLOp
+     {
+-        using MLListCacheLoader::MLOp::MLOp;
++        explicit Loader(const MLRecentVideoModel &model)
++            : MLOp(model), mode(model.historyMode()) {}
++        const HistoryMode mode;
+ 
+         size_t count(vlc_medialibrary_t* ml, const vlc_ml_query_params_t*) const override;
+ 
+@@ -51,6 +61,7 @@ private:
+ 
+         std::unique_ptr<MLItem> loadItemById(vlc_medialibrary_t* ml, MLItemId itemId) const override;
+     };
++    HistoryMode m_historyMode = All;
+ };
+ 
+ #endif // ML_RECENT_VIDEO_MODEL_H
+diff --git a/modules/gui/qt/medialibrary/qml/HomeDisplay.qml b/modules/gui/qt/medialibrary/qml/HomeDisplay.qml
+index 9d82e9959f..d5c05c2355 100644
+--- a/modules/gui/qt/medialibrary/qml/HomeDisplay.qml
++++ b/modules/gui/qt/medialibrary/qml/HomeDisplay.qml
+@@ -46,6 +46,8 @@ Widgets.PageLoader {
+         component: newMusicComponent
+     }, {
+         name: "listenAgain", component: juxtAudioHistoryComponent
++    }, {
++        name: "watchAgain", component: juxtWatchedVideoHistoryComponent
+     }, {
+         name: "frequentFolders", component: juxtFoldersComponent
+     }, {
+@@ -84,6 +86,7 @@ Widgets.PageLoader {
+         }
+     }
+     Component { id: juxtVideoHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: true; focus: true } }
++    Component { id: juxtWatchedVideoHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: true; completedVideos: true; focus: true } }
+     Component { id: juxtAudioHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: false; focus: true } }
+     Component {
+         id: juxtFoldersComponent
+diff --git a/modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml b/modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml
+index 0162a5ec19..bff3b8da3a 100644
+--- a/modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml
++++ b/modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml
+@@ -22,6 +22,7 @@ Flickable {
+     property url folderArtwork: ""
+     property url artistArtwork: ""
+     property var videoEntries: null
++    property var watchAgainEntries: null
+     property var audioEntries: null
+     property var folderEntries: []
+     property var playlistEntries: []
+@@ -76,9 +77,9 @@ Flickable {
+         else if (y + item.height > contentY + height)
+             contentY = Math.min(Math.max(0, contentHeight - height), y + item.height - height)
+     }
+-    function activate(kind, entry, reason) {
++    function activate(kind, entry, reason, resumeVideo = true) {
+         if (kind === "video" || kind === "audio")
+-            mediaRequested(entry, kind === "video" && (entry?.progress || 0) > 0, reason)
++            mediaRequested(entry, kind === "video" && resumeVideo && (entry?.progress || 0) > 0, reason)
+         else if (kind === "folder")
+             folderRequested(entry, reason)
+         else if (kind === "playlist")
+@@ -95,6 +96,8 @@ Flickable {
+         required property string category
+         required property string kind
+         property var entries: null
++        property bool resumeVideo: true
++        property string cardPrefix: "home" + kind
+         property string fallbackIcon: ""
+         property url fallbackArtwork: ""
+         property string emptyText: ""
+@@ -170,7 +173,7 @@ Flickable {
+                     required property var model
+                     required property int index
+                     readonly property var row: model.modelData ?? model
+-                    objectName: "home" + section.kind + index
++                    objectName: section.cardPrefix + index
+                     entry: row
+                     uiScale: root.uiScale
+                     fontFamily: inter.name
+@@ -185,7 +188,9 @@ Flickable {
+                     surfaceColor: root.surfaceColor
+                     textColor: root.textColor
+                     accentColor: root.accentColor
+-                    onClicked: root.activate(kind, row, focusReason)
++                    Accessible.description: !enabled ? qsTr("This item is unavailable") : kind === "video" ?
++                        (section.resumeVideo ? qsTr("Continue watching") : qsTr("Watch again from the beginning")) : ""
++                    onClicked: root.activate(kind, row, focusReason, section.resumeVideo)
+                     onContextMenuRequested: position => root.pinMenuRequested(row, position)
+                     onActiveFocusChanged: if (activeFocus) { root.focusedEntry = this; root.reveal(this) }
+                 }
+@@ -236,7 +241,18 @@ Flickable {
+             entries: root.videoEntries
+             fallbackIcon: root.videoIcon
+             loading: root.historyLoading
+-            emptyText: qsTr("Videos you watch will appear here.")
++            emptyText: qsTr("Unfinished videos will appear here.")
++        }
++        Section {
++            title: qsTr("Watch Again")
++            category: "watchAgain"
++            kind: "video"
++            cardPrefix: "homeWatchedVideo"
++            resumeVideo: false
++            entries: root.watchAgainEntries
++            fallbackIcon: root.videoIcon
++            loading: root.historyLoading
++            emptyText: qsTr("Videos you finish will appear here.")
+         }
+         Section {
+             title: qsTr("Listen Again")
+diff --git a/modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml b/modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml
+index e146072f5f..856ba689d0 100644
+--- a/modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml
++++ b/modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml
+@@ -14,7 +14,8 @@ import "JuxtopposedHomeSorting.js" as HomeSorting
+ Widgets.PageExt {
+     id: root
+     property bool isVideo: true
+-    title: isVideo ? qsTr("Continue Watching") : qsTr("Listen Again")
++    property bool completedVideos: false
++    title: isVideo ? (completedVideos ? qsTr("Watch Again") : qsTr("Continue Watching")) : qsTr("Listen Again")
+     hasGridListMode: true
+     isSearchable: true
+     libraryModel: isVideo ? videos : audio
+@@ -28,6 +29,7 @@ Widgets.PageExt {
+     MLRecentVideoModel {
+         id: videos
+         ml: MediaLib
++        historyMode: root.completedVideos ? MLRecentVideoModel.Completed : MLRecentVideoModel.Unfinished
+         searchPattern: root.search.pattern
+         sortCriteria: HomeSorting.mediaCriteria(root.sort.criteria)
+         sortOrder: HomeSorting.mediaOrder(root.sort.criteria, root.sort.order)
+@@ -48,11 +50,13 @@ Widgets.PageExt {
+         iconFontFamily: VLCIcons.fontFamily
+         fallbackIcon: root.isVideo ? VLCIcons.topbar_video : VLCIcons.topbar_music
+         loading: root.libraryModel.loading
+-        emptyText: root.search.pattern ? qsTr("No matching media") : qsTr("No playback history yet")
++        emptyText: root.search.pattern ? qsTr("No matching media")
++            : root.isVideo ? (root.completedVideos ? qsTr("No completed videos yet") : qsTr("No unfinished videos"))
++            : qsTr("No playback history yet")
+         Navigation.parentItem: root
+         Navigation.upItem: root.header
+         onActivated: (entry, kind, reason) => {
+-            MediaLib.addAndPlay(entry.id, root.isVideo && entry.progress > 0 ? [":restore-playback-pos=2"] : [])
++            MediaLib.addAndPlay(entry.id, root.isVideo ? [root.completedVideos ? ":restore-playback-pos=0" : ":restore-playback-pos=2"] : [])
+             MainCtx.playerView = true
+         }
+     }
+diff --git a/modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml b/modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml
+index 777a245ed7..a1c65224e5 100644
+--- a/modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml
++++ b/modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml
+@@ -39,6 +39,16 @@ Widgets.PageExt {
+     MLRecentVideoModel {
+         id: videos
+         ml: MediaLib
++        historyMode: MLRecentVideoModel.Unfinished
++        limit: 4
++        searchPattern: root.search.pattern
++        sortCriteria: HomeSorting.mediaCriteria(root.sort.criteria)
++        sortOrder: HomeSorting.mediaOrder(root.sort.criteria, root.sort.order)
++    }
++    MLRecentVideoModel {
++        id: watchedVideos
++        ml: MediaLib
++        historyMode: MLRecentVideoModel.Completed
+         limit: 4
+         searchPattern: root.search.pattern
+         sortCriteria: HomeSorting.mediaCriteria(root.sort.criteria)
+@@ -65,11 +75,12 @@ Widgets.PageExt {
+         folderArtwork: "qrc:/menu/folder.svg"
+         artistArtwork: VLCStyle.noArtArtist
+         videoEntries: videos
++        watchAgainEntries: watchedVideos
+         audioEntries: audio
+         folderEntries: root.filteredActivity(MediaLib.homeActivity.folders)
+         playlistEntries: root.filteredActivity(MediaLib.homeActivity.playlists)
+         artistEntries: root.filteredActivity(MediaLib.homeActivity.artists)
+-        historyLoading: videos.loading || audio.loading
++        historyLoading: videos.loading || watchedVideos.loading || audio.loading
+         activityLoading: MediaLib.homeActivity.loading
+         libraryBusy: !MediaLib.idle
+         mediaEmpty: !MediaLib.homeActivity.loading && MediaLib.homeActivity.mediaCount === 0
+@@ -79,7 +90,7 @@ Widgets.PageExt {
+         Navigation.parentItem: root
+         Navigation.upItem: root.header
+         onMediaRequested: (entry, resume, reason) => {
+-            MediaLib.addAndPlay(entry.id, resume ? [":restore-playback-pos=2"] : [])
++            MediaLib.addAndPlay(entry.id, resume ? [":restore-playback-pos=2"] : entry.isVideo ? [":restore-playback-pos=0"] : [])
+             MainCtx.playerView = true
+         }
+         onFolderRequested: (entry, reason) => root.collectionRequested("folder", entry, reason)
+diff --git a/modules/gui/qt/tests/test_home_activity.cpp b/modules/gui/qt/tests/test_home_activity.cpp
+index 3c88199988..53e48926f0 100644
+--- a/modules/gui/qt/tests/test_home_activity.cpp
++++ b/modules/gui/qt/tests/test_home_activity.cpp
+@@ -8,7 +8,10 @@
+ #endif
+ #include "medialibrary/mlhomeactivitydata.hpp"
+ #include "medialibrary/mlhelper.hpp"
++#include "medialibrary/mlvideohistory.hpp"
+ #include <vlc/vlc.h>
++#include <vlc_playlist.h>
++#include <vlc_player.h>
+ #include <QDir>
+ #include <QFile>
+ #include <QFileInfo>
+@@ -17,8 +20,11 @@
+ #include <QTest>
+ #include <limits>
+ #include <functional>
++#include <atomic>
++#include <algorithm>
+ 
+ extern "C" vlc_medialibrary_t *vlc_test_stream_library(libvlc_instance_t *);
++extern "C" vlc_playlist_t *vlc_test_stream_playlist(libvlc_instance_t *);
+ 
+ class TestHomeActivity : public QObject
+ {
+@@ -31,7 +37,8 @@ class TestHomeActivity : public QObject
+     libvlc_instance_t *instance()
+     {
+         const char *args[] = {"--ignore-config", "--media-library", "--no-auto-preparse",
+-            "--no-video", "--aout=dummy", "--verbose=2", "--file-logging", "--logfile=home-activity-native.log"};
++            "--no-ml-network-discovery", "--no-metadata-network-access",
++            "--no-video", "--vout=dummy", "--aout=dummy", "--verbose=2", "--file-logging", "--logfile=home-activity-native.log"};
+         return libvlc_new(ARRAY_SIZE(args), args);
+     }
+     int64_t media(const char *file)
+@@ -232,56 +239,74 @@ private slots:
+             { QFile blocker(root.filePath("storage")); QVERIFY(blocker.open(QIODevice::WriteOnly));
+               QCOMPARE(blocker.write("blocked parent"), qint64(14)); }
+             QVERIFY(!store.record(MLItemId(8, VLC_ML_PARENT_PLAYLIST), 200));
+-            QCOMPARE(settings.status(), QSettings::AccessError);
+             QCOMPARE(store.visits().size(), 1);
+             QCOMPARE(store.visits().front().id, accepted);
+             QCOMPARE(store.visits().front().count, quint64(1));
+             QCOMPARE(store.visits().front().lastVisit, qint64(100));
+-            QCOMPARE(settings.value("Juxtopposed/home-visits-v1"), previous);
+             QVERIFY(!store.clear()); // errored backend rejects clear without changing the document
+             QCOMPARE(store.visits().size(), 1);
+-            QCOMPARE(settings.value("Juxtopposed/home-visits-v1"), previous);
+             { QFile file(retained); QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), acceptedBytes); }
+             QVERIFY(QFile::remove(root.filePath("storage")));
+             QVERIFY(root.rename("accepted", "storage"));
+-            // QSettings keeps the first error status. Do not submit a new
+-            // candidate that could reach disk yet still be reported rejected.
+-            QVERIFY(!store.record(MLItemId(9, VLC_ML_PARENT_FOLDER), 300));
++            // Sync reflects the deliberately missing file while blocked;
++            // the store's accepted visits and retained file are authoritative.
++            settings.sync();
+             QCOMPARE(settings.value("Juxtopposed/home-visits-v1"), previous);
+-            // QSettings may flush its pending values on destruction now that
+-            // storage works; rollback must have removed every failed candidate.
++            // The production store uses a fresh checked session for retry;
++            // the borrowed QSettings object's status is not the save result.
++            QVERIFY(store.record(MLItemId(9, VLC_ML_PARENT_FOLDER), 300));
++            QCOMPARE(store.visits().size(), 2);
++            for (const auto &visit : store.visits())
++            {
++                QVERIFY(visit.id == accepted || visit.id == MLItemId(9, VLC_ML_PARENT_FOLDER));
++                QCOMPARE(visit.count, quint64(1));
++                QCOMPARE(visit.lastVisit, visit.id == accepted ? qint64(100) : qint64(300));
++            }
+         }
+         QSettings restarted(path, QSettings::IniFormat);
+         QCOMPARE(restarted.value("unrelated-preference").toString(), QString("kept"));
+         MLHomeVisitStore reopened(&restarted);
+-        QCOMPARE(reopened.visits().size(), 1);
++        QCOMPARE(reopened.visits().size(), 2);
+         QCOMPARE(reopened.visits().front().id, MLItemId(7, VLC_ML_PARENT_FOLDER));
+         QCOMPARE(reopened.visits().front().count, quint64(1));
+-        { QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), acceptedBytes); }
++        QCOMPARE(reopened.visits().back().id, MLItemId(9, VLC_ML_PARENT_FOLDER));
++        QCOMPARE(reopened.visits().back().lastVisit, qint64(300));
+     }
+     void blockedClearPreservesAcceptedVisitsAndDocument()
+     {
+         QTemporaryDir scratch; QVERIFY(scratch.isValid());
+         QDir root(scratch.path()); QVERIFY(root.mkdir("storage"));
+         const auto path = root.filePath("storage/visits.ini");
++        const auto retained = root.filePath("accepted/visits.ini");
++        QByteArray acceptedBytes;
+         {
+             QSettings settings(path, QSettings::IniFormat);
++            settings.setValue("unrelated-preference", "kept");
+             MLHomeVisitStore store(&settings);
+             QVERIFY(store.record(MLItemId(7, VLC_ML_PARENT_FOLDER), 100));
+             const auto previous = settings.value("Juxtopposed/home-visits-v1");
++            { QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly)); acceptedBytes = file.readAll(); }
++            QVERIFY(!acceptedBytes.isEmpty());
+             QVERIFY(root.rename("storage", "accepted"));
+             { QFile blocker(root.filePath("storage")); QVERIFY(blocker.open(QIODevice::WriteOnly)); }
+             QVERIFY(!store.clear()); // this sync itself is the first real failure
+-            QCOMPARE(settings.status(), QSettings::AccessError);
+             QCOMPARE(store.visits().size(), 1);
+-            QCOMPARE(settings.value("Juxtopposed/home-visits-v1"), previous);
++            QCOMPARE(store.visits().front().id, MLItemId(7, VLC_ML_PARENT_FOLDER));
++            QCOMPARE(store.visits().front().count, quint64(1));
++            QCOMPARE(store.visits().front().lastVisit, qint64(100));
++            { QFile file(retained); QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), acceptedBytes); }
+             QVERIFY(QFile::remove(root.filePath("storage")));
+             QVERIFY(root.rename("accepted", "storage"));
++            settings.sync();
++            QCOMPARE(settings.value("Juxtopposed/home-visits-v1"), previous);
++            QVERIFY(store.clear());
++            QVERIFY(store.visits().isEmpty());
++            QVERIFY(!settings.contains("Juxtopposed/home-visits-v1"));
+         }
+         QSettings restarted(path, QSettings::IniFormat);
+         MLHomeVisitStore reopened(&restarted);
+-        QCOMPARE(reopened.visits().size(), 1);
+-        QCOMPARE(reopened.visits().front().id, MLItemId(7, VLC_ML_PARENT_FOLDER));
++        QVERIFY(reopened.visits().isEmpty());
++        QCOMPARE(restarted.value("unrelated-preference").toString(), QString("kept"));
+     }
+     void addedFolderRequestStateAndReset()
+     {
+@@ -412,6 +437,406 @@ private slots:
+         QSettings clearedSettings(settingsFile, QSettings::IniFormat);
+         QVERIFY(MLHomeVisitStore(&clearedSettings).visits().isEmpty());
+     }
++    void nativeVideoHistorySections()
++    {
++        const auto folder = QUrl::fromLocalFile(m_fixtures).toEncoded();
++        QCOMPARE(vlc_ml_add_folder(m_library, folder.constData()), VLC_SUCCESS);
++        QTRY_VERIFY_WITH_TIMEOUT(media("home-video.mp4") > 0, 45000);
++        const auto id = media("home-video.mp4");
++        ml_unique_ptr<vlc_ml_media_t> video(vlc_ml_get_media(m_library, id));
++        QTRY_VERIFY_WITH_TIMEOUT((video.reset(vlc_ml_get_media(m_library, id)), video && video->i_duration > 0), 45000);
++        QCOMPARE(vlc_ml_clear_history(m_library, VLC_ML_HISTORY_TYPE_GLOBAL), VLC_SUCCESS);
++        std::atomic<unsigned> changes{0};
++        auto *cb = vlc_ml_event_register_callback(m_library,
++            [](void *opaque, const vlc_ml_event_t *event) {
++                if (event->i_type == VLC_ML_EVENT_HISTORY_CHANGED)
++                    ++*static_cast<std::atomic<unsigned> *>(opaque);
++            }, &changes);
++        QVERIFY(cb);
++        std::unique_ptr<vlc_ml_event_callback_t, std::function<void(vlc_ml_event_callback_t *)>> listener(
++            cb, [this](auto *value) { vlc_ml_event_unregister_callback(m_library, value); });
++        QCOMPARE(vlc_ml_media_update_progress(m_library, id, .5), VLC_SUCCESS);
++        video.reset(vlc_ml_get_media(m_library, id));
++        QVERIFY(mlVideoHistoryMatches(*video, false));
++        QVERIFY(!mlVideoHistoryMatches(*video, true));
++
++        // Real primary-player EOF must replace the resume position with native
++        // completion state; direct database writes cannot qualify this path.
++        auto *playlist = vlc_test_stream_playlist(m_instance);
++        QVERIFY(playlist);
++        std::unique_ptr<vlc_playlist_t, decltype(&vlc_playlist_Delete)> owned(playlist, &vlc_playlist_Delete);
++        auto *player = vlc_playlist_GetPlayer(playlist);
++        auto *input = vlc_ml_get_input_item(m_library, id);
++        QVERIFY(input);
++        const auto start = QString(":start-time=%1").arg(std::max(0., video->i_duration / 1000. - 1.)).toUtf8();
++        input_item_AddOption(input, start.constData(), VLC_INPUT_OPTION_TRUSTED);
++        input_item_AddOption(input, ":restore-playback-pos=0", VLC_INPUT_OPTION_TRUSTED);
++        input_item_AddOption(input, ":video=1", VLC_INPUT_OPTION_TRUSTED);
++        input_item_AddOption(input, ":vout=dummy", VLC_INPUT_OPTION_TRUSTED);
++        vlc_player_Lock(player);
++        const auto selected = vlc_player_SetCurrentMedia(player, input);
++        const auto started = selected == VLC_SUCCESS ? vlc_player_Start(player) : selected;
++        vlc_player_Unlock(player);
++        input_item_Release(input);
++        QCOMPARE(started, VLC_SUCCESS);
++        auto completed = [&] {
++            ml_unique_ptr<vlc_ml_media_t> item(vlc_ml_get_media(m_library, id));
++            return item && mlVideoHistoryMatches(*item, true) && !mlVideoHistoryMatches(*item, false);
++        };
++        QTRY_VERIFY_WITH_TIMEOUT(completed(), 15000);
++        owned.reset();
++        QTRY_VERIFY_WITH_TIMEOUT(changes.load() >= 2, 5000);
++        for (const auto mode : {"manual", "stop-time", "run-time"})
++        {
++            qInfo("Video history stop case: %s", mode);
++            QCOMPARE(vlc_ml_media_set_played(m_library, id, false), VLC_SUCCESS);
++            playlist = vlc_test_stream_playlist(m_instance); QVERIFY(playlist);
++            owned.reset(playlist);
++            player = vlc_playlist_GetPlayer(playlist);
++            input = vlc_ml_get_input_item(m_library, id); QVERIFY(input);
++            input_item_AddOption(input, ":restore-playback-pos=0", VLC_INPUT_OPTION_TRUSTED);
++            input_item_AddOption(input, ":video=1", VLC_INPUT_OPTION_TRUSTED);
++            if (strcmp(mode, "manual") == 0) {
++                input_item_AddOption(input, ":start-paused=1", VLC_INPUT_OPTION_TRUSTED);
++            } else {
++                const QByteArray option = QByteArray(":") + mode + "=0.8";
++                input_item_AddOption(input, option.constData(), VLC_INPUT_OPTION_TRUSTED);
++            }
++            vlc_player_Lock(player);
++            const auto selected = vlc_player_SetCurrentMedia(player, input);
++            const auto started = selected == VLC_SUCCESS ? vlc_player_Start(player) : selected;
++            vlc_player_Unlock(player);
++            input_item_Release(input);
++            QCOMPARE(started, VLC_SUCCESS);
++            auto paused = [&] {
++                vlc_player_Lock(player);
++                const bool result = vlc_player_GetState(player) == VLC_PLAYER_STATE_PAUSED;
++                vlc_player_Unlock(player); return result;
++            };
++            if (strcmp(mode, "manual") == 0) {
++                QTRY_VERIFY_WITH_TIMEOUT(paused(), 5000);
++                vlc_player_Lock(player); vlc_player_SetPosition(player, .4); vlc_player_Unlock(player);
++                auto positioned = [&] {
++                    vlc_player_Lock(player);
++                    const auto position = vlc_player_GetPosition(player);
++                    vlc_player_Unlock(player); return position > .3 && position < .6;
++                };
++                QTRY_VERIFY_WITH_TIMEOUT(positioned(), 5000);
++                vlc_player_Lock(player); vlc_player_Stop(player); vlc_player_Unlock(player);
++            }
++            auto unfinished = [&] {
++                ml_unique_ptr<vlc_ml_media_t> item(vlc_ml_get_media(m_library, id));
++                return item && item->i_playcount == 0 && mlVideoHistoryMatches(*item, false);
++            };
++            QTRY_VERIFY2_WITH_TIMEOUT(unfinished(), mode, 10000);
++            QVERIFY(!completed());
++            owned.reset();
++        }
++        // Restore a completed watch before qualifying an unfinished replay.
++        QCOMPARE(vlc_ml_media_update_progress(m_library, id, 1.), VLC_SUCCESS);
++        // A stopped replay returns to Continue even after a previous completion.
++        QCOMPARE(vlc_ml_media_update_progress(m_library, id, .4), VLC_SUCCESS);
++        video.reset(vlc_ml_get_media(m_library, id));
++        QVERIFY(video->i_playcount > 0 && mlVideoHistoryMatches(*video, false));
++        QVERIFY(!mlVideoHistoryMatches(*video, true));
++        QCOMPARE(vlc_ml_media_set_played(m_library, id, false), VLC_SUCCESS);
++        video.reset(vlc_ml_get_media(m_library, id));
++        QVERIFY(!mlVideoHistoryMatches(*video, true) && !mlVideoHistoryMatches(*video, false));
++
++        // Cross the native page boundary with interleaved states. A view limit
++        // or search must not be applied before completion filtering.
++        QCOMPARE(vlc_ml_clear_history(m_library, VLC_ML_HISTORY_TYPE_GLOBAL), VLC_SUCCESS);
++        std::vector<int64_t> unfinished, watched;
++        for (int i = 0; i < 300; ++i)
++        {
++            const auto url = QUrl::fromLocalFile(QDir(m_fixtures).filePath(
++                QString("owned-history-%1.mp4").arg(i, 3, 10, QLatin1Char('0')))).toEncoded();
++            ml_unique_ptr<vlc_ml_media_t> entry(vlc_ml_new_external_media(m_library, url.constData()));
++            QVERIFY(entry);
++            QCOMPARE(vlc_ml_media_set_type(m_library, entry->i_id, VLC_ML_MEDIA_TYPE_VIDEO), VLC_SUCCESS);
++            if (i % 3 == 0) {
++                QCOMPARE(vlc_ml_media_update_progress(m_library, entry->i_id, .4), VLC_SUCCESS);
++                unfinished.push_back(entry->i_id);
++            } else if (i % 3 == 1) {
++                QCOMPARE(vlc_ml_media_set_played(m_library, entry->i_id, true), VLC_SUCCESS);
++                watched.push_back(entry->i_id);
++            } else
++                QCOMPARE(vlc_ml_media_update_progress(m_library, entry->i_id, 0.), VLC_SUCCESS);
++        }
++        auto query = vlc_ml_query_params_create(); query.i_sort = VLC_ML_SORTING_ALPHA;
++        auto rows = [&](bool done, size_t offset, size_t limit) {
++            std::vector<int64_t> result;
++            visitMLVideoHistory(m_library, &query, done, [&](const auto &item, size_t index) {
++                if (index >= offset) result.push_back(item.i_id);
++                return limit == 0 || result.size() < limit;
++            });
++            return result;
++        };
++        QCOMPARE(vlc_ml_count_video_history(m_library, &query), size_t(300));
++        QCOMPARE(rows(false, 0, 0), unfinished);
++        QCOMPARE(rows(true, 0, 0), watched);
++        query.i_nbResults = 4; query.i_offset = 90;
++        QCOMPARE(rows(false, 90, 4), (std::vector<int64_t>(unfinished.begin()+90, unfinished.begin()+94)));
++        QCOMPARE(visitMLVideoHistory(m_library, &query, false, [](const auto &, size_t) { return true; }), size_t(100));
++        query.b_desc = true;
++        std::reverse(watched.begin(), watched.end());
++        QCOMPARE(rows(true, 0, 4), (std::vector<int64_t>(watched.begin(), watched.begin()+4)));
++        query.psz_pattern = "owned-history-298";
++        QCOMPARE(rows(true, 0, 0), (std::vector<int64_t>{watched.front()}));
++        QVERIFY(rows(false, 0, 0).empty());
++        QCOMPARE(vlc_ml_clear_history(m_library, VLC_ML_HISTORY_TYPE_GLOBAL), VLC_SUCCESS);
++        query.psz_pattern = nullptr;
++        QVERIFY(rows(false, 0, 0).empty() && rows(true, 0, 0).empty());
++    }
++    void nativeVideoHistoryCompletionBoundaries()
++    {
++        const auto folder = QUrl::fromLocalFile(m_fixtures).toEncoded();
++        QCOMPARE(vlc_ml_add_folder(m_library, folder.constData()), VLC_SUCCESS);
++        QTRY_VERIFY_WITH_TIMEOUT(media("home-video.mp4") > 0, 45000);
++        const auto id = media("home-video.mp4");
++        ml_unique_ptr<vlc_ml_media_t> video(vlc_ml_get_media(m_library, id));
++        QTRY_VERIFY_WITH_TIMEOUT((video.reset(vlc_ml_get_media(m_library, id)), video && video->i_duration > 1000), 45000);
++        const double duration = video->i_duration / 1000.;
++
++        struct Row {
++            const char *name;
++            double start, stop;
++            bool pauseAtEnd, seekBeforeStop, waitForSeek, expectCompleted;
++        };
++        const Row rows[] = {
++            {"normal-eof", 0., 0., false, false, false, true},
++            {"ignored-stop-before-start", .5, .25, false, false, false, true},
++            {"ignored-stop-equal-start", .5, .5, false, false, false, true},
++            {"stop-after-source-end", 0., duration + 1., false, false, false, true},
++            {"pause-at-end-then-stop", 0., 0., true, false, false, true},
++            {"pause-at-end-settled-seek-then-stop", 0., 0., true, true, true, false},
++            {"pause-at-end-queued-seek-immediate-stop", 0., 0., true, true, false, false},
++        };
++        bool allPassed = true;
++        for (const auto &row : rows)
++        {
++            qInfo("Video history completion boundary: %s", row.name);
++            QCOMPARE(vlc_ml_media_set_played(m_library, id, false), VLC_SUCCESS);
++            video.reset(vlc_ml_get_media(m_library, id));
++            QVERIFY(video);
++            QCOMPARE(video->i_playcount, uint32_t(0));
++            QVERIFY(video->f_progress <= 0.);
++            QVERIFY(!mlVideoHistoryMatches(*video, true));
++            QVERIFY(!mlVideoHistoryMatches(*video, false));
++
++            struct PositionTrace {
++                std::atomic<double> position{-1.};
++                std::atomic_bool pauseOnTarget{false}, reachedTarget{false};
++            } trace;
++            bool observed = true;
++            auto *playlist = vlc_test_stream_playlist(m_instance);
++            QVERIFY(playlist);
++            std::unique_ptr<vlc_playlist_t, decltype(&vlc_playlist_Delete)> owned(playlist, &vlc_playlist_Delete);
++            auto *player = vlc_playlist_GetPlayer(playlist);
++            static const vlc_player_cbs callbacks = [] {
++                vlc_player_cbs c{};
++                c.on_position_changed = [](vlc_player_t *player, vlc_tick_t, double position, void *data) {
++                    auto *trace = static_cast<PositionTrace *>(data);
++                    trace->position = position;
++                    if (trace->pauseOnTarget && position > .3 && position < .6)
++                    {
++                        trace->pauseOnTarget = false;
++                        trace->reachedTarget = true;
++                        vlc_player_Pause(player);
++                    }
++                };
++                return c;
++            }();
++            vlc_player_Lock(player);
++            auto *listener = vlc_player_AddListener(player, &callbacks, &trace);
++            vlc_player_Unlock(player);
++            QVERIFY(listener);
++            auto removeListener = [player](vlc_player_listener_id *id) {
++                vlc_player_Lock(player);
++                vlc_player_RemoveListener(player, id);
++                vlc_player_Unlock(player);
++            };
++            std::unique_ptr<vlc_player_listener_id, decltype(removeListener)> listenerOwner(listener, removeListener);
++            auto *input = vlc_ml_get_input_item(m_library, id);
++            QVERIFY(input);
++            const QByteArray start = QString(":start-time=%1").arg(row.start).toUtf8();
++            const QByteArray stop = QString(":stop-time=%1").arg(row.stop).toUtf8();
++            for (const auto *option : {start.constData(), stop.constData(), ":run-time=0",
++                                      ":restore-playback-pos=0", ":start-paused=0", ":video=1", ":vout=dummy"})
++                input_item_AddOption(input, option, VLC_INPUT_OPTION_TRUSTED);
++            vlc_player_Lock(player);
++            vlc_player_SetStartPaused(player, false);
++            vlc_player_SetPauseOnCork(player, false);
++            vlc_player_SetPlayAndPause(player, row.pauseAtEnd);
++            const auto selected = vlc_player_SetCurrentMedia(player, input);
++            const auto started = selected == VLC_SUCCESS ? vlc_player_Start(player) : selected;
++            vlc_player_Unlock(player);
++            input_item_Release(input);
++            QCOMPARE(started, VLC_SUCCESS);
++            auto state = [&] {
++                vlc_player_Lock(player);
++                const auto value = vlc_player_GetState(player);
++                vlc_player_Unlock(player);
++                return value;
++            };
++            QTRY_VERIFY2_WITH_TIMEOUT(state() == VLC_PLAYER_STATE_PLAYING
++                                      || state() == VLC_PLAYER_STATE_PAUSED, row.name, 5000);
++            if (row.pauseAtEnd)
++            {
++                // Start-paused and pause-on-cork are disabled. Before this
++                // first pause, no test pause request is issued: it is real EOF.
++                QTRY_COMPARE_WITH_TIMEOUT(state(), VLC_PLAYER_STATE_PAUSED, 10000);
++                vlc_player_Lock(player);
++                const auto beforeStop = vlc_player_GetState(player);
++                const auto positionAtPause = vlc_player_GetPosition(player);
++                vlc_player_Unlock(player);
++                QCOMPARE(beforeStop, VLC_PLAYER_STATE_PAUSED);
++                qInfo("Paused at natural EOF before user Stop: progress %.17g", positionAtPause);
++                if (row.seekBeforeStop)
++                {
++                    vlc_player_Lock(player);
++                    trace.position = -1.;
++                    trace.pauseOnTarget = row.waitForSeek;
++                    vlc_player_SetPosition(player, .4);
++                    if (row.waitForSeek)
++                        vlc_player_Resume(player);
++                    else
++                        vlc_player_Stop(player); // same lock: no input event can intervene
++                    vlc_player_Unlock(player);
++                    if (row.waitForSeek)
++                    {
++                        // A paused output can retain its old clock after a
++                        // seek. Resume until a real input position callback
++                        // reaches the target, where the listener pauses it.
++                        // A pending timer target alone cannot satisfy this.
++                        const bool reached = QTest::qWaitFor([&] { return trace.reachedTarget.load(); }, 5000);
++                        const bool paused = reached && QTest::qWaitFor([&] { return state() == VLC_PLAYER_STATE_PAUSED; }, 5000);
++                        observed = reached && paused;
++                        qInfo("Actual position reported after EOF seek: %.17g, target observed %s, paused %s",
++                              trace.position.load(), reached ? "yes" : "no", paused ? "yes" : "no");
++                        vlc_player_Lock(player);
++                        trace.pauseOnTarget = false;
++                        vlc_player_Stop(player);
++                        vlc_player_Unlock(player);
++                    }
++                }
++                else
++                {
++                    vlc_player_Lock(player);
++                    vlc_player_Stop(player);
++                    vlc_player_Unlock(player);
++                }
++            }
++            QTRY_COMPARE_WITH_TIMEOUT(state(), VLC_PLAYER_STATE_STOPPED, 10000);
++            listenerOwner.reset();
++            owned.reset(); // joins the real player and its history write
++            video.reset(vlc_ml_get_media(m_library, id));
++            QVERIFY(video);
++            // Completion clears the resume position; the native backend uses
++            // an unset sentinel (-1), rather than promising an exact zero.
++            const bool completed = video->i_playcount == 1 && video->f_progress <= 0.
++                && mlVideoHistoryMatches(*video, true) && !mlVideoHistoryMatches(*video, false);
++            const bool unfinished = video->i_playcount == 0 && video->f_progress > 0. && video->f_progress < 1.
++                && mlVideoHistoryMatches(*video, false) && !mlVideoHistoryMatches(*video, true);
++            const bool passed = observed && (row.expectCompleted ? completed : unfinished);
++            qInfo("Completion boundary %s: progress %.17g, play count %u, expected %s, passed %s",
++                  row.name, video->f_progress, unsigned(video->i_playcount),
++                  row.expectCompleted ? "completed" : "unfinished", passed ? "yes" : "no");
++            allPassed = allPassed && passed;
++        }
++        // Collect every row's result before failing, without changing the
++        // native completion predicate or accepting an approximate position.
++        QVERIFY2(allPassed, "Every full-source EOF must persist one completed watch, and a subsequent seek must retain unfinished state; inspect the named row results");
++        // The fixture has no title/chapter boundaries. MRL-range playback needs
++        // a separate generated chapter/title fixture, not a fabricated pass.
++    }
++    void nativeVideoHistoryRejectedRecordingSeek()
++    {
++        const auto folder = QUrl::fromLocalFile(m_fixtures).toEncoded();
++        QCOMPARE(vlc_ml_add_folder(m_library, folder.constData()), VLC_SUCCESS);
++        QTRY_VERIFY_WITH_TIMEOUT(media("home-video.mp4") > 0, 45000);
++        const auto id = media("home-video.mp4");
++        ml_unique_ptr<vlc_ml_media_t> video(vlc_ml_get_media(m_library, id));
++        QTRY_VERIFY_WITH_TIMEOUT((video.reset(vlc_ml_get_media(m_library, id)), video && video->i_duration > 1000), 45000);
++        QCOMPARE(vlc_ml_media_set_played(m_library, id, false), VLC_SUCCESS);
++        QTemporaryDir recordingDirectory;
++        QVERIFY(recordingDirectory.isValid());
++        const auto recordingPath = recordingDirectory.path().toUtf8();
++
++        auto *playlist = vlc_test_stream_playlist(m_instance);
++        QVERIFY(playlist);
++        std::unique_ptr<vlc_playlist_t, decltype(&vlc_playlist_Delete)> owned(playlist, &vlc_playlist_Delete);
++        auto *player = vlc_playlist_GetPlayer(playlist);
++        auto *input = vlc_ml_get_input_item(m_library, id);
++        QVERIFY(input);
++        for (const auto *option : {":restore-playback-pos=0", ":start-paused=1",
++                                  ":start-time=0", ":stop-time=0", ":run-time=0",
++                                  ":video=1", ":vout=dummy"})
++            input_item_AddOption(input, option, VLC_INPUT_OPTION_TRUSTED);
++        vlc_player_Lock(player);
++        vlc_player_SetStartPaused(player, true);
++        vlc_player_SetPauseOnCork(player, false);
++        vlc_player_SetPlayAndPause(player, false);
++        const auto selected = vlc_player_SetCurrentMedia(player, input);
++        const auto started = selected == VLC_SUCCESS ? vlc_player_Start(player) : selected;
++        vlc_player_Unlock(player);
++        input_item_Release(input);
++        QCOMPARE(started, VLC_SUCCESS);
++        auto state = [&] {
++            vlc_player_Lock(player);
++            const auto value = vlc_player_GetState(player);
++            vlc_player_Unlock(player);
++            return value;
++        };
++        QTRY_COMPARE_WITH_TIMEOUT(state(), VLC_PLAYER_STATE_PAUSED, 5000);
++        vlc_player_Lock(player);
++        vlc_player_SetPosition(player, .4);
++        vlc_player_Unlock(player);
++        auto actuallyPositioned = [&] {
++            vlc_player_Lock(player);
++            // GetPosition excludes the pending seek target. Establish the
++            // real held position before enabling the seek-rejecting recorder.
++            const auto position = vlc_player_GetPosition(player);
++            const bool paused = vlc_player_GetState(player) == VLC_PLAYER_STATE_PAUSED;
++            vlc_player_Unlock(player);
++            return paused && position > .3 && position < .6;
++        };
++        QTRY_VERIFY_WITH_TIMEOUT(actuallyPositioned(), 5000);
++        vlc_player_Lock(player);
++        vlc_player_SetRecordingEnabled(player, true, recordingPath.constData());
++        vlc_player_Unlock(player);
++        auto actuallyRecording = [&] {
++            vlc_player_Lock(player);
++            const bool recording = vlc_player_IsRecording(player);
++            const bool paused = vlc_player_GetState(player) == VLC_PLAYER_STATE_PAUSED;
++            vlc_player_Unlock(player);
++            return recording && paused;
++        };
++        QTRY_VERIFY_WITH_TIMEOUT(actuallyRecording(), 5000);
++        vlc_player_Lock(player);
++        const bool recordingBeforeStop = vlc_player_IsRecording(player);
++        const double actualBeforeStop = vlc_player_GetPosition(player);
++        vlc_player_SetPosition(player, .95);
++        const double pendingBeforeStop = vlc_player_GetPositionWithSeek(player);
++        vlc_player_Stop(player); // same lock: the rejected target must not become history
++        vlc_player_Unlock(player);
++        QVERIFY(recordingBeforeStop);
++        QVERIFY(actualBeforeStop > .3 && actualBeforeStop < .6);
++        QCOMPARE(pendingBeforeStop, .95);
++        QTRY_COMPARE_WITH_TIMEOUT(state(), VLC_PLAYER_STATE_STOPPED, 10000);
++        owned.reset();
++        video.reset(vlc_ml_get_media(m_library, id));
++        QVERIFY(video);
++        qInfo("Recording-rejected seek: actual %.17g, pending %.17g, saved %.17g, play count %u",
++              actualBeforeStop, pendingBeforeStop, video->f_progress, unsigned(video->i_playcount));
++        QCOMPARE(video->i_playcount, uint32_t(0));
++        QVERIFY(video->f_progress > .3 && video->f_progress < .6);
++        QVERIFY(qAbs(video->f_progress - actualBeforeStop) < .05);
++        QVERIFY(mlVideoHistoryMatches(*video, false));
++        QVERIFY(!mlVideoHistoryMatches(*video, true));
++        // Real recording state qualifies the rejected-seek history route.
++        // Starting/stopping while paused does not qualify recording content.
++    }
+     void cleanupTestCase()
+     {
+         if (m_instance)
+diff --git a/modules/gui/qt/tests/test_juxtopposed_home.py b/modules/gui/qt/tests/test_juxtopposed_home.py
+index 9c5fb0171e..d54c2fa5bd 100644
+--- a/modules/gui/qt/tests/test_juxtopposed_home.py
++++ b/modules/gui/qt/tests/test_juxtopposed_home.py
+@@ -104,7 +104,7 @@ assert art.save(str(art_path))
+ art_uri = QUrl.fromLocalFile(str(art_path.resolve())).toString()
+ video_model = SuppliedMediaModel([
+     {'id': 'video-12', 'title': 'RÃ©sumÃ©', 'fileName': 'RÃ©sumÃ©.mp4', 'small_cover': art_uri, 'progress': .4},
+-    {'id': 'video-8', 'title': 'Second', 'fileName': 'Second.mp4', 'small_cover': art_uri, 'progress': 0},
++    {'id': 'video-8', 'title': 'Second', 'fileName': 'Second.mp4', 'small_cover': art_uri, 'progress': .2},
+     {'id': 'video-31', 'title': 'Third', 'fileName': 'Third.mp4', 'small_cover': art_uri, 'progress': .1},
+     {'id': 'video-17', 'title': 'Fourth', 'fileName': 'Fourth.mp4', 'small_cover': art_uri, 'progress': .2},
+ ])
+@@ -113,11 +113,15 @@ audio_model = SuppliedMediaModel([
+     {'id': 'audio-29', 'title': 'Black bird', 'main_artist': 'Artist Î²', 'small_cover': art_uri},
+     {'id': 'audio-72', 'title': 'Untangle', 'main_artist': 'Artist Î±', 'small_cover': art_uri},
+ ])
++watched_model = SuppliedMediaModel([
++    {'id': 'watched-1', 'title': 'Finished film', 'fileName': 'Finished.mp4', 'small_cover': art_uri, 'progress': -1},
++])
+ folders = [{'id': 'folder-21', 'title': 'Shows'}, {'id': 'folder-22', 'title': 'Music'}, {'id': 'folder-23', 'title': 'Mixed media'}]
+ playlists = [{'id': 'playlist-56', 'title': 'Fav Episodes'}, {'id': 'playlist-83', 'title': 'Coolest Songs'}]
+ artists = [{'id': 'artist-15', 'title': 'Artist Î±', 'artwork': art_uri}]
+ properties = {
+     'videoEntries': video_model, 'audioEntries': audio_model,
++    'watchAgainEntries': watched_model,
+     'folderEntries': folders, 'playlistEntries': playlists, 'artistEntries': artists,
+     'arrowIcon': icon('ic_fluent_chevron_right_24'), 'videoIcon': icon('topbar_video'),
+     'audioIcon': icon('topbar_music'), 'folderIcon': icon('topbar_discover'),
+@@ -164,12 +168,20 @@ artist = QSignalSpy(root.artistRequested)
+ see_all = QSignalSpy(root.seeAllRequested)
+ expr(root, 'setCurrentItemFocus(Qt.TabFocusReason)')
+ assert find(root, 'homevideo0').hasActiveFocus()
++assert view.grabWindow().save(str(args.output_dir / 'home-sections-component.png'))
+ click(view, find(root, 'homevideo0'))
+ assert media.count() == 1 and entry_id(media.at(0)[0]) == 'video-12' and media.at(0)[1] is True
+ click(view, find(root, 'homevideo1'))
+-assert media.count() == 2 and entry_id(media.at(1)[0]) == 'video-8' and media.at(1)[1] is False
++assert media.count() == 2 and entry_id(media.at(1)[0]) == 'video-8' and media.at(1)[1] is True
++watched_card = find(root, 'homeWatchedVideo0')
++assert expr(watched_card, 'Accessible.description') == 'Watch again from the beginning'
++watched_card.forceActiveFocus(Qt.TabFocusReason)
++QTest.keyClick(view, Qt.Key_Return)
++assert media.count() == 3 and entry_id(media.at(2)[0]) == 'watched-1' and media.at(2)[1] is False
++find(root, 'homeaudio0').forceActiveFocus(Qt.TabFocusReason)
++QTest.qWait(20)
+ click(view, find(root, 'homeaudio0'))
+-assert media.count() == 3 and entry_id(media.at(2)[0]) == 'audio-44' and media.at(2)[1] is False
++assert media.count() == 4 and entry_id(media.at(3)[0]) == 'audio-44' and media.at(3)[1] is False
+ click(view, find(root, 'homeSectionlistenAgain'))
+ assert see_all.count() == 1 and see_all.at(0)[0] == 'listenAgain'
+ assert view.grabWindow().save(str(args.output_dir / 'home-grid-component.png'))
+@@ -209,7 +221,8 @@ for width, height, scale, grid in [(640, 420, 1, True), (640, 420, 1, False), (9
+     layouts.append({'width': width, 'height': height, 'scale': scale, 'grid': grid, 'focusedCenterY': p.y()})
+ 
+ empty_view, empty = load('JuxtopposedHomeDashboard.qml', {}, 700, 500)
+-assert 'Videos you watch' in find(empty, 'homeEmptycontinueWatching').property('text')
++assert 'Unfinished videos' in find(empty, 'homeEmptycontinueWatching').property('text')
++assert 'Videos you finish' in find(empty, 'homeEmptywatchAgain').property('text')
+ empty.setProperty('historyLoading', True)
+ assert 'Loading' in find(empty, 'homeEmptycontinueWatching').property('text')
+ empty.setProperty('historyLoading', False)
+diff --git a/modules/gui/qt/tests/test_player_subtitle_delay.cpp b/modules/gui/qt/tests/test_player_subtitle_delay.cpp
+index 84a24fb564..e20548404d 100644
+--- a/modules/gui/qt/tests/test_player_subtitle_delay.cpp
++++ b/modules/gui/qt/tests/test_player_subtitle_delay.cpp
+@@ -183,7 +183,9 @@ private slots:
+             QSKIP("Set VLC_SUBTITLE_FIXTURE to run the actual native controller diagnostic");
+         QVERIFY2(QFileInfo::exists(m_fixture), "Use the real generated subtitle-style.mp4");
+         const QDir fixtures(QFileInfo(m_fixture).absolutePath());
+-        QVERIFY(fixtures.exists("subtitle-style.srt"));
++        const QString primarySubtitle = qEnvironmentVariable("VLC_TEST_PRIMARY_SUBTITLE",
++                                                             "subtitle-style.srt");
++        QVERIFY(fixtures.exists(primarySubtitle));
+         QVERIFY(fixtures.exists("duration-cues.srt"));
+         QVERIFY(m_directory.isValid());
+         qputenv("VLC_TEST_TIMEOUT", "30");
+@@ -207,6 +209,11 @@ private slots:
+             QCOMPARE(var_SetString(playerObject, "text-renderer", "freetype"), VLC_SUCCESS);
+             var_Create(playerObject, "sub-autodetect-file", VLC_VAR_BOOL);
+             QCOMPARE(var_SetBool(playerObject, "sub-autodetect-file", false), VLC_SUCCESS);
++            if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1")
++            {
++                var_Create(playerObject, "demux-filter", VLC_VAR_STRING);
++                QCOMPARE(var_SetString(playerObject, "demux-filter", "noseek"), VLC_SUCCESS);
++            }
+         }
+         var_Create(m_environment->intf, "sub-delay", VLC_VAR_INTEGER);
+         var_SetInteger(m_environment->intf, "sub-delay", 0);
+@@ -219,6 +226,11 @@ private slots:
+             vlc_player_locker lock{m_player};
+             vlc_player_SetAssociatedSubsFPS(m_player, 50.f);
+         }
++        if (qEnvironmentVariable("VLC_TEST_PLAYBACK_RATE") == "0.25")
++        {
++            vlc_player_locker lock{m_player};
++            vlc_player_ChangeRate(m_player, 0.25f);
++        }
+         m_controller = std::make_unique<PlayerController>(m_environment->intf);
+         m_environment->intf->p_mainPlayerController = m_controller.get();
+         connect(m_controller.get(), &PlayerController::subtitleDelayChanged, this,
+@@ -244,11 +256,19 @@ private slots:
+         QCOMPARE(configured, VLC_SUCCESS);
+         QCOMPARE(started, VLC_SUCCESS);
+         QTRY_VERIFY_WITH_TIMEOUT(m_controller->hasVideoOutput(), 10000);
+-        for (const auto &name : {"subtitle-style.srt", "duration-cues.srt"})
++        const bool nonseekable = qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1";
++        if (nonseekable)
++        {
++            { vlc_player_locker lock{m_player}; vlc_player_UnselectTrackCategory(m_player, SPU_ES); }
++            QTRY_VERIFY(roles() == qMakePair(static_cast<vlc_es_id_t *>(nullptr),
++                                           static_cast<vlc_es_id_t *>(nullptr)));
++        }
++        for (const auto &name : {primarySubtitle, QStringLiteral("duration-cues.srt")})
+         {
+             const auto subtitle = QUrl::fromLocalFile(fixtures.filePath(name)).toEncoded();
+             vlc_player_locker lock{m_player};
+-            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), true, false, true), VLC_SUCCESS);
++            const bool selected = !nonseekable || name == primarySubtitle;
++            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), selected, false, true), VLC_SUCCESS);
+         }
+         // A media may already contain two embedded tracks. Wait for the actual
+         // associated sources instead of mistaking those initial rows for SRTs.
+@@ -266,13 +286,23 @@ private slots:
+             }
+             return false;
+         };
+-        QTRY_VERIFY_WITH_TIMEOUT(findAssociated("subtitle-style.srt", m_first), 10000);
++        QTRY_VERIFY_WITH_TIMEOUT(findAssociated(primarySubtitle, m_first), 10000);
+         QTRY_VERIFY_WITH_TIMEOUT(findAssociated("duration-cues.srt", m_second), 10000);
+         QVERIFY(m_first != m_second);
+-        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+-        QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
+-        QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
+-        QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
++        if (nonseekable)
++            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)), 5000);
++        else
++        {
++            QCOMPARE(select(m_first.get(), m_second.get()), 2u);
++            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
++        }
++        // Renderer-owned styles (e.g. ASS) need not expose the Freetype
++        // appearance/preset consumer to exercise native FPS and caption output.
++        if (qEnvironmentVariable("VLC_TEST_FPS_FORMAT_ONLY") != "1")
++        {
++            QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
++            QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
++        }
+         {
+             vlc_player_locker lock{m_player};
+             vlc_player_Pause(m_player);
+@@ -466,10 +496,26 @@ private slots:
+         QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+         QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+         QVERIFY(time() < VLC_TICK_FROM_SEC(14));
++        const auto recordingDirectory = qEnvironmentVariable("VLC_FPS_RECORDINGS");
++        if (!recordingDirectory.isEmpty())
++        {
++            QVERIFY(QDir(recordingDirectory).exists());
++            QVERIFY(QDir(recordingDirectory).entryList(QDir::Files).isEmpty());
++            { vlc_player_locker lock{m_player};
++              vlc_player_SetRecordingEnabled(m_player, true, qtu(recordingDirectory)); }
++            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
++                return vlc_player_IsRecording(m_player); })(), 5000);
++            qInfo("Recording before FPS edit: main clock=%lld", static_cast<long long>(time()));
++        }
+         const auto before = time();
+         m_controller->setSubtitleFPS(50.f); // first ever FPS edit for this input
+         QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+-        QTest::qWait(700);
++        float playbackRate;
++        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
++        QVERIFY(playbackRate > 0.f);
++        // The prompt-response mode keeps a wall-time bound even at slow rates.
++        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
++                         ? 700 : qRound(700.f / playbackRate));
+         const auto actual = snapshot("fresh-first-playing-fps50");
+         const auto after = time();
+         QVERIFY(!actual.isNull());
+@@ -483,6 +529,30 @@ private slots:
+               static_cast<long long>(before), static_cast<long long>(after));
+         QVERIFY2(matches(actualMask, middleMask) && !matches(actualMask, firstMask),
+                  "The first default->50 FPS edit must replace the old cue without a player seek");
++        if (!recordingDirectory.isEmpty())
++        {
++            { vlc_player_locker lock{m_player}; QVERIFY(vlc_player_IsRecording(m_player)); }
++            // The generated video has keyframes at 10-second intervals. Keep
++            // recording past the 20-second keyframe; stopping near 16 seconds
++            // can produce a file with no video packets. Decode it separately.
++            QTest::qWait(10000);
++            const auto stopTime = time();
++            QVERIFY(stopTime > VLC_TICK_FROM_SEC(22) && stopTime - after < VLC_TICK_FROM_SEC(12));
++            { vlc_player_locker lock{m_player};
++              QVERIFY(vlc_player_IsRecording(m_player));
++              QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PLAYING);
++              vlc_player_SetRecordingEnabled(m_player, false, nullptr); }
++            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
++                return !vlc_player_IsRecording(m_player); })(), 5000);
++            QTRY_VERIFY_WITH_TIMEOUT(time() > stopTime + VLC_TICK_FROM_MS(200), 5000);
++            QCOMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
++            const auto files = QDir(recordingDirectory).entryInfoList(QDir::Files);
++            QVERIFY2(!files.isEmpty(), "Recording must publish output for separate decode validation");
++            for (const auto &file : files)
++                QVERIFY(file.size() > 0);
++            qInfo("Recording stopped normally: main clock=%lld files=%lld",
++                  static_cast<long long>(stopTime), static_cast<long long>(files.size()));
++        }
+     }
+     // Run alone in a fresh process with both a selected external source and
+     // an embedded secondary source. Compare each rendered region independently.
+@@ -745,10 +815,30 @@ private slots:
+ 
+     // Both selected external sources share FPS but have independent delays.
+     // Run alone in a fresh process to exercise the first live change.
++    void firstPlayingFpsChangeRetimesBothTrackDelays_data()
++    {
++        QTest::addColumn<int>("primaryDelayMs");
++        QTest::addColumn<int>("secondaryDelayMs");
++        QTest::addColumn<int>("videoSeconds");
++        QTest::addColumn<int>("primaryReferenceSeconds");
++        QTest::addColumn<int>("secondaryReferenceSeconds");
++        QTest::addColumn<bool>("secondaryEnded");
++        QTest::newRow("opposed") << 10000 << -5000 << 23 << 26 << 56 << false;
++        QTest::newRow("opposed-secondary-ended") << 10000 << -5000 << 26 << 32 << 56 << true;
++        QTest::newRow("opposed-swapped") << -5000 << 10000 << 23 << 56 << 26 << false;
++        QTest::newRow("positive") << 10000 << 5000 << 23 << 26 << 36 << false;
++        QTest::newRow("negative") << -5000 << -10000 << 12 << 34 << 44 << false;
++    }
+     void firstPlayingFpsChangeRetimesBothTrackDelays()
+     {
+         if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+             QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
++        QFETCH(int, primaryDelayMs);
++        QFETCH(int, secondaryDelayMs);
++        QFETCH(int, videoSeconds);
++        QFETCH(int, primaryReferenceSeconds);
++        QFETCH(int, secondaryReferenceSeconds);
++        QFETCH(bool, secondaryEnded);
+         QVERIFY2(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty(), "Set snapshot output directory");
+         { vlc_player_locker lock{m_player};
+           QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+@@ -779,29 +869,31 @@ private slots:
+             return united > 100 && intersection * 1000 >= united * 995;
+         };
+         int attempt = 0;
+-        QImage at28, at58;
+-        seek(VLC_TICK_FROM_SEC(28));
++        // Reference times map (video time - selected delay) through FPS 50
++        // onto the original 25 FPS fixture. Stay clear of cue boundaries.
++        QImage at26, at56;
++        seek(VLC_TICK_FROM_SEC(primaryReferenceSeconds));
+         QTRY_VERIFY_WITH_TIMEOUT(([&] {
+-            at28 = captureNativeFrame(QString("track-delay-reference28-%1").arg(attempt++));
+-            return !at28.isNull() && frameMarker(at28) == 700u
+-                && mask(at28, 3, 4).count(char(1)) > 100;
++            at26 = captureNativeFrame(QString("track-delay-reference26-%1").arg(attempt++));
++            return !at26.isNull() && frameMarker(at26) == unsigned(primaryReferenceSeconds * 25)
++                && mask(at26, 3, 4).count(char(1)) > 100;
+         }()), 10000);
+-        seek(VLC_TICK_FROM_SEC(58));
++        seek(VLC_TICK_FROM_SEC(secondaryReferenceSeconds));
+         QTRY_VERIFY_WITH_TIMEOUT(([&] {
+-            at58 = captureNativeFrame(QString("track-delay-reference58-%1").arg(attempt++));
+-            return !at58.isNull() && frameMarker(at58) == 1450u
+-                && mask(at58, 1, 3).count(char(1)) > 100;
++            at56 = captureNativeFrame(QString("track-delay-reference56-%1").arg(attempt++));
++            return !at56.isNull() && frameMarker(at56) == unsigned(secondaryReferenceSeconds * 25)
++                && mask(at56, 1, 3).count(char(1)) > 100;
+         }()), 10000);
+-        const auto primaryExpected = mask(at28, 3, 4), secondaryExpected = mask(at58, 1, 3);
+-        QCOMPARE(setOwn(m_first.get(), VLC_TICK_FROM_SEC(10)), VLC_SUCCESS);
+-        QCOMPARE(setOwn(m_second.get(), -VLC_TICK_FROM_SEC(5)), VLC_SUCCESS);
+-        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_SEC(10));
+-        QCOMPARE(own(m_second.get()), -VLC_TICK_FROM_SEC(5));
++        const auto primaryExpected = mask(at26, 3, 4), secondaryExpected = mask(at56, 1, 3);
++        QCOMPARE(setOwn(m_first.get(), VLC_TICK_FROM_MS(primaryDelayMs)), VLC_SUCCESS);
++        QCOMPARE(setOwn(m_second.get(), VLC_TICK_FROM_MS(secondaryDelayMs)), VLC_SUCCESS);
++        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
++        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
+         QImage first;
+-        seek(VLC_TICK_FROM_SEC(24));
++        seek(VLC_TICK_FROM_SEC(videoSeconds));
+         QTRY_VERIFY_WITH_TIMEOUT(([&] {
+             first = captureNativeFrame(QString("track-delay-before-%1").arg(attempt++));
+-            return !first.isNull() && frameMarker(first) == 600u
++            return !first.isNull() && frameMarker(first) == unsigned(videoSeconds * 25)
+                 && mask(first, 1, 3).count(char(1)) > 100
+                 && mask(first, 3, 4).count(char(1)) > 100
+                 && !matches(mask(first, 1, 3), secondaryExpected)
+@@ -810,8 +902,8 @@ private slots:
+         const auto primaryBefore = mask(first, 3, 4), secondaryBefore = mask(first, 1, 3);
+         { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+         QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+-        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(24) + VLC_TICK_FROM_MS(100));
+-        QVERIFY(time() < VLC_TICK_FROM_SEC(26));
++        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(videoSeconds) + VLC_TICK_FROM_MS(100));
++        QVERIFY(time() < VLC_TICK_FROM_SEC(videoSeconds + 1));
+         const auto beforeTime = time();
+         const auto before = captureNativeFrame("track-delay-playing-before");
+         QVERIFY(!before.isNull());
+@@ -824,14 +916,145 @@ private slots:
+         const auto afterTime = time();
+         QVERIFY(!after.isNull());
+         QVERIFY(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3));
+-        QVERIFY(frameMarker(after) >= 600u && frameMarker(after) < 700u);
++        QVERIFY2(frameMarker(after) >= unsigned(videoSeconds * 25)
++              && frameMarker(after) < unsigned(videoSeconds * 25 + 37),
++                 "Capture must stay inside the expected caption interval");
+         QVERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+-        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_SEC(10));
+-        QCOMPARE(own(m_second.get()), -VLC_TICK_FROM_SEC(5));
+-        QVERIFY2(matches(mask(after, 1, 3), secondaryExpected), "External secondary cue must respect its -5s delay");
+-        QVERIFY2(matches(mask(after, 3, 4), primaryExpected), "External primary cue must respect its +10s delay");
++        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
++        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
++        QVERIFY2(secondaryEnded ? mask(after, 1, 3).count(char(1)) == 0
++                               : matches(mask(after, 1, 3), secondaryExpected),
++                 "External secondary cue must respect its selected delay and end time");
++        QVERIFY2(matches(mask(after, 3, 4), primaryExpected),
++                 "External primary cue must respect its selected delay");
+     }
+ 
++    // The filter affects the master and subtitle sources. Let playback advance
++    // naturally; seeking to construct references would invalidate this case.
++    void firstFpsChangePreservesNonseekableDelayedCaption()
++    {
++        if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") != "1")
++            QSKIP("Run alone with VLC_TEST_NONSEEK_SUBTITLE=1");
++        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
++        {
++            vlc_player_locker lock{m_player};
++            QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
++            QVERIFY(!vlc_player_CanSeek(m_player));
++        }
++        QVERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
++        m_controller->setSubtitleDelayMS(5000);
++        QTRY_COMPARE(m_controller->getSubtitleDelayMS(), 5000);
++        const auto time = [this] {
++            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
++        };
++        const auto mask = [](const QImage &image) {
++            QByteArray result;
++            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
++                for (int x = 0; x < image.width(); ++x)
++                {
++                    const auto c = image.pixelColor(x, y);
++                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
++                }
++            return result;
++        };
++        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
++        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
++        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(12), 20000);
++        QVERIFY(time() < VLC_TICK_FROM_SEC(13));
++        const auto before = captureNativeFrame("nonseek-before-fps");
++        QVERIFY(!before.isNull());
++        const auto expected = mask(before);
++        QVERIFY2(expected.count(char(1)) > 100, "First delayed caption must already be visible");
++        const auto beforeTime = time();
++        m_controller->setSubtitleFPS(50.f);
++        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
++        QTest::qWait(700);
++        const auto after = captureNativeFrame("nonseek-after-fps");
++        QVERIFY(!after.isNull());
++        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(14));
++        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 350u);
++        const auto actual = mask(after);
++        qsizetype intersection = 0, united = 0;
++        QCOMPARE(actual.size(), expected.size());
++        for (qsizetype i = 0; i < actual.size(); ++i)
++        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
++        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
++                 "A nonseekable source must retain the cue still active under its new FPS and delay");
++    }
++    void firstFpsChangePreservesOverlappingCues()
++    {
++        if (qEnvironmentVariable("VLC_TEST_OVERLAP_SUBTITLE") != "1")
++            QSKIP("Run alone with the overlapping ASS fixture");
++        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
++        QCOMPARE(select(m_first.get()), 1u);
++        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
++        const auto time = [this] {
++            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
++        };
++        const auto mask = [](const QImage &image) {
++            QByteArray result;
++            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
++                for (int x = 0; x < image.width(); ++x)
++                {
++                    const auto c = image.pixelColor(x, y);
++                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
++                }
++            return result;
++        };
++        // Obtain two overlapping cues by uninterrupted playback, so the
++        // reference does not assume the correctness of the seek/refill index.
++        { vlc_player_locker lock{m_player};
++          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
++          vlc_player_ChangeRate(m_player, 4.f);
++          vlc_player_Resume(m_player); }
++        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(24), 10000);
++        { vlc_player_locker lock{m_player}; vlc_player_Pause(m_player); }
++        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
++        QTest::qWait(700);
++        const auto reference = captureNativeFrame("overlap-uninterrupted-reference");
++        QVERIFY(!reference.isNull());
++        const auto expected = mask(reference);
++        { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(24)); }
++        QTest::qWait(700);
++        const auto sought = captureNativeFrame("overlap-paused-seek-reference");
++        QVERIFY(!sought.isNull());
++        QCOMPARE(frameMarker(sought), 600u);
++        const auto seekMask = mask(sought);
++        QCOMPARE(seekMask.size(), expected.size());
++        qsizetype seekIntersection = 0, seekUnion = 0;
++        for (qsizetype i = 0; i < seekMask.size(); ++i)
++        { seekIntersection += seekMask[i] && expected[i]; seekUnion += seekMask[i] || expected[i]; }
++        QVERIFY2(seekUnion > 100 && seekIntersection * 1000 >= seekUnion * 995,
++                 "A paused seek must retain both overlapping events after a renderer flush");
++        { vlc_player_locker lock{m_player};
++          vlc_player_ChangeRate(m_player, 1.f);
++          vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(12)); }
++        QTest::qWait(700);
++        const auto first = captureNativeFrame("overlap-first-only");
++        QVERIFY(!first.isNull());
++        QCOMPARE(frameMarker(first), 300u);
++        const auto single = mask(first);
++        QVERIFY(single.count(char(1)) > 100);
++        QVERIFY2(expected.count(char(1)) > single.count(char(1)) + 500,
++                 "The uninterrupted reference must contain both overlapping cues");
++        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
++        QTRY_VERIFY(time() >= VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
++        const auto beforeTime = time();
++        m_controller->setSubtitleFPS(50.f);
++        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
++        QTest::qWait(700);
++        const auto after = captureNativeFrame("overlap-after-first-fps50");
++        QVERIFY(!after.isNull());
++        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(15));
++        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 375u);
++        const auto actual = mask(after);
++        QCOMPARE(actual.size(), expected.size());
++        qsizetype intersection = 0, united = 0;
++        for (qsizetype i = 0; i < actual.size(); ++i)
++        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
++        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
++                 "A rate refill must retain the earlier cue overlapping the current one");
++    }
+     void firstFpsChangeRetimesDelayedPlayingCaption_data()
+     {
+         QTest::addColumn<int>("delayMs");
+@@ -869,6 +1092,14 @@ private slots:
+         const auto expected = captureNativeFrame("delayed-fps-reference");
+         QVERIFY(!expected.isNull());
+         QCOMPARE(frameMarker(expected), unsigned(referenceSeconds * 25));
++        unsigned referencePixels = 0;
++        for (int y = expected.height() * 3 / 4; y < expected.height(); ++y)
++            for (int x = 0; x < expected.width(); ++x)
++            {
++                const auto color = expected.pixelColor(x, y);
++                referencePixels += color.red() > 160 && color.green() > 160 && color.blue() > 160;
++            }
++        QVERIFY2(referencePixels > 100, "The reference must contain a rendered caption before testing FPS");
+         m_controller->setSubtitleDelayMS(delayMs);
+         QTRY_COMPARE(m_controller->getSubtitleDelayMS(), delayMs);
+         seek(VLC_TICK_FROM_SEC(videoSeconds));
+@@ -880,7 +1111,11 @@ private slots:
+         const auto before = time();
+         m_controller->setSubtitleFPS(50.f);
+         QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+-        QTest::qWait(700);
++        float playbackRate;
++        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
++        QVERIFY(playbackRate > 0.f);
++        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
++                         ? 700 : qRound(700.f / playbackRate));
+         const auto actual = captureNativeFrame("delayed-first-playing-fps50");
+         const auto after = time();
+         QVERIFY(!actual.isNull());
+diff --git a/src/input/es_out.c b/src/input/es_out.c
+index 2bf1a7d7b9..7a3921c232 100644
+--- a/src/input/es_out.c
++++ b/src/input/es_out.c
+@@ -4282,9 +4282,12 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
+     }
+     case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
+     case ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL:
++    case ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME:
+     {
+-        const input_source_t *requested = query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL
++        const input_source_t *requested = query != ES_OUT_PRIV_GET_SUBTITLE_PREROLL
+                                        ? va_arg(args, input_source_t *) : NULL;
++        const vlc_tick_t demux_time = query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME
++                                   ? va_arg(args, vlc_tick_t) : 0;
+         vlc_tick_t *delay = va_arg(args, vlc_tick_t *);
+         *delay = 0;
+         es_out_id_t *es;
+@@ -4297,6 +4300,13 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
+                                            ? es->delay : p_sys->i_spu_delay;
+             *delay = __MAX(*delay, selected_delay);
+         }
++        if (query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME)
++        {
++            const input_thread_private_t *priv = input_priv(p_sys->p_input);
++            const vlc_tick_t buffered = !priv->p_sout || !priv->b_out_pace_control
++                                      ? EsOutGetBuffering(p_sys) : 0;
++            *delay = __MAX(demux_time - buffered - *delay, 0);
++        }
+         return VLC_SUCCESS;
+     }
+     case ES_OUT_PRIV_SET_DELAY:
+diff --git a/src/input/es_out.h b/src/input/es_out.h
+index e03ac694d5..d291862709 100644
+--- a/src/input/es_out.h
++++ b/src/input/es_out.h
+@@ -125,7 +125,11 @@ enum es_out_query_private_e
+     ES_OUT_PRIV_GET_ES_STATE, /* arg1=vlc_es_id_t *, arg2=bool * */
+ 
+     /* Seek preroll belongs to the demux source containing the delayed cue. */
+-    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL /* arg1=input_source_t *, arg2=vlc_tick_t * */
++    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL, /* arg1=input_source_t *, arg2=vlc_tick_t * */
++
++    /* Earliest selected cue to refill after a source rate change. The supplied
++     * demux time is adjusted for buffered playback and positive source delay. */
++    ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME /* arg1=input_source_t *, arg2=vlc_tick_t, arg3=vlc_tick_t * */
+ };
+ 
+ struct vlc_input_es_out;
+diff --git a/src/input/input.c b/src/input/input.c
+index 0d73b992e8..72865bb3d7 100644
+--- a/src/input/input.c
++++ b/src/input/input.c
+@@ -33,6 +33,7 @@
+ #include <vlc_decoder.h>
+ 
+ #include <limits.h>
++#include <math.h>
+ #include <assert.h>
+ #include <sys/stat.h>
+ 
+@@ -723,9 +724,23 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
+                 bool eof_handled;
+                 if( !eof_signaled )
+                 {
++                    /* The periodic output-clock position can lag on short
++                     * files. Report the master's actual final position for
++                     * history, including an intentional segment boundary. */
++                    double position = -1.;
++                    bool live;
++                    if (InputSourceGetLength(input_priv(p_input)->master,
++                                             input_priv(p_input)->p_item, &live) <= 0
++                     || live
++                     || demux_Control(p_demux, DEMUX_GET_POSITION, &position) != VLC_SUCCESS
++                     || !isfinite(position) || position < 0.)
++                        position = -1.;
++                    else
++                        position = __MIN(position, 1.);
+                     eof_handled =
+                         input_SendEvent(p_input, &(struct vlc_input_event) {
+                             .type = INPUT_EVENT_EOF,
++                            .eof_position = position,
+                         });
+                     eof_signaled = true;
+                 }
+@@ -2551,6 +2566,10 @@ static bool Control( input_thread_t *p_input,
+         case INPUT_CONTROL_SET_SUBS_FPS:
+             RequestSubRate( p_input, param.val.f_float );
+             input_SendEventSubsFPS( p_input, param.val.f_float );
++            /* Apply the source timing change even when the main demux is
++             * waiting on buffered output or the player is paused. */
++            if( priv->i_slave > 0 )
++                SlaveDemux( p_input );
+             break;
+ 
+         case INPUT_CONTROL_SET_RECORD_STATE:
+@@ -3244,18 +3263,29 @@ static void SlaveDemux( input_thread_t *p_input )
+                 /* Subtitle timing follows the main clock. A slave rate change
+                  * must not reset the main video/audio PCR during a refill. */
+                 float new_rate = priv->slave_subs_rate;
+-                if (demux_Control(in->p_demux, DEMUX_SET_RATE, &new_rate) == VLC_SUCCESS)
++                vlc_tick_t refill_time = i_time;
++                es_out_PrivControl(priv->p_es_out_display,
++                                   ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME,
++                                   in, i_time, &refill_time);
++                /* Text demuxers reset their cue index on SET_RATE. Give them
++                 * the refill deadline first, including when seeking is disabled.
++                 * NEXT_DEMUX_TIME uses timestamps including VLC_TICK_0. */
++                const bool refill_deadline = refill_time < i_time &&
++                    demux_Control(in->p_demux, DEMUX_SET_NEXT_DEMUX_TIME,
++                                  refill_time + VLC_TICK_0) == VLC_SUCCESS;
++                const int rate_result = demux_Control(in->p_demux, DEMUX_SET_RATE,
++                                                      &new_rate);
++                if (refill_deadline)
++                    demux_Control(in->p_demux, DEMUX_SET_NEXT_DEMUX_TIME, i_time);
++                if (rate_result == VLC_SUCCESS)
+                 {
+-                    vlc_tick_t preroll = 0;
+-                    es_out_PrivControl(priv->p_es_out_display,
+-                                       ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL,
+-                                       in, &preroll);
+-                    /* The cue still visible after a positive delay can begin
+-                     * before the subtitle demux's current position.  Refill
+-                     * from the same source-relative boundary used by a seek. */
+-                    if (preroll > 0 &&
++                    /* Demuxing can be ahead of the displayed picture. Refill
++                     * from playback time, including this source's delay. */
++                    msg_Dbg(p_input, "subtitle rate refill: demux=%"PRId64
++                            " start=%"PRId64, i_time, refill_time);
++                    if (refill_time < i_time && !refill_deadline &&
+                         demux_Control(in->p_demux, DEMUX_SET_TIME,
+-                                      __MAX(i_time - preroll, 0), true)
++                                      refill_time, true)
+                             != VLC_SUCCESS)
+                         msg_Warn(p_input, "subtitle rate change could not seek for delay preroll");
+                     /* The demux resends the current cue at its new timestamps.
+diff --git a/src/input/input_internal.h b/src/input/input_internal.h
+index e837d5ad01..786a9da31a 100644
+--- a/src/input/input_internal.h
++++ b/src/input/input_internal.h
+@@ -318,6 +318,8 @@ struct vlc_input_event
+     union {
+         /* INPUT_EVENT_STATE */
+         struct vlc_input_event_state state;
++        /* INPUT_EVENT_EOF: final master position after outputs drained, or -1 */
++        double eof_position;
+         /* INPUT_EVENT_RATE */
+         float rate;
+         /* INPUT_EVENT_CAPABILITIES */
+diff --git a/src/player/input.c b/src/player/input.c
+index ce9e84d887..7a65f5ff24 100644
+--- a/src/player/input.c
++++ b/src/player/input.c
+@@ -152,7 +152,10 @@ vlc_player_input_SeekByPos(struct vlc_player_input *input, double position,
+     });
+ 
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Position(player, input, VLC_TICK_INVALID, position);
++    }
+ }
+ 
+ void
+@@ -179,7 +182,10 @@ vlc_player_input_SeekByTime(struct vlc_player_input *input, vlc_tick_t time,
+     });
+ 
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Position(player, input, time, -1);
++    }
+ }
+ 
+ void
+@@ -298,6 +304,8 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
+                 reason = VLC_PLAYER_MEDIA_STOPPING_USER;
+             else
+                 reason = VLC_PLAYER_MEDIA_STOPPING_EOS;
++            if (input->error == VLC_PLAYER_ERROR_NONE && input->eof_position >= 0.)
++                input->position_before_stop = input->eof_position;
+             input->started = false;
+ 
+             /* Note: no need to hold the media here, as it is already protected
+@@ -1125,6 +1133,19 @@ input_thread_Events(input_thread_t *input_thread,
+             handled = vlc_player_input_HandleAtoBLoop(input, true);
+             if (handled)
+                 break;
++            /* EOF is emitted after output drain. Preserve its source position
++             * without changing the playback timer. A queued seek or user Stop
++             * must not be replaced by an earlier EOF notification. */
++            if (input->started && input->error == VLC_PLAYER_ERROR_NONE
++             && input == player->input && (player->play_and_pause || input->repeat == 0))
++            {
++                vlc_mutex_lock(&player->timer.lock);
++                const bool seeking = player->timer.seek_ts != VLC_TICK_INVALID
++                                  || player->timer.seek_position >= 0.;
++                vlc_mutex_unlock(&player->timer.lock);
++                if (!seeking)
++                    input->eof_position = event->eof_position;
++            }
+             if (player->play_and_pause)
+             {
+                 vlc_player_Pause(player);
+@@ -1132,6 +1153,7 @@ input_thread_Events(input_thread_t *input_thread,
+             }
+             else if (input->repeat > 0)
+             {
++                input->eof_position = -1.;
+                 input->repeat--;
+                 handled =
+                     input_ControlPush(input->thread,
+@@ -1155,6 +1177,8 @@ input_thread_Events(input_thread_t *input_thread,
+         }
+         case INPUT_EVENT_TIMES:
+         {
++            if (!priv->master->b_eof)
++                input->eof_position = -1.;
+             bool changed = false;
+             vlc_tick_t system_date = VLC_TICK_INVALID;
+             vlc_tick_t duration = input_GetItemDuration(input->thread, event->times.length);
+@@ -1371,6 +1395,7 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
+     input->pause_date = VLC_TICK_INVALID;
+     input->position = 0.f;
+     input->position_before_stop = -1.;
++    input->eof_position = -1.;
+ 
+     input->recording = false;
+ 
+diff --git a/src/player/player.c b/src/player/player.c
+index 4907d699d8..723cb5eb86 100644
+--- a/src/player/player.c
++++ b/src/player/player.c
+@@ -131,8 +131,12 @@ vlc_player_destructor_AddInput(vlc_player_t *player,
+      * owns the timer; a later input must never supply this input's history. */
+     if (input == player->input && input->started)
+     {
++        /* Recording and nonseekable inputs reject seek controls. Do not
++         * persist a pending target which those inputs cannot perform. */
++        const bool pending_seek = !input->recording
++            && (input->capabilities & VLC_INPUT_CAPABILITIES_SEEKABLE);
+         const double position =
+-            vlc_player_input_GetPos(input, false, vlc_tick_now());
++            vlc_player_input_GetPos(input, pending_seek, vlc_tick_now());
+         if (position >= 0. && position <= 1.)
+             input->position_before_stop = position;
+     }
+@@ -915,8 +919,11 @@ vlc_player_SelectTitleIdx(vlc_player_t *player, size_t index)
+ {
+     struct vlc_player_input *input = vlc_player_get_input_locked(player);
+     if (input)
+-        input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_TITLE,
+-                                &(vlc_value_t){ .i_int = index });
++    {
++        if (input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_TITLE,
++                                   &(vlc_value_t){ .i_int = index }) == VLC_SUCCESS)
++            input->eof_position = -1.;
++    }
+ }
+ 
+ void
+@@ -947,7 +954,10 @@ vlc_player_SelectNextTitle(vlc_player_t *player)
+     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_TITLE_NEXT,
+                                 NULL);
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Message(player, _("Next title"));
++    }
+ }
+ 
+ void
+@@ -959,7 +969,10 @@ vlc_player_SelectPrevTitle(vlc_player_t *player)
+     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_TITLE_PREV,
+                                 NULL);
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Message(player, _("Previous title"));
++    }
+ }
+ 
+ ssize_t
+@@ -1006,7 +1019,10 @@ vlc_player_SelectChapterIdx(vlc_player_t *player, size_t index)
+     int ret = input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SEEKPOINT,
+                                       &(vlc_value_t){ .i_int = index });
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Message(player, _("Chapter %ld"), index);
++    }
+ }
+ 
+ void
+@@ -1019,7 +1035,10 @@ vlc_player_SelectNextChapter(vlc_player_t *player)
+     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_SEEKPOINT_NEXT,
+                                 NULL);
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Message(player, _("Next chapter"));
++    }
+ }
+ 
+ void
+@@ -1039,7 +1058,10 @@ vlc_player_SelectPrevChapter(vlc_player_t *player)
+     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_SEEKPOINT_PREV,
+                                 NULL);
+     if (ret == VLC_SUCCESS)
++    {
++        input->eof_position = -1.;
+         vlc_player_osd_Message(player, _("Previous chapter"));
++    }
+ }
+ 
+ void
+@@ -1413,8 +1435,9 @@ vlc_player_PreviousVideoFrame(vlc_player_t *player)
+     struct vlc_player_input *input = vlc_player_get_input_locked(player);
+     if (!input)
+         return;
+-    input_ControlPushHelper(input->thread,
+-                            INPUT_CONTROL_SET_FRAME_PREVIOUS, NULL);
++    if (input_ControlPushHelper(input->thread,
++                               INPUT_CONTROL_SET_FRAME_PREVIOUS, NULL) == VLC_SUCCESS)
++        input->eof_position = -1.;
+ }
+ 
+ enum vlc_player_state
+@@ -1813,7 +1836,8 @@ vlc_player_Navigate(vlc_player_t *player, enum vlc_player_nav nav)
+         default:
+             vlc_assert_unreachable();
+     }
+-    input_ControlPushHelper(input->thread, control, NULL);
++    if (input_ControlPushHelper(input->thread, control, NULL) == VLC_SUCCESS)
++        input->eof_position = -1.;
+ }
+ 
+ void
+diff --git a/src/player/player.h b/src/player/player.h
+index 04c40c8027..fcb298fff4 100644
+--- a/src/player/player.h
++++ b/src/player/player.h
+@@ -73,6 +73,8 @@ struct vlc_player_input
+     double position;
+     /* Timer position captured before detaching this input. */
+     double position_before_stop;
++    /* Final source position after drained EOF; invalidated by a new seek. */
++    double eof_position;
+     vlc_tick_t time;
+     vlc_tick_t normal_time;
+ 

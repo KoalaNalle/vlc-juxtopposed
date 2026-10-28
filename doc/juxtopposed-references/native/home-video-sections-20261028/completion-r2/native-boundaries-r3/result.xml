@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestHomeActivity">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="121.965"/>
+  </TestFunction>
+  <TestFunction name="nativeVideoHistoryCompletionBoundaries">
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: normal-eof]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary normal-eof: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: ignored-stop-before-start]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary ignored-stop-before-start: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: ignored-stop-equal-start]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary ignored-stop-equal-start: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: stop-after-source-end]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary stop-after-source-end: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-then-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 0.99582199999999998]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-then-stop: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-settled-seek-then-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 1]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Actual position reported after EOF seek: 0.52989499999999989, target observed yes, paused yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-settled-seek-then-stop: progress 0.48990949988365173, play count 0, expected unfinished, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-queued-seek-immediate-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 0.98618949999999994]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-queued-seek-immediate-stop: progress 0.40000000596046448, play count 0, expected unfinished, passed yes]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="16088.5"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="17.6382"/>
+  </TestFunction>
+  <Duration msecs="16229.4"/>
+</TestCase>

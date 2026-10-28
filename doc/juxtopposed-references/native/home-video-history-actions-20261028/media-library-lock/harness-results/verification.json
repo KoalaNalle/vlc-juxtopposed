@@ -1,0 +1,78 @@
+{
+  "status": "terminal",
+  "producerSha256": "f3cb356dfb42b39a6116f7bbb21170b6cc5045c52eb44ffff22a023f797a6af7",
+  "sourceSha256": {
+    "artifact-sha256.json": "ddb3f5400b44a1a480ec9ac243f74a46e9e8ebc63e87bfc0afc06d2a90583532",
+    "build-harness-r2.sh": "6a47b2ce0c92c74cb547fdc32274b2a8db6037ff6ea3ddc7dc7ef60dff529c15",
+    "build-harness.sh": "e2c6cc2cda0c3319913ca7c0ccce28d0ed10390e7576dfe8c374a000af5ed628",
+    "repository-integration.patch": "a49bb21d326783526ee71dfa19089f4e31c56b85b4f1f1e8622c41e18c002619",
+    "REVIEW.md": "468aecb13fc01ccf65e14dda6ef62967b0db47493baaa425f5f07b9db4607a97",
+    "run-harness-r2.py": "f3cb356dfb42b39a6116f7bbb21170b6cc5045c52eb44ffff22a023f797a6af7",
+    "run-harness.py": "f772fdc3a6c16ca95650d77720e318231fa30d3cb6d665a4fc35dc7b0704d53d",
+    "swmr-priority-wake.patch": "5cbacb2232553a8bb7952dfd5ea7f14549a7bf4fd7fa0228f299e495ed3c9263",
+    "swmr_priority_wake_test.cpp": "3c5c2cffe9437106d8b4058fbce5494aebf826b8b6462c42d4a34fec9d3b1e34",
+    "baseline\\utils\\SWMRLock.cpp": "f286e33baa44a70253d654f835b713adcccb0246fbee02b0dfc2895005d5090d",
+    "baseline\\utils\\SWMRLock.h": "bbb38e67682e8754f4709a85411134a47f274c9bd1aad5d14a3686710b0b60c8",
+    "candidate\\utils\\SWMRLock.cpp": "57a6cfd0d6fa5fab4d9c17e4301c8016cc7bc73b3880880ef930b501504c404e",
+    "candidate\\utils\\SWMRLock.h": "bbb38e67682e8754f4709a85411134a47f274c9bd1aad5d14a3686710b0b60c8",
+    "deterministic\\compat\\ConditionVariable.h": "3789efc444ef350bbe5790946932ad0ea225ea3bbcca625897cbf0676325cb9d"
+  },
+  "binarySha256": {
+    "baseline-deterministic.exe": "2400d3335fba9c64599e5597541f2a7ad38392d3ef45069ffa5b5bd8b354521f",
+    "baseline-native.exe": "cf54076cf9f10d4b5e5e99ece123d458dd8128650389869647a50ff347438c47",
+    "candidate-deterministic.exe": "cb3f0b07151134c886e909fe61cca9f94c55d9e3c77b995dddc305f5f6f725b6",
+    "candidate-native.exe": "77e85970808483770b7320c03622e132189227faefbb0b4f1fe3c0f2d34bd0aa"
+  },
+  "runs": [
+    {
+      "label": "baseline-deterministic",
+      "trials": 1,
+      "started": 1793199793.037527,
+      "forcedCleanupUsed": false,
+      "pid": 19036,
+      "exitCode": 1,
+      "ended": 1793199793.694603,
+      "stdout": "",
+      "stderr": "trial 1: stranded waiters: readers=0 readers_waiting=1 writing=0 writers_waiting=1 priority_owners=1\ntrial 1: FAIL (explicit rescue used)\n"
+    },
+    {
+      "label": "candidate-deterministic",
+      "trials": 100,
+      "started": 1793199793.6970325,
+      "forcedCleanupUsed": false,
+      "pid": 4228,
+      "exitCode": 0,
+      "ended": 1793199801.0099385,
+      "stdout": "PASS: 100 trials, no rescue wake used\n",
+      "stderr": ""
+    },
+    {
+      "label": "baseline-native",
+      "trials": 500,
+      "started": 1793199801.0159545,
+      "forcedCleanupUsed": false,
+      "pid": 8448,
+      "exitCode": 1,
+      "ended": 1793199801.710976,
+      "stdout": "",
+      "stderr": "trial 1: stranded waiters: readers=0 readers_waiting=1 writing=0 writers_waiting=1 priority_owners=1\ntrial 1: FAIL (explicit rescue used)\n"
+    },
+    {
+      "label": "candidate-native",
+      "trials": 500,
+      "started": 1793199801.7119768,
+      "forcedCleanupUsed": false,
+      "pid": 4652,
+      "exitCode": 0,
+      "ended": 1793199837.3009439,
+      "stdout": "PASS: 500 trials, no rescue wake used\n",
+      "stderr": ""
+    }
+  ],
+  "started": 1793199793.037527,
+  "scope": "Actual SWMRLock logic; deterministic legal wake selection and real Windows standard-CV stress. No VLC/library rebuild.",
+  "ended": 1793199837.3009439,
+  "producerUnchanged": true,
+  "sourceUnchanged": true,
+  "binariesUnchanged": true
+}

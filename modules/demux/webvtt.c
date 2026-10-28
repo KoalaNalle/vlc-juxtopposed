@@ -30,6 +30,7 @@
 #include <vlc_demux.h>
 #include <vlc_memstream.h>
 #include <assert.h>
+#include <math.h>
 
 #include "../codec/webvtt/webvtt.h"
 
@@ -51,6 +52,7 @@ typedef struct
     int          i_next_block_flags;
     vlc_tick_t   i_next_demux_time;
     vlc_tick_t   i_length;
+    float        f_rate;
     struct
     {
         void    *p_data;
@@ -94,17 +96,134 @@ static int cue_Compare( const void *a_, const void *b_ )
     else return a->i_start < b->i_start ? -1 : 1;
 }
 
-static block_t *ConvertWEBVTT( const webvtt_cue_t *p_cue, bool b_continued )
+/* Source cue/index times stay immutable. Only emitted presentation times change. */
+static bool ScaleTime( vlc_tick_t source, float rate, vlc_tick_t *result )
+{
+    if( source < 0 || !isfinite( rate ) || rate <= 0 )
+        return false;
+    const long double scaled = (long double) source * rate;
+    if( scaled > (long double) (VLC_TICK_MAX - VLC_TICK_0) - 0.5L )
+        return false;
+    *result = (vlc_tick_t) (scaled + 0.5L);
+    return true;
+}
+
+/* Unlike the cue-line scanner, an inline tag must contain a complete timestamp. */
+static bool ParseTimeTag( const char *begin, const char *end, vlc_tick_t *time )
+{
+    const size_t length = end - begin;
+    if( length != 9 && length < 12 )
+        return false;
+    const char *dot = end - 4;
+    if( *dot != '.' || dot[-3] != ':' )
+        return false;
+    const char *minutes = dot - 5;
+    uint64_t hours = 0;
+    if( minutes != begin )
+    {
+        const char *separator = minutes - 1;
+        if( *separator != ':' || separator - begin < 2 )
+            return false;
+        for( const char *p = begin; p < separator; ++p )
+        {
+            if( *p < '0' || *p > '9' || hours > (UINT64_MAX - 9) / 10 )
+                return false;
+            hours = hours * 10 + (*p - '0');
+        }
+    }
+    for( const char *p = minutes; p < end; ++p )
+        if( p != dot && p != dot - 3 && (*p < '0' || *p > '9') )
+            return false;
+    unsigned m = (minutes[0] - '0') * 10 + minutes[1] - '0';
+    unsigned s = (dot[-2] - '0') * 10 + dot[-1] - '0';
+    unsigned ms = (dot[1] - '0') * 100 + (dot[2] - '0') * 10 + dot[3] - '0';
+    if( m > 59 || s > 59 || hours > (uint64_t) VLC_TICK_MAX / CLOCK_FREQ / 3600 )
+        return false;
+    uint64_t seconds = hours * 3600 + m * 60 + s;
+    if( seconds > ((uint64_t) VLC_TICK_MAX - VLC_TICK_FROM_MS(ms)) / CLOCK_FREQ )
+        return false;
+    *time = seconds * CLOCK_FREQ + VLC_TICK_FROM_MS(ms);
+    return true;
+}
+
+/* A NULL stream validates all genuine tags before accepting a rate change. */
+static bool TransformText( const char *text, float rate, struct vlc_memstream *out )
+{
+    const char *cursor = text;
+    while( *cursor )
+    {
+        const char *tag = strchr( cursor, '<' );
+        if( tag == NULL )
+        {
+            if( out ) vlc_memstream_puts( out, cursor );
+            break;
+        }
+        const char *end = strchr( tag + 1, '>' );
+        if( end == NULL )
+        {
+            if( out ) vlc_memstream_puts( out, cursor );
+            break;
+        }
+        if( out ) vlc_memstream_write( out, cursor, tag - cursor );
+        vlc_tick_t source, scaled;
+        if( ParseTimeTag( tag + 1, end, &source ) )
+        {
+            if( !ScaleTime( source, rate, &scaled ) )
+                return false;
+            if( out )
+            {
+                uint64_t ms = scaled / VLC_TICK_FROM_MS(1);
+                if( scaled % VLC_TICK_FROM_MS(1) >= VLC_TICK_FROM_MS(1) / 2 ) ms++;
+                vlc_memstream_printf( out, "<%02"PRIu64":%02u:%02u.%03u>",
+                    ms / 3600000, (unsigned) (ms / 60000 % 60),
+                    (unsigned) (ms / 1000 % 60), (unsigned) (ms % 1000) );
+            }
+        }
+        else if( out ) vlc_memstream_write( out, tag, end - tag + 1 );
+        cursor = end + 1;
+    }
+    return true;
+}
+
+static block_t *ConvertWEBVTT( const webvtt_cue_t *p_cue, bool b_continued, float rate )
 {
     struct vlc_memstream stream;
+    struct vlc_memstream text;
+    char *converted = NULL;
+    const char *payload = p_cue->psz_text;
+    if( rate != 1.f )
+    {
+        if( vlc_memstream_open( &text ) )
+            return NULL;
+        const bool valid = TransformText( payload, rate, &text );
+        vlc_memstream_putc( &text, '\0' );
+        if( vlc_memstream_close( &text ) )
+            return NULL;
+        if( !valid )
+        {
+            free( text.ptr );
+            return NULL;
+        }
+        payload = converted = text.ptr;
+    }
 
     if( vlc_memstream_open( &stream ) )
+    {
+        free( converted );
         return NULL;
+    }
 
-    const size_t paylsize = 8 + strlen( p_cue->psz_text );
+    const size_t paylsize = 8 + strlen( payload );
     const size_t idensize = (p_cue->psz_id) ? 8 + strlen( p_cue->psz_id ) : 0;
     const size_t attrsize = (p_cue->psz_attrs) ? 8 + strlen( p_cue->psz_attrs ) : 0;
     const size_t vttcsize = 8 + paylsize + attrsize + idensize;
+    if( vttcsize > UINT32_MAX )
+    {
+        free( converted );
+        vlc_memstream_close( &stream );
+        free( stream.ptr );
+        return NULL;
+    }
 
     uint8_t vttcbox[8] = { 0, 0, 0, 0, 'v', 't', 't', 'c' };
     if( b_continued )
@@ -131,7 +250,8 @@ static block_t *ConvertWEBVTT( const webvtt_cue_t *p_cue, bool b_continued )
     uint8_t paylbox[8] = { 0, 0, 0, 0, 'p', 'a', 'y', 'l' };
     SetDWBE( paylbox, paylsize );
     vlc_memstream_write( &stream, paylbox, 8 );
-    vlc_memstream_write( &stream, p_cue->psz_text, paylsize - 8 );
+    vlc_memstream_write( &stream, payload, paylsize - 8 );
+    free( converted );
 
     if( vlc_memstream_close( &stream ) == 0 )
         return block_heap_Alloc( stream.ptr, stream.length );
@@ -267,7 +387,7 @@ static void StreamParserCueDoneHandler( void *priv, webvtt_cue_t *p_cue )
 
     if( p_cue->psz_text )
     {
-        block_t *p_block = ConvertWEBVTT( p_cue, true );
+        block_t *p_block = ConvertWEBVTT( p_cue, true, 1.f );
         if( p_block )
         {
             if ( p_sys->b_first_time )
@@ -308,12 +428,22 @@ static int index_Compare( const void *a_, const void *b_ )
 
 static size_t getIndexByTime( demux_sys_t *p_sys, vlc_tick_t i_time )
 {
-    for( size_t i=0; i<p_sys->index.i_count; i++ )
+    size_t first = 0, last = p_sys->index.i_count;
+    while( first < last )
     {
-        if( p_sys->index.p_array[i].time >= i_time )
-            return i;
+        size_t middle = first + (last - first) / 2;
+        vlc_tick_t scaled;
+        if( !ScaleTime( p_sys->index.p_array[middle].time, p_sys->f_rate, &scaled ) )
+            return p_sys->index.i_count;
+        if( scaled <= i_time ) first = middle + 1;
+        else last = middle;
     }
-    return 0;
+    if( first == 0 || first == p_sys->index.i_count )
+        return first;
+    first--;
+    while( first > 0 && p_sys->index.p_array[first - 1].time == p_sys->index.p_array[first].time )
+        first--;
+    return first;
 }
 
 static void BuildIndex( demux_t *p_demux )
@@ -363,7 +493,7 @@ static block_t *demux_From( demux_t *p_demux, vlc_tick_t i_start )
         }
         else if( p_cue->i_start <= i_start && p_cue->i_stop > i_start )
         {
-            *pp_append = ConvertWEBVTT( p_cue, p_sys->index.i_current > 0 );
+            *pp_append = ConvertWEBVTT( p_cue, p_sys->index.i_current > 0, p_sys->f_rate );
             if( *pp_append )
                 pp_append = &((*pp_append)->p_next);
         }
@@ -446,8 +576,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
-            *(va_arg( args, vlc_tick_t * )) = p_sys->i_length;
-            return VLC_SUCCESS;
+            return ScaleTime( p_sys->i_length, p_sys->f_rate,
+                              va_arg( args, vlc_tick_t * ) ) ? VLC_SUCCESS : VLC_EGENERIC;
 
         case DEMUX_GET_TIME:
             *va_arg( args, vlc_tick_t * ) = p_sys->i_next_demux_time;
@@ -456,10 +586,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_SET_TIME:
             if( p_sys->cues.i_count )
             {
-                p_sys->index.i_current = getIndexByTime( p_sys, va_arg( args, vlc_tick_t ) );
+                const vlc_tick_t target = va_arg( args, vlc_tick_t );
+                if( target == VLC_TICK_MIN || target > VLC_TICK_MAX - VLC_TICK_0 )
+                    return VLC_EGENERIC;
+                p_sys->index.i_current = getIndexByTime( p_sys, target );
                 p_sys->b_first_time = true;
-                p_sys->i_next_demux_time =
-                        p_sys->index.p_array[p_sys->index.i_current].time;
+                p_sys->i_next_demux_time = target;
                 p_sys->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
                 return VLC_SUCCESS;
             }
@@ -473,8 +605,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             }
             else if( p_sys->index.i_count > 0 )
             {
-                *pf = (double) p_sys->i_next_demux_time /
-                      (p_sys->i_length + VLC_TICK_FROM_MS(500));
+                vlc_tick_t length;
+                if( !ScaleTime( p_sys->i_length, p_sys->f_rate, &length ) )
+                    return VLC_EGENERIC;
+                *pf = p_sys->i_next_demux_time /
+                      ((long double) length + VLC_TICK_FROM_MS(500));
             }
             else
             {
@@ -486,19 +621,54 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             if( p_sys->cues.i_count )
             {
                 double f = va_arg( args, double );
-                p_sys->index.i_current = getIndexByTime( p_sys, p_sys->i_length * f );
+                vlc_tick_t length;
+                if( !isfinite( f ) || f < 0 || f > 1 ||
+                    !ScaleTime( p_sys->i_length, p_sys->f_rate, &length ) )
+                    return VLC_EGENERIC;
+                /* A double conversion can round a valid near-INT64_MAX
+                 * length out of range, including at position1. */
+                const long double fraction = (long double) length * f;
+                if( f != 1. && fraction > (long double) (VLC_TICK_MAX - VLC_TICK_0) )
+                    return VLC_EGENERIC;
+                const vlc_tick_t target = f == 1. ? length : (vlc_tick_t) fraction;
+                p_sys->index.i_current = getIndexByTime( p_sys, target );
                 p_sys->b_first_time = true;
-                p_sys->i_next_demux_time =
-                        p_sys->index.p_array[p_sys->index.i_current].time;
+                p_sys->i_next_demux_time = target;
                 p_sys->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
                 return VLC_SUCCESS;
             }
             break;
 
-        case DEMUX_SET_NEXT_DEMUX_TIME:
-            p_sys->b_slave = true;
-            p_sys->i_next_demux_time = va_arg( args, vlc_tick_t ) - VLC_TICK_0;
+        case DEMUX_CAN_CONTROL_RATE:
+            *va_arg( args, bool * ) = true;
             return VLC_SUCCESS;
+
+        case DEMUX_SET_RATE:
+        {
+            const float rate = *va_arg( args, float * );
+            vlc_tick_t length;
+            if( !ScaleTime( p_sys->i_length, rate, &length ) )
+                return VLC_EGENERIC;
+            for( size_t i = 0; i < p_sys->cues.i_count; i++ )
+                if( p_sys->cues.p_array[i].psz_text != NULL &&
+                    !TransformText( p_sys->cues.p_array[i].psz_text, rate, NULL ) )
+                    return VLC_EGENERIC;
+            p_sys->f_rate = rate;
+            p_sys->index.i_current = getIndexByTime( p_sys, p_sys->i_next_demux_time );
+            p_sys->b_first_time = true;
+            p_sys->i_next_block_flags |= BLOCK_FLAG_DISCONTINUITY;
+            return VLC_SUCCESS;
+        }
+
+        case DEMUX_SET_NEXT_DEMUX_TIME:
+        {
+            const vlc_tick_t target = va_arg( args, vlc_tick_t );
+            if( target <= VLC_TICK_MIN + VLC_TICK_0 )
+                return VLC_EGENERIC;
+            p_sys->b_slave = true;
+            p_sys->i_next_demux_time = target - VLC_TICK_0;
+            return VLC_SUCCESS;
+        }
 
         case DEMUX_CAN_PAUSE:
         case DEMUX_SET_PAUSE_STATE:
@@ -547,9 +717,14 @@ static int Demux( demux_t *p_demux )
 
     vlc_tick_t i_barrier = p_sys->i_next_demux_time;
 
-    while( p_sys->index.i_current < p_sys->index.i_count &&
-           p_sys->index.p_array[p_sys->index.i_current].time <= i_barrier )
+    while( p_sys->index.i_current < p_sys->index.i_count )
     {
+        vlc_tick_t scaled_start;
+        if( !ScaleTime( p_sys->index.p_array[p_sys->index.i_current].time,
+                        p_sys->f_rate, &scaled_start ) )
+            return VLC_DEMUXER_EGENERIC;
+        if( scaled_start > i_barrier )
+            break;
         /* Find start and end of our interval */
         vlc_tick_t i_start_time = p_sys->index.p_array[p_sys->index.i_current].time;
         vlc_tick_t i_end_time = i_start_time;
@@ -566,8 +741,14 @@ static int Demux( demux_t *p_demux )
         block_t *p_block = demux_From( p_demux, i_start_time );
         if( p_block )
         {
-            p_block->i_length = i_end_time - i_start_time;
-            p_block->i_dts = p_block->i_pts = VLC_TICK_0 + i_start_time;
+            vlc_tick_t scaled_end;
+            if( !ScaleTime( i_end_time, p_sys->f_rate, &scaled_end ) )
+            {
+                block_Release( p_block );
+                return VLC_DEMUXER_EGENERIC;
+            }
+            p_block->i_length = scaled_end - scaled_start;
+            p_block->i_dts = p_block->i_pts = VLC_TICK_0 + scaled_start;
 
             if( p_sys->i_next_block_flags )
             {
@@ -595,7 +776,14 @@ static int Demux( demux_t *p_demux )
     if ( !p_sys->b_slave )
     {
         es_out_SetPCR( p_demux->out, VLC_TICK_0 + i_barrier );
-        p_sys->i_next_demux_time += VLC_TICK_FROM_SEC(1);
+        if( p_sys->index.i_current < p_sys->index.i_count )
+        {
+            const vlc_tick_t maximum = VLC_TICK_MAX - VLC_TICK_0;
+            if( p_sys->i_next_demux_time > maximum - VLC_TICK_FROM_SEC(1) )
+                p_sys->i_next_demux_time = maximum;
+            else
+                p_sys->i_next_demux_time += VLC_TICK_FROM_SEC(1);
+        }
     }
 
     if( p_sys->index.i_current >= p_sys->index.i_count )
@@ -659,6 +847,7 @@ int webvtt_OpenDemux ( vlc_object_t *p_this )
     p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
+    p_sys->f_rate = 1.f;
 
     if( ReadWEBVTT( p_demux ) != VLC_SUCCESS )
     {
@@ -698,6 +887,7 @@ int webvtt_OpenDemuxStream ( vlc_object_t *p_this )
     p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
+    p_sys->f_rate = 1.f;
 
     p_sys->p_streamparser = webvtt_text_parser_New( p_demux,
                                           StreamParserGetCueHandler,

@@ -1,0 +1,111 @@
+{
+  "status": "observation-terminal",
+  "scope": "Instrumentation-only diagnosis, not repair acceptance.",
+  "events": [
+    {
+      "version": 1,
+      "stream": 2,
+      "cat": 1,
+      "kind": "video",
+      "active": 3,
+      "count": 0,
+      "bytes": 0,
+      "captured": 0,
+      "truncated": 0,
+      "complete": 1,
+      "zero": 1,
+      "rows": []
+    },
+    {
+      "version": 1,
+      "stream": 3,
+      "cat": 2,
+      "kind": "audio",
+      "active": 2,
+      "count": 1,
+      "bytes": 619,
+      "captured": 1,
+      "truncated": 0,
+      "complete": 1,
+      "zero": 1,
+      "rows": [
+        {
+          "stream": 3,
+          "ordinal": 0,
+          "size": 619,
+          "pts": 60000001,
+          "dts": 60000001,
+          "duration": 11000
+        }
+      ]
+    },
+    {
+      "version": 1,
+      "stream": 0,
+      "cat": 3,
+      "kind": "subtitle",
+      "active": 1,
+      "count": 0,
+      "bytes": 0,
+      "captured": 0,
+      "truncated": 0,
+      "complete": 1,
+      "zero": 1,
+      "rows": []
+    },
+    {
+      "version": 1,
+      "stream": 1,
+      "cat": 3,
+      "kind": "subtitle",
+      "active": 0,
+      "count": 0,
+      "bytes": 0,
+      "captured": 0,
+      "truncated": 0,
+      "complete": 1,
+      "zero": 1,
+      "rows": []
+    }
+  ],
+  "matching619Byte60sAudioRows": [
+    {
+      "stream": 3,
+      "ordinal": 0,
+      "size": 619,
+      "pts": 60000001,
+      "dts": 60000001,
+      "duration": 11000
+    }
+  ],
+  "tailMetadataPresentAtDelete": true,
+  "diagnosis": "exact625-packet/528-sample source-prefix loss and queued619-byte60s tail metadata coincide at retiring-audio FIFO",
+  "audioPackets": 625,
+  "sourceAudioPackets": 626,
+  "audioSamples": 2880000,
+  "sourceAudioSamples": 2880528,
+  "packetPayloadsExactSource": false,
+  "packetPayloadsExactSourcePrefix": true,
+  "exactSourcePcm": false,
+  "sourcePcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+  "outputPcmSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+  "pcmExactSourcePrefix": true,
+  "missingSourcePcmBytes": 1056,
+  "known528SampleTailLoss": true,
+  "strictAudioCompleteness": false,
+  "videoFrames": 1500,
+  "all1500Markers": true,
+  "subtitleChecks": [
+    {
+      "index": 0,
+      "timingPreserved": true,
+      "exactSrtExport": true
+    },
+    {
+      "index": 1,
+      "timingPreserved": true,
+      "exactSrtExport": true
+    }
+  ],
+  "verificationSha256": "c0d2c46e844aa681eb79bfe8af31b3ae18868d5820924e61ac146af793d8428b"
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestHistoryWorker">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="157.123"/>
+  </TestFunction>
+  <TestFunction name="busyStateAndCapturedMode">
+    <Incident type="fail" file="/mnt/c/Modding/vlc&#x002D;juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_history_worker.cpp" line="182">
+      <DataTag><![CDATA[continue]]></DataTag>
+      <Description><![CDATA[Compared values are not the same
+   Actual   (source->getCount()): 0
+   Expected (unsigned(1))       : 1]]></Description>
+    </Incident>
+    <Incident type="fail" file="/mnt/c/Modding/vlc&#x002D;juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_history_worker.cpp" line="182">
+      <DataTag><![CDATA[watch-again]]></DataTag>
+      <Description><![CDATA[Compared values are not the same
+   Actual   (source->getCount()): 0
+   Expected (unsigned(1))       : 1]]></Description>
+    </Incident>
+    <Duration msecs="36453.5"/>
+  </TestFunction>
+  <TestFunction name="workerFailureAndRetry">
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[continue]]></DataTag>
+    </Incident>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[watch-again]]></DataTag>
+    </Incident>
+    <Duration msecs="316.579"/>
+  </TestFunction>
+  <TestFunction name="deletionDrainsActiveWorker">
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[continue]]></DataTag>
+    <Description><![CDATA[Model deletion joined a real gated history worker; accepted batch completed, opposite history and indexed media retained]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[continue]]></DataTag>
+    </Incident>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[watch-again]]></DataTag>
+    <Description><![CDATA[Model deletion joined a real gated history worker; accepted batch completed, opposite history and indexed media retained]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[watch-again]]></DataTag>
+    </Incident>
+    <Duration msecs="526.613"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="7.4135"/>
+  </TestFunction>
+  <Duration msecs="37462.3"/>
+</TestCase>

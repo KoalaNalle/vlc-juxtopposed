@@ -1,0 +1,36 @@
+/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/unit-r7/unit-build-r1/candidate/test.o: \
+ /mnt/c/Modding/vlc-juxtopposed/test/modules/demux/webvtt_fps.c \
+ /root/vlc-juxtopposed-build/win64/config.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_fixups.h \
+ /mnt/c/Modding/vlc-juxtopposed/test/modules/demux/../../../modules/demux/webvtt.c \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_common.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_config.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_messages.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_objects.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_variables.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_demux.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_es.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_fourcc.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_viewpoint.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_replay_gain.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_stream.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_tick.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_config.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_block.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_frame.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_ancillary.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_vector.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_queue.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_threads.h \
+ /root/vlc-juxtopposed-build/contrib/x86_64-w64-mingw32/include/process.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_input.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_meta.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_epg.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_input_item.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_list.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_vout.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_picture.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_atomic.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_es_out.h \
+ /mnt/c/Modding/vlc-juxtopposed/include/vlc_memstream.h \
+ /mnt/c/Modding/vlc-juxtopposed/test/modules/demux/../../../modules/demux/../codec/webvtt/webvtt.h

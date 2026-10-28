@@ -401,7 +401,7 @@ libavcodec_plugin_la_SOURCES += demux/avformat/demux.c access/avio.c packetizer/
 libavcodec_plugin_la_CFLAGS += $(AVFORMAT_CFLAGS) $(AVUTIL_CFLAGS)
 libavcodec_plugin_la_LIBADD += $(AVFORMAT_LIBS) $(AVUTIL_LIBS) $(LIBM)
 if ENABLE_SOUT
-libavcodec_plugin_la_SOURCES += demux/avformat/mux.c
+libavcodec_plugin_la_SOURCES += demux/avformat/mux.c demux/avformat/avformat_mux_queue.h
 endif
 libavcodec_plugin_la_CFLAGS += -DMERGE_FFMPEG
 endif

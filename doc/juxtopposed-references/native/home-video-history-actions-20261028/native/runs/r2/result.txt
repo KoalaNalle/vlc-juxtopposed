@@ -1,0 +1,54 @@
+********* Start testing of TestHomeActivity *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestHomeActivity::initTestCase()
+PASS   : TestHomeActivity::persistentVisitTypesAndLifetime()
+PASS   : TestHomeActivity::malformedStoredVisits()
+PASS   : TestHomeActivity::preferencesResetDoesNotRestoreCachedVisits()
+PASS   : TestHomeActivity::realFolderPlaylistAndArtistMetadata()
+PASS   : TestHomeActivity::warmRestartAndDeletedPlaylist()
+PASS   : TestHomeActivity::blockedStoragePreservesAcceptedVisitsAndDocument()
+PASS   : TestHomeActivity::blockedClearPreservesAcceptedVisitsAndDocument()
+PASS   : TestHomeActivity::addedFolderRequestStateAndReset()
+PASS   : TestHomeActivity::actualAudioOnlyAddedFolderAndMixedRouteRestart()
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: manual
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: stop-time
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: run-time
+PASS   : TestHomeActivity::nativeVideoHistorySections()
+PASS   : TestHomeActivity::nativeVideoHistoryEditLists()
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Active-input history edit: continue-item-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Before continue-item-stop: selected progress 0.40000000596046448/count 0/date 1793202253; opposite progress -1/count 1/date 1793202253
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() After continue-item-stop: opposite progress -1/count 1/date 1793202253
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Active-input history edit: continue-clear-close
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Before continue-clear-close: selected progress 0.40000000596046448/count 0/date 1793202253; opposite progress -1/count 1/date 1793202253
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() After continue-clear-close: opposite progress -1/count 1/date 1793202253
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Active-input history edit: watch-again-item-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Before watch-again-item-stop: selected progress -1/count 1/date 1793202254; opposite progress 0.60000002384185791/count 0/date 1793202254
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() After watch-again-item-stop: opposite progress 0.60000002384185791/count 0/date 1793202254
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Active-input history edit: watch-again-clear-close
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Before watch-again-clear-close: selected progress -1/count 1/date 1793202254; opposite progress 0.60000002384185791/count 0/date 1793202254
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() After watch-again-clear-close: opposite progress 0.60000002384185791/count 0/date 1793202254
+PASS   : TestHomeActivity::nativeVideoHistoryEditActiveInput()
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: normal-eof
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary normal-eof: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-before-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-before-start: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-equal-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-equal-start: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: stop-after-source-end
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary stop-after-source-end: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 1
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-then-stop: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-settled-seek-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 1
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Actual position reported after EOF seek: 0.53284199999999993, target observed yes, paused yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-settled-seek-then-stop: progress 0.5, play count 0, expected unfinished, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-queued-seek-immediate-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 0.99916799999999995
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-queued-seek-immediate-stop: progress 0.40000000596046448, play count 0, expected unfinished, passed yes
+PASS   : TestHomeActivity::nativeVideoHistoryCompletionBoundaries()
+QINFO  : TestHomeActivity::nativeVideoHistoryRejectedRecordingSeek() Recording-rejected seek: actual 0.40000000000000002, pending 0.94999999999999996, saved 0.40000000596046448, play count 0
+PASS   : TestHomeActivity::nativeVideoHistoryRejectedRecordingSeek()
+PASS   : TestHomeActivity::cleanupTestCase()
+Totals: 16 passed, 0 failed, 0 skipped, 0 blacklisted, 37796ms
+********* Finished testing of TestHomeActivity *********

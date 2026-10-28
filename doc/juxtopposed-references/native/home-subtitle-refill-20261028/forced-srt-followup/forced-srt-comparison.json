@@ -1,0 +1,154 @@
+{
+  "producerSha256": "0e4d2561c93221ea0375f142dcc4a8b12de8d0ab3c6c392e8254b4d98d7a73d7",
+  "sourceSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+  "runs": {
+    "baseline": {
+      "outputSha256": "62850c54552e74d8fa045a4d4561ac7eeb294a5de881f27137832710af6e69c7",
+      "avcodecSha256": "1589cff3c00a5da3d9e96352902c02cb859cb54f010810e64629a621593bade7",
+      "verificationSha256": "ef73692a41cb2069b09e29963cbf87ed05db67e719f2d3ee0818c6e6d717eb6f",
+      "subtitles": [
+        {
+          "index": 0,
+          "events": [
+            {
+              "start": 0.0,
+              "duration": 0.0,
+              "expectedStart": 0.0,
+              "expectedDuration": 19.999,
+              "timingPassed": false
+            },
+            {
+              "start": 20.0,
+              "duration": 0.0,
+              "expectedStart": 20.0,
+              "expectedDuration": 19.999,
+              "timingPassed": false
+            },
+            {
+              "start": 40.0,
+              "duration": 0.0,
+              "expectedStart": 40.0,
+              "expectedDuration": 19.9,
+              "timingPassed": false
+            }
+          ],
+          "exactSrtExport": false,
+          "exportSha256": "7f1e8f1383451c75475fbfbf0dc9c8639d502d9b0364e67b0f2b77bb0508fd81"
+        },
+        {
+          "index": 1,
+          "events": [
+            {
+              "start": 0.0,
+              "duration": 0.0,
+              "expectedStart": 0.0,
+              "expectedDuration": 19.999,
+              "timingPassed": false
+            },
+            {
+              "start": 20.0,
+              "duration": 0.0,
+              "expectedStart": 20.0,
+              "expectedDuration": 19.999,
+              "timingPassed": false
+            },
+            {
+              "start": 40.0,
+              "duration": 0.0,
+              "expectedStart": 40.0,
+              "expectedDuration": 19.9,
+              "timingPassed": false
+            }
+          ],
+          "exactSrtExport": false,
+          "exportSha256": "56b3f13bd83e15e18acbc0ccaaee392c42ff8019c0fc9eac97cf5145b135bb89"
+        }
+      ],
+      "fullVideoMarkers": true,
+      "videoFrames": 1500,
+      "audioSamples": 2880000,
+      "sourceAudioSamples": 2880528,
+      "exactAudioPcm": false,
+      "audioSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+      "sourceAudioSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "diagnostics": [],
+      "selectedLibavformat": true,
+      "module603": true
+    },
+    "candidate": {
+      "outputSha256": "f1296003bcf8cf5d2f2c8181f2092b0a793ec68301fc2a052530b39da6e0f4f3",
+      "avcodecSha256": "545f715418c4d20659dce5d6c81ee33b292b21c87243fafa62036b9ffd739e1f",
+      "verificationSha256": "d7e9705fbccea8da330c22a0e2f4db055737e9442e9550ec88e2b54fa0346fe1",
+      "subtitles": [
+        {
+          "index": 0,
+          "events": [
+            {
+              "start": 0.0,
+              "duration": 19.999,
+              "expectedStart": 0.0,
+              "expectedDuration": 19.999,
+              "timingPassed": true
+            },
+            {
+              "start": 20.0,
+              "duration": 19.999,
+              "expectedStart": 20.0,
+              "expectedDuration": 19.999,
+              "timingPassed": true
+            },
+            {
+              "start": 40.0,
+              "duration": 19.9,
+              "expectedStart": 40.0,
+              "expectedDuration": 19.9,
+              "timingPassed": true
+            }
+          ],
+          "exactSrtExport": true,
+          "exportSha256": "0ec9616007eff1c19ec19f547ad12656866d935bef49c4c24060746792dd1494"
+        },
+        {
+          "index": 1,
+          "events": [
+            {
+              "start": 0.0,
+              "duration": 19.999,
+              "expectedStart": 0.0,
+              "expectedDuration": 19.999,
+              "timingPassed": true
+            },
+            {
+              "start": 20.0,
+              "duration": 19.999,
+              "expectedStart": 20.0,
+              "expectedDuration": 19.999,
+              "timingPassed": true
+            },
+            {
+              "start": 40.0,
+              "duration": 19.9,
+              "expectedStart": 40.0,
+              "expectedDuration": 19.9,
+              "timingPassed": true
+            }
+          ],
+          "exactSrtExport": true,
+          "exportSha256": "8d629d7a7e85fe2e5ea16117fb32d617a7f763fa6bb4ce076083fc2264782b75"
+        }
+      ],
+      "fullVideoMarkers": true,
+      "videoFrames": 1500,
+      "audioSamples": 2880000,
+      "sourceAudioSamples": 2880528,
+      "exactAudioPcm": false,
+      "audioSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+      "sourceAudioSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "diagnostics": [],
+      "selectedLibavformat": true,
+      "module603": true
+    }
+  },
+  "equalBaselineCandidateAudio": true,
+  "scope": "Compare subtitle-duration repair with unchanged r7 avcodec using forced Matroska mux. Audio completeness is independently reported, not inferred from equal baseline output."
+}

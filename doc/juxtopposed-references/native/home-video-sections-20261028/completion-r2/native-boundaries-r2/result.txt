@@ -1,0 +1,21 @@
+********* Start testing of TestHomeActivity *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestHomeActivity::initTestCase()
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: normal-eof
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary normal-eof: progress -1, play count 1, expected completed, passed no
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-before-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-before-start: progress 0.93604248762130737, play count 0, expected completed, passed no
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-equal-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-equal-start: progress 0.92966949939727783, play count 0, expected completed, passed no
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: stop-after-source-end
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary stop-after-source-end: progress 0.92791897058486938, play count 0, expected completed, passed no
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 1
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-then-stop: progress -1, play count 1, expected completed, passed no
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-settled-seek-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 0.98985849999999997
+FAIL!  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() 'trace.position.load() > .3 && trace.position.load() < .6' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_home_activity.cpp(696) : failure location
+PASS   : TestHomeActivity::cleanupTestCase()
+Totals: 2 passed, 1 failed, 0 skipped, 0 blacklisted, 32175ms
+********* Finished testing of TestHomeActivity *********

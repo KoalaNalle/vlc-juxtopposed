@@ -1,0 +1,14 @@
+--- a/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp
++++ b/modules/gui/qt/medialibrary/mlrecentvideomodel.cpp
+@@ -118,8 +118,10 @@
+     if (m_historyMode == mode)
+         return;
+     m_historyMode = mode;
++    // Loaders capture the mode: invalidate alone would reuse the old section.
++    resetCache();
++    m_itemLoader.reset();
+     emit historyModeChanged();
+-    emit resetRequested();
+ }
+ 
+ // Protected MLBaseModel implementation

@@ -1,0 +1,57 @@
+{
+  "status": "passed",
+  "sourceSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+  "remappedSha256": "c12ad273c85bcf42adf319f7ec2596ec036ad9dc2471032e487b0bfaa46d30db",
+  "producerSha256": "ddb0617d64a63f68f0474404b845a3a336fad16c59f216476a390f2edbbfabff",
+  "command": [
+    "/usr/bin/ffmpeg",
+    "-nostdin",
+    "-v",
+    "error",
+    "-threads",
+    "1",
+    "-i",
+    "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-20261028/media-record-flac/frame-marker.mkv",
+    "-map",
+    "0:a:0",
+    "-map",
+    "0:v:0",
+    "-map",
+    "0:s:0",
+    "-map",
+    "0:s:1",
+    "-c",
+    "copy",
+    "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-20261028/tail-drain-repair-r1/media-reversed/frame-marker.mkv"
+  ],
+  "streamChecks": [
+    {
+      "type": "audio",
+      "ordinal": 0,
+      "packets": 626,
+      "exactPayloads": true,
+      "exactTiming": true
+    },
+    {
+      "type": "video",
+      "ordinal": 0,
+      "packets": 1500,
+      "exactPayloads": true,
+      "exactTiming": true
+    },
+    {
+      "type": "subtitle",
+      "ordinal": 0,
+      "packets": 3,
+      "exactPayloads": true,
+      "exactTiming": true
+    },
+    {
+      "type": "subtitle",
+      "ordinal": 1,
+      "packets": 3,
+      "exactPayloads": true,
+      "exactTiming": true
+    }
+  ]
+}

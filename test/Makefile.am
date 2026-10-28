@@ -76,6 +76,7 @@ check_PROGRAMS = \
 	test_modules_lua_extension \
 	test_modules_misc_medialibrary \
 	test_modules_access_output_file \
+	test_modules_demux_avformat_mux_queue \
 	test_modules_packetizer_helpers \
 	test_modules_packetizer_copy \
 	test_modules_packetizer_hxxx \
@@ -176,6 +177,9 @@ endif
 AM_LDFLAGS = -no-install $(LDFLAGS_vlc)
 LIBVLCCORE = -L../src/ -lvlccore
 LIBVLC = -L../lib -lvlc
+
+test_modules_demux_avformat_mux_queue_SOURCES = modules/demux/avformat_mux_queue.c
+test_modules_demux_avformat_mux_queue_LDADD = $(LIBVLCCORE)
 
 test_libvlc_core_SOURCES = libvlc/core.c
 test_libvlc_core_LDADD = $(LIBVLC)

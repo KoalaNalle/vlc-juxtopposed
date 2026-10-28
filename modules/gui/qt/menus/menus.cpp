@@ -619,10 +619,20 @@ void VLCMenuBar::PopupMenuPlaylistEntries( QMenu *menu, qt_intf_t *p_intf )
     nextAction->setEnabled( !bPlaylistEmpty );
     connect( THEMPL, &PlaylistController::isEmptyChanged, nextAction, &QAction::setDisabled);
 
-    action = menu->addAction( qtr( "Record" ), THEMIM, &PlayerController::toggleRecord );
-    action->setIcon( QIcon( ":/menu/ic_fluent_record.svg" ) );
-    if( !hasInput )
-        action->setEnabled( false );
+    auto *player = THEMIM;
+    QAction *recordAction = menu->addAction( qtr( "Record" ) );
+    recordAction->setIcon( QIcon( ":/menu/ic_fluent_record.svg" ) );
+    recordAction->setCheckable( true );
+    recordAction->setChecked( player->isRecording() );
+    recordAction->setEnabled( hasInput );
+    connect( player, &PlayerController::recordingChanged, recordAction, &QAction::setChecked );
+    connect( player, &PlayerController::inputChanged, recordAction, &QAction::setEnabled );
+    connect( recordAction, &QAction::triggered, player, [player, recordAction] {
+        // QAction toggles before triggered; only the player's confirmed state
+        // may update the checkmark, including when a recording request fails.
+        recordAction->setChecked( player->isRecording() );
+        player->toggleRecord();
+    } );
     menu->addSeparator();
 }
 

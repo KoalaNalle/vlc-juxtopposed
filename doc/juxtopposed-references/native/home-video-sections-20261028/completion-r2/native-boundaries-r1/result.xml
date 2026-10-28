@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestHomeActivity">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="125.463"/>
+  </TestFunction>
+  <TestFunction name="nativeVideoHistoryCompletionBoundaries">
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: normal-eof]]></Description>
+  </Message>
+    <Incident type="fail" file="/mnt/c/Modding/vlc&#x002D;juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_home_activity.cpp" line="621">
+      <Description><![CDATA[Compared doubles are not the same (fuzzy compare)
+   Actual   (video->f_progress): -1
+   Expected (0.)               : 0]]></Description>
+    </Incident>
+    <Duration msecs="630.775"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="10.6401"/>
+  </TestFunction>
+  <Duration msecs="768.095"/>
+</TestCase>

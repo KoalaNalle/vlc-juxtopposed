@@ -1,0 +1,20 @@
+********* Start testing of TestHistoryWorker *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestHistoryWorker::initTestCase()
+FAIL!  : TestHistoryWorker::busyStateAndCapturedMode(continue) Compared values are not the same
+   Actual   (source->getCount()): 0
+   Expected (unsigned(1))       : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_history_worker.cpp(182) : failure location
+FAIL!  : TestHistoryWorker::busyStateAndCapturedMode(watch-again) Compared values are not the same
+   Actual   (source->getCount()): 0
+   Expected (unsigned(1))       : 1
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_history_worker.cpp(182) : failure location
+PASS   : TestHistoryWorker::workerFailureAndRetry(continue)
+PASS   : TestHistoryWorker::workerFailureAndRetry(watch-again)
+QINFO  : TestHistoryWorker::deletionDrainsActiveWorker(continue) Model deletion joined a real gated history worker; accepted batch completed, opposite history and indexed media retained
+PASS   : TestHistoryWorker::deletionDrainsActiveWorker(continue)
+QINFO  : TestHistoryWorker::deletionDrainsActiveWorker(watch-again) Model deletion joined a real gated history worker; accepted batch completed, opposite history and indexed media retained
+PASS   : TestHistoryWorker::deletionDrainsActiveWorker(watch-again)
+PASS   : TestHistoryWorker::cleanupTestCase()
+Totals: 6 passed, 2 failed, 0 skipped, 0 blacklisted, 37462ms
+********* Finished testing of TestHistoryWorker *********

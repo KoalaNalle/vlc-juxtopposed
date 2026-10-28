@@ -1,0 +1,293 @@
+"""Prepare-only producer; execute only after independent review and explicit parent dispatch."""
+import ctypes as C
+import hashlib, json, os, re, shutil, subprocess, sys, threading, time, uuid
+from datetime import datetime
+from pathlib import Path
+
+REPO = Path(r'C:\Modding\vlc-juxtopposed')
+HERE = Path(__file__).resolve().parent
+BASE = REPO / 'build-windows/beta-fps-20261028/tail-drain-repair-r1/adapter-duration-r1/real-writer-regression-r2/runtime-original-r1'
+RUNTIME = BASE / 'runtime'
+RECEIPT = BASE / 'verification.json'
+FIXTURE = REPO / 'build-windows/beta-fps-20261028/media-record-flac/frame-marker.mkv'
+PLUGIN_SHA = '26e1b8cc539ac5299c8e821dfba36f2449e588af5f8582b4a33c7605c0508cce'
+CORE_SHA = 'f8fc980bbe03da57908f79045f266710dd27a16c6ee66b6c45d60cd1f9b93598'
+FIXTURE_SHA = 'ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21'
+CASES = ('callback-control', 'good-writer', 'closed-pipe')
+DEADLINE = datetime.fromisoformat('2026-10-28T23:30:00+02:00').timestamp()
+CASE_TIMEOUT = 90
+CHECKPOINT_RESERVE = 60
+FREEZE = HERE / 'freeze-r4.json'
+
+def sha(path):
+    with Path(path).open('rb') as file: return hashlib.file_digest(file, 'sha256').hexdigest()
+
+def inventory(root):
+    root = Path(root); values = {}
+    for p in sorted(root.rglob('*')):
+        st = p.lstat()
+        if p.is_symlink() or getattr(st, 'st_file_attributes', 0) & 1024:
+            raise RuntimeError('Unexpected reparse point in runtime: '+str(p))
+        if p.is_file(): values[p.relative_to(root).as_posix()] = sha(p)
+    return values
+
+def atomic(path, data):
+    temp = path.with_suffix('.next.json')
+    temp.write_text(json.dumps(data, indent=2)+'\n', encoding='utf-8')
+    os.replace(temp, path)
+
+def child(case, out):
+    # Process-local only: suppress unattended native fault dialogs.
+    kernel=C.WinDLL('kernel32',use_last_error=True)
+    kernel.SetErrorMode.argtypes=[C.c_uint]; kernel.SetErrorMode.restype=C.c_uint
+    kernel.SetErrorMode(0x8003)
+    # stdout is reserved for avformat bytes and must never receive diagnostics.
+    out = Path(out); runtime = RUNTIME
+    for k in ('VLC_CACHE_SOURCE_PATH', 'VLC_CACHE_OUTPUT_PATH'):
+        os.environ.pop(k, None)
+    libpath = os.add_dll_directory(str(runtime))
+    core = C.CDLL(str(runtime/'libvlccore.dll'))
+    vlc = C.CDLL(str(runtime/'libvlc.dll'))
+    libpath  # keep DLL search lifetime alive through native release
+    getdir = core.config_GetUserDir; getdir.argtypes = [C.c_int]; getdir.restype = C.c_void_p
+    free = vlc.libvlc_free; free.argtypes=[C.c_void_p]; free.restype=None
+    userdata_ptr = getdir(2)
+    if not userdata_ptr: raise RuntimeError('config_GetUserDir(USERDATA) returned NULL')
+    try: userdata = os.fsdecode(C.string_at(userdata_ptr).decode('utf-8'))
+    finally: free(userdata_ptr)
+    if Path(userdata).resolve() != Path(os.environ['VLC_USERDATA_PATH']).resolve():
+        raise RuntimeError('VLC_USERDATA_PATH did not resolve to owned directory')
+    def bind(name, args, result):
+        f = getattr(vlc,name); f.argtypes=args; f.restype=result; return f
+    new = bind('libvlc_new',[C.c_int,C.POINTER(C.c_char_p)],C.c_void_p)
+    release = bind('libvlc_release',[C.c_void_p],None)
+    set_error = bind('libvlc_dialog_set_error_callback',[C.c_void_p,C.c_void_p,C.c_void_p],None)
+    new_path = bind('libvlc_media_new_path',[C.c_char_p],C.c_void_p)
+    media_release = bind('libvlc_media_release',[C.c_void_p],None)
+    media_add = bind('libvlc_media_add_option_flag',[C.c_void_p,C.c_char_p,C.c_uint],None)
+    player_new = bind('libvlc_media_player_new',[C.c_void_p,C.c_void_p,C.c_void_p],C.c_void_p)
+    player_set = bind('libvlc_media_player_set_media',[C.c_void_p,C.c_void_p],None)
+    play = bind('libvlc_media_player_play',[C.c_void_p],C.c_int)
+    player_release = bind('libvlc_media_player_release',[C.c_void_p],None)
+    names = ('on_media_changed on_media_stopping on_state_changed on_buffering_changed on_rate_changed '
+             'on_capabilities_changed on_position_changed on_length_changed on_track_list_changed '
+             'on_track_selection_changed on_program_list_changed on_program_selection_changed '
+             'on_titles_changed on_title_selection_changed on_chapter_selection_changed '
+             'on_recording_changed on_screenshot_taken on_media_parsed on_media_meta_changed '
+             'on_media_subitems_changed on_media_attachments_added on_next_frame_status '
+             'on_prev_frame_status on_vout_changed on_cork_changed on_audio_volume_changed '
+             'on_audio_mute_changed on_audio_device_changed').split()
+    class PlayerCallbacks(C.Structure):
+        _fields_ = [('version', C.c_uint32)] + [(name,C.c_void_p) for name in names]
+    Event = C.CFUNCTYPE(None,C.c_void_p,C.c_int)
+    MediaStop = C.CFUNCTYPE(None,C.c_void_p,C.c_void_p,C.c_int)
+    Dialog = C.CFUNCTYPE(None,C.c_void_p,C.c_char_p,C.c_char_p)
+    events=[]; dialogs=[]; lock=threading.Lock(); done=threading.Event(); started=False
+    @Event
+    def on_state(opaque, state):
+        with lock:
+            events.append(('state',int(state),time.monotonic()))
+            if state in (1,2,3,5,6): nonlocal_state[0]=True
+            if state in (4,6) and nonlocal_state[0]: done.set()
+    nonlocal_state=[False]
+    @MediaStop
+    def on_stop(opaque, media, reason):
+        with lock: events.append(('media_stopping',int(reason),time.monotonic()))
+    @Dialog
+    def on_error(opaque, title, message):
+        with lock:
+            dialogs.append({'title': (title or b'').decode('utf-8','replace'),
+                            'text': (message or b'').decode('utf-8','replace')})
+    cbs=PlayerCallbacks(); cbs.version=0
+    cbs.on_media_stopping=C.cast(on_stop,C.c_void_p).value
+    cbs.on_state_changed=C.cast(on_state,C.c_void_p).value
+    options=['--ignore-config','--intf=dummy','--no-one-instance','--no-media-library',
+             '--no-save-recentplay','--no-metadata-network-access','--no-ml-network-discovery',
+             '--no-auto-preparse','--extraintf=','--control=',
+             '--file-logging','--verbose=2','--log-verbose=2','--logfile='+str(out/'vlc.log'),
+             '--sout-all']
+    if case == 'good-writer':
+        options += ['--sout=#standard{access=file{no-overwrite},mux=avformat{mux=matroska},dst='+
+                    (out/'output.mkv').as_posix()+'}']
+    elif case == 'closed-pipe':
+        options += ['--sout=#standard{access=fd,mux=avformat{mux=matroska},dst=1}']
+    # There is no --no-interact: the native error positive control tests this path.
+    args=(C.c_char_p*len(options))(*(x.encode('utf-8') for x in options))
+    instance=new(len(options),args)
+    if not instance: raise RuntimeError('libvlc_new failed')
+    player = media = None
+    try:
+        set_error(instance,C.cast(on_error,C.c_void_p),None)
+        path = out/'owned-intentionally-absent-input.mkv' if case == 'callback-control' else FIXTURE
+        if case == 'callback-control' and path.exists(): raise RuntimeError('Positive-control path exists')
+        media=new_path(str(path).encode('utf-8'))
+        if not media: raise RuntimeError('libvlc_media_new_path failed')
+        # Explicit input options suppress accidental discovery from user context.
+        for option in (':no-sub-autodetect-file',':no-save-recentplay'):
+            media_add(media,option.encode(),2)
+        player=player_new(instance,C.byref(cbs),None)
+        if not player: raise RuntimeError('libvlc_media_player_new failed')
+        player_set(player,media); media_release(media); media=None
+        play_rc=play(player)
+        if play_rc != 0: raise RuntimeError('libvlc_media_player_play failed: '+str(play_rc))
+        if not done.wait(70): raise TimeoutError('No observed terminal player state')
+        # Player release drains/closes sout; callbacks remain registered and alive.
+        player_release(player); player=None
+        with lock: captured={'events':events[:], 'dialogs':dialogs[:]}
+        captured.update(case=case,userdata=userdata,playReturn=play_rc,argv=options,
+                        observedStart=nonlocal_state[0],terminalObserved=True)
+    finally:
+        if player: player_release(player)
+        if media: media_release(media)
+        # Keep callback registered through player finalization; then detach.
+        set_error(instance,None,None)
+        release(instance)
+    atomic(out/'child-result.json',captured)
+
+
+def known_roaming_folder():
+    # FOLDERID_RoamingAppData, resolved by Windows independently of APPDATA.
+    class GUID(C.Structure):
+        _fields_=[('data1',C.c_uint32),('data2',C.c_uint16),('data3',C.c_uint16),('data4',C.c_ubyte*8)]
+    guid=GUID.from_buffer_copy(uuid.UUID('3eb685db-65f9-4cf6-a03a-e3ef65729f3d').bytes_le)
+    shell=C.WinDLL('shell32'); ole=C.OleDLL('ole32')
+    shell.SHGetKnownFolderPath.argtypes=[C.POINTER(GUID),C.c_uint32,C.c_void_p,C.POINTER(C.c_void_p)]
+    shell.SHGetKnownFolderPath.restype=C.c_long
+    ole.CoTaskMemFree.argtypes=[C.c_void_p]; ole.CoTaskMemFree.restype=None
+    value=C.c_void_p()
+    result=shell.SHGetKnownFolderPath(C.byref(guid),0,None,C.byref(value))
+    if result != 0 or not value.value: raise OSError('SHGetKnownFolderPath failed: '+str(result))
+    try: return Path(C.wstring_at(value.value))
+    finally: ole.CoTaskMemFree(value)
+
+def parent():
+    assert time.time()+CASE_TIMEOUT+CHECKPOINT_RESERVE < DEADLINE, 'Insufficient time before 23:30 Helsinki deadline'
+    freeze=json.loads(FREEZE.read_text(encoding='utf-8')); freeze_sha=sha(FREEZE)
+    assert sha(Path(__file__))==freeze['producerSha256'] and sha(RECEIPT)==freeze['receiptSha256']
+    assert all(sha(REPO/p)==h for p,h in freeze['sourceHeadersSha256'].items())
+    receipt=json.loads(RECEIPT.read_text(encoding='utf-8'))
+    assert receipt['normalExit'] and receipt['runtimeUnchanged'] and receipt['fixtureUnchanged']
+    assert receipt['runtimeSha256']['plugins/codec/libavcodec_plugin.dll']==PLUGIN_SHA
+    assert receipt['runtimeSha256']['libvlccore.dll']==CORE_SHA
+    assert sha(FIXTURE)==FIXTURE_SHA and sha(RUNTIME/'libvlccore.dll')==CORE_SHA
+    assert sha(RUNTIME/'plugins/codec/libavcodec_plugin.dll')==PLUGIN_SHA
+    assert all(sha(REPO/p)==h for p,h in receipt['sourceSha256'].items())
+    before=inventory(RUNTIME); assert before == receipt['runtimeSha256']
+    disk=shutil.disk_usage(REPO); assert disk.free - ((disk.total+4)//5) >= 64*1024*1024
+    # Refuse to overlap an existing result. No overwrites and no staging.
+    out=HERE/'baseline-run-r4'; out.mkdir(exist_ok=False)
+    known=known_roaming_folder()
+    appdata=Path(os.environ['APPDATA'])
+    human=list(dict.fromkeys(root/'vlc'/name for root in (known,appdata)
+                             for name in ('vlcrc','vlc-qt-interface.ini')))
+    human_before={str(p):sha(p) if p.is_file() else None for p in human}
+    source_sha=sha(Path(__file__)); receipt_sha=sha(RECEIPT)
+    report={'status':'running','started':time.time(),'cases':{},'runtimeReceiptSha256':receipt_sha,
+            'producerSha256':source_sha,'fixtureSha256':FIXTURE_SHA,'humanBeforeSha256':human_before,
+            'knownRoamingFolder':str(known),'appdataAliasesKnownFolder':known.resolve()==appdata.resolve(),
+            'sourceHeadersSha256':freeze['sourceHeadersSha256'],'freezeSha256':freeze_sha,
+            'deadlineLocal':'2026-10-28 23:30 Europe/Helsinki','forcedCleanupUsed':False,
+            'scope':'Owned headless LibVLC callback baseline; not GUI, tail-only or beta acceptance.'}
+    def save(): atomic(out/'verification.json',report)
+    save()
+    proc=None; reader=None; info=None
+    try:
+        for case in CASES:
+            proc=None; reader=None; info=None
+            if time.time()+CASE_TIMEOUT+CHECKPOINT_RESERVE >= DEADLINE:
+                raise RuntimeError('Insufficient time for another case and checkpoint')
+            d=out/case; d.mkdir()
+            for folder in ('temp','userdata','appdata','localappdata'): (d/folder).mkdir()
+            env={k:v for k,v in os.environ.items() if not k.startswith('VLC_')}
+            env.update(VLC_USERDATA_PATH=str(d/'userdata'),VLC_PLUGIN_PATH=str(RUNTIME/'plugins'),
+                       APPDATA=str(d/'appdata'),LOCALAPPDATA=str(d/'localappdata'),
+                       TEMP=str(d/'temp'),TMP=str(d/'temp'),PYTHONDONTWRITEBYTECODE='1')
+            info={'status':'starting'}; report['cases'][case]=info; save()
+            with (d/'stderr.txt').open('wb') as err:
+                proc=subprocess.Popen([sys.executable,'-u',str(Path(__file__).resolve()),'--child',case,str(d)],
+                    cwd=d,env=env,stdout=subprocess.PIPE if case=='closed-pipe' else subprocess.DEVNULL,
+                    stderr=err,creationflags=subprocess.CREATE_NO_WINDOW)
+                info.update(status='running',pid=proc.pid); save()
+                reader=None
+                if case=='closed-pipe':
+                    def read_prefix():
+                        try:
+                            with proc.stdout:
+                                prefix=proc.stdout.read(4096)
+                                (d/'stdout-prefix.bin').write_bytes(prefix)
+                                info['prefixBytes']=len(prefix)
+                        except BaseException as e: info['readerError']=repr(e)
+                    reader=threading.Thread(target=read_prefix,daemon=True); reader.start()
+                timed_out=False
+                try: code=proc.wait(timeout=CASE_TIMEOUT)
+                except subprocess.TimeoutExpired:
+                    timed_out=True
+                    report['forcedCleanupUsed']=True
+                    info.update(status='timeout-cleanup',forcedCleanupUsed=True)
+                    save()
+                    proc.kill()  # Only this owned child; never accept a forced run.
+                    try: code=proc.wait(timeout=10)
+                    except subprocess.TimeoutExpired:
+                        info.update(status='cleanup-incomplete-child-still-running')
+                        save()
+                        raise RuntimeError('Owned child could not be reaped after kill')
+                if reader:
+                    reader.join(timeout=5); info['readerJoined']=not reader.is_alive()
+                    if reader.is_alive():
+                        info.update(status='cleanup-incomplete-reader-still-running')
+                        save()
+                        raise RuntimeError('Owned pipe reader did not terminate')
+                info.update(status='terminal',exitCode=code,normalExit=code==0 and not timed_out)
+                if timed_out:
+                    save()
+                    raise RuntimeError('Owned child exceeded deadline and was killed; run not accepted')
+            childfile=d/'child-result.json'
+            info['child']=json.loads(childfile.read_text()) if childfile.exists() else None
+            log=(d/'vlc.log').read_text(encoding='utf-8',errors='replace') if (d/'vlc.log').exists() else ''
+            info['selectedAvformat']='using sout mux module "avcodec"' in log
+            info['ioFailureLogged']=bool(re.search(r'could not write frame|could not flush buffered mux output|could not flush mux header|could not finalize muxed output',log))
+            info['unexpectedDiagnostics']=[line for line in log.splitlines() if re.search(r'Assertion failed|Binding loop|ReferenceError|TypeError',line)]
+            info['outputBytes']=(d/'output.mkv').stat().st_size if (d/'output.mkv').exists() else None
+            save()
+            if code != 0 or not info['child'] or info['unexpectedDiagnostics']:
+                raise RuntimeError('Case did not terminate cleanly: '+case)
+            if case == 'callback-control' and not any(
+                    entry['title'] == "Your media can't be opened" and entry['text']
+                    for entry in info['child']['dialogs']):
+                raise RuntimeError('Expected missing-media callback absent; other counts inconclusive')
+            if case == 'good-writer' and (not info['selectedAvformat'] or info['ioFailureLogged'] or not info['outputBytes'] or info['child']['dialogs']):
+                raise RuntimeError('Good writer control did not qualify')
+            if case == 'closed-pipe' and (not info['selectedAvformat'] or not info['ioFailureLogged'] or info.get('prefixBytes') != 4096 or not info.get('readerJoined') or info.get('readerError')):
+                raise RuntimeError('Closed-pipe case did not prove expected writer error and teardown')
+    except BaseException as e:
+        report['failure']=repr(e)
+        if proc is not None and proc.poll() is None:
+            report['forcedCleanupUsed']=True
+            try:
+                proc.kill(); proc.wait(timeout=10)
+                if info is not None: info['cleanupAfterException']=True
+            except BaseException as cleanup:
+                report['cleanupError']=repr(cleanup)
+        if reader is not None:
+            reader.join(timeout=5)
+            if reader.is_alive(): report['cleanupError']='Owned pipe reader did not terminate'
+    finally:
+        report['runtimeUnchanged']=inventory(RUNTIME)==before
+        report['fixtureUnchanged']=sha(FIXTURE)==FIXTURE_SHA
+        report['humanConfigUnchanged']=all((sha(p) if p.is_file() else None)==human_before[str(p)] for p in human)
+        report['sourceUnchanged']=all(sha(REPO/p)==h for p,h in receipt['sourceSha256'].items())
+        report['headersUnchanged']=all(sha(REPO/p)==h for p,h in freeze['sourceHeadersSha256'].items())
+        report['freezeUnchanged']=sha(FREEZE)==freeze_sha
+        report['receiptUnchanged']=sha(RECEIPT)==receipt_sha
+        report['producerUnchanged']=sha(Path(__file__))==source_sha
+        report['ended']=time.time()
+        report['status']='cleanup-incomplete' if 'cleanupError' in report else 'terminal'
+        report['success']='failure' not in report and 'cleanupError' not in report and not report['forcedCleanupUsed'] and all(report[k] for k in ('runtimeUnchanged','fixtureUnchanged','humanConfigUnchanged','sourceUnchanged','headersUnchanged','freezeUnchanged','receiptUnchanged','producerUnchanged'))
+        save()
+    print(json.dumps({'status':report['status'],'success':report['success'],'failure':report.get('failure')}))
+    if not report['success']: raise SystemExit(1)
+
+if __name__=='__main__':
+    if len(sys.argv)==4 and sys.argv[1]=='--child' and sys.argv[2] in CASES: child(sys.argv[2],sys.argv[3])
+    elif sys.argv[1:]==['--execute-reviewed-baseline']: parent()
+    else: raise SystemExit('Requires --execute-reviewed-baseline after review')

@@ -44,6 +44,7 @@ T.Page {
     property int libraryItemCount: libraryModel?.count ?? _firstChild?.count ?? -1
     property var libraryBreadcrumbs: null
     property bool libraryHeaderEnabled: true
+    property var libraryMoreMenu: null
 
     property var sortModel: _firstChild?.sortModel ?? null
 
@@ -210,7 +211,7 @@ T.Page {
                 const menu = root.sortMenu ?? librarySortMenu
                 menu.popup(position, false, model)
             }
-            onMoreRequested: position => libraryMenu.popup(position)
+            onMoreRequested: position => (root.libraryMoreMenu ?? libraryMenu).popup(position)
             Connections {
                 target: root.search
                 function onAskShow() { libraryHeader.showSearch() }

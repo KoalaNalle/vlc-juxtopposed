@@ -1,0 +1,52 @@
+{
+  "status": "prepared-not-executed-awaiting-root-lane-and-storage",
+  "scope": "Actual production QObject/QThread model lifetime only; no shipping source edits, GUI build or extra dependency",
+  "initialSelectedSources": 44,
+  "realCompilerGraph": "Captured with exact -M flags before build; compared to actual -MD graph afterward",
+  "knownExistingCppObjectBytes": 30717278,
+  "knownExistingMocObjectBytes": 15614651,
+  "existingNativeExeBytes": 477529227,
+  "existingNativeExeDebugSectionBytes": 446515503,
+  "existingNativeExeNonDebugSectionBytes": 16905752,
+  "expectedStrippedExe": "Tens of MB; enforce <=80 MiB and absence of debug sections",
+  "peakBudget": {
+    "componentsBytes": {
+      "objects": 83886080,
+      "strippedExe": 83886080,
+      "linkTemporary": 83886080,
+      "generatedAndDependencies": 16777216,
+      "logsAndReceipts": 33554432,
+      "isolatedDatabase": 67108864,
+      "runtimeMetadataAndCache": 33554432
+    },
+    "peakAdditionalBytes": 402653184,
+    "reserveFraction": 0.2
+  },
+  "storageAtPreparation": {
+    "totalBytes": 1999321952256,
+    "freeBytes": 403169370112,
+    "minimumFreeBytes": 399864390452,
+    "before80HeadroomBytes": 3304979660,
+    "peakAdditionalBytes": 402653184,
+    "fits": true,
+    "usedPercent": 79.83469497461023
+  },
+  "deadlineLocal": "2026-10-28T23:35:00+02:00",
+  "expectedFunctions": [
+    "initTestCase",
+    "busyStateAndCapturedMode",
+    "workerFailureAndRetry",
+    "deletionDrainsActiveWorker",
+    "cleanupTestCase"
+  ],
+  "expectedDataTags": [
+    "continue",
+    "watch-again"
+  ],
+  "expectedDataRows": 6,
+  "expectedTotalIncidents": 8,
+  "rootMustExplicitlyReleaseWriterLaneBeforeBuild": true,
+  "buildInvoked": false,
+  "runInvoked": false,
+  "runtimeStaging": "Only frozen immutable inventory, hardlink-only with no EMLINK copy fallback; fresh profile; unlink before replacement"
+}

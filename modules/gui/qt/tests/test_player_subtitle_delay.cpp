@@ -183,7 +183,9 @@ private slots:
             QSKIP("Set VLC_SUBTITLE_FIXTURE to run the actual native controller diagnostic");
         QVERIFY2(QFileInfo::exists(m_fixture), "Use the real generated subtitle-style.mp4");
         const QDir fixtures(QFileInfo(m_fixture).absolutePath());
-        QVERIFY(fixtures.exists("subtitle-style.srt"));
+        const QString primarySubtitle = qEnvironmentVariable("VLC_TEST_PRIMARY_SUBTITLE",
+                                                             "subtitle-style.srt");
+        QVERIFY(fixtures.exists(primarySubtitle));
         QVERIFY(fixtures.exists("duration-cues.srt"));
         QVERIFY(m_directory.isValid());
         qputenv("VLC_TEST_TIMEOUT", "30");
@@ -207,6 +209,11 @@ private slots:
             QCOMPARE(var_SetString(playerObject, "text-renderer", "freetype"), VLC_SUCCESS);
             var_Create(playerObject, "sub-autodetect-file", VLC_VAR_BOOL);
             QCOMPARE(var_SetBool(playerObject, "sub-autodetect-file", false), VLC_SUCCESS);
+            if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1")
+            {
+                var_Create(playerObject, "demux-filter", VLC_VAR_STRING);
+                QCOMPARE(var_SetString(playerObject, "demux-filter", "noseek"), VLC_SUCCESS);
+            }
         }
         var_Create(m_environment->intf, "sub-delay", VLC_VAR_INTEGER);
         var_SetInteger(m_environment->intf, "sub-delay", 0);
@@ -218,6 +225,11 @@ private slots:
         {
             vlc_player_locker lock{m_player};
             vlc_player_SetAssociatedSubsFPS(m_player, 50.f);
+        }
+        if (qEnvironmentVariable("VLC_TEST_PLAYBACK_RATE") == "0.25")
+        {
+            vlc_player_locker lock{m_player};
+            vlc_player_ChangeRate(m_player, 0.25f);
         }
         m_controller = std::make_unique<PlayerController>(m_environment->intf);
         m_environment->intf->p_mainPlayerController = m_controller.get();
@@ -244,11 +256,19 @@ private slots:
         QCOMPARE(configured, VLC_SUCCESS);
         QCOMPARE(started, VLC_SUCCESS);
         QTRY_VERIFY_WITH_TIMEOUT(m_controller->hasVideoOutput(), 10000);
-        for (const auto &name : {"subtitle-style.srt", "duration-cues.srt"})
+        const bool nonseekable = qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1";
+        if (nonseekable)
+        {
+            { vlc_player_locker lock{m_player}; vlc_player_UnselectTrackCategory(m_player, SPU_ES); }
+            QTRY_VERIFY(roles() == qMakePair(static_cast<vlc_es_id_t *>(nullptr),
+                                           static_cast<vlc_es_id_t *>(nullptr)));
+        }
+        for (const auto &name : {primarySubtitle, QStringLiteral("duration-cues.srt")})
         {
             const auto subtitle = QUrl::fromLocalFile(fixtures.filePath(name)).toEncoded();
             vlc_player_locker lock{m_player};
-            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), true, false, true), VLC_SUCCESS);
+            const bool selected = !nonseekable || name == primarySubtitle;
+            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), selected, false, true), VLC_SUCCESS);
         }
         // A media may already contain two embedded tracks. Wait for the actual
         // associated sources instead of mistaking those initial rows for SRTs.
@@ -266,13 +286,23 @@ private slots:
             }
             return false;
         };
-        QTRY_VERIFY_WITH_TIMEOUT(findAssociated("subtitle-style.srt", m_first), 10000);
+        QTRY_VERIFY_WITH_TIMEOUT(findAssociated(primarySubtitle, m_first), 10000);
         QTRY_VERIFY_WITH_TIMEOUT(findAssociated("duration-cues.srt", m_second), 10000);
         QVERIFY(m_first != m_second);
-        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
-        QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
-        QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
-        QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
+        if (nonseekable)
+            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)), 5000);
+        else
+        {
+            QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
+        }
+        // Renderer-owned styles (e.g. ASS) need not expose the Freetype
+        // appearance/preset consumer to exercise native FPS and caption output.
+        if (qEnvironmentVariable("VLC_TEST_FPS_FORMAT_ONLY") != "1")
+        {
+            QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
+            QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
+        }
         {
             vlc_player_locker lock{m_player};
             vlc_player_Pause(m_player);
@@ -466,10 +496,26 @@ private slots:
         QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
         QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
         QVERIFY(time() < VLC_TICK_FROM_SEC(14));
+        const auto recordingDirectory = qEnvironmentVariable("VLC_FPS_RECORDINGS");
+        if (!recordingDirectory.isEmpty())
+        {
+            QVERIFY(QDir(recordingDirectory).exists());
+            QVERIFY(QDir(recordingDirectory).entryList(QDir::Files).isEmpty());
+            { vlc_player_locker lock{m_player};
+              vlc_player_SetRecordingEnabled(m_player, true, qtu(recordingDirectory)); }
+            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
+                return vlc_player_IsRecording(m_player); })(), 5000);
+            qInfo("Recording before FPS edit: main clock=%lld", static_cast<long long>(time()));
+        }
         const auto before = time();
         m_controller->setSubtitleFPS(50.f); // first ever FPS edit for this input
         QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
-        QTest::qWait(700);
+        float playbackRate;
+        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
+        QVERIFY(playbackRate > 0.f);
+        // The prompt-response mode keeps a wall-time bound even at slow rates.
+        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
+                         ? 700 : qRound(700.f / playbackRate));
         const auto actual = snapshot("fresh-first-playing-fps50");
         const auto after = time();
         QVERIFY(!actual.isNull());
@@ -483,6 +529,30 @@ private slots:
               static_cast<long long>(before), static_cast<long long>(after));
         QVERIFY2(matches(actualMask, middleMask) && !matches(actualMask, firstMask),
                  "The first default->50 FPS edit must replace the old cue without a player seek");
+        if (!recordingDirectory.isEmpty())
+        {
+            { vlc_player_locker lock{m_player}; QVERIFY(vlc_player_IsRecording(m_player)); }
+            // The generated video has keyframes at 10-second intervals. Keep
+            // recording past the 20-second keyframe; stopping near 16 seconds
+            // can produce a file with no video packets. Decode it separately.
+            QTest::qWait(10000);
+            const auto stopTime = time();
+            QVERIFY(stopTime > VLC_TICK_FROM_SEC(22) && stopTime - after < VLC_TICK_FROM_SEC(12));
+            { vlc_player_locker lock{m_player};
+              QVERIFY(vlc_player_IsRecording(m_player));
+              QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PLAYING);
+              vlc_player_SetRecordingEnabled(m_player, false, nullptr); }
+            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
+                return !vlc_player_IsRecording(m_player); })(), 5000);
+            QTRY_VERIFY_WITH_TIMEOUT(time() > stopTime + VLC_TICK_FROM_MS(200), 5000);
+            QCOMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+            const auto files = QDir(recordingDirectory).entryInfoList(QDir::Files);
+            QVERIFY2(!files.isEmpty(), "Recording must publish output for separate decode validation");
+            for (const auto &file : files)
+                QVERIFY(file.size() > 0);
+            qInfo("Recording stopped normally: main clock=%lld files=%lld",
+                  static_cast<long long>(stopTime), static_cast<long long>(files.size()));
+        }
     }
     // Run alone in a fresh process with both a selected external source and
     // an embedded secondary source. Compare each rendered region independently.
@@ -745,10 +815,30 @@ private slots:
 
     // Both selected external sources share FPS but have independent delays.
     // Run alone in a fresh process to exercise the first live change.
+    void firstPlayingFpsChangeRetimesBothTrackDelays_data()
+    {
+        QTest::addColumn<int>("primaryDelayMs");
+        QTest::addColumn<int>("secondaryDelayMs");
+        QTest::addColumn<int>("videoSeconds");
+        QTest::addColumn<int>("primaryReferenceSeconds");
+        QTest::addColumn<int>("secondaryReferenceSeconds");
+        QTest::addColumn<bool>("secondaryEnded");
+        QTest::newRow("opposed") << 10000 << -5000 << 23 << 26 << 56 << false;
+        QTest::newRow("opposed-secondary-ended") << 10000 << -5000 << 26 << 32 << 56 << true;
+        QTest::newRow("opposed-swapped") << -5000 << 10000 << 23 << 56 << 26 << false;
+        QTest::newRow("positive") << 10000 << 5000 << 23 << 26 << 36 << false;
+        QTest::newRow("negative") << -5000 << -10000 << 12 << 34 << 44 << false;
+    }
     void firstPlayingFpsChangeRetimesBothTrackDelays()
     {
         if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
             QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        QFETCH(int, primaryDelayMs);
+        QFETCH(int, secondaryDelayMs);
+        QFETCH(int, videoSeconds);
+        QFETCH(int, primaryReferenceSeconds);
+        QFETCH(int, secondaryReferenceSeconds);
+        QFETCH(bool, secondaryEnded);
         QVERIFY2(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty(), "Set snapshot output directory");
         { vlc_player_locker lock{m_player};
           QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
@@ -779,29 +869,31 @@ private slots:
             return united > 100 && intersection * 1000 >= united * 995;
         };
         int attempt = 0;
-        QImage at28, at58;
-        seek(VLC_TICK_FROM_SEC(28));
+        // Reference times map (video time - selected delay) through FPS 50
+        // onto the original 25 FPS fixture. Stay clear of cue boundaries.
+        QImage at26, at56;
+        seek(VLC_TICK_FROM_SEC(primaryReferenceSeconds));
         QTRY_VERIFY_WITH_TIMEOUT(([&] {
-            at28 = captureNativeFrame(QString("track-delay-reference28-%1").arg(attempt++));
-            return !at28.isNull() && frameMarker(at28) == 700u
-                && mask(at28, 3, 4).count(char(1)) > 100;
+            at26 = captureNativeFrame(QString("track-delay-reference26-%1").arg(attempt++));
+            return !at26.isNull() && frameMarker(at26) == unsigned(primaryReferenceSeconds * 25)
+                && mask(at26, 3, 4).count(char(1)) > 100;
         }()), 10000);
-        seek(VLC_TICK_FROM_SEC(58));
+        seek(VLC_TICK_FROM_SEC(secondaryReferenceSeconds));
         QTRY_VERIFY_WITH_TIMEOUT(([&] {
-            at58 = captureNativeFrame(QString("track-delay-reference58-%1").arg(attempt++));
-            return !at58.isNull() && frameMarker(at58) == 1450u
-                && mask(at58, 1, 3).count(char(1)) > 100;
+            at56 = captureNativeFrame(QString("track-delay-reference56-%1").arg(attempt++));
+            return !at56.isNull() && frameMarker(at56) == unsigned(secondaryReferenceSeconds * 25)
+                && mask(at56, 1, 3).count(char(1)) > 100;
         }()), 10000);
-        const auto primaryExpected = mask(at28, 3, 4), secondaryExpected = mask(at58, 1, 3);
-        QCOMPARE(setOwn(m_first.get(), VLC_TICK_FROM_SEC(10)), VLC_SUCCESS);
-        QCOMPARE(setOwn(m_second.get(), -VLC_TICK_FROM_SEC(5)), VLC_SUCCESS);
-        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_SEC(10));
-        QCOMPARE(own(m_second.get()), -VLC_TICK_FROM_SEC(5));
+        const auto primaryExpected = mask(at26, 3, 4), secondaryExpected = mask(at56, 1, 3);
+        QCOMPARE(setOwn(m_first.get(), VLC_TICK_FROM_MS(primaryDelayMs)), VLC_SUCCESS);
+        QCOMPARE(setOwn(m_second.get(), VLC_TICK_FROM_MS(secondaryDelayMs)), VLC_SUCCESS);
+        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
+        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
         QImage first;
-        seek(VLC_TICK_FROM_SEC(24));
+        seek(VLC_TICK_FROM_SEC(videoSeconds));
         QTRY_VERIFY_WITH_TIMEOUT(([&] {
             first = captureNativeFrame(QString("track-delay-before-%1").arg(attempt++));
-            return !first.isNull() && frameMarker(first) == 600u
+            return !first.isNull() && frameMarker(first) == unsigned(videoSeconds * 25)
                 && mask(first, 1, 3).count(char(1)) > 100
                 && mask(first, 3, 4).count(char(1)) > 100
                 && !matches(mask(first, 1, 3), secondaryExpected)
@@ -810,8 +902,8 @@ private slots:
         const auto primaryBefore = mask(first, 3, 4), secondaryBefore = mask(first, 1, 3);
         { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
         QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
-        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(24) + VLC_TICK_FROM_MS(100));
-        QVERIFY(time() < VLC_TICK_FROM_SEC(26));
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(videoSeconds) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(videoSeconds + 1));
         const auto beforeTime = time();
         const auto before = captureNativeFrame("track-delay-playing-before");
         QVERIFY(!before.isNull());
@@ -824,14 +916,145 @@ private slots:
         const auto afterTime = time();
         QVERIFY(!after.isNull());
         QVERIFY(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3));
-        QVERIFY(frameMarker(after) >= 600u && frameMarker(after) < 700u);
+        QVERIFY2(frameMarker(after) >= unsigned(videoSeconds * 25)
+              && frameMarker(after) < unsigned(videoSeconds * 25 + 37),
+                 "Capture must stay inside the expected caption interval");
         QVERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
-        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_SEC(10));
-        QCOMPARE(own(m_second.get()), -VLC_TICK_FROM_SEC(5));
-        QVERIFY2(matches(mask(after, 1, 3), secondaryExpected), "External secondary cue must respect its -5s delay");
-        QVERIFY2(matches(mask(after, 3, 4), primaryExpected), "External primary cue must respect its +10s delay");
+        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
+        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
+        QVERIFY2(secondaryEnded ? mask(after, 1, 3).count(char(1)) == 0
+                               : matches(mask(after, 1, 3), secondaryExpected),
+                 "External secondary cue must respect its selected delay and end time");
+        QVERIFY2(matches(mask(after, 3, 4), primaryExpected),
+                 "External primary cue must respect its selected delay");
     }
 
+    // The filter affects the master and subtitle sources. Let playback advance
+    // naturally; seeking to construct references would invalidate this case.
+    void firstFpsChangePreservesNonseekableDelayedCaption()
+    {
+        if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") != "1")
+            QSKIP("Run alone with VLC_TEST_NONSEEK_SUBTITLE=1");
+        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
+        {
+            vlc_player_locker lock{m_player};
+            QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+            QVERIFY(!vlc_player_CanSeek(m_player));
+        }
+        QVERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        m_controller->setSubtitleDelayMS(5000);
+        QTRY_COMPARE(m_controller->getSubtitleDelayMS(), 5000);
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image) {
+            QByteArray result;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(12), 20000);
+        QVERIFY(time() < VLC_TICK_FROM_SEC(13));
+        const auto before = captureNativeFrame("nonseek-before-fps");
+        QVERIFY(!before.isNull());
+        const auto expected = mask(before);
+        QVERIFY2(expected.count(char(1)) > 100, "First delayed caption must already be visible");
+        const auto beforeTime = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("nonseek-after-fps");
+        QVERIFY(!after.isNull());
+        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(14));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 350u);
+        const auto actual = mask(after);
+        qsizetype intersection = 0, united = 0;
+        QCOMPARE(actual.size(), expected.size());
+        for (qsizetype i = 0; i < actual.size(); ++i)
+        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "A nonseekable source must retain the cue still active under its new FPS and delay");
+    }
+    void firstFpsChangePreservesOverlappingCues()
+    {
+        if (qEnvironmentVariable("VLC_TEST_OVERLAP_SUBTITLE") != "1")
+            QSKIP("Run alone with the overlapping ASS fixture");
+        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image) {
+            QByteArray result;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        // Obtain two overlapping cues by uninterrupted playback, so the
+        // reference does not assume the correctness of the seek/refill index.
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          vlc_player_ChangeRate(m_player, 4.f);
+          vlc_player_Resume(m_player); }
+        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(24), 10000);
+        { vlc_player_locker lock{m_player}; vlc_player_Pause(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
+        QTest::qWait(700);
+        const auto reference = captureNativeFrame("overlap-uninterrupted-reference");
+        QVERIFY(!reference.isNull());
+        const auto expected = mask(reference);
+        { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(24)); }
+        QTest::qWait(700);
+        const auto sought = captureNativeFrame("overlap-paused-seek-reference");
+        QVERIFY(!sought.isNull());
+        QCOMPARE(frameMarker(sought), 600u);
+        const auto seekMask = mask(sought);
+        QCOMPARE(seekMask.size(), expected.size());
+        qsizetype seekIntersection = 0, seekUnion = 0;
+        for (qsizetype i = 0; i < seekMask.size(); ++i)
+        { seekIntersection += seekMask[i] && expected[i]; seekUnion += seekMask[i] || expected[i]; }
+        QVERIFY2(seekUnion > 100 && seekIntersection * 1000 >= seekUnion * 995,
+                 "A paused seek must retain both overlapping events after a renderer flush");
+        { vlc_player_locker lock{m_player};
+          vlc_player_ChangeRate(m_player, 1.f);
+          vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(12)); }
+        QTest::qWait(700);
+        const auto first = captureNativeFrame("overlap-first-only");
+        QVERIFY(!first.isNull());
+        QCOMPARE(frameMarker(first), 300u);
+        const auto single = mask(first);
+        QVERIFY(single.count(char(1)) > 100);
+        QVERIFY2(expected.count(char(1)) > single.count(char(1)) + 500,
+                 "The uninterrupted reference must contain both overlapping cues");
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_VERIFY(time() >= VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        const auto beforeTime = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("overlap-after-first-fps50");
+        QVERIFY(!after.isNull());
+        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(15));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 375u);
+        const auto actual = mask(after);
+        QCOMPARE(actual.size(), expected.size());
+        qsizetype intersection = 0, united = 0;
+        for (qsizetype i = 0; i < actual.size(); ++i)
+        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "A rate refill must retain the earlier cue overlapping the current one");
+    }
     void firstFpsChangeRetimesDelayedPlayingCaption_data()
     {
         QTest::addColumn<int>("delayMs");
@@ -869,6 +1092,14 @@ private slots:
         const auto expected = captureNativeFrame("delayed-fps-reference");
         QVERIFY(!expected.isNull());
         QCOMPARE(frameMarker(expected), unsigned(referenceSeconds * 25));
+        unsigned referencePixels = 0;
+        for (int y = expected.height() * 3 / 4; y < expected.height(); ++y)
+            for (int x = 0; x < expected.width(); ++x)
+            {
+                const auto color = expected.pixelColor(x, y);
+                referencePixels += color.red() > 160 && color.green() > 160 && color.blue() > 160;
+            }
+        QVERIFY2(referencePixels > 100, "The reference must contain a rendered caption before testing FPS");
         m_controller->setSubtitleDelayMS(delayMs);
         QTRY_COMPARE(m_controller->getSubtitleDelayMS(), delayMs);
         seek(VLC_TICK_FROM_SEC(videoSeconds));
@@ -880,7 +1111,11 @@ private slots:
         const auto before = time();
         m_controller->setSubtitleFPS(50.f);
         QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
-        QTest::qWait(700);
+        float playbackRate;
+        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
+        QVERIFY(playbackRate > 0.f);
+        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
+                         ? 700 : qRound(700.f / playbackRate));
         const auto actual = captureNativeFrame("delayed-first-playing-fps50");
         const auto after = time();
         QVERIFY(!actual.isNull());

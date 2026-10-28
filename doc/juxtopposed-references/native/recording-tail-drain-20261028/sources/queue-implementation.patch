@@ -1,0 +1,980 @@
+--- a/modules/demux/avformat/mux.c
++++ b/modules/demux/avformat/mux.c
+@@ -37,6 +37,7 @@
+ #include <libavformat/avformat.h>
+ 
+ #include "avformat.h"
++#include "avformat_mux_queue.h"
+ #include "../../codec/avcodec/avcodec.h"
+ #include "../../codec/avcodec/avcommon.h"
+ #include "../xiph.h"
+@@ -59,9 +60,8 @@
+ 
+     AVFormatContext *oc;
+ 
+-    bool     b_write_header;
++    struct avformat_mux_queue queue;
+     bool     b_write_keyframe;
+-    bool     b_error;
+     bool     b_header_done;
+ } sout_mux_sys_t;
+ 
+@@ -72,6 +72,9 @@
+ static int AddStream( sout_mux_t *, sout_input_t * );
+ static void DelStream( sout_mux_t *, sout_input_t * );
+ static int Mux      ( sout_mux_t * );
++static int WriteHeader( void * );
++static int MuxBlock( void *, unsigned, int, const block_t * );
++static int WriteTrailer( void * );
+ 
+ #if FF_API_AVIO_WRITE_NONCONST
+ static int IOWrite( void *opaque, uint8_t *buf, int buf_size );
+@@ -147,9 +150,8 @@
+     p_sys->oc->pb = p_sys->io;
+     p_sys->oc->nb_streams = 0;
+ 
+-    p_sys->b_write_header = true;
++    avformatMuxQueueInit( &p_sys->queue );
+     p_sys->b_write_keyframe = false;
+-    p_sys->b_error = false;
+     p_sys->io->write_data_type = IOWriteTyped;
+     p_sys->b_header_done = false;
+     if( var_GetBool( p_mux, "sout-avformat-reset-ts" ) )
+@@ -172,10 +174,10 @@
+     sout_mux_t *p_mux = (sout_mux_t*)p_this;
+     sout_mux_sys_t *p_sys = p_mux->p_sys;
+ 
+-    if( !p_sys->b_write_header && !p_sys->b_error && av_write_trailer( p_sys->oc ) < 0 )
+-    {
+-        msg_Err( p_mux, "could not write trailer" );
+-    }
++    if( avformatMuxFinalize( &p_sys->queue, MuxBlock, WriteTrailer, p_mux )
++        != VLC_SUCCESS )
++        msg_Err( p_mux, "could not finalize muxed output" );
++    avformatMuxQueueClear( &p_sys->queue );
+ 
+     avformat_free_context(p_sys->oc);
+     av_free(p_sys->io);
+@@ -235,19 +237,21 @@
+     }
+ 
+     /* */
+-    p_input->p_sys = malloc( sizeof( int ) );
+-    if( unlikely(p_input->p_sys == NULL) )
++    struct avformat_mux_stream *mux_stream = avformatMuxStreamNew(
++        p_input->p_fifo, p_sys->oc->nb_streams, fmt->i_cat, malloc );
++    if( unlikely(mux_stream == NULL) )
+         return VLC_ENOMEM;
+-
+-    *((int *)p_input->p_sys) = p_sys->oc->nb_streams;
++    p_input->p_sys = mux_stream;
+ 
+     /* */
+     AVStream *stream = avformat_new_stream( p_sys->oc, NULL);
+     if( !stream )
+     {
+-        free( p_input->p_sys );
+-        return VLC_EGENERIC;
+-    }
++        free( mux_stream );
++        p_input->p_sys = NULL;
++        return VLC_EGENERIC;
++    }
++    mux_stream->index = stream->index;
+ 
+     AVCodecParameters *codecpar = stream->codecpar;
+ 
+@@ -363,6 +367,7 @@
+         }
+     }
+ 
++    avformatMuxQueueAdd( &p_sys->queue, mux_stream );
+     return VLC_SUCCESS;
+ }
+ 
+@@ -372,19 +377,27 @@
+ static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
+ {
+     msg_Dbg( p_mux, "removing input" );
+-    free( p_input->p_sys );
+-}
+-
+-static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
+-{
+-    sout_mux_sys_t *p_sys = p_mux->p_sys;
+-    block_t *p_data = block_FifoGet( p_input->p_fifo );
+-    int i_stream = *((int *)p_input->p_sys);
++    struct avformat_mux_stream *stream = p_input->p_sys;
++    avformatMuxStreamRetire( stream );
++    p_input->p_sys = NULL;
++    /* Core has removed this input from pp_inputs and will free it on return.
++     * Its detached blocks are committed output, like other muxers' delete-time
++     * drains. Keep their original stream mapping until they can be interleaved.
++     * A subsequent Flush of a different live ES cannot revoke this output. */
++    Mux( p_mux );
++}
++
++static int MuxBlock( void *opaque, unsigned index, int category,
++                     const block_t *p_data )
++{
++    sout_mux_t *p_mux = opaque;
++    sout_mux_sys_t *p_sys = p_mux->p_sys;
++    int i_stream = (int)index;
+     AVStream *p_stream = p_sys->oc->streams[i_stream];
+     AVPacket *pkt = av_packet_alloc();
+     if( !pkt )
+     {
+-        block_Release( p_data );
++        msg_Err( p_mux, "could not allocate mux packet" );
+         return VLC_EGENERIC;
+     }
+ 
+@@ -411,7 +424,7 @@
+         pkt->dts = av_rescale_q( p_data->i_dts - VLC_TICK_0,
+                                 VLC_TIME_BASE_Q, p_stream->time_base );
+     /* Subtitle packet payloads do not carry their display duration. */
+-    if( p_input->p_fmt->i_cat == SPU_ES && p_data->i_length > 0 )
++    if( category == SPU_ES && p_data->i_length > 0 )
+         pkt->duration = av_rescale_q( p_data->i_length,
+                                      VLC_TIME_BASE_Q, p_stream->time_base );
+ 
+@@ -420,14 +433,24 @@
+         msg_Err( p_mux, "could not write frame (pts: %"PRId64", dts: %"PRId64") "
+                  "(pkt pts: %"PRId64", dts: %"PRId64")",
+                  p_data->i_pts, p_data->i_dts, pkt->pts, pkt->dts );
+-        block_Release( p_data );
+         av_packet_free( &pkt );
+         return VLC_EGENERIC;
+     }
+ 
+ 
+     av_packet_free( &pkt );
+-    block_Release( p_data );
++    return VLC_SUCCESS;
++}
++
++static int WriteTrailer( void *opaque )
++{
++    sout_mux_t *p_mux = opaque;
++    sout_mux_sys_t *p_sys = p_mux->p_sys;
++    if( av_write_trailer( p_sys->oc ) < 0 )
++    {
++        msg_Err( p_mux, "could not write trailer" );
++        return VLC_EGENERIC;
++    }
+     return VLC_SUCCESS;
+ }
+ 
+@@ -449,57 +472,43 @@
+ }
+ 
+ /*****************************************************************************
+- * Mux: multiplex available data in input fifos
+- *****************************************************************************/
++ * Header setup and multiplexing of live and committed input packets
++ *****************************************************************************/
++static int WriteHeader( void *opaque )
++{
++    sout_mux_t *p_mux = opaque;
++    sout_mux_sys_t *p_sys = p_mux->p_sys;
++    int error;
++    msg_Dbg( p_mux, "writing header" );
++
++    char *psz_opts = var_GetNonEmptyString( p_mux, "sout-avformat-options" );
++    AVDictionary *options = NULL;
++    if (psz_opts) {
++        vlc_av_get_options(psz_opts, &options);
++        free(psz_opts);
++    }
++    av_dict_set( &p_sys->oc->metadata, "encoding_tool", "VLC "VERSION, 0 );
++    error = avformat_write_header( p_sys->oc, options ? &options : NULL);
++    AVDictionaryEntry *t = NULL;
++    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
++        msg_Err( p_mux, "Unknown option \"%s\"", t->key );
++    }
++    av_dict_free(&options);
++    if( error < 0 )
++    {
++        msg_Err( p_mux, "could not write header: %s",
++                 vlc_strerror_c(AVUNERROR(error)) );
++        return VLC_EGENERIC;
++    }
++
++    avio_flush( p_sys->oc->pb );
++    return VLC_SUCCESS;
++}
++
+ static int Mux( sout_mux_t *p_mux )
+ {
+     sout_mux_sys_t *p_sys = p_mux->p_sys;
+-
+-    if( p_sys->b_error ) return VLC_EGENERIC;
+-
+-    if( p_sys->b_write_header )
+-    {
+-        int error;
+-        msg_Dbg( p_mux, "writing header" );
+-
+-        char *psz_opts = var_GetNonEmptyString( p_mux, "sout-avformat-options" );
+-        AVDictionary *options = NULL;
+-        if (psz_opts) {
+-            vlc_av_get_options(psz_opts, &options);
+-            free(psz_opts);
+-        }
+-        av_dict_set( &p_sys->oc->metadata, "encoding_tool", "VLC "VERSION, 0 );
+-        error = avformat_write_header( p_sys->oc, options ? &options : NULL);
+-        AVDictionaryEntry *t = NULL;
+-        while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
+-            msg_Err( p_mux, "Unknown option \"%s\"", t->key );
+-        }
+-        av_dict_free(&options);
+-        if( error < 0 )
+-        {
+-            msg_Err( p_mux, "could not write header: %s",
+-                     vlc_strerror_c(AVUNERROR(error)) );
+-            p_sys->b_write_header = false;
+-            p_sys->b_error = true;
+-            return VLC_EGENERIC;
+-        }
+-
+-        avio_flush( p_sys->oc->pb );
+-        p_sys->b_write_header = false;
+-    }
+-
+-    for( ;; )
+-    {
+-        vlc_tick_t i_dts;
+-
+-        int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
+-        if( i_stream < 0 )
+-            return VLC_SUCCESS;
+-
+-        MuxBlock( p_mux, p_mux->pp_inputs[i_stream] );
+-    }
+-
+-    return VLC_SUCCESS;
++    return avformatMuxRun( &p_sys->queue, WriteHeader, MuxBlock, p_mux );
+ }
+ 
+ /*****************************************************************************
+@@ -549,7 +558,7 @@
+     block_t *p_buf = block_Alloc( buf_size );
+     if( buf_size > 0 ) memcpy( p_buf->p_buffer, buf, buf_size );
+ 
+-    if( p_sys->b_write_header )
++    if( p_sys->queue.header_pending )
+         p_buf->i_flags |= BLOCK_FLAG_HEADER;
+     if( !p_sys->b_header_done )
+         p_buf->i_flags |= BLOCK_FLAG_HEADER;
+--- /dev/null
++++ b/modules/demux/avformat/avformat_mux_queue.h
+@@ -0,0 +1,205 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++// Copyright (C) 2026 VLC authors and VideoLAN
++#ifndef VLC_AVFORMAT_MUX_QUEUE_H
++#define VLC_AVFORMAT_MUX_QUEUE_H
++
++#include <vlc_common.h>
++#include <vlc_block.h>
++#include <vlc_es.h>
++#include <stdlib.h>
++
++/* Protected by the calling sout stream's lock. A live FIFO belongs to the
++ * core: never take packets from it except for an immediate writer call. Only
++ * DelStream transfers its remaining packets into a committed, owned chain.
++ * The deleted core input/FIFO/format must never be borrowed afterward. */
++struct avformat_mux_stream
++{
++    struct avformat_mux_stream *next;
++    block_fifo_t *live_fifo;
++    block_t *committed;
++    unsigned index;
++    int category;
++};
++
++struct avformat_mux_queue
++{
++    struct avformat_mux_stream *head;
++    struct avformat_mux_stream **tail;
++    bool header_pending;
++    bool failed;
++};
++
++typedef int (*avformat_mux_header_cb)(void *);
++/* The writer borrows the block for this call. The queue releases it exactly
++ * once afterward, including on failure. The writer must not retain it. */
++typedef int (*avformat_mux_write_cb)(void *, unsigned, int, const block_t *);
++typedef int (*avformat_mux_trailer_cb)(void *);
++
++static inline void
++avformatMuxQueueInit(struct avformat_mux_queue *queue)
++{
++    queue->head = NULL;
++    queue->tail = &queue->head;
++    queue->header_pending = true;
++    queue->failed = false;
++}
++
++static inline struct avformat_mux_stream *
++avformatMuxStreamNew(block_fifo_t *fifo, unsigned index, int category,
++                     void *(*allocate)(size_t))
++{
++    struct avformat_mux_stream *stream = allocate(sizeof(*stream));
++    if (stream != NULL)
++        *stream = (struct avformat_mux_stream) {
++            .live_fifo = fifo, .index = index, .category = category,
++        };
++    return stream;
++}
++
++static inline void
++avformatMuxQueueAdd(struct avformat_mux_queue *queue,
++                    struct avformat_mux_stream *stream)
++{
++    assert(stream != NULL && stream->next == NULL);
++    *queue->tail = stream;
++    queue->tail = &stream->next;
++}
++
++static inline void
++avformatMuxStreamRetire(struct avformat_mux_stream *stream)
++{
++    assert(stream->live_fifo != NULL && stream->committed == NULL);
++    vlc_fifo_Lock(stream->live_fifo);
++    stream->committed = vlc_fifo_DequeueAllUnlocked(stream->live_fifo);
++    vlc_fifo_Unlock(stream->live_fifo);
++    stream->live_fifo = NULL;
++}
++
++static inline struct avformat_mux_stream *
++avformatMuxSelect(struct avformat_mux_queue *queue)
++{
++    struct avformat_mux_stream *selected = NULL;
++    vlc_tick_t dts = VLC_TICK_MAX;
++    for (struct avformat_mux_stream *stream = queue->head;
++         stream != NULL; stream = stream->next)
++    {
++        const block_t *head;
++        if (stream->live_fifo != NULL)
++        {
++            if (block_FifoCount(stream->live_fifo) == 0)
++            {
++                if (stream->category != SPU_ES)
++                    return NULL; /* Preserve the live A/V readiness rule. */
++                continue;
++            }
++            head = block_FifoShow(stream->live_fifo);
++        }
++        else
++            head = stream->committed;
++
++        /* Registration order breaks ties, just as the original input array.
++         * Preserve original DTS values, including their invalid sentinel. */
++        if (head != NULL && head->i_dts < dts)
++        {
++            selected = stream;
++            dts = head->i_dts;
++        }
++    }
++    return selected;
++}
++
++static inline int
++avformatMuxRun(struct avformat_mux_queue *queue,
++               avformat_mux_header_cb header, avformat_mux_write_cb write,
++               void *opaque)
++{
++    if (queue->failed)
++        return VLC_EGENERIC;
++    if (queue->header_pending)
++    {
++        assert(header != NULL);
++        /* It stays pending during the callback, including its I/O flush, so
++         * the access output retains the existing header flag behavior. */
++        const int result = header(opaque);
++        queue->header_pending = false;
++        if (result != VLC_SUCCESS)
++        {
++            queue->failed = true;
++            return result;
++        }
++    }
++
++    struct avformat_mux_stream *stream;
++    while ((stream = avformatMuxSelect(queue)) != NULL)
++    {
++        block_t *block;
++        if (stream->live_fifo != NULL)
++            block = block_FifoGet(stream->live_fifo);
++        else
++        {
++            block = stream->committed;
++            stream->committed = block->p_next;
++        }
++        block->p_next = NULL;
++        const int result = write(opaque, stream->index, stream->category, block);
++        block_Release(block);
++        if (result != VLC_SUCCESS)
++        {
++            queue->failed = true;
++            return result;
++        }
++    }
++    return VLC_SUCCESS;
++}
++
++static inline int
++avformatMuxFinalize(struct avformat_mux_queue *queue,
++                    avformat_mux_write_cb write,
++                    avformat_mux_trailer_cb trailer, void *opaque)
++{
++    if (queue->failed)
++        return VLC_EGENERIC;
++    if (queue->header_pending)
++        return VLC_SUCCESS; /* Preserve Close without an initialized header. */
++    for (struct avformat_mux_stream *stream = queue->head;
++         stream != NULL; stream = stream->next)
++        if (stream->live_fifo != NULL)
++        {
++            /* Core inputs must end before mux Close. Do not guess that an
++             * empty but live FIFO is EOF or finalize a partial committed tail. */
++            queue->failed = true;
++            return VLC_EGENERIC;
++        }
++    int result = avformatMuxRun(queue, NULL, write, opaque);
++    if (result == VLC_SUCCESS)
++        for (struct avformat_mux_stream *stream = queue->head;
++             stream != NULL; stream = stream->next)
++            if (stream->committed != NULL)
++            {
++                /* A head that cannot be selected must not silently become
++                 * a successful trailer and discarded committed output. */
++                queue->failed = true;
++                return VLC_EGENERIC;
++            }
++    if (result == VLC_SUCCESS)
++        result = trailer(opaque);
++    if (result != VLC_SUCCESS)
++        queue->failed = true;
++    return result;
++}
++
++static inline void
++avformatMuxQueueClear(struct avformat_mux_queue *queue)
++{
++    struct avformat_mux_stream *stream = queue->head;
++    while (stream != NULL)
++    {
++        struct avformat_mux_stream *next = stream->next;
++        block_ChainRelease(stream->committed);
++        /* live_fifo remains core-owned, even on an error path. */
++        free(stream);
++        stream = next;
++    }
++    avformatMuxQueueInit(queue);
++}
++#endif
+--- a/modules/codec/Makefile.am
++++ b/modules/codec/Makefile.am
+@@ -401,7 +401,7 @@
+ libavcodec_plugin_la_CFLAGS += $(AVFORMAT_CFLAGS) $(AVUTIL_CFLAGS)
+ libavcodec_plugin_la_LIBADD += $(AVFORMAT_LIBS) $(AVUTIL_LIBS) $(LIBM)
+ if ENABLE_SOUT
+-libavcodec_plugin_la_SOURCES += demux/avformat/mux.c
++libavcodec_plugin_la_SOURCES += demux/avformat/mux.c demux/avformat/avformat_mux_queue.h
+ endif
+ libavcodec_plugin_la_CFLAGS += -DMERGE_FFMPEG
+ endif
+--- /dev/null
++++ b/test/modules/demux/avformat_mux_queue.c
+@@ -0,0 +1,490 @@
++// SPDX-License-Identifier: LGPL-2.1-or-later
++// Exercise the production queue with real Core FIFO/frame ownership, no FFmpeg.
++#ifdef HAVE_CONFIG_H
++# include "config.h"
++#endif
++#include <vlc_common.h>
++#include <vlc_block.h>
++#include <vlc_es.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include "../../../modules/demux/avformat/avformat_mux_queue.h"
++
++enum { MAX_STREAMS = 4, MAX_BLOCKS = 32, MAX_BYTES = 640 };
++struct fixture;
++struct tracked_block
++{
++    block_t block; /* First: the custom release callback can recover its owner. */
++    struct fixture *owner;
++    unsigned tag, index, releases, writes;
++    int category;
++    size_t bytes;
++    vlc_tick_t dts, pts, length;
++    uint32_t flags;
++    uint8_t payload[MAX_BYTES];
++};
++
++struct fixture
++{
++    struct avformat_mux_queue queue;
++    struct avformat_mux_stream *streams[MAX_STREAMS];
++    block_fifo_t *fifos[MAX_STREAMS];
++    unsigned indices[MAX_STREAMS];
++    int categories[MAX_STREAMS];
++    struct tracked_block blocks[MAX_BLOCKS];
++    unsigned block_count, header_calls, write_calls, trailer_calls;
++    unsigned written[MAX_BLOCKS], fail_write_at;
++    bool fail_header, fail_trailer;
++};
++
++static unsigned checks, failures, cases;
++static const char *case_name;
++static unsigned case_checks, case_failures;
++
++static void check(bool condition, const char *expression, unsigned line)
++{
++    ++checks;
++    if (!condition)
++    {
++        ++failures;
++        printf("{\"case\":\"%s\",\"line\":%u,\"check\":\"%s\",\"passed\":false}\n",
++               case_name, line, expression);
++    }
++}
++#define CHECK(expression) check((expression), #expression, __LINE__)
++
++static void begin_case(const char *name)
++{
++    case_name = name;
++    case_checks = checks;
++    case_failures = failures;
++    ++cases;
++}
++
++static void end_case(void)
++{
++    printf("{\"case\":\"%s\",\"checks\":%u,\"failures\":%u,\"passed\":%s}\n",
++           case_name, checks - case_checks, failures - case_failures,
++           failures == case_failures ? "true" : "false");
++}
++
++static void release_block(block_t *block)
++{
++    struct tracked_block *tracked = (struct tracked_block *)block;
++    CHECK(tracked->owner != NULL);
++    ++tracked->releases;
++    CHECK(tracked->releases == 1);
++    /* Storage remains in the fixture so a duplicate release is observable. */
++}
++static const struct vlc_block_callbacks callbacks = { .free = release_block };
++
++static void init(struct fixture *f)
++{
++    *f = (struct fixture){0};
++    avformatMuxQueueInit(&f->queue);
++    CHECK(f->queue.head == NULL && f->queue.tail == &f->queue.head);
++    CHECK(f->queue.header_pending && !f->queue.failed);
++}
++
++static void add_stream(struct fixture *f, unsigned slot, unsigned index, int cat)
++{
++    assert(slot < MAX_STREAMS && f->fifos[slot] == NULL);
++    f->fifos[slot] = block_FifoNew();
++    assert(f->fifos[slot] != NULL);
++    f->streams[slot] = avformatMuxStreamNew(f->fifos[slot], index, cat, malloc);
++    assert(f->streams[slot] != NULL);
++    f->indices[slot] = index;
++    f->categories[slot] = cat;
++    avformatMuxQueueAdd(&f->queue, f->streams[slot]);
++    CHECK(f->streams[slot]->live_fifo == f->fifos[slot]);
++    CHECK(f->streams[slot]->committed == NULL);
++}
++
++static unsigned put(struct fixture *f, unsigned slot, vlc_tick_t dts, size_t bytes)
++{
++    assert(slot < MAX_STREAMS && f->fifos[slot] != NULL);
++    assert(f->block_count < MAX_BLOCKS && bytes <= MAX_BYTES);
++    struct tracked_block *b = &f->blocks[f->block_count++];
++    b->owner = f;
++    b->tag = f->block_count;
++    b->index = f->indices[slot];
++    b->category = f->categories[slot];
++    b->bytes = bytes;
++    b->dts = dts;
++    b->pts = dts == VLC_TICK_INVALID ? VLC_TICK_0 + 12345 : dts + 1;
++    b->length = 1000 + b->tag;
++    b->flags = b->tag % 2 ? BLOCK_FLAG_DISCONTINUITY : BLOCK_FLAG_TYPE_I;
++    for (size_t i = 0; i < bytes; ++i)
++        b->payload[i] = (uint8_t)(b->tag * 29 + i);
++    block_Init(&b->block, &callbacks, b->payload, bytes);
++    b->block.i_dts = b->dts;
++    b->block.i_pts = b->pts;
++    b->block.i_length = b->length;
++    b->block.i_flags = b->flags;
++    block_FifoPut(f->fifos[slot], &b->block);
++    return b->tag;
++}
++
++static int header(void *opaque)
++{
++    struct fixture *f = opaque;
++    ++f->header_calls;
++    CHECK(f->queue.header_pending); /* Must stay true during header I/O. */
++    CHECK(f->header_calls == 1);
++    CHECK(f->write_calls == 0 && f->trailer_calls == 0);
++    return f->fail_header ? VLC_EGENERIC : VLC_SUCCESS;
++}
++
++static int write_block(void *opaque, unsigned index, int category,
++                       const block_t *block)
++{
++    struct fixture *f = opaque;
++    const struct tracked_block *b = (const struct tracked_block *)block;
++    CHECK(!f->queue.header_pending && f->header_calls == 1);
++    CHECK(f->trailer_calls == 0);
++    CHECK(b->owner == f && b->releases == 0 && b->writes == 0);
++    CHECK(index == b->index && category == b->category);
++    CHECK(block->p_next == NULL);
++    CHECK(block->p_buffer == b->payload && block->i_buffer == b->bytes);
++    CHECK(block->i_dts == b->dts && block->i_pts == b->pts);
++    CHECK(block->i_length == b->length && block->i_flags == b->flags);
++    bool payload_unchanged = true;
++    for (size_t i = 0; i < b->bytes; ++i)
++        payload_unchanged &= block->p_buffer[i] == (uint8_t)(b->tag * 29 + i);
++    CHECK(payload_unchanged);
++    assert(f->write_calls < MAX_BLOCKS);
++    f->written[f->write_calls++] = b->tag;
++    ++f->blocks[b->tag - 1].writes;
++    return f->fail_write_at == f->write_calls ? VLC_EGENERIC : VLC_SUCCESS;
++}
++
++static int trailer(void *opaque)
++{
++    struct fixture *f = opaque;
++    ++f->trailer_calls;
++    CHECK(!f->queue.header_pending && !f->queue.failed);
++    CHECK(f->header_calls == 1 && f->trailer_calls == 1);
++    for (const struct avformat_mux_stream *s = f->queue.head; s; s = s->next)
++        CHECK(s->live_fifo == NULL && s->committed == NULL);
++    return f->fail_trailer ? VLC_EGENERIC : VLC_SUCCESS;
++}
++
++static void retire(struct fixture *f, unsigned slot)
++{
++    block_fifo_t *fifo = f->fifos[slot];
++    assert(fifo != NULL);
++    avformatMuxStreamRetire(f->streams[slot]);
++    CHECK(f->streams[slot]->live_fifo == NULL);
++    CHECK(block_FifoCount(fifo) == 0);
++    block_FifoRelease(fifo); /* Core destroys it immediately after Del returns. */
++    f->fifos[slot] = NULL;
++}
++
++static void written_prefix(struct fixture *f, const unsigned *expected, size_t count)
++{
++    CHECK(f->write_calls <= count);
++    for (unsigned i = 0; i < f->write_calls && i < count; ++i)
++        CHECK(f->written[i] == expected[i]);
++}
++
++static void clear(struct fixture *f)
++{
++    avformatMuxQueueClear(&f->queue);
++    CHECK(f->queue.head == NULL && f->queue.tail == &f->queue.head);
++    CHECK(f->queue.header_pending && !f->queue.failed);
++    avformatMuxQueueClear(&f->queue); /* Repeated cleanup owns nothing twice. */
++    for (unsigned i = 0; i < MAX_STREAMS; ++i)
++        if (f->fifos[i] != NULL)
++        {
++            block_FifoRelease(f->fifos[i]);
++            f->fifos[i] = NULL;
++        }
++    for (unsigned i = 0; i < f->block_count; ++i)
++    {
++        CHECK(f->blocks[i].releases == 1);
++        CHECK(f->blocks[i].writes <= 1);
++    }
++}
++
++static void deletion_permutation(const unsigned order[4])
++{
++    char name[80];
++    snprintf(name, sizeof(name), "all-track-delete-order-%u%u%u%u",
++             order[0], order[1], order[2], order[3]);
++    begin_case(name);
++    struct fixture f;
++    init(&f);
++    add_stream(&f, 0, 0, AUDIO_ES);
++    add_stream(&f, 1, 1, VIDEO_ES);
++    add_stream(&f, 2, 2, SPU_ES);
++    add_stream(&f, 3, 3, SPU_ES);
++    put(&f, 0, 10, 21); put(&f, 0, 30, 22); put(&f, 0, 60, 619);
++    put(&f, 1, 20, 24); put(&f, 1, 40, 25); put(&f, 1, 59, 26);
++    put(&f, 2, 15, 27); put(&f, 2, 60, 28);
++    put(&f, 3, 25, 29); put(&f, 3, 65, 30);
++    const unsigned expected[] = {1, 7, 4, 9, 2, 5, 6, 3, 8, 10};
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 7); /* The now-empty live video still gates the tail. */
++    CHECK(f.blocks[2].releases == 0 && block_FifoCount(f.fifos[0]) == 1);
++    written_prefix(&f, expected, ARRAY_SIZE(expected));
++    for (unsigned i = 0; i < 4; ++i)
++    {
++        retire(&f, order[i]);
++        CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++        written_prefix(&f, expected, ARRAY_SIZE(expected));
++    }
++    CHECK(f.write_calls == ARRAY_SIZE(expected));
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    CHECK(f.header_calls == 1 && f.trailer_calls == 1);
++    clear(&f);
++    end_case();
++}
++
++static void live_gaps_and_sparse_subtitles(void)
++{
++    begin_case("live-gaps-never-predequeue-active-packets");
++    struct fixture f;
++    init(&f);
++    add_stream(&f, 0, 0, AUDIO_ES);
++    add_stream(&f, 1, 1, VIDEO_ES);
++    add_stream(&f, 2, 2, SPU_ES);
++    put(&f, 0, 10, 10); put(&f, 2, 5, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 0 && block_FifoCount(f.fifos[0]) == 1);
++    CHECK(block_FifoCount(f.fifos[2]) == 1);
++    put(&f, 1, 20, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    const unsigned expected[] = {2, 1, 3};
++    CHECK(f.write_calls == 2 && block_FifoCount(f.fifos[1]) == 1);
++    CHECK(f.blocks[2].releases == 0);
++    retire(&f, 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 3); /* Empty SPU does not gate the remaining video. */
++    written_prefix(&f, expected, ARRAY_SIZE(expected));
++    retire(&f, 1); retire(&f, 2);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f);
++    end_case();
++}
++
++static void flush_boundaries(void)
++{
++    begin_case("flush-before-delete-drops-only-live-queued-data");
++    struct fixture f;
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    put(&f, 0, 10, 10); put(&f, 0, 20, 10);
++    block_FifoEmpty(f.fifos[0]);
++    CHECK(f.blocks[0].releases == 1 && f.blocks[1].releases == 1);
++    retire(&f, 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f); end_case();
++
++    begin_case("flush-other-live-stream-preserves-committed-deleted-tail");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); add_stream(&f, 1, 1, VIDEO_ES);
++    put(&f, 0, 60, 619); put(&f, 1, 50, 10);
++    retire(&f, 0);
++    block_FifoEmpty(f.fifos[1]);
++    CHECK(f.blocks[1].releases == 1 && f.blocks[0].releases == 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 0); /* The still-live empty video gates commitment. */
++    put(&f, 1, 55, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 1 && f.written[0] == 3 && f.blocks[0].releases == 0);
++    block_FifoEmpty(f.fifos[1]); block_FifoEmpty(f.fifos[1]);
++    put(&f, 1, 70, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    const unsigned committed[] = {3, 1, 4};
++    CHECK(f.write_calls == 3);
++    written_prefix(&f, committed, ARRAY_SIZE(committed));
++    retire(&f, 1);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f); end_case();
++
++    begin_case("repeated-live-flush-send-does-not-create-private-active-backlog");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    put(&f, 0, 10, 10); block_FifoEmpty(f.fifos[0]);
++    put(&f, 0, 20, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    block_FifoEmpty(f.fifos[0]);
++    put(&f, 0, 30, 10); block_FifoEmpty(f.fifos[0]);
++    put(&f, 0, 40, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    const unsigned sent[] = {2, 4};
++    CHECK(f.write_calls == 2);
++    written_prefix(&f, sent, ARRAY_SIZE(sent));
++    retire(&f, 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f); end_case();
++}
++
++static void startup_and_subtitle_only(void)
++{
++    begin_case("short-startup-delete-forces-header-once-before-final-tail");
++    struct fixture f;
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); add_stream(&f, 1, 1, VIDEO_ES);
++    put(&f, 0, VLC_TICK_0 + 1000, 619);
++    /* Core's waiting-stream Delete invokes Mux before removing that input.
++     * No cached duration threshold is needed to initialize this one header. */
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.header_calls == 1 && f.write_calls == 0);
++    retire(&f, 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 0 && f.blocks[0].releases == 0);
++    retire(&f, 1);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.header_calls == 1 && f.write_calls == 1 && f.blocks[0].releases == 1);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    CHECK(f.trailer_calls == 1);
++    clear(&f); end_case();
++
++    begin_case("pending-header-close-never-invents-header-or-trailer");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 60, 619);
++    retire(&f, 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    CHECK(f.header_calls == 0 && f.write_calls == 0 && f.trailer_calls == 0);
++    CHECK(f.blocks[0].releases == 0);
++    clear(&f); end_case();
++
++    begin_case("clear-pending-header-leaves-core-owned-live-fifo-intact");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    avformatMuxQueueClear(&f.queue);
++    CHECK(block_FifoCount(f.fifos[0]) == 1 && f.blocks[0].releases == 0);
++    CHECK(f.header_calls == 0 && f.write_calls == 0 && f.trailer_calls == 0);
++    clear(&f); end_case();
++
++    begin_case("subtitle-only-empty-live-stream-is-not-an-av-gate");
++    init(&f); add_stream(&f, 0, 0, SPU_ES); add_stream(&f, 1, 1, SPU_ES);
++    put(&f, 0, 10, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    put(&f, 1, 20, 10);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 2 && f.header_calls == 1);
++    retire(&f, 1); retire(&f, 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f); end_case();
++
++    begin_case("invalid-dts-preserved-and-equal-dts-use-registration-order");
++    init(&f); add_stream(&f, 0, 40, AUDIO_ES); add_stream(&f, 1, 10, VIDEO_ES);
++    add_stream(&f, 2, 30, SPU_ES);
++    put(&f, 0, 20, 10); put(&f, 1, 20, 10); put(&f, 2, VLC_TICK_INVALID, 10);
++    retire(&f, 1); retire(&f, 2); retire(&f, 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    const unsigned expected[] = {3, 1, 2};
++    CHECK(f.write_calls == 3);
++    written_prefix(&f, expected, ARRAY_SIZE(expected));
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
++    clear(&f); end_case();
++}
++
++static unsigned failed_allocations;
++static void *fail_allocate(size_t bytes)
++{
++    CHECK(bytes == sizeof(struct avformat_mux_stream));
++    ++failed_allocations;
++    return NULL;
++}
++
++static void failures_and_cleanup(void)
++{
++    struct fixture f;
++    begin_case("allocator-failure-does-not-own-or-drain-the-live-fifo");
++    init(&f);
++    f.fifos[0] = block_FifoNew(); assert(f.fifos[0] != NULL);
++    f.categories[0] = AUDIO_ES;
++    put(&f, 0, 10, 10);
++    failed_allocations = 0;
++    CHECK(avformatMuxStreamNew(f.fifos[0], 0, AUDIO_ES, fail_allocate) == NULL);
++    CHECK(failed_allocations == 1 && f.queue.head == NULL);
++    CHECK(block_FifoCount(f.fifos[0]) == 1 && f.blocks[0].releases == 0);
++    clear(&f); end_case();
++
++    begin_case("header-error-is-sticky-and-committed-cleanup-is-exactly-once");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10); retire(&f, 0);
++    f.fail_header = true;
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
++    CHECK(f.queue.failed && f.blocks[0].releases == 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.header_calls == 1 && f.write_calls == 0 && f.trailer_calls == 0);
++    clear(&f); end_case();
++
++    begin_case("committed-writer-error-releases-failed-block-and-stops");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    put(&f, 0, 10, 10); put(&f, 0, 20, 10); retire(&f, 0);
++    f.fail_write_at = 1;
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
++    CHECK(f.blocks[0].releases == 1 && f.blocks[1].releases == 0 && f.queue.failed);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.write_calls == 1 && f.trailer_calls == 0);
++    clear(&f); end_case();
++
++    begin_case("live-writer-error-keeps-remaining-core-fifo-ownership");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    put(&f, 0, 10, 10); put(&f, 0, 20, 10); f.fail_write_at = 1;
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
++    CHECK(f.blocks[0].releases == 1 && f.blocks[1].releases == 0);
++    avformatMuxQueueClear(&f.queue);
++    CHECK(block_FifoCount(f.fifos[0]) == 1 && f.blocks[1].releases == 0);
++    clear(&f); end_case();
++
++    begin_case("finalize-writer-error-prevents-trailer-and-cleans-remainder");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    put(&f, 0, 10, 10); put(&f, 0, 20, 10); retire(&f, 0); f.fail_write_at = 1;
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.write_calls == 1 && f.trailer_calls == 0 && f.blocks[0].releases == 1);
++    clear(&f); end_case();
++
++    begin_case("unselectable-committed-head-cannot-report-complete-trailer");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    put(&f, 0, VLC_TICK_MAX, 10); retire(&f, 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.queue.failed && f.write_calls == 0 && f.trailer_calls == 0);
++    CHECK(f.blocks[0].releases == 0);
++    clear(&f); end_case();
++
++    begin_case("trailer-error-is-sticky-without-double-release-or-retry");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10); retire(&f, 0);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    f.fail_trailer = true;
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.queue.failed && f.trailer_calls == 1 && f.blocks[0].releases == 1);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.trailer_calls == 1);
++    clear(&f); end_case();
++
++    begin_case("initialized-finalize-with-live-stream-rejects-partial-tail");
++    init(&f); add_stream(&f, 0, 0, AUDIO_ES); add_stream(&f, 1, 1, VIDEO_ES);
++    put(&f, 1, 10, 10); retire(&f, 1);
++    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
++    CHECK(f.write_calls == 0);
++    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
++    CHECK(f.queue.failed && f.write_calls == 0 && f.trailer_calls == 0);
++    CHECK(f.blocks[0].releases == 0);
++    clear(&f); end_case();
++}
++
++int main(void)
++{
++    for (unsigned a = 0; a < 4; ++a)
++        for (unsigned b = 0; b < 4; ++b)
++            for (unsigned c = 0; c < 4; ++c)
++                for (unsigned d = 0; d < 4; ++d)
++                    if (a != b && a != c && a != d && b != c && b != d && c != d)
++                    {
++                        const unsigned order[] = {a, b, c, d};
++                        deletion_permutation(order);
++                    }
++    live_gaps_and_sparse_subtitles();
++    flush_boundaries();
++    startup_and_subtitle_only();
++    failures_and_cleanup();
++    printf("{\"cases\":%u,\"checks\":%u,\"failures\":%u}\n", cases, checks, failures);
++    return failures ? 1 : 0;
++}

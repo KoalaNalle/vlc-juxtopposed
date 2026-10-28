@@ -265,6 +265,7 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/mlrecentmediamodel.hpp \
 	medialibrary/mlrecentvideomodel.cpp \
 	medialibrary/mlrecentvideomodel.hpp \
+	medialibrary/mlvideohistory.hpp \
 	medialibrary/mlrecentaudiomodel.cpp \
 	medialibrary/mlrecentaudiomodel.hpp \
 	medialibrary/mlhomeactivity.cpp \

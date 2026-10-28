@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "scope": "Strict real-writer Matroska comparison; separate from ordinary recording-toggle/UI or final package.",
+  "variant": "reversed",
+  "esRegistrationCodecs": [
+    "subt",
+    "subt",
+    "h264",
+    "flac"
+  ],
+  "esDeletionOrder": [
+    {
+      "registration": 3,
+      "codec": "flac"
+    },
+    {
+      "registration": 2,
+      "codec": "h264"
+    },
+    {
+      "registration": 0,
+      "codec": "subt"
+    },
+    {
+      "registration": 1,
+      "codec": "subt"
+    }
+  ],
+  "producerSha256": "4902c886e812b452836dcaade978e99c259974b24a4bbdd331c12dd00bdf23a6",
+  "audioPackets": 626,
+  "sourceAudioPackets": 626,
+  "audioSamples": 2880528,
+  "sourceAudioSamples": 2880528,
+  "packetPayloadsExactSource": true,
+  "packetPayloadsExactSourcePrefix": true,
+  "exactSourcePcm": true,
+  "sourcePcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+  "outputPcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+  "pcmExactSourcePrefix": true,
+  "missingSourcePcmBytes": 0,
+  "known528SampleTailLoss": false,
+  "strictAudioCompleteness": true,
+  "videoFrames": 1500,
+  "all1500Markers": true,
+  "subtitleChecks": [
+    {
+      "index": 0,
+      "timingPreserved": true,
+      "exactSrtExport": true
+    },
+    {
+      "index": 1,
+      "timingPreserved": true,
+      "exactSrtExport": true
+    }
+  ],
+  "verificationSha256": "cd0a5e53689ef472143b7d7dda6e4ee2a7f5ab99bb59967fa0abfc87218576c6",
+  "audioPrefixTimelinePreserved": true,
+  "videoTimelinePreserved": true,
+  "accepted": true
+}

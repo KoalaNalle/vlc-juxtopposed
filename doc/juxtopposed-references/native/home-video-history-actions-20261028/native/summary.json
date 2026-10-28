@@ -1,0 +1,85 @@
+{
+  "scope": "Native backend tests only; QML worker and ordinary GUI validation are separate",
+  "runs": [
+    {
+      "revision": "r1",
+      "status": "terminal",
+      "exitCode": 2,
+      "normalExit": false,
+      "forcedCleanupUsed": false,
+      "guards": {
+        "sourceUnchanged": true,
+        "fixtureUnchanged": true,
+        "runtimeUnchanged": true,
+        "baselineUnchanged": true,
+        "testUnchanged": true,
+        "producerUnchanged": true
+      },
+      "passed": 14,
+      "failed": 2,
+      "skipped": 0,
+      "expectedCases": [
+        "initTestCase",
+        "persistentVisitTypesAndLifetime",
+        "malformedStoredVisits",
+        "preferencesResetDoesNotRestoreCachedVisits",
+        "realFolderPlaylistAndArtistMetadata",
+        "warmRestartAndDeletedPlaylist",
+        "blockedStoragePreservesAcceptedVisitsAndDocument",
+        "blockedClearPreservesAcceptedVisitsAndDocument",
+        "addedFolderRequestStateAndReset",
+        "actualAudioOnlyAddedFolderAndMixedRouteRestart",
+        "nativeVideoHistorySections",
+        "nativeVideoHistoryCompletionBoundaries",
+        "nativeVideoHistoryRejectedRecordingSeek",
+        "nativeVideoHistoryEditLists",
+        "nativeVideoHistoryEditActiveInput",
+        "cleanupTestCase"
+      ],
+      "testSha256": "e5a5338928947fb571d5e1736a57324280332c9378b085e62e5f3594a5173d0b",
+      "coreSha256": "f09c45fe4075a02836807f00cab03163cdba1ec79e37ba35a0328f7cb6d5462d",
+      "qtSha256": "005fbe744643aa9fea7a45ffa84a11313b32ea454197c118984af413a6844484",
+      "medialibrarySha256": "e834a41a700bbc6ffeaa83bfde895f5b60f35c2e11f08cd6526d5122afe5af3f"
+    },
+    {
+      "revision": "r2",
+      "status": "terminal",
+      "exitCode": 0,
+      "normalExit": true,
+      "forcedCleanupUsed": false,
+      "guards": {
+        "sourceUnchanged": true,
+        "fixtureUnchanged": true,
+        "runtimeUnchanged": true,
+        "baselineUnchanged": true,
+        "testUnchanged": true,
+        "producerUnchanged": true
+      },
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "expectedCases": [
+        "initTestCase",
+        "persistentVisitTypesAndLifetime",
+        "malformedStoredVisits",
+        "preferencesResetDoesNotRestoreCachedVisits",
+        "realFolderPlaylistAndArtistMetadata",
+        "warmRestartAndDeletedPlaylist",
+        "blockedStoragePreservesAcceptedVisitsAndDocument",
+        "blockedClearPreservesAcceptedVisitsAndDocument",
+        "addedFolderRequestStateAndReset",
+        "actualAudioOnlyAddedFolderAndMixedRouteRestart",
+        "nativeVideoHistorySections",
+        "nativeVideoHistoryCompletionBoundaries",
+        "nativeVideoHistoryRejectedRecordingSeek",
+        "nativeVideoHistoryEditLists",
+        "nativeVideoHistoryEditActiveInput",
+        "cleanupTestCase"
+      ],
+      "testSha256": "999bc9d641dd48f9e34c754664ec626098bff8cfb766959902de82cdd1fa131a",
+      "coreSha256": "f09c45fe4075a02836807f00cab03163cdba1ec79e37ba35a0328f7cb6d5462d",
+      "qtSha256": "005fbe744643aa9fea7a45ffa84a11313b32ea454197c118984af413a6844484",
+      "medialibrarySha256": "e834a41a700bbc6ffeaa83bfde895f5b60f35c2e11f08cd6526d5122afe5af3f"
+    }
+  ]
+}

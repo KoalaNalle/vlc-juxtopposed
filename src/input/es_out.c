@@ -4282,9 +4282,12 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
     }
     case ES_OUT_PRIV_GET_SUBTITLE_PREROLL:
     case ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL:
+    case ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME:
     {
-        const input_source_t *requested = query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_PREROLL
+        const input_source_t *requested = query != ES_OUT_PRIV_GET_SUBTITLE_PREROLL
                                        ? va_arg(args, input_source_t *) : NULL;
+        const vlc_tick_t demux_time = query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME
+                                   ? va_arg(args, vlc_tick_t) : 0;
         vlc_tick_t *delay = va_arg(args, vlc_tick_t *);
         *delay = 0;
         es_out_id_t *es;
@@ -4296,6 +4299,13 @@ static int EsOutVaPrivControlLocked(es_out_sys_t *p_sys, input_source_t *source,
             const vlc_tick_t selected_delay = es->delay != VLC_TICK_MAX
                                            ? es->delay : p_sys->i_spu_delay;
             *delay = __MAX(*delay, selected_delay);
+        }
+        if (query == ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME)
+        {
+            const input_thread_private_t *priv = input_priv(p_sys->p_input);
+            const vlc_tick_t buffered = !priv->p_sout || !priv->b_out_pace_control
+                                      ? EsOutGetBuffering(p_sys) : 0;
+            *delay = __MAX(demux_time - buffered - *delay, 0);
         }
         return VLC_SUCCESS;
     }
