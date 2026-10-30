@@ -1,0 +1,68 @@
+/* Temporary generated-fixture observation only. No queue ownership changes. */
+static void TraceRetiringInput( sout_mux_t *p_mux, const sout_input_t *p_input )
+{
+    enum { MAX_ROWS = 4096 };
+    struct probe_row
+    {
+        size_t size;
+        vlc_tick_t pts, dts, duration;
+    };
+
+    if( p_input->p_sys == NULL )
+    {
+        msg_Err( p_mux, "tail_probe failed reason=missing-stream-mapping" );
+        return;
+    }
+
+    const int stream = *(const int *)p_input->p_sys;
+    const int category = p_input->p_fmt->i_cat;
+    const char *kind = category == VIDEO_ES ? "video" :
+                       category == AUDIO_ES ? "audio" :
+                       category == SPU_ES ? "subtitle" : "other";
+    struct probe_row *rows = malloc( MAX_ROWS * sizeof(*rows) );
+    if( rows == NULL )
+    {
+        msg_Err( p_mux, "tail_probe failed reason=allocation stream=%d cat=%d",
+                 stream, category );
+        return;
+    }
+
+    size_t count, bytes, captured = 0;
+    bool truncated = false;
+    vlc_fifo_Lock( p_input->p_fifo );
+    count = vlc_fifo_GetCount( p_input->p_fifo );
+    bytes = vlc_fifo_GetBytes( p_input->p_fifo );
+    const block_t *block =
+        (const block_t *)vlc_fifo_queue( p_input->p_fifo )->first;
+    for( ; block != NULL; block = block->p_next )
+    {
+        if( captured == MAX_ROWS )
+        {
+            truncated = true;
+            break;
+        }
+        rows[captured++] = (struct probe_row) {
+            .size = block->i_buffer,
+            .pts = block->i_pts,
+            .dts = block->i_dts,
+            .duration = block->i_length,
+        };
+    }
+    vlc_fifo_Unlock( p_input->p_fifo );
+
+    const bool complete = !truncated && captured == count;
+    msg_Dbg( p_mux,
+        "tail_probe begin version=1 stream=%d cat=%d kind=%s active=%d "
+        "count=%zu bytes=%zu captured=%zu truncated=%d complete=%d zero=%"PRId64,
+        stream, category, kind, p_mux->i_nb_inputs, count, bytes, captured,
+        truncated, complete, (int64_t)VLC_TICK_0 );
+    for( size_t i = 0; i < captured; ++i )
+        msg_Dbg( p_mux,
+            "tail_probe row stream=%d ordinal=%zu size=%zu "
+            "pts=%"PRId64" dts=%"PRId64" duration=%"PRId64,
+            stream, i, rows[i].size, (int64_t)rows[i].pts,
+            (int64_t)rows[i].dts, (int64_t)rows[i].duration );
+    msg_Dbg( p_mux, "tail_probe end stream=%d complete=%d", stream, complete );
+    free( rows );
+}
+

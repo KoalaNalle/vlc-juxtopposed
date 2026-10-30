@@ -1,0 +1,169 @@
+{
+  "scope": "Actual output inventory, compressed packet identity and complete decoded PCM comparison; no duration tolerance.",
+  "reports": {
+    "source": {
+      "path": "media-record-flac/frame-marker.mkv",
+      "fileSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+      "streamInventory": [
+        {
+          "index": 0,
+          "type": "video",
+          "codec": "h264"
+        },
+        {
+          "index": 1,
+          "type": "audio",
+          "codec": "flac"
+        },
+        {
+          "index": 2,
+          "type": "subtitle",
+          "codec": "subrip"
+        },
+        {
+          "index": 3,
+          "type": "subtitle",
+          "codec": "subrip"
+        }
+      ],
+      "audioPackets": 626,
+      "decodedFrames": 626,
+      "decodedSamples": 2880528,
+      "pcmSamples": 2880528,
+      "pcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "lastPacket": {
+        "codec_type": "audio",
+        "stream_index": 1,
+        "pts": 60000,
+        "pts_time": "60.000000",
+        "dts": 60000,
+        "dts_time": "60.000000",
+        "duration": 11,
+        "duration_time": "0.011000",
+        "size": "619",
+        "pos": "3431886",
+        "flags": "K__",
+        "data_hash": "SHA256:7b2a0c0f0e91ab6804b11077160743336c3ead5f7c1c583e4a4c072946766343"
+      },
+      "lastDecodedFrame": {
+        "pts_time": "60.000000",
+        "nb_samples": 528
+      }
+    },
+    "priorAv": {
+      "path": "forced_srt_matroska_clean_candidate/output.mkv",
+      "fileSha256": "f1296003bcf8cf5d2f2c8181f2092b0a793ec68301fc2a052530b39da6e0f4f3",
+      "streamInventory": [
+        {
+          "index": 0,
+          "type": "subtitle",
+          "codec": "subrip"
+        },
+        {
+          "index": 1,
+          "type": "subtitle",
+          "codec": "subrip"
+        },
+        {
+          "index": 2,
+          "type": "video",
+          "codec": "h264"
+        },
+        {
+          "index": 3,
+          "type": "audio",
+          "codec": "flac"
+        }
+      ],
+      "audioPackets": 625,
+      "decodedFrames": 625,
+      "decodedSamples": 2880000,
+      "pcmSamples": 2880000,
+      "pcmSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+      "lastPacket": {
+        "codec_type": "audio",
+        "stream_index": 3,
+        "pts": 59904,
+        "pts_time": "59.904000",
+        "dts": 59904,
+        "dts_time": "59.904000",
+        "duration": 96,
+        "duration_time": "0.096000",
+        "size": "5281",
+        "pos": "3426138",
+        "flags": "K__",
+        "data_hash": "SHA256:8e28a3250faee04eedfdcd2e76184f17f38b5a20a2d1fd966e65dc0f96d6a4a2"
+      },
+      "lastDecodedFrame": {
+        "pts_time": "59.904000",
+        "nb_samples": 4608
+      },
+      "packetPayloadsExactSource": false,
+      "packetPayloadsExactPrefix": true,
+      "exactSourcePcm": false,
+      "pcmExactPrefix": true,
+      "missingSourcePackets": [
+        {
+          "codec_type": "audio",
+          "stream_index": 1,
+          "pts": 60000,
+          "pts_time": "60.000000",
+          "dts": 60000,
+          "dts_time": "60.000000",
+          "duration": 11,
+          "duration_time": "0.011000",
+          "size": "619",
+          "pos": "3431886",
+          "flags": "K__",
+          "data_hash": "SHA256:7b2a0c0f0e91ab6804b11077160743336c3ead5f7c1c583e4a4c072946766343"
+        }
+      ]
+    },
+    "audioOnly": {
+      "path": "forced_srt_matroska_audio_only_r1/output.mkv",
+      "fileSha256": "922f96b22df4da1b323b76e790c21ea6a05e3da69a9c7245a3bc8eade752a804",
+      "streamInventory": [
+        {
+          "index": 0,
+          "type": "audio",
+          "codec": "flac"
+        }
+      ],
+      "audioPackets": 626,
+      "decodedFrames": 626,
+      "decodedSamples": 2880528,
+      "pcmSamples": 2880528,
+      "pcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "lastPacket": {
+        "codec_type": "audio",
+        "stream_index": 0,
+        "pts": 60000,
+        "pts_time": "60.000000",
+        "dts": 60000,
+        "dts_time": "60.000000",
+        "duration": 11,
+        "duration_time": "0.011000",
+        "size": "619",
+        "pos": "3241852",
+        "flags": "K__",
+        "data_hash": "SHA256:7b2a0c0f0e91ab6804b11077160743336c3ead5f7c1c583e4a4c072946766343"
+      },
+      "lastDecodedFrame": {
+        "pts_time": "60.000000",
+        "nb_samples": 528
+      },
+      "packetPayloadsExactSource": true,
+      "packetPayloadsExactPrefix": true,
+      "exactSourcePcm": true,
+      "pcmExactPrefix": true,
+      "missingSourcePackets": []
+    }
+  },
+  "onlyOneAudioStream": true,
+  "audioOnlyPreservesCompleteSource": true,
+  "sourceSamples": 2880528,
+  "audioOnlySamples": 2880528,
+  "priorAvSamples": 2880000,
+  "verificationSha256": "54732faa91f86558493cd5810a9d8680e322a4b172edcf6586980c07d7c38c84",
+  "producerSha256": "b0651f0eccfb0510204c43ab59dabb461980cb8fa2ebd7962a0f5af71a411527"
+}

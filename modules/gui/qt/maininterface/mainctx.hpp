@@ -186,6 +186,7 @@ class MainCtx : public QObject
     Q_PROPERTY(bool hasAcrylicSurface READ hasAcrylicSurface NOTIFY hasAcrylicSurfaceChanged FINAL)
     Q_PROPERTY(bool smoothScroll READ smoothScroll NOTIFY smoothScrollChanged FINAL)
     Q_PROPERTY(QWindow* intfMainWindow READ intfMainWindow CONSTANT FINAL)
+    Q_PROPERTY(bool videoSurfaceCanHaveFractionalPosition READ videoSurfaceCanHaveFractionalPosition CONSTANT FINAL)
     Q_PROPERTY(bool useGlobalShortcuts READ getUseGlobalShortcuts WRITE setUseGlobalShortcuts NOTIFY useGlobalShortcutsChanged FINAL)
     Q_PROPERTY(int maxVolume READ maxVolume NOTIFY maxVolumeChanged FINAL)
     Q_PROPERTY(float safeArea READ safeArea NOTIFY safeAreaChanged FINAL)
@@ -486,6 +487,8 @@ public:
 
     QWindow *intfMainWindow() const;
 
+    bool videoSurfaceCanHaveFractionalPosition() const;
+
     Q_INVOKABLE QVariant settingValue(const QString &key, const QVariant &defaultValue) const;
     Q_INVOKABLE void setSettingValue(const QString &key, const QVariant &value);
 
@@ -642,6 +645,7 @@ protected:
 public slots:
     void toggleToolbarMenu();
     void toggleInterfaceFullScreen();
+    bool interfaceFullscreenHeld() const;
     void setPlayerPlaylistWidth( double factor );
     void setInterfaceAlwaysOnTop( bool );
     void setShowRemainingTime( bool );

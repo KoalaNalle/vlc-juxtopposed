@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls.Basic as C
 import QtQuick.Window
 import VLC.MainInterface
+import VLC.Player
 import VLC.Menus as Menus
 import VLC.Style
 import VLC.Util
@@ -251,7 +252,19 @@ FocusScope {
         StripButton {
             id: fullscreen; key: "fullscreen"; description: MainCtx.intfMainWindow.visibility === Window.FullScreen ? qsTr("Leave fullscreen") : qsTr("Fullscreen")
             width: 36 * root.uiScale
-            onClicked: MainCtx.toggleInterfaceFullScreen()
+            onClicked: {
+                // Embedded playback owns VIDEO fullscreen, which must remain
+                // reversible after returning to Home. Home still enters through
+                // INTERFACE and releases that owner first if both are active.
+                const embeddedVideo = MainCtx.hasEmbededVideo && Player.hasVideoOutput
+                const videoRoute = embeddedVideo && (root.playerContext
+                    ? (MainCtx.intfMainWindow.visibility !== Window.FullScreen || Player.fullscreen)
+                    : (Player.fullscreen && !MainCtx.interfaceFullscreenHeld()))
+                if (videoRoute)
+                    Player.toggleFullscreen()
+                else
+                    MainCtx.toggleInterfaceFullScreen()
+            }
             Navigation.leftItem: maximize.visible ? maximize : navigation.visible ? navigation : more
             Navigation.rightItem: close.visible ? close : logo
         }

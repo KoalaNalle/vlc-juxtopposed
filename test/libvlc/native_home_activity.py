@@ -21,8 +21,10 @@ SUITES = {
                   "preferencesResetDoesNotRestoreCachedVisits", "realFolderPlaylistAndArtistMetadata",
                   "warmRestartAndDeletedPlaylist", "blockedStoragePreservesAcceptedVisitsAndDocument",
                   "blockedClearPreservesAcceptedVisitsAndDocument", "addedFolderRequestStateAndReset",
-                  "actualAudioOnlyAddedFolderAndMixedRouteRestart", "cleanupTestCase"],
-        "scope": "Production Home store, snapshot and request helpers with real local ML indexing/events/restart; no full MLHomeActivity runner, folder picker, QML or desktop claim.",
+                  "actualAudioOnlyAddedFolderAndMixedRouteRestart", "nativeVideoHistorySections",
+                  "nativeVideoHistoryCompletionBoundaries", "nativeVideoHistoryRejectedRecordingSeek",
+                  "nativeVideoHistoryEditLists", "nativeVideoHistoryEditActiveInput", "cleanupTestCase"],
+        "scope": "Production Home store, snapshot, request, filtered video-history and scoped removal helpers with real local ML indexing/events/restart, primary-player EOF and active-input removal; no full MLHomeActivity/model worker, folder picker, QML or desktop claim.",
     },
     "new-playlist": {
         "class": "TestNewPlaylist", "fixtureEnv": "VLC_PLAYLIST_FIXTURE_DIR",

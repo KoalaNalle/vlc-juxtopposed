@@ -54,6 +54,16 @@ typedef struct
     tt_time_t dur;
 } tt_timings_t;
 
+/* Document parameters are inherited by parsed nodes. Frame-based expressions
+ * are normalized to media ticks before resolving parent-relative timings. */
+typedef struct
+{
+    long double frame_rate;
+    long double tick_rate;
+    uint64_t nominal_frame_rate;
+    uint64_t sub_frame_rate;
+} tt_time_parameters_t;
+
 struct tt_searchkey
 {
     tt_time_t time;
@@ -110,6 +120,7 @@ struct tt_node_t
     tt_basenode_t *p_child;
     char *psz_node_name;
     tt_timings_t timings;
+    tt_time_parameters_t time_parameters;
     vlc_dictionary_t attr_dict;
     char *psz_namespace;
 };
@@ -185,9 +196,10 @@ static inline int tt_time_Compare( const tt_time_t *t1, const tt_time_t *t2 )
 static inline tt_time_t tt_time_Add( tt_time_t t1, tt_time_t t2 )
 {
     t1.base += t2.base;
-    t1.frames += t2.frames;
-    t1.base += vlc_tick_from_samples( t1.frames, TT_FRAME_RATE );
-    t1.frames = t1.frames % TT_FRAME_RATE;
+    const uint64_t frames = (uint64_t) t1.frames + t2.frames;
+    /* Carry whole seconds only: Convert() still adds the remaining frames. */
+    t1.base += vlc_tick_from_sec( frames / TT_FRAME_RATE );
+    t1.frames = frames % TT_FRAME_RATE;
     return t1;
 }
 
@@ -210,3 +222,7 @@ char *tt_genTiming( tt_time_t t );
 void tt_node_AttributesToText( struct vlc_memstream *p_stream, const tt_node_t* p_node );
 void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_basenode,
                      const tt_time_t *playbacktime );
+/* Resolved demux tree, filtered at source time, valid for one presentation
+ * interval. Descendant timings have already been resolved and filtered. */
+void tt_node_ToTextInterval( struct vlc_memstream *, const tt_basenode_t *,
+                            const tt_time_t *, vlc_tick_t begin, vlc_tick_t end );

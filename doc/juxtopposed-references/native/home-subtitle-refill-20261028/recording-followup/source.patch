@@ -1,0 +1,27 @@
+diff --git a/modules/demux/avformat/mux.c b/modules/demux/avformat/mux.c
+index 1ffc6f943d3..dcb20b76ca4 100644
+--- a/modules/demux/avformat/mux.c
++++ b/modules/demux/avformat/mux.c
+@@ -273,6 +273,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
+ 
+     case SPU_ES:
+         codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
++        /* VLC supplies SSA/ASS cues as ReadOrder, Layer, ... event packets.
++         * libavformat uses the ASS codec ID for this packet layout; Matroska
++         * rejects the legacy SSA ID returned by the shared codec mapping. */
++        if( fmt->i_codec == VLC_CODEC_SSA )
++            i_codec_id = AV_CODEC_ID_ASS;
+         /* psz_description and psz_language are expected to be compliant with
+          * the muxing format. It should be the case when muxing a compliant
+          * source to the same muxing format, but we have no general guarantee
+@@ -405,6 +410,10 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
+     if( p_data->i_dts >= VLC_TICK_0 )
+         pkt->dts = av_rescale_q( p_data->i_dts - VLC_TICK_0,
+                                 VLC_TIME_BASE_Q, p_stream->time_base );
++    /* Subtitle packet payloads do not carry their display duration. */
++    if( p_input->p_fmt->i_cat == SPU_ES && p_data->i_length > 0 )
++        pkt->duration = av_rescale_q( p_data->i_length,
++                                     VLC_TIME_BASE_Q, p_stream->time_base );
+ 
+     if( av_write_frame( p_sys->oc, pkt ) < 0 )
+     {

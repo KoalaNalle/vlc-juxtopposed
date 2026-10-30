@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "maininterface/sidebar_pins_store.hpp"
+#include "util/checked_preferences_store.hpp"
 #include <QtTest>
 #include <QCoreApplication>
 #include <QDir>
@@ -11,11 +12,41 @@
 #include <QProcess>
 #include <QSet>
 #include <QSettings>
+#include <QLockFile>
 #include <stdexcept>
+#include <utility>
 #ifdef _WIN32
 #include <windows.h>
 #endif
 #include <stdlib.h>
+
+#ifdef VLC_TEST_WRAP_SETTINGS_SYNC
+// Test-only linker wrapping supplies a deterministic second writer between a
+// physical sync and the caller's next step. No hook enters the ordinary plugin.
+static QString syncPeerPath, syncPeerKey;
+static bool syncPeerRan = false, syncPeerSucceeded = false;
+extern "C" void __real__ZN9QSettings4syncEv(QSettings *);
+extern "C" void __wrap__ZN9QSettings4syncEv(QSettings *settings)
+{
+    __real__ZN9QSettings4syncEv(settings);
+    if (syncPeerPath.isEmpty() || settings->fileName() != syncPeerPath
+        || settings->value(syncPeerKey).toInt() != 1)
+        return;
+    const auto path = std::exchange(syncPeerPath, QString{});
+    syncPeerRan = true;
+    QProcess child;
+#ifdef _WIN32
+    child.setCreateProcessArgumentsModifier([](QProcess::CreateProcessArguments *args) {
+        args->flags |= CREATE_NO_WINDOW;
+    });
+#endif
+    child.start(QCoreApplication::applicationFilePath(),
+        {QStringLiteral("--owned-setting-peer"), path, syncPeerKey});
+    syncPeerSucceeded = child.waitForStarted(10000) && child.waitForFinished(10000)
+        && child.exitStatus() == QProcess::NormalExit && child.exitCode() == 0;
+    if (child.state() != QProcess::NotRunning) { child.kill(); child.waitForFinished(2000); }
+}
+#endif
 
 namespace {
 SidebarPin uriPin(const QString &kind, const QUrl &url, const QString &title = {})
@@ -116,6 +147,132 @@ private slots:
         HeldFile lock(path); QVERIFY(lock.valid());
         QVERIFY2(store.add({uriPin(QStringLiteral("folder"), owned(QStringLiteral("Folder")))}, error), qPrintable(error));
         QCOMPARE(keys(store), order); lock.release(); QCOMPARE(contents(path), before);
+#endif
+    }
+    void stalePeerCannotDiscardNewPins_data()
+    {
+        QTest::addColumn<QString>("action");
+        QTest::newRow("add") << QStringLiteral("add");
+        QTest::newRow("remove") << QStringLiteral("remove");
+        QTest::newRow("move") << QStringLiteral("move");
+    }
+    void stalePeerCannotDiscardNewPins()
+    {
+        QFETCH(QString, action);
+        const auto path = file();
+        QSettings firstSettings(path, QSettings::IniFormat), secondSettings(path, QSettings::IniFormat);
+        SidebarPinsStore first(&firstSettings); QString error;
+        QVERIFY(first.add({uriPin(QStringLiteral("media"), owned(QStringLiteral("one.flac"))),
+            uriPin(QStringLiteral("media"), owned(QStringLiteral("two.flac")))}, error));
+        SidebarPinsStore stale(&secondSettings);
+        const auto staleOrder = keys(stale);
+        QVERIFY(first.add({uriPin(QStringLiteral("media"), owned(QStringLiteral("first-window.flac")))}, error));
+        const auto accepted = keys(first);
+        const auto saved = contents(path);
+        auto edit = [&] {
+            if (action == QStringLiteral("add"))
+                return stale.add({uriPin(QStringLiteral("media"), owned(QStringLiteral("second-window.flac")))}, error);
+            if (action == QStringLiteral("remove")) return stale.remove(staleOrder.first(), error);
+            return stale.move(staleOrder.first(), 1, error);
+        };
+        QVERIFY(!edit()); QVERIFY(!error.isEmpty());
+        QCOMPARE(contents(path), saved); QCOMPARE(keys(stale), staleOrder);
+        QVERIFY2(stale.reload(error), qPrintable(error));
+        QCOMPARE(keys(stale), accepted);
+        QVERIFY2(edit(), qPrintable(error));
+        QSettings freshSettings(path, QSettings::IniFormat); SidebarPinsStore fresh(&freshSettings);
+        QCOMPARE(keys(fresh), keys(stale));
+        QVERIFY(keys(fresh).contains(accepted.last()));
+    }
+    void staleAddCannotResurrectRemovedPin()
+    {
+        const auto path = file(); QSettings firstSettings(path, QSettings::IniFormat), peerSettings(path, QSettings::IniFormat);
+        SidebarPinsStore first(&firstSettings); QString error;
+        QVERIFY(first.add({uriPin(QStringLiteral("media"), owned(QStringLiteral("removed.flac")))}, error));
+        SidebarPinsStore peer(&peerSettings); const auto removed = first.pins().first().key;
+        QVERIFY(first.remove(removed, error)); const auto saved = contents(path);
+        const auto addition = uriPin(QStringLiteral("media"), owned(QStringLiteral("kept.flac")));
+        QVERIFY(!peer.add({addition}, error)); QCOMPARE(contents(path), saved);
+        QVERIFY(peer.reload(error)); QVERIFY(peer.add({addition}, error));
+        QCOMPARE(peer.pins().size(), 1); QVERIFY(peer.pins().first().key != removed);
+    }
+    void physicalWriterLockRejectsWithoutQueuingAnEdit()
+    {
+        const auto path = file(); QSettings settings(path, QSettings::IniFormat); QString error;
+        settings.setValue(QStringLiteral("key"), 0); settings.sync();
+        const auto before = contents(path);
+        QLockFile writer(path + QStringLiteral(".lock")); QVERIFY(writer.tryLock(0));
+        QVERIFY(!CheckedPreferencesStore(nullptr).saveSettings(&settings, QStringLiteral("key"), 1, false, error));
+        QVERIFY(!error.isEmpty()); QCOMPARE(contents(path), before);
+        writer.unlock();
+        settings.setValue(QStringLiteral("unrelated"), QStringLiteral("Keep")); settings.sync();
+        QCOMPARE(settings.value(QStringLiteral("key")).toInt(), 0);
+        QVERIFY2(CheckedPreferencesStore(nullptr).saveSettings(&settings, QStringLiteral("key"), 1, false, error), qPrintable(error));
+        QCOMPARE(settings.value(QStringLiteral("key")).toInt(), 1);
+    }
+    void rejectedAtomicReplacementDoesNotLeakOnLaterSync()
+    {
+#ifndef _WIN32
+        QSKIP("Windows file sharing is required");
+#else
+        const auto path = file(); QSettings settings(path, QSettings::IniFormat); QString error;
+        settings.setValue(QStringLiteral("key"), 0); settings.sync(); const auto before = contents(path);
+        const auto handle = CreateFileW(path.toStdWString().c_str(), GENERIC_READ, FILE_SHARE_READ,
+            nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+        QVERIFY(handle != INVALID_HANDLE_VALUE);
+        const bool accepted = CheckedPreferencesStore(nullptr).saveSettings(&settings, QStringLiteral("key"), 1, false, error);
+        CloseHandle(handle);
+        QVERIFY(!accepted); QVERIFY(!error.isEmpty()); QCOMPARE(contents(path), before);
+        settings.setValue(QStringLiteral("unrelated"), QStringLiteral("Keep")); settings.sync();
+        QSettings fresh(path, QSettings::IniFormat); fresh.sync();
+        QCOMPARE(fresh.value(QStringLiteral("key")).toInt(), 0);
+        QCOMPARE(fresh.value(QStringLiteral("unrelated")).toString(), QStringLiteral("Keep"));
+        QVERIFY2(CheckedPreferencesStore(nullptr).saveSettings(&settings, QStringLiteral("key"), 1, false, error), qPrintable(error));
+        QCOMPARE(settings.value(QStringLiteral("key")).toInt(), 1);
+#endif
+    }
+    void removingPrimaryOverrideRestoresFallbackOnly()
+    {
+        const auto directory = QDir(m_root).filePath(QStringLiteral("fallback-removal"));
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, directory + QStringLiteral("/user"));
+        QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, directory + QStringLiteral("/system"));
+        QSettings defaults(QSettings::IniFormat, QSettings::SystemScope, QStringLiteral("OwnedRemoval"), QStringLiteral("App"));
+        defaults.beginGroup(QStringLiteral("Owned/group")); defaults.setValue(QStringLiteral("key"), QStringLiteral("Fallback")); defaults.sync();
+        QSettings user(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("OwnedRemoval"), QStringLiteral("App"));
+        user.beginGroup(QStringLiteral("Owned/group")); QString error;
+        QVERIFY(CheckedPreferencesStore(nullptr).saveSettings(&user, QStringLiteral("key"), QStringLiteral("Primary"), false, error));
+        QVERIFY(CheckedPreferencesStore(nullptr).saveSettings(&user, QStringLiteral("key"), {}, true, error));
+        QCOMPARE(user.value(QStringLiteral("key")).toString(), QStringLiteral("Fallback"));
+        QSettings primary(user.fileName(), QSettings::IniFormat); primary.setFallbacksEnabled(false);
+        primary.beginGroup(QStringLiteral("Owned/group")); QVERIFY(!primary.contains(QStringLiteral("key")));
+        QCOMPARE(defaults.value(QStringLiteral("key")).toString(), QStringLiteral("Fallback"));
+    }
+    void newerAcceptedSettingsSurviveReadback_data()
+    {
+        QTest::addColumn<bool>("initiallyPresent");
+        QTest::newRow("existing-key") << true;
+        QTest::newRow("absent-key") << false;
+    }
+    void newerAcceptedSettingsSurviveReadback()
+    {
+#ifndef VLC_TEST_WRAP_SETTINGS_SYNC
+        QSKIP("Requires the opt-in native target's test-only sync wrapper");
+#else
+        QFETCH(bool, initiallyPresent);
+        const auto path = file(); QSettings settings(path, QSettings::IniFormat);
+        const auto key = QStringLiteral("MainWindow/color-scheme-index");
+        settings.setValue(QStringLiteral("unrelated/sentinel"), QStringLiteral("Keep"));
+        if (initiallyPresent) settings.setValue(key, 0);
+        settings.sync();
+        syncPeerRan = syncPeerSucceeded = false; syncPeerPath = settings.fileName(); syncPeerKey = key;
+        QString error;
+        CheckedPreferencesStore(nullptr).saveSettings(&settings, key, 1, false, error);
+        syncPeerPath.clear();
+        QVERIFY(syncPeerRan); QVERIFY(syncPeerSucceeded);
+        settings.sync();
+        QSettings fresh(path, QSettings::IniFormat); fresh.sync();
+        QCOMPARE(fresh.value(key).toInt(), 2);
+        QCOMPARE(fresh.value(QStringLiteral("unrelated/sentinel")).toString(), QStringLiteral("Keep"));
 #endif
     }
     void identicalLabelsKeepDistinctTargets()
@@ -231,6 +388,16 @@ int main(int argc, char **argv)
 #endif
     QCoreApplication app(argc, argv);
     const auto args = app.arguments();
+    if (args.size() == 4 && args[1] == QStringLiteral("--owned-setting-peer"))
+    {
+        const auto root = QDir(qEnvironmentVariable("VLC_SIDEBAR_PINS_TEST_OUTPUT")).canonicalPath();
+        const auto path = QFileInfo(args[2]).canonicalFilePath();
+        if (root.isEmpty() || path.isEmpty() || !path.startsWith(root + QLatin1Char('/'))
+            || args[3] != QStringLiteral("MainWindow/color-scheme-index")) return 6;
+        QSettings settings(path, QSettings::IniFormat); settings.setFallbacksEnabled(false);
+        settings.setValue(args[3], 2); settings.sync();
+        return settings.status() == QSettings::NoError && settings.value(args[3]).toInt() == 2 ? 0 : 7;
+    }
     if (args.size() == 4 && args[1] == QStringLiteral("--owned-cold-read"))
     {
         const auto ownedRoot = qEnvironmentVariable("VLC_SIDEBAR_PINS_TEST_OUTPUT");

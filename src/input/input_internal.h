@@ -318,6 +318,8 @@ struct vlc_input_event
     union {
         /* INPUT_EVENT_STATE */
         struct vlc_input_event_state state;
+        /* INPUT_EVENT_EOF: final master position after outputs drained, or -1 */
+        double eof_position;
         /* INPUT_EVENT_RATE */
         float rate;
         /* INPUT_EVENT_CAPABILITIES */

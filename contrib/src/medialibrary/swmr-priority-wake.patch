@@ -1,0 +1,23 @@
+From: VLC Juxtopposed contributors
+Subject: [PATCH] Wake every eligible waiter after the last reader exits
+
+Readers and writers share a condition variable. A priority writer can be
+waiting alongside readers that must give way. Waking only one waiter can
+choose an ineligible reader and leave the writer asleep with no remaining
+lock owner to notify it. Let every waiter recheck its predicate.
+
+--- a/src/utils/SWMRLock.cpp
++++ b/src/utils/SWMRLock.cpp
+@@ -54,7 +54,11 @@ void SWMRLock::unlock_read()
+     std::unique_lock<compat::Mutex> lock( m_lock );
+     --m_nbReader;
+     if ( m_nbReader == 0 && m_nbWriterWaiting > 0 )
+-        m_cond.notify_one();
++        // Readers and writers share this condition variable. A reader
++        // blocked by a priority writer cannot proceed if notify_one()
++        // wakes it instead of that writer; no lock owner remains to wake
++        // the eligible writer. Every waiter must recheck its predicate.
++        m_cond.notify_all();
+ }
+
+ void SWMRLock::lock_write()

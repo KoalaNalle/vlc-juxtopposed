@@ -33,10 +33,12 @@
 #include <vlc_block.h>
 #include <vlc_sout.h>
 #include <vlc_es.h>
+#include <vlc_dialog.h>
 
 #include <libavformat/avformat.h>
 
 #include "avformat.h"
+#include "avformat_mux_queue.h"
 #include "../../codec/avcodec/avcodec.h"
 #include "../../codec/avcodec/avcommon.h"
 #include "../xiph.h"
@@ -59,11 +61,18 @@ typedef struct
 
     AVFormatContext *oc;
 
-    bool     b_write_header;
+    struct avformat_mux_queue queue;
     bool     b_write_keyframe;
-    bool     b_error;
     bool     b_header_done;
 } sout_mux_sys_t;
+
+static void ReportFailure( sout_mux_t *p_mux )
+{
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+    if( avformatMuxTakeFailureNotice( &p_sys->queue ) )
+        vlc_dialog_display_error( p_mux, _("Output could not be completed"),
+            "%s", _("The output may be incomplete. Check the messages for details.") );
+}
 
 /*****************************************************************************
  * Local prototypes
@@ -72,6 +81,9 @@ static int Control  ( sout_mux_t *, int, va_list );
 static int AddStream( sout_mux_t *, sout_input_t * );
 static void DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
+static int WriteHeader( void * );
+static int MuxBlock( void *, unsigned, int, const block_t * );
+static int WriteTrailer( void * );
 
 #if FF_API_AVIO_WRITE_NONCONST
 static int IOWrite( void *opaque, uint8_t *buf, int buf_size );
@@ -147,9 +159,8 @@ int avformat_OpenMux( vlc_object_t *p_this )
     p_sys->oc->pb = p_sys->io;
     p_sys->oc->nb_streams = 0;
 
-    p_sys->b_write_header = true;
+    avformatMuxQueueInit( &p_sys->queue );
     p_sys->b_write_keyframe = false;
-    p_sys->b_error = false;
     p_sys->io->write_data_type = IOWriteTyped;
     p_sys->b_header_done = false;
     if( var_GetBool( p_mux, "sout-avformat-reset-ts" ) )
@@ -172,10 +183,13 @@ void avformat_CloseMux( vlc_object_t *p_this )
     sout_mux_t *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys = p_mux->p_sys;
 
-    if( !p_sys->b_write_header && !p_sys->b_error && av_write_trailer( p_sys->oc ) < 0 )
+    if( avformatMuxFinalize( &p_sys->queue, MuxBlock, WriteTrailer, p_mux )
+        != VLC_SUCCESS )
     {
-        msg_Err( p_mux, "could not write trailer" );
+        msg_Err( p_mux, "could not finalize muxed output" );
+        ReportFailure( p_mux );
     }
+    avformatMuxQueueClear( &p_sys->queue );
 
     avformat_free_context(p_sys->oc);
     av_free(p_sys->io);
@@ -235,19 +249,21 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     }
 
     /* */
-    p_input->p_sys = malloc( sizeof( int ) );
-    if( unlikely(p_input->p_sys == NULL) )
+    struct avformat_mux_stream *mux_stream = avformatMuxStreamNew(
+        p_input->p_fifo, p_sys->oc->nb_streams, fmt->i_cat, malloc );
+    if( unlikely(mux_stream == NULL) )
         return VLC_ENOMEM;
-
-    *((int *)p_input->p_sys) = p_sys->oc->nb_streams;
+    p_input->p_sys = mux_stream;
 
     /* */
     AVStream *stream = avformat_new_stream( p_sys->oc, NULL);
     if( !stream )
     {
-        free( p_input->p_sys );
+        free( mux_stream );
+        p_input->p_sys = NULL;
         return VLC_EGENERIC;
     }
+    mux_stream->index = stream->index;
 
     AVCodecParameters *codecpar = stream->codecpar;
 
@@ -273,6 +289,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 
     case SPU_ES:
         codecpar->codec_type = AVMEDIA_TYPE_SUBTITLE;
+        /* VLC supplies SSA/ASS cues as ReadOrder, Layer, ... event packets.
+         * libavformat uses the ASS codec ID for this packet layout; Matroska
+         * rejects the legacy SSA ID returned by the shared codec mapping. */
+        if( fmt->i_codec == VLC_CODEC_SSA )
+            i_codec_id = AV_CODEC_ID_ASS;
         /* psz_description and psz_language are expected to be compliant with
          * the muxing format. It should be the case when muxing a compliant
          * source to the same muxing format, but we have no general guarantee
@@ -358,6 +379,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         }
     }
 
+    avformatMuxQueueAdd( &p_sys->queue, mux_stream );
     return VLC_SUCCESS;
 }
 
@@ -367,19 +389,28 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 static void DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
     msg_Dbg( p_mux, "removing input" );
-    free( p_input->p_sys );
+    struct avformat_mux_stream *stream = p_input->p_sys;
+    avformatMuxStreamRetire( stream );
+    p_input->p_sys = NULL;
+    /* Core has removed this input from pp_inputs and will free it on return.
+     * Its detached blocks are committed output, like other muxers' delete-time
+     * drains. Keep their original stream mapping until they can be interleaved.
+     * A subsequent Flush of a different live ES cannot revoke this output. */
+    Mux( p_mux );
 }
 
-static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
+static int MuxBlock( void *opaque, unsigned index, int category,
+                     const block_t *p_data )
 {
+    (void) category;
+    sout_mux_t *p_mux = opaque;
     sout_mux_sys_t *p_sys = p_mux->p_sys;
-    block_t *p_data = block_FifoGet( p_input->p_fifo );
-    int i_stream = *((int *)p_input->p_sys);
+    int i_stream = (int)index;
     AVStream *p_stream = p_sys->oc->streams[i_stream];
     AVPacket *pkt = av_packet_alloc();
     if( !pkt )
     {
-        block_Release( p_data );
+        msg_Err( p_mux, "could not allocate mux packet" );
         return VLC_EGENERIC;
     }
 
@@ -391,8 +422,13 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     {
 #ifdef AVFMT_ALLOW_FLUSH
         /* Make sure we don't inadvertedly mark buffered data as keyframes. */
-        if( p_sys->oc->oformat->flags & AVFMT_ALLOW_FLUSH )
-            av_write_frame( p_sys->oc, NULL );
+        if( (p_sys->oc->oformat->flags & AVFMT_ALLOW_FLUSH)
+         && av_write_frame( p_sys->oc, NULL ) < 0 )
+        {
+            msg_Err( p_mux, "could not flush buffered mux output" );
+            av_packet_free( &pkt );
+            return VLC_EGENERIC;
+        }
 #endif
 
         p_sys->b_write_keyframe = true;
@@ -405,20 +441,34 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     if( p_data->i_dts >= VLC_TICK_0 )
         pkt->dts = av_rescale_q( p_data->i_dts - VLC_TICK_0,
                                 VLC_TIME_BASE_Q, p_stream->time_base );
+    /* The final packet has no following DTS to infer its duration from. */
+    if( p_data->i_length > 0 )
+        pkt->duration = av_rescale_q( p_data->i_length,
+                                     VLC_TIME_BASE_Q, p_stream->time_base );
 
     if( av_write_frame( p_sys->oc, pkt ) < 0 )
     {
         msg_Err( p_mux, "could not write frame (pts: %"PRId64", dts: %"PRId64") "
                  "(pkt pts: %"PRId64", dts: %"PRId64")",
                  p_data->i_pts, p_data->i_dts, pkt->pts, pkt->dts );
-        block_Release( p_data );
         av_packet_free( &pkt );
         return VLC_EGENERIC;
     }
 
 
     av_packet_free( &pkt );
-    block_Release( p_data );
+    return VLC_SUCCESS;
+}
+
+static int WriteTrailer( void *opaque )
+{
+    sout_mux_t *p_mux = opaque;
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+    if( av_write_trailer( p_sys->oc ) < 0 )
+    {
+        msg_Err( p_mux, "could not write trailer" );
+        return VLC_EGENERIC;
+    }
     return VLC_SUCCESS;
 }
 
@@ -440,57 +490,51 @@ int IOWriteTyped(void *opaque, const uint8_t *buf, int buf_size,
 }
 
 /*****************************************************************************
- * Mux: multiplex available data in input fifos
+ * Header setup and multiplexing of live and committed input packets
  *****************************************************************************/
+static int WriteHeader( void *opaque )
+{
+    sout_mux_t *p_mux = opaque;
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+    int error;
+    msg_Dbg( p_mux, "writing header" );
+
+    char *psz_opts = var_GetNonEmptyString( p_mux, "sout-avformat-options" );
+    AVDictionary *options = NULL;
+    if (psz_opts) {
+        vlc_av_get_options(psz_opts, &options);
+        free(psz_opts);
+    }
+    av_dict_set( &p_sys->oc->metadata, "encoding_tool", "VLC "VERSION, 0 );
+    error = avformat_write_header( p_sys->oc, options ? &options : NULL);
+    AVDictionaryEntry *t = NULL;
+    while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
+        msg_Err( p_mux, "Unknown option \"%s\"", t->key );
+    }
+    av_dict_free(&options);
+    if( error < 0 )
+    {
+        msg_Err( p_mux, "could not write header: %s",
+                 vlc_strerror_c(AVUNERROR(error)) );
+        return VLC_EGENERIC;
+    }
+
+    avio_flush( p_sys->oc->pb );
+    if( p_sys->oc->pb->error < 0 )
+    {
+        msg_Err( p_mux, "could not flush mux header" );
+        return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
+}
+
 static int Mux( sout_mux_t *p_mux )
 {
     sout_mux_sys_t *p_sys = p_mux->p_sys;
-
-    if( p_sys->b_error ) return VLC_EGENERIC;
-
-    if( p_sys->b_write_header )
-    {
-        int error;
-        msg_Dbg( p_mux, "writing header" );
-
-        char *psz_opts = var_GetNonEmptyString( p_mux, "sout-avformat-options" );
-        AVDictionary *options = NULL;
-        if (psz_opts) {
-            vlc_av_get_options(psz_opts, &options);
-            free(psz_opts);
-        }
-        av_dict_set( &p_sys->oc->metadata, "encoding_tool", "VLC "VERSION, 0 );
-        error = avformat_write_header( p_sys->oc, options ? &options : NULL);
-        AVDictionaryEntry *t = NULL;
-        while ((t = av_dict_get(options, "", t, AV_DICT_IGNORE_SUFFIX))) {
-            msg_Err( p_mux, "Unknown option \"%s\"", t->key );
-        }
-        av_dict_free(&options);
-        if( error < 0 )
-        {
-            msg_Err( p_mux, "could not write header: %s",
-                     vlc_strerror_c(AVUNERROR(error)) );
-            p_sys->b_write_header = false;
-            p_sys->b_error = true;
-            return VLC_EGENERIC;
-        }
-
-        avio_flush( p_sys->oc->pb );
-        p_sys->b_write_header = false;
-    }
-
-    for( ;; )
-    {
-        vlc_tick_t i_dts;
-
-        int i_stream = sout_MuxGetStream( p_mux, 1, &i_dts );
-        if( i_stream < 0 )
-            return VLC_SUCCESS;
-
-        MuxBlock( p_mux, p_mux->pp_inputs[i_stream] );
-    }
-
-    return VLC_SUCCESS;
+    const int result = avformatMuxRun( &p_sys->queue, WriteHeader, MuxBlock, p_mux );
+    if( result != VLC_SUCCESS )
+        ReportFailure( p_mux );
+    return result;
 }
 
 /*****************************************************************************
@@ -538,9 +582,11 @@ static int IOWrite( void *opaque, const uint8_t *buf, int buf_size )
 #endif
 
     block_t *p_buf = block_Alloc( buf_size );
+    if( unlikely(p_buf == NULL) )
+        return AVERROR(ENOMEM);
     if( buf_size > 0 ) memcpy( p_buf->p_buffer, buf, buf_size );
 
-    if( p_sys->b_write_header )
+    if( p_sys->queue.header_pending )
         p_buf->i_flags |= BLOCK_FLAG_HEADER;
     if( !p_sys->b_header_done )
         p_buf->i_flags |= BLOCK_FLAG_HEADER;

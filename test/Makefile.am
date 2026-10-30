@@ -49,6 +49,7 @@ check_PROGRAMS = \
 	test_libvlc_media_discoverer \
 	test_libvlc_renderer_discoverer \
 	test_libvlc_slaves \
+	test_src_audio_output_dec \
 	test_src_config_chain \
 	test_src_clock_clock \
 	test_src_clock_start \
@@ -75,6 +76,7 @@ check_PROGRAMS = \
 	test_modules_lua_extension \
 	test_modules_misc_medialibrary \
 	test_modules_access_output_file \
+	test_modules_demux_avformat_mux_queue \
 	test_modules_packetizer_helpers \
 	test_modules_packetizer_copy \
 	test_modules_packetizer_hxxx \
@@ -100,6 +102,7 @@ check_PROGRAMS = \
 	test_modules_tls \
 	test_modules_stream_out_transcode \
 	test_modules_mux_webvtt \
+	test_modules_video_filter_blend \
 	test_modules_stream_out_hls_subtitles_segmenter \
 	$(NULL)
 
@@ -175,6 +178,9 @@ AM_LDFLAGS = -no-install $(LDFLAGS_vlc)
 LIBVLCCORE = -L../src/ -lvlccore
 LIBVLC = -L../lib -lvlc
 
+test_modules_demux_avformat_mux_queue_SOURCES = modules/demux/avformat_mux_queue.c
+test_modules_demux_avformat_mux_queue_LDADD = $(LIBVLCCORE)
+
 test_libvlc_core_SOURCES = libvlc/core.c
 test_libvlc_core_LDADD = $(LIBVLC)
 test_libvlc_downloader_SOURCES = libvlc/downloader.c
@@ -218,6 +224,21 @@ test_libvlc_slaves_SOURCES = libvlc/slaves.c
 test_libvlc_slaves_LDADD = $(LIBVLCCORE) $(LIBVLC)
 test_libvlc_meta_SOURCES = libvlc/meta.c
 test_libvlc_meta_LDADD = $(LIBVLCCORE) $(LIBVLC)
+
+test_src_audio_output_dec_SOURCES = src/audio_output/dec.c \
+	../src/audio_output/dec.c \
+	../src/audio_output/output.c \
+	../src/audio_output/common.c \
+	../src/audio_output/filters.c \
+	../src/audio_output/volume.c \
+	../src/audio_output/meter.c \
+	../src/input/replay_gain.c \
+	../src/misc/objects.c \
+	../src/misc/variables.c \
+	../src/clock/clock.c \
+	../src/clock/clock_internal.c
+test_src_audio_output_dec_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src
+test_src_audio_output_dec_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
 
 test_src_clock_clock_SOURCES = src/clock/clock.c \
 	../src/clock/clock.c \
@@ -264,6 +285,35 @@ test_src_player_discontinuities_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
 test_src_player_eof_SOURCES = src/player/common.h src/player/modules.c \
 	src/player/eof.c
 test_src_player_eof_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
+
+# Opt-in real-media notification test; arguments select a generated short A/V
+# fixture and an owned recording directory. No private media or UI is needed.
+EXTRA_PROGRAMS += test_src_player_recording
+test_src_player_recording_SOURCES = src/player/recording.c
+test_src_player_recording_LDADD = $(LIBVLCCORE) $(LIBVLC)
+# Opt-in actual subtitle decoder snapshots; the caller supplies generated media,
+# subtitle references and an empty output directory. Pixel checks run separately.
+EXTRA_PROGRAMS += test_src_player_subtitle_fps
+test_src_player_subtitle_fps_SOURCES = src/player/subtitle_fps.c
+test_src_player_subtitle_fps_LDADD = $(LIBVLCCORE) $(LIBVLC)
+# Actual TTML parser/control/serializer test; pass fixtures/ttml-fps explicitly.
+EXTRA_PROGRAMS += test_modules_demux_ttml_fps
+test_modules_demux_ttml_fps_SOURCES = modules/demux/ttml_fps.c \
+    ../modules/codec/ttml/ttml.c ../modules/codec/ttml/genttml.c
+test_modules_demux_ttml_fps_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src \
+    -DMODULE_STRING=\"ttml_fps_test\" -DMODULE_NAME=ttml_fps_test
+test_modules_demux_ttml_fps_LDADD = $(LIBVLCCORE) $(LIBVLC) $(top_builddir)/compat/libcompat.la
+EXTRA_DIST += modules/demux/fixtures/ttml-fps/flat.ttml \
+    modules/demux/fixtures/ttml-fps/nested-par.ttml \
+    modules/demux/fixtures/ttml-fps/nested-seq.ttml \
+    modules/demux/fixtures/ttml-fps/mixed-clock-frame.ttml
+EXTRA_DIST += libvlc/native_recorded_webvtt_pause.py
+if HAVE_WIN32
+test_src_player_recording_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+test_src_player_subtitle_fps_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+test_modules_demux_ttml_fps_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+endif
+
 test_src_player_errors_SOURCES = src/player/common.h src/player/modules.c \
 	src/player/errors.c
 test_src_player_errors_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
@@ -482,6 +532,8 @@ test_modules_stream_out_sdi_LDADD = $(LIBVLCCORE) $(LIBVLC)
 
 test_modules_mux_webvtt_SOURCES = modules/mux/webvtt.c
 test_modules_mux_webvtt_LDADD = $(LIBVLCCORE) $(LIBVLC)
+test_modules_video_filter_blend_SOURCES = modules/video_filter/blend.c
+test_modules_video_filter_blend_LDADD = $(LIBVLCCORE) $(LIBVLC)
 
 test_modules_stream_out_hls_subtitles_segmenter_SOURCES = \
 	modules/stream_out/hls/subtitles_segmenter.c \

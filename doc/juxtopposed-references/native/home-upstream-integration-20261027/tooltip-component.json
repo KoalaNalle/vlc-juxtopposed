@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "name": "plainChapter",
+      "text": "00:20 - Middle chapter",
+      "actualWidth": 153.0,
+      "expectedWidth": 153.0,
+      "actualHeight": 17.0,
+      "expectedHeight": 17.0,
+      "passed": true
+    },
+    {
+      "name": "literalChapterTags",
+      "text": "00:20 - Middle <b>\u00e4\u00f6</b>",
+      "actualWidth": 178.0,
+      "expectedWidth": 178.0,
+      "actualHeight": 17.0,
+      "expectedHeight": 17.0,
+      "passed": true
+    },
+    {
+      "name": "literalLineBreak",
+      "text": "00:40 - Ending <br> next",
+      "actualWidth": 168.0,
+      "expectedWidth": 168.0,
+      "actualHeight": 17.0,
+      "expectedHeight": 17.0,
+      "passed": true
+    },
+    {
+      "name": "literalBookmarkEntities",
+      "text": "Bookmark <i>Evening &amp; morning</i>",
+      "actualWidth": 272.0,
+      "expectedWidth": 272.0,
+      "actualHeight": 17.0,
+      "expectedHeight": 17.0,
+      "passed": true
+    },
+    {
+      "name": "empty",
+      "text": "",
+      "actualWidth": 0.0,
+      "expectedWidth": 0.0,
+      "actualHeight": 17.0,
+      "expectedHeight": 17.0,
+      "passed": true
+    }
+  ]
+}

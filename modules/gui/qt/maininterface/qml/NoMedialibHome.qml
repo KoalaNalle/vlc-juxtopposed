@@ -19,10 +19,10 @@ import QtQuick
 import QtQuick.Window
 
 import VLC.MainInterface
+import VLC.Dialogs
 import VLC.Widgets as Widgets
 import VLC.Util
 import VLC.Style
-import VLC.Dialogs
 
 FocusScope {
     id: root
@@ -45,9 +45,9 @@ FocusScope {
 
         property real spacing: VLCStyle.margin_large
 
-        implicitWidth: orientation === Qt.Vertical ? Math.max(cone.implicitWidth, buttons.implicitWidth)
-                                                   : cone.implicitWidth + spacing + buttons.implicitWidth
-        implicitHeight: orientation === Qt.Vertical ? cone.implicitHeight + spacing + buttons.implicitHeight
+        implicitWidth: orientation === Qt.Vertical ? Math.max(cone.implicitWidth, button.implicitWidth)
+                                                   : cone.implicitWidth + spacing + button.implicitWidth
+        implicitHeight: orientation === Qt.Vertical ? cone.implicitHeight + spacing + button.implicitHeight
                                                     : cone.implicitHeight
 
         states: [
@@ -60,7 +60,7 @@ FocusScope {
                     anchors.horizontalCenter: coneNButtons.horizontalCenter
                 }
                 AnchorChanges {
-                    target: buttons
+                    target: button
 
                     anchors.left: undefined
                     anchors.verticalCenter: undefined
@@ -68,7 +68,7 @@ FocusScope {
                     anchors.horizontalCenter: coneNButtons.horizontalCenter
                 }
                 PropertyChanges {
-                    target: buttons
+                    target: button
 
                     anchors.topMargin: coneNButtons.spacing
                 }
@@ -82,7 +82,7 @@ FocusScope {
                     anchors.left: coneNButtons.left
                 }
                 AnchorChanges {
-                    target: buttons
+                    target: button
 
                     anchors.top: undefined
                     anchors.horizontalCenter: undefined
@@ -90,7 +90,7 @@ FocusScope {
                     anchors.verticalCenter: coneNButtons.verticalCenter
                 }
                 PropertyChanges {
-                    target: buttons
+                    target: button
 
                     anchors.leftMargin: coneNButtons.spacing
                 }
@@ -106,7 +106,7 @@ FocusScope {
             property real _eDPR: MainCtx.effectiveDevicePixelRatio(Window.window)
 
             sourceSize: Qt.size(0, orientation === Qt.Vertical ? VLCStyle.colWidth(1)
-                                                               : buttons.implicitHeight * 1.618 * _eDPR) // 1.618 = golden ratio approximation
+                                                               : button.implicitHeight * 1.618 * _eDPR) // 1.618 = golden ratio approximation
 
             source: MainCtx.useXmasCone() ? "qrc:///logo/vlc48-xmas.png" // TODO: new xmas cone designs
                                           : "qrc:///misc/cone.svg"
@@ -126,54 +126,34 @@ FocusScope {
         }
 
         Row {
-            id: buttons
+            id: button
 
             spacing: coneNButtons.spacing
 
-            Widgets.ActionButtonPrimary {
+            OpenFileSplitButton {
                 id: fileButton
-
-                AccessibleCompat.id: "openFileButton"
 
                 focus: true
 
-                text: qsTr("Open File")
-
-                // NOTE: Use the same width for the buttons (give more width if necessary) to have bilateral symmetry:
-                width: Math.max(fileButton.implicitWidth, discButton.implicitWidth)
+                width: folderButton.visible ? Math.max(implicitWidth, folderButton.implicitWidth) : implicitWidth
 
                 Navigation.parentItem: coneNButtons
-                Navigation.rightItem: discButton
-
-                // TODO: The full-fledged open dialog is advertised as "Open Multiple Files" in the menu.
-                //       In the future, we can have the "Open File" button as a combo box button that has these options,
-                //       with the default being a simple open dialog:
-                //       - Default: simple open dialog.
-                //       - Combo box option 1 (user clicks the down button, and the combo box reveals all buttons): open multiple files (Ctrl+Shift+O).
-                //       - Combo box option 2: open location from clipboard (Ctrl+V) / simple text edit dialog.
-                onClicked: DialogsProvider.simpleOpenDialog()
+                Navigation.rightItem: folderButton.visible ? folderButton : null
             }
 
             Widgets.ActionButtonPrimary {
-                id: discButton
+                id: folderButton
 
-                readonly property bool addsLibraryFolder: MainCtx.juxtopposedControls && MainCtx.mediaLibraryAvailable
-                AccessibleCompat.id: addsLibraryFolder ? "addLibraryFolderButton" : "discButton"
+                AccessibleCompat.id: "addLibraryFolderButton"
 
-                text: addsLibraryFolder ? qsTr("Add Folder") : qsTr("Open Disc")
-
-                // NOTE: Use the same width for the buttons (give more width if necessary) to have bilateral symmetry:
-                width: Math.max(fileButton.implicitWidth, discButton.implicitWidth)
+                text: qsTr("Add Folder")
+                visible: MainCtx.juxtopposedControls && MainCtx.mediaLibraryAvailable
+                width: Math.max(fileButton.implicitWidth, implicitWidth)
 
                 Navigation.parentItem: coneNButtons
                 Navigation.leftItem: fileButton
 
-                onClicked: {
-                    if (addsLibraryFolder)
-                        DialogsProvider.addMediaLibraryFolder()
-                    else
-                        DialogsProvider.openDiscDialog()
-                }
+                onClicked: DialogsProvider.addMediaLibraryFolder()
             }
         }
     }

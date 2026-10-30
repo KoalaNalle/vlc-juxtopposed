@@ -49,6 +49,8 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_queue_overlay.py
       - name: Check shared library navigation states and actions
         run: python modules/gui/qt/tests/test_juxtopposed_navigation.py --output-dir ui-previews/navigation
+      - name: Check title strip layout and fullscreen routing
+        run: python modules/gui/qt/tests/test_juxtopposed_titlebar.py --output-dir ui-previews/titlebar
       - name: Check leaf route properties and saved selection restoration
         run: python modules/gui/qt/tests/test_page_loader_routes.py --repo-root . --mode fixed --output-dir ui-previews/page-loader
       - name: Check Music and Network history model readiness
@@ -63,6 +65,8 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_new_playlist.py --output-dir ui-previews/new-playlist
       - name: Check subtitle source-cue strip and timing states
         run: python modules/gui/qt/tests/test_juxtopposed_subtitle_timeline.py --output-dir ui-previews/subtitle-timeline
+      - name: Check audio timing marks across track selection
+        run: python modules/gui/qt/tests/test_audio_timing_selection.py --output-dir ui-previews/audio-timing-selection
       - name: Check network stream dialog and modal shortcuts
         run: python modules/gui/qt/tests/test_juxtopposed_network_dialog.py --output-dir ui-previews/network
       - name: Check conversion form states, focus and scaled layouts
@@ -71,12 +75,18 @@ jobs:
         run: python modules/gui/qt/tests/test_juxtopposed_music_player.py --output-dir ui-previews/music
       - name: Check Home dashboard and collection actions
         run: python modules/gui/qt/tests/test_juxtopposed_home.py --output-dir ui-previews/home
+      - name: Check Home history section actions and confirmation routing
+        run: python modules/gui/qt/tests/test_juxtopposed_home_history_actions.py --repo-root . --output-dir ui-previews/home-history-actions
+      - name: Check no-library Home and upstream Open File routes
+        run: python modules/gui/qt/tests/test_no_medialib_home.py --output-dir ui-previews/no-medialib-home
       - name: Check subtitle preset menu, naming and states
         run: python modules/gui/qt/tests/test_juxtopposed_subtitle_presets.py --output-dir ui-previews/subtitle-presets
       - name: Check Global Settings assets, choices, focus and feedback
         run: python modules/gui/qt/tests/test_juxtopposed_global_settings.py --output-dir ui-previews/global-settings
       - name: Check shared dialog ownership, routing and busy guards
         run: python modules/gui/qt/tests/test_juxtopposed_dialogs_host.py --output-dir ui-previews/dialogs-host
+      - name: Check error notification focus, timing and details routing
+        run: python modules/gui/qt/tests/test_error_notification.py --output-dir ui-previews/error-notification
       - name: Check original Light volume artwork and native binding contract
         run: python modules/gui/qt/tests/test_juxtopposed_light_volume.py --output-dir ui-previews/light-volume
       - name: Check production backdrop software alpha, updates and lifecycle

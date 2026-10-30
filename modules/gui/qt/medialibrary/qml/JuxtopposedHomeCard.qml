@@ -11,6 +11,7 @@ import VLC.Widgets as Widgets
 C.AbstractButton {
     id: root
     signal contextMenuRequested(point position)
+    signal activated(int reason)
     TapHandler {
         acceptedButtons: Qt.RightButton
         onTapped: eventPoint => {
@@ -31,6 +32,8 @@ C.AbstractButton {
     property string kind: "video"
     property string detailText: ""
     property var entry: ({})
+    property bool contextMenuAvailable: false
+    readonly property bool available: entry?.available !== false
     property bool gridMode: true
     property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
     property color textColor: JuxtopposedPalette.color("#969696")
@@ -49,12 +52,13 @@ C.AbstractButton {
     implicitHeight: gridMode ? coverHeight + 18 * uiScale + 22 * uiScale + (subtitle ? 26 * uiScale : 0) : 44 * uiScale
     padding: 0
     focusPolicy: Qt.StrongFocus
-    enabled: entry?.available !== false
-    opacity: enabled ? 1 : 0.5
+    enabled: available || contextMenuAvailable
+    opacity: available ? 1 : 0.5
+    onClicked: if (available) activated(focusReason)
     Keys.onReturnPressed: clicked()
     Keys.onEnterPressed: clicked()
     Accessible.name: artist ? title + " \u2014 " + artist : title
-    Accessible.description: !enabled ? qsTr("This item is unavailable") : video && progress > 0 ? qsTr("Continue watching") : ""
+    Accessible.description: !available ? qsTr("This item is unavailable") : video && progress > 0 ? qsTr("Continue watching") : ""
     C.ToolTip.visible: hovered && label.truncated
     C.ToolTip.text: Accessible.name
     C.ToolTip.delay: 600

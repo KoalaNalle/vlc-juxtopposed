@@ -1,0 +1,67 @@
+--- r1/test_home_activity.cpp
++++ r2/test_home_activity.cpp
+@@ -661,8 +661,11 @@
+         QVERIFY(result.success()); QCOMPARE(result.removed, size_t(0));
+         ml_unique_ptr<vlc_ml_media_t> replay(vlc_ml_get_media(m_library, completed[1]));
+         QVERIFY(replay && mlVideoHistoryMatches(*replay, false));
+-        QCOMPARE(replay->f_progress, .3);
+-        QCOMPARE(vlc_ml_media_update_progress(m_library, completed[1], 1.), VLC_SUCCESS);
++        QVERIFY(qAbs(replay->f_progress - .3) < .000001);
++        // Synthetic entries have no duration: a raw progress of 1 is not a
++        // native completion. Seed the explicit completed state for this test.
++        QCOMPARE(vlc_ml_media_set_played(m_library, completed[1], false), VLC_SUCCESS);
++        QCOMPARE(vlc_ml_media_set_played(m_library, completed[1], true), VLC_SUCCESS);
+         result = edit(MLVideoHistoryScope::Unfinished, completed[1]);
+         QVERIFY(result.success()); QCOMPARE(result.removed, size_t(0));
+         replay.reset(vlc_ml_get_media(m_library, completed[1]));
+@@ -672,7 +675,8 @@
+         // changes between the outer snapshot/read and the final operation.
+         result = editMLVideoHistory(m_library, MLVideoHistoryScope::Unfinished, unfinished[1],
+             [&](int64_t id) {
+-                if (vlc_ml_media_update_progress(m_library, id, 1.) != VLC_SUCCESS)
++                if (vlc_ml_media_set_played(m_library, id, false) != VLC_SUCCESS
++                    || vlc_ml_media_set_played(m_library, id, true) != VLC_SUCCESS)
+                     return VLC_EGENERIC;
+                 return removeMLVideoHistoryItem(m_library, player, MLVideoHistoryScope::Unfinished, id);
+             });
+@@ -754,7 +758,10 @@
+             qInfo("Active-input history edit: %s", row.name);
+             QCOMPARE(vlc_ml_clear_history(m_library, VLC_ML_HISTORY_TYPE_GLOBAL), VLC_SUCCESS);
+             QCOMPARE(vlc_ml_media_update_progress(m_library, id, row.completed ? 1. : .4), VLC_SUCCESS);
+-            QCOMPARE(vlc_ml_media_update_progress(m_library, other->i_id, row.completed ? .6 : 1.), VLC_SUCCESS);
++            if (row.completed)
++                QCOMPARE(vlc_ml_media_update_progress(m_library, other->i_id, .6), VLC_SUCCESS);
++            else
++                QCOMPARE(vlc_ml_media_set_played(m_library, other->i_id, true), VLC_SUCCESS);
+             QCOMPARE(vlc_ml_media_set_playback_state(m_library, id, VLC_ML_PLAYBACK_STATE_SPEED, "1.0"), VLC_SUCCESS);
+             auto *playlist = vlc_test_stream_playlist(m_instance); QVERIFY(playlist);
+             std::unique_ptr<vlc_playlist_t, decltype(&vlc_playlist_Delete)> owned(playlist, &vlc_playlist_Delete);
+@@ -794,6 +801,14 @@
+                 vlc_player_Unlock(player); return qAbs(rate - 1.5f) < .001f;
+             };
+             QTRY_VERIFY_WITH_TIMEOUT(changedSpeed(), 5000);
++            video.reset(vlc_ml_get_media(m_library, id));
++            ml_unique_ptr<vlc_ml_media_t> otherBefore(vlc_ml_get_media(m_library, other->i_id));
++            QVERIFY(video && otherBefore);
++            qInfo("Before %s: selected progress %.17g/count %u/date %lld; opposite progress %.17g/count %u/date %lld",
++                  row.name, video->f_progress, unsigned(video->i_playcount), (long long)video->i_last_played_date,
++                  otherBefore->f_progress, unsigned(otherBefore->i_playcount), (long long)otherBefore->i_last_played_date);
++            QVERIFY(mlVideoHistoryMatches(*video, row.completed));
++            QVERIFY(mlVideoHistoryMatches(*otherBefore, !row.completed));
+             const auto scope = row.completed ? MLVideoHistoryScope::Completed : MLVideoHistoryScope::Unfinished;
+             const auto result = editMLVideoHistory(m_library,
+                 scope,
+@@ -817,7 +832,13 @@
+             const double storedSpeed = savedSpeed.toDouble(&speedValid);
+             QVERIFY(speedValid); QVERIFY(qAbs(storedSpeed - 1.5) < .001);
+             ml_unique_ptr<vlc_ml_media_t> kept(vlc_ml_get_media(m_library, other->i_id));
++            QVERIFY(kept);
++            qInfo("After %s: opposite progress %.17g/count %u/date %lld",
++                  row.name, kept->f_progress, unsigned(kept->i_playcount), (long long)kept->i_last_played_date);
+             QVERIFY(kept && mlVideoHistoryMatches(*kept, !row.completed));
++            QCOMPARE(kept->f_progress, otherBefore->f_progress);
++            QCOMPARE(kept->i_playcount, otherBefore->i_playcount);
++            QCOMPARE(kept->i_last_played_date, otherBefore->i_last_played_date);
+ 
+             // The suppression belongs to the cleared input, not this media
+             // forever. A fresh playback on the same player can save progress.

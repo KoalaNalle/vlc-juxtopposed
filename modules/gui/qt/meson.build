@@ -807,6 +807,7 @@ qml_modules += {
         'maininterface/qml/JuxtopposedTitlebar.qml',
         'maininterface/qml/JuxtopposedNavigationPane.qml',
         'maininterface/qml/NoMedialibHome.qml',
+        'maininterface/qml/OpenFileSplitButton.qml',
         qml_maininterface_extra_files,
         'maininterface/qml/SideNavigationPane.qml',
         'maininterface/qml/SideNavigationDelegate.qml',
@@ -1107,6 +1108,7 @@ qml_modules += {
         'widgets/qml/NavigableRow.qml',
         'widgets/qml/PlayCover.qml',
         'widgets/qml/RoundButtonExt.qml',
+        'widgets/qml/SplitButton.qml',
         'widgets/qml/ScaledImage.qml',
         'widgets/qml/TextAutoScroller.qml',
         'widgets/qml/SearchBox.qml',
@@ -2071,6 +2073,39 @@ if qt6_dep.found()
             'dependencies': [qt6_dep, qt_extra_deps, qtest_qt6_dep]
         }
 
+        csd_button_test_sources = files(
+                'tests/vlc_stub_modules.cpp',
+                'tests/test_qt_csd_button_model.cpp',
+                'util/csdbuttonmodel.hpp',
+                'util/csdbuttonmodel.cpp'
+            )
+        csd_button_test_deps = []
+        csd_button_test_link_args = qt_link_args
+        if host_system == 'windows' and have_mingw
+            csd_button_test_sources += files('util/winpthreads_shutdown.cpp')
+            csd_button_test_deps += [cpp.find_library('winpthread', static: true), cpp.find_library('ntdll')]
+            csd_button_test_link_args += '-Wl,--wrap=pthread_key_delete'
+        endif
+        if host_system == 'windows' and cpp.compiles(qt_static_check, dependencies: qt6_dep,
+                name: 'CSD test uses static Qt')
+            csd_qt_plugindir = qt6_dep.get_variable(pkgconfig: 'plugindir', configtool: '-query QT_INSTALL_PLUGINS')
+            csd_button_test_deps += cpp.find_library('qoffscreen', dirs: csd_qt_plugindir / 'platforms', static: true)
+        endif
+        vlc_tests += {
+            'name': 'test_qt_csd_button_model',
+            'sources': csd_button_test_sources,
+            'moc_sources': files(
+                'tests/test_qt_csd_button_model.cpp'
+            ),
+            'moc_headers': files(
+                'util/csdbuttonmodel.hpp'
+            ),
+            'suite': ['qt'],
+            'include_directories' : qt_include_dir,
+            'link_with': [libvlccore, libvlc],
+            'link_args': csd_button_test_link_args,
+            'dependencies': [csd_button_test_deps, qt6_dep, qt_extra_deps, qtest_qt6_dep]
+        }
 
         vlc_tests += {
             'name': 'test_qt_renderer_manager',

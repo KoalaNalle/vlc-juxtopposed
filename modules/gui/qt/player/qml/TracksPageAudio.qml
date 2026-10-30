@@ -31,12 +31,37 @@ import VLC.Player
 TracksPage {
     id: root
 
+    property string audioTimingToken: ""
+
     Connections {
         target: Player
-        function onInputChanged() { delayEstimator.cancel() }
-        function onRateChanged() { delayEstimator.cancel() }
-        function onSeekStarted() { delayEstimator.cancel() }
-        function onPlayingStateChanged() { delayEstimator.cancel() }
+        function onInputChanged() { root.cancelAudioTiming() }
+        function onRateChanged() { root.cancelAudioTimingIfStale() }
+        function onSeekStarted() { root.cancelAudioTiming() }
+        function onPlayingStateChanged() { root.cancelAudioTimingIfStale() }
+        function onAudioSelectionChanged() { root.cancelAudioTimingIfStale() }
+        function onAudioDelayChanged() { root.cancelAudioTimingIfStale() }
+        function onAudioTimingContextChanged() { root.cancelAudioTimingIfStale() }
+    }
+
+    function cancelAudioTiming() {
+        delayEstimator.cancel()
+        audioTimingToken = ""
+    }
+
+    function cancelAudioTimingIfStale() {
+        if (audioTimingToken.length && !Player.isAudioTimingCurrent(audioTimingToken))
+            cancelAudioTiming()
+    }
+
+    function prepareAudioMark() {
+        if (!delayEstimator.isHeardTimeMarked && !delayEstimator.isSpottedTimeMarked)
+            audioTimingToken = Player.beginAudioTiming()
+        else if (!Player.isAudioTimingCurrent(audioTimingToken)) {
+            delayEstimator.cancel()
+            audioTimingToken = Player.beginAudioTiming()
+        }
+        return audioTimingToken.length > 0
     }
 
     // Functions
@@ -77,7 +102,12 @@ TracksPage {
             DelayEstimator {
                 id: delayEstimator
                 // Marks measure wall time; native track offsets use media time.
-                onDelayChanged: Player.addAudioDelay(delayEstimator.delay.scale(Player.rate))
+                onDelayChanged: {
+                    const token = root.audioTimingToken
+                    root.audioTimingToken = ""
+                    if (token.length)
+                        Player.addAudioTimingIfCurrent(delayEstimator.delay, token)
+                }
             }
 
             Widgets.MenuCaption {
@@ -138,6 +168,7 @@ TracksPage {
                 text: qsTr("Reset")
 
                 onClicked: {
+                    root.cancelAudioTiming()
                     Player.audioDelayMS = 0
                     delayEstimator.reset()
                 }
@@ -162,7 +193,11 @@ TracksPage {
                 selected: delayEstimator.isSpottedTimeMarked
 
                 onClicked: {
+                    if (!root.prepareAudioMark())
+                        return
                     delayEstimator.markSpottedTime() //method name should be changed
+                    if (!delayEstimator.isHeardTimeMarked && !delayEstimator.isSpottedTimeMarked)
+                        root.audioTimingToken = ""
                     if (!delayEstimator.isHeardTimeMarked && delayEstimator.isSpottedTimeMarked)
                         soundSpotted.animate()
                 }
@@ -177,7 +212,11 @@ TracksPage {
                 selected: delayEstimator.isHeardTimeMarked
 
                 onClicked: {
+                    if (!root.prepareAudioMark())
+                        return
                     delayEstimator.markHeardTime() //method name should be changed
+                    if (!delayEstimator.isHeardTimeMarked && !delayEstimator.isSpottedTimeMarked)
+                        root.audioTimingToken = ""
                     if (!delayEstimator.isSpottedTimeMarked && delayEstimator.isHeardTimeMarked)
                         soundHeard.animate()
                 }

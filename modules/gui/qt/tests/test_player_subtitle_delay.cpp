@@ -183,7 +183,9 @@ private slots:
             QSKIP("Set VLC_SUBTITLE_FIXTURE to run the actual native controller diagnostic");
         QVERIFY2(QFileInfo::exists(m_fixture), "Use the real generated subtitle-style.mp4");
         const QDir fixtures(QFileInfo(m_fixture).absolutePath());
-        QVERIFY(fixtures.exists("subtitle-style.srt"));
+        const QString primarySubtitle = qEnvironmentVariable("VLC_TEST_PRIMARY_SUBTITLE",
+                                                             "subtitle-style.srt");
+        QVERIFY(fixtures.exists(primarySubtitle));
         QVERIFY(fixtures.exists("duration-cues.srt"));
         QVERIFY(m_directory.isValid());
         qputenv("VLC_TEST_TIMEOUT", "30");
@@ -207,11 +209,28 @@ private slots:
             QCOMPARE(var_SetString(playerObject, "text-renderer", "freetype"), VLC_SUCCESS);
             var_Create(playerObject, "sub-autodetect-file", VLC_VAR_BOOL);
             QCOMPARE(var_SetBool(playerObject, "sub-autodetect-file", false), VLC_SUCCESS);
+            if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1")
+            {
+                var_Create(playerObject, "demux-filter", VLC_VAR_STRING);
+                QCOMPARE(var_SetString(playerObject, "demux-filter", "noseek"), VLC_SUCCESS);
+            }
         }
         var_Create(m_environment->intf, "sub-delay", VLC_VAR_INTEGER);
         var_SetInteger(m_environment->intf, "sub-delay", 0);
         var_Create(m_environment->intf, "sub-fps", VLC_VAR_FLOAT);
         var_SetFloat(m_environment->intf, "sub-fps", 0.f);
+        // Exercise a value present before input creation. This emulates the
+        // player's inherited FPS value; it is not a persistence/restart test.
+        if (qEnvironmentVariable("VLC_TEST_INITIAL_SUBTITLE_FPS") == "50")
+        {
+            vlc_player_locker lock{m_player};
+            vlc_player_SetAssociatedSubsFPS(m_player, 50.f);
+        }
+        if (qEnvironmentVariable("VLC_TEST_PLAYBACK_RATE") == "0.25")
+        {
+            vlc_player_locker lock{m_player};
+            vlc_player_ChangeRate(m_player, 0.25f);
+        }
         m_controller = std::make_unique<PlayerController>(m_environment->intf);
         m_environment->intf->p_mainPlayerController = m_controller.get();
         connect(m_controller.get(), &PlayerController::subtitleDelayChanged, this,
@@ -237,11 +256,19 @@ private slots:
         QCOMPARE(configured, VLC_SUCCESS);
         QCOMPARE(started, VLC_SUCCESS);
         QTRY_VERIFY_WITH_TIMEOUT(m_controller->hasVideoOutput(), 10000);
-        for (const auto &name : {"subtitle-style.srt", "duration-cues.srt"})
+        const bool nonseekable = qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") == "1";
+        if (nonseekable)
+        {
+            { vlc_player_locker lock{m_player}; vlc_player_UnselectTrackCategory(m_player, SPU_ES); }
+            QTRY_VERIFY(roles() == qMakePair(static_cast<vlc_es_id_t *>(nullptr),
+                                           static_cast<vlc_es_id_t *>(nullptr)));
+        }
+        for (const auto &name : {primarySubtitle, QStringLiteral("duration-cues.srt")})
         {
             const auto subtitle = QUrl::fromLocalFile(fixtures.filePath(name)).toEncoded();
             vlc_player_locker lock{m_player};
-            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), true, false, true), VLC_SUCCESS);
+            const bool selected = !nonseekable || name == primarySubtitle;
+            QCOMPARE(vlc_player_AddAssociatedMedia(m_player, SPU_ES, subtitle.constData(), selected, false, true), VLC_SUCCESS);
         }
         // A media may already contain two embedded tracks. Wait for the actual
         // associated sources instead of mistaking those initial rows for SRTs.
@@ -259,13 +286,23 @@ private slots:
             }
             return false;
         };
-        QTRY_VERIFY_WITH_TIMEOUT(findAssociated("subtitle-style.srt", m_first), 10000);
+        QTRY_VERIFY_WITH_TIMEOUT(findAssociated(primarySubtitle, m_first), 10000);
         QTRY_VERIFY_WITH_TIMEOUT(findAssociated("duration-cues.srt", m_second), 10000);
         QVERIFY(m_first != m_second);
-        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
-        QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
-        QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
-        QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
+        if (nonseekable)
+            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)), 5000);
+        else
+        {
+            QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+            QTRY_VERIFY_WITH_TIMEOUT(roles() == qMakePair(m_first.get(), m_second.get()), 5000);
+        }
+        // Renderer-owned styles (e.g. ASS) need not expose the Freetype
+        // appearance/preset consumer to exercise native FPS and caption output.
+        if (qEnvironmentVariable("VLC_TEST_FPS_FORMAT_ONLY") != "1")
+        {
+            QTRY_VERIFY_WITH_TIMEOUT(m_controller->getSubtitleAppearance()->available(), 10000);
+            QTRY_VERIFY_WITH_TIMEOUT(m_presets->canApply(), 5000);
+        }
         {
             vlc_player_locker lock{m_player};
             vlc_player_Pause(m_player);
@@ -401,6 +438,744 @@ private slots:
         QVERIFY2(picturesMatch, "FPS must preserve the held video picture");
         QVERIFY2(positionsMatch, "FPS must preserve the held video time");
     }
+    // Run this function alone in a fresh process: earlier FPS edits initialize
+    // the subtitle source and would mask the first-change regression.
+    void firstDefaultFpsChangeRetimesPlayingCaption()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        QVERIFY2(!directory.isEmpty() && QDir(directory).exists(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        auto seek = [this](vlc_tick_t t) { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, t); };
+        auto time = [this] { vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player); };
+        auto snapshot = [this, &directory](const QString &name) {
+            const auto path = QDir(directory).filePath(name + ".png");
+            vout_thread_t *output;
+            { vlc_player_locker lock{m_player}; output = vlc_player_vout_Hold(m_player); }
+            if (!output) return QImage();
+            var_Create(output, "snapshot-width", VLC_VAR_INTEGER); var_SetInteger(output, "snapshot-width", 960);
+            var_Create(output, "snapshot-height", VLC_VAR_INTEGER); var_SetInteger(output, "snapshot-height", 540);
+            var_Create(output, "snapshot-path", VLC_VAR_STRING); var_SetString(output, "snapshot-path", qtu(path));
+            var_Create(output, "snapshot-format", VLC_VAR_STRING); var_SetString(output, "snapshot-format", "png");
+            var_TriggerCallback(output, "video-snapshot"); vout_Release(output);
+            QImage image;
+            for (int i = 0; i < 100 && image.isNull(); ++i) { QTest::qWait(20); image.load(path); }
+            return image.convertToFormat(QImage::Format_RGBA8888);
+        };
+        auto mask = [](const QImage &image) {
+            QByteArray pixels;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x) {
+                    const auto c = image.pixelColor(x, y);
+                    pixels.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return pixels;
+        };
+        auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i) { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        // Both reference captures use default 0 FPS and take place before any FPS setter.
+        seek(VLC_TICK_FROM_SEC(24)); QTest::qWait(700);
+        const auto middle = snapshot("fresh-fps-middle-reference");
+        QVERIFY(!middle.isNull()); QCOMPARE(frameMarker(middle), 600u);
+        seek(VLC_TICK_FROM_SEC(12)); QTest::qWait(700);
+        const auto first = snapshot("fresh-fps-first-reference");
+        QVERIFY(!first.isNull()); QCOMPARE(frameMarker(first), 300u);
+        const auto firstMask = mask(first), middleMask = mask(middle);
+        QVERIFY(firstMask.count(char(1)) > 100 && middleMask.count(char(1)) > 100);
+        QVERIFY(!matches(firstMask, middleMask));
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(14));
+        const auto recordingDirectory = qEnvironmentVariable("VLC_FPS_RECORDINGS");
+        if (!recordingDirectory.isEmpty())
+        {
+            QVERIFY(QDir(recordingDirectory).exists());
+            QVERIFY(QDir(recordingDirectory).entryList(QDir::Files).isEmpty());
+            { vlc_player_locker lock{m_player};
+              vlc_player_SetRecordingEnabled(m_player, true, qtu(recordingDirectory)); }
+            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
+                return vlc_player_IsRecording(m_player); })(), 5000);
+            qInfo("Recording before FPS edit: main clock=%lld", static_cast<long long>(time()));
+        }
+        const auto before = time();
+        m_controller->setSubtitleFPS(50.f); // first ever FPS edit for this input
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        float playbackRate;
+        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
+        QVERIFY(playbackRate > 0.f);
+        // The prompt-response mode keeps a wall-time bound even at slow rates.
+        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
+                         ? 700 : qRound(700.f / playbackRate));
+        const auto actual = snapshot("fresh-first-playing-fps50");
+        const auto after = time();
+        QVERIFY(!actual.isNull());
+        QVERIFY2(after > before && after - before < VLC_TICK_FROM_SEC(3) && after < VLC_TICK_FROM_SEC(16),
+                 "The main playback clock must advance without a primary seek");
+        QVERIFY2(frameMarker(actual) >= 300u && frameMarker(actual) < 400u,
+                 "The captured decoded frame must remain in the expected window");
+        const auto actualMask = mask(actual);
+        qInfo("Fresh 0->50 playing caption matches first=%d middle=%d clock %lld->%lld",
+              matches(actualMask, firstMask), matches(actualMask, middleMask),
+              static_cast<long long>(before), static_cast<long long>(after));
+        QVERIFY2(matches(actualMask, middleMask) && !matches(actualMask, firstMask),
+                 "The first default->50 FPS edit must replace the old cue without a player seek");
+        if (!recordingDirectory.isEmpty())
+        {
+            { vlc_player_locker lock{m_player}; QVERIFY(vlc_player_IsRecording(m_player)); }
+            // The generated video has keyframes at 10-second intervals. Keep
+            // recording past the 20-second keyframe; stopping near 16 seconds
+            // can produce a file with no video packets. Decode it separately.
+            QTest::qWait(10000);
+            const auto stopTime = time();
+            QVERIFY(stopTime > VLC_TICK_FROM_SEC(22) && stopTime - after < VLC_TICK_FROM_SEC(12));
+            { vlc_player_locker lock{m_player};
+              QVERIFY(vlc_player_IsRecording(m_player));
+              QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PLAYING);
+              vlc_player_SetRecordingEnabled(m_player, false, nullptr); }
+            QTRY_VERIFY_WITH_TIMEOUT(([&] { vlc_player_locker lock{m_player};
+                return !vlc_player_IsRecording(m_player); })(), 5000);
+            QTRY_VERIFY_WITH_TIMEOUT(time() > stopTime + VLC_TICK_FROM_MS(200), 5000);
+            QCOMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+            const auto files = QDir(recordingDirectory).entryInfoList(QDir::Files);
+            QVERIFY2(!files.isEmpty(), "Recording must publish output for separate decode validation");
+            for (const auto &file : files)
+                QVERIFY(file.size() > 0);
+            qInfo("Recording stopped normally: main clock=%lld files=%lld",
+                  static_cast<long long>(stopTime), static_cast<long long>(files.size()));
+        }
+    }
+    // Run alone in a fresh process with both a selected external source and
+    // an embedded secondary source. Compare each rendered region independently.
+    void firstFpsChangePreservesEmbeddedSecondary()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        QVERIFY2(!directory.isEmpty() && QDir(directory).exists(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        HeldEs embedded;
+        {
+            vlc_player_locker lock{m_player};
+            for (size_t i = 0; i < vlc_player_GetTrackCount(m_player, SPU_ES); ++i)
+            {
+                const auto *track = vlc_player_GetTrackAt(m_player, SPU_ES, i);
+                if (track->fmt.psz_language && !strcmp(track->fmt.psz_language, "fin"))
+                    embedded.reset(track->es_id);
+            }
+        }
+        QVERIFY(embedded);
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image, int top, int bottom) {
+            QByteArray result;
+            for (int y = image.height() * top / 4; y < image.height() * bottom / 4; ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        const auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i)
+            { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        seek(VLC_TICK_FROM_SEC(24)); QTest::qWait(800);
+        const auto middle = captureNativeFrame("isolation-external-middle-reference");
+        QVERIFY(!middle.isNull()); QCOMPARE(frameMarker(middle), 600u);
+        seek(VLC_TICK_FROM_SEC(12)); QTest::qWait(800);
+        const auto first = captureNativeFrame("isolation-external-first-reference");
+        QVERIFY(!first.isNull()); QCOMPARE(frameMarker(first), 300u);
+        const auto firstMask = mask(first, 3, 4), middleMask = mask(middle, 3, 4);
+        QVERIFY(firstMask.count(char(1)) > 100 && middleMask.count(char(1)) > 100);
+        QVERIFY(!matches(firstMask, middleMask));
+        QCOMPARE(select(m_first.get(), embedded.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), embedded.get()));
+        seek(VLC_TICK_FROM_SEC(12));
+        QImage before;
+        int attempt = 0;
+        const auto bothVisible = [&] {
+            before = captureNativeFrame(QString("isolation-before-%1").arg(attempt++));
+            return !before.isNull() && frameMarker(before) == 300u
+                && mask(before, 1, 3).count(char(1)) > 100
+                && matches(mask(before, 3, 4), firstMask);
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(bothVisible(), 10000);
+        const auto secondary = mask(before, 1, 3);
+        const auto heldTime = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("isolation-after-fps50");
+        QVERIFY(!after.isNull());
+        QCOMPARE(frameMarker(after), 300u);
+        QVERIFY(qAbs(time() - heldTime) < VLC_TICK_FROM_MS(50));
+        QVERIFY(roles() == qMakePair(m_first.get(), embedded.get()));
+        QVERIFY2(matches(mask(after, 1, 3), secondary),
+                 "An FPS edit must not remove or change an unrelated embedded secondary caption");
+        QVERIFY2(matches(mask(after, 3, 4), middleMask),
+                 "The selected external primary must retime from FIRST to MIDDLE");
+    }
+
+    // Run alone in a fresh process with both a selected external source and
+    // an embedded secondary source. Compare each rendered region independently.
+    void firstPlayingFpsChangePreservesEmbeddedSecondary()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        QVERIFY2(!directory.isEmpty() && QDir(directory).exists(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        HeldEs embedded;
+        {
+            vlc_player_locker lock{m_player};
+            for (size_t i = 0; i < vlc_player_GetTrackCount(m_player, SPU_ES); ++i)
+            {
+                const auto *track = vlc_player_GetTrackAt(m_player, SPU_ES, i);
+                if (track->fmt.psz_language && !strcmp(track->fmt.psz_language, "fin"))
+                    embedded.reset(track->es_id);
+            }
+        }
+        QVERIFY(embedded);
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image, int top, int bottom) {
+            QByteArray result;
+            for (int y = image.height() * top / 4; y < image.height() * bottom / 4; ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        const auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i)
+            { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        seek(VLC_TICK_FROM_SEC(24)); QTest::qWait(800);
+        const auto middle = captureNativeFrame("playing-isolation-external-middle-reference");
+        QVERIFY(!middle.isNull()); QCOMPARE(frameMarker(middle), 600u);
+        seek(VLC_TICK_FROM_SEC(12)); QTest::qWait(800);
+        const auto first = captureNativeFrame("playing-isolation-external-first-reference");
+        QVERIFY(!first.isNull()); QCOMPARE(frameMarker(first), 300u);
+        const auto firstMask = mask(first, 3, 4), middleMask = mask(middle, 3, 4);
+        QVERIFY(firstMask.count(char(1)) > 100 && middleMask.count(char(1)) > 100);
+        QVERIFY(!matches(firstMask, middleMask));
+        QCOMPARE(select(m_first.get(), embedded.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), embedded.get()));
+        seek(VLC_TICK_FROM_SEC(12));
+        QImage before;
+        int attempt = 0;
+        const auto bothVisible = [&] {
+            before = captureNativeFrame(QString("playing-isolation-before-%1").arg(attempt++));
+            return !before.isNull() && frameMarker(before) == 300u
+                && mask(before, 1, 3).count(char(1)) > 100
+                && matches(mask(before, 3, 4), firstMask);
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(bothVisible(), 10000);
+        const auto secondary = mask(before, 1, 3);
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(14));
+        const auto beforeTime = time();
+        const auto playingBefore = captureNativeFrame("playing-isolation-before-change");
+        QVERIFY(!playingBefore.isNull());
+        QVERIFY2(matches(mask(playingBefore, 1, 3), secondary),
+                 "The embedded secondary must be visible before the FPS change");
+        QVERIFY2(matches(mask(playingBefore, 3, 4), firstMask),
+                 "The external primary must be visible before the FPS change");
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("playing-isolation-after-fps50");
+        QVERIFY(!after.isNull());
+        const auto afterTime = time();
+        QVERIFY2(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3),
+                 "Playback must advance without a main-player seek");
+        QVERIFY2(frameMarker(after) >= 300u && frameMarker(after) < 400u,
+                 "The decoded video frame must remain in the expected interval");
+        QVERIFY(roles() == qMakePair(m_first.get(), embedded.get()));
+        QVERIFY2(matches(mask(after, 1, 3), secondary),
+                 "An FPS edit must not remove or change an unrelated embedded secondary caption");
+        QVERIFY2(matches(mask(after, 3, 4), middleMask),
+                 "The selected external primary must retime from FIRST to MIDDLE");
+    }
+
+    // Shared associated-subtitle FPS applies to both external sources.
+    // Run alone in a fresh process to exercise the first live change.
+    void firstPlayingFpsChangeRetimesBothExternalSources()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        QVERIFY2(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image, int top, int bottom) {
+            QByteArray result;
+            for (int y = image.height() * top / 4; y < image.height() * bottom / 4; ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        const auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i)
+            { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        int attempt = 0;
+        QImage middle;
+        seek(VLC_TICK_FROM_SEC(24));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            middle = captureNativeFrame(QString("both-external-middle-%1").arg(attempt++));
+            return !middle.isNull() && frameMarker(middle) == 600u
+                && mask(middle, 1, 3).count(char(1)) > 100
+                && mask(middle, 3, 4).count(char(1)) > 100;
+        }()), 10000);
+        const auto upperMiddle = mask(middle, 1, 3), lowerMiddle = mask(middle, 3, 4);
+        QImage first;
+        seek(VLC_TICK_FROM_SEC(12));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            first = captureNativeFrame(QString("both-external-first-%1").arg(attempt++));
+            return !first.isNull() && frameMarker(first) == 300u
+                && mask(first, 1, 3).count(char(1)) > 100
+                && mask(first, 3, 4).count(char(1)) > 100
+                && !matches(mask(first, 1, 3), upperMiddle)
+                && !matches(mask(first, 3, 4), lowerMiddle);
+        }()), 10000);
+        const auto upperFirst = mask(first, 1, 3), lowerFirst = mask(first, 3, 4);
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(14));
+        const auto beforeTime = time();
+        const auto before = captureNativeFrame("both-external-playing-before");
+        QVERIFY(!before.isNull());
+        QVERIFY(matches(mask(before, 1, 3), upperFirst));
+        QVERIFY(matches(mask(before, 3, 4), lowerFirst));
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("both-external-playing-after");
+        const auto afterTime = time();
+        QVERIFY(!after.isNull());
+        QVERIFY(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 400u);
+        QVERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        QVERIFY2(matches(mask(after, 1, 3), upperMiddle), "External secondary cue must retime");
+        QVERIFY2(matches(mask(after, 3, 4), lowerMiddle), "External primary cue must retime");
+    }
+
+    // Both selected external sources share FPS but have independent delays.
+    // Run alone in a fresh process to exercise the first live change.
+    void firstPlayingFpsChangeRetimesBothTrackDelays_data()
+    {
+        QTest::addColumn<int>("primaryDelayMs");
+        QTest::addColumn<int>("secondaryDelayMs");
+        QTest::addColumn<int>("videoSeconds");
+        QTest::addColumn<int>("primaryReferenceSeconds");
+        QTest::addColumn<int>("secondaryReferenceSeconds");
+        QTest::addColumn<bool>("secondaryEnded");
+        QTest::newRow("opposed") << 10000 << -5000 << 23 << 26 << 56 << false;
+        QTest::newRow("opposed-secondary-ended") << 10000 << -5000 << 26 << 32 << 56 << true;
+        QTest::newRow("opposed-swapped") << -5000 << 10000 << 23 << 56 << 26 << false;
+        QTest::newRow("positive") << 10000 << 5000 << 23 << 26 << 36 << false;
+        QTest::newRow("negative") << -5000 << -10000 << 12 << 34 << 44 << false;
+    }
+    void firstPlayingFpsChangeRetimesBothTrackDelays()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        QFETCH(int, primaryDelayMs);
+        QFETCH(int, secondaryDelayMs);
+        QFETCH(int, videoSeconds);
+        QFETCH(int, primaryReferenceSeconds);
+        QFETCH(int, secondaryReferenceSeconds);
+        QFETCH(bool, secondaryEnded);
+        QVERIFY2(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        QCOMPARE(select(m_first.get(), m_second.get()), 2u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image, int top, int bottom) {
+            QByteArray result;
+            for (int y = image.height() * top / 4; y < image.height() * bottom / 4; ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        const auto matches = [](const QByteArray &a, const QByteArray &b) {
+            if (a.size() != b.size()) return false;
+            qsizetype intersection = 0, united = 0;
+            for (qsizetype i = 0; i < a.size(); ++i)
+            { intersection += a[i] && b[i]; united += a[i] || b[i]; }
+            return united > 100 && intersection * 1000 >= united * 995;
+        };
+        int attempt = 0;
+        // Reference times map (video time - selected delay) through FPS 50
+        // onto the original 25 FPS fixture. Stay clear of cue boundaries.
+        QImage at26, at56;
+        seek(VLC_TICK_FROM_SEC(primaryReferenceSeconds));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            at26 = captureNativeFrame(QString("track-delay-reference26-%1").arg(attempt++));
+            return !at26.isNull() && frameMarker(at26) == unsigned(primaryReferenceSeconds * 25)
+                && mask(at26, 3, 4).count(char(1)) > 100;
+        }()), 10000);
+        seek(VLC_TICK_FROM_SEC(secondaryReferenceSeconds));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            at56 = captureNativeFrame(QString("track-delay-reference56-%1").arg(attempt++));
+            return !at56.isNull() && frameMarker(at56) == unsigned(secondaryReferenceSeconds * 25)
+                && mask(at56, 1, 3).count(char(1)) > 100;
+        }()), 10000);
+        const auto primaryExpected = mask(at26, 3, 4), secondaryExpected = mask(at56, 1, 3);
+        QCOMPARE(setOwn(m_first.get(), VLC_TICK_FROM_MS(primaryDelayMs)), VLC_SUCCESS);
+        QCOMPARE(setOwn(m_second.get(), VLC_TICK_FROM_MS(secondaryDelayMs)), VLC_SUCCESS);
+        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
+        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
+        QImage first;
+        seek(VLC_TICK_FROM_SEC(videoSeconds));
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            first = captureNativeFrame(QString("track-delay-before-%1").arg(attempt++));
+            return !first.isNull() && frameMarker(first) == unsigned(videoSeconds * 25)
+                && mask(first, 1, 3).count(char(1)) > 100
+                && mask(first, 3, 4).count(char(1)) > 100
+                && !matches(mask(first, 1, 3), secondaryExpected)
+                && !matches(mask(first, 3, 4), primaryExpected);
+        }()), 10000);
+        const auto primaryBefore = mask(first, 3, 4), secondaryBefore = mask(first, 1, 3);
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(videoSeconds) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(videoSeconds + 1));
+        const auto beforeTime = time();
+        const auto before = captureNativeFrame("track-delay-playing-before");
+        QVERIFY(!before.isNull());
+        QVERIFY(matches(mask(before, 1, 3), secondaryBefore));
+        QVERIFY(matches(mask(before, 3, 4), primaryBefore));
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("track-delay-playing-after");
+        const auto afterTime = time();
+        QVERIFY(!after.isNull());
+        QVERIFY(afterTime > beforeTime && afterTime - beforeTime < VLC_TICK_FROM_SEC(3));
+        QVERIFY2(frameMarker(after) >= unsigned(videoSeconds * 25)
+              && frameMarker(after) < unsigned(videoSeconds * 25 + 37),
+                 "Capture must stay inside the expected caption interval");
+        QVERIFY(roles() == qMakePair(m_first.get(), m_second.get()));
+        QCOMPARE(own(m_first.get()), VLC_TICK_FROM_MS(primaryDelayMs));
+        QCOMPARE(own(m_second.get()), VLC_TICK_FROM_MS(secondaryDelayMs));
+        QVERIFY2(secondaryEnded ? mask(after, 1, 3).count(char(1)) == 0
+                               : matches(mask(after, 1, 3), secondaryExpected),
+                 "External secondary cue must respect its selected delay and end time");
+        QVERIFY2(matches(mask(after, 3, 4), primaryExpected),
+                 "External primary cue must respect its selected delay");
+    }
+
+    // The filter affects the master and subtitle sources. Let playback advance
+    // naturally; seeking to construct references would invalidate this case.
+    void firstFpsChangePreservesNonseekableDelayedCaption()
+    {
+        if (qEnvironmentVariable("VLC_TEST_NONSEEK_SUBTITLE") != "1")
+            QSKIP("Run alone with VLC_TEST_NONSEEK_SUBTITLE=1");
+        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
+        {
+            vlc_player_locker lock{m_player};
+            QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+            QVERIFY(!vlc_player_CanSeek(m_player));
+        }
+        QVERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        m_controller->setSubtitleDelayMS(5000);
+        QTRY_COMPARE(m_controller->getSubtitleDelayMS(), 5000);
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image) {
+            QByteArray result;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(12), 20000);
+        QVERIFY(time() < VLC_TICK_FROM_SEC(13));
+        const auto before = captureNativeFrame("nonseek-before-fps");
+        QVERIFY(!before.isNull());
+        const auto expected = mask(before);
+        QVERIFY2(expected.count(char(1)) > 100, "First delayed caption must already be visible");
+        const auto beforeTime = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("nonseek-after-fps");
+        QVERIFY(!after.isNull());
+        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(14));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 350u);
+        const auto actual = mask(after);
+        qsizetype intersection = 0, united = 0;
+        QCOMPARE(actual.size(), expected.size());
+        for (qsizetype i = 0; i < actual.size(); ++i)
+        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "A nonseekable source must retain the cue still active under its new FPS and delay");
+    }
+    void firstFpsChangePreservesOverlappingCues()
+    {
+        if (qEnvironmentVariable("VLC_TEST_OVERLAP_SUBTITLE") != "1")
+            QSKIP("Run alone with the overlapping ASS fixture");
+        QVERIFY(!qEnvironmentVariable("VLC_FPS_SNAPSHOTS").isEmpty());
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        const auto mask = [](const QImage &image) {
+            QByteArray result;
+            for (int y = image.height() * 3 / 4; y < image.height(); ++y)
+                for (int x = 0; x < image.width(); ++x)
+                {
+                    const auto c = image.pixelColor(x, y);
+                    result.append(char(c.red() > 160 && c.green() > 160 && c.blue() > 160));
+                }
+            return result;
+        };
+        // Obtain two overlapping cues by uninterrupted playback, so the
+        // reference does not assume the correctness of the seek/refill index.
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          vlc_player_ChangeRate(m_player, 4.f);
+          vlc_player_Resume(m_player); }
+        QTRY_VERIFY_WITH_TIMEOUT(time() >= VLC_TICK_FROM_SEC(24), 10000);
+        { vlc_player_locker lock{m_player}; vlc_player_Pause(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
+        QTest::qWait(700);
+        const auto reference = captureNativeFrame("overlap-uninterrupted-reference");
+        QVERIFY(!reference.isNull());
+        const auto expected = mask(reference);
+        { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(24)); }
+        QTest::qWait(700);
+        const auto sought = captureNativeFrame("overlap-paused-seek-reference");
+        QVERIFY(!sought.isNull());
+        QCOMPARE(frameMarker(sought), 600u);
+        const auto seekMask = mask(sought);
+        QCOMPARE(seekMask.size(), expected.size());
+        qsizetype seekIntersection = 0, seekUnion = 0;
+        for (qsizetype i = 0; i < seekMask.size(); ++i)
+        { seekIntersection += seekMask[i] && expected[i]; seekUnion += seekMask[i] || expected[i]; }
+        QVERIFY2(seekUnion > 100 && seekIntersection * 1000 >= seekUnion * 995,
+                 "A paused seek must retain both overlapping events after a renderer flush");
+        { vlc_player_locker lock{m_player};
+          vlc_player_ChangeRate(m_player, 1.f);
+          vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(12)); }
+        QTest::qWait(700);
+        const auto first = captureNativeFrame("overlap-first-only");
+        QVERIFY(!first.isNull());
+        QCOMPARE(frameMarker(first), 300u);
+        const auto single = mask(first);
+        QVERIFY(single.count(char(1)) > 100);
+        QVERIFY2(expected.count(char(1)) > single.count(char(1)) + 500,
+                 "The uninterrupted reference must contain both overlapping cues");
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_VERIFY(time() >= VLC_TICK_FROM_SEC(12) + VLC_TICK_FROM_MS(100));
+        const auto beforeTime = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        QTest::qWait(700);
+        const auto after = captureNativeFrame("overlap-after-first-fps50");
+        QVERIFY(!after.isNull());
+        QVERIFY(time() > beforeTime && time() < VLC_TICK_FROM_SEC(15));
+        QVERIFY(frameMarker(after) >= 300u && frameMarker(after) < 375u);
+        const auto actual = mask(after);
+        QCOMPARE(actual.size(), expected.size());
+        qsizetype intersection = 0, united = 0;
+        for (qsizetype i = 0; i < actual.size(); ++i)
+        { intersection += actual[i] && expected[i]; united += actual[i] || expected[i]; }
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "A rate refill must retain the earlier cue overlapping the current one");
+    }
+    void firstFpsChangeRetimesDelayedPlayingCaption_data()
+    {
+        QTest::addColumn<int>("delayMs");
+        QTest::addColumn<int>("videoSeconds");
+        QTest::addColumn<int>("referenceSeconds");
+        QTest::newRow("positive") << 5000 << 12 << 14;
+        QTest::newRow("negative") << -5000 << 12 << 34;
+        QTest::newRow("positive-change-cue") << 10000 << 24 << 28;
+    }
+    // Run each data row alone in its own fresh process.
+    void firstFpsChangeRetimesDelayedPlayingCaption()
+    {
+        if (qEnvironmentVariable("VLC_TEST_FIRST_FPS_FRESH") != "1")
+            QSKIP("Run each row alone in a fresh process with VLC_TEST_FIRST_FPS_FRESH=1");
+        QFETCH(int, delayMs);
+        QFETCH(int, videoSeconds);
+        QFETCH(int, referenceSeconds);
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        QVERIFY2(!directory.isEmpty() && QDir(directory).exists(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 0.f);
+          QCOMPARE(vlc_player_GetState(m_player), VLC_PLAYER_STATE_PAUSED); }
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        const auto seek = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, value);
+        };
+        const auto time = [this] {
+            vlc_player_locker lock{m_player}; return vlc_player_GetTime(m_player);
+        };
+        // At FPS 50 the effective source time is twice (video time minus
+        // the subtitle delay). Capture the expected cue before touching FPS.
+        seek(VLC_TICK_FROM_SEC(referenceSeconds));
+        QTest::qWait(800);
+        const auto expected = captureNativeFrame("delayed-fps-reference");
+        QVERIFY(!expected.isNull());
+        QCOMPARE(frameMarker(expected), unsigned(referenceSeconds * 25));
+        unsigned referencePixels = 0;
+        for (int y = expected.height() * 3 / 4; y < expected.height(); ++y)
+            for (int x = 0; x < expected.width(); ++x)
+            {
+                const auto color = expected.pixelColor(x, y);
+                referencePixels += color.red() > 160 && color.green() > 160 && color.blue() > 160;
+            }
+        QVERIFY2(referencePixels > 100, "The reference must contain a rendered caption before testing FPS");
+        m_controller->setSubtitleDelayMS(delayMs);
+        QTRY_COMPARE(m_controller->getSubtitleDelayMS(), delayMs);
+        seek(VLC_TICK_FROM_SEC(videoSeconds));
+        QTest::qWait(800);
+        { vlc_player_locker lock{m_player}; vlc_player_Resume(m_player); }
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PLAYING);
+        QTRY_VERIFY(time() > VLC_TICK_FROM_SEC(videoSeconds) + VLC_TICK_FROM_MS(100));
+        QVERIFY(time() < VLC_TICK_FROM_SEC(videoSeconds + 2));
+        const auto before = time();
+        m_controller->setSubtitleFPS(50.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 50.f);
+        float playbackRate;
+        { vlc_player_locker lock{m_player}; playbackRate = vlc_player_GetRate(m_player); }
+        QVERIFY(playbackRate > 0.f);
+        QTest::qWait(qEnvironmentVariable("VLC_TEST_FPS_PROMPT_RESPONSE") == "1"
+                         ? 700 : qRound(700.f / playbackRate));
+        const auto actual = captureNativeFrame("delayed-first-playing-fps50");
+        const auto after = time();
+        QVERIFY(!actual.isNull());
+        QVERIFY(after > before && after - before < VLC_TICK_FROM_SEC(3));
+        QVERIFY(frameMarker(actual) >= unsigned(videoSeconds * 25)
+                && frameMarker(actual) < unsigned((videoSeconds + 4) * 25));
+        unsigned intersection = 0, united = 0;
+        for (int y = actual.height() * 3 / 4; y < actual.height(); ++y)
+            for (int x = 0; x < actual.width(); ++x)
+            {
+                const auto a = actual.pixelColor(x, y), b = expected.pixelColor(x, y);
+                const bool ca = a.red() > 160 && a.green() > 160 && a.blue() > 160;
+                const bool cb = b.red() > 160 && b.green() > 160 && b.blue() > 160;
+                intersection += ca && cb;
+                united += ca || cb;
+            }
+        qInfo("First FPS edit delay=%d caption intersection=%u union=%u clock=%lld->%lld",
+              delayMs, intersection, united, static_cast<long long>(before), static_cast<long long>(after));
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "First FPS change must replace and retime the cue with the selected delay");
+    }
+
+    // Run alone with VLC_TEST_INITIAL_SUBTITLE_FPS=50 in a fresh process.
+    // The FPS exists before input creation and associated-source attachment.
+    void inheritedFpsDisplaysFirstAssociatedCue()
+    {
+        if (qEnvironmentVariable("VLC_TEST_INITIAL_SUBTITLE_FPS") != "50")
+            QSKIP("Run alone with VLC_TEST_INITIAL_SUBTITLE_FPS=50");
+        const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
+        QVERIFY2(!directory.isEmpty() && QDir(directory).exists(), "Set snapshot output directory");
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_GetAssociatedSubsFPS(m_player), 50.f); }
+        QCOMPARE(select(m_first.get()), 1u);
+        QTRY_VERIFY(roles() == qMakePair(m_first.get(), static_cast<vlc_es_id_t *>(nullptr)));
+        { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(12)); }
+        QTest::qWait(800);
+        const auto inherited = captureNativeFrame("inherited-fps-first-associated-cue");
+        QVERIFY(!inherited.isNull());
+        QCOMPARE(frameMarker(inherited), 300u);
+        m_controller->setSubtitleFPS(0.f);
+        QTRY_COMPARE(m_controller->getSubtitleFPS(), 0.f);
+        { vlc_player_locker lock{m_player}; vlc_player_SetTime(m_player, VLC_TICK_FROM_SEC(24)); }
+        QTest::qWait(800);
+        const auto reference = captureNativeFrame("inherited-fps-default-reference");
+        QVERIFY(!reference.isNull());
+        QCOMPARE(frameMarker(reference), 600u);
+        unsigned intersection = 0, united = 0;
+        for (int y = inherited.height() * 3 / 4; y < inherited.height(); ++y)
+            for (int x = 0; x < inherited.width(); ++x)
+            {
+                const auto a = inherited.pixelColor(x, y), b = reference.pixelColor(x, y);
+                const bool ca = a.red() > 160 && a.green() > 160 && a.blue() > 160;
+                const bool cb = b.red() > 160 && b.green() > 160 && b.blue() > 160;
+                intersection += ca && cb;
+                united += ca || cb;
+            }
+        QVERIFY2(united > 100 && intersection * 1000 >= united * 995,
+                 "An associated source added with pre-set 50 FPS must show its correctly retimed cue");
+    }
+
     void associatedFpsRetimesPlayingCaption()
     {
         const auto directory = qEnvironmentVariable("VLC_FPS_SNAPSHOTS");
@@ -864,7 +1639,7 @@ private slots:
                                          : QStringLiteral("TracksPageSubtitle.qml")));
         QVERIFY(source.open(QIODevice::ReadOnly));
         const QString text = QString::fromUtf8(source.readAll());
-        const QString method = audio ? QStringLiteral("addAudioDelay")
+        const QString method = audio ? QStringLiteral("addAudioTimingIfCurrent")
             : secondary ? QStringLiteral("addSecondarySubtitleDelay") : QStringLiteral("addSubtitleDelay");
         const QRegularExpression call(QStringLiteral("Player\\.%1\\([^\\r\\n]+").arg(method));
         const auto match = call.match(text);
@@ -887,9 +1662,16 @@ private slots:
         engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
         for (const auto *id : {"delayEstimator", "delayEstimatorPrimary", "delayEstimatorSecondary"})
             engine.rootContext()->setContextProperty(QString::fromLatin1(id), &estimator);
+        auto handler = match.captured();
+        if (audio) {
+            const auto token = m_controller->beginAudioTiming();
+            QVERIFY(!token.isEmpty());
+            engine.rootContext()->setContextProperty(QStringLiteral("testToken"), token);
+            handler.replace(QStringLiteral(", token)"), QStringLiteral(", testToken)"));
+        }
         QQmlComponent component(&engine);
         component.setData(QByteArrayLiteral("import QtQml\nQtObject { property QtObject hook: Connections { target: delayEstimator; function onDelayChanged() { ")
-            + match.captured().toUtf8() + QByteArrayLiteral(" } } }"),
+            + handler.toUtf8() + QByteArrayLiteral(" } } }"),
             QUrl(QStringLiteral("file:///timing-rate-native.qml")));
         QScopedPointer<QObject> root(component.create());
         QVERIFY2(root, qPrintable(component.errorString()));
@@ -929,12 +1711,17 @@ private slots:
         for (const auto *change : {"native-all-unselect", "native-secondary-unselect"})
             QTest::newRow(qPrintable(QStringLiteral("subtitle-")+QString::fromLatin1(change)))
                 << true << QString::fromLatin1(change);
+        for (const auto *change : {"native-audio-unselect", "native-audio-select"})
+            QTest::newRow(qPrintable(QStringLiteral("audio-")+QString::fromLatin1(change)))
+                << false << QString::fromLatin1(change);
     }
     void timingContextCancellation()
     {
         QFETCH(bool, subtitle); QFETCH(QString, change);
         const bool roleChange=change==QStringLiteral("native-all-unselect")
                            || change==QStringLiteral("native-secondary-unselect");
+        const bool audioSelectionChange=change==QStringLiteral("native-audio-unselect")
+                                     || change==QStringLiteral("native-audio-select");
         const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
         QVERIFY2(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty(),
                  "Supply frozen production synchronization QML pages");
@@ -959,6 +1746,27 @@ private slots:
             ? PlayerController::PLAYING_STATE_PLAYING : PlayerController::PLAYING_STATE_PAUSED);
         m_controller->setTime(VLCTime(VLC_TICK_FROM_SEC(3)));
         QTRY_VERIFY(qAbs(m_controller->getTime().toVLCTick()-VLC_TICK_FROM_SEC(3)) <= VLC_TICK_FROM_MS(100));
+        HeldEs audioId;
+        auto selectedAudio = [this] {
+            vlc_player_locker lock{m_player};
+            const auto *track = vlc_player_GetSelectedTrack(m_player, AUDIO_ES);
+            return track ? track->es_id : nullptr;
+        };
+        if (audioSelectionChange) {
+            {
+                vlc_player_locker lock{m_player};
+                QVERIFY(vlc_player_GetTrackCount(m_player, AUDIO_ES) > 0);
+                audioId.reset(vlc_player_GetTrackAt(m_player, AUDIO_ES, 0)->es_id);
+                vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
+            }
+            QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+            if (change == QStringLiteral("native-audio-select")) {
+                vlc_player_locker lock{m_player};
+                vlc_player_UnselectEsId(m_player, audioId.get());
+            }
+            if (change == QStringLiteral("native-audio-select"))
+                QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == nullptr, 5000);
+        }
         QTest::qWait(100); // drain the setup seek before marking a new pair
         DelayEstimator audio, primary, secondary;
         QSignalSpy audioChanges(&audio, &DelayEstimator::delayChanged);
@@ -970,7 +1778,9 @@ private slots:
         engine.rootContext()->setContextProperty(QStringLiteral("delayEstimatorPrimary"), &primary);
         engine.rootContext()->setContextProperty(QStringLiteral("delayEstimatorSecondary"), &secondary);
         QQmlComponent component(&engine);
-        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property QtObject hook: ")
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; ")
+            +(subtitle ? QByteArray() : QByteArrayLiteral("property string audioTimingToken: \"\"; "))
+            + QByteArrayLiteral("property QtObject hook: ")
             +connections+'\n'+helpers+'\n'+'}', QUrl(QStringLiteral("file:///timing-context-native.qml")));
         QScopedPointer<QObject> root(component.create());
         QVERIFY2(root, qPrintable(component.errorString()));
@@ -978,17 +1788,28 @@ private slots:
             QCOMPARE(QThread::currentThread(), m_controller->thread());
             (void)m_controller->getInput(); // rate observers may re-lock too
         }, Qt::DirectConnection);
+        connect(m_controller.get(), &PlayerController::audioSelectionChanged, root.data(), [this] {
+            QCOMPARE(QThread::currentThread(), m_controller->thread());
+            (void)m_controller->getInput(); // selection notification must follow the native unlock
+        }, Qt::DirectConnection);
         auto marked=[&] { return subtitle ? primary.isHeardTimeMarked() || secondary.isSpottedTimeMarked()
                                           : audio.isHeardTimeMarked(); };
         if (subtitle) { primary.markHeardTime(); secondary.markSpottedTime(); }
-        else audio.markHeardTime();
+        else {
+            QVariant prepared;
+            QVERIFY(QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, prepared)));
+            QVERIFY(prepared.toBool());
+            audio.markHeardTime();
+        }
         QVERIFY(marked());
         QTest::qWait(50);
         QVERIFY(marked()); // no delayed setup event may cancel this pair
         const auto input=m_controller->getInput();
         const auto selected=roles(); const auto savedCategory=category();
         const auto savedOwn=own(m_second.get());
+        const auto savedAudioDelay=m_controller->getAudioDelay().toVLCTick();
         QSignalSpy seeks(m_controller.get(), &PlayerController::seekStarted);
+        QSignalSpy audioSelections(m_controller.get(), &PlayerController::audioSelectionChanged);
         if (change==QStringLiteral("native-all-unselect")) {
             vlc_player_locker lock{m_player};
             vlc_player_UnselectTrackCategory(m_player, SPU_ES);
@@ -996,6 +1817,13 @@ private slots:
         else if (change==QStringLiteral("native-secondary-unselect")) {
             vlc_player_locker lock{m_player};
             vlc_player_UnselectEsId(m_player, selected.second);
+        }
+        else if (audioSelectionChange) {
+            vlc_player_locker lock{m_player};
+            if (change == QStringLiteral("native-audio-unselect"))
+                vlc_player_UnselectEsId(m_player, audioId.get());
+            else
+                vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
         }
         else if (change==QStringLiteral("qt-seek")) m_controller->jumpToPos(.25);
         else if (change==QStringLiteral("qt-rate")) m_controller->setRate(1.5f);
@@ -1013,6 +1841,11 @@ private slots:
             QTRY_VERIFY(qAbs(m_controller->getTime().toVLCTick()-requested) <= VLC_TICK_FROM_MS(100));
         }
         QVERIFY(audioChanges.isEmpty() && primaryChanges.isEmpty() && secondaryChanges.isEmpty());
+        if (audioSelectionChange) {
+            QTRY_VERIFY(!audioSelections.isEmpty());
+            QTRY_VERIFY(selectedAudio() == (change == QStringLiteral("native-audio-select") ? audioId.get() : nullptr));
+            QCOMPARE(m_controller->getAudioDelay().toVLCTick(), savedAudioDelay);
+        }
         QCOMPARE(m_controller->getInput(), input);
         if (change==QStringLiteral("native-all-unselect")) {
             QTRY_VERIFY(roles()==qMakePair(static_cast<vlc_es_id_t *>(nullptr), static_cast<vlc_es_id_t *>(nullptr)));
@@ -1023,7 +1856,7 @@ private slots:
             QTRY_VERIFY(!m_controller->hasSecondarySubtitle());
         }
         else QCOMPARE(roles(), selected);
-        if (roleChange) QVERIFY(seeks.isEmpty()); // Selection alone cancels the marks.
+        if (roleChange || audioSelectionChange) QVERIFY(seeks.isEmpty()); // Selection alone cancels the marks.
         QCOMPARE(category(), savedCategory);
         QCOMPARE(own(m_second.get()), savedOwn);
         // The same hook/estimator objects survive the native event. Teardown
@@ -1036,6 +1869,266 @@ private slots:
             QTRY_VERIFY(roles()==selected);
             QTRY_VERIFY(m_controller->hasSecondarySubtitle());
         }
+        if (audioSelectionChange && change == QStringLiteral("native-audio-unselect")) {
+            { vlc_player_locker lock{m_player}; vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE); }
+            QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+        }
+    }
+    void audioTimingRevisionGuardsNativeChanges()
+    {
+        // Execute the production cancellation hook with a native NORMAL-lock
+        // player. The first mark and the native setter deliberately run before
+        // any queued GUI notification is delivered.
+        const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
+        QVERIFY(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty());
+        QFile source(pages.filePath(QStringLiteral("TracksPageAudio.qml")));
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        const auto text = source.readAll();
+        const auto start = text.indexOf("    Connections {");
+        const auto close = text.indexOf("\n    }", start);
+        const auto end = text.indexOf("    // Functions", close);
+        QVERIFY(start >= 0 && close > start && end > close);
+        const auto connections = text.mid(start, close + 6 - start);
+        const auto helpers = text.mid(close + 6, end - close - 6);
+        HeldEs audioId;
+        {
+            vlc_player_locker lock{m_player};
+            QVERIFY(vlc_player_GetTrackCount(m_player, AUDIO_ES) > 0);
+            audioId.reset(vlc_player_GetTrackAt(m_player, AUDIO_ES, 0)->es_id);
+            vlc_player_SelectEsId(m_player, audioId.get(), VLC_PLAYER_SELECT_EXCLUSIVE);
+        }
+        auto selectedAudio = [this] {
+            vlc_player_locker lock{m_player};
+            const auto *track = vlc_player_GetSelectedTrack(m_player, AUDIO_ES);
+            return track ? track->es_id : nullptr;
+        };
+        QTRY_VERIFY_WITH_TIMEOUT(selectedAudio() == audioId.get(), 5000);
+        auto audioCategory = [this] {
+            vlc_player_locker lock{m_player};
+            return vlc_player_GetAudioDelay(m_player);
+        };
+        auto setAudioCategory = [this](vlc_tick_t value) {
+            vlc_player_locker lock{m_player};
+            return vlc_player_SetCategoryDelay(m_player, AUDIO_ES, value, VLC_PLAYER_WHENCE_ABSOLUTE);
+        };
+        const auto savedCategory = audioCategory();
+        const auto savedOwn = own(audioId.get());
+        m_controller->setRate(1.f);
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QCOMPARE(setOwn(audioId.get(), INT64_MAX), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS);
+        QTest::qWait(100); // drain setup events before the first observation
+
+        DelayEstimator estimator;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
+        engine.rootContext()->setContextProperty(QStringLiteral("delayEstimator"), &estimator);
+        QQmlComponent component(&engine);
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property string audioTimingToken: \"\"; property QtObject hook: ")
+            + connections + '\n' + helpers + '\n' + '}', QUrl(QStringLiteral("file:///audio-revision-native.qml")));
+        QScopedPointer<QObject> root(component.create());
+        QVERIFY2(root, qPrintable(component.errorString()));
+        const auto audioObserver = connect(m_controller.get(), &PlayerController::audioDelayChanged,
+            this, &TestPlayerSubtitleDelay::observeAfterUnlock, Qt::DirectConnection);
+        const auto ownObserver = connect(m_controller.get(), &PlayerController::audioTimingContextChanged,
+            this, [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        QSignalSpy changes(m_controller.get(), &PlayerController::audioDelayChanged);
+        auto prepare = [&] {
+            QVariant result;
+            return QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, result))
+                && result.toBool();
+        };
+        QVERIFY(prepare());
+        estimator.markHeardTime();
+        const auto first = root->property("audioTimingToken").toString();
+        QVERIFY(!first.isEmpty());
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS); // no-op emits a native event
+        QVERIFY(m_controller->isAudioTimingCurrent(first));
+        QTRY_VERIFY(!changes.isEmpty());
+        QVERIFY(estimator.isHeardTimeMarked());
+
+        // Returning to the old numeric value must not revive the old mark.
+        QCOMPARE(setAudioCategory(173000), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(123000), VLC_SUCCESS);
+        QVERIFY(!m_controller->isAudioTimingCurrent(first));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(50000), first));
+        QCOMPARE(audioCategory(), vlc_tick_t(123000));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        // The estimator's own previous write queues a notification. A new
+        // mark acquired before its delivery must survive that old event.
+        const auto beforeWrite = m_controller->beginAudioTiming();
+        const auto previousChanges = changes.size();
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(50000), beforeWrite));
+        QVERIFY(prepare());
+        estimator.markHeardTime();
+        const auto fresh = root->property("audioTimingToken").toString();
+        QVERIFY(m_controller->isAudioTimingCurrent(fresh));
+        QTRY_VERIFY(changes.size() > previousChanges);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(fresh));
+
+        // A selected track override invalidates a mark, while its same-value
+        // notification does not; guarded category changes preserve the override.
+        QCOMPARE(setOwn(audioId.get(), 400000), VLC_SUCCESS);
+        QVERIFY(!m_controller->isAudioTimingCurrent(fresh));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+        const auto overrideToken = m_controller->beginAudioTiming();
+        QCOMPARE(setOwn(audioId.get(), 400000), VLC_SUCCESS);
+        QVERIFY(m_controller->isAudioTimingCurrent(overrideToken));
+        const auto previousCategory = audioCategory();
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(25000), overrideToken));
+        QCOMPARE(audioCategory(), previousCategory + vlc_tick_t(25000));
+        QCOMPARE(own(audioId.get()), vlc_tick_t(400000));
+        QTest::qWait(100); // both direct observers re-lock after queued delivery
+        disconnect(audioObserver);
+        disconnect(ownObserver);
+        QCOMPARE(setOwn(audioId.get(), savedOwn), VLC_SUCCESS);
+        QCOMPARE(setAudioCategory(savedCategory), VLC_SUCCESS);
+    }
+    void audioTimingRevisionGuardsRateAndState()
+    {
+        const QDir pages(qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR"));
+        QVERIFY(!qEnvironmentVariable("VLC_TRACKS_SOURCE_DIR").isEmpty());
+        QFile source(pages.filePath(QStringLiteral("TracksPageAudio.qml")));
+        QVERIFY(source.open(QIODevice::ReadOnly));
+        const auto text = source.readAll();
+        const auto start = text.indexOf("    Connections {");
+        const auto close = text.indexOf("\n    }", start);
+        const auto end = text.indexOf("    // Functions", close);
+        QVERIFY(start >= 0 && close > start && end > close);
+        const auto connections = text.mid(start, close + 6 - start);
+        const auto helpers = text.mid(close + 6, end - close - 6);
+
+        auto requestRate = [this](float rate) {
+            vlc_player_locker lock{m_player};
+            vlc_player_ChangeRate(m_player, rate);
+        };
+        auto requestPause = [this](bool paused) {
+            vlc_player_locker lock{m_player};
+            if (paused) vlc_player_Pause(m_player);
+            else vlc_player_Resume(m_player);
+        };
+        // Do not pump the Qt event queue here: wait for actual native input
+        // transitions while their GUI notifications deliberately remain queued.
+        auto waitRate = [this](float expected) {
+            QElapsedTimer timer; timer.start();
+            while (timer.elapsed() < 5000) {
+                { vlc_player_locker lock{m_player};
+                  if (qFuzzyCompare(vlc_player_GetRate(m_player), expected)) return true; }
+                QThread::msleep(10);
+            }
+            return false;
+        };
+        auto waitState = [this](vlc_player_state expected) {
+            QElapsedTimer timer; timer.start();
+            while (timer.elapsed() < 5000) {
+                { vlc_player_locker lock{m_player};
+                  if (vlc_player_GetState(m_player) == expected) return true; }
+                QThread::msleep(10);
+            }
+            return false;
+        };
+        requestRate(1.f);
+        requestPause(true);
+        QVERIFY(waitRate(1.f));
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QTRY_COMPARE(m_controller->getPlayingState(), PlayerController::PLAYING_STATE_PAUSED);
+        QTest::qWait(100); // setup events are not part of the experiments
+
+        DelayEstimator estimator;
+        QQmlEngine engine;
+        engine.rootContext()->setContextProperty(QStringLiteral("Player"), m_controller.get());
+        engine.rootContext()->setContextProperty(QStringLiteral("delayEstimator"), &estimator);
+        QQmlComponent component(&engine);
+        component.setData(QByteArrayLiteral("import QtQml\nQtObject { id: root; property string audioTimingToken: \"\"; property QtObject hook: ")
+            + connections + '\n' + helpers + '\n' + '}', QUrl(QStringLiteral("file:///audio-rate-state-native.qml")));
+        QScopedPointer<QObject> root(component.create());
+        QVERIFY2(root, qPrintable(component.errorString()));
+        const auto rateObserver = connect(m_controller.get(), &PlayerController::rateChanged,
+            this, [this](float) { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        const auto stateObserver = connect(m_controller.get(), &PlayerController::playingStateChanged,
+            this, [this](PlayerController::PlayingState) { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        const auto contextObserver = connect(m_controller.get(), &PlayerController::audioTimingContextChanged,
+            this, [this] { observeAfterUnlock(VLCDuration()); }, Qt::DirectConnection);
+        QSignalSpy contexts(m_controller.get(), &PlayerController::audioTimingContextChanged);
+        auto mark = [&] {
+            QVariant result;
+            if (!QMetaObject::invokeMethod(root.data(), "prepareAudioMark", Q_RETURN_ARG(QVariant, result)) || !result.toBool())
+                return false;
+            estimator.markHeardTime();
+            return estimator.isHeardTimeMarked();
+        };
+        auto token = [&] { return root->property("audioTimingToken").toString(); };
+        auto nativeDelay = [this] {
+            vlc_player_locker lock{m_player};
+            return vlc_player_GetAudioDelay(m_player);
+        };
+        const auto savedDelay = nativeDelay();
+
+        QVERIFY(mark());
+        const auto originalRateToken = token();
+        requestRate(1.f); // same value may still emit a native callback
+        QTest::qWait(100);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(originalRateToken));
+        requestRate(1.5f);
+        QVERIFY(waitRate(1.5f));
+        requestRate(1.f);
+        QVERIFY(waitRate(1.f));
+        QVERIFY(!m_controller->isAudioTimingCurrent(originalRateToken));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(100000), originalRateToken));
+        QCOMPARE(nativeDelay(), savedDelay);
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        requestRate(1.5f);
+        QVERIFY(waitRate(1.5f));
+        const auto previousContexts = contexts.size();
+        QVERIFY(mark()); // newer than the queued rate notification
+        const auto freshRateToken = token();
+        QTRY_VERIFY(contexts.size() > previousContexts);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(freshRateToken));
+        QVERIFY(m_controller->addAudioTimingIfCurrent(VLCDuration(100000), freshRateToken));
+        QCOMPARE(nativeDelay(), savedDelay + vlc_tick_t(150000)); // native 1.5x rate
+        QVERIFY(QMetaObject::invokeMethod(root.data(), "cancelAudioTiming"));
+        requestRate(1.f);
+        QVERIFY(waitRate(1.f));
+        QTRY_COMPARE(m_controller->getRate(), 1.f);
+        QTest::qWait(100);
+
+        QVERIFY(mark());
+        const auto originalStateToken = token();
+        requestPause(true); // already paused: no context change
+        QTest::qWait(100);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(originalStateToken));
+        requestPause(false);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PLAYING));
+        requestPause(true);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        QVERIFY(!m_controller->isAudioTimingCurrent(originalStateToken));
+        QVERIFY(!m_controller->addAudioTimingIfCurrent(VLCDuration(100000), originalStateToken));
+        QTRY_VERIFY(!estimator.isHeardTimeMarked());
+
+        requestPause(false);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PLAYING));
+        const auto previousStateContexts = contexts.size();
+        QVERIFY(mark()); // newer than the queued resume notification
+        const auto freshStateToken = token();
+        QTRY_VERIFY(contexts.size() > previousStateContexts);
+        QVERIFY(estimator.isHeardTimeMarked());
+        QVERIFY(m_controller->isAudioTimingCurrent(freshStateToken));
+        QVERIFY(QMetaObject::invokeMethod(root.data(), "cancelAudioTiming"));
+        requestPause(true);
+        QVERIFY(waitState(VLC_PLAYER_STATE_PAUSED));
+        { vlc_player_locker lock{m_player};
+          QCOMPARE(vlc_player_SetCategoryDelay(m_player, AUDIO_ES, savedDelay, VLC_PLAYER_WHENCE_ABSOLUTE), VLC_SUCCESS); }
+        QTest::qWait(100);
+        disconnect(rateObserver);
+        disconnect(stateObserver);
+        disconnect(contextObserver);
     }
     void incrementalSelectionKeepsSecondaryTimingReachable()
     {
@@ -1358,7 +2451,7 @@ private slots:
         QTemporaryDir temporary; QVERIFY(temporary.isValid());
         const auto mediaPath = temporary.filePath("Attachment media %.mp4");
         QVERIFY(QFile::copy(m_fixture, mediaPath));
-        const auto firstPath = temporary.filePath("First ä %.srt"), secondPath = temporary.filePath("Second.srt");
+        const auto firstPath = temporary.filePath("First Ã¤ %.srt"), secondPath = temporary.filePath("Second.srt");
         for (const auto &path : {firstPath, secondPath}) {
             QFile file(path); QVERIFY(file.open(QIODevice::WriteOnly));
             file.write("1\n00:00:00,000 --> 00:01:00,000\nEXTERNAL ATTACHMENT\n");

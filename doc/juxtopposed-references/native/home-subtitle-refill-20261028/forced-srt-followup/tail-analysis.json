@@ -1,0 +1,91 @@
+{
+  "analysisDate": "2026-10-28",
+  "scope": "Read-only analysis of three preserved generated-media artifacts; no native run or repair validation",
+  "artifactRoot": "C:/Modding/vlc-juxtopposed/build-windows/beta-fps-20261028",
+  "audio": {
+    "codec": "flac",
+    "sampleRate": 48000,
+    "channels": 1,
+    "bitsPerRawSample": 24,
+    "comparisonPcmFormat": "s16le",
+    "initialPaddingAllStreams": 0,
+    "extradataBytesAllStreams": 34,
+    "extradataSha256AllStreams": "a9dfe39d93c57653e8fb5ed971128c064d0ed9d8ba4181efe379bc047c9cbd4e"
+  },
+  "artifacts": {
+    "source": {
+      "path": "media-record-flac/frame-marker.mkv",
+      "sha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+      "audioPackets": 626,
+      "decodedAudioFrames": 626,
+      "decodedSamples": 2880528,
+      "pcmBytes": 5761056,
+      "pcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "lastDecodedFramePtsSeconds": 60.0,
+      "lastDecodedFrameSamples": 528
+    },
+    "baseline": {
+      "path": "forced_srt_matroska_clean_baseline/output.mkv",
+      "sha256": "62850c54552e74d8fa045a4d4561ac7eeb294a5de881f27137832710af6e69c7",
+      "audioPackets": 625,
+      "decodedAudioFrames": 625,
+      "decodedSamples": 2880000,
+      "pcmBytes": 5760000,
+      "pcmSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+      "packetPayloadsExactSourcePrefix": true,
+      "pcmExactSourcePrefix": true,
+      "lastDecodedFramePtsSeconds": 59.904,
+      "lastDecodedFrameSamples": 4608
+    },
+    "candidate": {
+      "path": "forced_srt_matroska_clean_candidate/output.mkv",
+      "sha256": "f1296003bcf8cf5d2f2c8181f2092b0a793ec68301fc2a052530b39da6e0f4f3",
+      "audioPackets": 625,
+      "decodedAudioFrames": 625,
+      "decodedSamples": 2880000,
+      "pcmBytes": 5760000,
+      "pcmSha256": "6a90de2906192a3ab98215c50b455fb02aa96879726b30f83ea4d6ff3e23d88f",
+      "packetPayloadsExactSourcePrefix": true,
+      "pcmExactSourcePrefix": true,
+      "lastDecodedFramePtsSeconds": 59.904,
+      "lastDecodedFrameSamples": 4608
+    }
+  },
+  "missingSourcePacket": {
+    "ptsSeconds": 60.0,
+    "dtsSeconds": 60.0,
+    "probeDurationSeconds": 0.011,
+    "payloadBytes": 619,
+    "payloadSha256": "7b2a0c0f0e91ab6804b11077160743336c3ead5f7c1c583e4a4c072946766343",
+    "decodedSamples": 528,
+    "comparisonPcmBytes": 1056,
+    "nonzeroComparisonPcmBytes": 772
+  },
+  "reproduction": {
+    "wslDistro": "VLC-Juxtopposed-Home-20261018",
+    "pathRoot": "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-20261028",
+    "packetProbeArguments": ["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_streams", "-show_packets", "-show_data_hash", "sha256", "-of", "json", "FILE"],
+    "frameProbeArguments": ["ffprobe", "-v", "error", "-select_streams", "a:0", "-show_frames", "-show_entries", "frame=pts_time,nb_samples", "-of", "json", "FILE"],
+    "pcmDecodeArguments": ["ffmpeg", "-v", "error", "-threads", "1", "-i", "FILE", "-map", "0:a:0", "-f", "s16le", "-"],
+    "fileDigest": "Python hashlib.sha256(path.read_bytes()).hexdigest()",
+    "outputHandling": "Capture stdout bytes in memory; no existing file overwritten"
+  },
+  "staticHypothesis": {
+    "stage": "libavformat mux FIFO scheduling and input deletion",
+    "provenByInstrumentation": false,
+    "evidence": [
+      "avformat Mux calls sout_MuxGetStream with one required block",
+      "sout_MuxGetStream returns -1 if any non-SPU FIFO is empty when streams cannot be added dynamically",
+      "normal sout_MuxDeleteStream releases FIFO without a final mux pass after initial waiting has ended",
+      "observed avformat DelStream only frees stream mapping",
+      "recorded EOF teardown removes video before audio"
+    ]
+  },
+  "nextTest": "Repeat same source/runtime/avformat mux in a fresh isolated audio-only output; require all626 packet payloads and exact2880528 samples. Audio-only success implicates multi-input mux scheduling/deletion; repeated loss calls for demux/packetizer drain tracing.",
+  "limitations": [
+    "No new VLC run or instrumented stage trace performed",
+    "Original AAC-to-FLAC fixture generation padding provenance not established",
+    "Nonzero byte count is not a nonzero sample count or audibility assessment",
+    "This report does not establish audio completeness or a repaired final package"
+  ]
+}

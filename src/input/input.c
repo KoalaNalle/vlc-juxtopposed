@@ -33,6 +33,7 @@
 #include <vlc_decoder.h>
 
 #include <limits.h>
+#include <math.h>
 #include <assert.h>
 #include <sys/stat.h>
 
@@ -723,9 +724,23 @@ static void MainLoop( input_thread_t *p_input, bool b_interactive )
                 bool eof_handled;
                 if( !eof_signaled )
                 {
+                    /* The periodic output-clock position can lag on short
+                     * files. Report the master's actual final position for
+                     * history, including an intentional segment boundary. */
+                    double position = -1.;
+                    bool live;
+                    if (InputSourceGetLength(input_priv(p_input)->master,
+                                             input_priv(p_input)->p_item, &live) <= 0
+                     || live
+                     || demux_Control(p_demux, DEMUX_GET_POSITION, &position) != VLC_SUCCESS
+                     || !isfinite(position) || position < 0.)
+                        position = -1.;
+                    else
+                        position = __MIN(position, 1.);
                     eof_handled =
                         input_SendEvent(p_input, &(struct vlc_input_event) {
                             .type = INPUT_EVENT_EOF,
+                            .eof_position = position,
                         });
                     eof_signaled = true;
                 }
@@ -2551,6 +2566,10 @@ static bool Control( input_thread_t *p_input,
         case INPUT_CONTROL_SET_SUBS_FPS:
             RequestSubRate( p_input, param.val.f_float );
             input_SendEventSubsFPS( p_input, param.val.f_float );
+            /* Apply the source timing change even when the main demux is
+             * waiting on buffered output or the player is paused. */
+            if( priv->i_slave > 0 )
+                SlaveDemux( p_input );
             break;
 
         case INPUT_CONTROL_SET_RECORD_STATE:
@@ -3244,13 +3263,37 @@ static void SlaveDemux( input_thread_t *p_input )
                 /* Subtitle timing follows the main clock. A slave rate change
                  * must not reset the main video/audio PCR during a refill. */
                 float new_rate = priv->slave_subs_rate;
-                if (demux_Control(in->p_demux, DEMUX_SET_RATE, &new_rate) == VLC_SUCCESS)
+                vlc_tick_t refill_time = i_time;
+                es_out_PrivControl(priv->p_es_out_display,
+                                   ES_OUT_PRIV_GET_SOURCE_SUBTITLE_REFILL_TIME,
+                                   in, i_time, &refill_time);
+                /* Text demuxers reset their cue index on SET_RATE. Give them
+                 * the refill deadline first, including when seeking is disabled.
+                 * NEXT_DEMUX_TIME uses timestamps including VLC_TICK_0. */
+                const bool refill_deadline = refill_time < i_time &&
+                    demux_Control(in->p_demux, DEMUX_SET_NEXT_DEMUX_TIME,
+                                  refill_time + VLC_TICK_0) == VLC_SUCCESS;
+                const int rate_result = demux_Control(in->p_demux, DEMUX_SET_RATE,
+                                                      &new_rate);
+                if (refill_deadline)
+                    demux_Control(in->p_demux, DEMUX_SET_NEXT_DEMUX_TIME, i_time);
+                if (rate_result == VLC_SUCCESS)
                 {
+                    /* Demuxing can be ahead of the displayed picture. Refill
+                     * from playback time, including this source's delay. */
+                    msg_Dbg(p_input, "subtitle rate refill: demux=%"PRId64
+                            " start=%"PRId64, i_time, refill_time);
+                    if (refill_time < i_time && !refill_deadline &&
+                        demux_Control(in->p_demux, DEMUX_SET_TIME,
+                                      refill_time, true)
+                            != VLC_SUCCESS)
+                        msg_Warn(p_input, "subtitle rate change could not seek for delay preroll");
                     /* The demux resends the current cue at its new timestamps.
                      * Drop this source's old cues without seeking the player. */
-                    if (in->sub_rate != 0)
-                        es_out_PrivControl(priv->p_es_out_display,
-                                           ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
+                    /* A zero tracked rate also represents the default timing,
+                     * which may already have queued or displayed cues. */
+                    es_out_PrivControl(priv->p_es_out_display,
+                                       ES_OUT_PRIV_FLUSH_SOURCE_SUBTITLES, in);
                     in->b_eof = false;
                 }
             }

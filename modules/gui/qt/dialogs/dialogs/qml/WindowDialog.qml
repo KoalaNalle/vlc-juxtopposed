@@ -20,6 +20,7 @@ import QtQuick
 import QtQuick.Window
 import QtQuick.Controls.Basic as C
 import QtQuick.Layouts
+import QtQuick.Controls.Basic
 
 import VLC.MainInterface
 import VLC.Widgets as Widgets

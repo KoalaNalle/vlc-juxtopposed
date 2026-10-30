@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestHomeActivity">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="125.046"/>
+  </TestFunction>
+  <TestFunction name="persistentVisitTypesAndLifetime">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="20.0791"/>
+  </TestFunction>
+  <TestFunction name="malformedStoredVisits">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="10.7608"/>
+  </TestFunction>
+  <TestFunction name="preferencesResetDoesNotRestoreCachedVisits">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="103.264"/>
+  </TestFunction>
+  <TestFunction name="realFolderPlaylistAndArtistMetadata">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="671.473"/>
+  </TestFunction>
+  <TestFunction name="warmRestartAndDeletedPlaylist">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="203.401"/>
+  </TestFunction>
+  <TestFunction name="blockedStoragePreservesAcceptedVisitsAndDocument">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="23.5255"/>
+  </TestFunction>
+  <TestFunction name="blockedClearPreservesAcceptedVisitsAndDocument">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="25.5983"/>
+  </TestFunction>
+  <TestFunction name="addedFolderRequestStateAndReset">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="0.7637"/>
+  </TestFunction>
+  <TestFunction name="actualAudioOnlyAddedFolderAndMixedRouteRestart">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="758.816"/>
+  </TestFunction>
+  <TestFunction name="nativeVideoHistorySections">
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history stop case: manual]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history stop case: stop-time]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history stop case: run-time]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="8683.63"/>
+  </TestFunction>
+  <TestFunction name="nativeVideoHistoryCompletionBoundaries">
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: normal-eof]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary normal-eof: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: ignored-stop-before-start]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary ignored-stop-before-start: progress 0.92236047983169556, play count 0, expected completed, passed no]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: ignored-stop-equal-start]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary ignored-stop-equal-start: progress 0.91098099946975708, play count 0, expected completed, passed no]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: stop-after-source-end]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary stop-after-source-end: progress 0.92658299207687378, play count 0, expected completed, passed no]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-then-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 1]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-then-stop: progress -1, play count 1, expected completed, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-settled-seek-then-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 0.98762549999999993]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Actual position reported after EOF seek: 0.53007099999999996, target observed yes, paused yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-settled-seek-then-stop: progress 0.49008551239967346, play count 0, expected unfinished, passed yes]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Video history completion boundary: pause-at-end-queued-seek-immediate-stop]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Paused at natural EOF before user Stop: progress 0.96428499999999995]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Completion boundary pause-at-end-queued-seek-immediate-stop: progress -1, play count 1, expected unfinished, passed no]]></Description>
+  </Message>
+    <Incident type="fail" file="/mnt/c/Modding/vlc&#x002D;juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_home_activity.cpp" line="749">
+      <Description><![CDATA['allPassed' returned FALSE. (Every full-source EOF must persist one completed watch, and a subsequent seek must retain unfinished state; inspect the named row results)]]></Description>
+    </Incident>
+    <Duration msecs="15493.1"/>
+  </TestFunction>
+  <TestFunction name="nativeVideoHistoryRejectedRecordingSeek">
+  <Message type="qinfo" file="" line="0">
+    <Description><![CDATA[Recording-rejected seek: actual 0.40000000000000002, pending 0.94999999999999996, saved 0.40000000596046448, play count 0]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="391.631"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="19.605"/>
+  </TestFunction>
+  <Duration msecs="26532.3"/>
+</TestCase>

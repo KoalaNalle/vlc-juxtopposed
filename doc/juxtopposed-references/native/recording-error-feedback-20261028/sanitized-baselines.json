@@ -1,0 +1,126 @@
+{
+  "r3": {
+    "success": false,
+    "classification": "setup failure: executable-only option rejected before player was created",
+    "cases": {
+      "callback-control": {
+        "normalExit": false,
+        "exitCode": 1,
+        "dialogCount": null,
+        "selectedAvformat": false,
+        "ioFailureLogged": false,
+        "outputBytes": null,
+        "prefixBytes": null,
+        "shortenedSeconds": null
+      }
+    },
+    "runtimeReceiptSha256": "a1501181a31324e2cb4b91970901c760367dc032a1612a77c6cf46aafaff3409",
+    "producerSha256": "1f0ea8b8a52dc1e3dba99cc5a00f0dd78ac02698f8fd88e4a05727e8237b90c5",
+    "fixtureSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+    "freezeSha256": "7272664870b758487aa01ea279f8ba40038b1489ab3914c16ab76520ef7ab782",
+    "forcedCleanupUsed": false,
+    "preservationGuards": {
+      "runtimeUnchanged": true,
+      "fixtureUnchanged": true,
+      "humanConfigUnchanged": true,
+      "sourceUnchanged": true,
+      "headersUnchanged": true,
+      "freezeUnchanged": true,
+      "receiptUnchanged": true,
+      "producerUnchanged": true
+    }
+  },
+  "r4": {
+    "success": false,
+    "classification": "setup failure: global stream-output option overridden; no writer output",
+    "cases": {
+      "callback-control": {
+        "normalExit": true,
+        "exitCode": 0,
+        "dialogCount": 1,
+        "selectedAvformat": false,
+        "ioFailureLogged": false,
+        "outputBytes": null,
+        "prefixBytes": null,
+        "shortenedSeconds": null
+      },
+      "good-writer": {
+        "normalExit": true,
+        "exitCode": 0,
+        "dialogCount": 0,
+        "selectedAvformat": false,
+        "ioFailureLogged": false,
+        "outputBytes": null,
+        "prefixBytes": null,
+        "shortenedSeconds": null
+      }
+    },
+    "runtimeReceiptSha256": "a1501181a31324e2cb4b91970901c760367dc032a1612a77c6cf46aafaff3409",
+    "producerSha256": "df1846744f9166f4c6946445f40d0f709d4288a1718befd9290f159c6ab7f076",
+    "fixtureSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+    "freezeSha256": "bec3c71b4a20c101045fcfda247238e8d55079dd8c2fe28ffab2bca5643dd362",
+    "forcedCleanupUsed": false,
+    "preservationGuards": {
+      "runtimeUnchanged": true,
+      "fixtureUnchanged": true,
+      "humanConfigUnchanged": true,
+      "sourceUnchanged": true,
+      "headersUnchanged": true,
+      "freezeUnchanged": true,
+      "receiptUnchanged": true,
+      "producerUnchanged": true
+    }
+  },
+  "r5": {
+    "success": true,
+    "classification": "qualified callback and avformat writer baseline",
+    "cases": {
+      "callback-control": {
+        "normalExit": true,
+        "exitCode": 0,
+        "dialogCount": 1,
+        "selectedAvformat": false,
+        "ioFailureLogged": false,
+        "outputBytes": null,
+        "prefixBytes": null,
+        "shortenedSeconds": null
+      },
+      "good-writer": {
+        "normalExit": true,
+        "exitCode": 0,
+        "dialogCount": 0,
+        "selectedAvformat": true,
+        "ioFailureLogged": false,
+        "outputBytes": 121979,
+        "prefixBytes": null,
+        "shortenedSeconds": 2
+      },
+      "closed-pipe": {
+        "normalExit": true,
+        "exitCode": 0,
+        "dialogCount": 0,
+        "selectedAvformat": true,
+        "ioFailureLogged": true,
+        "outputBytes": null,
+        "prefixBytes": 4096,
+        "shortenedSeconds": 2
+      }
+    },
+    "runtimeReceiptSha256": "a1501181a31324e2cb4b91970901c760367dc032a1612a77c6cf46aafaff3409",
+    "producerSha256": "c5ca979e6ad2451f8dd691bb9c57b88f90062eadfa695324a2b0c5ba4786895d",
+    "fixtureSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+    "freezeSha256": "46e4d2314f1f0cf79b49808c2bba15a0350dc43d0de1025364b455b4596a2e17",
+    "forcedCleanupUsed": false,
+    "preservationGuards": {
+      "runtimeUnchanged": true,
+      "fixtureUnchanged": true,
+      "humanConfigUnchanged": true,
+      "sourceUnchanged": true,
+      "headersUnchanged": true,
+      "freezeUnchanged": true,
+      "receiptUnchanged": true,
+      "producerUnchanged": true
+    }
+  },
+  "scope": "Headless owned-process baseline only. The closed-pipe fault shows logged output failure with no callback; it does not locate the fault in the final tail or demonstrate Qt behavior."
+}

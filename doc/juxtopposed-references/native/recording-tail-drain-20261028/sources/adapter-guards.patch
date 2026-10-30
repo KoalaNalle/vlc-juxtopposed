@@ -1,0 +1,39 @@
+--- a/modules/demux/avformat/mux.c
++++ b/modules/demux/avformat/mux.c
+@@ -409,8 +409,13 @@
+     {
+ #ifdef AVFMT_ALLOW_FLUSH
+         /* Make sure we don't inadvertedly mark buffered data as keyframes. */
+-        if( p_sys->oc->oformat->flags & AVFMT_ALLOW_FLUSH )
+-            av_write_frame( p_sys->oc, NULL );
++        if( (p_sys->oc->oformat->flags & AVFMT_ALLOW_FLUSH)
++         && av_write_frame( p_sys->oc, NULL ) < 0 )
++        {
++            msg_Err( p_mux, "could not flush buffered mux output" );
++            av_packet_free( &pkt );
++            return VLC_EGENERIC;
++        }
+ #endif
+ 
+         p_sys->b_write_keyframe = true;
+@@ -502,6 +507,11 @@
+     }
+ 
+     avio_flush( p_sys->oc->pb );
++    if( p_sys->oc->pb->error < 0 )
++    {
++        msg_Err( p_mux, "could not flush mux header" );
++        return VLC_EGENERIC;
++    }
+     return VLC_SUCCESS;
+ }
+ 
+@@ -556,6 +566,8 @@
+ #endif
+ 
+     block_t *p_buf = block_Alloc( buf_size );
++    if( unlikely(p_buf == NULL) )
++        return AVERROR(ENOMEM);
+     if( buf_size > 0 ) memcpy( p_buf->p_buffer, buf, buf_size );
+ 
+     if( p_sys->queue.header_pending )

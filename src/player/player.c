@@ -131,8 +131,12 @@ vlc_player_destructor_AddInput(vlc_player_t *player,
      * owns the timer; a later input must never supply this input's history. */
     if (input == player->input && input->started)
     {
+        /* Recording and nonseekable inputs reject seek controls. Do not
+         * persist a pending target which those inputs cannot perform. */
+        const bool pending_seek = !input->recording
+            && (input->capabilities & VLC_INPUT_CAPABILITIES_SEEKABLE);
         const double position =
-            vlc_player_input_GetPos(input, false, vlc_tick_now());
+            vlc_player_input_GetPos(input, pending_seek, vlc_tick_now());
         if (position >= 0. && position <= 1.)
             input->position_before_stop = position;
     }
@@ -915,8 +919,11 @@ vlc_player_SelectTitleIdx(vlc_player_t *player, size_t index)
 {
     struct vlc_player_input *input = vlc_player_get_input_locked(player);
     if (input)
-        input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_TITLE,
-                                &(vlc_value_t){ .i_int = index });
+    {
+        if (input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_TITLE,
+                                   &(vlc_value_t){ .i_int = index }) == VLC_SUCCESS)
+            input->eof_position = -1.;
+    }
 }
 
 void
@@ -947,7 +954,10 @@ vlc_player_SelectNextTitle(vlc_player_t *player)
     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_TITLE_NEXT,
                                 NULL);
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Message(player, _("Next title"));
+    }
 }
 
 void
@@ -959,7 +969,10 @@ vlc_player_SelectPrevTitle(vlc_player_t *player)
     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_TITLE_PREV,
                                 NULL);
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Message(player, _("Previous title"));
+    }
 }
 
 ssize_t
@@ -1006,7 +1019,10 @@ vlc_player_SelectChapterIdx(vlc_player_t *player, size_t index)
     int ret = input_ControlPushHelper(input->thread, INPUT_CONTROL_SET_SEEKPOINT,
                                       &(vlc_value_t){ .i_int = index });
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Message(player, _("Chapter %ld"), index);
+    }
 }
 
 void
@@ -1019,7 +1035,10 @@ vlc_player_SelectNextChapter(vlc_player_t *player)
     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_SEEKPOINT_NEXT,
                                 NULL);
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Message(player, _("Next chapter"));
+    }
 }
 
 void
@@ -1039,7 +1058,10 @@ vlc_player_SelectPrevChapter(vlc_player_t *player)
     int ret = input_ControlPush(input->thread, INPUT_CONTROL_SET_SEEKPOINT_PREV,
                                 NULL);
     if (ret == VLC_SUCCESS)
+    {
+        input->eof_position = -1.;
         vlc_player_osd_Message(player, _("Previous chapter"));
+    }
 }
 
 void
@@ -1413,8 +1435,9 @@ vlc_player_PreviousVideoFrame(vlc_player_t *player)
     struct vlc_player_input *input = vlc_player_get_input_locked(player);
     if (!input)
         return;
-    input_ControlPushHelper(input->thread,
-                            INPUT_CONTROL_SET_FRAME_PREVIOUS, NULL);
+    if (input_ControlPushHelper(input->thread,
+                               INPUT_CONTROL_SET_FRAME_PREVIOUS, NULL) == VLC_SUCCESS)
+        input->eof_position = -1.;
 }
 
 enum vlc_player_state
@@ -1813,7 +1836,8 @@ vlc_player_Navigate(vlc_player_t *player, enum vlc_player_nav nav)
         default:
             vlc_assert_unreachable();
     }
-    input_ControlPushHelper(input->thread, control, NULL);
+    if (input_ControlPushHelper(input->thread, control, NULL) == VLC_SUCCESS)
+        input->eof_position = -1.;
 }
 
 void

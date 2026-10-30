@@ -24,15 +24,32 @@
 #endif
 
 #include "mlvideomodel.hpp"
+#include <optional>
+
+class QThread;
 
 class MLRecentVideoModel : public MLVideoModel
 {
     Q_OBJECT
+    Q_PROPERTY(HistoryMode historyMode READ historyMode WRITE setHistoryMode NOTIFY historyModeChanged FINAL)
+    Q_PROPERTY(bool historyBusy READ historyBusy NOTIFY historyBusyChanged FINAL)
 
 public:
+    enum HistoryMode { All, Unfinished, Completed };
+    Q_ENUM(HistoryMode)
     explicit MLRecentVideoModel(QObject * parent = nullptr);
 
-    virtual ~MLRecentVideoModel() = default;
+    ~MLRecentVideoModel() override;
+    HistoryMode historyMode() const { return m_historyMode; }
+    void setHistoryMode(HistoryMode mode);
+    bool historyBusy() const { return m_historyWorker != nullptr; }
+    Q_INVOKABLE void clearHistory();
+    Q_INVOKABLE void removeFromHistory(MLItemId itemId);
+
+signals:
+    void historyModeChanged();
+    void historyBusyChanged();
+    void historyEditFinished(bool success, QString error);
 
 protected: // MLBaseModel implementation
     std::unique_ptr<MLListCacheLoader> createMLLoader() const override;
@@ -41,9 +58,12 @@ protected: // MLVideoModel reimplementation
     void onVlcMlEvent(const MLEvent & event) override;
 
 private:
+    void editHistory(std::optional<int64_t> itemId);
     struct Loader : public MLListCacheLoader::MLOp
     {
-        using MLListCacheLoader::MLOp::MLOp;
+        explicit Loader(const MLRecentVideoModel &model)
+            : MLOp(model), mode(model.historyMode()) {}
+        const HistoryMode mode;
 
         size_t count(vlc_medialibrary_t* ml, const vlc_ml_query_params_t*) const override;
 
@@ -51,6 +71,8 @@ private:
 
         std::unique_ptr<MLItem> loadItemById(vlc_medialibrary_t* ml, MLItemId itemId) const override;
     };
+    HistoryMode m_historyMode = All;
+    QThread *m_historyWorker = nullptr;
 };
 
 #endif // ML_RECENT_VIDEO_MODEL_H

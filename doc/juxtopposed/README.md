@@ -65,6 +65,46 @@ pause/completion state must agree with the actual work, and a session's duration
 must not replace the definition of beta readiness. No automation is created by
 this documentation change.
 
+## Continue in Codex CLI
+
+On the same home computer, use the existing Windows CLI and authoritative
+checkout. Do not reinstall the working WSL toolchain or create another build tree.
+CLI `0.165.0` and this chat's matching local session record were verified
+on 29 October 2026. From PowerShell:
+
+```powershell
+Set-Location 'C:\Modding\vlc-juxtopposed'
+codex resume 01a13636-aaf4-7fe0-9a7c-fe8eb4e4725e -m gpt-6.1-sol -c model_reasoning_effort=xhigh
+```
+
+This selects the exact saved chat rather than whichever chat ran most recently.
+Keep normal speed selected. If that session is unavailable under another Windows
+account or CODEX_HOME, start `codex` in this checkout and use the continuation
+instruction below; the project documents preserve the required checkpoint.
+
+Read STATUS.md before launching jobs. Desktop tool handles, terminal observer
+handles and old PIDs are not resumable process ownership. Discover the CLI's actual
+tools/skills and verify running processes; do not assume app-only connectors are
+present. No build/test was left running at the 29 October CLI-transfer checkpoint.
+The ignored preparations and evidence remain on this computer and are not all in Git.
+
+Use `/goal` in the CLI to continue sustained work, with this instruction:
+
+> Resume the beta goal from doc/juxtopposed/STATUS.md. Read AGENTS.md and the
+> project guide, then pursue the full scope and all applicable gates in BETA.md
+> until ready or I ask you to pause. Follow the current next action in STATUS,
+> preserve its completed recovery/integration evidence, and continue the roadmap.
+> The desktop is available. Revalidate interrupted jobs and fresh helper
+> inventories before running them; preserve the tested fallback and unrelated
+> experiments. One completed repair is a checkpoint, not beta completion.
+
+Do not run the desktop and CLI agents against this checkout/build tree at the
+same time. End the desktop turn before resuming in the terminal. The CLI inherits
+the current permission configuration; the launch command does not bypass it.
+
+Official references: [CLI resume](https://learn.chatgpt.com/docs/cli/reference#codex-resume)
+and [Goal mode](https://learn.chatgpt.com/docs/long-running-work).
+
 ## Checkpoint procedure
 
 1. Check Git, the current request, desktop availability and any recorded child

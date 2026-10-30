@@ -161,8 +161,10 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/library/VLCLibraryAbstractSegmentViewController.m \
 	gui/macosx/library/VLCLibraryAddToPlaylistMenuController.h \
 	gui/macosx/library/VLCLibraryAddToPlaylistMenuController.m \
-	gui/macosx/library/VLCLibraryCarouselViewItemView.h \
-	gui/macosx/library/VLCLibraryCarouselViewItemView.m \
+	gui/macosx/library/VLCLibraryCarouselCollectionViewItem.h \
+	gui/macosx/library/VLCLibraryCarouselCollectionViewItem.m \
+	gui/macosx/library/VLCLibraryCarouselView.h \
+	gui/macosx/library/VLCLibraryCarouselView.m \
 	gui/macosx/library/VLCLibraryCollectionView.h \
 	gui/macosx/library/VLCLibraryCollectionView.m \
 	gui/macosx/library/VLCLibraryCollectionViewDataSource.h \
@@ -211,6 +213,7 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/library/VLCLibraryModelChangeDelegate.m \
 	gui/macosx/library/VLCLibraryRepresentedItem.h \
 	gui/macosx/library/VLCLibraryRepresentedItem.m \
+	gui/macosx/library/VLCLibraryRepresentedItemCollectionViewItem.h \
 	gui/macosx/library/VLCLibrarySegment.h \
 	gui/macosx/library/VLCLibrarySegment.m \
 	gui/macosx/library/VLCLibrarySegmentBookmarkedLocation.h \
@@ -267,6 +270,18 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/library/home-library/VLCLibraryHomeViewAudioCarouselContainerView.m \
 	gui/macosx/library/home-library/VLCLibraryHomeViewBaseCarouselContainerView.h \
 	gui/macosx/library/home-library/VLCLibraryHomeViewBaseCarouselContainerView.m \
+	gui/macosx/library/home-library/VLCLibraryHomeViewSectionHeaderView.h \
+	gui/macosx/library/home-library/VLCLibraryHomeViewSectionHeaderView.m \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselContainerView.h \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselContainerView.m \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselItemView.h \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselItemView.m \
+	gui/macosx/library/home-library/VLCLibraryHomeBrowseCarouselView.h \
+	gui/macosx/library/home-library/VLCLibraryHomeBrowseCarouselView.m \
+	gui/macosx/library/home-library/VLCLibraryHomeBrowseCollectionViewItem.h \
+	gui/macosx/library/home-library/VLCLibraryHomeBrowseCollectionViewItem.m \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselItemCell.h \
+	gui/macosx/library/home-library/VLCLibraryHomeViewBrowseCarouselItemCell.m \
 	gui/macosx/library/home-library/VLCLibraryHomeViewStackViewController.h \
 	gui/macosx/library/home-library/VLCLibraryHomeViewStackViewController.m \
 	gui/macosx/library/home-library/VLCLibraryHomeViewContainerView.h \
@@ -281,6 +296,8 @@ libmacosx_plugin_la_SOURCES = \
     gui/macosx/library/home-library/VLCLibraryHomeViewVideoGridContainerView.m \
 	gui/macosx/library/video-library/VLCLibraryMoviesDataSource.h \
 	gui/macosx/library/video-library/VLCLibraryMoviesDataSource.m \
+	gui/macosx/library/video-library/VLCLibraryShowEpisodeTableViewDelegate.h \
+	gui/macosx/library/video-library/VLCLibraryShowEpisodeTableViewDelegate.m \
 	gui/macosx/library/video-library/VLCLibraryShowsDataSource.h \
 	gui/macosx/library/video-library/VLCLibraryShowsDataSource.m \
 	gui/macosx/library/video-library/VLCLibraryVideoViewController.h \
@@ -460,10 +477,10 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/preferences/prefs_widgets.h \
 	gui/macosx/preferences/prefs_widgets.m \
 	gui/macosx/shaders/VLCShaderTypes.h \
-	gui/macosx/views/iCarousel/iCarousel.h \
-	gui/macosx/views/iCarousel/iCarousel.m \
 	gui/macosx/views/VLCBasicView.h \
 	gui/macosx/views/VLCBasicView.m \
+	gui/macosx/views/VLCCarouselView.h \
+	gui/macosx/views/VLCCarouselView.m \
 	gui/macosx/views/VLCBottomBarView.h \
 	gui/macosx/views/VLCBottomBarView.m \
 	gui/macosx/views/VLCDefaultValueSlider.h \
@@ -516,6 +533,8 @@ libmacosx_plugin_la_SOURCES = \
 	gui/macosx/views/VLCTrackingView.m \
 	gui/macosx/views/VLCUIUnits.h \
 	gui/macosx/views/VLCUIUnits.m \
+	gui/macosx/views/VLCVisualEffectView.h \
+	gui/macosx/views/VLCVisualEffectView.m \
 	gui/macosx/views/VLCVolumeSlider.h \
 	gui/macosx/views/VLCVolumeSlider.m \
 	gui/macosx/views/VLCVolumeSliderCell.h \
@@ -608,7 +627,7 @@ libmacosx_plugin_la_XIB_SOURCES = \
 	gui/macosx/UI/VLCLibraryTableCellView.xib \
 	gui/macosx/UI/VLCLibraryVideoTableCellView.xib \
 	gui/macosx/UI/VLCPlayQueueTableCellView.xib \
-	gui/macosx/UI/VLCLibraryCarouselViewItemView.xib \
+	gui/macosx/UI/VLCLibraryCarouselCollectionViewItem.xib \
 	gui/macosx/UI/VLCLibraryCollectionViewMediaItemListSupplementaryDetailView.xib \
 	gui/macosx/UI/VLCLibraryCollectionViewAudioGroupSupplementaryDetailView.xib \
 	gui/macosx/UI/VLCLibraryCollectionViewMediaItemSupplementaryDetailView.xib \

@@ -1,0 +1,100 @@
+{
+  "dateLocal": "2026-10-30",
+  "status": "scoped-native-and-ordinary-passed",
+  "beforeExpectedFailures": [
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "add",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "remove",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "move",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "staleAddCannotResurrectRemovedPin",
+      "tag": "",
+      "type": "fail",
+      "description": "'!peer.add({addition}, error)' returned FALSE. ()"
+    },
+    {
+      "name": "newerAcceptedSettingsSurviveReadback",
+      "tag": "existing-key",
+      "type": "fail",
+      "description": "Compared values are not the same\n   Actual   (fresh.value(key).toInt()): 0\n   Expected (2)                       : 2"
+    },
+    {
+      "name": "newerAcceptedSettingsSurviveReadback",
+      "tag": "absent-key",
+      "type": "fail",
+      "description": "Compared values are not the same\n   Actual   (fresh.value(key).toInt()): 0\n   Expected (2)                       : 2"
+    }
+  ],
+  "afterPassRows": 31,
+  "profilePassRows": 20,
+  "beforeOracleRecoveredByExactCompilerHash": true,
+  "sourceSha256": {
+    "modules/gui/qt/util/checked_preferences_store.cpp": "00efdfac21ea60f24a08192ab492da1b4c2884f0a1fd6f23469591f3d710bff9",
+    "modules/gui/qt/util/checked_preferences_store.hpp": "9bdc71ad4d6cc7d23a6230eaf6806684afe515ba6994cec0b9fee764c7e0bd45",
+    "modules/gui/qt/maininterface/sidebar_pins_store.cpp": "d1db323e7257a507a5c1924bc08966aaeac330d68ca8f3fc5bba6fe78bc065d0",
+    "modules/gui/qt/maininterface/sidebar_pins_store.hpp": "773b753bca86e8f8bcf29af85c1ecc99e896fef6a7a7014c883c6dfba1ff5bab",
+    "modules/gui/qt/maininterface/sidebar_pins_model.cpp": "cdcccee1ad1a2e39eadc40f06fd82cb59f35b56f4e81f94dd2bed07c7a2cf101",
+    "modules/gui/qt/maininterface/sidebar_pins_model.hpp": "bb578cfe3645e738c924aeb2fde9f76cb1f4a5fc7f238bb7ee441ad3576bcf2c",
+    "modules/gui/qt/tests/test_sidebar_pins_store.cpp": "562e8b9a8d62cb2d651c106505a0575c92a8586ebebcc041a3c02e0e58b1d577",
+    "modules/gui/qt/tests/native_library/sidebar-pins.mk": "3e2a6f3597fa1ea999bbc2623812657a273899ccea34ce91b39e9bbcde62cdf7"
+  },
+  "ordinaryQtSha256": "a52ecd5c5c8472f4f44d0ea15578696d182c27b604fb099f2292b79d6af619c1",
+  "ordinaryCompilerInputCount": 3556,
+  "ordinaryPrivateHooks": false,
+  "remaining": [
+    "Full beta and graphical-alpha completion; inventory selects the next visual work."
+  ],
+  "qualificationLimits": [
+    "Test-only Qt sync linker wrapper is absent from ordinary GUI",
+    "Before has the original 28-row oracle; after adds three distinct transaction guards",
+    "No Windows 10, final-package, OS-DPI or complete graphical-alpha acceptance",
+    "Ordinary inventory retains one layout-cycle warning; this repair proof is not broad UI-stability acceptance."
+  ],
+  "localWork": "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-saved-state-20261030",
+  "ordinaryGui": {
+    "visibleConflict": true,
+    "retryRetainedThreePins": true,
+    "coldPersistence": true,
+    "processes": [
+      {
+        "pid": 25416,
+        "normalExit": true,
+        "moduleCounts": [
+          "603"
+        ],
+        "preservationGuards": true
+      },
+      {
+        "pid": 27628,
+        "normalExit": true,
+        "moduleCounts": [
+          "603"
+        ],
+        "preservationGuards": true
+      },
+      {
+        "pid": 2104,
+        "normalExit": true,
+        "moduleCounts": [
+          "603"
+        ],
+        "preservationGuards": true
+      }
+    ],
+    "captures": "../../reviews/graphical-inventory-20261030/captures"
+  }
+}

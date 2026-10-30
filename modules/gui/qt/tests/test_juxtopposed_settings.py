@@ -14,7 +14,7 @@ os.environ['QT_QPA_PLATFORM'] = 'offscreen'
 os.environ['QT_QUICK_BACKEND'] = 'software'
 os.environ['QML_DISABLE_DISK_CACHE'] = '1'
 os.environ['QT_QPA_FONTDIR'] = str(repo / 'modules/gui/qt/pixmaps/juxtopposed')
-from PySide6.QtCore import QAbstractListModel, QModelIndex, QObject, Property, Qt, QUrl, Signal, Slot, qInstallMessageHandler
+from PySide6.QtCore import QAbstractListModel, QModelIndex, QObject, QPoint, Property, Qt, QUrl, Signal, Slot, qInstallMessageHandler
 from PySide6.QtGui import QGuiApplication, QFontDatabase
 from PySide6.QtQml import QQmlExpression, qmlContext
 from PySide6.QtQuick import QQuickView
@@ -202,6 +202,8 @@ QtObject {
 Item {
     id: scene
     width: 400; height: 600
+    property int playbackClicks: 0
+    MouseArea { anchors.fill: parent; onClicked: scene.playbackClicks += 1 }
     PlaybackSettingsMenu { id: menu; objectName: "testedPopup"; parent: scene; maximumHeight: scene.height; Component.onCompleted: open() }
 }
 ''')
@@ -435,7 +437,29 @@ Item {
     QTest.keyClick(view, Qt.Key_Escape)
     QTest.qWait(20)
     assert not popup.property('visible')
+    # Use a real outside press over a playback underlay, then reopen and Escape.
+    # Both dismissals must consume input; the closed popup must release it.
+    view.resize(640, 600)
+    view.requestActivate()
+    QTest.qWait(50)
+    scene = view.rootObject()
+    for dismissal in ('outside-click', 'escape'):
+        evaluate('open()')
+        QTest.qWait(50)
+        assert popup.property('visible')
+        clicks = scene.property('playbackClicks')
+        if dismissal == 'outside-click':
+            QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, QPoint(600, 300))
+        else:
+            QTest.keyClick(view, Qt.Key_Escape)
+        QTest.qWait(50)
+        assert not popup.property('visible'), dismissal
+        assert scene.property('playbackClicks') == clicks, f'{dismissal} propagated to playback'
+    clicks = scene.property('playbackClicks')
+    QTest.mouseClick(view, Qt.LeftButton, Qt.NoModifier, QPoint(600, 300))
+    QTest.qWait(20)
+    assert scene.property('playbackClicks') == clicks + 1, 'Closed popup still blocks playback input'
     view.close()
 assert not messages, messages
-print('Passed: actual tabbed popup construction, rate/choice/delay/equalizer bindings, model-only synchronization, media availability, closure and scaled scenes.')
+print('Passed: actual tabbed popup construction, rate/choice/delay/equalizer bindings, model-only synchronization, media availability, dismissal input ownership and scaled scenes.')
 print('Native VLC desktop interaction and final visual acceptance remain separate gates.')

@@ -51,6 +51,9 @@ public:
     ~MediaLib();
     static std::unique_ptr<MediaLib> createHistorySource(qt_intf_t *, vlc::playlist::PlaylistController *, vlc_medialibrary_t *, QObject *parent);
     bool historyOnly() const { return m_historyOnly; }
+    // Borrowed by model-owned history workers, drained before model teardown.
+    vlc_player_t *historyPlayer() const { return m_intf ? m_intf->p_player : nullptr; }
+    vlc_medialibrary_t *historyBackend() const { return m_ml; }
 
     Q_INVOKABLE static MLItemId deserializeMlItemIdFromString(const QString& serialized_id);
 

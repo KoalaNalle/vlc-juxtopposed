@@ -18,6 +18,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Templates as T
+import QtQuick.Window
 
 import VLC.MainInterface
 import VLC.Dialogs
@@ -49,16 +50,12 @@ Item {
     // Events
     //---------------------------------------------------------------------------------------------
 
-    Component.onCompleted: if (showErrorNotifications && DialogErrorModel.repeatedMessageCount){
-                               hideErrorPopupTimer.restart()
-                               errorPopup.state = "visible"
-                           }
+    Component.onCompleted: if (showErrorNotifications && DialogErrorModel.repeatedMessageCount)
+                               errorPopup.showNotification()
 
     onShowErrorNotificationsChanged: {
-        if (!showErrorNotifications) {
-            hideErrorPopupTimer.stop()
-            errorPopup.state = "hidden"
-        }
+        if (!showErrorNotifications)
+            errorPopup.hideNotification(false)
     }
 
     Component.onDestruction: {
@@ -158,8 +155,7 @@ Item {
 
         function onCountChanged() {
             if (!root.showErrorNotifications) return
-            hideErrorPopupTimer.restart()
-            errorPopup.state = "visible"
+            errorPopup.showNotification()
         }
     }
 
@@ -169,9 +165,71 @@ Item {
 
     Widgets.DrawerExt {
         id: errorPopup
+        objectName: "errorNotification"
 
         property string messageText
         property int repeatedMessageCount: 0
+        property Item previousFocusItem: null
+        readonly property bool interacting: contentItem?.interacting ?? false
+
+        function ownsFocus(item) {
+            for (let current = item; current; current = current.parent) {
+                if (current === errorPopup) return true
+            }
+            return false
+        }
+
+        function rememberCurrentFocus() {
+            const current = root.Window.window?.activeFocusItem
+            if (current && !ownsFocus(current))
+                previousFocusItem = current
+        }
+
+        function showNotification() {
+            rememberCurrentFocus()
+            state = "visible"
+            if (!interacting)
+                hideErrorPopupTimer.restart()
+        }
+
+        function hideNotification(resetCount) {
+            hideErrorPopupTimer.stop()
+            if (state !== "visible") return false
+
+            const window = root.Window.window
+            const restore = ownsFocus(window?.activeFocusItem)
+            const previous = previousFocusItem
+            state = "hidden"
+            // An inactive window has no activeFocusItem, but its focus scope
+            // can still remember this notice. Clear it without activating the
+            // window, even when another window currently owns focus.
+            errorPopup.focus = false
+
+            if (restore) {
+                // Release this FocusScope first: the previous item may itself
+                // be an ancestor scope that remembers the notification.
+                if (window.active && previous && previous.visible && previous.enabled
+                        && previous.Window.window === window)
+                    previous.forceActiveFocus(Qt.OtherFocusReason)
+                else if (window.active && root.bgContent && root.bgContent.visible && root.bgContent.enabled)
+                    root.bgContent.forceActiveFocus(Qt.OtherFocusReason)
+            }
+            if (resetCount) DialogErrorModel.resetRepeatedMessageCount()
+            return true
+        }
+
+        onInteractingChanged: {
+            if (state !== "visible") return
+            if (interacting)
+                hideErrorPopupTimer.stop()
+            else
+                hideErrorPopupTimer.restart()
+        }
+
+        Connections {
+            target: root.Window.window
+            function onActiveFocusItemChanged() { errorPopup.rememberCurrentFocus() }
+        }
 
         anchors {
             bottom: parent.bottom
@@ -197,6 +255,9 @@ Item {
             radius: VLCStyle.fontHeight_normal / 2
 
             property real layoutWidth: layout.width
+            readonly property bool interacting: popupHover.hovered || detailsBtn.activeFocus || closeBtn.activeFocus
+
+            HoverHandler { id: popupHover }
 
             Accessible.role: Accessible.AlertMessage
             Accessible.name: qsTr("error popup")
@@ -232,21 +293,29 @@ Item {
 
                 Widgets.TextToolButton {
                     id: detailsBtn
+                    objectName: "errorNotificationDetails"
+                    activeFocusOnTab: true
+                    Keys.onReturnPressed: clicked()
+                    Keys.onEnterPressed: clicked()
 
                     text: qsTr("Show Details")
 
                     colorContext.colorSet: ColorContext.ButtonAccent
 
                     onClicked: {
-                        hideErrorPopupTimer.stop()
-                        errorPopup.state = "hidden"
-                        DialogErrorModel.resetRepeatedMessageCount()
-                        DialogsProvider.messagesDialog(1)
+                        // Restore the player first; the native Messages window
+                        // must be free to take focus after it opens.
+                        if (errorPopup.hideNotification(true))
+                            DialogsProvider.messagesDialog(1)
                     }
                 }
 
                 Widgets.IconToolButton {
                     id: closeBtn
+                    objectName: "errorNotificationDismiss"
+                    activeFocusOnTab: true
+                    Keys.onReturnPressed: clicked()
+                    Keys.onEnterPressed: clicked()
                     font.pixelSize: VLCStyle.icon_normal
                     text: VLCIcons.clear
                     description: qsTr("Dismiss")
@@ -256,9 +325,7 @@ Item {
                     backgroundColor: closeBtn.colorContext.bg.negative
 
                     onClicked: {
-                        hideErrorPopupTimer.stop()
-                        errorPopup.state = "hidden"
-                        DialogErrorModel.resetRepeatedMessageCount()
+                        errorPopup.hideNotification(true)
                     }
                 }
             }
@@ -282,8 +349,7 @@ Item {
             interval: 5000
             repeat: false
             onTriggered: {
-                errorPopup.state = "hidden"
-                DialogErrorModel.resetRepeatedMessageCount()
+                errorPopup.hideNotification(true)
             }
         }
     }

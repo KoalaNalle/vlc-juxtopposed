@@ -47,6 +47,8 @@ Widgets.PageLoader {
     }, {
         name: "listenAgain", component: juxtAudioHistoryComponent
     }, {
+        name: "watchAgain", component: juxtWatchedVideoHistoryComponent
+    }, {
         name: "frequentFolders", component: juxtFoldersComponent
     }, {
         name: "frequentPlaylists", component: juxtPlaylistsComponent
@@ -84,6 +86,7 @@ Widgets.PageLoader {
         }
     }
     Component { id: juxtVideoHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: true; focus: true } }
+    Component { id: juxtWatchedVideoHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: true; completedVideos: true; focus: true } }
     Component { id: juxtAudioHistoryComponent; JuxtopposedHomeHistoryPage { isVideo: false; focus: true } }
     Component {
         id: juxtFoldersComponent

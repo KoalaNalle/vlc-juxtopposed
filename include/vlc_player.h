@@ -1037,6 +1037,16 @@ VLC_API int
 vlc_player_ClearHistory(vlc_player_t *);
 
 /**
+ * Remove one media's playback history on the locked player. The indexed media,
+ * its files and playback preferences are retained. On success, current/retiring
+ * inputs for this media cannot restore or save their old history on Stop/Close;
+ * unrelated inputs and a later freshly opened input keep their normal policy.
+ * May block on the media-library database; dispatch off the interface thread.
+ */
+VLC_API int
+vlc_player_RemoveMediaFromHistory(vlc_player_t *, int64_t media_id);
+
+/**
  * Restore the previous playback position of the current media, if permitted
  * by the current position-storage and exclusion policy.
  */

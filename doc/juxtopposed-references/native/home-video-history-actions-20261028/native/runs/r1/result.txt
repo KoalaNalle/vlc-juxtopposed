@@ -1,0 +1,47 @@
+********* Start testing of TestHomeActivity *********
+Config: Using QtTest library 6.8.3, Qt 6.8.3 (x86_64-little_endian-llp64 static release build; by GCC 13-posix), windows 11
+PASS   : TestHomeActivity::initTestCase()
+PASS   : TestHomeActivity::persistentVisitTypesAndLifetime()
+PASS   : TestHomeActivity::malformedStoredVisits()
+PASS   : TestHomeActivity::preferencesResetDoesNotRestoreCachedVisits()
+PASS   : TestHomeActivity::realFolderPlaylistAndArtistMetadata()
+PASS   : TestHomeActivity::warmRestartAndDeletedPlaylist()
+PASS   : TestHomeActivity::blockedStoragePreservesAcceptedVisitsAndDocument()
+PASS   : TestHomeActivity::blockedClearPreservesAcceptedVisitsAndDocument()
+PASS   : TestHomeActivity::addedFolderRequestStateAndReset()
+PASS   : TestHomeActivity::actualAudioOnlyAddedFolderAndMixedRouteRestart()
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: manual
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: stop-time
+QINFO  : TestHomeActivity::nativeVideoHistorySections() Video history stop case: run-time
+PASS   : TestHomeActivity::nativeVideoHistorySections()
+FAIL!  : TestHomeActivity::nativeVideoHistoryEditLists() Compared doubles are not the same (fuzzy compare)
+   Actual   (replay->f_progress): 0.300000011921
+   Expected (.3)                : 0.3
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_home_activity.cpp(664) : failure location
+QINFO  : TestHomeActivity::nativeVideoHistoryEditActiveInput() Active-input history edit: continue-item-stop
+FAIL!  : TestHomeActivity::nativeVideoHistoryEditActiveInput() 'kept && mlVideoHistoryMatches(*kept, !row.completed)' returned FALSE. ()
+/mnt/c/Modding/vlc-juxtopposed/extras/package/win32/../../../modules/gui/qt/tests/test_home_activity.cpp(820) : failure location
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: normal-eof
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary normal-eof: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-before-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-before-start: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: ignored-stop-equal-start
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary ignored-stop-equal-start: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: stop-after-source-end
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary stop-after-source-end: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 1
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-then-stop: progress -1, play count 1, expected completed, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-settled-seek-then-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 1
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Actual position reported after EOF seek: 0.52962899999999991, target observed yes, paused yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-settled-seek-then-stop: progress 0.48963901400566101, play count 0, expected unfinished, passed yes
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Video history completion boundary: pause-at-end-queued-seek-immediate-stop
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Paused at natural EOF before user Stop: progress 0.99859699999999996
+QINFO  : TestHomeActivity::nativeVideoHistoryCompletionBoundaries() Completion boundary pause-at-end-queued-seek-immediate-stop: progress 0.40000000596046448, play count 0, expected unfinished, passed yes
+PASS   : TestHomeActivity::nativeVideoHistoryCompletionBoundaries()
+QINFO  : TestHomeActivity::nativeVideoHistoryRejectedRecordingSeek() Recording-rejected seek: actual 0.40000000000000002, pending 0.94999999999999996, saved 0.40000000596046448, play count 0
+PASS   : TestHomeActivity::nativeVideoHistoryRejectedRecordingSeek()
+PASS   : TestHomeActivity::cleanupTestCase()
+Totals: 14 passed, 2 failed, 0 skipped, 0 blacklisted, 39895ms
+********* Finished testing of TestHomeActivity *********

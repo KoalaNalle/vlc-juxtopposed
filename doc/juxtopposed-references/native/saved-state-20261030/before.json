@@ -1,0 +1,184 @@
+{
+  "phase": "before",
+  "exitCode": 6,
+  "forcedCleanupUsed": false,
+  "rows": [
+    {
+      "name": "initTestCase",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "mixedKindsPersistOrderAndExactLargeIds",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "duplicateAddressDoesNotWriteEvenWhenLocked",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "add",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "remove",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "stalePeerCannotDiscardNewPins",
+      "tag": "move",
+      "type": "fail",
+      "description": "'!edit()' returned FALSE. ()"
+    },
+    {
+      "name": "staleAddCannotResurrectRemovedPin",
+      "tag": "",
+      "type": "fail",
+      "description": "'!peer.add({addition}, error)' returned FALSE. ()"
+    },
+    {
+      "name": "newerAcceptedSettingsSurviveReadback",
+      "tag": "existing-key",
+      "type": "fail",
+      "description": "Compared values are not the same\n   Actual   (fresh.value(key).toInt()): 0\n   Expected (2)                       : 2"
+    },
+    {
+      "name": "newerAcceptedSettingsSurviveReadback",
+      "tag": "absent-key",
+      "type": "fail",
+      "description": "Compared values are not the same\n   Actual   (fresh.value(key).toInt()): 0\n   Expected (2)                       : 2"
+    },
+    {
+      "name": "identicalLabelsKeepDistinctTargets",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "nativeNamespaceSeparatesCollectionKindsAndDatabases",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "invalidBatchDoesNotPartiallySave",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "failedMutationAndSameObjectRetry",
+      "tag": "add",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "failedMutationAndSameObjectRetry",
+      "tag": "move",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "failedMutationAndSameObjectRetry",
+      "tag": "remove",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "future-version",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "wrong-list-type",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "wrong-entry",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "wrong-key",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "malformed-json",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "unreadableSavedDataBlocksWritesAndCanReload",
+      "tag": "wrong-text-type",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "missingStoreIsHandled",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "canonicalAddressesRetainDriveRootsAndNoPassword",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "relativeFileAddressIsRejected",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "capacityFailureIsAtomic",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "settingsGroupIsPreserved",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "organizationFallbackPinsRemainReadAndWriteConsistent",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    },
+    {
+      "name": "cleanupTestCase",
+      "tag": "",
+      "type": "pass",
+      "description": ""
+    }
+  ],
+  "inputsUnchanged": true,
+  "sourceInputs": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-saved-state-20261030\\build-before-r2\\.libs\\test_qt_sidebar_pins_store.exe": "8e4825c90cb772c9ac00ccfc8446fe0d61285c98d096cd67a72d4dc22ebf602e",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-record-notice-20261029\\gui-r29\\runtime\\libvlc.dll": "6f68a9e8b51499354e7959d96cff41b661471bfd8308fda1dae3933ad35a7912",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-record-notice-20261029\\gui-r29\\runtime\\libvlccore.dll": "ccb6a2005ca575c0ab99277864eb23f7da824407615a45c06eb0ef52a2ab6e6a"
+  },
+  "compilerInputCount": 905,
+  "programSha256": "8e4825c90cb772c9ac00ccfc8446fe0d61285c98d096cd67a72d4dc22ebf602e",
+  "producerSha256": "8aa1588f5a82e1ddfd17c399f3d416ffbdec4e7f27b0884696b4d0790189ee84"
+}

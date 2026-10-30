@@ -320,6 +320,12 @@ void
 vlc_player_UpdateTimerSeekState(vlc_player_t *player, vlc_tick_t time,
                                 double position)
 {
+    vlc_player_assert_locked(player);
+    /* An explicit time/position/chapter seek supersedes a pending redraw.
+     * The redraw caller restores its own exact target after updating the
+     * visible seek clock. Never carry that target into a later user seek. */
+    if (player->input)
+        player->input->subtitle_refresh_target = VLC_TICK_INVALID;
     vlc_mutex_lock(&player->timer.lock);
     struct vlc_player_timer_source *source = &player->timer.best_source;
 

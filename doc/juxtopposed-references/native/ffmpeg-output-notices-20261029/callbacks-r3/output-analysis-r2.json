@@ -1,0 +1,56 @@
+{
+  "status": "terminal",
+  "scope": "complete generated H264/FLAC/two-SRT passthrough outputs from the identified current Core and FFmpeg plugin; no arbitrary-media or package acceptance",
+  "outputs": {
+    "control": {
+      "streamMapping": [
+        {
+          "kind": "video",
+          "ordinal": 0,
+          "sourceIndex": 0,
+          "outputIndex": 2
+        },
+        {
+          "kind": "audio",
+          "ordinal": 0,
+          "sourceIndex": 1,
+          "outputIndex": 3
+        },
+        {
+          "kind": "subtitle",
+          "ordinal": 0,
+          "sourceIndex": 2,
+          "outputIndex": 0
+        },
+        {
+          "kind": "subtitle",
+          "ordinal": 1,
+          "sourceIndex": 3,
+          "outputIndex": 1
+        }
+      ],
+      "checks": {
+        "streams": true,
+        "pcmExact": true,
+        "allVideoFrames": true,
+        "subtitleTextExact": true,
+        "video0": false,
+        "audio0": true,
+        "subtitle0": true,
+        "subtitle1": true
+      },
+      "passed": false,
+      "fileSha256": "9827cc747eeeec4001cde776a0b9b91387df03c119121d197f9f4835fcd98967",
+      "audioPcmSha256": "7ea9ed935c066e9d388c931f6aa87b86399425be6642c23dab662e9a49ffe028",
+      "audioBytes": 5761056,
+      "videoFrames": 1500,
+      "packetCounts": [
+        3,
+        3,
+        1500,
+        626
+      ]
+    }
+  },
+  "analyzerSha256": "1653d5e2c605d0f2c7644cffb247352b8dd3b2d0459a07ec3d2d229845da88d4"
+}

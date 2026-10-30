@@ -165,6 +165,50 @@ vlc_player_ClearHistory(vlc_player_t *player)
     return VLC_SUCCESS;
 }
 
+static void
+HistoryInvalidateMediaInput(vlc_medialibrary_t *ml,
+                            struct vlc_player_input *input, int64_t media_id)
+{
+    input_item_t *item = input_GetItem(input->thread);
+    if (!item)
+        return;
+    vlc_ml_media_t *media = vlc_ml_get_media_by_mrl(ml, item->psz_uri);
+    const bool matches = media && media->i_id == media_id;
+    if (media)
+        vlc_ml_release(media);
+    if (!matches)
+        return;
+
+    /* Block only this input's resume/recent activity. Keep its ordinary pending
+     * playback preferences, and leave global/privacy epoch checks effective.
+     * A freshly opened input has no scoped removal marker.
+     */
+    input->history_removed = true;
+    HistoryInvalidatePosition(input);
+}
+
+int
+vlc_player_RemoveMediaFromHistory(vlc_player_t *player, int64_t media_id)
+{
+    vlc_player_assert_locked(player);
+    vlc_medialibrary_t *ml = HistoryBackend(player);
+    if (!ml || media_id <= 0
+        || vlc_ml_media_set_played(ml, media_id, false) != VLC_SUCCESS)
+        return VLC_EGENERIC;
+
+    if (player->input)
+        HistoryInvalidateMediaInput(ml, player->input, media_id);
+    struct vlc_list *lists[] = { &player->mainloop.stop_inputs,
+        &player->mainloop.stopping_inputs, &player->mainloop.joinable_inputs };
+    for (size_t i = 0; i < ARRAY_SIZE(lists); ++i)
+    {
+        struct vlc_player_input *input;
+        vlc_list_foreach(input, lists[i], node)
+            HistoryInvalidateMediaInput(ml, input, media_id);
+    }
+    return VLC_SUCCESS;
+}
+
 void
 vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
 {
@@ -181,7 +225,8 @@ vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
 
     if (!player->history_policy.save_history || !var_GetBool(input->thread, "save-recentplay")
         || !player->history_policy.remember_position
-        || input->position_epoch != player->position_epoch)
+        || input->position_epoch != player->position_epoch
+        || input->history_removed)
         restore_pos = VLC_PLAYER_RESTORE_PLAYBACK_POS_NEVER;
 
     const bool restore_states = var_InheritBool(input->thread, "restore-playback-states");
@@ -367,12 +412,14 @@ vlc_player_UpdateMLStates(vlc_player_t *player, struct vlc_player_input* input)
     assert(media->i_type != VLC_ML_MEDIA_TYPE_UNKNOWN);
 
     const bool remember = player->history_policy.remember_position
-        && input->position_epoch == player->position_epoch;
+        && input->position_epoch == player->position_epoch
+        && !input->history_removed;
     /* Zero records recent activity without retaining a resume point. It does
      * not mark the item as completed or increment the play count. */
     const double position = input->position_before_stop >= 0.
                           ? input->position_before_stop : input->position;
-    vlc_ml_media_update_progress(ml, media->i_id, remember ? position : 0.);
+    if (!input->history_removed)
+        vlc_ml_media_update_progress(ml, media->i_id, remember ? position : 0.);
 
 
     /* If the value changed during the playback, update it in the medialibrary.

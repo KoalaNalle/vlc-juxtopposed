@@ -14,6 +14,7 @@ Flickable {
     property url assetBase: "qrc:/juxtopposed/"
     property string iconFontFamily: ""
     property string arrowIcon: ""
+    property string moreIcon: ""
     property string videoIcon: ""
     property string audioIcon: ""
     property string folderIcon: ""
@@ -22,6 +23,7 @@ Flickable {
     property url folderArtwork: ""
     property url artistArtwork: ""
     property var videoEntries: null
+    property var watchAgainEntries: null
     property var audioEntries: null
     property var folderEntries: []
     property var playlistEntries: []
@@ -30,6 +32,8 @@ Flickable {
     property bool historyLoading: false
     property bool activityLoading: false
     property bool libraryBusy: false
+    property bool historyBusy: false
+    property string historyMessage: ""
     property string errorText: ""
     property string searchPattern: ""
     property bool mediaEmpty: false
@@ -45,6 +49,8 @@ Flickable {
     signal addFolderRequested()
     signal retryRequested()
     signal pinMenuRequested(var entry, point position)
+    signal videoMenuRequested(var entry, string category, point position)
+    signal historyMenuRequested(string category, point position)
 
     clip: true
     contentWidth: width
@@ -76,9 +82,9 @@ Flickable {
         else if (y + item.height > contentY + height)
             contentY = Math.min(Math.max(0, contentHeight - height), y + item.height - height)
     }
-    function activate(kind, entry, reason) {
+    function activate(kind, entry, reason, resumeVideo = true) {
         if (kind === "video" || kind === "audio")
-            mediaRequested(entry, kind === "video" && (entry?.progress || 0) > 0, reason)
+            mediaRequested(entry, kind === "video" && resumeVideo && (entry?.progress || 0) > 0, reason)
         else if (kind === "folder")
             folderRequested(entry, reason)
         else if (kind === "playlist")
@@ -95,6 +101,8 @@ Flickable {
         required property string category
         required property string kind
         property var entries: null
+        property bool resumeVideo: true
+        property string cardPrefix: "home" + kind
         property string fallbackIcon: ""
         property url fallbackArtwork: ""
         property string emptyText: ""
@@ -115,11 +123,16 @@ Flickable {
                 heading.forceActiveFocus(reason)
         }
 
-        C.ToolButton {
+        Row {
+            id: headingRow
+            width: parent.width
+            spacing: 8 * root.uiScale
+          C.ToolButton {
             id: heading
             objectName: "homeSection" + section.category
             padding: 0
-            width: root.gridMode ? implicitWidth : parent.width
+            width: root.gridMode ? Math.min(implicitWidth, headingRow.width - (historyOptions.visible ? historyOptions.width + headingRow.spacing : 0))
+                                 : headingRow.width - (historyOptions.visible ? historyOptions.width + headingRow.spacing : 0)
             implicitHeight: 28 * root.uiScale
             focusPolicy: Qt.StrongFocus
             Accessible.name: section.title
@@ -140,13 +153,15 @@ Flickable {
                     anchors.left: parent.left
                     anchors.verticalCenter: parent.verticalCenter
                     text: section.title
+                    width: Math.min(implicitWidth, Math.max(0, parent.width - headingArrow.width - 10 * root.uiScale))
+                    elide: Text.ElideRight
                     font.family: inter.name
                     font.pixelSize: 20 * root.uiScale
                     color: root.textColor
                 }
                 C.Label {
                     id: headingArrow
-                    x: root.gridMode ? headingText.implicitWidth + 10 * root.uiScale : parent.width - width
+                    x: root.gridMode ? headingText.width + 10 * root.uiScale : parent.width - width
                     text: root.arrowIcon
                     font.family: root.iconFontFamily
                     font.pixelSize: 18 * root.uiScale
@@ -155,6 +170,39 @@ Flickable {
                     Accessible.ignored: true
                 }
             }
+          }
+          C.ToolButton {
+            id: historyOptions
+            objectName: "homeHistoryOptions" + section.category
+            visible: section.kind === "video"
+            enabled: !root.historyBusy
+            width: 28 * root.uiScale
+            height: 28 * root.uiScale
+            padding: 0
+            focusPolicy: Qt.StrongFocus
+            text: root.moreIcon || "\u22ef"
+            font.family: root.iconFontFamily
+            font.pixelSize: 20 * root.uiScale
+            Accessible.name: qsTr("%1 options").arg(section.title)
+            C.ToolTip.visible: hovered
+            C.ToolTip.text: Accessible.name
+            background: Rectangle {
+                color: historyOptions.hovered ? JuxtopposedPalette.color("#242424") : "transparent"
+                radius: 4 * root.uiScale
+                border.width: historyOptions.visualFocus ? 2 * root.uiScale : 0
+                border.color: root.accentColor
+            }
+            contentItem: C.Label {
+                text: historyOptions.text
+                font: historyOptions.font
+                color: root.textColor
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                Accessible.ignored: true
+            }
+            onClicked: root.historyMenuRequested(section.category, mapToGlobal(0, height))
+            onActiveFocusChanged: if (activeFocus) { root.focusedEntry = this; root.reveal(this) }
+          }
         }
         Flow {
             width: parent.width
@@ -170,8 +218,9 @@ Flickable {
                     required property var model
                     required property int index
                     readonly property var row: model.modelData ?? model
-                    objectName: "home" + section.kind + index
+                    objectName: section.cardPrefix + index
                     entry: row
+                    contextMenuAvailable: section.kind === "video"
                     uiScale: root.uiScale
                     fontFamily: inter.name
                     iconFontFamily: root.iconFontFamily
@@ -185,8 +234,13 @@ Flickable {
                     surfaceColor: root.surfaceColor
                     textColor: root.textColor
                     accentColor: root.accentColor
-                    onClicked: root.activate(kind, row, focusReason)
-                    onContextMenuRequested: position => root.pinMenuRequested(row, position)
+                    Accessible.description: !available ? qsTr("This item is unavailable") : kind === "video" ?
+                        (section.resumeVideo ? qsTr("Continue watching") : qsTr("Watch again from the beginning")) : ""
+                    onActivated: reason => root.activate(kind, row, reason, section.resumeVideo)
+                    onContextMenuRequested: position => {
+                        if (kind === "video") root.videoMenuRequested(row, section.category, position)
+                        else root.pinMenuRequested(row, position)
+                    }
                     onActiveFocusChanged: if (activeFocus) { root.focusedEntry = this; root.reveal(this) }
                 }
             }
@@ -210,6 +264,16 @@ Flickable {
         width: Math.max(0, root.width - 48 * root.uiScale)
         spacing: (root.gridMode ? 72 : 28) * root.uiScale
 
+        C.Label {
+            objectName: "homeHistoryStatus"
+            width: parent.width
+            visible: root.historyBusy || root.historyMessage.length > 0
+            text: root.historyBusy ? qsTr("Updating playback history…") : root.historyMessage
+            wrapMode: Text.WordWrap
+            font.family: inter.name
+            font.pixelSize: 14 * root.uiScale
+            color: root.textColor
+        }
         Column {
             width: parent.width
             spacing: 12 * root.uiScale
@@ -236,7 +300,18 @@ Flickable {
             entries: root.videoEntries
             fallbackIcon: root.videoIcon
             loading: root.historyLoading
-            emptyText: qsTr("Videos you watch will appear here.")
+            emptyText: qsTr("Unfinished videos will appear here.")
+        }
+        Section {
+            title: qsTr("Watch Again")
+            category: "watchAgain"
+            kind: "video"
+            cardPrefix: "homeWatchedVideo"
+            resumeVideo: false
+            entries: root.watchAgainEntries
+            fallbackIcon: root.videoIcon
+            loading: root.historyLoading
+            emptyText: qsTr("Videos you finish will appear here.")
         }
         Section {
             title: qsTr("Listen Again")

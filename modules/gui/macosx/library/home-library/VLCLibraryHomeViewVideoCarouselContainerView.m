@@ -25,12 +25,19 @@
 #import "extensions/NSFont+VLCAdditions.h"
 #import "extensions/NSString+Helpers.h"
 
-#import "library/VLCLibraryCarouselViewItemView.h"
+#import "library/VLCLibraryCollectionView.h"
+#import "library/VLCLibraryCollectionViewDelegate.h"
+#import "library/VLCLibraryCarouselCollectionViewItem.h"
 #import "library/VLCLibraryDataTypes.h"
+#import "library/VLCLibraryWindow.h"
+#import "library/VLCLibraryWindowSplitViewController.h"
+#import "library/VLCLibrarySegment.h"
+#import "library/VLCLibraryWindowNavigationSidebarViewController.h"
 
 #import "library/home-library/VLCLibraryHomeViewVideoContainerViewDataSource.h"
 
 #import "views/VLCUIUnits.h"
+#import "main/VLCMain.h"
 
 #include "library/video-library/VLCLibraryVideoGroupDescriptor.h"
 
@@ -40,16 +47,20 @@
 @synthesize videoGroup = _videoGroup;
 @synthesize dataSource = _dataSource;
 
-- (void)setup
+- (NSNotificationName)displayedCollectionChangedNotification
 {
-    [super setup];
-    [self setupDataSource];
+    return VLCLibraryVideoCollectionViewDataSourceDisplayedCollectionChangedNotification;
 }
 
 - (void)setupDataSource
 {
+    self.collectionViewDelegate.itemsAspectRatio = VLCLibraryCollectionViewItemAspectRatioVideoItem;
+    self.collectionViewDelegate.staticItemSize = NSMakeSize(VLCUIUnits.carouselViewVideoItemViewWidth,
+                                                            VLCUIUnits.carouselViewItemViewHeight);
+    self.itemHeight = VLCUIUnits.carouselViewItemViewHeight;
     _dataSource = [[VLCLibraryHomeViewVideoContainerViewDataSource alloc] init];
-    self.dataSource.carouselView = self.carouselView;
+    _dataSource.collectionViewItemIdentifier = VLCLibraryCarouselCollectionViewItemIdentifier;
+    self.dataSource.collectionView = self.collectionView;
     [self.dataSource setup];
 }
 
@@ -59,11 +70,17 @@
     _videoGroup = groupDescriptor.group;
     self.dataSource.groupDescriptor = groupDescriptor;
     if (groupDescriptor.group == VLCMediaLibraryParentGroupTypeRecentVideos) {
-        self.titleView.stringValue = _NS("Recent videos");
+        self.headerView.title = _NS("Recent videos");
     } else {
-        self.titleView.stringValue = groupDescriptor.name;
+        self.headerView.title = groupDescriptor.name;
     }
- }
+}
+
+- (void)openLibrary:(id)sender
+{
+    [VLCMain.sharedInstance.libraryWindow.splitViewController.navSidebarViewController
+        selectSegment:VLCLibraryVideoSegmentType];
+}
 
 - (void)setVideoGroup:(VLCMediaLibraryParentGroupType)group
 {
@@ -73,20 +90,6 @@
 
     VLCLibraryVideoCollectionViewGroupDescriptor * const descriptor = [[VLCLibraryVideoCollectionViewGroupDescriptor alloc] initWithVLCVideoLibraryGroup:group];
     [self setGroupDescriptor:descriptor];
-}
-
-- (void)presentLibraryItem:(id<VLCMediaLibraryItemProtocol>)libraryItem
-{
-    if (libraryItem == nil) {
-        return;
-    }
-
-    NSIndexPath * const indexPath = [self.dataSource indexPathForLibraryItem:libraryItem];
-    if (indexPath == nil) {
-        return;
-    }
-
-    [self.carouselView scrollToItemAtIndex:indexPath.item animated:YES];
 }
 
 @end

@@ -1,0 +1,142 @@
+{
+  "status": "terminal",
+  "started": 1793214303.2548375,
+  "scope": "Standalone actual parser/Control/Demux/packet boundaries only; no decoder/render/player/UI/full-format acceptance.",
+  "variants": [
+    {
+      "variant": "baseline",
+      "pid": 25312,
+      "exitCode": 1,
+      "cases": [
+        {
+          "case": "actual-demux-containing-cue-refill",
+          "checks": 13,
+          "failures": 1,
+          "passed": false
+        },
+        {
+          "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+          "checks": 23,
+          "failures": 3,
+          "passed": false
+        },
+        {
+          "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+          "checks": 38,
+          "failures": 10,
+          "passed": false
+        },
+        {
+          "case": "actual-demux-eof-revival-and-no-wrap",
+          "checks": 32,
+          "failures": 6,
+          "passed": false
+        },
+        {
+          "case": "actual-demux-invalid-rates-atomic",
+          "checks": 23,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+          "checks": 24,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+          "checks": 54,
+          "failures": 6,
+          "passed": false
+        },
+        {
+          "case": "actual-demux-large-length-exact-ending-position",
+          "checks": 16,
+          "failures": 2,
+          "passed": false
+        }
+      ],
+      "summary": {
+        "summary": true,
+        "cases": 8,
+        "checks": 223,
+        "failures": 28
+      },
+      "runtimeExeUnchanged": true,
+      "runtimeCoreUnchanged": true
+    },
+    {
+      "variant": "candidate",
+      "pid": 25680,
+      "exitCode": 0,
+      "cases": [
+        {
+          "case": "actual-demux-containing-cue-refill",
+          "checks": 25,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-rate-inline-overlap-and-immutable-source",
+          "checks": 46,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-fractional-and-reset-without-cumulative-transform",
+          "checks": 77,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-eof-revival-and-no-wrap",
+          "checks": 34,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-invalid-rates-atomic",
+          "checks": 23,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-stream-mode-rejects-rate-and-preserves-inline-times",
+          "checks": 24,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-zero-duplicate-boundaries-and-empty-file",
+          "checks": 47,
+          "failures": 0,
+          "passed": true
+        },
+        {
+          "case": "actual-demux-large-length-exact-ending-position",
+          "checks": 16,
+          "failures": 0,
+          "passed": true
+        }
+      ],
+      "summary": {
+        "summary": true,
+        "cases": 8,
+        "checks": 292,
+        "failures": 0
+      },
+      "runtimeExeUnchanged": true,
+      "runtimeCoreUnchanged": true
+    }
+  ],
+  "errors": [],
+  "forcedCleanupUsed": false,
+  "sourceUnchanged": true,
+  "producersUnchanged": true,
+  "configUnchanged": true,
+  "buildUnchanged": true,
+  "preservedCoreUnchanged": true,
+  "ended": 1793214303.4874842,
+  "success": true
+}

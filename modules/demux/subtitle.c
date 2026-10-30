@@ -771,10 +771,19 @@ ResetCurrentIndex( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     for( size_t i = 0; i < p_sys->subtitles.i_count; i++ )
     {
-        if( SubtitleSourceTime(&p_sys->subtitles.p_array[i], p_sys->f_rate) >
-            p_sys->i_next_demux_date && i > 0 )
+        const subtitle_t *subtitle = &p_sys->subtitles.p_array[i];
+        const vlc_tick_t start = SubtitleSourceTime(subtitle, p_sys->f_rate);
+        if( start > p_sys->i_next_demux_date && i > 0 )
             break;
         p_sys->subtitles.i_current = i;
+        /* Refill every still-active overlapping event, not only the newest
+         * one. Unknown ends retain the existing latest-start fallback. */
+        if( subtitle->i_stop != VLC_TICK_INVALID && subtitle->i_stop >= subtitle->i_start )
+        {
+            const vlc_tick_t length = (subtitle->i_stop - subtitle->i_start) * p_sys->f_rate;
+            if( start + length > p_sys->i_next_demux_date )
+                break;
+        }
     }
 }
 

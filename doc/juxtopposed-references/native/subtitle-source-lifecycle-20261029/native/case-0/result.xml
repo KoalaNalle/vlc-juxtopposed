@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestPlayerSubtitleDelay">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="846.952"/>
+  </TestFunction>
+  <TestFunction name="attachmentReusedMediaCaption">
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[fresh-item-control]]></DataTag>
+    <Description><![CDATA[A-B-A reuse=0 english=0 selected=1 caption=2597 marker=29 clock=1167432]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[fresh-item-control]]></DataTag>
+    </Incident>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[reused-playlist-item]]></DataTag>
+    <Description><![CDATA[A-B-A reuse=1 english=0 selected=1 caption=2597 marker=30 clock=1233726]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[reused-playlist-item]]></DataTag>
+    </Incident>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[fresh-item-english-default]]></DataTag>
+    <Description><![CDATA[A-B-A reuse=0 english=1 selected=1 caption=2597 marker=30 clock=1229501]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[fresh-item-english-default]]></DataTag>
+    </Incident>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[reused-item-english-default]]></DataTag>
+    <Description><![CDATA[A-B-A reuse=1 english=1 selected=1 caption=2597 marker=30 clock=1216406]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[reused-item-english-default]]></DataTag>
+    </Incident>
+    <Duration msecs="14568.3"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="49.6122"/>
+  </TestFunction>
+  <Duration msecs="15466.1"/>
+</TestCase>

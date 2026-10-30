@@ -265,6 +265,7 @@ libqt_plugin_la_SOURCES = \
 	medialibrary/mlrecentmediamodel.hpp \
 	medialibrary/mlrecentvideomodel.cpp \
 	medialibrary/mlrecentvideomodel.hpp \
+	medialibrary/mlvideohistory.hpp \
 	medialibrary/mlrecentaudiomodel.cpp \
 	medialibrary/mlrecentaudiomodel.hpp \
 	medialibrary/mlhomeactivity.cpp \
@@ -1418,7 +1419,8 @@ libqml_module_maininterface_a_QML = \
 	maininterface/qml/JuxtopposedNavigationPane.qml \
 	maininterface/qml/SideNavigationPane.qml \
 	maininterface/qml/SideNavigationDelegate.qml \
-	maininterface/qml/NoMedialibHome.qml
+	maininterface/qml/NoMedialibHome.qml \
+	maininterface/qml/OpenFileSplitButton.qml
 
 if UPDATE_CHECK
 libqml_module_maininterface_a_QML += maininterface/qml/UpdatePane.qml
@@ -1746,6 +1748,7 @@ libqml_module_widgets_a_QML = \
 	widgets/qml/TextInputFocus.qml \
 	widgets/qml/SliderExt.qml \
 	widgets/qml/SortControl.qml \
+	widgets/qml/SplitButton.qml \
 	widgets/qml/SpinBoxExt.qml \
 	widgets/qml/StackViewExt.qml \
 	widgets/qml/PageLoader.qml \
@@ -2262,6 +2265,35 @@ test_vlc_dialog_model_LDADD = $(QT_QTEST_COMMON_ldadd)
 test_vlc_dialog_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
 check_PROGRAMS += test_vlc_dialog_model
 TESTS += test_vlc_dialog_model
+
+# test_qt_csd_button_model
+check_PROGRAMS += test_qt_csd_button_model
+TESTS += test_qt_csd_button_model
+
+test_qt_csd_button_model_SOURCES = \
+	tests/vlc_stub_modules.cpp \
+	tests/test_qt_csd_button_model.cpp \
+	util/csdbuttonmodel.hpp \
+	util/csdbuttonmodel.cpp
+nodist_test_qt_csd_button_model_SOURCES = \
+	tests/test_qt_csd_button_model.moc \
+	util/csdbuttonmodel.moc.cpp
+BUILT_SOURCES += tests/test_qt_csd_button_model.moc
+CLEANFILES += tests/test_qt_csd_button_model.moc
+test_qt_csd_button_model_CPPFLAGS = $(QT_QTEST_COMMON_cppflags)
+test_qt_csd_button_model_CXXFLAGS = $(QT_QTEST_COMMON_cxxflags)
+test_qt_csd_button_model_LDFLAGS = $(QT_QTEST_COMMON_ldflags)
+if HAVE_WIN32
+test_qt_csd_button_model_SOURCES += util/winpthreads_shutdown.cpp
+test_qt_csd_button_model_LDFLAGS += -Wl,--wrap=pthread_key_delete
+# qmake adds platform plugin libraries to QT_LIBS for static Qt builds.
+# Keep the offscreen plugin before the Qt libraries it depends on.
+test_qt_csd_button_model_LDADD = $(if $(filter %qwindows %qwindows.a,$(QT_LIBS)),-lqoffscreen) $(QT_QTEST_COMMON_ldadd) -lntdll
+# Automake cannot infer file prerequisites through the conditional library flag.
+test_qt_csd_button_model_DEPENDENCIES = $(LIBVLCCORE) $(LIBVLC) $(filter %.a %.la %.obj,$(QT_LIBS) $(LIBS_qt) $(QT_QTEST_LIBS))
+else
+test_qt_csd_button_model_LDADD = $(QT_QTEST_COMMON_ldadd)
+endif
 
 
 test_qt_navigation_model_SOURCES = \

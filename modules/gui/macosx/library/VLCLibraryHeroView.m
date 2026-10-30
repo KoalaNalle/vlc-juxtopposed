@@ -54,6 +54,13 @@
     if (@available(macOS 10.14, *)) {
         self.playButton.contentTintColor = NSColor.VLCAccentColor;
     }
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 260000
+    if (@available(macOS 26.0, *)) {
+        self.playButton.bordered = YES;
+        self.playButton.bezelStyle = NSBezelStyleGlass;
+        self.playButton.borderShape = NSControlBorderShapeCapsule;
+    }
+#endif
     self.titleTextField.font = NSFont.VLCLibrarySubsectionHeaderFont;
     self.titleTextField.maximumNumberOfLines = 3;
     self.detailTextField.font = NSFont.VLCLibrarySubsectionSubheaderFont;
@@ -79,12 +86,25 @@
 
 - (void)setRepresentedItem:(VLCLibraryRepresentedItem *)representedItem
 {
-    NSParameterAssert(representedItem != nil);
-    if (representedItem == self.representedItem) {
+    if (representedItem != nil && representedItem == self.representedItem) {
         return;
     }
 
     _representedItem = representedItem;
+    self.hidden = representedItem == nil;
+    self.playButton.enabled = representedItem != nil;
+    if (representedItem == nil) {
+        self.largeImageView.image = nil;
+        self.titleTextField.stringValue = @"";
+        self.detailTextField.stringValue = @"";
+        self.explanationTextField.stringValue = @"";
+        self.playButton.title = @"";
+        self.menuController.representedItems = @[];
+        [self connectForNewVideo];
+        return;
+    }
+
+    [self disconnectForNewVideo];
     [self updateRepresentedItem];
 }
 
@@ -142,8 +162,7 @@
         return;
     }
 
-    NSLog(@"Could not find a good media item for hero view!");
-    [self connectForNewVideo];
+    self.representedItem = nil;
 }
 
 - (IBAction)playRepresentedItem:(id)sender
@@ -153,6 +172,7 @@
 
 - (void)connectForNewVideo
 {
+    [self disconnectForNewVideo];
     NSNotificationCenter * const notificationCenter = NSNotificationCenter.defaultCenter;
     [notificationCenter addObserver:self
                            selector:@selector(newVideosAvailable:)
@@ -179,7 +199,6 @@
 - (void)newVideosAvailable:(NSNotification *)notification
 {
     [self setOptimalRepresentedItem];
-    [self disconnectForNewVideo];
 }
 
 - (void)connectItemUpdaters
@@ -226,11 +245,15 @@
 
 - (void)openContextMenu:(NSEvent *)event
 {
+    VLCLibraryRepresentedItem * const representedItem = self.representedItem;
+    if (representedItem == nil) {
+        return;
+    }
     if (self.menuController == nil) {
         _menuController = [[VLCLibraryMenuController alloc] init];
     }
 
-    self.menuController.representedItems = @[self.representedItem];
+    self.menuController.representedItems = @[representedItem];
     [self.menuController popupMenuWithEvent:event forView:self];
 }
 

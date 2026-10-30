@@ -333,6 +333,14 @@ static void Flush( decoder_t *p_dec )
 
     p_sys->i_max_stop = VLC_TICK_INVALID;
     p_sys->i_last_pts = VLC_TICK_INVALID;
+
+    /* A refill can resend the same ReadOrder with new timestamps. Discard
+     * cached events as well as the decoder's timing bookkeeping. Rendering
+     * and event updates share this track, so use their existing lock. */
+    vlc_mutex_lock( &p_sys->lock );
+    if( p_sys->p_track )
+        ass_flush_events( p_sys->p_track );
+    vlc_mutex_unlock( &p_sys->lock );
 }
 
 /****************************************************************************
@@ -451,7 +459,8 @@ static void SubpictureUpdate( subpicture_t *p_subpic,
     }
 
     /* */
-    const vlc_tick_t i_stream_date = p_spusys->i_pts + (cfg->pts - p_subpic->i_start);
+    /* The SPU clock mapping includes playback rate and pause adjustments. */
+    const vlc_tick_t i_stream_date = subpicture_GetSourceTime(p_subpic, cfg->pts);
     int i_changed;
     ASS_Image *p_img = ass_render_frame( p_sys->p_renderer, p_sys->p_track,
                                          MS_FROM_VLC_TICK( i_stream_date ), &i_changed );

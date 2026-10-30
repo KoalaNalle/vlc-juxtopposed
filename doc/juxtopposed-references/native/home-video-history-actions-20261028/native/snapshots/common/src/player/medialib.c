@@ -1,0 +1,517 @@
+/*****************************************************************************
+ * medialib.c: Player/Media Library interractions
+ *****************************************************************************
+ * Copyright © 2018-2019 VLC authors and VideoLAN
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2.1 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_charset.h>
+#include <vlc_url.h>
+#include "player.h"
+#include "misc/variables.h"
+
+/* A greedy wildcard matcher with an implicit leading/trailing '*'. Bound its
+ * total work as well as byte lengths: a hostile pattern must not stall playback.
+ * Invalid UTF-8 and exhausted work deny automatic storage instead of leaking it.
+ */
+static bool
+HistoryMatches(const char *pattern, const char *text)
+{
+    if (!text)
+        return false;
+    if (strnlen(text, 65537) > 65536 || !IsUTF8(text))
+        return true;
+    const char *p = pattern, *s = text, *star = pattern, *retry = text;
+    unsigned work = 0;
+    for (;;)
+    {
+        if (++work > 1000000)
+            return true;
+        if (*p == '\0')
+            return true;
+        if (*p == '*')
+        {
+            star = ++p;
+            retry = s;
+            continue;
+        }
+        uint32_t pc, sc;
+        ssize_t pn = vlc_towc(p, &pc), sn = vlc_towc(s, &sc);
+        if (sn > 0 && (*p == '?' || pc == sc))
+        {
+            p += pn;
+            s += sn;
+            continue;
+        }
+        if (*retry == '\0')
+            return false;
+        retry += vlc_towc(retry, &sc);
+        s = retry;
+        p = star;
+    }
+}
+
+bool
+vlc_player_HistoryIsExcluded(const char *pattern, const char *uri, const char *name)
+{
+    if (!pattern || !*pattern)
+        return false;
+    if (strnlen(pattern, 4097) > 4096 || !IsUTF8(pattern))
+        return true;
+    if (HistoryMatches(pattern, uri) || HistoryMatches(pattern, name))
+        return true;
+    char *path = uri ? vlc_uri2path(uri) : NULL;
+    bool excluded = HistoryMatches(pattern, path);
+    free(path);
+    return excluded;
+}
+
+static vlc_medialibrary_t *
+HistoryBackend(vlc_player_t *player)
+{
+    vlc_medialibrary_t *ml = vlc_ml_instance_get(player);
+    if (ml || player->obj.priv->parent != (vlc_object_t *)vlc_object_instance(player))
+        return ml;
+    return vlc_ml_history_get(player);
+}
+
+static bool
+HistoryExcluded(vlc_player_t *player, struct vlc_player_input *input)
+{
+    input_item_t *item = input_GetItem(input->thread);
+    if (!item)
+        return true;
+    char *name = input_item_GetName(item);
+    bool excluded = vlc_player_HistoryIsExcluded(
+        player->history_policy.exclusion_pattern, item->psz_uri, name);
+    free(name);
+    return excluded;
+}
+
+static void
+HistoryInvalidatePosition(struct vlc_player_input *input)
+{
+    input->ml.restore = VLC_RESTOREPOINT_NONE;
+    input->ml.delay_restore = false;
+    input->ml.pos = -1.f;
+    input->ml.states.current_title = -1;
+}
+
+static void
+HistoryInvalidateInputs(vlc_player_t *player)
+{
+    if (player->input)
+        HistoryInvalidatePosition(player->input);
+    struct vlc_list *lists[] = { &player->mainloop.stop_inputs,
+        &player->mainloop.stopping_inputs, &player->mainloop.joinable_inputs };
+    for (size_t i = 0; i < ARRAY_SIZE(lists); ++i)
+    {
+        struct vlc_player_input *input;
+        vlc_list_foreach(input, lists[i], node)
+            HistoryInvalidatePosition(input);
+    }
+}
+
+void
+vlc_player_SwapHistoryPolicy(vlc_player_t *player,
+                           struct vlc_player_history_policy *policy)
+{
+    vlc_player_assert_locked(player);
+    assert(policy && policy->exclusion_pattern);
+    const bool pattern_changed = strcmp(policy->exclusion_pattern,
+        player->history_policy.exclusion_pattern) != 0;
+    if (pattern_changed || policy->save_history != player->history_policy.save_history)
+        player->history_epoch++;
+    if (pattern_changed || policy->remember_position != player->history_policy.remember_position
+        || policy->save_history != player->history_policy.save_history)
+    {
+        player->position_epoch++;
+        HistoryInvalidateInputs(player);
+    }
+    struct vlc_player_history_policy old = player->history_policy;
+    player->history_policy = *policy;
+    *policy = old;
+    var_SetBool(player, "save-recentplay", player->history_policy.save_history);
+}
+
+int
+vlc_player_ClearHistory(vlc_player_t *player)
+{
+    vlc_player_assert_locked(player);
+    vlc_medialibrary_t *ml = HistoryBackend(player);
+    if (!ml || vlc_ml_clear_history(ml, VLC_ML_HISTORY_TYPE_GLOBAL) != VLC_SUCCESS)
+        return VLC_EGENERIC;
+    player->history_epoch++;
+    player->position_epoch++;
+    HistoryInvalidateInputs(player);
+    return VLC_SUCCESS;
+}
+
+static void
+HistoryInvalidateMediaInput(vlc_medialibrary_t *ml,
+                            struct vlc_player_input *input, int64_t media_id)
+{
+    input_item_t *item = input_GetItem(input->thread);
+    if (!item)
+        return;
+    vlc_ml_media_t *media = vlc_ml_get_media_by_mrl(ml, item->psz_uri);
+    const bool matches = media && media->i_id == media_id;
+    if (media)
+        vlc_ml_release(media);
+    if (!matches)
+        return;
+
+    /* Block only this input's resume/recent activity. Keep its ordinary pending
+     * playback preferences, and leave global/privacy epoch checks effective.
+     * A freshly opened input has no scoped removal marker.
+     */
+    input->history_removed = true;
+    HistoryInvalidatePosition(input);
+}
+
+int
+vlc_player_RemoveMediaFromHistory(vlc_player_t *player, int64_t media_id)
+{
+    vlc_player_assert_locked(player);
+    vlc_medialibrary_t *ml = HistoryBackend(player);
+    if (!ml || media_id <= 0
+        || vlc_ml_media_set_played(ml, media_id, false) != VLC_SUCCESS)
+        return VLC_EGENERIC;
+
+    if (player->input)
+        HistoryInvalidateMediaInput(ml, player->input, media_id);
+    struct vlc_list *lists[] = { &player->mainloop.stop_inputs,
+        &player->mainloop.stopping_inputs, &player->mainloop.joinable_inputs };
+    for (size_t i = 0; i < ARRAY_SIZE(lists); ++i)
+    {
+        struct vlc_player_input *input;
+        vlc_list_foreach(input, lists[i], node)
+            HistoryInvalidateMediaInput(ml, input, media_id);
+    }
+    return VLC_SUCCESS;
+}
+
+void
+vlc_player_input_RestoreMlStates(struct vlc_player_input* input, bool force_pos)
+{
+    vlc_player_t* player = input->player;
+    vlc_player_assert_locked(player);
+
+    if (HistoryExcluded(player, input))
+        return;
+    int restore_pos;
+    if (force_pos)
+        restore_pos = VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS;
+    else
+        restore_pos = var_InheritInteger(input->thread, "restore-playback-pos");
+
+    if (!player->history_policy.save_history || !var_GetBool(input->thread, "save-recentplay")
+        || !player->history_policy.remember_position
+        || input->position_epoch != player->position_epoch
+        || input->history_removed)
+        restore_pos = VLC_PLAYER_RESTORE_PLAYBACK_POS_NEVER;
+
+    const bool restore_states = var_InheritBool(input->thread, "restore-playback-states");
+
+    if ((!player->history_policy.save_history || !var_GetBool(input->thread, "save-recentplay"))
+        && !restore_states)
+        return;
+    if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_NEVER && !restore_states)
+        return;
+    vlc_medialibrary_t* ml = HistoryBackend(player);
+    if (!ml)
+        return;
+    input_item_t* item = input_GetItem(input->thread);
+    vlc_ml_media_t* media = vlc_ml_get_media_by_mrl( ml, item->psz_uri);
+    if (!media)
+        return;
+    vlc_ml_release(&input->ml.states);
+    memset(&input->ml.states, 0, sizeof(input->ml.states));
+    input->ml.states.current_title = -1;
+    if (media->i_type != VLC_ML_MEDIA_TYPE_VIDEO ||
+        vlc_ml_media_get_all_playback_pref(ml, media->i_id,
+                                           &input->ml.states) != VLC_SUCCESS)
+    {
+        vlc_ml_release(media);
+        return;
+    }
+
+    input->ml.restore = (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS
+                          && media->f_progress > .0f) ?
+                            VLC_RESTOREPOINT_TITLE : VLC_RESTOREPOINT_NONE;
+    input->ml.restore_states = restore_states;
+    if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS && media->f_progress > .0f)
+        input->ml.pos = media->f_progress;
+    /* If we are aiming at a specific title, wait for it to be added, and
+     * only then select it & set the position.
+     * If we're not aiming at a specific title, just set the position now.
+     */
+    if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ALWAYS &&
+            input->ml.states.current_title == -1 &&
+            media->f_progress > .0f)
+        input_SetMediaPosition(input->thread, media->f_progress, false);
+    else if (restore_pos == VLC_PLAYER_RESTORE_PLAYBACK_POS_ASK &&
+             media->f_progress > .0f)
+    {
+        input->ml.delay_restore = true;
+        input->ml.pos = media->f_progress;
+    }
+
+    vlc_ml_release(media);
+
+    if (!restore_states)
+        return;
+    if (input->ml.states.rate != .0f)
+        vlc_player_ChangeRate(player, input->ml.states.rate);
+
+
+    const char *video_track_ids = input->ml.states.current_video_track;
+    const char *audio_track_ids = input->ml.states.current_audio_track;
+    const char *subtitle_track_ids = input->ml.states.current_subtitle_track;
+
+    if (video_track_ids)
+        vlc_player_input_SelectTracksByStringIds(input, VIDEO_ES,
+                                                 video_track_ids);
+    if (audio_track_ids)
+        vlc_player_input_SelectTracksByStringIds(input, AUDIO_ES,
+                                                 audio_track_ids);
+    if (subtitle_track_ids)
+        vlc_player_input_SelectTracksByStringIds(input, SPU_ES,
+                                                 subtitle_track_ids);
+
+    vout_thread_t* vout = vlc_player_vout_Hold(player);
+    if (vout != NULL)
+    {
+        if (input->ml.states.zoom >= .0f)
+            var_SetFloat(vout, "zoom", input->ml.states.zoom);
+        else
+            var_SetFloat(vout, "zoom", 1.f);
+        if (input->ml.states.aspect_ratio)
+            var_SetString(vout, "aspect-ratio", input->ml.states.aspect_ratio);
+        else
+            var_SetString(vout, "aspect-ratio", NULL);
+        if (input->ml.states.deinterlace)
+        {
+            var_SetString(vout, "deinterlace-mode", input->ml.states.deinterlace);
+            var_SetInteger(vout, "deinterlace", 1);
+        }
+        else
+        {
+            var_SetString(vout, "deinterlace-mode", NULL);
+            var_SetInteger(vout, "deinterlace", 0);
+        }
+        if (input->ml.states.video_filter)
+            var_SetString(vout, "video-filter", input->ml.states.video_filter);
+        else
+            var_SetString(vout, "video-filter", NULL);
+        vout_Release(vout);
+    }
+}
+
+static bool
+vlc_player_UpdateMediaType(const struct vlc_player_input* input,
+                           vlc_medialibrary_t* ml, vlc_ml_media_t* media)
+{
+    assert(media->i_type == VLC_ML_MEDIA_TYPE_UNKNOWN);
+    vlc_ml_media_type_t media_type;
+    if (input->ml.has_video_tracks)
+        media_type = VLC_ML_MEDIA_TYPE_VIDEO;
+    else if (input->ml.has_audio_tracks)
+        media_type = VLC_ML_MEDIA_TYPE_AUDIO;
+    else
+        return false;
+    if (vlc_ml_media_set_type(ml, media->i_id, media_type) != VLC_SUCCESS)
+        return false;
+    media->i_type = media_type;
+    return true;
+}
+
+static void
+vlc_player_CompareAssignState(char **target_ptr, char **input_ptr)
+{
+    /* We only want to save these states if they are different, and not the
+     * default values (NULL), so this means that either one is NULL and the
+     * other isn't, or they are both non null and differ lexicographically */
+
+    char *target = *target_ptr;
+    char *input = *input_ptr;
+    if ( ( input != NULL && target != NULL &&
+           strcmp(input, target ) ) ||
+         ( input == NULL && target != NULL ) ||
+         ( input != NULL && target == NULL ) )
+    {
+        free(target);
+        *target_ptr = input;
+        *input_ptr = NULL;
+    }
+    else
+    {
+        free(target);
+        *target_ptr = NULL;
+    }
+}
+
+void
+vlc_player_UpdateMLStates(vlc_player_t *player, struct vlc_player_input* input)
+{
+    /* Do not save states for any secondary player. If this player's parent is
+       the main vlc object, then it's the main player */
+    if (player->obj.priv->parent != (vlc_object_t*)vlc_object_instance(player))
+        return;
+
+    vlc_player_assert_locked(player);
+    if (!player->history_policy.save_history
+        || input->history_epoch != player->history_epoch
+        || !var_GetBool(input->thread, "save-recentplay")
+        || HistoryExcluded(player, input))
+        return;
+
+    vlc_medialibrary_t* ml = HistoryBackend(player);
+    if (!ml)
+        return;
+    input_item_t* item = input_GetItem(input->thread);
+    if (!item)
+        return;
+    vlc_ml_media_t* media = vlc_ml_get_media_by_mrl(ml, item->psz_uri);
+    if (!media)
+    {
+        /* We don't know this media yet, let's add it as an external media so
+         * we can still store its playback preferences
+         */
+        media = vlc_ml_new_external_media(ml, item->psz_uri);
+        if (media == NULL)
+            return;
+    }
+
+    if (media->i_type == VLC_ML_MEDIA_TYPE_UNKNOWN)
+    {
+        if (!vlc_player_UpdateMediaType(input, ml, media))
+        {
+            vlc_ml_release( media );
+            return;
+        }
+    }
+    assert(media->i_type != VLC_ML_MEDIA_TYPE_UNKNOWN);
+
+    const bool remember = player->history_policy.remember_position
+        && input->position_epoch == player->position_epoch
+        && !input->history_removed;
+    /* Zero records recent activity without retaining a resume point. It does
+     * not mark the item as completed or increment the play count. */
+    const double position = input->position_before_stop >= 0.
+                          ? input->position_before_stop : input->position;
+    if (!input->history_removed)
+        vlc_ml_media_update_progress(ml, media->i_id, remember ? position : 0.);
+
+
+    /* If the value changed during the playback, update it in the medialibrary.
+     * If not, set each state to their "unset" values, so that they aren't saved
+     * in database */
+    if (remember && ((input->ml.states.current_title == -1 && input->title_selected != 0) ||
+         (input->ml.states.current_title != -1 &&
+          input->ml.states.current_title != (int)input->title_selected)))
+    {
+        input->ml.states.current_title = input->title_selected;
+    }
+    else
+        input->ml.states.current_title = -1;
+
+    /* We use .0f to signal an unsaved rate. We want to save it to the ml if it
+     * changed, and if it's not the player's default value when the value was
+     * never saved in the ML */
+    if (input->rate != input->ml.states.rate &&
+            (input->rate != 1.f || input->ml.states.rate != .0f))
+        input->ml.states.rate = input->rate;
+    else
+        input->ml.states.rate = -1.f;
+
+    struct vlc_player_track_priv* t;
+    vout_thread_t* vout = NULL;
+
+    vlc_vector_foreach(t, &input->video_track_vector)
+    {
+        if (!t->t.selected)
+            continue;
+        enum vlc_vout_order order;
+        vout = vlc_player_GetEsIdVout(player, t->t.es_id, &order);
+        if (vout != NULL && order == VLC_VOUT_ORDER_PRIMARY)
+            break;
+        vout = NULL;
+    }
+    if (vout != NULL)
+    {
+        char* aspect_ratio = var_GetNonEmptyString(vout, "aspect-ratio");
+        char* crop = var_GetNonEmptyString(vout, "crop");
+        char* deinterlace = var_GetNonEmptyString(vout, "deinterlace-mode");
+        char* video_filter = var_GetNonEmptyString(vout, "video-filter");
+
+        vlc_player_CompareAssignState(&input->ml.states.aspect_ratio, &aspect_ratio);
+        vlc_player_CompareAssignState(&input->ml.states.crop, &crop);
+        vlc_player_CompareAssignState(&input->ml.states.deinterlace, &deinterlace);
+        vlc_player_CompareAssignState(&input->ml.states.video_filter, &video_filter);
+
+        free(video_filter);
+        free(deinterlace);
+        free(crop);
+        free(aspect_ratio);
+
+        if (input->ml.states.deinterlace != NULL &&
+            !strcmp(input->ml.states.deinterlace, "auto"))
+        {
+            free(input->ml.states.deinterlace);
+            input->ml.states.deinterlace = NULL;
+        }
+
+        float zoom = var_GetFloat(vout, "zoom");
+        if (zoom != input->ml.states.zoom &&
+            (zoom != 1.f && input->ml.states.zoom >= .0f))
+            input->ml.states.zoom = zoom;
+        else
+            input->ml.states.zoom = -1.f;
+    }
+
+    char *video_track_ids =
+        vlc_player_input_GetSelectedTrackStringIds(input, VIDEO_ES);
+    char *audio_track_ids =
+        vlc_player_input_GetSelectedTrackStringIds(input, AUDIO_ES);
+    char *subtitle_track_ids =
+        vlc_player_input_GetSelectedTrackStringIds(input, SPU_ES);
+
+    vlc_player_CompareAssignState(&input->ml.states.current_video_track, &video_track_ids);
+    vlc_player_CompareAssignState(&input->ml.states.current_audio_track, &audio_track_ids);
+    vlc_player_CompareAssignState(&input->ml.states.current_subtitle_track, &subtitle_track_ids);
+
+    free(video_track_ids);
+    free(audio_track_ids);
+    free(subtitle_track_ids);
+
+    vlc_ml_media_set_all_playback_states(ml, media->i_id, &input->ml.states);
+
+    vlc_ml_release(media);
+}
+
+void
+vlc_player_RestorePlaybackPos(vlc_player_t *player)
+{
+    vlc_player_assert_locked(player);
+    if (player->input)
+        vlc_player_input_RestoreMlStates(player->input, true);
+}

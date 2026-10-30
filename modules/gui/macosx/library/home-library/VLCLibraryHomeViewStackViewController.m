@@ -29,10 +29,12 @@
 #import "library/VLCLibraryCollectionViewSupplementaryElementView.h"
 #import "library/VLCLibraryController.h"
 #import "library/VLCLibraryHeroView.h"
+#import "library/VLCLibraryItemPresentingCapable.h"
 #import "library/VLCLibraryModel.h"
 
 #import "library/home-library/VLCLibraryHomeViewActionsView.h"
 #import "library/home-library/VLCLibraryHomeViewAudioCarouselContainerView.h"
+#import "library/home-library/VLCLibraryHomeViewBrowseCarouselContainerView.h"
 #import "library/home-library/VLCLibraryHomeViewContainerView.h"
 #import "library/home-library/VLCLibraryHomeViewVideoCarouselContainerView.h"
 #import "library/home-library/VLCLibraryHomeViewVideoContainerView.h"
@@ -49,7 +51,7 @@
 @interface VLCLibraryHomeViewStackViewController()
 {
     NSMutableArray<NSView<VLCLibraryHomeViewContainerView> *> *_containers;
-    NSUInteger _leadingContainerCount;
+    NSArray<NSView *> *_leadingViews;
 }
 @end
 
@@ -98,7 +100,6 @@
                              object:nil];
 
     _containers = [NSMutableArray array];
-    _leadingContainerCount = 0;
     [self generateCustomContainers];
     [self generateGenericCollectionViewContainers];
 }
@@ -107,17 +108,21 @@
 {
     _actionsView = [VLCLibraryHomeViewActionsView fromNibWithOwner:self];
     _heroView = [VLCLibraryHeroView fromNibWithOwner:self];
-    _leadingContainerCount += 2;
+    _leadingViews = @[self.actionsView, self.heroView];
 
     [self addCustomContainerViews];
-    [self audioRecentsChanged:nil];
     [self recentsChanged:nil];
+    [self audioRecentsChanged:nil];
+    _browseView = [[VLCLibraryHomeViewBrowseCarouselContainerView alloc] init];
+    [_containers addObject:self.browseView];
+    [self addContainerView:self.browseView toStackView:self.collectionsStackView];
 }
 
 - (void)addCustomContainerViews
 {
-    [self addView:self.actionsView toStackView:self.collectionsStackView];
-    [self addView:self.heroView toStackView:self.collectionsStackView];
+    for (NSView * const view in _leadingViews) {
+        [self addView:view toStackView:self.collectionsStackView];
+    }
     [self.heroView setOptimalRepresentedItem];
 }
 
@@ -133,21 +138,22 @@
     return model.numberOfRecentAudioMedia > 0;
 }
 
-- (void)prependRecentItemsContainer:(NSView<VLCLibraryHomeViewContainerView> *)container
+- (void)insertRecentItemsContainer:(NSView<VLCLibraryHomeViewContainerView> *)container
+                          atIndex:(NSUInteger)index
 {
-    [self.collectionsStackView insertArrangedSubview:container atIndex:_leadingContainerCount];
+    // Actions and Hero precede the ordered video, music, and Browse rows.
+    [self.collectionsStackView insertArrangedSubview:container atIndex:_leadingViews.count + index];
     [self setupContainerView:container withStackView:_collectionsStackView];
-    [_containers insertObject:container atIndex:0];
-    ++_leadingContainerCount;
+    [_containers insertObject:container atIndex:index];
 }
 
 - (void)removeRecentItemsContainer:(NSView<VLCLibraryHomeViewContainerView> *)container
 {
     [self.collectionsStackView removeConstraints:container.constraintsWithSuperview];
     [self.collectionsStackView removeArrangedSubview:container];
+    [container removeFromSuperview];
+    [container disconnect];
     [_containers removeObject:container];
-    container = nil; // Important to detect whether the view is presented or not
-    --_leadingContainerCount;
 }
 
 - (void)recentsChanged:(NSNotification *)notification
@@ -160,9 +166,10 @@
     } else if (shouldShowRecentsContainer) {
         _recentsView = [[VLCLibraryHomeViewVideoCarouselContainerView alloc] init];
         self.recentsView.videoGroup = VLCMediaLibraryParentGroupTypeRecentVideos;
-        [self prependRecentItemsContainer:self.recentsView];
+        [self insertRecentItemsContainer:self.recentsView atIndex:0];
     } else {
         [self removeRecentItemsContainer:_recentsView];
+        _recentsView = nil;
     }
 }
 
@@ -176,9 +183,10 @@
     } else if (shouldShowAudioRecentsContainer) {
         _audioRecentsView = [[VLCLibraryHomeViewAudioCarouselContainerView alloc] init];
         self.audioRecentsView.audioLibrarySegment = VLCAudioLibraryRecentsSegment;
-        [self prependRecentItemsContainer:self.audioRecentsView];
+        [self insertRecentItemsContainer:self.audioRecentsView atIndex:self.recentsView != nil ? 1 : 0];
     } else {
         [self removeRecentItemsContainer:_audioRecentsView];
+        _audioRecentsView = nil;
     }
 }
 
@@ -201,7 +209,7 @@
         for (NSView<VLCLibraryHomeViewContainerView> * const containerView in self->_containers) {
             if ([containerView isKindOfClass:VLCLibraryHomeViewBaseCarouselContainerView.class]) {
                 VLCLibraryHomeViewBaseCarouselContainerView * const baseContainerView = (VLCLibraryHomeViewBaseCarouselContainerView *)containerView;
-                [baseContainerView.dataSource reloadData];
+                [baseContainerView reloadData];
             }
         }
     });
@@ -390,7 +398,8 @@
     }
 
     // TODO: Make this work agnostically of video type
-    NSView<VLCLibraryHomeViewVideoContainerView> * const containerView = (NSView<VLCLibraryHomeViewVideoContainerView> *)[self containerViewForGroup:VLCMediaLibraryParentGroupTypeVideoLibrary];
+    NSView<VLCLibraryHomeViewVideoContainerView, VLCLibraryItemPresentingCapable> * const containerView =
+        (NSView<VLCLibraryHomeViewVideoContainerView, VLCLibraryItemPresentingCapable> *)[self containerViewForGroup:VLCMediaLibraryParentGroupTypeVideoLibrary];
     if (containerView == nil) {
         return;
     }

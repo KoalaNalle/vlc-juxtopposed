@@ -1,0 +1,1719 @@
+{
+  "scope": "Generated recorded WVTT paused startup/selection and seek; current Windows 11 Core, software snapshots and one ordinary D3D11 topology",
+  "coreBuild": {
+    "status": "built-not-qualified",
+    "forcedCleanupUsed": false,
+    "candidateSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+    "candidateSize": 15699315,
+    "sharedTreeRestored": true,
+    "changedSharedFiles": [],
+    "sourcesUnchanged": true,
+    "fallbackUnchanged": true,
+    "cFreeAfter": 403582803968
+  },
+  "ordinary": {
+    "gui-r14": {
+      "exitCode": 0,
+      "modules": [
+        "603"
+      ],
+      "preservationPassed": true,
+      "diagnostics": [],
+      "d3d11va": true,
+      "runtimeSha256": {
+        "libvlccore.dll": "4d3952cedf6d6eccc747cf4545d29a7e1283e2968e8e15093c6c754299959d8d",
+        "plugins/gui/libqt_plugin.dll": "7c7db5cb675edc20b3366120dc55282b09d2db2dc731b7c6ed8c1815e0706624",
+        "plugins/codec/libwebvtt_plugin.dll": "38eec724ba220769389ba0aac6fb8f2cd56306f32ccff7dba3763674ce6dba1d"
+      }
+    },
+    "gui-r15": {
+      "exitCode": 0,
+      "modules": [
+        "603"
+      ],
+      "preservationPassed": true,
+      "diagnostics": [],
+      "d3d11va": true,
+      "runtimeSha256": {
+        "libvlccore.dll": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "plugins/gui/libqt_plugin.dll": "7c7db5cb675edc20b3366120dc55282b09d2db2dc731b7c6ed8c1815e0706624",
+        "plugins/codec/libwebvtt_plugin.dll": "38eec724ba220769389ba0aac6fb8f2cd56306f32ccff7dba3763674ce6dba1d"
+      }
+    }
+  },
+  "native": {
+    "paused-selection-r2": [
+      {
+        "case": "start-offset",
+        "passed": false,
+        "checks": {
+          "selectionRendered": false,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4d3952cedf6d6eccc747cf4545d29a7e1283e2968e8e15093c6c754299959d8d",
+        "producerSha256": "a98c69f79f626cbd292e77e65e4870b1afc68165b37ad0784fcbdd83d8b2d20a",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 54,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 54,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 54,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 54,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      }
+    ],
+    "paused-selection-r3": [
+      {
+        "case": "start-offset-1",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "a22a57a877bab2bb83c190b88f09459de82b942cdbde40907dcf19675cf78a12",
+        "producerSha256": "a98c69f79f626cbd292e77e65e4870b1afc68165b37ad0784fcbdd83d8b2d20a",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 24,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "start-offset-2",
+        "passed": false,
+        "checks": {
+          "selectionRendered": false,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "a22a57a877bab2bb83c190b88f09459de82b942cdbde40907dcf19675cf78a12",
+        "producerSha256": "a98c69f79f626cbd292e77e65e4870b1afc68165b37ad0784fcbdd83d8b2d20a",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 20,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 20,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 20,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 20,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1047,
+            "captionPixels": 0
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "start-offset-3",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "a22a57a877bab2bb83c190b88f09459de82b942cdbde40907dcf19675cf78a12",
+        "producerSha256": "a98c69f79f626cbd292e77e65e4870b1afc68165b37ad0784fcbdd83d8b2d20a",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 27,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      }
+    ],
+    "paused-selection-r4": [
+      {
+        "case": "case-1-start-0",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true,
+          "beforeCueIsEmpty": true
+        },
+        "start": 0,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 12000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 12000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 12000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 12000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 12000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "06-explicit-seek-5",
+            "state": 3,
+            "timeUs": 5000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 873,
+            "captionPixels": 0
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 25000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-2-start-12",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 37,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-3-start-12",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 69,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-4-start-12",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 61,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-5-start-12",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 73,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-6-start-12",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-at-file-12-no-track",
+            "state": 3,
+            "timeUs": 19,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-12",
+            "state": 3,
+            "timeUs": 1,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 13000001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      }
+    ],
+    "paused-selection-r5": [
+      {
+        "case": "case-1-start-12.001",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.001,
+        "coreSha256": "4d3952cedf6d6eccc747cf4545d29a7e1283e2968e8e15093c6c754299959d8d",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 14,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 119001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12999001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-2-start-12.019",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.019,
+        "coreSha256": "4d3952cedf6d6eccc747cf4545d29a7e1283e2968e8e15093c6c754299959d8d",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 122,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 21001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 21001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 21001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 101001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12981001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-3-start-12.039",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.039,
+        "coreSha256": "4d3952cedf6d6eccc747cf4545d29a7e1283e2968e8e15093c6c754299959d8d",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 66,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 81001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12961001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      }
+    ],
+    "paused-selection-r6": [
+      {
+        "case": "case-1-start-12.001",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.001,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 20,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 39001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 119001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12999001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-2-start-12.019",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.019,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 19,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 0,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 0,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 0,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1048,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 101001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12981001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      },
+      {
+        "case": "case-3-start-12.039",
+        "passed": true,
+        "checks": {
+          "selectionRendered": true,
+          "selectionHeldFrame": true,
+          "selectionHeldTime": true,
+          "explicitSeekRenders": true,
+          "lateCueRenders": true
+        },
+        "start": 12.039,
+        "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+        "producerSha256": "99938f76ae9faca3fc014eba29244d023fc48b76464cca8cd4be85c90f453d94",
+        "teardownDiagnostics": 1,
+        "observations": [
+          {
+            "step": "01-paused-with-no-track",
+            "state": 3,
+            "timeUs": 14,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": false
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 0
+          },
+          {
+            "step": "02-selected-half-second",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "03-selected-one-more-second",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "04-selected-after-refresh-window",
+            "state": 3,
+            "timeUs": 1001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1049,
+            "captionPixels": 1498
+          },
+          {
+            "step": "05-explicit-seek-file-12.1",
+            "state": 3,
+            "timeUs": 81001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1051,
+            "captionPixels": 1498
+          },
+          {
+            "step": "07-explicit-seek-25",
+            "state": 3,
+            "timeUs": 12961001,
+            "tracks": [
+              {
+                "id": "spu/3",
+                "selected": true
+              }
+            ],
+            "snapshotReturn": 0,
+            "frameMarker": 1373,
+            "captionPixels": 1503
+          }
+        ]
+      }
+    ]
+  },
+  "diagnosticTraces": [
+    {
+      "run": "paused-selection-r3",
+      "case": "start-offset-1",
+      "text": "main debug: subtitle redraw trace ts=1 date=9223372036854775807 seeking=0 offset=12000000 normal=1 pending=0 pos=-1.000000000"
+    },
+    {
+      "run": "paused-selection-r3",
+      "case": "start-offset-2",
+      "text": "main debug: subtitle redraw trace ts=-39999 date=9223372036854775807 seeking=0 offset=12000000 normal=1 pending=0 pos=-1.000000000"
+    },
+    {
+      "run": "paused-selection-r3",
+      "case": "start-offset-3",
+      "text": "main debug: subtitle redraw trace ts=1 date=9223372036854775807 seeking=0 offset=12000000 normal=1 pending=0 pos=-1.000000000"
+    }
+  ],
+  "recordingRegressionCases": 7,
+  "recordingRegressionFailures": 0,
+  "findings": [
+    "Stored R8 cue spans movie time 10.08 through 29.98 seconds after its empty edit.",
+    "Old normalized held video time -39999 was rejected, while time 1 passed; the diagnostic build changed logging only.",
+    "Candidate case start=12.019 retains marker 1048, also observed at file time 12 in the earlier no-offset probe; the picture lies before that start offset and now renders its cue.",
+    "R4 six positive integer-start runs did not by themselves exercise a negative normalized picture.",
+    "R5 fractional old-Core cases all passed and are positive controls, not intended negative controls.",
+    "R14 ordinary held caption stayed missing; R15 renders it with Play shown and visible elapsed zero."
+  ],
+  "limitations": [
+    "Native held-time assertion is within 50000 microseconds; frame markers must match exactly.",
+    "No all-formats, FPS/delay matrix, cue-boundary/tail, broad GPU/DPI, multi-instance or package acceptance.",
+    "Earlier R1 probe sought beyond the start-offset playback interval; that coordinate error is retained locally and not counted as a program failure."
+  ]
+}

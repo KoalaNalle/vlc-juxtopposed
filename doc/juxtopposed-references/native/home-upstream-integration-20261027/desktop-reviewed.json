@@ -1,0 +1,40 @@
+{
+  "redesigned": {
+    "normalExit": true,
+    "runtimeUnchanged": true,
+    "packageUnchanged": true,
+    "fixturesUnchanged": true,
+    "humanConfigUnchanged": true,
+    "producerUnchanged": true,
+    "exitCode": 0,
+    "mode": "redesigned",
+    "autoHidePolicy": 1,
+    "moduleCounts": [
+      "603"
+    ],
+    "diagnostics": [
+      "main error: window closed"
+    ],
+    "review": "The initial strict observer exited 1 for the single window-close callback. src/video_output/video_window.c:vout_display_window_CloseNotify logs that callback at error level. It followed the owned Close click; teardown finished and actual VLC exited 0. The original observer result is preserved; no unexpected diagnostics were accepted.",
+    "scope": "Ordinary desktop journey on generated media; no full design, DPI or accessibility acceptance.",
+    "privateHooks": false
+  },
+  "classic": {
+    "normalExit": true,
+    "runtimeUnchanged": true,
+    "packageUnchanged": true,
+    "fixturesUnchanged": true,
+    "humanConfigUnchanged": true,
+    "producerUnchanged": true,
+    "exitCode": 0,
+    "mode": "classic",
+    "autoHidePolicy": 0,
+    "moduleCounts": [
+      "603"
+    ],
+    "diagnostics": [],
+    "review": "Observer and actual VLC exited 0, with no diagnostics.",
+    "scope": "Ordinary desktop journey on generated media; no full design, DPI or accessibility acceptance.",
+    "privateHooks": false
+  }
+}

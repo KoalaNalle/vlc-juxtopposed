@@ -1,0 +1,21 @@
+--- a/modules/demux/avformat/mux.c
++++ b/modules/demux/avformat/mux.c
+@@ -390,6 +390,7 @@
+ static int MuxBlock( void *opaque, unsigned index, int category,
+                      const block_t *p_data )
+ {
++    (void) category;
+     sout_mux_t *p_mux = opaque;
+     sout_mux_sys_t *p_sys = p_mux->p_sys;
+     int i_stream = (int)index;
+@@ -428,8 +429,8 @@
+     if( p_data->i_dts >= VLC_TICK_0 )
+         pkt->dts = av_rescale_q( p_data->i_dts - VLC_TICK_0,
+                                 VLC_TIME_BASE_Q, p_stream->time_base );
+-    /* Subtitle packet payloads do not carry their display duration. */
+-    if( category == SPU_ES && p_data->i_length > 0 )
++    /* The final packet has no following DTS to infer its duration from. */
++    if( p_data->i_length > 0 )
+         pkt->duration = av_rescale_q( p_data->i_length,
+                                      VLC_TIME_BASE_Q, p_stream->time_base );
+ 

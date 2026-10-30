@@ -1,0 +1,30 @@
+{
+  "basis": "Selected values transcribed from the immutable full runtime receipt. A subset is not a full runtime inventory. The runtime guard in the baseline receipt compared the whole runtime.",
+  "fullRuntimeReceiptSha256": "a1501181a31324e2cb4b91970901c760367dc032a1612a77c6cf46aafaff3409",
+  "sourceSha256": {
+    "modules/demux/avformat/mux.c": "f2a90481441d369949b4132e0ef67614ab462a5b41f61d3542ca2d952a3c372c",
+    "modules/demux/avformat/avformat_mux_queue.h": "37eaa3c00753f5dc34ba43632ceb928492bd04f1277d9a7c125cc5e3893701d2",
+    "modules/codec/Makefile.am": "443574b73e37c3ddec010a388254e6afda128268dd6c04c1009f7d2e0a378772",
+    "test/modules/demux/avformat_mux_queue.c": "34a467dedff11259b4612b52646b2a20cd506f2887e29d9b8fac359658699e2b"
+  },
+  "fixtureSha256": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+  "selectedRuntimeSha256": {
+    "libvlc.dll": "6f68a9e8b51499354e7959d96cff41b661471bfd8308fda1dae3933ad35a7912",
+    "libvlccore.dll": "f8fc980bbe03da57908f79045f266710dd27a16c6ee66b6c45d60cd1f9b93598",
+    "plugins/codec/libavcodec_plugin.dll": "26e1b8cc539ac5299c8e821dfba36f2449e588af5f8582b4a33c7605c0508cce",
+    "plugins/access_output/libaccess_output_file_plugin.dll": "ba5894858e4ffb5014b0a710313375a4bf121f17f217c87dd9b0d51c0a38de89",
+    "plugins/stream_out/libstream_out_standard_plugin.dll": "2dd837e4a21ab0c06a486f01b99deea3c50f130b4373924922b4921a2d41aece",
+    "plugins/access/libfilesystem_plugin.dll": "1dd8cb6fc7b5bcd7c1fa8f0712e1a430968a0095ff16da8a072f3faef60e2988",
+    "plugins/demux/libmkv_plugin.dll": "d9174ad0c4884364b093df9e775acd8866a6e027bb4bd9b7bddb612a304c1b06",
+    "plugins/audio_output/libadummy_plugin.dll": "2b343a21e87e92254210d69c29823f07516df9ca53d2c0398a03b1083ce4e219",
+    "plugins/video_output/libvdummy_plugin.dll": "03ad6be4e614aad362fa14ca7936e4b0a63bebc6e0b2dfb2773159bc65fc2cd6"
+  },
+  "observedR5Modules": {
+    "soutMux": "avcodec (avformat Matroska)",
+    "soutAccess": "file (file and fd destinations)",
+    "soutOutput": "stream_out_standard",
+    "sourceAccess": "filesystem",
+    "demux": "mkv",
+    "audioOutput": "adummy"
+  }
+}

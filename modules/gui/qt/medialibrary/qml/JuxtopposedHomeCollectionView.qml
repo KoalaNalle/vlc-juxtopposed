@@ -20,12 +20,14 @@ FocusScope {
     property var entries: null
     property bool gridMode: true
     property bool loading: false
+    property bool historyActionsAvailable: false
     property string emptyText: qsTr("No items yet")
     property string errorText: ""
     property color accentColor: JuxtopposedPalette.color("#D37918")
     property color surfaceColor: JuxtopposedPalette.color("#0F0F0F")
     readonly property int count: view.count
     signal activated(var entry, string kind, int reason)
+    signal contextMenuRequested(var entry, point position)
     signal retryRequested()
     activeFocusOnTab: true
     Rectangle { anchors.fill: parent; z: -1; color: root.surfaceColor }
@@ -68,6 +70,7 @@ FocusScope {
             readonly property var row: model.modelData ?? model
             objectName: "homeCollectionItem" + index
             entry: row
+            contextMenuAvailable: root.historyActionsAvailable
             detailText: root.showLocation ? String(row?.url || "") : ""
             kind: root.kind === "media" ? (row?.isVideo ? "video" : "audio") : root.kind
             uiScale: root.uiScale
@@ -82,7 +85,8 @@ FocusScope {
             accentColor: root.accentColor
             Keys.forwardTo: [view]
             onActiveFocusChanged: if (activeFocus) view.currentIndex = index
-            onClicked: root.activated(row, kind, focusReason)
+            onActivated: reason => root.activated(row, kind, reason)
+            onContextMenuRequested: position => root.contextMenuRequested(row, position)
         }
     }
     Column {

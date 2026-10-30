@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestCase name="TestPlayerSubtitleDelay">
+  <Environment>
+    <QtVersion>6.8.3</QtVersion>
+    <QtBuild>Qt 6.8.3 (x86_64&#x002D;little_endian&#x002D;llp64 static release build; by GCC 13&#x002D;posix)</QtBuild>
+    <QTestVersion>6.8.3</QTestVersion>
+  </Environment>
+  <TestFunction name="initTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="854.372"/>
+  </TestFunction>
+  <TestFunction name="largeTrackDelaysKeepHeldFrameAndResume">
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-fps-50 marker=300 primaryCaption=2770 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-primary-5000 marker=300 primaryCaption=2486 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-secondary-minus9000 marker=300 primaryCaption=2486 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-primary-reset marker=300 primaryCaption=2770 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-secondary-reset marker=300 primaryCaption=2770 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay large-fps-reset marker=300 primaryCaption=2486 time=12000001]]></Description>
+  </Message>
+  <Message type="qinfo" file="" line="0">
+    <DataTag><![CDATA[own-secondary]]></DataTag>
+    <Description><![CDATA[Large delay resumed marker=353 time=14146319]]></Description>
+  </Message>
+    <Incident type="pass" file="" line="0">
+      <DataTag><![CDATA[own-secondary]]></DataTag>
+    </Incident>
+    <Duration msecs="7866.89"/>
+  </TestFunction>
+  <TestFunction name="cleanupTestCase">
+    <Incident type="pass" file="" line="0" />
+    <Duration msecs="81.4728"/>
+  </TestFunction>
+  <Duration msecs="8804.29"/>
+</TestCase>

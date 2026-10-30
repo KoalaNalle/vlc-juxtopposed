@@ -1,0 +1,45 @@
+{
+  "scope": "Unmodified production HomePage, HomeHistoryPage, PageExt, dashboard, collection and card with supplied native-boundary modules; offscreen software rendering only.",
+  "notExecuted": [
+    "native medialibrary query/mutation",
+    "native menu/dialog presentation",
+    "disk persistence",
+    "ordinary desktop"
+  ],
+  "searchScope": "QML confirmation explicitly includes hidden items and invokes the selected model without a search argument. Native category-wide selection remains a separate backend/native requirement.",
+  "checks": [
+    "Home continueWatching: unavailable removal, busy recheck, clear cancel/confirm and category target",
+    "Home watchAgain: unavailable removal, busy recheck, clear cancel/confirm and category target",
+    "Home Pin/Remove indices follow the actual available menu entries",
+    "Continue Watching full page: right-click/Shift+F10, override, cancel/confirm, busy/error, resume policy",
+    "Watch Again full page: right-click/Shift+F10, override, cancel/confirm, busy/error, resume policy",
+    "Listen Again retains global header menu and does not expose video-history removal"
+  ],
+  "productionSha256": {
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml": "e20fa28ebb1b761fb78a3028aac3157f794ba110bee82cbe526ea6f44c4a5a7c",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml": "8de1273d45fc648ccb600d23d91fe7e437810fd880c09b83a9cfd3203769490c",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml": "e6f0ea98ffbb208fc499249e0be2d31b921448197d23e8ea3f692a78c94a79fd",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCollectionView.qml": "dafa5c5267be60c4d0edc4b27cb3e020b2f8f5ecc4d76b95816c0470f98a3c96",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCard.qml": "cad2aa9a2f020fabcf7c0c56a8c6c02ff22137bf02f78efdc00d3433a6a95971",
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeSorting.js": "f6a4aabec95247a9312e31113b9333a72c0f888660e9af4882c1907127877a36",
+    "modules/gui/qt/widgets/qml/PageExt.qml": "f2f1f7ee99399bc64e7a8e2a0182752ac6eef03790c9321f5b82c2d3fa4179f5",
+    "modules/gui/qt/widgets/qml/ImageExt.qml": "4a766a3835cd176b25e0dcaecad8b5a0d4872d955a6e9f7bd1af4f5c4727ae33",
+    "modules/gui/qt/style/JuxtopposedPalette.qml": "2bc270d19be0491f71af9c23ea2c0b233efb6f0d1befd322a3f3be1085ed23a1",
+    "modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf": "4989b125924991b90d05b2d16e0e388c48f7d5bb8b30539bbf9c755278d0ccaf",
+    "modules/gui/qt/tests/test_juxtopposed_home_history_actions.py": "40feb4145c10d4374cc3173fa1b8de7c657df9728d3116880dc2e7856057ee82"
+  },
+  "sourceGuards": {
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomePage.qml": true,
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeHistoryPage.qml": true,
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeDashboard.qml": true,
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCollectionView.qml": true,
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeCard.qml": true,
+    "modules/gui/qt/medialibrary/qml/JuxtopposedHomeSorting.js": true,
+    "modules/gui/qt/widgets/qml/PageExt.qml": true,
+    "modules/gui/qt/widgets/qml/ImageExt.qml": true,
+    "modules/gui/qt/style/JuxtopposedPalette.qml": true,
+    "modules/gui/qt/pixmaps/juxtopposed/InterVariable.ttf": true,
+    "modules/gui/qt/tests/test_juxtopposed_home_history_actions.py": true
+  },
+  "qmlWarnings": []
+}

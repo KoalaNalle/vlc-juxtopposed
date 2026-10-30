@@ -16,9 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 import QtQuick
+import QtQuick.Window
 
 import VLC.MainInterface
 import VLC.Dialogs
+import VLC.Player
 
 Item {
     id: root
@@ -48,7 +50,21 @@ Item {
 
     ShortcutExt{ sequence:"F1"; onActivated: DialogsProvider.helpDialog() }
     ShortcutExt{ sequence:"F10"; onActivated: MainCtx.toggleToolbarMenu() }
-    ShortcutExt{ sequence:"F11"; onActivated: MainCtx.toggleInterfaceFullScreen() }
+    ShortcutExt {
+        sequence: "F11"
+        onActivated: {
+            // Match the redesigned video strip when entering or leaving
+            // embedded player fullscreen; Home still owns its own entry.
+            // A separate interface hold always follows the interface route.
+            if (Qt.platform.os === "windows" && MainCtx.juxtopposedControls && MainCtx.hasEmbededVideo
+                && Player.hasVideoOutput && !MainCtx.interfaceFullscreenHeld()
+                && (Player.fullscreen || (MainCtx.playerView
+                    && MainCtx.intfMainWindow.visibility !== Window.FullScreen)))
+                Player.toggleFullscreen()
+            else
+                MainCtx.toggleInterfaceFullScreen()
+        }
+    }
     ShortcutExt{ sequence:"Ctrl+H"; onActivated: MainCtx.minimalView = !MainCtx.minimalView; }
 
     ShortcutExt{ sequences: [StandardKey.ZoomIn, "Ctrl+="]; onActivated: MainCtx.incrementIntfUserScaleFactor(true) }

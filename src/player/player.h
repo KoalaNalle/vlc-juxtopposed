@@ -73,6 +73,8 @@ struct vlc_player_input
     double position;
     /* Timer position captured before detaching this input. */
     double position_before_stop;
+    /* Final source position after drained EOF; invalidated by a new seek. */
+    double eof_position;
     vlc_tick_t time;
     vlc_tick_t normal_time;
 
@@ -138,6 +140,11 @@ struct vlc_player_input
     uint64_t position_epoch;
     /* Under player->lock; a current-input retry, never a saved timestamp. */
     vlc_tick_t subtitle_refresh_deadline;
+    /* Scoped history removal keeps pending non-history playback preferences. */
+    bool history_removed;
+    /* Exact media-relative picture target while our paused redraw is seeking.
+     * It can precede the visible origin when the start offset retains preroll. */
+    vlc_tick_t subtitle_refresh_target;
 };
 
 struct vlc_player_listener_id
