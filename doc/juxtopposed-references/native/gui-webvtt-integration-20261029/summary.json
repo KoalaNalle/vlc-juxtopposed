@@ -1,0 +1,456 @@
+{
+  "utc": "2026-10-29T13:57:08.988842+00:00",
+  "scope": "New ordinary GUI and WebVTT integration only; no complete beta or final package claim",
+  "native": [
+    {
+      "variant": "candidate",
+      "case": "held",
+      "exitCode": 0,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "associatedFpsRetimesHeldCaption",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": true,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {
+        "live-0.000.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "85ce5636bbd3cb79350cc7bbd7c8a45ef0d1741ef3ee64b8e3d0f42986ab8132"
+        },
+        "live-23.976.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "0794ca675ba9ffab2078b2251985558833cda2ae5f3496dd206fe25298c24f00"
+        },
+        "live-29.970.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "e89ca9bc2867953f02bbdb8ebe4a63b98199ddd6ea16d813bcc73a708635b118"
+        },
+        "live-50.000.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1795,
+          "sha256": "b30b9cb0bb8533bda64843a98bb693a95a7bf383a6e206f99c2d53d25cf0556d"
+        },
+        "normal-first-reference.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "72840260cbf1c350a2419c93a00fd5533cb8e0eb4c63010d826fa3b2a8973187"
+        },
+        "normal-middle-reference.png": {
+          "frameMarker": 600,
+          "bottomBrightPixels": 1795,
+          "sha256": "60e221bb28c9b767ea62b71e15374f90e13198af731dd388e79660ce2bc34240"
+        },
+        "reset-after-fps-seek.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "1f34c8ba22a9b07e4f0337c735a26bc6b7c0610a8d55f79f6ddbf6abb0f8d148"
+        },
+        "seek-with-fps-50.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1795,
+          "sha256": "1751ba15d4f5dd949bcabcae2b38f24735844f6f378921c5426804ba5263ddea"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "case": "playing",
+      "exitCode": 0,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "firstDefaultFpsChangeRetimesPlayingCaption",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": true,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {
+        "fresh-first-playing-fps50.png": {
+          "frameMarker": 322,
+          "bottomBrightPixels": 1795,
+          "sha256": "f5e5f593aa06c26c37487abebe8b21a402f3592ad3bf521ea90264e27ce6b411"
+        },
+        "fresh-fps-first-reference.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1620,
+          "sha256": "8758572b3196ab0ea642896a87912bf538e6cf7d425e48423db7c91ae5af65c4"
+        },
+        "fresh-fps-middle-reference.png": {
+          "frameMarker": 600,
+          "bottomBrightPixels": 1795,
+          "sha256": "ef2a5edfb94932c572cfbdcbfd71f5e55dbe26d7dfe523ed4ba57eac592451cd"
+        }
+      }
+    },
+    {
+      "variant": "candidate",
+      "case": "inherited",
+      "exitCode": 0,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "inheritedFpsDisplaysFirstAssociatedCue",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": true,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {
+        "inherited-fps-default-reference.png": {
+          "frameMarker": 600,
+          "bottomBrightPixels": 1795,
+          "sha256": "e8b043c4a5ed8b5884b0191fd422864eb740dd3b1b119499c4bc305e0932fece"
+        },
+        "inherited-fps-first-associated-cue.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 1795,
+          "sha256": "903f78a64ace1f3abe86c9c4a7b8fab87b580259c04dc2b701dd3d6f75097d24"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "case": "held",
+      "exitCode": 1,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "name": "associatedFpsRetimesHeldCaption",
+          "incidents": [
+            {
+              "type": "fail",
+              "description": "'firstMask.count(char(1)) > 100' returned FALSE. ()"
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": false,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {
+        "normal-first-reference.png": {
+          "frameMarker": 300,
+          "bottomBrightPixels": 0,
+          "sha256": "39ac7a319689e35b1b479cc7df51a97bd3fb59c2cff4d34e70ad2bdf693cbdee"
+        },
+        "normal-middle-reference.png": {
+          "frameMarker": 600,
+          "bottomBrightPixels": 1795,
+          "sha256": "6c64e248e1655646993a3cf98ef3b6341445acdbf55e5eb0a7b9deafa5d90521"
+        }
+      }
+    },
+    {
+      "variant": "baseline",
+      "case": "playing",
+      "exitCode": 1,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "fail",
+              "description": "Compared values are not the same\n   Actual   (select(m_first.get(), m_second.get())): 4294967295\n   Expected (2u)                                   : 2"
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": false,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {}
+    },
+    {
+      "variant": "baseline",
+      "case": "inherited",
+      "exitCode": 1,
+      "functions": [
+        {
+          "name": "initTestCase",
+          "incidents": [
+            {
+              "type": "fail",
+              "description": "Compared values are not the same\n   Actual   (select(m_first.get(), m_second.get())): 4294967295\n   Expected (2u)                                   : 2"
+            }
+          ]
+        },
+        {
+          "name": "cleanupTestCase",
+          "incidents": [
+            {
+              "type": "pass",
+              "description": ""
+            }
+          ]
+        }
+      ],
+      "testPassed": false,
+      "allPreservationGuards": true,
+      "actualWebvttDemuxAndDecoderSelected": true,
+      "expectedFpsNegativeControlQualified": false,
+      "diagnostics": [
+        "Window-close notification during native harness teardown; observed in both variants"
+      ],
+      "fixtures": {
+        "duration-cues.srt": "47b6e8859d57d5c309c3a03b07070fe93332d88c93bb777141650085781ddcf6",
+        "frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+        "subtitle-style.vtt": "d11c6d7c09dc75e66e2759469899614fb7185fb6d9dfc4f7a6574a6e280743a9"
+      },
+      "snapshots": {}
+    }
+  ],
+  "ordinary": [
+    {
+      "run": "r6",
+      "vlcExitCode": 0,
+      "preservationGuards": {
+        "sourcesUnchanged": true,
+        "runtimeUnchanged": true,
+        "fallbackBytesUnchanged": true,
+        "priorProfileUnchanged": true,
+        "inputsUnchanged": true,
+        "humanConfigUnchanged": true
+      },
+      "moduleCounts": [
+        "603"
+      ],
+      "diagnostics": [],
+      "interpretation": "No detected error diagnostics"
+    },
+    {
+      "run": "r7",
+      "vlcExitCode": 0,
+      "preservationGuards": {
+        "fixturesUnchanged": true,
+        "sourcesUnchanged": true,
+        "runtimeUnchanged": true,
+        "fallbackBytesUnchanged": true,
+        "priorProfileUnchanged": true,
+        "inputsUnchanged": true,
+        "humanConfigUnchanged": true
+      },
+      "moduleCounts": [
+        "603"
+      ],
+      "diagnostics": [],
+      "interpretation": "No detected error diagnostics"
+    },
+    {
+      "run": "r8",
+      "vlcExitCode": 0,
+      "preservationGuards": {
+        "fixturesUnchanged": true,
+        "sourcesUnchanged": true,
+        "runtimeUnchanged": true,
+        "fallbackBytesUnchanged": true,
+        "priorProfileUnchanged": true,
+        "inputsUnchanged": true,
+        "humanConfigUnchanged": true
+      },
+      "moduleCounts": [
+        "603"
+      ],
+      "diagnostics": [
+        "main error: cannot add this stream",
+        "main error: cannot add this stream"
+      ],
+      "interpretation": "Two AVI format-probe rejections before successful MP4 output"
+    }
+  ],
+  "recording": {
+    "bytes": 484134,
+    "sha256": "9fabdf4bea090ae9cff35799c80a286717a7ae72d8ee3820bda3ccb88ef95a56",
+    "probe": {
+      "programs": [],
+      "streams": [
+        {
+          "index": 0,
+          "codec_type": "data",
+          "codec_tag_string": "wvtt",
+          "duration": "19.900000"
+        },
+        {
+          "index": 1,
+          "codec_name": "aac",
+          "codec_type": "audio",
+          "codec_tag_string": "mp4a",
+          "duration": "30.080000",
+          "nb_read_frames": "1410"
+        },
+        {
+          "index": 2,
+          "codec_name": "h264",
+          "codec_type": "video",
+          "codec_tag_string": "avc1",
+          "duration": "29.960000",
+          "nb_read_frames": "749"
+        }
+      ],
+      "format": {
+        "duration": "30.090813",
+        "size": "484134"
+      }
+    },
+    "avDecodeExitCode": 0,
+    "avDecodeErrors": [],
+    "subtitlePlaybackQualified": false,
+    "scope": "This manually started output decodes A/V; no exact tail, full input, subtitle playback, or manual Record-off acceptance"
+  },
+  "ordinaryFpsObservations": "Playback-settings 50 FPS changed held first cue to middle; synchronization Reset restored normal timing and reflected 0 FPS back in playback settings; generated clip had start-time=12, so displayed elapsed time is relative to that start",
+  "recordObservations": "Checked state appeared after enabling; native Stop returned Home and disabled/cleared the action. Manual off while repeat was active did not produce a confirmed clear state; keep open.",
+  "openInteraction": "PlaybackSettingsMenu lacks modal: true; observed outside dismissal also toggling video underneath. Needs controlled before/after qualification.",
+  "nativeBaselineLimit": "All original-plugin runs failed before the intended FPS-specific assertion. Held failed a missing reference caption; playing/inherited failed initial track-role setup. None qualifies the runner's intended FPS negative control.",
+  "inputs": {
+    "modules\\gui\\qt\\menus\\menus.cpp": "dccea714c014175b7a47e6950298e570ce79ecbd3b3c8393117e4c7be7b33d15",
+    "modules\\gui\\qt\\medialibrary\\mlrecentvideomodel.cpp": "cc7ede0057e3e8722a26dcfdb6c28f5a0f77ea8de9550c3c6825325db532d4b9",
+    "modules\\demux\\webvtt.c": "433da57aa248b6be9b7bb65a4ddedd6c940eb1fb4f3fd3c9c6b14c25674df4e6",
+    "modules\\gui\\qt\\tests\\test_player_subtitle_delay.cpp": "80838e7b8198e5cd4f92d7b400016e536ed6d08c6e5820e2a10d5e8d7439bf65"
+  }
+}

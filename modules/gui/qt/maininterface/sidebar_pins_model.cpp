@@ -125,6 +125,22 @@ void SidebarPinsModel::reloadStore()
     if (!m_store.reload(error)) { fail(error, [this] { reloadStore(); }); return; }
     beginResetModel(); m_rows = m_store.pins(); endResetModel(); emit countChanged(); refresh();
 }
+void SidebarPinsModel::retryEdit(std::function<void()> operation)
+{
+    if (m_store.needsReload()) {
+        QString error;
+        if (!m_store.reload(error)) {
+            fail(error, [this, operation] { retryEdit(operation); });
+            return;
+        }
+        // A peer may have added, removed or reordered rows. Publish the fresh
+        // catalog before replaying the pending key-based operation.
+        cancelActivation();
+        beginResetModel(); m_rows = m_store.pins(); endResetModel();
+        emit countChanged(); refresh();
+    }
+    operation();
+}
 int SidebarPinsModel::rowCount(const QModelIndex &parent) const { return parent.isValid() ? 0 : count(); }
 bool SidebarPinsModel::available(const SidebarPin &pin) const
 { return m_available.value(pin.key, !collection(pin) || m_library); }
@@ -217,7 +233,7 @@ void SidebarPinsModel::publishAppend()
 void SidebarPinsModel::finishAddition()
 {
     QString error;
-    if (!m_store.add(m_queue.head().pins, error)) { m_failedAddition = true; fail(error, [this] { drain(); }); return; }
+    if (!m_store.add(m_queue.head().pins, error)) { m_failedAddition = true; fail(error, [this] { retryEdit([this] { drain(); }); }); return; }
     m_failedAddition = false; m_queue.dequeue(); publishAppend(); m_error.clear(); emit stateChanged();
     QTimer::singleShot(0, this, [this] { drain(); });
 }
@@ -227,7 +243,7 @@ bool SidebarPinsModel::remove(const QString &key)
     const auto row = indexOf(key);
     if (row < 0) return true;
     QString error;
-    if (!m_store.remove(key, error)) { fail(error, [this, key] { remove(key); }); return false; }
+    if (!m_store.remove(key, error)) { fail(error, [this, key] { retryEdit([this, key] { remove(key); }); }); return false; }
     cancelActivation(); beginRemoveRows({}, row, row); m_rows.removeAt(row); endRemoveRows();
     m_available.remove(key); emit countChanged(); m_error.clear(); emit stateChanged(); refresh(); return true;
 }
@@ -237,7 +253,7 @@ bool SidebarPinsModel::move(const QString &key, int destination)
     const auto row = indexOf(key);
     if (row < 0 || destination < 0 || destination >= count()) { fail(tr("The pinned item could not be moved.")); return false; }
     QString error;
-    if (!m_store.move(key, destination, error)) { fail(error, [this, key, destination] { move(key, destination); }); return false; }
+    if (!m_store.move(key, destination, error)) { fail(error, [this, key, destination] { retryEdit([this, key, destination] { move(key, destination); }); }); return false; }
     if (row != destination) {
         beginMoveRows({}, row, row, {}, destination > row ? destination + 1 : destination);
         m_rows.move(row, destination); endMoveRows();

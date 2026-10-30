@@ -1,0 +1,49 @@
+{
+  "inputs": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-fps-webvtt-20261028\\player-candidate-held-r2-20261029\\media\\frame-marker.mp4": "fd82d189533aa73d9715596d9856d27960cf76c76df1baaa0632672660c9b42d",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-resume-20261029\\prepare-inline-webvtt-r1.py": "3a0793274e5ebe81d68e8b6232b85e3bbf15f058a762e21108871e0f72bc91e1"
+  },
+  "inputsUnchanged": true,
+  "videoCommand": [
+    "wsl",
+    "-d",
+    "VLC-Juxtopposed-Home-20261018",
+    "--",
+    "ffmpeg",
+    "-nostdin",
+    "-v",
+    "error",
+    "-n",
+    "-i",
+    "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-fps-webvtt-20261028/player-candidate-held-r2-20261029/media/frame-marker.mp4",
+    "-map",
+    "0:v:0",
+    "-map",
+    "0:a:0",
+    "-vf",
+    "drawbox=x=0:y=ih/2:w=iw:h=ih/2:color=black:t=fill",
+    "-filter_threads",
+    "1",
+    "-c:v",
+    "libx264",
+    "-preset",
+    "ultrafast",
+    "-crf",
+    "18",
+    "-threads",
+    "2",
+    "-c:a",
+    "copy",
+    "-movflags",
+    "+faststart",
+    "/mnt/c/Modding/vlc-juxtopposed/build-windows/beta-inline-webvtt-20261029/media-r1/frame-marker-black-bottom.mp4"
+  ],
+  "files": {
+    "base.vtt": "baf88f4aedbe829b801359f18e68326dc25c9ac8e15611c1ab4e8e5ad1a38830",
+    "frame-marker-black-bottom.mp4": "0f2e1f82444805a70ca1060bcdeb0ddc85b0f51ccb73a2a3d6080e1430ff8f3f",
+    "reference-23_976.vtt": "953312e8981eae3e57f6059063504374ea4cf9a6c7c470528f4b3ea38b951bce",
+    "reference-29_97.vtt": "fd5509969b88af3547829f669ec558b9cab750f8fe91321da28673c36bb0da77",
+    "reference-50.vtt": "3423c83fe9ac1b6a9716cbdf4607aa715cfcfe0b3b1a7851f8bef94686658897"
+  },
+  "scope": "Generated A/V and independent explicit timestamp references, not renderer acceptance"
+}

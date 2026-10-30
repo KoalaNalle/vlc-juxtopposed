@@ -30,6 +30,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <math.h>
 
 #include "ttml.h"
 
@@ -200,69 +201,160 @@ bool tt_node_HasChild( const tt_node_t *p_node )
     return p_node->p_child;
 }
 
-static inline bool tt_ScanReset( unsigned *a, unsigned *b, unsigned *c,
-                                 char *d,  unsigned *e )
+static bool tt_ReadInteger( const char **cursor, uint64_t *value )
 {
-    *a = *b = *c = *d = *e = 0;
-    return false;
+    const char *p = *cursor;
+    if( *p < '0' || *p > '9' )
+        return false;
+    uint64_t result = 0;
+    do
+    {
+        const unsigned digit = *p - '0';
+        if( result > (UINT64_MAX - digit) / 10 )
+            return false;
+        result = result * 10 + digit;
+        p++;
+    } while( *p >= '0' && *p <= '9' );
+    *cursor = p;
+    *value = result;
+    return true;
 }
 
-static tt_time_t tt_ParseTime( const char *s )
+static bool tt_ParameterInteger( const char *text, uint64_t *value )
 {
-    tt_time_t t = {-1, 0};
-    unsigned h1 = 0, m1 = 0, s1 = 0, d1 = 0;
-    char c = 0;
+    return tt_ReadInteger( &text, value ) && *value > 0 && *text == '\0';
+}
 
-    /* Clock time */
-    if( sscanf( s, "%u:%2u:%2u%c%u",     &h1, &m1, &s1, &c, &d1 ) == 5 ||
-                           tt_ScanReset( &h1, &m1, &s1, &c, &d1 )      ||
-        sscanf( s, "%u:%2u:%2u",         &h1, &m1, &s1          ) == 3 ||
-                           tt_ScanReset( &h1, &m1, &s1, &c, &d1 ) )
+static bool tt_ReadParameters( tt_time_parameters_t *parameters,
+                                const char *frame_rate, const char *multiplier,
+                                const char *sub_frame_rate, const char *tick_rate )
+{
+    uint64_t frames = TT_FRAME_RATE, subframes = 1, numerator = 1, denominator = 1;
+    uint64_t ticks;
+    if( (frame_rate && !tt_ParameterInteger( frame_rate, &frames )) ||
+        (sub_frame_rate && !tt_ParameterInteger( sub_frame_rate, &subframes )) )
+        return false;
+    if( multiplier )
     {
-        t.base = vlc_tick_from_sec(h1 * 3600 + m1 * 60 + s1);
-        if( c == '.' && d1 > 0 )
-        {
-            unsigned i_den = 1;
-            for( const char *p = strchr( s, '.' ) + 1; *p && (i_den < UINT_MAX / 10); p++ )
-                i_den *= 10;
-            t.base += vlc_tick_from_samples(d1, i_den);
-        }
-        else if( c == ':' )
-        {
-            t.frames = d1;
-        }
+        if( !tt_ReadInteger( &multiplier, &numerator ) || numerator == 0 ||
+            !strchr( " \t\r\n", *multiplier ) || *multiplier == '\0' )
+            return false;
+        do multiplier++; while( *multiplier && strchr( " \t\r\n", *multiplier ) );
+        if( !tt_ParameterInteger( multiplier, &denominator ) )
+            return false;
     }
-    else /* Offset Time */
+    parameters->nominal_frame_rate = frames;
+    parameters->sub_frame_rate = subframes;
+    parameters->frame_rate = (long double) frames * numerator / denominator;
+    if( tick_rate )
     {
-        char *psz_end = (char *) s;
-        double v = vlc_strtod_c( s, &psz_end );
-        if( psz_end != s && *psz_end )
-        {
-            if( *psz_end == 'm' )
-            {
-                if( *(psz_end + 1) == 's' )
-                    t.base = VLC_TICK_FROM_MS(v);
-                else
-                    t.base = vlc_tick_from_sec(60 * v);
-            }
-            else if( *psz_end == 's' )
-            {
-                t.base = vlc_tick_from_sec(v);
-            }
-            else if( *psz_end == 'h' )
-            {
-                t.base = vlc_tick_from_sec(v * 3600);
-            }
-            else if( *psz_end == 'f' )
-            {
-                t.base = 0;
-                t.frames = v;
-            }
-            //else if( *psz_end == 't' );
-        }
+        if( !tt_ParameterInteger( tick_rate, &ticks ) )
+            return false;
+        parameters->tick_rate = ticks;
     }
+    else
+    {
+        parameters->tick_rate = frame_rate ? parameters->frame_rate * subframes : 1;
+    }
+    return isfinite( parameters->frame_rate ) && parameters->frame_rate > 0 &&
+           isfinite( parameters->tick_rate ) && parameters->tick_rate > 0;
+}
 
-    return t;
+static bool tt_ReadFraction( const char **cursor, long double *value )
+{
+    const char *p = *cursor;
+    if( *p++ != '.' || *p < '0' || *p > '9' )
+        return false;
+    long double fraction = 0, place = .1L;
+    do
+    {
+        fraction += (*p++ - '0') * place;
+        place /= 10;
+    } while( *p >= '0' && *p <= '9' );
+    *cursor = p;
+    *value = fraction;
+    return true;
+}
+
+static bool tt_ReadTwoDigits( const char **cursor, unsigned *value )
+{
+    const char *p = *cursor;
+    if( p[0] < '0' || p[0] > '9' || p[1] < '0' || p[1] > '9' )
+        return false;
+    *value = (p[0] - '0') * 10 + p[1] - '0';
+    *cursor = p + 2;
+    return true;
+}
+
+static bool tt_ParseTime( const char *s, const tt_time_parameters_t *parameters,
+                          tt_time_t *result )
+{
+    const char *first = s;
+    uint64_t whole;
+    if( !tt_ReadInteger( &s, &whole ) )
+        return false;
+    long double seconds;
+    if( *s == ':' ) /* Clock time */
+    {
+        unsigned minutes, second;
+        if( s - first < 2 )
+            return false;
+        s++;
+        if( !tt_ReadTwoDigits( &s, &minutes ) || *s++ != ':' ||
+            !tt_ReadTwoDigits( &s, &second ) || minutes >= 60 || second > 60 )
+            return false;
+        /* The deprecated leap-second value is interpreted as 59 in media time. */
+        seconds = (long double) whole * 3600 + minutes * 60 + (second == 60 ? 59 : second);
+        if( *s == '.' )
+        {
+            long double fraction;
+            if( !tt_ReadFraction( &s, &fraction ) || (second == 60 && fraction > 0) )
+                return false;
+            seconds += fraction;
+        }
+        else if( *s == ':' )
+        {
+            uint64_t frames, subframes = 0;
+            first = ++s;
+            if( !tt_ReadInteger( &s, &frames ) || s - first < 2 ||
+                frames >= parameters->nominal_frame_rate )
+                return false;
+            if( *s == '.' )
+            {
+                s++;
+                if( !tt_ReadInteger( &s, &subframes ) || subframes >= parameters->sub_frame_rate )
+                    return false;
+            }
+            seconds += (frames + (long double) subframes / parameters->sub_frame_rate)
+                       / parameters->frame_rate;
+        }
+        if( *s != '\0' )
+            return false;
+    }
+    else /* Offset time: no exponents, signs, whitespace or partial unit names. */
+    {
+        long double value = whole;
+        if( *s == '.' )
+        {
+            long double fraction;
+            if( !tt_ReadFraction( &s, &fraction ) )
+                return false;
+            value += fraction;
+        }
+        if( !strcmp( s, "h" ) ) seconds = value * 3600;
+        else if( !strcmp( s, "m" ) ) seconds = value * 60;
+        else if( !strcmp( s, "s" ) ) seconds = value;
+        else if( !strcmp( s, "ms" ) ) seconds = value / 1000;
+        else if( !strcmp( s, "f" ) ) seconds = value / parameters->frame_rate;
+        else if( !strcmp( s, "t" ) ) seconds = value / parameters->tick_rate;
+        else return false;
+    }
+    const long double ticks = seconds * CLOCK_FREQ;
+    if( !isfinite( ticks ) || ticks < 0 ||
+        ticks > (long double) (VLC_TICK_MAX - VLC_TICK_0) - .5L )
+        return false;
+    *result = tt_time_Create( (vlc_tick_t) (ticks + .5L) );
+    return true;
 }
 
 bool tt_timings_Contains( const tt_timings_t *p_range, const tt_time_t *time )
@@ -363,9 +455,9 @@ tt_textnode_t *tt_subtextnode_New( tt_node_t *p_parent, const char *psz_text, si
     return tt_textnode_NewImpl( p_parent, strndup( psz_text, len ) );
 }
 
-tt_node_t * tt_node_New( tt_node_t* p_parent,
-                         const char* psz_node_name,
-                         const char *psz_namespace )
+static tt_node_t *tt_node_Alloc( tt_node_t* p_parent,
+                                 const char* psz_node_name,
+                                 const char *psz_namespace )
 {
     tt_node_t *p_node = calloc( 1, sizeof( *p_node ) );
     if( !p_node )
@@ -390,21 +482,35 @@ tt_node_t * tt_node_New( tt_node_t* p_parent,
     tt_time_Init( &p_node->timings.end );
     tt_time_Init( &p_node->timings.dur );
     p_node->p_parent = p_parent;
-    if( p_parent )
-        tt_node_ParentAddChild( p_parent, (tt_basenode_t *) p_node );
+    p_node->time_parameters = p_parent ? p_parent->time_parameters :
+        (tt_time_parameters_t) { .frame_rate = TT_FRAME_RATE, .tick_rate = 1,
+                                .nominal_frame_rate = TT_FRAME_RATE, .sub_frame_rate = 1 };
 
     return p_node;
+}
+
+tt_node_t * tt_node_New( tt_node_t* p_parent, const char* psz_node_name,
+                         const char *psz_namespace )
+{
+    tt_node_t *node = tt_node_Alloc( p_parent, psz_node_name, psz_namespace );
+    if( node && p_parent )
+        tt_node_ParentAddChild( p_parent, (tt_basenode_t *) node );
+    return node;
 }
 
 tt_node_t * tt_node_NewRead( xml_reader_t* reader,
                              tt_namespaces_t *p_nss, tt_node_t* p_parent,
                              const char* psz_node_name, const char *psz_namespace )
 {
-    tt_node_t *p_node = tt_node_New( p_parent, psz_node_name, psz_namespace );
+    /* Link only after validation, so a failed child cannot leave a dangling
+     * entry in its parent's list during parser cleanup. */
+    tt_node_t *p_node = tt_node_Alloc( p_parent, psz_node_name, psz_namespace );
     if( !p_node )
         return NULL;
 
     const char* psz_value = NULL, *psz_ns = NULL;
+    const char *frame_rate = NULL, *multiplier = NULL, *sub_frame_rate = NULL, *tick_rate = NULL;
+    const char *begin = NULL, *end = NULL, *duration = NULL;
     for( const char* psz_key = xml_ReaderNextAttrNS( reader, &psz_value, &psz_ns );
          psz_key != NULL;
          psz_key = xml_ReaderNextAttrNS( reader, &psz_value, &psz_ns ) )
@@ -412,22 +518,44 @@ tt_node_t * tt_node_NewRead( xml_reader_t* reader,
         if( psz_ns && psz_key )
         tt_namespaces_Register( p_nss, psz_key, psz_ns );
         char *psz_val = strdup( psz_value );
-        if( psz_val )
+        if( !psz_val )
+            goto error;
         {
             vlc_dictionary_insert( &p_node->attr_dict, psz_key, psz_val );
 
             if( !strcasecmp( psz_key, "begin" ) )
-                p_node->timings.begin = tt_ParseTime( psz_val );
+                begin = psz_val;
             else if( ! strcasecmp( psz_key, "end" ) )
-                p_node->timings.end = tt_ParseTime( psz_val );
+                end = psz_val;
             else if( ! strcasecmp( psz_key, "dur" ) )
-                p_node->timings.dur = tt_ParseTime( psz_val );
+                duration = psz_val;
             else if( ! strcasecmp( psz_key, "timeContainer" ) )
                 p_node->timings.i_type = strcmp( psz_val, "seq" ) ? TT_TIMINGS_PARALLEL
                                                                   : TT_TIMINGS_SEQUENTIAL;
+            if( !p_parent && psz_ns && !strcmp( psz_ns, TT_NS_PARAMETER ) )
+            {
+                const char *name = tt_LocalName( psz_key );
+                if( !strcmp( name, "frameRate" ) ) frame_rate = psz_val;
+                else if( !strcmp( name, "frameRateMultiplier" ) ) multiplier = psz_val;
+                else if( !strcmp( name, "subFrameRate" ) ) sub_frame_rate = psz_val;
+                else if( !strcmp( name, "tickRate" ) ) tick_rate = psz_val;
+            }
         }
     }
+    /* Collect the full root declaration first; XML attribute order is irrelevant.
+     * Namespace identity comes from the reader, including alternate prefixes. */
+    if( (!p_parent && !tt_ReadParameters( &p_node->time_parameters, frame_rate, multiplier,
+                                         sub_frame_rate, tick_rate )) ||
+        (begin && !tt_ParseTime( begin, &p_node->time_parameters, &p_node->timings.begin )) ||
+        (end && !tt_ParseTime( end, &p_node->time_parameters, &p_node->timings.end )) ||
+        (duration && !tt_ParseTime( duration, &p_node->time_parameters, &p_node->timings.dur )) )
+        goto error;
+    if( p_parent )
+        tt_node_ParentAddChild( p_parent, (tt_basenode_t *) p_node );
     return p_node;
+error:
+    tt_node_RecursiveDelete( p_node );
+    return NULL;
 }
 #if 0
 static int tt_node_Skip( xml_reader_t *p_reader, const char *psz_skipped )

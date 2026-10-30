@@ -5,6 +5,7 @@
 #include <QString>
 #include <QVariantMap>
 #include <QVector>
+#include "util/checked_preferences_store.hpp"
 
 class QSettings;
 
@@ -37,6 +38,7 @@ public:
     bool readable() const { return m_readable; }
     QString readError() const { return m_readError; }
     bool reload(QString &error);
+    bool needsReload() const { return m_needsReload; }
     bool add(const QVector<SidebarPin> &pins, QString &error);
     bool remove(const QString &key, QString &error);
     bool move(const QString &key, int destination, QString &error);
@@ -48,4 +50,6 @@ private:
     QVector<SidebarPin> m_pins;
     QString m_readError;
     bool m_readable = false;
+    bool m_needsReload = false;
+    CheckedPreferencesStore::SettingsValue m_sourceValue;
 };

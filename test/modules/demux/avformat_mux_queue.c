@@ -85,6 +85,7 @@ static void init(struct fixture *f)
     avformatMuxQueueInit(&f->queue);
     CHECK(f->queue.head == NULL && f->queue.tail == &f->queue.head);
     CHECK(f->queue.header_pending && !f->queue.failed);
+    CHECK(!f->queue.payload_observed && !f->queue.failure_reported);
 }
 
 static void add_stream(struct fixture *f, unsigned slot, unsigned index, int cat)
@@ -470,6 +471,114 @@ static void failures_and_cleanup(void)
     clear(&f); end_case();
 }
 
+static void failure_notice_boundaries(void)
+{
+    struct fixture f;
+    begin_case("empty-format-probe-error-stays-silent");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(!f.queue.payload_observed);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("real-data-after-empty-header-error-reports-once");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    put(&f, 0, 10, 10);
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(f.queue.payload_observed && avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(f.header_calls == 1 && f.write_calls == 0);
+    clear(&f); end_case();
+
+    begin_case("live-header-error-with-media-reports-once");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
+    f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(block_FifoCount(f.fifos[0]) == 1 && f.blocks[0].releases == 0);
+    clear(&f); end_case();
+
+    begin_case("retired-header-error-observes-owned-media");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
+    retire(&f, 0); f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(f.fifos[0] == NULL && f.blocks[0].releases == 0);
+    clear(&f); end_case();
+
+    begin_case("frame-error-and-close-share-one-notice");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
+    f.fail_write_at = 1;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(f.blocks[0].releases == 1 && avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("final-drain-error-reports-observed-committed-media");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES);
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
+    put(&f, 0, 10, 10); retire(&f, 0); f.fail_write_at = 1;
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("trailer-error-after-media-reports-once");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0); f.fail_trailer = true;
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("zero-size-only-media-does-not-turn-probe-error-into-notice");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 0);
+    f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(!f.queue.payload_observed && !avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("payload-observation-checks-all-streams-before-readiness-gate");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); add_stream(&f, 1, 1, VIDEO_ES);
+    put(&f, 1, 10, 10); f.fail_header = true;
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) != VLC_SUCCESS);
+    CHECK(f.queue.payload_observed && avformatMuxTakeFailureNotice(&f.queue));
+    CHECK(f.write_calls == 0 && !avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0); retire(&f, 1);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) != VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f); end_case();
+
+    begin_case("successful-media-and-trailer-have-no-failure-notice");
+    init(&f); add_stream(&f, 0, 0, AUDIO_ES); put(&f, 0, 10, 10);
+    CHECK(avformatMuxRun(&f.queue, header, write_block, &f) == VLC_SUCCESS);
+    CHECK(f.queue.payload_observed && !avformatMuxTakeFailureNotice(&f.queue));
+    retire(&f, 0);
+    CHECK(avformatMuxFinalize(&f.queue, write_block, trailer, &f) == VLC_SUCCESS);
+    CHECK(!avformatMuxTakeFailureNotice(&f.queue));
+    clear(&f);
+    CHECK(!f.queue.payload_observed && !f.queue.failure_reported);
+    end_case();
+}
+
 int main(void)
 {
     for (unsigned a = 0; a < 4; ++a)
@@ -485,6 +594,7 @@ int main(void)
     flush_boundaries();
     startup_and_subtitle_only();
     failures_and_cleanup();
+    failure_notice_boundaries();
     printf("{\"cases\":%u,\"checks\":%u,\"failures\":%u}\n", cases, checks, failures);
     return failures ? 1 : 0;
 }

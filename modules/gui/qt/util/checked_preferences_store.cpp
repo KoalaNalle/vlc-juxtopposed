@@ -12,6 +12,11 @@
 #include <QSettings>
 #include <QFile>
 #include <QDir>
+#include <QFileInfo>
+#include <QLockFile>
+#include <QSaveFile>
+#include <QTemporaryDir>
+#include <QCryptographicHash>
 #include <memory>
 #include <cmath>
 #include <QLocale>
@@ -39,6 +44,187 @@ std::unique_ptr<QSettings> settingsSession(const QSettings *source)
     session->setAtomicSyncRequired(source->isAtomicSyncRequired());
     if (!source->group().isEmpty()) session->beginGroup(source->group());
     return session;
+}
+
+using SettingsValue = CheckedPreferencesStore::SettingsValue;
+
+bool iniStorage(const QSettings *settings)
+{
+#ifdef _WIN32
+    return settings->format() == QSettings::IniFormat;
+#else
+    // Qt's NativeFormat uses INI storage on Unix, not the Windows registry.
+    return settings->format() == QSettings::IniFormat
+        || settings->format() == QSettings::NativeFormat;
+#endif
+}
+
+bool readIniBytes(const QString &path, QByteArray &bytes, QString &error)
+{
+    bytes.clear();
+    QFile file(path);
+    if (!file.exists()) return true;
+    if (!file.open(QIODevice::ReadOnly) || file.size() > 64 * 1024 * 1024)
+        return reject(error, tr("The interface preferences file could not be read."));
+    bytes = file.readAll();
+    return file.error() == QFile::NoError
+        || reject(error, tr("The interface preferences file could not be read."));
+}
+
+bool writeStagedIni(const QString &path, const QByteArray &bytes, QString &error)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly) || file.write(bytes) != bytes.size() || !file.flush())
+        return reject(error, tr("The interface preferences transaction could not be prepared."));
+    return true;
+}
+
+// QSettings shares INI caches across instances in one process. Read physical
+// snapshots under unique filenames so a failed or same-size prior write cannot
+// supply the expected document for a later catalog transaction.
+bool readStagedValue(const QString &path, const QSettings *source, const QString &key,
+                     SettingsValue &result, QString &error)
+{
+    QSettings reader(path, QSettings::IniFormat);
+    reader.setFallbacksEnabled(false);
+    if (!source->group().isEmpty()) reader.beginGroup(source->group());
+    result.present = reader.contains(key);
+    result.value = result.present ? reader.value(key) : QVariant{};
+    return reader.status() == QSettings::NoError
+        || reject(error, tr("The interface preferences file could not be parsed."));
+}
+
+QStringList iniFallbackFiles(const QSettings *source)
+{
+    QStringList paths;
+    if (!source->fallbacksEnabled() || source->organizationName().isEmpty()) return paths;
+    const auto add = [&](QSettings::Scope scope, const QString &application) {
+        QSettings fallback(source->format(), scope, source->organizationName(), application);
+        const auto path = fallback.fileName();
+        if (path != source->fileName() && !paths.contains(path)) paths.append(path);
+    };
+    // Qt's effective order is user/app, user/org, system/app, system/org.
+    if (source->scope() == QSettings::UserScope) {
+        add(QSettings::UserScope, {});
+        add(QSettings::SystemScope, source->applicationName());
+    }
+    add(QSettings::SystemScope, {});
+    return paths;
+}
+
+bool readEffectiveIniValue(const QSettings *source, const QString &key,
+                           const QString &primarySnapshot, const QString &temporary,
+                           SettingsValue &result, QString &error)
+{
+    if (!readStagedValue(primarySnapshot, source, key, result, error)) return false;
+    int index = 0;
+    for (const auto &path : iniFallbackFiles(source)) {
+        if (result.present) break;
+        QByteArray bytes;
+        const auto snapshot = QDir(temporary).filePath(QStringLiteral("fallback-%1.ini").arg(index++));
+        if (!readIniBytes(path, bytes, error) || !writeStagedIni(snapshot, bytes, error)
+            || !readStagedValue(snapshot, source, key, result, error)) return false;
+    }
+    return true;
+}
+
+bool compareValue(const SettingsValue &current, const SettingsValue *expected,
+                  bool *conflict, QString &error)
+{
+    if (!expected || current == *expected) return true;
+    if (conflict) *conflict = true;
+    return reject(error, tr("These preferences changed in another window. Reload them and retry."));
+}
+
+bool saveIniValue(QSettings *source, const QString &key, const QVariant &value,
+                  bool remove, const SettingsValue *expected, bool *conflict,
+                  QString &error)
+{
+    const QFileInfo destination(source->fileName());
+    if (!destination.isAbsolute() || !QDir().mkpath(destination.absolutePath()))
+        return reject(error, tr("The interface preferences folder is unavailable."));
+    // This is the ordinary Qt INI writer's lock. Never sync a live/cache-sharing
+    // QSettings while holding it: only the isolated temporary INI is mutated.
+    QLockFile lock(source->fileName() + QStringLiteral(".lock"));
+    if (!lock.tryLock(0))
+        return reject(error, tr("Another window is saving interface preferences. Retry shortly."));
+    QTemporaryDir temporary;
+    if (!temporary.isValid())
+        return reject(error, tr("The interface preferences transaction could not be prepared."));
+    QByteArray before;
+    const auto stagedPath = temporary.filePath(QStringLiteral("transaction.ini"));
+    if (!readIniBytes(source->fileName(), before, error) || !writeStagedIni(stagedPath, before, error)) return false;
+    SettingsValue current;
+    if (!readEffectiveIniValue(source, key, stagedPath, temporary.path(), current, error)
+        || !compareValue(current, expected, conflict, error)) return false;
+    {
+        QSettings staged(stagedPath, QSettings::IniFormat);
+        staged.setFallbacksEnabled(false);
+        if (!source->group().isEmpty()) staged.beginGroup(source->group());
+        if (remove) staged.remove(key); else staged.setValue(key, value);
+        staged.sync();
+        if (staged.status() != QSettings::NoError)
+            return reject(error, tr("The interface preferences transaction could not be saved."));
+    }
+    QByteArray after;
+    if (!readIniBytes(stagedPath, after, error)) return false;
+    const auto verificationPath = temporary.filePath(QStringLiteral("verification.ini"));
+    SettingsValue prepared;
+    if (!writeStagedIni(verificationPath, after, error)
+        || !readStagedValue(verificationPath, source, key, prepared, error)) return false;
+    if ((remove && prepared.present) || (!remove && (!prepared.present || prepared.value != value)))
+        return reject(error, tr("The prepared interface preference could not be verified."));
+    // Size must change even for an equal-length replacement within one clock
+    // tick, otherwise QSettings may reuse a stale same-process physical cache.
+    if (after.size() == before.size()) after.append('\n');
+    QSaveFile file(source->fileName());
+    file.setDirectWriteFallback(false);
+    if (!file.open(QIODevice::WriteOnly) || file.write(after) != after.size() || !file.commit())
+        return reject(error, tr("The interface preference could not be saved. The previous values were preserved."));
+    // Publication is the commit point. A newer writer after unlocking is a
+    // legitimate successor; never mistake it for our failure and roll it back.
+    return true;
+}
+
+bool saveSettingsValue(QSettings *source, const QString &key, const QVariant &value,
+                       bool remove, const SettingsValue *expected, bool *conflict,
+                       QString &error)
+{
+    error.clear();
+    if (conflict) *conflict = false;
+    if (!source) return reject(error, tr("The interface preferences storage is not writable."));
+    // Flush unrelated caller edits before taking any physical writer lock. A
+    // fresh session checks current errors rather than source's sticky status.
+    source->sync();
+    auto session = settingsSession(source);
+    if (!session) return reject(error, tr("The interface preferences storage location has changed."));
+    session->sync();
+    if (!session->isWritable() || session->status() != QSettings::NoError)
+        return reject(error, tr("The interface preferences storage is not writable."));
+    if (iniStorage(source)) {
+        if (!saveIniValue(source, key, value, remove, expected, conflict, error)) return false;
+        // The isolated transaction has released .lock before refreshing a live
+        // QSettings cache. No failed transaction ever dirtied that cache.
+        source->sync();
+        return true;
+    }
+    const auto identity = QCryptographicHash::hash(source->fileName().toCaseFolded().toUtf8(),
+                                                  QCryptographicHash::Sha256).toHex();
+    QLockFile lock(QDir::temp().filePath(QStringLiteral("vlc-checked-native-%1.lock")
+                                       .arg(QString::fromLatin1(identity))));
+    if (!lock.tryLock(0))
+        return reject(error, tr("Another window is saving interface preferences. Retry shortly."));
+    session->sync();
+    if (session->status() != QSettings::NoError)
+        return reject(error, tr("The interface preferences could not be read."));
+    const SettingsValue current{session->contains(key), session->value(key)};
+    if (!compareValue(current, expected, conflict, error)) return false;
+    // Windows NativeFormat is a single registry-value operation. There is no
+    // readback-triggered rollback: another accepted writer must remain intact.
+    if (remove) session->remove(key); else session->setValue(key, value);
+    session->sync();
+    return session->status() == QSettings::NoError
+        || reject(error, tr("The interface preference could not be saved. Reload and retry."));
 }
 }
 bool CheckedPreferencesStore::syncCurrentSettings(QSettings *source)
@@ -121,44 +307,31 @@ bool CheckedPreferencesStore::saveNative(const QVariantMap &changes, QString &er
 bool CheckedPreferencesStore::saveSettings(QSettings *settings, const QString &key,
                                            const QVariant &value, bool remove, QString &error)
 {
-    error.clear();
-    if (!settings)
-        return reject(error, tr("The interface preferences storage is not writable."));
-    // Flush unrelated caller changes using its own policy before opening a
-    // fresh session. Never interpret its permanently retained first error as
-    // a current failure after permissions/file-sharing have been repaired.
+    return saveSettingsValue(settings, key, value, remove, nullptr, nullptr, error);
+}
+
+bool CheckedPreferencesStore::compareAndSaveSettings(QSettings *settings, const QString &key,
+    const QVariant &value, const SettingsValue &expected, QString &error, bool *conflict)
+{
+    return saveSettingsValue(settings, key, value, false, &expected, conflict, error);
+}
+
+bool CheckedPreferencesStore::readSettingsValue(QSettings *settings, const QString &key,
+    SettingsValue &result, QString &error)
+{
+    error.clear(); result = {};
+    if (!settings) return reject(error, tr("The interface preferences storage is unavailable."));
     settings->sync();
-    auto transaction = settingsSession(settings);
-    auto primary = settingsSession(settings);
-    if (!transaction || !primary)
-        return reject(error, tr("The interface preferences storage location has changed."));
-    transaction->sync();
-    primary->setFallbacksEnabled(false);
-    primary->sync();
-    const bool existed = primary->contains(key);
-    const auto before = primary->value(key);
-    if (!transaction->isWritable() || transaction->status() != QSettings::NoError
-        || primary->status() != QSettings::NoError)
-        return reject(error, tr("The interface preferences storage is not writable."));
-    if (remove) transaction->remove(key); else transaction->setValue(key, value);
-    transaction->sync();
-    std::unique_ptr<QSettings> readback;
-    bool matches = false;
-    if (transaction->status() == QSettings::NoError) {
-        readback = settingsSession(settings);
-        if (readback) {
-            readback->setFallbacksEnabled(false);
-            readback->sync();
-            matches = remove ? !readback->contains(key) : readback->value(key) == value;
-        }
+    auto session = settingsSession(settings);
+    if (!session) return reject(error, tr("The interface preferences storage location has changed."));
+    if (!iniStorage(settings)) {
+        session->sync(); result = {session->contains(key), session->value(key)};
+        return session->status() == QSettings::NoError
+            || reject(error, tr("The interface preferences could not be read."));
     }
-    if (transaction->status() == QSettings::NoError && readback
-        && readback->status() == QSettings::NoError && matches)
-        return true;
-    // INI sessions share their cache with the borrowed object. Restore only
-    // this primary key; never turn a fallback-only value into a user override.
-    // Native registry sessions write the same exact injected/production key.
-    if (existed) transaction->setValue(key, before); else transaction->remove(key);
-    transaction->sync();
-    return reject(error, tr("The interface preference could not be saved. The requested change was not accepted."));
+    QTemporaryDir temporary; QByteArray bytes;
+    if (!temporary.isValid()) return reject(error, tr("The interface preferences could not be read."));
+    const auto path = temporary.filePath(QStringLiteral("snapshot.ini"));
+    return readIniBytes(settings->fileName(), bytes, error) && writeStagedIni(path, bytes, error)
+        && readEffectiveIniValue(settings, key, path, temporary.path(), result, error);
 }

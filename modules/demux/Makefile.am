@@ -164,7 +164,8 @@ libavformat_plugin_la_SOURCES = demux/avformat/demux.c \
 	demux/vobsub.h \
 	demux/avformat/avformat.c demux/avformat/avformat.h
 if ENABLE_SOUT
-libavformat_plugin_la_SOURCES += demux/avformat/mux.c
+libavformat_plugin_la_SOURCES += demux/avformat/mux.c \
+	demux/avformat/avformat_mux_queue.h
 endif
 libavformat_plugin_la_CFLAGS = $(AM_CFLAGS) $(AVFORMAT_CFLAGS) $(AVUTIL_CFLAGS)
 libavformat_plugin_la_LIBADD = $(AVFORMAT_LIBS) $(AVUTIL_LIBS) $(LIBM) $(LIBZ) libavcodec_common.la

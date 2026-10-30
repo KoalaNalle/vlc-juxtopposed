@@ -1,0 +1,92 @@
+{
+  "scope": "Actual ordinary Windows 11 popup input ownership, one generated fixture/profile and window topology; no full beta, broad DPI or final-package claim",
+  "passed": true,
+  "checks": {
+    "outsidePaused": true,
+    "closedReleasesClick": true,
+    "playingPopupOpens": true,
+    "outsideKeepsPlaying": true,
+    "escapeKeepsPaused": true,
+    "reopenAndTab": true,
+    "cleanNormalExit": true,
+    "preservation": true,
+    "sourceAndBinaryBound": true
+  },
+  "runtimeSha256": {
+    "libvlccore.dll": "f09c45fe4075a02836807f00cab03163cdba1ec79e37ba35a0328f7cb6d5462d",
+    "plugins/gui/libqt_plugin.dll": "7c7db5cb675edc20b3366120dc55282b09d2db2dc731b7c6ed8c1815e0706624",
+    "plugins/codec/libwebvtt_plugin.dll": "38eec724ba220769389ba0aac6fb8f2cd56306f32ccff7dba3763674ce6dba1d",
+    "plugins/misc/libmedialibrary_plugin.dll": "e834a41a700bbc6ffeaa83bfde895f5b60f35c2e11f08cd6526d5122afe5af3f",
+    "plugins/codec/libavcodec_plugin.dll": "545f715418c4d20659dce5d6c81ee33b292b21c87243fafa62036b9ffd739e1f"
+  },
+  "sourceSha256": {
+    "modules/gui/qt/player/qml/PlaybackSettingsMenu.qml": "01cc8afaf200730ca46c9ed5b759f92559cf2043c3da3d5f45b2a09295be4fc1",
+    "modules/gui/qt/tests/test_juxtopposed_settings.py": "75a0b290cf20c992f5488f2e507508e8818e588d0e82d5892ee030f943830f55",
+    "modules/gui/qt/menus/menus.cpp": "dccea714c014175b7a47e6950298e570ce79ecbd3b3c8393117e4c7be7b33d15",
+    "modules/gui/qt/medialibrary/mlrecentvideomodel.cpp": "cc7ede0057e3e8722a26dcfdb6c28f5a0f77ea8de9550c3c6825325db532d4b9"
+  },
+  "ordinary": {
+    "exitCode": 0,
+    "modules": 603,
+    "diagnostics": [],
+    "preservationGuards": {
+      "fixturesUnchanged": true,
+      "sourcesUnchanged": true,
+      "runtimeUnchanged": true,
+      "fallbackBytesUnchanged": true,
+      "priorProfileUnchanged": true,
+      "inputsUnchanged": true,
+      "humanConfigUnchanged": true
+    }
+  },
+  "build": {
+    "result": {
+      "status": "built-not-desktop-qualified",
+      "finishedUtc": "2026-10-29T14:19:47.389304+00:00",
+      "originalSharedArtifactsRestored": true,
+      "protectedUnchanged": true,
+      "inputsUnchanged": true,
+      "fullBaselineRuntimeUnchanged": true,
+      "noLiveOwnedWriterGroups": true,
+      "forcedCleanupUsed": false,
+      "namespaceSessionUnchanged": true,
+      "cFreeAfter": 404651077632,
+      "noOldDwarfAssignedToNewIdentity": true
+    },
+    "candidate": {
+      "size": 107583195,
+      "mtimeNs": 1793283523237451166,
+      "device": 2096,
+      "inode": 33805081,
+      "links": 1,
+      "mode": 33261,
+      "sha256": "7c7db5cb675edc20b3366120dc55282b09d2db2dc731b7c6ed8c1815e0706624"
+    },
+    "actualCompilerClosure": {
+      "count": 937,
+      "unqualified": []
+    },
+    "manifestSha256": "c10a6c7651bc6b9c8578a0abc4625b225dbbc77044386d09015f95bf9369fce5"
+  },
+  "componentProof": {
+    "scope": "Maintained actual popup test with supplied controllers; native GUI rebuild/desktop acceptance pending",
+    "evidenceKind": "Transcribed terminal command outcomes; raw before/after image outputs retained locally",
+    "qmlBeforeSha256": "9d182d48f169e452e3df3f4c14fffbe50f8f713d19fa60c63c1ea9028faf14b1",
+    "qmlAfterSha256": "01cc8afaf200730ca46c9ed5b759f92559cf2043c3da3d5f45b2a09295be4fc1",
+    "testSha256": "75a0b290cf20c992f5488f2e507508e8818e588d0e82d5892ee030f943830f55",
+    "before": {
+      "exitCode": 1,
+      "assertion": "outside-click propagated to playback"
+    },
+    "after": {
+      "exitCode": 0,
+      "checks": "Complete existing settings suite plus outside-click ownership, Escape/reopen and input release after closing"
+    },
+    "nativeBinaryIncludesRepair": false
+  },
+  "limitations": [
+    "Supplied-state component tests are separate from ordinary checks.",
+    "No physical DPI matrix, multi-instance, all pages or final package acceptance.",
+    "No Record behavior or output qualification in this run."
+  ]
+}

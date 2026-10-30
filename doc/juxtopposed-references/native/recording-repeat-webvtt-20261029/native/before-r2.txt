@@ -1,0 +1,8 @@
+CASE manual-off-paused PASS records=2 second_media_records=0 current_recording=0
+CASE natural-eos FAIL records=1 second_media_records=0 current_recording=0 reason=record-off missing before next input or final stop
+CASE next-same-media FAIL records=1 second_media_records=1 current_recording=0 reason=record-off missing before next input or final stop
+CASE next-other-media FAIL records=1 second_media_records=1 current_recording=0 reason=record-off missing before next input or final stop
+CASE replace-paused FAIL records=1 second_media_records=1 current_recording=0 reason=record-off missing before next input or final stop
+CASE stop-paused FAIL records=1 second_media_records=0 current_recording=0 reason=record-off missing before next input or final stop
+CASE off-then-eos-no-duplicate PASS records=2 second_media_records=0 current_recording=0
+RESULT cases=7 failures=5

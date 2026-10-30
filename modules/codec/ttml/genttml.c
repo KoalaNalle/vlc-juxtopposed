@@ -85,7 +85,8 @@ static void tt_MemstreamPutEntities( struct vlc_memstream *p_stream, const char 
     }
 }
 
-void tt_node_AttributesToText( struct vlc_memstream *p_stream, const tt_node_t* p_node )
+static void tt_node_WriteAttributes( struct vlc_memstream *p_stream,
+                                     const tt_node_t* p_node, bool keep_timings )
 {
     bool b_timed_node = false;
     const vlc_dictionary_t* p_attr_dict = &p_node->attr_dict;
@@ -123,7 +124,7 @@ void tt_node_AttributesToText( struct vlc_memstream *p_stream, const tt_node_t* 
         }
     }
 
-    if( b_timed_node )
+    if( b_timed_node && keep_timings )
     {
         if( tt_time_Valid( &p_node->timings.begin ) )
         {
@@ -141,8 +142,25 @@ void tt_node_AttributesToText( struct vlc_memstream *p_stream, const tt_node_t* 
     }
 }
 
-void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_basenode,
-                     const tt_time_t *playbacktime )
+void tt_node_AttributesToText( struct vlc_memstream *p_stream, const tt_node_t* p_node )
+{
+    tt_node_WriteAttributes( p_stream, p_node, true );
+}
+
+static void tt_WriteIntervalTime( struct vlc_memstream *stream, const char *name,
+                                  vlc_tick_t time )
+{
+    assert( time >= 0 );
+    const vlc_tick_t seconds = time / CLOCK_FREQ;
+    vlc_memstream_printf( stream, " %s=\"%02"PRId64":%02"PRId64":%02"PRId64".%06"PRId64"\"",
+                         name, seconds / 3600, seconds / 60 % 60, seconds % 60,
+                         time % CLOCK_FREQ );
+}
+
+static void tt_node_WriteText( struct vlc_memstream *p_stream,
+                               const tt_basenode_t *p_basenode,
+                               const tt_time_t *playbacktime,
+                               const vlc_tick_t *interval )
 {
     if( p_basenode->i_type == TT_NODE_TYPE_ELEMENT )
     {
@@ -155,7 +173,16 @@ void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_base
         vlc_memstream_putc( p_stream, '<' );
         tt_MemstreamPutEntities( p_stream, p_node->psz_node_name );
 
-        tt_node_AttributesToText( p_stream, p_node );
+        tt_node_WriteAttributes( p_stream, p_node, interval == NULL );
+        if( interval && tt_node_Match( p_node, "body", TT_NS ) )
+        {
+            /* The active subtree is constant until the next indexed change.
+             * Put that interval on body once. Re-emitting resolved absolute
+             * begin/end on its descendants adds parent offsets a second time
+             * when the decoder resolves the serialized document. */
+            tt_WriteIntervalTime( p_stream, "begin", interval[0] );
+            tt_WriteIntervalTime( p_stream, "end", interval[1] );
+        }
 
         if( tt_node_HasChild( p_node ) )
         {
@@ -170,7 +197,7 @@ void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_base
             for( const tt_basenode_t *p_child = p_node->p_child;
                  p_child; p_child = p_child->p_next )
             {
-                tt_node_ToText( p_stream, p_child, playbacktime );
+                tt_node_WriteText( p_stream, p_child, playbacktime, interval );
             }
 
             vlc_memstream_puts( p_stream, "</" );
@@ -185,4 +212,18 @@ void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_base
         const tt_textnode_t *p_textnode = (const tt_textnode_t *) p_basenode;
         tt_MemstreamPutEntities( p_stream, p_textnode->psz_text );
     }
+}
+
+void tt_node_ToText( struct vlc_memstream *p_stream, const tt_basenode_t *p_basenode,
+                     const tt_time_t *playbacktime )
+{
+    tt_node_WriteText( p_stream, p_basenode, playbacktime, NULL );
+}
+
+void tt_node_ToTextInterval( struct vlc_memstream *stream, const tt_basenode_t *node,
+                            const tt_time_t *source_time, vlc_tick_t begin,
+                            vlc_tick_t end )
+{
+    const vlc_tick_t interval[] = { begin, end };
+    tt_node_WriteText( stream, node, source_time, interval );
 }

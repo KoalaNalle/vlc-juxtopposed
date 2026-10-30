@@ -142,6 +142,9 @@ struct vlc_player_input
     vlc_tick_t subtitle_refresh_deadline;
     /* Scoped history removal keeps pending non-history playback preferences. */
     bool history_removed;
+    /* Exact media-relative picture target while our paused redraw is seeking.
+     * It can precede the visible origin when the start offset retains preroll. */
+    vlc_tick_t subtitle_refresh_target;
 };
 
 struct vlc_player_listener_id

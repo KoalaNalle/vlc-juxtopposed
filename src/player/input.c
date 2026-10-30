@@ -243,7 +243,10 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
     input->state = state;
     if (state == VLC_PLAYER_STATE_STOPPING || state == VLC_PLAYER_STATE_STOPPED
      || (state == VLC_PLAYER_STATE_PLAYING && last_state == VLC_PLAYER_STATE_PAUSED))
+    {
         input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+        input->subtitle_refresh_target = VLC_TICK_INVALID;
+    }
 
     /* Override the global state if the player is still playing and has a next
      * media to play */
@@ -253,6 +256,15 @@ vlc_player_input_HandleState(struct vlc_player_input *input,
         case VLC_PLAYER_STATE_STOPPED:
             assert(!input->started);
             assert(input != player->input);
+
+            /* Recording belongs to one input. Seamless media changes do not
+             * publish a global STOPPED state, so notify recording observers
+             * after this input has closed and before opening its successor. */
+            if (input->recording)
+            {
+                input->recording = false;
+                vlc_player_SendEvent(player, on_recording_changed, false);
+            }
 
             if (input->titles)
             {
@@ -638,6 +650,7 @@ vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
       && input->state != VLC_PLAYER_STATE_PAUSED))
     {
         input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+        input->subtitle_refresh_target = VLC_TICK_INVALID;
         return;
     }
 
@@ -646,6 +659,7 @@ vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
         /* Selection can precede the startup pause, or a pause can be queued
          * from the selection callback. Retain the request briefly without
          * seeking a playing input. The PAUSED event wakes the worker. */
+        input->subtitle_refresh_target = VLC_TICK_INVALID;
         input->subtitle_refresh_deadline = vlc_tick_now() + VLC_TICK_FROM_SEC(5);
         vlc_cond_signal(&player->mainloop.wait);
         return;
@@ -657,9 +671,20 @@ vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
     const struct vlc_player_timer_source *video = &player->timer.smpte_source;
     if (video->es && !video->seeking
      && video->point.system_date != VLC_TICK_INVALID
-     && video->point.ts >= VLC_TICK_0)
+     /* Decoder preroll can retain a picture just before a positive start-time
+      * offset. Its normalized time is negative, but still addresses a valid
+      * source picture; seek that exact picture rather than waiting forever. */
+     && video->point.ts >= VLC_TICK_0 - __MAX(player->timer.start_offset, 0))
     {
         target = video->point.ts - VLC_TICK_0;
+        have_target = true;
+    }
+    else if (input->subtitle_refresh_target != VLC_TICK_INVALID)
+    {
+        /* A preset can request several redraws before the first seek returns.
+         * The visible seek clock clamps preroll to zero; retain the actual
+         * picture target so the next request cannot advance to the origin. */
+        target = input->subtitle_refresh_target;
         have_target = true;
     }
     else if (player->timer.seek_ts != VLC_TICK_INVALID)
@@ -678,10 +703,13 @@ vlc_player_input_RefreshPausedSubtitle(struct vlc_player_input *input)
          * retaining VLC_TICK_0 here would advance a frame at an exact boundary. */
         /* Zero is also the timer's invalid timestamp. Represent the origin
          * by position, retaining an exact zero target for repeated redraws. */
-        if (target == 0)
+        /* Keep the visible clock at the origin for a retained preroll picture,
+         * while the input seek below still uses its exact source timestamp. */
+        if (target <= 0)
             vlc_player_UpdateTimerSeekState(player, VLC_TICK_INVALID, 0.);
         else
             vlc_player_UpdateTimerSeekState(player, target, -1);
+        input->subtitle_refresh_target = target;
         input_SetTime(input->thread, target, false);
     }
     else if (input->subtitle_refresh_deadline == VLC_TICK_INVALID)
@@ -1247,7 +1275,10 @@ input_thread_Events(input_thread_t *input_thread,
         case INPUT_EVENT_RECORD:
             input->recording = event->record;
             if (input->recording)
+            {
                 input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+                input->subtitle_refresh_target = VLC_TICK_INVALID;
+            }
             vlc_player_SendEvent(player, on_recording_changed, input->recording);
             break;
         case INPUT_EVENT_STATISTICS:
@@ -1390,6 +1421,7 @@ vlc_player_input_New(vlc_player_t *player, input_item_t *item)
     input->capabilities = 0;
     input->length = input->time = VLC_TICK_INVALID;
     input->subtitle_refresh_deadline = VLC_TICK_INVALID;
+    input->subtitle_refresh_target = VLC_TICK_INVALID;
     input->live = false;
     input->normal_time = VLC_TICK_0;
     input->pause_date = VLC_TICK_INVALID;

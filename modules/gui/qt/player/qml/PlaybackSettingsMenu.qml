@@ -47,6 +47,9 @@ T.Popup {
 
     closePolicy: T.Popup.CloseOnEscape | T.Popup.CloseOnPressOutside
     focus: true
+    // Dismissing settings must not also activate the player underneath.
+    modal: true
+    dim: false
     height: Math.min(600 * uiScale, Math.max(1, maximumHeight))
     margins: MainCtx.windowExtendedMargin
     padding: 0

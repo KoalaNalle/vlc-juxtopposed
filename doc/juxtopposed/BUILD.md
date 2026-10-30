@@ -14,15 +14,23 @@ installation, rebuild or desktop test merely by being read.
 | Source as seen by WSL | `/mnt/c/Modding/vlc-juxtopposed` |
 | Native build lock | `/root/vlc-juxtopposed-build/.vlc-build.lock` |
 | Target | Windows x64, MinGW-w64 GCC 13 POSIX, pinned Qt 6.8.3 contrib |
-| Component Python | `build-windows/homecoming-20261018/tools/VlcUiTests/Scripts/python.exe`, Python 3.12 / PySide6 6.8.3 |
+| Component Python | `tools/VlcUiTests/Scripts/python.exe`, Python 3.12 / PySide6 6.8.3 |
+| Local Windows tools | Ignored root `tools/`: Git, Python312, VlcUiTests, Wheels and WinDbg |
 | Active generated outputs | Ignored `build-windows/` and `ui-previews/` |
-| Cold archives | `D:\Modding\vlc-juxtopposed`; retain existing verified archive/junction layout |
+| Cold archives | `D:\Modding\vlc-juxtopposed\build-windows`, browsable through `build-windows/archive` |
 
 Recheck paths/tools before use. The original setup and guest-machine migration
 are historical; E:-only paths and guest resource limits are not home instructions.
 Preserve the original distro, migration copies and working contrib cache. The existing
 tools support the current native work. Ask before installing
 anything beyond the user's expressly authorized environment setup.
+
+The Windows tools moved within C: on 29 October. The old
+`build-windows/homecoming-20261018/tools` path is a compatibility junction to
+`tools/`, preserving frozen helpers. New helpers should use the root tools path.
+The virtual environment's configuration, pip and PySide console launchers point to the new
+location; no dependencies were installed. The active WSL virtual disk stays in
+`build-windows/homecoming-20261018/wsl`; it was not moved with the Windows tools.
 
 ## Before a build
 
@@ -105,8 +113,9 @@ changing it. Preserve original prompt-rule states when replacing their behavior.
 
 The read-only home inventory is under
 `build-windows/firewall-ledger-20261027/`; it creates no rules. The earlier helper
-and original-state backup are `build-windows/configure-vlc-firewall.ps1` and
-`build-windows/firewall-setup-20261014/`. Those historical executable inventories
+and original-state backup are
+`build-windows/archive/cold-archive-20261029-r1/loose-files/configure-vlc-firewall.ps1`
+and `build-windows/archive/firewall-setup-20261014/`. Those historical executable inventories
 must be reviewed and refreshed before Apply or Undo; never run an old helper
 blindly. Archive the journals/backups with cold build evidence before removing
 build outputs, so project rules can be identified and safely cleaned up later.
@@ -118,7 +127,7 @@ component suites and their dependency pins. Use the existing Python environment.
 For example, from the repository root in PowerShell, choose an unused output name:
 
 ```powershell
-& .\build-windows\homecoming-20261018\tools\VlcUiTests\Scripts\python.exe `
+& .\tools\VlcUiTests\Scripts\python.exe `
   modules/gui/qt/tests/test_juxtopposed_settings.py `
   --output-dir build-windows/new-settings-check
 ```
@@ -138,6 +147,61 @@ Dummy subtitle blending needs supported `--no-hw-dec`; do not restore obsolete
 decoder flags from old attempts. Source identities must prove genuine external
 tracks were selected even if the main media already contains embedded subtitles.
 
+`test_src_player_recording` is an opt-in real-input notification regression in
+`test/src/player/recording.c`. Pass a generated short A/V file and an owned
+recording output directory as its two arguments. Stage the matching Core/runtime
+and set `VLC_TEST_PLUGIN_PATH` to its plugins. It checks recording notifications
+at EOF, same/other-media succession, replacement, Stop, manual off and subsequent
+recording; it does not qualify the recorded content. The 29 October
+[before/after receipt](../juxtopposed-references/native/recording-repeat-webvtt-20261029/README.md)
+preserves its compiler and runtime identities, controls and teardown diagnostics.
+
+`test/libvlc/native_recorded_webvtt_pause.py` is a fixture-specific actual decoder
+snapshot test, using the existing PySide Python environment. Its arguments are
+the staged runtime, an existing empty output directory, the generated recorded
+MP4 and a start offset (0, or 12 through 12.04 seconds). It uses the recording in
+the [paused-start receipt](../juxtopposed-references/native/recorded-webvtt-paused-20261029/README.md),
+including its embedded cue's MP4 edit. LibVLC time/seek arguments are microseconds
+relative to the start offset. Frame markers must remain identical on selection;
+the held-time tolerance is 50 ms. Set the staged plugin path/isolation as in the
+frozen runner, adapting fresh outputs before use. This is not a general media
+checker or evidence for all subtitle formats, physical GPUs or final packaging.
+
+`test_src_player_subtitle_fps` is an opt-in actual Core/decoder snapshot driver
+in `test/src/player/subtitle_fps.c`. Arguments are generated video, external
+subtitle, existing empty output folder, FPS, mode (`reference`, `hold`, `inherited`
+or `playing`, plus the startup modes below), target seconds and category delay in microseconds. Use a matching
+staged runtime, isolated environment and `VLC_TEST_PLUGIN_PATH` as in the frozen
+[inline WebVTT runner](../juxtopposed-references/native/inline-webvtt-fps-20261029/README.md).
+Its JSON observations and pictures need independent reference/mask assertions;
+an FPS getter or successful process alone does not prove retimed rendering.
+The direct compiler build is qualified separately from the Makefile registration.
+
+`startup-single` and `startup-batch` instead use the generated two-embedded-track
+marker MP4, select Finnish and treat target seconds as the media start offset.
+Pass `-` for the unused external-subtitle argument and 1,200,000 for delay. The
+driver captures initial, delayed and reset pictures, then an explicit user seek
+and a subsequent redraw. The batch models Default's native delay/FPS/per-track
+reset sequence. Compare each process's actual initial marker; fractional startup
+can retain a frame before the visible origin. A fixed elapsed clock alone is
+insufficient. The [preset repair receipt](../juxtopposed-references/native/preset-retry-held-frame-20261029/README.md)
+binds a before failure, unchanged-oracle after run and ordinary hardware result.
+
+`test_modules_demux_ttml_fps` in `test/modules/demux/ttml_fps.c` is an opt-in
+source-compiled actual TTML demux/parser/serializer check. Pass
+`test/modules/demux/fixtures/ttml-fps` as its argument and use the isolated runtime
+environment from its [receipt](../juxtopposed-references/native/ttml-fps-nested-clock-20261029/README.md).
+It loads the real XML reader and checks containing-cue seeks, rates/Reset,
+invalid controls, EOF revival, parser roundtrip and mixed clock/frame offsets.
+Unused module-descriptor callbacks are failing stubs. Actual decoder output is
+verified by the separate native snapshot matrix. The expanded
+[time-parameter receipt](../juxtopposed-references/native/ttml-time-parameters-20261029/README.md)
+qualifies media-time frame/multiplier/subframe/tick parsing and malformed-value
+cleanup. Its source tests have 538 checks. Native boundary probes check actual
+video clocks: a nominal seek can round forward to a 25-FPS frame. Preserve the
+failed nominal-time calibration separately. Direct-build evidence is distinct
+from Makefile registration; other TTML time bases/profiles remain separate.
+
 `test/modules/demux/avformat_mux_queue.c` includes the production queue helper
 and uses real Core FIFOs/frame ownership. The regular `make check` entry is
 `test_modules_demux_avformat_mux_queue`; its 41 cases cover all 24 A/V/S/S ending
@@ -146,6 +210,21 @@ has a separately recorded focused compile/run with 5,772 checks. That result
 does not claim the whole standard test target or FFmpeg/container paths passed;
 use the [real writer receipt](../juxtopposed-references/native/recording-tail-drain-20261028/README.md)
 and its container follow-up for those distinct scopes.
+
+The pending notice helper adds ten cases (51/6,062 total) with separate queue-only
+evidence. In the current merged-FFmpeg configuration, rebuild `libavcodec_plugin.la`,
+not the disabled separate avformat plugin. Preflight must use `MERGE_FFMPEG` so
+the included `avformat.c` is inventoried. The [current notice receipt](../juxtopposed-references/native/ffmpeg-output-notices-20261029/README.md)
+records the normal 13-unit build, actual dependencies and shared-artifact restore.
+`test/libvlc/native_avformat_notice.py` is a bounded-runner worker using the
+public error/state callbacks. Supply the isolated runtime, generated media,
+fresh case directory and success/header-error/writer-error/cancel mode. Writer
+failure requires a parent closing the stdout sink; cancellation requires a paced,
+open sink and its actual-output marker. Trusted media-item sout options are
+required: LibVLC's player does not inherit the global sout string. The parent
+must verify child exits, callbacks, logs, preservation and decoded content;
+worker exit alone does not qualify a case. Frozen producers are examples, not
+commands to rerun into existing outputs. Ordinary Details remains separate.
 
 First-change FPS checks in `test_player_subtitle_delay.cpp` are opt-in:
 run the selected function or data row alone in a fresh process with
@@ -257,6 +336,31 @@ usage target. Reuse immutable unchanged source copies instead of duplicating ful
 trees for every receipt. Copy cold artifacts to the HDD, verify the copies before
 reclaiming SSD space, and preserve link targets and needed active files. Never
 clean unknown folders as part of a routine test or documentation change.
+
+Old top-level archive shortcuts are grouped under `build-windows/archive`, a
+junction to the HDD archive. Individual compatibility paths remain only where
+maintained tests or the deferred comparison require them; internal links in
+active build trees retain their own purpose. Do not follow archive junctions
+when measuring C: usage. WSL cannot reliably traverse cross-volume junctions;
+use the corresponding `/mnt/d/Modding/vlc-juxtopposed/build-windows/...` path
+when reading cold artifacts from Linux, and refresh helper inventories first.
+
+Folder dates and summed file sizes do not establish whether storage is cold.
+The old homecoming directory still contains the working WSL virtual disk, and
+`build-windows/package` remains the configured Windows packaging destination.
+Both stay physically on C:. Historical test runtimes share many NTFS hard links;
+count distinct file identities and retained links before estimating reclaimed
+space, preserve that sharing on D:, and verify checksums before removing originals.
+The maintenance started 29 October and completed 30 October. Records are under
+`build-windows/storage-maintenance-20261029-r1/`, with a full mirror at the same
+name on D:. All 941,286 regular file entries and their link mappings passed
+verification before removal of the selected C: originals; the three protected
+current/clean/fallback runtimes passed before/after binary checks. The archive
+preserves hard links (174.8 GB of distinct data across about 2 TB of logical file
+sizes). Do not expand that sharing through a naive copy of whole old collections.
+The cutover reclaimed about 170 GB; consult STATUS and recheck current free space.
+These maintenance helpers and receipts are one-use historical evidence. This
+operation did not run GUI tests or advance the beta acceptance gates.
 
 | Area | Source |
 | --- | --- |

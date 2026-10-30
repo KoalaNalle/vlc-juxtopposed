@@ -1,0 +1,527 @@
+{
+  "status": "terminal",
+  "scope": "actual LibVLC FFmpeg mux error callbacks and generated output; no ordinary Qt/record-control qualification",
+  "cases": [
+    {
+      "variant": "control",
+      "mode": "header-error",
+      "started": 1793299632.8635328,
+      "forcedCleanupUsed": false,
+      "pid": 29320,
+      "exitCode": 0,
+      "normalExit": true,
+      "callbacks": [],
+      "noticeCount": 0,
+      "expectedNoticeCount": 0,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [
+        "avcodec error: could not write header: Invalid argument",
+        "main error: cannot continue streaming due to errors with codec h264",
+        "main error: cannot continue streaming due to errors with codec flac",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "avcodec error: could not finalize muxed output"
+      ],
+      "observation": {
+        "mode": "header-error",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28029.921
+          },
+          {
+            "state": 2,
+            "monotonic": 28029.937
+          },
+          {
+            "state": 5,
+            "monotonic": 28029.953
+          },
+          {
+            "state": 4,
+            "monotonic": 28029.953
+          }
+        ],
+        "released": true
+      },
+      "passed": true,
+      "ended": 1793299633.238713
+    },
+    {
+      "variant": "candidate",
+      "mode": "header-error",
+      "started": 1793299633.238713,
+      "forcedCleanupUsed": false,
+      "pid": 21988,
+      "exitCode": 0,
+      "normalExit": true,
+      "callbacks": [
+        {
+          "title": "Output could not be completed",
+          "text": "The output may be incomplete. Check the messages for details.",
+          "monotonic": 28030.281
+        }
+      ],
+      "noticeCount": 1,
+      "expectedNoticeCount": 1,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [
+        "avcodec error: could not write header: Invalid argument",
+        "main error: cannot continue streaming due to errors with codec h264",
+        "main error: cannot continue streaming due to errors with codec flac",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "avcodec error: could not finalize muxed output"
+      ],
+      "observation": {
+        "mode": "header-error",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [
+          {
+            "title": "Output could not be completed",
+            "text": "The output may be incomplete. Check the messages for details.",
+            "monotonic": 28030.281
+          }
+        ],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28030.25
+          },
+          {
+            "state": 2,
+            "monotonic": 28030.281
+          },
+          {
+            "state": 5,
+            "monotonic": 28030.281
+          },
+          {
+            "state": 4,
+            "monotonic": 28030.281
+          }
+        ],
+        "released": true
+      },
+      "passed": true,
+      "ended": 1793299633.4926376
+    },
+    {
+      "variant": "control",
+      "mode": "writer-error",
+      "started": 1793299633.4926376,
+      "forcedCleanupUsed": false,
+      "sinkReaderErrors": [],
+      "sinkPrefixBytes": 4096,
+      "pid": 20404,
+      "exitCode": 0,
+      "sinkReaderJoined": true,
+      "normalExit": true,
+      "callbacks": [],
+      "noticeCount": 0,
+      "expectedNoticeCount": 0,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [
+        "file error: cannot write: Broken pipe",
+        "avcodec error: could not write frame (pts: 640001, dts: 560001) (pkt pts: 640, dts: 560)",
+        "main error: cannot continue streaming due to errors with codec h264",
+        "main error: cannot continue streaming due to errors with codec flac",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "avcodec error: could not finalize muxed output"
+      ],
+      "observation": {
+        "mode": "writer-error",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28030.5
+          },
+          {
+            "state": 2,
+            "monotonic": 28030.515
+          },
+          {
+            "state": 5,
+            "monotonic": 28030.531
+          },
+          {
+            "state": 4,
+            "monotonic": 28030.531
+          }
+        ],
+        "released": true
+      },
+      "passed": true,
+      "ended": 1793299633.7347305
+    },
+    {
+      "variant": "candidate",
+      "mode": "writer-error",
+      "started": 1793299633.7347305,
+      "forcedCleanupUsed": false,
+      "sinkReaderErrors": [],
+      "sinkPrefixBytes": 4096,
+      "pid": 30908,
+      "exitCode": 0,
+      "sinkReaderJoined": true,
+      "normalExit": true,
+      "callbacks": [
+        {
+          "title": "Output could not be completed",
+          "text": "The output may be incomplete. Check the messages for details.",
+          "monotonic": 28030.765
+        }
+      ],
+      "noticeCount": 1,
+      "expectedNoticeCount": 1,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [
+        "file error: cannot write: Broken pipe",
+        "avcodec error: could not write frame (pts: 640001, dts: 560001) (pkt pts: 640, dts: 560)",
+        "main error: cannot continue streaming due to errors with codec h264",
+        "main error: cannot continue streaming due to errors with codec flac",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "main error: cannot continue streaming due to errors with codec     ",
+        "avcodec error: could not finalize muxed output"
+      ],
+      "observation": {
+        "mode": "writer-error",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [
+          {
+            "title": "Output could not be completed",
+            "text": "The output may be incomplete. Check the messages for details.",
+            "monotonic": 28030.765
+          }
+        ],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28030.734
+          },
+          {
+            "state": 2,
+            "monotonic": 28030.765
+          },
+          {
+            "state": 5,
+            "monotonic": 28030.765
+          },
+          {
+            "state": 4,
+            "monotonic": 28030.765
+          }
+        ],
+        "released": true
+      },
+      "passed": true,
+      "ended": 1793299633.969808
+    },
+    {
+      "variant": "control",
+      "mode": "success",
+      "started": 1793299633.969808,
+      "forcedCleanupUsed": false,
+      "pid": 30304,
+      "exitCode": 0,
+      "normalExit": true,
+      "callbacks": [],
+      "noticeCount": 0,
+      "expectedNoticeCount": 0,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [],
+      "observation": {
+        "mode": "success",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28030.984
+          },
+          {
+            "state": 2,
+            "monotonic": 28031.015
+          },
+          {
+            "state": 5,
+            "monotonic": 28031.031
+          },
+          {
+            "state": 4,
+            "monotonic": 28031.031
+          }
+        ],
+        "released": true
+      },
+      "outputSha256": "9827cc747eeeec4001cde776a0b9b91387df03c119121d197f9f4835fcd98967",
+      "outputBytes": 3432509,
+      "passed": true,
+      "ended": 1793299634.2509835
+    },
+    {
+      "variant": "candidate",
+      "mode": "success",
+      "started": 1793299634.2509835,
+      "forcedCleanupUsed": false,
+      "pid": 31316,
+      "exitCode": 0,
+      "normalExit": true,
+      "callbacks": [],
+      "noticeCount": 0,
+      "expectedNoticeCount": 0,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [],
+      "observation": {
+        "mode": "success",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28031.25
+          },
+          {
+            "state": 2,
+            "monotonic": 28031.281
+          },
+          {
+            "state": 5,
+            "monotonic": 28031.39
+          },
+          {
+            "state": 4,
+            "monotonic": 28031.39
+          }
+        ],
+        "released": true
+      },
+      "outputSha256": "b867cea74e5123f5e678eb0ad627ce7c406302c51dc466b8342ac276a4553e0a",
+      "outputBytes": 3432509,
+      "passed": true,
+      "ended": 1793299634.6068819
+    },
+    {
+      "variant": "candidate",
+      "mode": "cancel",
+      "started": 1793299634.60859,
+      "forcedCleanupUsed": false,
+      "pid": 19188,
+      "exitCode": 0,
+      "normalExit": true,
+      "callbacks": [],
+      "noticeCount": 0,
+      "expectedNoticeCount": 0,
+      "selectedMux": true,
+      "modules": [
+        "603"
+      ],
+      "diagnostics": [],
+      "observation": {
+        "mode": "cancel",
+        "completed": true,
+        "cancellationRequested": false,
+        "terminalState": 4,
+        "events": [],
+        "states": [
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 1,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 2,
+            "mediaTimeMs": 0
+          },
+          {
+            "state": 4,
+            "mediaTimeMs": 0
+          }
+        ],
+        "nativeStateEvents": [
+          {
+            "state": 1,
+            "monotonic": 28031.609
+          },
+          {
+            "state": 2,
+            "monotonic": 28031.625
+          },
+          {
+            "state": 5,
+            "monotonic": 28031.656
+          },
+          {
+            "state": 4,
+            "monotonic": 28031.656
+          }
+        ],
+        "released": true
+      },
+      "outputSha256": "f1355b11b000bb94a2ca83ab351fa5ef1d987a58d7e3dcd9a96ca143f82a82f3",
+      "outputBytes": 3432509
+    }
+  ],
+  "failure": "AssertionError()",
+  "sourcesUnchanged": true,
+  "fallbackUnchanged": true,
+  "runtimeUnchanged": true,
+  "humanConfigUnchanged": true,
+  "inputs": {
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-record-notice-20261029\\run-callback-r3.py": "94190af8db9bc0f228d4a7e47e6a8cd088b000a232d88751f909e310aa8c7d26",
+    "C:\\Modding\\vlc-juxtopposed\\test\\libvlc\\native_avformat_notice.py": "cfd9b9d9ae6cfb93c1835bcfdc1e3228127f1de525eff70f43f2d2972ec9e7d7",
+    "C:\\Modding\\vlc-juxtopposed\\modules\\demux\\avformat\\mux.c": "714e67e943425eeae14da5a582db93faaed2bed0d97e6f8755c1a69ddac80829",
+    "C:\\Modding\\vlc-juxtopposed\\modules\\demux\\avformat\\avformat_mux_queue.h": "7ffb7cbb237f92e28bb6fa53c75385150174e3629f9d1859a85fe398a91120d3",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-fps-20261028\\media-record-flac\\frame-marker.mkv": "ff9c28f52e759fcfcfd657dda5af5d3115b29d0255363b208dbbc08c9ae16a21",
+    "C:\\Modding\\vlc-juxtopposed\\include\\vlc\\libvlc_media_player.h": "958bc506dd38b50bfc6c4fc32d700f8c766d409b074644f3aa03392c46cd8fbc",
+    "C:\\Modding\\vlc-juxtopposed\\include\\vlc\\libvlc_dialog.h": "b3035a0fddc6668f22ef2c85ad91ef6cf13256376c8bc6ead66f8cca30d5b023",
+    "C:\\Modding\\vlc-juxtopposed\\build-windows\\beta-record-notice-20261029\\plugin-build-r2\\verification.json": "d1231f55cf1499479ab06e327011f3d98e9521ace6bb927add4b93a036831461"
+  },
+  "passed": false
+}

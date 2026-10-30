@@ -1,0 +1,25 @@
+--- a/src/player/input.c
++++ b/src/player/input.c
+@@ -666,7 +666,10 @@
+     const struct vlc_player_timer_source *video = &player->timer.smpte_source;
+     if (video->es && !video->seeking
+      && video->point.system_date != VLC_TICK_INVALID
+-     && video->point.ts >= VLC_TICK_0)
++     /* Decoder preroll can retain a picture just before a positive start-time
++      * offset. Its normalized time is negative, but still addresses a valid
++      * source picture; seek that exact picture rather than waiting forever. */
++     && video->point.ts >= VLC_TICK_0 - __MAX(player->timer.start_offset, 0))
+     {
+         target = video->point.ts - VLC_TICK_0;
+         have_target = true;
+@@ -687,7 +690,9 @@
+          * retaining VLC_TICK_0 here would advance a frame at an exact boundary. */
+         /* Zero is also the timer's invalid timestamp. Represent the origin
+          * by position, retaining an exact zero target for repeated redraws. */
+-        if (target == 0)
++        /* Keep the visible clock at the origin for a retained preroll picture,
++         * while the input seek below still uses its exact source timestamp. */
++        if (target <= 0)
+             vlc_player_UpdateTimerSeekState(player, VLC_TICK_INVALID, 0.);
+         else
+             vlc_player_UpdateTimerSeekState(player, target, -1);

@@ -59,6 +59,7 @@ private:
     void finishAddition();
     void beginRefresh();
     void reloadStore();
+    void retryEdit(std::function<void()> operation);
     void publishAppend();
     void fail(const QString &, std::function<void()> retry = {});
     void openPicker(QDialog *, QWindow *);

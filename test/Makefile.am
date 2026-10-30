@@ -285,6 +285,35 @@ test_src_player_discontinuities_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
 test_src_player_eof_SOURCES = src/player/common.h src/player/modules.c \
 	src/player/eof.c
 test_src_player_eof_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)
+
+# Opt-in real-media notification test; arguments select a generated short A/V
+# fixture and an owned recording directory. No private media or UI is needed.
+EXTRA_PROGRAMS += test_src_player_recording
+test_src_player_recording_SOURCES = src/player/recording.c
+test_src_player_recording_LDADD = $(LIBVLCCORE) $(LIBVLC)
+# Opt-in actual subtitle decoder snapshots; the caller supplies generated media,
+# subtitle references and an empty output directory. Pixel checks run separately.
+EXTRA_PROGRAMS += test_src_player_subtitle_fps
+test_src_player_subtitle_fps_SOURCES = src/player/subtitle_fps.c
+test_src_player_subtitle_fps_LDADD = $(LIBVLCCORE) $(LIBVLC)
+# Actual TTML parser/control/serializer test; pass fixtures/ttml-fps explicitly.
+EXTRA_PROGRAMS += test_modules_demux_ttml_fps
+test_modules_demux_ttml_fps_SOURCES = modules/demux/ttml_fps.c \
+    ../modules/codec/ttml/ttml.c ../modules/codec/ttml/genttml.c
+test_modules_demux_ttml_fps_CPPFLAGS = $(AM_CPPFLAGS) -I$(top_srcdir)/src \
+    -DMODULE_STRING=\"ttml_fps_test\" -DMODULE_NAME=ttml_fps_test
+test_modules_demux_ttml_fps_LDADD = $(LIBVLCCORE) $(LIBVLC) $(top_builddir)/compat/libcompat.la
+EXTRA_DIST += modules/demux/fixtures/ttml-fps/flat.ttml \
+    modules/demux/fixtures/ttml-fps/nested-par.ttml \
+    modules/demux/fixtures/ttml-fps/nested-seq.ttml \
+    modules/demux/fixtures/ttml-fps/mixed-clock-frame.ttml
+EXTRA_DIST += libvlc/native_recorded_webvtt_pause.py
+if HAVE_WIN32
+test_src_player_recording_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+test_src_player_subtitle_fps_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+test_modules_demux_ttml_fps_LDFLAGS = $(AM_LDFLAGS) -Wc,-static
+endif
+
 test_src_player_errors_SOURCES = src/player/common.h src/player/modules.c \
 	src/player/errors.c
 test_src_player_errors_LDADD = $(LIBVLCCORE) $(LIBVLC) $(LIBM)

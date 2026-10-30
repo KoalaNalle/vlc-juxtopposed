@@ -33,6 +33,7 @@
 #include <vlc_block.h>
 #include <vlc_sout.h>
 #include <vlc_es.h>
+#include <vlc_dialog.h>
 
 #include <libavformat/avformat.h>
 
@@ -64,6 +65,14 @@ typedef struct
     bool     b_write_keyframe;
     bool     b_header_done;
 } sout_mux_sys_t;
+
+static void ReportFailure( sout_mux_t *p_mux )
+{
+    sout_mux_sys_t *p_sys = p_mux->p_sys;
+    if( avformatMuxTakeFailureNotice( &p_sys->queue ) )
+        vlc_dialog_display_error( p_mux, _("Output could not be completed"),
+            "%s", _("The output may be incomplete. Check the messages for details.") );
+}
 
 /*****************************************************************************
  * Local prototypes
@@ -176,7 +185,10 @@ void avformat_CloseMux( vlc_object_t *p_this )
 
     if( avformatMuxFinalize( &p_sys->queue, MuxBlock, WriteTrailer, p_mux )
         != VLC_SUCCESS )
+    {
         msg_Err( p_mux, "could not finalize muxed output" );
+        ReportFailure( p_mux );
+    }
     avformatMuxQueueClear( &p_sys->queue );
 
     avformat_free_context(p_sys->oc);
@@ -519,7 +531,10 @@ static int WriteHeader( void *opaque )
 static int Mux( sout_mux_t *p_mux )
 {
     sout_mux_sys_t *p_sys = p_mux->p_sys;
-    return avformatMuxRun( &p_sys->queue, WriteHeader, MuxBlock, p_mux );
+    const int result = avformatMuxRun( &p_sys->queue, WriteHeader, MuxBlock, p_mux );
+    if( result != VLC_SUCCESS )
+        ReportFailure( p_mux );
+    return result;
 }
 
 /*****************************************************************************

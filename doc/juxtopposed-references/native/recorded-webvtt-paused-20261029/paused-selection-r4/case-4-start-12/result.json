@@ -1,0 +1,108 @@
+{
+  "status": "terminal",
+  "scope": "Generated recorded embedded WebVTT, actual decoder snapshots and paused time/frame; no full beta acceptance",
+  "startTimeOption": 12,
+  "observations": [
+    {
+      "step": "01-paused-at-file-12-no-track",
+      "state": 3,
+      "timeUs": 61,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": false
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1048,
+      "captionPixels": 0
+    },
+    {
+      "step": "02-selected-half-second",
+      "state": 3,
+      "timeUs": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1048,
+      "captionPixels": 1498
+    },
+    {
+      "step": "03-selected-one-more-second",
+      "state": 3,
+      "timeUs": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1048,
+      "captionPixels": 1498
+    },
+    {
+      "step": "04-selected-after-refresh-window",
+      "state": 3,
+      "timeUs": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1048,
+      "captionPixels": 1498
+    },
+    {
+      "step": "05-explicit-seek-12",
+      "state": 3,
+      "timeUs": 1,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1048,
+      "captionPixels": 1498
+    },
+    {
+      "step": "07-explicit-seek-25",
+      "state": 3,
+      "timeUs": 13000001,
+      "tracks": [
+        {
+          "id": "spu/3",
+          "selected": true
+        }
+      ],
+      "snapshotReturn": 0,
+      "frameMarker": 1373,
+      "captionPixels": 1503
+    }
+  ],
+  "producerSha256": "3a42b10f647d720a0108e05852bb92af99bef3592e93b52ec22b3b329d2167b6",
+  "coreSha256": "4a2865915e342744a5a7092171b92279b08f7b229eede231e00c3e86d88cff84",
+  "mediaSha256": "9fabdf4bea090ae9cff35799c80a286717a7ae72d8ee3820bda3ccb88ef95a56",
+  "notApplicable": [
+    "File time 5 lies before the start-time=12 playback interval"
+  ],
+  "checks": {
+    "selectionRendered": true,
+    "selectionHeldFrame": true,
+    "selectionHeldTime": true,
+    "explicitSeekRenders": true,
+    "lateCueRenders": true
+  },
+  "stopReturn": 0,
+  "stopReached": true,
+  "teardownComplete": true,
+  "passed": true
+}

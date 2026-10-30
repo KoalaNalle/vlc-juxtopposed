@@ -15,21 +15,6 @@
 #include <memory>
 
 namespace {
-std::unique_ptr<QSettings> settingsReader(const QSettings *source)
-{
-    std::unique_ptr<QSettings> reader;
-    if (!source->organizationName().isEmpty() && source->fallbacksEnabled())
-        reader = std::make_unique<QSettings>(source->format(), source->scope(),
-            source->organizationName(), source->applicationName());
-    else
-        reader = std::make_unique<QSettings>(source->fileName(), source->format());
-    if (reader->fileName() != source->fileName())
-        return {};
-    reader->setFallbacksEnabled(source->fallbacksEnabled());
-    reader->setAtomicSyncRequired(source->isAtomicSyncRequired());
-    if (!source->group().isEmpty()) reader->beginGroup(source->group());
-    return reader;
-}
 QUrl normalizedAddress(QUrl url, bool directory)
 {
     url = url.adjusted(QUrl::NormalizePathSegments);
@@ -187,19 +172,18 @@ bool SidebarPinsStore::reload(QString &error)
     // A previous failed writer can leave the borrowed object's status sticky.
     // Read through a fresh session so fixing the file permits the same store
     // object to retry without discarding the last accepted in-memory order.
-    auto reader = settingsReader(m_settings);
-    if (!reader)
+    CheckedPreferencesStore::SettingsValue source;
+    if (!CheckedPreferencesStore::readSettingsValue(m_settings, settingsKey(), source, error))
     {
         m_readable = false;
-        error = m_readError = QCoreApplication::translate("SidebarPins", "Pin preferences moved during this session. Restart and retry.");
+        m_readError = error;
         return false;
     }
-    reader->sync();
     QVector<SidebarPin> candidate;
     QSet<QString> keys;
-    if (reader->contains(settingsKey()))
+    if (source.present)
     {
-        const auto saved = reader->value(settingsKey());
+        const auto saved = source.value;
         QJsonParseError parseError;
         const auto document = QJsonDocument::fromJson(saved.toString().toUtf8(), &parseError);
         const auto envelope = document.object();
@@ -232,14 +216,10 @@ bool SidebarPinsStore::reload(QString &error)
             }
         }
     }
-    if (reader->status() != QSettings::NoError)
-    {
-        m_readable = false;
-        error = m_readError = QCoreApplication::translate("SidebarPins", "Saved pins could not be read. Restore the preferences file and retry.");
-        return false;
-    }
     m_pins = std::move(candidate);
+    m_sourceValue = source;
     m_readable = true;
+    m_needsReload = false;
     m_readError.clear();
     error.clear();
     return true;
@@ -270,9 +250,15 @@ bool SidebarPinsStore::save(const QVector<SidebarPin> &candidate, QString &error
     // relying on the writer process' shared INI cache or stream registrations.
     const auto serialized = QString::fromUtf8(QJsonDocument(
         QJsonObject::fromVariantMap(envelope)).toJson(QJsonDocument::Compact));
-    if (!CheckedPreferencesStore(nullptr).saveSettings(m_settings, settingsKey(), serialized, false, error))
+    bool conflict = false;
+    if (!CheckedPreferencesStore(nullptr).compareAndSaveSettings(m_settings, settingsKey(),
+            serialized, m_sourceValue, error, &conflict))
+    {
+        m_needsReload = m_needsReload || conflict;
         return false;
+    }
     m_pins = candidate;
+    m_sourceValue = {true, serialized};
     error.clear();
     return true;
 }
